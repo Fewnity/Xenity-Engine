@@ -336,6 +336,36 @@ public:
 		return returnValue;
 	}
 
+	template<typename T>
+	static ValueInputState DrawInputSliderTemplate(const std::string& inputName, T& valueRef, double min, double max)
+	{
+		T value = valueRef;
+		ValueInputState returnValue = ValueInputState::NO_CHANGE;
+
+		if constexpr (std::is_same<T, nlohmann::json>())
+			return returnValue;
+
+		DrawInputTitle(inputName);
+		bool hasChanged = false;
+
+		if constexpr (std::is_same<T, float>())
+			hasChanged = ImGui::SliderFloat(GenerateItemId().c_str(), &value, min, max, "%.4f");
+		else if constexpr (std::is_same<T, int>())
+			hasChanged = ImGui::SliderInt(GenerateItemId().c_str(), &value, static_cast<int>(min), static_cast<int>(max));
+		else if constexpr (std::is_same<T, double>())
+			hasChanged = ImGui::SliderScalar(GenerateItemId().c_str(), ImGuiDataType_Double, &value, &min, &max, "%0.8f");
+
+		valueRef = value;
+
+		const bool hasApplied = ImGui::IsItemDeactivatedAfterEdit();
+		if (hasApplied)
+			returnValue = ValueInputState::APPLIED;
+		else if (hasChanged)
+			returnValue = ValueInputState::CHANGED;
+
+		return returnValue;
+	}
+
 	static ReflectiveDataToDraw CreateReflectiveDataToDraw(AssetPlatform platform)
 	{
 		ReflectiveDataToDraw reflectiveDataToDraw;
@@ -873,7 +903,10 @@ private:
 		T newValue = valuePtr.get();
 		if (!reflectiveDataToDraw.currentEntry.isEnum)
 		{
-			state = DrawInputTemplate(reflectiveDataToDraw.name, newValue);
+			if(reflectiveDataToDraw.currentEntry.isSlider)
+				state = DrawInputSliderTemplate(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.minSliderValue, reflectiveDataToDraw.currentEntry.maxSliderValue);
+			else
+				state = DrawInputTemplate(reflectiveDataToDraw.name, newValue);
 		}
 		else if constexpr (std::is_same<int, T>())
 			state = DrawEnum(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);

@@ -6,9 +6,9 @@
 
 #include "reflection.h"
 
-void Reflective::CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum)
+ReflectiveEntry& Reflective::CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum)
 {
-	ReflectiveEntry entry;
+	ReflectiveEntry& entry = vector.emplace_back();
 	entry.variable = variable;
 	entry.visibleInFileInspector = visibleInFileInspector;
 	entry.isPublic = isPublic;
@@ -16,5 +16,5 @@ void Reflective::CreateReflectionEntry(ReflectiveData& vector, const VariableRef
 	entry.isEnum = isEnum;
 	entry.variableName = variableName;
 
-	vector.push_back(entry);
+	return entry;
 }

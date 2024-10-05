@@ -116,6 +116,9 @@ struct API ReflectiveEntry
 	bool visibleInFileInspector = false;
 	bool isPublic = false;
 	bool isEnum = false;
+	bool isSlider = false;
+	double minSliderValue = 0.0;
+	double maxSliderValue = 0.0;
 };
 
 typedef std::vector<ReflectiveEntry> ReflectiveData;
@@ -148,18 +151,20 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T>
-	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value, void>
+	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value, ReflectiveEntry&>
 	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, value, variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, value, variableName, false, isPublic, type, false);
+		return newReflectiveEntry;
 	}
 
 	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
-	static void AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, isPublic, type, true);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, isPublic, type, true);
+		return newReflectiveEntry;
 	}
 
 	/**
@@ -170,10 +175,11 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
-	static void AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, reinterpret_cast<int&>(value), variableName, false, isPublic, type, true);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<int&>(value), variableName, false, isPublic, type, true);
+		return newReflectiveEntry;
 	}
 
 	/**
@@ -184,10 +190,11 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
-	static void AddVariable(ReflectiveData& vector, std::weak_ptr<T>& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::weak_ptr<T>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::weak_ptr<Component>&>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::weak_ptr<Component>&>(value), variableName, false, isPublic, type, false);
+		return newReflectiveEntry;
 	}
 	
 	/**
@@ -198,10 +205,11 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
-	static void AddVariable(ReflectiveData& vector, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::weak_ptr<Component>>&>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::weak_ptr<Component>>&>(value), variableName, false, isPublic, type, false);
+		return newReflectiveEntry;
 	}
 
 	/**
@@ -212,11 +220,11 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T>
-	std::enable_if_t<std::is_base_of<Reflective, T>::value, void>
+	std::enable_if_t<std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
 	static AddVariable(ReflectiveData& vector, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, isPublic, type, false);
 		for (ReflectiveEntry& otherEntry : vector)
 		{
 			if (otherEntry.variableName == variableName) 
@@ -225,6 +233,7 @@ protected:
 				break;
 			}
 		}
+		return newReflectiveEntry;
 	}
 
 	/**
@@ -236,11 +245,12 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T>
-	std::enable_if_t<!std::is_pointer<T>::value, void>
+	std::enable_if_t<!std::is_pointer<T>::value, ReflectiveEntry&>
 	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		Reflective::CreateReflectionEntry(map, value, variableName, visibleInFileInspector, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(map, value, variableName, visibleInFileInspector, isPublic, type, false);
+		return newReflectiveEntry;
 	}
 
 private:
@@ -254,6 +264,6 @@ private:
 	* @param id The variable type id (hash code)
 	* @param isEnum If the variable is an enum
 	*/
-	static void CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum);
+	static ReflectiveEntry& CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum);
 };
 
