@@ -320,7 +320,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		{
 			glDisable(GL_BLEND);
 			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GREATER, 0.5f);
+			glAlphaFunc(GL_GEQUAL, material.GetAlphaCutoff());
 		}
 		else
 		{

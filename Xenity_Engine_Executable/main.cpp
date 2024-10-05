@@ -35,10 +35,8 @@ Disable "Use lighting" do not block all lights
 Reload material file on game stop
 Add option to disable the grid
 Add an option to create a material from a texture
-Add cutout support on PSP
 Add color to standard shader in psvita
 Fix light in fixed pipeline with 2 cameras
-Add an option to change the cutout value in the editor
 
 --- Can be done for the next release
 Remove the old profiler

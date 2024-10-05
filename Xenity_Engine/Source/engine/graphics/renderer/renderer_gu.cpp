@@ -357,7 +357,7 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 		{
 			sceGuDisable(GU_BLEND);
 			sceGuEnable(GU_ALPHA_TEST);
-			sceGuAlphaFunc(GU_GREATER, 128, 0xff);
+			sceGuAlphaFunc(GU_GEQUAL, static_cast<int>(material.GetAlphaCutoff() * 255), 0xff);
 		}
 		else
 		{

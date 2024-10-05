@@ -227,8 +227,9 @@ void Material::Update()
 ReflectiveData Material::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_renderingMode, "renderingMode", true);
 	Reflective::AddVariable(reflectedVariables, m_shader, "shader", true);
+	Reflective::AddVariable(reflectedVariables, m_renderingMode, "renderingMode", true);
+	Reflective::AddVariable(reflectedVariables, m_alphaCutoff, "alphaCutoff", m_renderingMode == MaterialRenderingModes::Cutout);
 	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
 	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
 	Reflective::AddVariable(reflectedVariables, t_offset, "offset", true);
@@ -245,6 +246,9 @@ ReflectiveData Material::GetMetaReflectiveData(AssetPlatform platform)
 
 void Material::OnReflectionUpdated()
 {
+	// Call set functions to ensure that the values are correct
+	SetAlphaCutoff(m_alphaCutoff);
+
 #if defined(EDITOR)
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());

@@ -106,6 +106,24 @@ public:
 		m_color = _color;
 	}
 
+	void SetAlphaCutoff(float _alphaCutoff)
+	{
+		m_alphaCutoff = _alphaCutoff;
+		if (m_alphaCutoff < 0.0f)
+		{
+			m_alphaCutoff = 0.0f;
+		}
+		else if (m_alphaCutoff > 1.0f)
+		{
+			m_alphaCutoff = 1.0f;
+		}
+	}
+
+	float GetAlphaCutoff() const
+	{
+		return m_alphaCutoff;
+	}
+
 protected:
 	friend class AssetManager;
 	friend class ProjectManager;
@@ -141,6 +159,7 @@ protected:
 	Vector2 t_tiling = Vector2(1, 1);
 	IDrawableTypes m_lastUpdatedType = IDrawableTypes::Draw_3D;
 	MaterialRenderingModes m_renderingMode = MaterialRenderingModes::Opaque;
+	float m_alphaCutoff = 0.5f;
 	bool m_updated = false;
 	bool m_useLighting = false;
 
