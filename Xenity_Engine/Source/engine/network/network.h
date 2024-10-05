@@ -27,6 +27,8 @@ public:
 	{
 		this->m_socketId = socketId;
 	}
+	Socket(const Socket& other) = delete;
+	Socket& operator=(const Socket&) = delete;
 
 	~Socket();
 

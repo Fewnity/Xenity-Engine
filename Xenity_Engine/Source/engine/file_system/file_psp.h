@@ -26,6 +26,9 @@ class API FilePSP : public File
 public:
 	FilePSP() = delete;
 	explicit FilePSP(const std::string& _path);
+	FilePSP(const FilePSP& other) = delete;
+	FilePSP& operator=(const FilePSP&) = delete;
+
 	~FilePSP();
 
 	/**

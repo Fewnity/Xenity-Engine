@@ -30,6 +30,8 @@ class AudioClipStream
 public:
 	AudioClipStream();
 	~AudioClipStream();
+	AudioClipStream(const AudioClipStream& other) = delete;
+	AudioClipStream& operator=(const AudioClipStream&) = delete;
 
 	/**
 	* @brief Open audio clip stream

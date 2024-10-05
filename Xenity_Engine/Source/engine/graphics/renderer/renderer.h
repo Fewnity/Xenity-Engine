@@ -62,6 +62,8 @@ class API Renderer
 {
 public:
 	virtual ~Renderer() = default;
+	Renderer& operator=(const Renderer&) = delete;
+
 	virtual int Init() = 0;
 	virtual void Setup() = 0;
 	virtual void Stop() = 0;

@@ -19,6 +19,8 @@ class API ProfilerBenchmark
 {
 public:
 	ProfilerBenchmark(const std::string& category, const std::string& name);
+	ProfilerBenchmark(const ProfilerBenchmark& other) = delete;
+	ProfilerBenchmark& operator=(const ProfilerBenchmark&) = delete;
 	~ProfilerBenchmark();
 
 	/**

@@ -30,6 +30,9 @@ class API File : public UniqueId, public std::enable_shared_from_this<File>
 public:
 	File() = delete;
 	explicit File(const std::string& _path);
+	File(const File& other) = delete;
+	File& operator=(const File&) = delete;
+
 	~File() = default;
 
 	/**

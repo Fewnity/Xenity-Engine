@@ -26,6 +26,8 @@ class API Component : public UniqueId, public Reflective, public std::enable_sha
 {
 public:
 	Component();
+	Component(const Component& other) = delete;
+	Component& operator=(const Component&) = delete;
 
 	virtual ~Component();
 

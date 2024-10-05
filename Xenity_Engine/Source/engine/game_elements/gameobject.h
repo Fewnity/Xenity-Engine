@@ -73,6 +73,8 @@ public:
 
 	GameObject();
 	explicit GameObject(const std::string& name);
+	GameObject(const GameObject& other) = delete;
+	GameObject& operator=(const GameObject&) = delete;
 
 	virtual ~GameObject();
 

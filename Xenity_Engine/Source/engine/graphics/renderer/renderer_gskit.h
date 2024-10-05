@@ -23,6 +23,9 @@ class API RendererGsKit : public Renderer
 {
 public:
 	RendererGsKit();
+	RendererGsKit(const RendererGsKit& other) = delete;
+	RendererGsKit& operator=(const RendererGsKit&) = delete;
+
 	int Init() override;
 	void Setup() override;
 	void Stop() override;

@@ -29,6 +29,10 @@ private:
 class FileDataBase : public Reflective
 {
 public:
+	FileDataBase() = default;
+	FileDataBase(const FileDataBase& other) = delete;
+	FileDataBase& operator=(const FileDataBase&) = delete;
+
 	ReflectiveData GetReflectiveData() override;
 
 	/**

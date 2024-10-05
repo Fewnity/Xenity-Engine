@@ -11,6 +11,9 @@ class File;
 class BitFile
 {
 public:
+	BitFile() = default;
+	BitFile(const BitFile& other) = delete;
+	BitFile& operator=(const BitFile&) = delete;
 
 	/**
 	* Create the file at the given path

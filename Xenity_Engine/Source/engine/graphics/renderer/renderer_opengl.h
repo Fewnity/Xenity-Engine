@@ -35,6 +35,9 @@ class API RendererOpengl : public Renderer
 {
 public:
 	RendererOpengl();
+	RendererOpengl(const RendererOpengl& other) = delete;
+	RendererOpengl& operator=(const RendererOpengl&) = delete;
+
 	int Init() override;
 	void Setup() override;
 	void Stop() override;

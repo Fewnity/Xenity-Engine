@@ -16,6 +16,9 @@
 class API Benchmark
 {
 public:
+	Benchmark() = default;
+	Benchmark(const Benchmark& other) = delete;
+	Benchmark& operator=(const Benchmark&) = delete;
 
 	/**
 	* @brief Start the benchmark

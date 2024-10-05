@@ -28,6 +28,9 @@ class StackDebugObject
 {
 public:
 	StackDebugObject(const std::string& name, const uint32_t level);
+	StackDebugObject(const StackDebugObject& other) = delete;
+	StackDebugObject& operator=(const StackDebugObject&) = delete;
+
 	~StackDebugObject();
 
 private:

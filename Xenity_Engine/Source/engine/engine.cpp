@@ -175,7 +175,7 @@ int Engine::Init()
 #elif defined(_WIN32) | defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
 	s_renderer = std::make_unique<RendererOpengl>();
 #else
-	#error "No renderer defined for this platform" 
+#error "No renderer defined for this platform" 
 #endif
 
 	const int rendererInitResult = s_renderer->Init();

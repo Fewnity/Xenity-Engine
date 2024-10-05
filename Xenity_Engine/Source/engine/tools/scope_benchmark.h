@@ -7,6 +7,8 @@ class ScopeBenchmark
 {
 public:
 	ScopeBenchmark(const size_t hash);
+	ScopeBenchmark(const ScopeBenchmark& other) = delete;
+	ScopeBenchmark& operator=(const ScopeBenchmark&) = delete;
 	~ScopeBenchmark();
 
 private:

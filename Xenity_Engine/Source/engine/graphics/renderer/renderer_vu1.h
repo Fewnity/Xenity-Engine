@@ -23,6 +23,9 @@ class API RendererVU1 : public Renderer
 {
 public:
 	RendererVU1();
+	RendererVU1(const RendererVU1& other) = delete;
+	RendererVU1& operator=(const RendererVU1&) = delete;
+
 	int Init() override;
 	void Setup() override;
 	void Stop() override;

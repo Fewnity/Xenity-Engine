@@ -34,6 +34,8 @@ class API FileReference : public std::enable_shared_from_this<FileReference>
 {
 public:
 	FileReference() = default;
+	FileReference(const FileReference& other) = delete;
+	FileReference& operator=(const FileReference&) = delete;
 
 	/**
 	* @brief Load the file

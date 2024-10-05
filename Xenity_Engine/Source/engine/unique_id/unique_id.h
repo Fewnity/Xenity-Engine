@@ -28,6 +28,9 @@ public:
 		m_uniqueId = GenerateUniqueId(_forFile);
 	}
 
+	UniqueId(const UniqueId& other) = delete;
+	UniqueId& operator=(const UniqueId&) = delete;
+
 	/**
 	* @brief Get unique Id
 	*/

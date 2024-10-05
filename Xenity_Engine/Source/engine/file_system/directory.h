@@ -23,6 +23,9 @@ class API Directory : public UniqueId, public std::enable_shared_from_this<Direc
 public:
 	Directory() = delete;
 	explicit Directory(std::string _path);
+	Directory(const Directory& other) = delete;
+	Directory& operator=(const Directory&) = delete;
+
 	~Directory();
 
 	/**

@@ -21,6 +21,9 @@ class API RendererGU : public Renderer
 {
 public:
 	RendererGU();
+	RendererGU(const RendererGU& other) = delete;
+	RendererGU& operator=(const RendererGU&) = delete;
+
 	int Init() override;
 	void Setup() override;
 	void Stop() override;
