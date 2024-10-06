@@ -76,7 +76,10 @@ ReflectiveData Camera::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_projectionType, "projectionType", true);
-	Reflective::AddVariable(reflectedVariables, m_fov, "fov", m_projectionType == ProjectionTypes::Perspective);
+	ReflectiveEntry& fovEntry = Reflective::AddVariable(reflectedVariables, m_fov, "fov", m_projectionType == ProjectionTypes::Perspective);
+	fovEntry.isSlider = true;
+	fovEntry.minSliderValue = 1;
+	fovEntry.maxSliderValue = 179;
 	Reflective::AddVariable(reflectedVariables, m_projectionSize, "projectionSize", m_projectionType == ProjectionTypes::Orthographic);
 	Reflective::AddVariable(reflectedVariables, m_nearClippingPlane, "nearClippingPlane", true);
 	Reflective::AddVariable(reflectedVariables, m_farClippingPlane, "farClippingPlane", true);

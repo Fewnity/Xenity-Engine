@@ -229,7 +229,10 @@ ReflectiveData Material::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_shader, "shader", true);
 	Reflective::AddVariable(reflectedVariables, m_renderingMode, "renderingMode", true);
-	Reflective::AddVariable(reflectedVariables, m_alphaCutoff, "alphaCutoff", m_renderingMode == MaterialRenderingModes::Cutout);
+	ReflectiveEntry& alphaCutoffReflectiveEntry = Reflective::AddVariable(reflectedVariables, m_alphaCutoff, "alphaCutoff", m_renderingMode == MaterialRenderingModes::Cutout);
+	alphaCutoffReflectiveEntry.isSlider = true;
+	alphaCutoffReflectiveEntry.minSliderValue = 0.0;
+	alphaCutoffReflectiveEntry.maxSliderValue = 1.0;
 	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
 	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
 	Reflective::AddVariable(reflectedVariables, t_offset, "offset", true);
