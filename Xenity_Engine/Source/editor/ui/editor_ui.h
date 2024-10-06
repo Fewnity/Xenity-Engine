@@ -349,7 +349,7 @@ public:
 		bool hasChanged = false;
 
 		if constexpr (std::is_same<T, float>())
-			hasChanged = ImGui::SliderFloat(GenerateItemId().c_str(), &value, min, max, "%.4f");
+			hasChanged = ImGui::SliderFloat(GenerateItemId().c_str(), &value, static_cast<float>(min), static_cast<float>(max), "%.4f");
 		else if constexpr (std::is_same<T, int>())
 			hasChanged = ImGui::SliderInt(GenerateItemId().c_str(), &value, static_cast<int>(min), static_cast<int>(max));
 		else if constexpr (std::is_same<T, double>())
