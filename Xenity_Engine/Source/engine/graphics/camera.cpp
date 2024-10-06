@@ -86,7 +86,12 @@ ReflectiveData Camera::GetReflectiveData()
 
 void Camera::OnReflectionUpdated()
 {
-	m_isProjectionDirty = true;
+	// Call set functions to ensure that the values are correct
+	SetFov(m_fov);
+	SetNearClippingPlane(m_nearClippingPlane);
+	SetFarClippingPlane(m_farClippingPlane);
+	SetProjectionSize(m_projectionSize);
+
 	if (m_lastMultisamplingValue != m_useMultisampling)
 	{
 		m_lastMultisamplingValue = m_useMultisampling;
@@ -129,6 +134,11 @@ Camera::~Camera()
 void Camera::SetFov(const float fov)
 {
 	m_fov = fov;
+	if (m_fov < 1)
+		m_fov = 1;
+	else if (m_fov > 179)
+		m_fov = 179;
+
 	m_isProjectionDirty = true;
 }
 
@@ -139,12 +149,15 @@ float Camera::GetFov() const
 
 void Camera::SetProjectionSize(const float value)
 {
-	m_projectionSize = value;
+	m_projectionSize = std::clamp(value, 0.001f, 10000.0f);
+
 	m_isProjectionDirty = true;
 }
 
 void Camera::SetNearClippingPlane(float value)
 {
+	value = std::clamp(value, 0.001f, 10000.0f);
+
 	if (value >= m_farClippingPlane)
 	{
 		m_farClippingPlane = value + 0.01f;
@@ -155,6 +168,8 @@ void Camera::SetNearClippingPlane(float value)
 
 void Camera::SetFarClippingPlane(float value)
 {
+	value = std::clamp(value, 0.001f, 10000.0f);
+
 	if (value <= m_nearClippingPlane)
 	{
 		m_farClippingPlane = value + 0.01f;
