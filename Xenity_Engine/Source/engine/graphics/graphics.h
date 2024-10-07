@@ -160,13 +160,17 @@ public:
 	static std::shared_ptr <Material> currentMaterial;
 	static IDrawableTypes currentMode;
 	static bool isRenderingBatchDirty;
-
 	static GraphicsSettings settings;
 
 	static std::vector <Light*> directionalLights;
 	static void CreateLightLists();
 	static bool isLightUpdateNeeded;
+	static void SetIsGridRenderingEnabled(bool enabled);
+	static bool IsGridRenderingEnabled();
+
 private:
+	static bool s_isGridRenderingEnabled;
+	static float s_gridAlphaMultiplier;
 
 	static void OnProjectLoaded();
 

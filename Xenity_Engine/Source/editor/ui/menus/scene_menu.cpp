@@ -859,6 +859,9 @@ bool SceneMenu::DrawToolWindow()
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Scale);
 		const bool scaleClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Scale], "##SceneScaleButton", buttonHovered);
 		EditorUI::EndButtonColor();
+		EditorUI::SetButtonColor(Graphics::IsGridRenderingEnabled());
+		const bool gridClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Grid], "##SceneGridButton", buttonHovered);
+		EditorUI::EndButtonColor();
 
 		if (moveCameraClicked)
 		{
@@ -877,6 +880,11 @@ bool SceneMenu::DrawToolWindow()
 		{
 			toolMode = ToolMode::Tool_Scale;
 			Editor::isToolLocalMode = false;
+		}
+
+		if (gridClicked) 
+		{
+			Graphics::SetIsGridRenderingEnabled(!Graphics::IsGridRenderingEnabled());
 		}
 
 		EditorUI::SetButtonColor(mode2D);

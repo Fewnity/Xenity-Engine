@@ -91,6 +91,7 @@ int EditorUI::Init()
 	LoadEditorIcon(IconName::Icon_Move, "icons/move.png");
 	LoadEditorIcon(IconName::Icon_Rotate, "icons/rotate.png");
 	LoadEditorIcon(IconName::Icon_Scale, "icons/scale.png");
+	LoadEditorIcon(IconName::Icon_Grid, "icons/grid.png");
 
 	// Platform icons
 	LoadEditorIcon(IconName::Icon_Platform_Windows, "icons/platform_windows.png");

@@ -42,6 +42,7 @@
 #include <engine/tools/math.h>
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/time/time.h>
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::shared_ptr<Camera> Graphics::usedCamera;
@@ -74,6 +75,8 @@ GraphicsSettings Graphics::settings;
 
 std::vector <Light*> Graphics::directionalLights;
 bool Graphics::isLightUpdateNeeded = true;
+bool Graphics::s_isGridRenderingEnabled = true;
+float  Graphics::s_gridAlphaMultiplier = 1;
 
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
@@ -606,6 +609,16 @@ void Graphics::CreateLightLists()
 	}
 }
 
+void Graphics::SetIsGridRenderingEnabled(bool enabled)
+{
+	s_isGridRenderingEnabled = enabled;
+}
+
+bool Graphics::IsGridRenderingEnabled()
+{
+	return s_isGridRenderingEnabled;
+}
+
 void Graphics::OnProjectLoaded()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
@@ -748,16 +761,41 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	SCOPED_PROFILER("Graphics::DrawEditorGrid", scopeBenchmark);
+
+	if (s_isGridRenderingEnabled && s_gridAlphaMultiplier < 1)
+	{
+		s_gridAlphaMultiplier += Time::GetDeltaTime() * 7.0f;
+		s_gridAlphaMultiplier = std::clamp(s_gridAlphaMultiplier, 0.0f, 1.0f);
+	}
+	else if (!s_isGridRenderingEnabled && s_gridAlphaMultiplier > 0)
+	{
+		s_gridAlphaMultiplier -= Time::GetDeltaTime() * 7.0f;
+		s_gridAlphaMultiplier = std::clamp(s_gridAlphaMultiplier, 0.0f, 1.0f);
+	}
+
+	if (s_gridAlphaMultiplier == 0)
+	{
+		return;
+	}
+
 	float distance;
 	if (gridAxis == 0)
+	{
 		distance = fabs(cameraPosition.y);
+	}
 	else if (gridAxis == 1)
+	{
 		distance = fabs(cameraPosition.x);
+	}
 	else //if (gridAxis == 2)
+	{
 		distance = fabs(cameraPosition.z);
+	}
 
 	if (distance < 0.7f)
+	{
 		distance = 0.7f;
+	}
 
 	// Get the coef for grid lineCount by using the camera distance
 	int coef = 1;
@@ -768,7 +806,7 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 
 	const float lineLenght = 20 * distance;
 	const float lineCount = lineLenght / coef;
-	const Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f);
+	const Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f * s_gridAlphaMultiplier);
 
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.renderingMode = MaterialRenderingModes::Transparent;

@@ -72,6 +72,7 @@ enum class IconName
 	Icon_Move,
 	Icon_Rotate,
 	Icon_Scale,
+	Icon_Grid,
 	Icon_Platform_Windows,
 	Icon_Platform_Linux,
 	Icon_Platform_PSP,
