@@ -551,9 +551,11 @@ void FileExplorerMenu::Rename()
 		needUpdate = true;
 
 		std::string parentPath = directoryToRename->path;
-		const size_t lastSlash = parentPath.find_last_of('\\', parentPath.size() - 2);
-		parentPath = parentPath.substr(0, lastSlash) + "\\";
-		const bool success = FileSystem::s_fileSystem->Rename(directoryToRename->path, parentPath + renamingString);
+		// Remove the old folder name from the path
+		const size_t lastSlash = parentPath.find_last_of('/', parentPath.size() - 2);
+		parentPath = parentPath.substr(0, lastSlash) + "/";
+
+		const bool success = FileSystem::s_fileSystem->Rename(directoryToRename->path, parentPath + renamingString + "/");
 	}
 
 	fileToRename.reset();
