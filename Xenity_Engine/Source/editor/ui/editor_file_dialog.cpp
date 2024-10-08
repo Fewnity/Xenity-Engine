@@ -4,6 +4,8 @@
 //
 // This file is part of Xenity Engine
 
+#include <sstream>
+
 #if defined(EDITOR)
 #include <variant>
 #if defined(_WIN32) || defined(_WIN64)

@@ -22,6 +22,12 @@ std::map<int, WorldPartitionner::XNode> WorldPartitionner::Tree::children;
 
 struct Vector3Fast
 {
+	Vector3Fast(float x, float y, float z) 
+	{
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
 	float x, y, z;
 };
 

@@ -7,10 +7,10 @@
 #include "file_default.h"
 
 #include <string>
+#include <sstream>
 
 #include <engine/engine_settings.h>
 #include <engine/debug/debug.h>
-
 
 FileDefault::FileDefault(std::string _path) : File(_path)
 {

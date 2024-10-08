@@ -304,7 +304,7 @@ void ProjectManager::FindAllProjectFiles()
 	// Check if a file has changed or has been deleted
 	for (const auto& kv : projectFilesIds)
 	{
-		const bool contains = oldProjectFilesIds.contains(kv.first);
+		const bool contains = oldProjectFilesIds.find(kv.first) != oldProjectFilesIds.end();
 		if (contains)
 		{
 			FileChange& fileChange = oldProjectFilesIds[kv.first];
@@ -828,7 +828,7 @@ FileInfo* ProjectManager::GetFileById(const uint64_t id)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
-	if (projectFilesIds.contains(id))
+	if (projectFilesIds.find(id) != projectFilesIds.end())
 	{
 		return &projectFilesIds[id];
 	}
@@ -862,7 +862,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	// If the file is not instanciated, create the File Reference
 	if (fileRef == nullptr)
 	{
-		if (projectFilesIds.contains(id))
+		if (projectFilesIds.find(id) != projectFilesIds.end())
 		{
 #if defined(EDITOR)
 			fileRef = CreateFileReference(projectFilesIds[id].path, id);
@@ -933,6 +933,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPat
 			}
 			catch (const std::exception&)
 			{
+				XASSERT(false, "[ProjectManager::LoadProjectSettings] Corrupted project settings");
 				Debug::PrintError("[ProjectManager::LoadProjectSettings] Corrupted project settings", true);
 				return settings;
 			}
@@ -943,7 +944,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPat
 	}
 	else
 	{
-		XASSERT(false, "[ProjectManager::LoadProjectSettings] Fail to open the project settings file");
+		//XASSERT(false, "[ProjectManager::LoadProjectSettings] Fail to open the project settings file");
 		Debug::PrintError("[ProjectManager::LoadProjectSettings] Fail to open the project settings file", true);
 	}
 
