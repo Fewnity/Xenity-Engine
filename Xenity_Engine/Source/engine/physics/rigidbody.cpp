@@ -148,7 +148,7 @@ void RigidBody::UpdateGeneratesEvents()
 	bool hasEvents = false;
 	for (auto& collider : colliders)
 	{
-		if (collider->generateCollisionEvents)
+		if (collider->m_generateCollisionEvents)
 		{
 			hasEvents = true;
 			break;
@@ -276,16 +276,16 @@ void RigidBody::OnTransformUpdated()
 
 void RigidBody::Tick()
 {
-	if (GetGameObject()->IsLocalActive() && m_bulletTriggerRigidbody)
+	if (GetGameObjectRaw()->IsLocalActive() && m_bulletTriggerRigidbody)
 	{
-		Transform& transform = *GetTransform();
 		m_disableEvent = true;
 		m_bulletTriggerRigidbody->setWorldTransform(m_bulletRigidbody->getWorldTransform());
 
 		const btVector3& p = m_bulletRigidbody->getCenterOfMassPosition();
-		transform.SetPosition(Vector3(p.x(), p.y(), p.z()));
-
 		const btQuaternion q = m_bulletRigidbody->getOrientation();
+
+		Transform& transform = *GetTransformRaw();
+		transform.SetPosition(Vector3(p.x(), p.y(), p.z()));
 		transform.SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
 
 		const btVector3& vel = m_bulletRigidbody->getLinearVelocity();

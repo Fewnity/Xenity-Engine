@@ -182,7 +182,7 @@ public:
 	//	std::cout << "Collision detected between objects " << colObj0Wrap->getCollisionObject() << " and " << colObj1Wrap->getCollisionObject() << std::endl;
 		//std::cout << partId0 << " " << index0 << " and " << partId1 << "   " << index1 << std::endl;
 		if (col0 && col1 && col0->GetGameObject() != col1->GetGameObject())
-			PhysicsManager::AddEvent(col0, col1, col0->isTrigger || col1->isTrigger);
+			PhysicsManager::AddEvent(col0, col1, col0->IsTrigger() || col1->IsTrigger());
 
 		return false;
 	}
@@ -278,88 +278,100 @@ void PhysicsManager::Update()
 	const size_t colliderCount = s_colliders.size();
 
 	//physDynamicsWorld->stepSimulation(Time::GetDeltaTime(), 1, 0.01666666f / 3.0f);
-	s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
-
-	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
-		RigidBody* rb = s_rigidBodies[i];
-		rb->Tick();
+		SCOPED_PROFILER("PhysicsManager::Update|StepSimulation", scopeBenchmark2);
+		s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
 	}
 
-	MyContactResultCallback resultCallback;
-	for (size_t i = 0; i < rigidbodyCount; i++)
 	{
-		const RigidBody* rb = s_rigidBodies[i];
-		if (rb->m_generatesEvents)
+		SCOPED_PROFILER("PhysicsManager::Update|RigidBodyTick", scopeBenchmark2);
+		for (size_t i = 0; i < rigidbodyCount; i++)
 		{
-			s_physDynamicsWorld->contactTest(rb->m_bulletRigidbody, resultCallback);
-			s_physDynamicsWorld->contactTest(rb->m_bulletTriggerRigidbody, resultCallback);
+			RigidBody* rb = s_rigidBodies[i];
+			rb->Tick();
 		}
 	}
 
-	for (size_t i = 0; i < colliderCount; i++)
 	{
-		const ColliderInfo& colliderInfo = s_colliders[i];
-		if (colliderInfo.collider->generateCollisionEvents && colliderInfo.collider->m_bulletCollisionObject)
+		SCOPED_PROFILER("PhysicsManager::Update|ContactTest", scopeBenchmark2);
+		MyContactResultCallback resultCallback;
+		for (size_t i = 0; i < rigidbodyCount; i++)
 		{
-			s_physDynamicsWorld->contactTest(colliderInfo.collider->m_bulletCollisionObject, resultCallback);
+			const RigidBody* rb = s_rigidBodies[i];
+			if (rb->m_generatesEvents)
+			{
+				s_physDynamicsWorld->contactTest(rb->m_bulletRigidbody, resultCallback);
+				s_physDynamicsWorld->contactTest(rb->m_bulletTriggerRigidbody, resultCallback);
+			}
+		}
+
+		for (size_t i = 0; i < colliderCount; i++)
+		{
+			const ColliderInfo& colliderInfo = s_colliders[i];
+			if (colliderInfo.collider->m_generateCollisionEvents && colliderInfo.collider->m_bulletCollisionObject)
+			{
+				s_physDynamicsWorld->contactTest(colliderInfo.collider->m_bulletCollisionObject, resultCallback);
+			}
 		}
 	}
 
-	// Call the collision events
-	for (size_t i = 0; i < colliderCount; i++)
 	{
-		ColliderInfo& colliderInfo = s_colliders[i];
-		std::vector<Collider*> toRemove;
-
-		for (auto& collision : colliderInfo.collisions)
+		SCOPED_PROFILER("PhysicsManager::Update|CallCollisionEvent", scopeBenchmark2);
+		// Call the collision events
+		for (size_t i = 0; i < colliderCount; i++)
 		{
-			if (collision.second == CollisionState::FirstFrame)
-			{
-				CallCollisionEvent(colliderInfo.collider, collision.first, false, 0);
-				//std::cout << "OnCollisionEnter: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-				collision.second = CollisionState::RequireUpdate;
-			}
-			else if (collision.second == CollisionState::Updated)
-			{
-				CallCollisionEvent(colliderInfo.collider, collision.first, false, 1);
-				//std::cout << "OnCollisionStay: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-				collision.second = CollisionState::RequireUpdate;
-			}
-			else if (collision.second == CollisionState::RequireUpdate)
-			{
-				CallCollisionEvent(colliderInfo.collider, collision.first, false, 2);
-				//std::cout << "OnCollisionExit: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-				toRemove.push_back(collision.first);
-			}
-		}
+			ColliderInfo& colliderInfo = s_colliders[i];
+			std::vector<Collider*> toRemove;
 
-		for (auto& collision : colliderInfo.triggersCollisions)
-		{
-			if (collision.second == CollisionState::FirstFrame)
+			for (auto& collision : colliderInfo.collisions)
 			{
-				CallCollisionEvent(colliderInfo.collider, collision.first, true, 0);
-				//std::cout << "OnTriggerEnter: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-				collision.second = CollisionState::RequireUpdate;
+				if (collision.second == CollisionState::FirstFrame)
+				{
+					CallCollisionEvent(colliderInfo.collider, collision.first, false, 0);
+					//std::cout << "OnCollisionEnter: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
+					collision.second = CollisionState::RequireUpdate;
+				}
+				else if (collision.second == CollisionState::Updated)
+				{
+					CallCollisionEvent(colliderInfo.collider, collision.first, false, 1);
+					//std::cout << "OnCollisionStay: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
+					collision.second = CollisionState::RequireUpdate;
+				}
+				else if (collision.second == CollisionState::RequireUpdate)
+				{
+					CallCollisionEvent(colliderInfo.collider, collision.first, false, 2);
+					//std::cout << "OnCollisionExit: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
+					toRemove.push_back(collision.first);
+				}
 			}
-			else if (collision.second == CollisionState::Updated)
-			{
-				CallCollisionEvent(colliderInfo.collider, collision.first, true, 1);
-				//std::cout << "OnTriggerStay: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-				collision.second = CollisionState::RequireUpdate;
-			}
-			else if (collision.second == CollisionState::RequireUpdate)
-			{
-				CallCollisionEvent(colliderInfo.collider, collision.first, true, 2);
-				//std::cout << "OnTriggerExit: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-				toRemove.push_back(collision.first);
-			}
-		}
 
-		for (auto& remove : toRemove)
-		{
-			colliderInfo.collisions.erase(remove);
-			colliderInfo.triggersCollisions.erase(remove);
+			for (auto& collision : colliderInfo.triggersCollisions)
+			{
+				if (collision.second == CollisionState::FirstFrame)
+				{
+					CallCollisionEvent(colliderInfo.collider, collision.first, true, 0);
+					//std::cout << "OnTriggerEnter: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
+					collision.second = CollisionState::RequireUpdate;
+				}
+				else if (collision.second == CollisionState::Updated)
+				{
+					CallCollisionEvent(colliderInfo.collider, collision.first, true, 1);
+					//std::cout << "OnTriggerStay: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
+					collision.second = CollisionState::RequireUpdate;
+				}
+				else if (collision.second == CollisionState::RequireUpdate)
+				{
+					CallCollisionEvent(colliderInfo.collider, collision.first, true, 2);
+					//std::cout << "OnTriggerExit: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
+					toRemove.push_back(collision.first);
+				}
+			}
+
+			for (auto& remove : toRemove)
+			{
+				colliderInfo.collisions.erase(remove);
+				colliderInfo.triggersCollisions.erase(remove);
+			}
 		}
 	}
 }

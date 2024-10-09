@@ -35,8 +35,8 @@ ReflectiveData BoxCollider::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, s_size, "size", true);
 	AddVariable(reflectedVariables, m_offset, "offset", true);
-	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
-	AddVariable(reflectedVariables, generateCollisionEvents, "generateCollisionEvents", true);
+	AddVariable(reflectedVariables, m_isTrigger, "isTrigger", true);
+	AddVariable(reflectedVariables, m_generateCollisionEvents, "generateCollisionEvents", true);
 	return reflectedVariables;
 }
 
@@ -62,7 +62,7 @@ void BoxCollider::OnTransformScaled()
 		{
 			rb->RemoveShape(m_bulletCollisionShape);
 			rb->RemoveTriggerShape(m_bulletCollisionShape);
-			if (!isTrigger)
+			if (!m_isTrigger)
 				rb->AddShape(m_bulletCollisionShape, m_offset * scale);
 			else
 				rb->AddTriggerShape(m_bulletCollisionShape, m_offset * scale);
@@ -84,62 +84,6 @@ void BoxCollider::OnTransformUpdated()
 			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
 			btVector3(-newPos.x, newPos.y, newPos.z)));
 	}
-}
-
-bool BoxCollider::CheckTrigger(const BoxCollider& a, const BoxCollider& b)
-{
-	const Vector3& aPos = a.GetTransform()->GetPosition();
-	const Vector3& bPos = b.GetTransform()->GetPosition();
-
-	const Vector3 aMinPos = a.m_min + aPos;
-	const Vector3 aMaxPos = a.m_max + aPos;
-	const Vector3 bMinPos = b.m_min + bPos;
-	const Vector3 bMaxPos = b.m_max + bPos;
-
-	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
-	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
-	const bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
-
-	if (xColl && yColl && zColl)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-CollisionSide BoxCollider::CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3& aVelocity)
-{
-	const Vector3& aPosition = a.GetTransform()->GetPosition();
-	const Vector3& bPosition = b.GetTransform()->GetPosition();
-
-	const Vector3 aMinPos = a.m_min + aPosition + aVelocity;
-	const Vector3 aMaxPos = a.m_max + aPosition + aVelocity;
-	const Vector3 bMinPos = b.m_min + bPosition;
-	const Vector3 bMaxPos = b.m_max + bPosition;
-
-	const bool xColl = aMinPos.x <= bMaxPos.x && aMaxPos.x >= bMinPos.x;
-	const bool yColl = aMinPos.y <= bMaxPos.y && aMaxPos.y >= bMinPos.y;
-	const bool zColl = aMinPos.z <= bMaxPos.z && aMaxPos.z >= bMinPos.z;
-	int result = (int)CollisionSide::NoSide;
-
-	if (xColl && yColl && zColl)
-	{
-		const Vector3 aMinPosBef = a.m_min + aPosition;
-		const Vector3 aMaxPosBef = a.m_max + aPosition;
-		const bool xCollBefore = aMinPosBef.x <= bMaxPos.x && aMaxPosBef.x >= bMinPos.x;
-		const bool yCollBefore = aMinPosBef.y <= bMaxPos.y && aMaxPosBef.y >= bMinPos.y;
-		const bool zCollBefore = aMinPosBef.z <= bMaxPos.z && aMaxPosBef.z >= bMinPos.z;
-
-		if (!xCollBefore)
-			result |= (int)CollisionSide::SideX;
-		if (!yCollBefore)
-			result |= (int)CollisionSide::SideY;
-		if (!zCollBefore)
-			result |= (int)CollisionSide::SideZ;
-	}
-
-	return (CollisionSide)result;
 }
 
 BoxCollider::~BoxCollider()
@@ -187,7 +131,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 
 	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
-		if (!isTrigger)
+		if (!m_isTrigger)
 			rb->AddShape(m_bulletCollisionShape, m_offset * scale);
 		else
 			rb->AddTriggerShape(m_bulletCollisionShape, m_offset * scale);
@@ -210,7 +154,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 		m_bulletCollisionObject->setUserPointer(this);
 		m_bulletCollisionObject->setRestitution(1);
 
-		if (isTrigger)
+		if (m_isTrigger)
 		{
 			m_bulletCollisionObject->setCollisionFlags(m_bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		}
@@ -223,7 +167,7 @@ void BoxCollider::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
 	Color lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
-	if (isTrigger)
+	if (m_isTrigger)
 		lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 0.5f);
 
 	Gizmo::SetColor(lineColor);

@@ -18,9 +18,28 @@ class btCollisionShape;
 class API Collider : public Component
 {
 public:
-	bool isTrigger = false;
-	bool generateCollisionEvents = false;
 	~Collider();
+	void SetIsTrigger(bool isTrigger)
+	{
+		m_isTrigger = isTrigger;
+		OnTransformScaled();
+		OnTransformUpdated();
+	}
+
+	bool IsTrigger() const
+	{
+		return m_isTrigger;
+	}
+
+	void SetGenerateCollisionEvents(bool generateCollisionEvents)
+	{
+		m_generateCollisionEvents = generateCollisionEvents;
+	}
+
+	bool GetGenerateCollisionEvents() const
+	{
+		return m_generateCollisionEvents;
+	}
 
 protected:
 	friend class PhysicsManager;
@@ -28,7 +47,7 @@ protected:
 	friend class InspectorMenu;
 	friend class MainBarMenu;
 
-	const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
+	const std::weak_ptr<RigidBody>& GetAttachedRigidbody() const
 	{
 		return m_attachedRigidbody;
 	}
@@ -40,9 +59,13 @@ protected:
 	virtual void SetDefaultSize() {}
 	void RemoveReferences()  override;
 	virtual void CreateCollision(bool forceCreation) = 0;
+	virtual void OnTransformScaled() {};
+	virtual void OnTransformUpdated() {};
 
 	std::weak_ptr<RigidBody> m_attachedRigidbody;
 	btCollisionObject* m_bulletCollisionObject = nullptr;
 	btCollisionShape* m_bulletCollisionShape = nullptr;
+	bool m_isTrigger = false;
+	bool m_generateCollisionEvents = false;
 };
 

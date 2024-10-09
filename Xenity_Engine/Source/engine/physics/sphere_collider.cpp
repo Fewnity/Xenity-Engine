@@ -35,8 +35,8 @@ ReflectiveData SphereCollider::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	AddVariable(reflectedVariables, m_size, "size", true);
 	AddVariable(reflectedVariables, m_offset, "offset", true);
-	AddVariable(reflectedVariables, isTrigger, "isTrigger", true);
-	AddVariable(reflectedVariables, generateCollisionEvents, "generateCollisionEvents", true);
+	AddVariable(reflectedVariables, m_isTrigger, "isTrigger", true);
+	AddVariable(reflectedVariables, m_generateCollisionEvents, "generateCollisionEvents", true);
 	return reflectedVariables;
 }
 
@@ -78,7 +78,7 @@ void SphereCollider::OnDrawGizmosSelected()
 {
 #if defined(EDITOR)
 	Color lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 1);
-	if (isTrigger)
+	if (m_isTrigger)
 		lineColor = Color::CreateFromRGBAFloat(0, 1, 0, 0.5f);
 
 	Gizmo::SetColor(lineColor);
@@ -118,7 +118,7 @@ void SphereCollider::CreateCollision(bool forceCreation)
 
 	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
-		if (!isTrigger)
+		if (!m_isTrigger)
 			rb->AddShape(m_bulletCollisionShape, m_offset * scale);
 		else
 			rb->AddTriggerShape(m_bulletCollisionShape, m_offset * scale);
@@ -141,7 +141,7 @@ void SphereCollider::CreateCollision(bool forceCreation)
 		m_bulletCollisionObject->setUserPointer(this);
 		m_bulletCollisionObject->setRestitution(1);
 
-		if (isTrigger)
+		if (m_isTrigger)
 		{
 			m_bulletCollisionObject->setCollisionFlags(m_bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		}
@@ -162,7 +162,7 @@ void SphereCollider::OnTransformScaled()
 		{
 			rb->RemoveShape(m_bulletCollisionShape);
 			rb->RemoveTriggerShape(m_bulletCollisionShape);
-			if (!isTrigger)
+			if (!m_isTrigger)
 				rb->AddShape(m_bulletCollisionShape, m_offset * scale);
 			else
 				rb->AddTriggerShape(m_bulletCollisionShape, m_offset * scale);

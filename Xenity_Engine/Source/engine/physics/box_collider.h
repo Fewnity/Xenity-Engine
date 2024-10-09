@@ -71,8 +71,8 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	void OnTransformScaled();
-	void OnTransformUpdated();
+	void OnTransformScaled() override;
+	void OnTransformUpdated() override;
 
 	void OnDrawGizmosSelected() override;
 
@@ -85,21 +85,6 @@ protected:
 	* @brief Calculate the bounding box of the box collider
 	*/
 	void CalculateBoundingBox();
-
-	/**
-	* @brief [Internal] Check if two box colliders are triggering each other
-	* @param a The first box collider
-	* @param b The second box collider
-	*/
-	static bool CheckTrigger(const BoxCollider& a, const BoxCollider& b);
-
-	/**
-	 * @brief [Internal] Check if two box colliders are colliding with each other
-	 * @param a The first box collider
-	 * @param b The second box collider
-	 * @param aVelocity The velocity of the first box collider
-	 */
-	static CollisionSide CheckCollision(const BoxCollider& a, const BoxCollider& b, const Vector3& aVelocity);
 
 	Vector3 s_size = Vector3(1);
 	Vector3 m_offset = Vector3(0);

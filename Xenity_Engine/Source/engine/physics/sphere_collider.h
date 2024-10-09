@@ -53,8 +53,8 @@ protected:
 
 	void OnDrawGizmosSelected() override;
 	void CreateCollision(bool forceCreation) override;
-	void OnTransformScaled();
-	void OnTransformUpdated();
+	void OnTransformScaled() override;
+	void OnTransformUpdated() override;
 
 	/**
 	* @brief Set the default size of the box collider based on the mesh renderer
