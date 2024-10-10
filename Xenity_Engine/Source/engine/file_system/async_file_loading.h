@@ -36,6 +36,8 @@ public:
 
 private:
 	static std::vector<std::shared_ptr<FileReference>> s_threadLoadedFiles;
+#if !defined(__PS3__)
 	static std::mutex s_threadLoadingMutex;
+#endif
 };
 

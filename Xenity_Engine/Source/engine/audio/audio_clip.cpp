@@ -25,10 +25,12 @@ AudioClip::AudioClip()
 	AudioClipSettingsStandalone* audioClipSettingsStandalone = new AudioClipSettingsStandalone();
 	AudioClipSettingsPSP* audioClipSettingsPSP = new AudioClipSettingsPSP();
 	AudioClipSettingsPSVITA* audioClipSettingsPSVITA = new AudioClipSettingsPSVITA();
+	AudioClipSettingsPS3* audioClipSettingsPS3 = new AudioClipSettingsPS3();
 
 	m_settings.push_back(audioClipSettingsStandalone);
 	m_settings.push_back(audioClipSettingsPSP);
 	m_settings.push_back(audioClipSettingsPSVITA);
+	m_settings.push_back(audioClipSettingsPS3);
 }
 
 ReflectiveData AudioClip::GetReflectiveData()

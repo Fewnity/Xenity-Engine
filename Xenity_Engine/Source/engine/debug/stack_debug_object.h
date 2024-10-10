@@ -19,10 +19,16 @@
 //#define ENABLE_STACK_DEBUG_OBJECT
 
 #if defined(ENABLE_STACK_DEBUG_OBJECT)
+
+#if defined(__PS3__)
+#define STACK_DEBUG_OBJECT(level) StackDebugObject _stackDebugObject(__PRETTY_FUNCTION__, level)
+#else // else !defined(__PS3__)
 #define STACK_DEBUG_OBJECT(level) StackDebugObject _stackDebugObject(__FUNCTION__, level)
-#else
+#endif // !defined(__PS3__)
+
+#else // #elif !defined(ENABLE_STACK_DEBUG_OBJECT)
 #define STACK_DEBUG_OBJECT
-#endif
+#endif // !defined(ENABLE_STACK_DEBUG_OBJECT)
 
 class StackDebugObject
 {

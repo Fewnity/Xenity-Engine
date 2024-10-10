@@ -143,19 +143,35 @@ public:
 
 protected:
 
-	/**
-	* @brief Add a variable to the list of variables (basic type)
+/**
+	* @brief Add a variable to the list of variables (basic Reflectives)
 	* @param vector The list of variables
 	* @param value The variable value
 	* @param variableName The variable name
 	* @param isPublic If the variable is public
 	*/
 	template<typename T>
-	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value, ReflectiveEntry&>
+	std::enable_if_t<std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
 	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, value, variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<Reflective>(value), variableName, false, isPublic, type, false);
+		return newReflectiveEntry;
+	}
+
+	/**
+	* @brief Add a variable to the list of variables (basic types)
+	* @param vector The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param isPublic If the variable is public
+	*/
+	template<typename T>
+	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value && !std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
+	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
+	{
+		const uint64_t type = typeid(T).hash_code();
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<T>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
 
@@ -178,7 +194,7 @@ protected:
 	static ReflectiveEntry& AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
 		const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<int&>(value), variableName, false, isPublic, type, true);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<int>((int&)value), variableName, false, isPublic, type, true);
 		return newReflectiveEntry;
 	}
 

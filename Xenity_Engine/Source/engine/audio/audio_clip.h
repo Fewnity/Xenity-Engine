@@ -36,6 +36,11 @@ class AudioClipSettingsPSP : public AudioClipSettings
 public:
 };
 
+class AudioClipSettingsPS3 : public AudioClipSettings
+{
+public:
+};
+
 class API AudioClip : public FileReference, public Reflective
 {
 public:

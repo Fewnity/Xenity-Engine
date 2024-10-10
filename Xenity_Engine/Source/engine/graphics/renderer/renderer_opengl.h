@@ -10,7 +10,7 @@
  * [Internal]
  */
 
-#if !defined(_EE) && !defined(__PSP__) // Improve conditions
+#if !defined(_EE) && !defined(__PSP__) && !defined(__PS3__) // Improve conditions
 #include <engine/api.h>
 
 #include "renderer.h"

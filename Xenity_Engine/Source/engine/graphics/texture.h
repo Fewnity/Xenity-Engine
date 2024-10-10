@@ -80,6 +80,11 @@ public:
 	}
 };
 
+class TextureSettingsPS3 : public TextureSettings
+{
+public:
+};
+
 /**
 * @brief Texture file class
 */

@@ -6,9 +6,10 @@
 
 #include "file_system.h"
 
-#include <filesystem>
 #include <string>
+
 #if defined(_EE)
+#include <filesystem>
 #define NEWLIB_PORT_AWARE
 #include <fileXio_rpc.h>
 #include <fileio.h>
@@ -19,10 +20,15 @@
 #include <iopcontrol.h>
 #include <iopheap.h>
 #elif defined(__PSP__) || defined(_EE)
+#include <filesystem>
 #include <dirent.h>
 #include <sys/stat.h>
 #elif defined(__vita__)
+#include <filesystem>
 #include <psp2/io/stat.h>
+#elif defined(__PS3__)
+#else
+#include <filesystem>
 #endif
 
 #include <engine/debug/debug.h>
@@ -30,9 +36,10 @@
 #include "file.h"
 #include "file_psp.h"
 #include "file_ps2.h"
+#include "file_ps3.h"
 #include "file_default.h"
 
-FileSystem *FileSystem::s_fileSystem = nullptr;
+FileSystem* FileSystem::s_fileSystem = nullptr;
 
 #pragma region File
 
@@ -51,12 +58,12 @@ void FileSystem::FillDirectory(const std::shared_ptr<Directory>& directory, bool
 		return;
 	}
 #if defined(__PSP__)
-	DIR *dir = opendir(directory->GetPath().c_str());
+	DIR* dir = opendir(directory->GetPath().c_str());
 	if (dir == NULL)
 	{
 		return;
 	}
-	struct dirent *ent;
+	struct dirent* ent;
 	while ((ent = readdir(dir)) != NULL)
 	{
 		std::string found = ent->d_name;
@@ -137,8 +144,9 @@ void FileSystem::FillDirectory(const std::shared_ptr<Directory>& directory, bool
 			directory->subdirectories.push_back(newDirectory);
 		}
 	}
+#elif defined(__PS3__)
 #else
-	for (const auto &file : std::filesystem::directory_iterator(directory->GetPath()))
+	for (const auto& file : std::filesystem::directory_iterator(directory->GetPath()))
 	{
 		if (file.is_directory())
 		{
@@ -156,7 +164,7 @@ void FileSystem::FillDirectory(const std::shared_ptr<Directory>& directory, bool
 					newDirectory->GetAllFiles(true);
 				directory->subdirectories.push_back(newDirectory);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 			}
 		}
@@ -173,7 +181,7 @@ void FileSystem::FillDirectory(const std::shared_ptr<Directory>& directory, bool
 				newFile = FileSystem::MakeFile(path);
 				directory->files.push_back(newFile);
 			}
-			catch (const std::exception &)
+			catch (const std::exception&)
 			{
 			}
 		}
@@ -181,7 +189,7 @@ void FileSystem::FillDirectory(const std::shared_ptr<Directory>& directory, bool
 #endif
 }
 
-bool FileSystem::Rename(const std::string &path, const std::string &newPath)
+bool FileSystem::Rename(const std::string& path, const std::string& newPath)
 {
 	bool success = true;
 	try
@@ -197,16 +205,17 @@ bool FileSystem::Rename(const std::string &path, const std::string &newPath)
 		}
 #endif
 	}
-	catch (const std::exception &)
+	catch (const std::exception&)
 	{
 		success = false;
 	}
 	return success;
 }
 
-int FileSystem::CopyFile(const std::string &path, const std::string &newPath, bool replace)
+int FileSystem::CopyFile(const std::string& path, const std::string& newPath, bool replace)
 {
 	int result = 0;
+#if !defined(__PS3__)
 	try
 	{
 		if (!replace)
@@ -225,16 +234,17 @@ int FileSystem::CopyFile(const std::string &path, const std::string &newPath, bo
 		if (result == 0)
 			std::filesystem::copy_file(path, newPath, option);
 	}
-	catch (const std::exception &)
+	catch (const std::exception&)
 	{
 		result = -2; // Error
 	}
+#endif
 	return result;
 }
 
 //std::vector<std::shared_ptr<File>> files;
 
-std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
+std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)
 {
 	XASSERT(!path.empty(), "[FileSystem::MakeFile] path is empty");
 
@@ -254,14 +264,16 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string &path)
 	{*/
 #if defined(__PSP__)
 	file = std::make_shared<FilePSP>(path);
+#elif defined(__PS3__)
+	file = std::make_shared<FilePS3>(path);
 #elif defined(_EE)
 	file = std::make_shared<FilePS2>(path);
-		// file = std::make_shared<FileDefault>(path);
+	// file = std::make_shared<FileDefault>(path);
 #else
-		file = std::make_shared<FileDefault>(path);
+	file = std::make_shared<FileDefault>(path);
 #endif
-		//files.push_back(file);
-	//}
+	//files.push_back(file);
+//}
 
 	return file;
 }
@@ -301,24 +313,24 @@ std::string FileSystem::ConvertBasicPathToWindowsPath(const std::string& path)
 
 #pragma endregion
 
-bool FileSystem::CreateFolder(const std::string &path)
+bool FileSystem::CreateFolder(const std::string& path)
 {
 	XASSERT(!path.empty(), "[FileSystem::CreateFolder] path is empty");
-
 	bool result = true;
+#if !defined(__PS3__)
 	try
 	{
 		std::filesystem::create_directory(path);
 	}
-	catch (const std::exception &)
+	catch (const std::exception&)
 	{
 		result = false;
 	}
-
+#endif
 	return result;
 }
 
-void FileSystem::Delete(const std::string &path)
+void FileSystem::Delete(const std::string& path)
 {
 	XASSERT(!path.empty(), "[FileSystem::Delete] path is empty");
 #if defined(_EE)
@@ -327,12 +339,13 @@ void FileSystem::Delete(const std::string &path)
 
 #if defined(__PSP__)
 	sceIoRemove(path.c_str());
+#elif defined(__PS3__)
 #else
 	try
 	{
 		std::filesystem::remove_all(path.c_str());
 	}
-	catch (const std::exception &)
+	catch (const std::exception&)
 	{
 	}
 #endif
@@ -348,37 +361,37 @@ int FileSystem::InitFileSystem()
 	sceIoMkdir("ux0:/data/xenity_engine", 0777);
 #endif
 #if defined(_EE)
-// 	SifInitRpc(0);
-// 	while (!SifIopReset(NULL, 0))
-// 	{
-// 	}
-// 	while (!SifIopSync())
-// 	{
-// 	}
-// 	SifInitRpc(0);
+	// 	SifInitRpc(0);
+	// 	while (!SifIopReset(NULL, 0))
+	// 	{
+	// 	}
+	// 	while (!SifIopSync())
+	// 	{
+	// 	}
+	// 	SifInitRpc(0);
 
-// 	// SifInitIopHeap();
-// 	// // SifLoadFileInit();
+	// 	// SifInitIopHeap();
+	// 	// // SifLoadFileInit();
 
-// 	// sbv_patch_enable_lmb();
-// 	// sbv_patch_disable_prefix_check();
-// 	// sbv_patch_fileio();
+	// 	// sbv_patch_enable_lmb();
+	// 	// sbv_patch_disable_prefix_check();
+	// 	// sbv_patch_fileio();
 
-// 	int ret = SifLoadModule("host0:iomanX.irx", 0, NULL);
-// 	int ret2 = SifLoadModule("host0:fileXio.irx", 0, NULL);
+	// 	int ret = SifLoadModule("host0:iomanX.irx", 0, NULL);
+	// 	int ret2 = SifLoadModule("host0:fileXio.irx", 0, NULL);
 
-// 	fileXioInitSkipOverride();
-// 	// fileXioSetBlockMode(0);
+	// 	fileXioInitSkipOverride();
+	// 	// fileXioSetBlockMode(0);
 
-// 	if (ret < 0)
-// 		Debug::PrintError("Failed to load iomanX.irx");
-// 	if (ret2 < 0)
-// 		Debug::PrintError("Failed to load fileXio.irx");
+	// 	if (ret < 0)
+	// 		Debug::PrintError("Failed to load iomanX.irx");
+	// 	if (ret2 < 0)
+	// 		Debug::PrintError("Failed to load fileXio.irx");
 
-// 	if (ret >= 0 && ret2 >= 0)
-// 	{
-// 		Debug::Print("-------- PS2 File System initiated --------");
-// 	}
+	// 	if (ret >= 0 && ret2 >= 0)
+	// 	{
+	// 		Debug::Print("-------- PS2 File System initiated --------");
+	// 	}
 #endif
 	Debug::Print("-------- File System initiated --------", true);
 	return 0;

@@ -32,8 +32,11 @@ struct Vector3Fast
 	float x, y, z;
 };
 
-// Fonction pour vérifier si un cube intersecte une sphère
-bool cubeIntersectsSphere(const Vector3Fast& cubeMin, int cubeSize, const Vector3Fast& sphereCenter, float sphereRadius) {
+// Fonction pour vï¿½rifier si un cube intersecte une sphï¿½re
+bool cubeIntersectsSphere(const Vector3Fast& cubeMin, int cubeSize, const Vector3Fast& sphereCenter, float sphereRadius)
+{
+	// STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+
 	float dmin = 0.0f;
 
 	// Calcul de la distance minimale au cube
@@ -51,14 +54,16 @@ bool cubeIntersectsSphere(const Vector3Fast& cubeMin, int cubeSize, const Vector
 		}
 	}
 
-	// Si la distance est inférieure au rayon de la sphère, il y a intersection
+	// Si la distance est infï¿½rieure au rayon de la sphï¿½re, il y a intersection
 	return dmin <= sphereRadius * sphereRadius;
 }
 
-// Fonction pour obtenir la liste des cubes traversés par la sphère
-void getCubesIntersectedBySphere(std::vector<Vector3Fast>& intersectedCubes, const Vector3Fast& pos, float r, int cubeSize) {
+// Fonction pour obtenir la liste des cubes traversï¿½s par la sphï¿½re
+void getCubesIntersectedBySphere(std::vector<Vector3Fast>& intersectedCubes, const Vector3Fast& pos, float r, int cubeSize) 
+{
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
-	// Détermination des limites de la grille à vérifier
+	// Dï¿½termination des limites de la grille ï¿½ vï¿½rifier
 	const Vector3Fast minCube = Vector3Fast(
 		std::floor((pos.x - r) / cubeSize) * cubeSize,
 		std::floor((pos.y - r) / cubeSize) * cubeSize,
@@ -71,7 +76,7 @@ void getCubesIntersectedBySphere(std::vector<Vector3Fast>& intersectedCubes, con
 		std::floor((pos.z + r) / cubeSize) * cubeSize
 	);
 
-	// Parcours de tous les cubes potentiellement concernés
+	// Parcours de tous les cubes potentiellement concernï¿½s
 	for (float x = minCube.x; x <= maxCube.x; x += cubeSize)
 	{
 		for (float y = minCube.y; y <= maxCube.y; y += cubeSize)

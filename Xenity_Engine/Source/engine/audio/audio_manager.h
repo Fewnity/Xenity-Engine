@@ -74,7 +74,7 @@ public:
 	int mutexid = -1;
 	//#elif defined(__PSP__)
 	//SceLwMutexWorkarea workarea;
-#else
+#elif !defined(__PS3__)
 	std::mutex m_audioMutex;
 #endif
 
@@ -87,7 +87,7 @@ public:
 		sceKernelLockMutex(mutexid, 1, nullptr);
 //#elif defined(__PSP__)
 //		sceKernelLockLwMutex(&workarea, 1, nullptr);
-#else
+#elif !defined(__PS3__)
 		m_audioMutex.lock();
 #endif
 	}
@@ -101,7 +101,7 @@ public:
 		sceKernelUnlockMutex(mutexid, 1);
 //#elif defined(__PSP__)
 //		sceKernelUnlockLwMutex(&workarea, 1);
-#else
+#elif !defined(__PS3__)
 		m_audioMutex.unlock();
 #endif
 	}

@@ -41,6 +41,7 @@
 #include <engine/graphics/renderer/renderer_gskit.h>
 #include <engine/graphics/renderer/renderer_vu1.h>
 #include <engine/graphics/renderer/renderer_gu.h>
+#include <engine/graphics/renderer/renderer_rsx.h>
 
 // Audio
 #include <engine/audio/audio_manager.h>
@@ -174,15 +175,24 @@ int Engine::Init()
 	s_renderer = std::make_unique<RendererGU>();
 #elif defined(_WIN32) | defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
 	s_renderer = std::make_unique<RendererOpengl>();
+#elif defined(__PS3__)
+	s_renderer = std::make_unique<RendererRSX>();
 #else
 #error "No renderer defined for this platform" 
 #endif
 
-	const int rendererInitResult = s_renderer->Init();
-	if (rendererInitResult != 0)
+	if(s_renderer)
 	{
-		Debug::PrintError("-------- Renderer init error code: " + std::to_string(rendererInitResult) + " --------", true);
-		return -1;
+		const int rendererInitResult = s_renderer->Init();
+		if (rendererInitResult != 0)
+		{
+			Debug::PrintError("-------- Renderer init error code: " + std::to_string(rendererInitResult) + " --------", true);
+			return -1;
+		}
+	}
+	else
+	{
+		Debug::PrintError("-------- No Renderer created --------", true);
 	}
 
 	//------------------------------------------ Init Window
@@ -192,7 +202,10 @@ int Engine::Init()
 		Debug::PrintError("-------- Window init error code: " + std::to_string(windowInitResult) + " --------", true);
 		return -1;
 	}
-	s_renderer->Setup();
+	if(s_renderer)
+	{
+		s_renderer->Setup();
+	}
 
 	//------------------------------------------ Init other things
 	InputSystem::Init();
@@ -307,13 +320,14 @@ void Engine::Loop()
 
 	// Load the game if the executable is not the Editor
 #if !defined(EDITOR)
-#if defined(_EE)
+#if defined(_EE) || defined(__PS3__)
 	const bool projectLoaded = ProjectManager::LoadProject("");
 #else
 	const bool projectLoaded = ProjectManager::LoadProject("./");
 #endif
 	if (!projectLoaded)
 	{
+		Debug::Print("-------- Failed to load the game --------", true);
 		return;
 	}
 #endif
@@ -436,9 +450,11 @@ void Engine::Stop()
 	ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
 	s_game.reset();
-
-	s_renderer->Stop();
-	s_renderer.reset();
+	if(s_renderer)
+	{
+		s_renderer->Stop();
+		s_renderer.reset();
+	}
 	AudioManager::Stop();
 	PhysicsManager::Stop();
 	Graphics::Stop();

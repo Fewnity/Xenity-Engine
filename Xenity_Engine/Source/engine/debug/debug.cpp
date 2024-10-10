@@ -124,6 +124,8 @@ void Debug::PrintInConsole(const std::string& text)
 	// PsVitaDebugPrint(text);
 #elif defined(_EE)
 	printf(text.c_str());
+#elif defined(__PS3__)
+	printf(text.c_str());
 #else
 	std::cout << text;
 #endif

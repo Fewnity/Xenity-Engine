@@ -14,6 +14,8 @@
 #include <psp/inputs/inputs.h>
 #elif defined(_EE)
 #include <ps2/inputs/inputs.h>
+#elif defined(__PS3__)
+#include <ps3/inputs/inputs.h>
 #else
 #include <windows/inputs/inputs.h>
 #include <SDL3/SDL_gamepad.h>

@@ -26,6 +26,23 @@
 * ------
 */
 
+template <typename T>
+T SwapEndian(T u)
+{
+    union
+    {
+        T u;
+        unsigned char u8[sizeof(T)];
+    } source, dest;
+
+    source.u = u;
+
+    for (size_t k = 0; k < sizeof(T); k++)
+        dest.u8[k] = source.u8[sizeof(T) - k - 1];
+
+    return dest.u;
+}
+
 bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
@@ -33,17 +50,23 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 
-	const VertexElements vertexDescriptor = *(VertexElements*)fileData;
+	VertexElements vertexDescriptor = *(VertexElements*)fileData;
 	fileData += sizeof(VertexElements);
 
-	const uint32_t subMeshCount = *(uint32_t*)fileData;
+	uint32_t subMeshCount = *(uint32_t*)fileData;
+
+#if defined(__PS3__)
+	vertexDescriptor = SwapEndian(vertexDescriptor);
+	subMeshCount = SwapEndian(subMeshCount);
+#endif // defined(__PS3__)
+
 	fileData += sizeof(uint32_t);
 
 #if defined(__PSP__)
 	mesh.m_hasIndices = false; // Disable indices on psp, this will improve performances
-#else
+#else // !defined(__PSP__)
 	mesh.m_hasIndices = true;
-#endif
+#endif // !defined(__PSP__)
 	mesh.m_hasColor = false;
 
 	mesh.SetVertexDescriptor(vertexDescriptor);
@@ -66,6 +89,13 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		memcpy(&indexMemSize, fileData, sizeof(uint32_t));
 		fileData += sizeof(uint32_t);
 
+#if defined(__PS3__)
+		vertice_count = SwapEndian(vertice_count);
+		index_count = SwapEndian(index_count);
+		vertexMemSize = SwapEndian(vertexMemSize);
+		indexMemSize = SwapEndian(indexMemSize);
+#endif // defined(__PS3__)
+
 		mesh.AllocSubMesh(vertice_count, index_count);
 		MeshData::SubMesh* subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
 
@@ -73,17 +103,57 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		memcpy(subMesh->data, fileData, vertexMemSize);
 		fileData += vertexMemSize;
 
+#if defined(__PS3__)
+		for (int vertexIndex = 0; vertexIndex < vertice_count; vertexIndex++)
+		{
+			if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+			{
+				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				{
+					VertexNormalsNoColor& vertex = ((VertexNormalsNoColor*)subMesh->data)[vertexIndex];
+					vertex = SwapEndian(vertex);
+				}
+				else 
+				{
+					VertexNormalsNoColorNoUv& vertex = ((VertexNormalsNoColorNoUv*)subMesh->data)[vertexIndex];
+					vertex = SwapEndian(vertex);
+				}
+			}
+			else 
+			{
+				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				{
+					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
+					vertex = SwapEndian(vertex);
+				}
+				else
+				{
+					VertexNoColorNoUv& vertex = ((VertexNoColorNoUv*)subMesh->data)[vertexIndex];
+					vertex = SwapEndian(vertex);
+				}
+			}
+		}
+#endif // defined(__PS3__)
+
 		// Copy indices data
 		if(mesh.m_hasIndices)
 		{
 			memcpy(subMesh->indices, fileData, indexMemSize);
+
+#if defined(__PS3__)
+			for (int indexIndex = 0; indexIndex < index_count; indexIndex++)
+			{
+				unsigned short& index = ((unsigned short*)subMesh->indices)[indexIndex];
+				index = SwapEndian(index);
+			}
+#endif // defined(__PS3__)
 		}
 		fileData += indexMemSize;
 	}
 
 #if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
-#endif
+#endif // defined(__PSP__)
 
 	delete[] fileDataOriginalPtr;
 

@@ -13,7 +13,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <unistd.h>
-#elif defined(__LINUX__)
+#elif defined(__LINUX__) || defined(__PS3__)
 #include <sys/socket.h>
 #include <errno.h>
 #include <netinet/in.h>
@@ -241,6 +241,8 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 #if defined(_WIN32) || defined(_WIN64)
 	unsigned long nonblocking_long = false ? 0 : 1;
 	ioctlsocket(newSocketId, FIONBIO, &nonblocking_long);
+#elif defined(__PS3__)
+
 #else
 	int i = 1;
 	if (setsockopt(newSocketId, SOL_SOCKET, SO_NONBLOCK, (char*)&i, sizeof(i)) < 0)

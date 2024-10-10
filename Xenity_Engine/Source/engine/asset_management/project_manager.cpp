@@ -342,6 +342,7 @@ void ProjectManager::FindAllProjectFiles()
 
 void ProjectManager::CreateVisualStudioSettings()
 {
+#if defined(EDITOR)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	try
@@ -400,6 +401,7 @@ void ProjectManager::CreateVisualStudioSettings()
 	{
 		Debug::PrintError("[ProjectManager::CreateVisualStudioSettings] Fail to create Visual Studio Settings file", true);
 	}
+#endif
 }
 
 void ProjectManager::CreateProjectDirectories(Directory& projectDirectoryBase, ProjectDirectory& realProjectDirectory)
@@ -460,6 +462,7 @@ void ProjectManager::Init()
 
 bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
 {
+#if defined(EDITOR)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	XASSERT(!name.empty(), "[ProjectManager::CreateProject] name is empty");
@@ -499,6 +502,9 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	SaveProjectSettings();
 
 	return LoadProject(projectFolderPath);
+#else
+	return false;
+#endif
 }
 
 FileType ProjectManager::GetFileType(const std::string& _extension)
@@ -664,7 +670,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 #else
 	Engine::s_game = std::make_unique<Game>();
 #endif //  defined(_WIN32) || defined(_WIN64)
-#endif
+#endif // !defined(__LINUX__)
 	// Fill class registery
 	if (Engine::s_game)
 		Engine::s_game->Start();
@@ -892,14 +898,21 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const 
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
+	// Temp fix for PS3
+	std::string filePathFixed;
+#if defined(__PS3__)
+	filePathFixed = "/dev_hdd0/xenity_engine/";
+#endif
+	filePathFixed += filePath;
+
 #if defined(EDITOR)
 	std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
 	const uint64_t fileId = ProjectManager::ReadFileId(*file);
 #else
 	uint64_t fileId = -1;
-	for(const auto& kv : projectFilesIds)
+	for (const auto& kv : projectFilesIds)
 	{
-		if(kv.second.path == filePath)
+		if (kv.second.path == filePathFixed)
 		{
 			fileId = kv.first;
 			break;
@@ -1231,7 +1244,7 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
 	if (metaFile->Open(FileMode::ReadOnly))
 #else
-	if(true)
+	if (true)
 #endif
 	{
 		std::string jsonString;
@@ -1255,7 +1268,7 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 			return;
 		}
 
-		if(Application::GetAssetPlatform() == AssetPlatform::AP_Standalone || Application::IsInEditor())
+		if (Application::GetAssetPlatform() == AssetPlatform::AP_Standalone || Application::IsInEditor())
 			ReflectionUtils::JsonToReflectiveData(metaData["Standalone"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_Standalone));
 		if (Application::GetAssetPlatform() == AssetPlatform::AP_PSP || Application::IsInEditor())
 			ReflectionUtils::JsonToReflectiveData(metaData["PSP"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PSP));

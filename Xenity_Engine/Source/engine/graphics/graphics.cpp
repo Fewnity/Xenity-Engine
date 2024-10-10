@@ -624,7 +624,7 @@ void Graphics::OnProjectLoaded()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	skyPlane = AssetManager::LoadEngineAsset<MeshData>("public_engine_assets/models/PlaneTriangulate.obj");
-	XASSERT(skyPlane != nullptr, "[Graphics::Init] skyPlane is null");
+	XASSERT(skyPlane != nullptr, "[Graphics::OnProjectLoaded] skyPlane is null");
 	skyPlane->LoadFileReference();
 }
 

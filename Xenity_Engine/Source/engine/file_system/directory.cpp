@@ -6,13 +6,15 @@
 
 #include "directory.h"
 
-#include <filesystem>
 #if defined(__PSP__)
+#include <filesystem>
 #include <dirent.h>
 #include <sys/stat.h>
 #elif defined(__vita__)
+#include <filesystem>
 #include <psp2/io/stat.h>
 #elif defined(_EE)
+#include <filesystem>
 #define NEWLIB_PORT_AWARE
 #include <fileXio_rpc.h>
 #include <fileio.h>
@@ -22,6 +24,9 @@
 #include <sbv_patches.h>
 #include <iopcontrol.h>
 #include <iopheap.h>
+#elif defined(__PS3__)
+#else
+#include <filesystem>
 #endif
 
 #include <engine/assertions/assertions.h>
@@ -102,6 +107,7 @@ bool Directory::CheckIfExist() const
 		exists = true;
 		fileXioDclose(fd);
 	}
+#elif defined(__PS3__)
 #else
 	exists = std::filesystem::exists(m_path);
 #endif

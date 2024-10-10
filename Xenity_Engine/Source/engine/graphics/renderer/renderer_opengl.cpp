@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#if !defined(_EE) && !defined(__PSP__)
+#if !defined(_EE) && !defined(__PSP__) && !defined(__PS3__)
 #include "renderer_opengl.h"
 
 #include <memory>

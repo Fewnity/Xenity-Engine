@@ -70,7 +70,7 @@ void Font::LoadFileReference()
 bool Font::CreateFont(Font& font)
 {
 	Debug::Print("Loading font: " + font.m_file->GetPath(), true);
-#if !defined(__LINUX__)
+#if !defined(__LINUX__) && !defined(__PS3__)
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
 	{

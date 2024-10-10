@@ -522,6 +522,7 @@
     <ClCompile Include="include\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp" />
     <ClCompile Include="include\bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp" />
     <ClCompile Include="include\bullet\LinearMath\btThreads.cpp" />
+    <ClCompile Include="Source\engine\file_system\file_ps3.cpp" />
     <ClCompile Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
@@ -1114,6 +1115,7 @@
     <ClInclude Include="include\bullet\LinearMath\btCpuFeatureUtility.h" />
     <ClInclude Include="include\bullet\LinearMath\btSpatialAlgebra.h" />
     <ClInclude Include="include\bullet\LinearMath\btThreads.h" />
+    <ClInclude Include="Source\engine\file_system\file_ps3.h" />
     <ClInclude Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.h" />
     <ClInclude Include="include\bullet\btBulletCollisionCommon.h" />
     <ClInclude Include="include\bullet\btBulletDynamicsCommon.h" />

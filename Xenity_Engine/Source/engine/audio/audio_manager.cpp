@@ -7,6 +7,7 @@
 #include "audio_manager.h"
 
 #include <cstring>
+
 #if defined(__PSP__)
 #include <pspaudiolib.h>
 #include <pspaudio.h>
@@ -323,7 +324,7 @@ int fillAudioBufferThread()
 
 #if defined(__vita__) || defined(__PSP__)
 		sceKernelDelayThread(16);
-#else
+#elif !defined(__PS3__)
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 #endif
 	}

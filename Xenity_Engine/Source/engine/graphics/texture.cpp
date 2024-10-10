@@ -50,10 +50,12 @@ Texture::Texture()
 	TextureSettingsStandalone* textureSettingsStandalone = new TextureSettingsStandalone();
 	TextureSettingsPSP* textureSettingsPSP = new TextureSettingsPSP();
 	TextureSettingsPSVITA* textureSettingsPSVITA = new TextureSettingsPSVITA();
+	TextureSettingsPS3* textureSettingsPS3 = new TextureSettingsPS3();
 
 	m_settings.push_back(textureSettingsStandalone);
 	m_settings.push_back(textureSettingsPSP);
 	m_settings.push_back(textureSettingsPSVITA);
+	m_settings.push_back(textureSettingsPS3);
 }
 
 ReflectiveData Texture::GetReflectiveData()

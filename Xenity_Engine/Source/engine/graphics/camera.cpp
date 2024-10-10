@@ -26,6 +26,7 @@
 #include <engine/ui/window.h>
 #include <engine/game_elements/transform.h>
 #include <engine/asset_management/asset_manager.h>
+#include <engine/assertions/assertions.h>
 #include <engine/debug/debug.h>
 #include <engine/debug/stack_debug_object.h>
 #include "graphics.h"
@@ -202,6 +203,8 @@ Vector2 Camera::MouseTo2DWorld()
 
 void Camera::UpdateProjection()
 {
+	XASSERT(m_aspect > 0, "m_aspect is incorrect!");
+
 	if constexpr (Graphics::UseOpenGLFixedFunctions)
 	{
 		if (m_projectionType == ProjectionTypes::Perspective)
@@ -360,6 +363,9 @@ void Camera::UpdateFrameBuffer()
 
 void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 {
+	XASSERT(resolution.x > 0, "Width is incorrect!");
+	XASSERT(resolution.y > 0, "Height is incorrect!");
+
 	if (m_width != resolution.x || m_height != resolution.y)
 	{
 		m_width = resolution.x;

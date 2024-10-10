@@ -14,8 +14,8 @@ ENUM(Platform,
 	P_Linux,
 	P_PSP,
 	P_PsVita,
-	P_PS2,
 	P_PS3,
+	P_PS2,
 	P_PS4, 
 	P_COUNT);
 
@@ -24,7 +24,7 @@ ENUM(AssetPlatform,
 	AP_Standalone,
 	AP_PSP,
 	AP_PsVita,
-	AP_PS2,
 	AP_PS3,
+	AP_PS2,
 	AP_PS4,
 	AP_COUNT);
