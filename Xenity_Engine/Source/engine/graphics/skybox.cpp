@@ -12,6 +12,7 @@
 #include <engine/debug/debug.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
+#include <engine/debug/stack_debug_object.h>
 
 using json = nlohmann::json;
 
@@ -55,6 +56,8 @@ ReflectiveData SkyBox::GetMetaReflectiveData(AssetPlatform platform)
 
 void SkyBox::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 #if defined(EDITOR)
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
@@ -70,6 +73,8 @@ void SkyBox::OnReflectionUpdated()
 
 void SkyBox::LoadFileReference()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		bool openResult = true;

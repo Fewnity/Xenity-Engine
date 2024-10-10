@@ -2,6 +2,7 @@
 
 #include <engine/file_system/file_system.h>
 #include <engine/reflection/reflection_utils.h>
+#include <engine/debug/stack_debug_object.h>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -27,11 +28,15 @@ ReflectiveData FileDataBase::GetReflectiveData()
 
 void FileDataBase::AddFile(FileDataBaseEntry* file)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	m_fileList.push_back(file);
 }
 
 void FileDataBase::Clear()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const size_t listSize = m_fileList.size();
 	for (size_t i = 0; i < listSize; i++)
 	{
@@ -42,6 +47,7 @@ void FileDataBase::Clear()
 
 void FileDataBase::SaveToFile(const std::string& path)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	FileSystem::s_fileSystem->Delete(path);
 
@@ -63,6 +69,8 @@ void FileDataBase::SaveToFile(const std::string& path)
 
 void FileDataBase::LoadFromFile(const std::string& path)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	Clear();
 
 	std::shared_ptr<File> file = FileSystem::MakeFile(path);

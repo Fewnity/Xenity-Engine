@@ -25,6 +25,7 @@
 #include <engine/vectors/quaternion.h>
 #include <engine/engine.h>
 #include <engine/graphics/2d_graphics/sprite_manager.h>
+#include <engine/debug/stack_debug_object.h>
 
 ParticleSystem::ParticleSystem()
 {
@@ -71,6 +72,8 @@ ReflectiveData ParticleSystem::GetReflectiveData()
 
 void ParticleSystem::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	Graphics::isRenderingBatchDirty = true;
 	if (m_speedMin > m_speedMax)
 		m_speedMin = m_speedMax;

@@ -9,6 +9,8 @@
 #include <engine/graphics/graphics.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
+#include <engine/debug/stack_debug_object.h>
+
 #include "text_manager.h"
 
 #pragma region Constructors / Destructor
@@ -35,6 +37,8 @@ ReflectiveData TextRenderer::GetReflectiveData()
 
 void TextRenderer::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	m_isTextInfoDirty = true;
 	Graphics::isRenderingBatchDirty = true;
 }

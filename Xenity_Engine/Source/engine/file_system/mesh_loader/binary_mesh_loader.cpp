@@ -1,10 +1,13 @@
 #include "binary_mesh_loader.h"
+
+#include <iostream>
+
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/file_system/file.h>
 #include <engine/file_system/file_system.h>
 #include <engine/asset_management/project_manager.h>
-#include <iostream>
 #include <engine/debug/debug.h>
+#include <engine/debug/stack_debug_object.h>
 
 #if defined(__PSP__)
 #include <pspkernel.h>
@@ -25,6 +28,8 @@
 
 bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 

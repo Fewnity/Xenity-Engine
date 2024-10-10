@@ -29,6 +29,7 @@
 #include "camera.h"
 #include <engine/application.h>
 #include <engine/accessors/acc_gameobject.h>
+#include <engine/debug/stack_debug_object.h>
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
@@ -273,6 +274,8 @@ ReflectiveData Shader::GetMetaReflectiveData(AssetPlatform platform)
 
 void Shader::LoadFileReference()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		if constexpr (Graphics::UseOpenGLFixedFunctions) 

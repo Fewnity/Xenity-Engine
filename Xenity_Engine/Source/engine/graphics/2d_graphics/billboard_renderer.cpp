@@ -11,6 +11,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
+#include <engine/debug/stack_debug_object.h>
 #include "sprite_manager.h"
 
 #pragma region Constructors / Destructor
@@ -33,6 +34,8 @@ ReflectiveData BillboardRenderer::GetReflectiveData()
 
 void BillboardRenderer::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	Graphics::isRenderingBatchDirty = true;
 }
 

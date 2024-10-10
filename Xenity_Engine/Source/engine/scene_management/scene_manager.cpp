@@ -27,6 +27,7 @@
 #include <engine/missing_script.h>
 #include "scene.h"
 #include <engine/world_partitionner/world_partitionner.h>
+#include <engine/debug/stack_debug_object.h>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -41,6 +42,8 @@ bool SceneManager::s_sceneModified = false;
 
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::unordered_map<uint64_t, bool> usedIds;
 	std::vector<uint64_t> usedFilesIds;
 
@@ -164,21 +167,29 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 void SceneManager::ReloadScene()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	LoadScene(s_openedScene);
 }
 
 void SceneManager::RestoreScene()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	LoadScene(savedSceneData);
 }
 
 void SceneManager::RestoreSceneHotReloading()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	LoadScene(savedSceneDataHotReloading);
 }
 
 void SceneManager::SetSceneModified(bool value)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (GameplayManager::GetGameState() == GameState::Stopped)
 	{
 		s_sceneModified = value;
@@ -188,6 +199,8 @@ void SceneManager::SetSceneModified(bool value)
 
 bool SceneManager::OnQuit()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	bool cancel = false;
 #if defined(EDITOR)
 	if (GameplayManager::GetGameState() != GameState::Stopped)
@@ -222,6 +235,8 @@ bool SceneManager::OnQuit()
 
 void SceneManager::LoadScene(const ordered_json& jsonData)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	// Automaticaly start the game if built in engine mode
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(GameState::Starting, true);
@@ -413,6 +428,8 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(scene != nullptr, "[SceneManager::LoadScene] scene is nullptr");
 
 	bool canceled = OnQuit();
@@ -464,6 +481,8 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 
 void SceneManager::ClearScene()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	WorldPartitionner::ClearWorld();
 	Graphics::DeleteAllDrawables();
 	Graphics::usedCamera.reset();

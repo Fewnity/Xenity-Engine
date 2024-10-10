@@ -41,6 +41,8 @@
 #include <engine/debug/memory_tracker.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/debug/performance.h>
+#include <engine/debug/stack_debug_object.h>
+
 #include "renderer/renderer.h"
 
 Texture::Texture()
@@ -70,6 +72,8 @@ ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform platform)
 
 void Texture::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 #if defined(EDITOR)
 	if(previousResolution != GetCookResolution() && m_fileStatus == FileStatus::FileStatus_Loaded && isValid)
 	{
@@ -95,6 +99,8 @@ Texture::~Texture()
 
 void Texture::LoadFileReference()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		m_fileStatus = FileStatus::FileStatus_Loading;
@@ -113,9 +119,10 @@ void Texture::LoadFileReference()
 
 void Texture::UnloadFileReference()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (Engine::IsRunning(true))
 	{
-		Debug::Print("Unload", true);
 		if (m_fileStatus == FileStatus::FileStatus_Loaded)
 		{
 			m_fileStatus = FileStatus::FileStatus_Not_Loaded;
@@ -126,6 +133,8 @@ void Texture::UnloadFileReference()
 
 void Texture::ClearSpriteSelections()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	const size_t selectionCount = spriteSelections.size();
 	for (size_t i = 0; i < selectionCount; i++)
 	{
@@ -142,6 +151,8 @@ void Texture::ClearSpriteSelections()
 /// <param name="useMipMap">Will texture use mipmap</param>
 void Texture::CreateTexture(const Filter filter, const bool useMipMap)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SetFilter(filter);
 
 	m_settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap = useMipMap;
@@ -404,6 +415,8 @@ void Texture::SetTextureLevel(int level, const unsigned char *texData)
 
 void Texture::OnLoadFileReferenceFinished()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	textureId = Engine::GetRenderer().CreateNewTexture();
 	Engine::GetRenderer().BindTexture(*this);
@@ -417,6 +430,8 @@ void Texture::OnLoadFileReferenceFinished()
 
 void Texture::SetData(const unsigned char *texData)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(texData != nullptr, "[Texture::SetTextureLevel] texData is nullptr");
 	// sceGeEdramSetSize(4096);
 	// The psp needs a pow2 sized texture
@@ -500,7 +515,8 @@ void Texture::SetData(const unsigned char *texData)
 
 void Texture::LoadTexture()
 {
-	//Debug::Print("Loading texture: " + file->GetPath(), true);
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+	
 	bool openResult = true;
 #if defined(EDITOR)
 	openResult = m_file->Open(FileMode::ReadOnly);
@@ -581,6 +597,8 @@ void Texture::LoadTexture()
 
 void Texture::Unload()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	ClearSpriteSelections();
 	Engine::GetRenderer().DeleteTexture(*this);
 

@@ -17,6 +17,7 @@
 #include <engine/tools/math.h>
 #include <engine/tools/benchmark.h>
 #include <engine/debug/performance.h>
+#include <engine/debug/stack_debug_object.h>
 
 std::map<int, WorldPartitionner::XNode> WorldPartitionner::Tree::children;
 
@@ -89,11 +90,15 @@ void getCubesIntersectedBySphere(std::vector<Vector3Fast>& intersectedCubes, con
 
 void WorldPartitionner::ClearWorld()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	Tree::children.clear();
 }
 
 void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	XASSERT(meshRenderer, "The meshRenderer is null");
 
 	for (auto& position : meshRenderer->worldChunkPositions)
@@ -120,6 +125,8 @@ void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 
 void WorldPartitionner::RemoveLight(Light* light)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	XASSERT(light, "The light is null");
 
 	for (auto& position : light->worldChunkPositions)
@@ -155,6 +162,8 @@ void WorldPartitionner::RemoveLight(Light* light)
 
 void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	XASSERT(meshRenderer, "The meshRenderer is null");
 
 	RemoveMeshRenderer(meshRenderer);
@@ -196,6 +205,8 @@ void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 
 void WorldPartitionner::ProcessLight(Light* light)
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	XASSERT(light, "The light is null");
 
 	if (light->GetType() == LightType::Point || light->GetType() == LightType::Spot)
@@ -237,6 +248,8 @@ void WorldPartitionner::ProcessLight(Light* light)
 
 void WorldPartitionner::DrawChunk(const Chunk& chunk, int x, int y, int z)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	if (chunk.meshes.empty() && chunk.lights.empty())
 		return;
 
@@ -277,6 +290,7 @@ void WorldPartitionner::DrawChunk(const Chunk& chunk, int x, int y, int z)
 
 void WorldPartitionner::OnDrawGizmos()
 {
+	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 	return;
 
 #if defined(EDITOR)

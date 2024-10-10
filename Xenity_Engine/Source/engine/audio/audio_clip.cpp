@@ -10,6 +10,7 @@
 #include <engine/file_system/file.h>
 #include <engine/debug/debug.h>
 #include <engine/game_elements/gameplay_manager.h>
+#include <engine/debug/stack_debug_object.h>
 
 ReflectiveData AudioClipSettings::GetReflectiveData()
 {
@@ -54,6 +55,8 @@ std::shared_ptr<AudioClip> AudioClip::MakeAudioClip()
 
 void AudioClip::LoadFileReference()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (IsStoredInMemory() && m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		if (m_file->Open(FileMode::ReadOnly))
@@ -87,6 +90,8 @@ void AudioClip::UnloadFileReference()
 
 void AudioClip::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	// Reload file
 	if (GameplayManager::GetGameState() == GameState::Stopped)
 	{

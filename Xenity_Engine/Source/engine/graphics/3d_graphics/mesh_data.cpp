@@ -26,6 +26,7 @@
 #endif
 #include <engine/debug/performance.h>
 #include <engine/debug/memory_tracker.h>
+#include <engine/debug/stack_debug_object.h>
 
 MeshData::MeshData()
 {
@@ -381,6 +382,8 @@ MeshData::~MeshData()
 
 void MeshData::LoadFileReference()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		m_fileStatus = FileStatus::FileStatus_Loading;

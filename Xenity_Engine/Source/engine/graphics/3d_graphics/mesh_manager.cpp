@@ -12,6 +12,8 @@
 #include <engine/debug/debug.h>
 #include <engine/tools/math.h>
 #include <engine/vectors/quaternion.h>
+#include <engine/debug/stack_debug_object.h>
+
 #include "mesh_data.h"
 
 void MeshManager::Init()
@@ -21,6 +23,8 @@ void MeshManager::Init()
 
 std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	XASSERT(!path.empty(), "[MeshManager::LoadMesh] path is empty");
 
 	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();

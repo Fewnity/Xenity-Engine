@@ -13,6 +13,8 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
+#include <engine/debug/stack_debug_object.h>
+
 #include "physics_manager.h"
 
 RigidBody::RigidBody()
@@ -38,6 +40,8 @@ ReflectiveData RigidBody::GetReflectiveData()
 
 void RigidBody::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	// Call setters to make sure the values are correct and to apply them to the bullet rigidbody
 	SetDrag(m_drag);
 	SetBounce(m_bounce);

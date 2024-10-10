@@ -10,6 +10,7 @@
 #include <sstream>
 
 #include <engine/tools/math.h>
+#include <engine/debug/stack_debug_object.h>
 
 /**
  * @brief Create color from RGB
@@ -49,6 +50,8 @@ ReflectiveData Color::GetReflectiveData()
 
 void Color::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	Color::UpdateUnsignedInts();
 }
 

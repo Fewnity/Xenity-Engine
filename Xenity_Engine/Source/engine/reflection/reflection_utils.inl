@@ -25,6 +25,7 @@
 #include <engine/component.h>
 #include <engine/physics/collider.h>
 #include <engine/file_system/file_reference.h>
+#include <engine/debug/stack_debug_object.h>
 
 #pragma region Fill variables
 
@@ -33,16 +34,22 @@ template<typename T>
 std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
 inline  ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<T> valuePtr, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	valuePtr.get() = jsonValue;
 }
 
 inline  void ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<Reflective> valuePtr, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	ReflectionUtils::JsonToReflective(jsonValue, valuePtr.get());
 }
 
 inline  void ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::vector<Reflective*>> valuePtr, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
 
@@ -71,6 +78,8 @@ std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value ||
 	|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
 	inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::vector<T>> valuePtr, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
 
@@ -92,6 +101,8 @@ template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::weak_ptr<T>> valuePtr, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	if constexpr (std::is_same <T, GameObject>())
 	{
 		const auto go = FindGameObjectById(jsonValue);
@@ -120,6 +131,8 @@ template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
 inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	ReflectionUtils::FillFileReference<T>(jsonValue, valuePtr);
 }
 
@@ -127,6 +140,8 @@ template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const size_t jsonArraySize = jsonValue.size();
 	const size_t objectVectorSize = valuePtr.get().size();
 
@@ -172,11 +187,15 @@ template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
 inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	ReflectionUtils::FillVectorFileReference(jsonValue, valuePtr);
 }
 
 inline void ReflectionUtils::JsonToReflectiveData(const nlohmann::ordered_json& json, const ReflectiveData& dataList)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	if (json.contains("Values"))
 	{
 		// Go through json Values list
@@ -203,6 +222,8 @@ inline void ReflectionUtils::JsonToReflectiveData(const nlohmann::ordered_json& 
 
 inline void ReflectionUtils::JsonToReflectiveEntry(const nlohmann::ordered_json& json, const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const VariableReference& variableRef = entry.variable.value();
 	if (json.is_null())
 	{
@@ -224,6 +245,8 @@ inline void ReflectionUtils::JsonToReflectiveEntry(const nlohmann::ordered_json&
 
 inline ReflectiveEntry ReflectionUtils::GetReflectiveEntryByName(const ReflectiveData& dataList, const std::string& name)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	for (const ReflectiveEntry& entry : dataList)
 	{
 		if (entry.variableName == name)
@@ -237,6 +260,8 @@ inline ReflectiveEntry ReflectionUtils::GetReflectiveEntryByName(const Reflectiv
 
 inline void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, Reflective& toReflective)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const ReflectiveData fromReflectiveData = fromReflective.GetReflectiveData();
 	nlohmann::ordered_json jsonData;
 	jsonData["Values"] = ReflectiveDataToJson(fromReflectiveData);
@@ -248,6 +273,8 @@ inline void ReflectionUtils::ReflectiveToReflective(Reflective& fromReflective, 
 
 inline void ReflectionUtils::JsonToReflective(const nlohmann::ordered_json& j, Reflective& reflective)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const ReflectiveData myMap = reflective.GetReflectiveData();
 	JsonToReflectiveData(j, myMap);
 	reflective.OnReflectionUpdated();
@@ -262,6 +289,8 @@ template<typename T>
 std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
 inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<T> valuePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson0] key is empty");
 
 	jsonValue[key] = valuePtr.get();
@@ -269,6 +298,8 @@ inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const 
 
 inline void ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<Reflective> valuePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson1] key is empty");
 
 	jsonValue[key]["Values"] = ReflectionUtils::ReflectiveToJson(valuePtr.get());
@@ -276,6 +307,8 @@ inline void ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, c
 
 inline void ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson2] key is empty");
 
 	std::vector <Reflective*>& getVal = valuePtr.get();
@@ -294,6 +327,8 @@ std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value ||
 	|| std::is_same<T, double>::value || std::is_same<T, std::string>::value, void>
 	inline 	ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<T>> valuePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson3] key is empty");
 
 	std::vector <T>& getVal = valuePtr.get();
@@ -308,6 +343,8 @@ template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::weak_ptr<T>> valuePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson4] key is empty");
 
 	if (const auto lockValue = (valuePtr.get()).lock())
@@ -339,6 +376,8 @@ template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
 inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::shared_ptr<T>> valuePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson5] key is empty");
 
 	if (valuePtr.get() != nullptr)
@@ -351,6 +390,8 @@ template<typename T>
 std::enable_if_t<std::is_base_of<GameObject, T>::value || std::is_base_of<Transform, T>::value || std::is_base_of<Component, T>::value || std::is_base_of<Collider, T>::value, void>
 inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson6] key is empty");
 
 	const std::vector <std::weak_ptr<T>>& getVal = valuePtr.get();
@@ -383,6 +424,8 @@ template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, void>
 inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const std::string& key, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(!key.empty(), "[ReflectionUtils::VariableToJson7] key is empty");
 
 	const std::vector <std::shared_ptr<T>>& getVal = valuePtr.get();
@@ -398,6 +441,8 @@ inline ReflectionUtils::VariableToJson(nlohmann::ordered_json& jsonValue, const 
 
 inline nlohmann::ordered_json ReflectionUtils::ReflectiveDataToJson(const ReflectiveData& dataList)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	nlohmann::ordered_json json;
 	for (const ReflectiveEntry& entry : dataList)
 	{
@@ -413,6 +458,8 @@ inline nlohmann::ordered_json ReflectionUtils::ReflectiveDataToJson(const Reflec
 
 inline nlohmann::ordered_json ReflectionUtils::ReflectiveToJson(Reflective& reflective)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const auto dataList = reflective.GetReflectiveData();
 	const nlohmann::ordered_json jsonData = ReflectiveDataToJson(dataList);
 	return jsonData;
@@ -420,6 +467,8 @@ inline nlohmann::ordered_json ReflectionUtils::ReflectiveToJson(Reflective& refl
 
 inline nlohmann::ordered_json ReflectionUtils::ReflectiveEntryToJson(const ReflectiveEntry& entry)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	nlohmann::ordered_json json;
 	std::visit([&entry, &json](const auto& value)
 		{
@@ -432,6 +481,8 @@ inline nlohmann::ordered_json ReflectionUtils::ReflectiveEntryToJson(const Refle
 template <typename T>
 inline void ReflectionUtils::FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>> variablePtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	if (fileId == 0)
 	{
 		variablePtr.get() = nullptr;
@@ -450,6 +501,8 @@ inline void ReflectionUtils::FillFileReference(const uint64_t fileId, const std:
 template <typename T>
 inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_json& jsonVectorData, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> vectorRefPtr)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	const size_t jsonArraySize = jsonVectorData.size();
 	const size_t vectorSize = vectorRefPtr.get().size();
 
@@ -482,6 +535,8 @@ inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_jso
 
 inline bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, const ReflectiveData& dataList)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(file != nullptr, "[ReflectionUtils::FileToReflectiveData] file is nullptr");
 
 	bool ok = false;
@@ -518,6 +573,8 @@ inline bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, co
 
 inline bool ReflectionUtils::ReflectiveDataToFile(const ReflectiveData& dataList, std::shared_ptr<File> file)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(file != nullptr, "[ReflectionUtils::ReflectiveDataToFile] file is nullptr");
 
 	bool ok = false;
@@ -530,6 +587,8 @@ inline bool ReflectionUtils::ReflectiveDataToFile(const ReflectiveData& dataList
 
 inline bool ReflectionUtils::JsonToFile(const nlohmann::ordered_json& data, std::shared_ptr<File> file)
 {
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
 	XASSERT(file != nullptr, "[ReflectionUtils::JsonToFile] file is nullptr");
 
 	bool ok = false;

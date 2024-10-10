@@ -17,6 +17,7 @@
 #include <engine/graphics/shader.h>
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/engine.h>
+#include <engine/debug/stack_debug_object.h>
 
 #if defined(EDITOR)
 #include <editor/gizmo.h>
@@ -118,6 +119,8 @@ ReflectiveData MeshRenderer::GetReflectiveData()
 
 void MeshRenderer::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	if (m_meshData)
 	{
 		m_materials.resize(m_meshData->m_subMeshCount);

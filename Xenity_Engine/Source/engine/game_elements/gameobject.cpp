@@ -13,6 +13,7 @@
 #include <engine/accessors/acc_gameobject.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/memory_tracker.h>
+#include <engine/debug/stack_debug_object.h>
 
 #pragma region Constructors / Destructor
 
@@ -391,5 +392,7 @@ bool GameObject::IsParentOf(const std::shared_ptr<GameObject>& gameObject)
 
 void GameObject::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	UpdateActive(*this);
 }

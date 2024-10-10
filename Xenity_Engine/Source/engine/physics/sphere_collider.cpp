@@ -21,6 +21,8 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/tools/math.h>
+#include <engine/debug/stack_debug_object.h>
+
 #include "rigidbody.h"
 #include "physics_manager.h"
 
@@ -42,6 +44,8 @@ ReflectiveData SphereCollider::GetReflectiveData()
 
 void SphereCollider::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		rb->UpdateGeneratesEvents();

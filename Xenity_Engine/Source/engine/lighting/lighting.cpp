@@ -23,6 +23,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/engine.h>
+#include <engine/debug/stack_debug_object.h>
 
 #pragma region Constructors / Destructor
 
@@ -99,6 +100,8 @@ ReflectiveData Light::GetReflectiveData()
 
 void Light::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	SetType(m_type);
 	SetRange(m_range);
 	SetSpotAngle(m_spotAngle);

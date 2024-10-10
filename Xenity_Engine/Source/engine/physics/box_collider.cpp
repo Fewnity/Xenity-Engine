@@ -6,6 +6,8 @@
 
 #include "box_collider.h"
 
+#include <iostream>
+
 #include <bullet/btBulletDynamicsCommon.h>
 
 #if defined(EDITOR)
@@ -19,9 +21,9 @@
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
+#include <engine/debug/stack_debug_object.h>
 #include "rigidbody.h"
 #include "physics_manager.h"
-#include <iostream>
 
 BoxCollider::BoxCollider()
 {
@@ -42,6 +44,8 @@ ReflectiveData BoxCollider::GetReflectiveData()
 
 void BoxCollider::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	CalculateBoundingBox();
 	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{

@@ -16,6 +16,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
+#include <engine/debug/stack_debug_object.h>
 
 RectTransform::RectTransform()
 {
@@ -39,6 +40,7 @@ ReflectiveData RectTransform::GetReflectiveData()
 
 void RectTransform::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 }
 
 void RectTransform::UpdatePosition(const std::shared_ptr <Canvas>& canvas) 

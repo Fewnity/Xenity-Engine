@@ -18,6 +18,7 @@
 #include <engine/tools/scope_benchmark.h>
 #include "graphics.h"
 #include "renderer/renderer.h"
+#include <engine/debug/stack_debug_object.h>
 
 using json = nlohmann::json;
 
@@ -249,6 +250,8 @@ ReflectiveData Material::GetMetaReflectiveData(AssetPlatform platform)
 
 void Material::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	// Call set functions to ensure that the values are correct
 	SetAlphaCutoff(m_alphaCutoff);
 
@@ -268,6 +271,8 @@ void Material::OnReflectionUpdated()
 
 void Material::LoadFileReference()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		m_fileStatus = FileStatus::FileStatus_Loading;

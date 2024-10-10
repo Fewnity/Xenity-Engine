@@ -27,6 +27,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/debug/debug.h>
+#include <engine/debug/stack_debug_object.h>
 #include "graphics.h"
 
 #pragma region Constructors / Destructor
@@ -89,6 +90,8 @@ ReflectiveData Camera::GetReflectiveData()
 
 void Camera::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	// Call set functions to ensure that the values are correct
 	SetFov(m_fov);
 	SetNearClippingPlane(m_nearClippingPlane);

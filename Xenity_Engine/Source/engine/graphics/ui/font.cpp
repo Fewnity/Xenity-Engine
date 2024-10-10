@@ -19,6 +19,7 @@
 #include <engine/debug/debug.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
+#include <engine/debug/stack_debug_object.h>
 
 Font::~Font()
 {
@@ -45,10 +46,13 @@ ReflectiveData Font::GetMetaReflectiveData(AssetPlatform platform)
 
 void Font::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 }
 
 void Font::LoadFileReference()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		bool result = CreateFont(*this);

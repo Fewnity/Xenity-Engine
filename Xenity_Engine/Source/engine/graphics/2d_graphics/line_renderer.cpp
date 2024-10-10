@@ -15,6 +15,7 @@
 #include <engine/graphics/material.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/graphics/3d_graphics/mesh_manager.h>
+#include <engine/debug/stack_debug_object.h>
 
 #pragma region Constructors / Destructor
 
@@ -37,6 +38,8 @@ ReflectiveData LineRenderer::GetReflectiveData()
 
 void LineRenderer::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	Graphics::isRenderingBatchDirty = true;
 }
 

@@ -21,6 +21,7 @@
 #include <engine/ui/window.h>
 #include <engine/game_elements/rect_transform.h>
 #include <engine/engine.h>
+#include <engine/debug/stack_debug_object.h>
 
 ReflectiveData Canvas::GetReflectiveData()
 {
@@ -31,6 +32,7 @@ ReflectiveData Canvas::GetReflectiveData()
 
 void Canvas::OnReflectionUpdated()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 }
 
 void Canvas::OnDisabled()
