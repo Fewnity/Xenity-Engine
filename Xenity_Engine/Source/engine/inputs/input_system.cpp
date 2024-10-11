@@ -150,7 +150,7 @@ void InputSystem::UpdateControllers()
 	rightJoystick.x = pad.rx;
 	rightJoystick.y = pad.ry;
 
-#if defined(__PSP__) || defined(__vita__)
+#if defined(__PSP__) || defined(__vita__) || defined(__PS3__)
 	const auto mapE = s_keyMap.end();
 	for (auto mapB = s_keyMap.begin(); mapB != mapE; ++mapB)
 	{

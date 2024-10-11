@@ -134,9 +134,11 @@ enum class KeyCode
 	DPAD_RIGHT = 105,
 	DPAD_UP = 106,
 	DPAD_DOWN = 107,
+	L_JOYSTICK_CLICK = 108,
+	R_JOYSTICK_CLICK = 109,
 };
 
-#define INPUT_COUNT 109 // Number = Last Enum + 2
+#define INPUT_COUNT 111 // Number = Last Enum + 2
 
 struct Input
 {

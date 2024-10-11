@@ -36,7 +36,7 @@ Add an option to create a material from a texture
 Add color to standard shader in psvita
 Fix light in fixed pipeline with 2 cameras
 Improve crash handling if opening a project that does not exists anymore
-Check FilePSP::ReadAll() sceIoLseek is twice
+Check FilePSP::ReadAll() sceIoLseek is twice add comment
 
 --- Can be done for the next release
 Remove the old profiler
