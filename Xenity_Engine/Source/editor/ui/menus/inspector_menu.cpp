@@ -435,6 +435,14 @@ void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 		}
 		EditorUI::EndButtonColor();
 
+		ImGui::SameLine();
+		EditorUI::SetButtonColor(platformView == AssetPlatform::AP_PS3);
+		if (ImGui::Button("PS3"))
+		{
+			platformView = AssetPlatform::AP_PS3;
+		}
+		EditorUI::EndButtonColor();
+
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedFileReference, platformView);
 		reflectiveDataToDraw.isMeta = true;
 		const ValueInputState valueInputState = EditorUI::DrawReflectiveData(reflectiveDataToDraw, metaReflection, nullptr);
