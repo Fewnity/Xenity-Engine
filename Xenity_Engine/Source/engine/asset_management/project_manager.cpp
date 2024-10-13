@@ -1016,6 +1016,7 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 	metaData["Standalone"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_Standalone));
 	metaData["PSP"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_PSP));
 	metaData["PSVITA"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_PsVita));
+	metaData["PS3"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_PS3));
 
 	if (metaFile->Open(FileMode::WriteCreateFile))
 	{
@@ -1274,6 +1275,8 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 			ReflectionUtils::JsonToReflectiveData(metaData["PSP"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PSP));
 		if (Application::GetAssetPlatform() == AssetPlatform::AP_PsVita || Application::IsInEditor())
 			ReflectionUtils::JsonToReflectiveData(metaData["PSVITA"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PsVita));
+		if (Application::GetAssetPlatform() == AssetPlatform::AP_PS3 || Application::IsInEditor())
+			ReflectionUtils::JsonToReflectiveData(metaData["PS3"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PS3));
 
 		fileReference.m_file->SetUniqueId(metaData["id"]);
 		fileReference.m_fileId = metaData["id"];
