@@ -180,6 +180,7 @@ protected:
 	template <class T>
 	friend class SelectAssetMenu;
 	friend class RendererOpengl;
+	friend class RendererRSX;
 	friend class RendererGU;
 	friend class RendererGsKit;
 	friend class RendererVU1;
@@ -308,6 +309,7 @@ protected:
 
 	std::vector<TextureSettings*> m_settings;
 	unsigned char *m_buffer = nullptr;
+	unsigned char *m_ps3buffer = nullptr;
 	unsigned int textureId = 0;
 	int m_width = 0, height = 0, nrChannels = 0;
 

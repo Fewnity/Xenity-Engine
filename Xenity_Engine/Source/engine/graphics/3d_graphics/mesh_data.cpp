@@ -11,6 +11,8 @@
 #include <pspkernel.h>
 #include <vram.h>
 #include <pspgu.h>
+#elif defined(__PS3__)
+#include <rsx/rsx.h>
 #endif
 
 #include <engine/graphics/color/color.h>
@@ -493,6 +495,8 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 		newSubMesh->indexMemSize = sizeof(unsigned short) * index_count;
 #if defined(__PSP__)
 		newSubMesh->indices = (unsigned short*)memalign(16, newSubMesh->indexMemSize);
+#elif defined(__PS3__)
+		newSubMesh->indices = (unsigned short*)rsxMemalign(128,newSubMesh->indexMemSize);
 #else
 		newSubMesh->indices = (unsigned short*)malloc(newSubMesh->indexMemSize);
 #endif
@@ -582,8 +586,10 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	// packet2_add_u32(newSubMesh->meshPacket, 128);
 	// packet2_add_u32(newSubMesh->meshPacket, 128);
 	// packet2_add_u32(newSubMesh->meshPacket, 128);
-
+#elif defined(__PS3__)
+	newSubMesh->data = (void*)rsxMemalign(128,newSubMesh->vertexMemSize);
 #else
+
 	newSubMesh->data = (void*)malloc(newSubMesh->vertexMemSize);
 #endif
 

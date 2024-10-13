@@ -30,6 +30,8 @@
 #include <kernel.h>
 #include <gs_psm.h>
 #include "renderer/renderer_vu1.h"
+#elif defined(__PS3__)
+#include <rsx/rsx.h>
 #endif
 
 #include <engine/engine.h>
@@ -454,6 +456,20 @@ void Texture::SetData(const unsigned char *texData)
 		// SetTextureLevel(3, texData);
 		m_settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount = 1;
 	}
+#elif defined(__PS3__)
+	// m_ps3buffer = (unsigned char*)rsxMemalign(128, (GetWidth() * GetHeight() * 4));
+	// if(!m_ps3buffer) 
+	//     return;
+		
+	// unsigned char* upBuffer = m_ps3buffer;
+	// for(int i=0; i< GetWidth() * GetHeight() * 4; i+=4)
+	// {
+	// 	upBuffer[i + 0] = m_buffer[(i + 3)];
+    //     upBuffer[i + 1] = m_buffer[(i + 0)];
+	// 	upBuffer[i + 2] = m_buffer[(i + 1)];
+	// 	upBuffer[i + 3] = m_buffer[(i + 2)];
+	// }
+
 #elif defined(_EE)
 	texbuff.width = m_width;
 	texbuff.psm = GS_PSM_32;
@@ -580,7 +596,7 @@ void Texture::LoadTexture()
 			return;
 		}
 
-#if defined(__PSP__) || defined(_EE)
+#if defined(__PSP__) || defined(_EE) || defined(__PS3__)
 		SetData(m_buffer);
 #else
 #if defined (DEBUG)

@@ -172,15 +172,17 @@ void Graphics::Draw()
 	SCOPED_PROFILER("Graphics::Draw", scopeBenchmark);
 
 	Engine::GetRenderer().NewFrame();
+
 	usedCamera.reset();
 	currentMaterial = nullptr;
 
 	OrderDrawables();
-
+	
 	const int matCount = AssetManager::GetMaterialCount();
 	for (const std::weak_ptr<Camera>& weakCam : cameras)
 	{
 		usedCamera = weakCam.lock();
+
 		if (usedCamera->IsEnabled() && usedCamera->GetGameObjectRaw()->IsLocalActive())
 		{
 			SortTransparentDrawables();

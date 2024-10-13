@@ -36,8 +36,7 @@ Add an option to create a material from a texture
 Add color to standard shader in psvita
 Fix light in fixed pipeline with 2 cameras
 Improve crash handling if opening a project that does not exists anymore
-Check FilePSP::ReadAll() sceIoLseek is twice add comment
-Automate SaveMetaFile and LoadMetaFile for each platforms
+Check FilePSP::ReadAll() sceIoLseek is twice
 
 --- Can be done for the next release
 Remove the old profiler
@@ -99,6 +98,9 @@ Create OnReflectionUpdated in transform and set isTransformationMatrixDirty = tr
 */
 
 #undef main
+
+// #include <sys/process.h>
+// SYS_PROCESS_PARAM(1001, 0x100000); // Crash on real PS3, why?
 
 int main(int argc, char* argv[])
 {

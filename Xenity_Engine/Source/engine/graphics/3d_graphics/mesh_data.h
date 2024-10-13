@@ -196,6 +196,7 @@ public:
 
 protected:
 	friend class RendererOpengl;
+	friend class RendererRSX;
 	friend class RendererGU;
 	friend class RendererGsKit;
 	friend class RendererVU1;

@@ -16,6 +16,7 @@
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/texture.h>
+#include <engine/vectors/vector2_int.h>
 
 class API RendererRSX : public Renderer
 {
@@ -56,6 +57,7 @@ public:
 	void Setlights(const LightsIndices& lightsIndices, const Camera& camera) override;
 
 private:
+	Vector2Int resolution;
 	void ApplyTextureFilters(const Texture& texture);
 	std::array<const Light*, MAX_LIGHT_COUNT> lastUpdatedLights;
 	int maxLightCount = 4;
@@ -70,6 +72,16 @@ private:
 	RenderingSettings lastSettings;
 	unsigned int lastUsedColor = 0x00000000;
 	unsigned int lastUsedColor2 = 0xFFFFFFFF;
+	void flip();
+	void waitflip();
+	void init_screen(void *host_addr, uint32_t size);
+	void setRenderTarget(uint32_t index);
+	void initVideoConfiguration();
+	void waitRSXIdle();
+	void waitFinish();
+	void setDrawEnv();
+	void drawFrame();
+
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(AnisotropicLevel level);
 

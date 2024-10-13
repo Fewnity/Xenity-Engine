@@ -252,6 +252,7 @@ protected:
 	friend class RendererGU;
 	friend class RendererGsKit;
 	friend class RendererVU1;
+	friend class RendererRSX;
 	friend class Graphics;
 	friend class SceneManager;
 	friend class Window;

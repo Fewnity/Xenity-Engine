@@ -111,12 +111,27 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 				{
 					VertexNormalsNoColor& vertex = ((VertexNormalsNoColor*)subMesh->data)[vertexIndex];
-					vertex = SwapEndian(vertex);
+					vertex.x = SwapEndian(vertex.x);
+					vertex.y = SwapEndian(vertex.y);
+					vertex.z = SwapEndian(vertex.z);
+
+					vertex.u = SwapEndian(vertex.u);
+					vertex.v = SwapEndian(vertex.v);
+
+					vertex.normX = SwapEndian(vertex.normX);
+					vertex.normY = SwapEndian(vertex.normY);
+					vertex.normZ = SwapEndian(vertex.normZ);
 				}
 				else 
 				{
 					VertexNormalsNoColorNoUv& vertex = ((VertexNormalsNoColorNoUv*)subMesh->data)[vertexIndex];
-					vertex = SwapEndian(vertex);
+					vertex.x = SwapEndian(vertex.x);
+					vertex.y = SwapEndian(vertex.y);
+					vertex.z = SwapEndian(vertex.z);
+
+					vertex.normX = SwapEndian(vertex.normX);
+					vertex.normY = SwapEndian(vertex.normY);
+					vertex.normZ = SwapEndian(vertex.normZ);
 				}
 			}
 			else 
@@ -124,12 +139,19 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 				{
 					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
-					vertex = SwapEndian(vertex);
+					vertex.x = SwapEndian(vertex.x);
+					vertex.y = SwapEndian(vertex.y);
+					vertex.z = SwapEndian(vertex.z);
+
+					vertex.y = SwapEndian(vertex.y);
+					vertex.v = SwapEndian(vertex.v);
 				}
 				else
 				{
 					VertexNoColorNoUv& vertex = ((VertexNoColorNoUv*)subMesh->data)[vertexIndex];
-					vertex = SwapEndian(vertex);
+					vertex.x = SwapEndian(vertex.x);
+					vertex.y = SwapEndian(vertex.y);
+					vertex.z = SwapEndian(vertex.z);
 				}
 			}
 		}
