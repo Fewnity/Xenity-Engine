@@ -45,6 +45,8 @@ void CrossInputsInit()
 	// ioPadSetPortSetting(0, PAD_SETTINGS_PRESS_ON);
 }
 
+InputPad oldPad = InputPad();
+
 InputPad CrossGetInputPad()
 {
 	InputPad pad = InputPad();
@@ -57,50 +59,27 @@ InputPad CrossGetInputPad()
 	{
 		padData paddata = padData();
 		ioPadGetData(controllerIndex, &paddata);
-
-		// Read buttons
-		const u32 btn = ((paddata.button[2] << 8) | (paddata.button[3] & 0xff));
-		pad.buttons = btn;
-		uint32_t CELL_UTIL_ANALOG_RIGHT = 4 << 16;
-		uint32_t CELL_UTIL_ANALOG_LEFT = 6 << 16;
-
-		uint32_t roffset = (CELL_UTIL_ANALOG_RIGHT >> 16) & 0x00FF;
-		int rjx = paddata.button[roffset];
-		int rjy = paddata.button[roffset + 1];
-
-		//  printf("r0 : %d\n", rjx);
-		//  printf("r1 : %d\n", rjy);
-
-		uint32_t loffset = (CELL_UTIL_ANALOG_LEFT >> 16) & 0x00FF;
-		int ljx = paddata.button[loffset];
-		int ljy = paddata.button[loffset + 1];
-
-		//  printf("l0 : %d\n", ljx);
-		//  printf("l1 : %d\n", ljy);
-
-
-		pad.lx = ((ljx - 128) / 256.0f) * 2;
-		pad.ly = ((ljy - 128) / 256.0f) * 2;
-
-		// Right joystick
-		pad.rx = ((rjx - 128) / 256.0f) * 2;
-		pad.ry = ((rjy - 128) / 256.0f) * 2;
 		
-		// Left joystick
-		// pad.lx = (((paddata.ANA_L_H & 0xffff) - 128) / 256.0f) * 2;
-		// pad.ly = ((((paddata.ANA_L_V) & 0xffff) - 128) / 256.0f) * 2;
+		// Check the len to detect if there is new update, if not, the structure is just full of 0
+		if(paddata.len != 0)
+		{
+			// Read buttons
+			const u32 btn = ((paddata.button[2] << 8) | (paddata.button[3] & 0xff));
+			pad.buttons = btn;
 
-		// // Right joystick
-		// pad.rx = (((paddata.ANA_R_H & 0xffff) - 128) / 256.0f) * 2;
-		// pad.ry = ((((paddata.ANA_R_V) & 0xffff) - 128) / 256.0f) * 2;
+			// Left joystick
+			pad.lx = ((paddata.ANA_L_H - 128) / 256.0f) * 2;
+			pad.ly = ((paddata.ANA_L_V - 128) / 256.0f) * 2;
 
-// 		printf("ANA_L_H: 0x%X\n", paddata.ANA_L_H);  // Affiche ANA_L_H en hexadécimal
-//     	printf("ANA_L_V: 0x%X\n", paddata.ANA_L_V);  // Affiche ANA_L_V en hexadécimal
-// printf("s0 : %d\n", sizeof(padData));
-// printf("s1 : %d\n", sizeof(padData2));
-    	// Debug::Print("x " + std::to_string(paddata.ANA_L_H));
-		// Debug::Print("x2 " + std::to_string(paddata.ANA_L_H& 0xff));
-		// Debug::Print("x3 " + std::to_string(paddata.ANA_L_H << 8));
+			// Right joystick
+			pad.rx = ((paddata.ANA_R_H - 128) / 256.0f) * 2;
+			pad.ry = ((paddata.ANA_R_V - 128) / 256.0f) * 2;
+			oldPad = pad;
+		}
+		else
+		{
+			pad = oldPad;
+		}
 
 		ioPadClearBuf(controllerIndex);
 	}
