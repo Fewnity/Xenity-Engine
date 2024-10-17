@@ -24,6 +24,7 @@
 #include <memory>
 #include <glm/gtc/type_ptr.hpp>
 #include <rsx/rsx.h>
+#include <io/pad.h> 
 #include <sysutil/video.h>
 #include <rsxdebugfontrenderer.h>
 #include <sysutil/sysutil.h>
@@ -275,10 +276,10 @@ void RendererRSX::setDrawEnv()
 	rsxSetDepthFunc(context, GCM_LESS);
 	rsxSetShadeModel(context, GCM_SHADE_MODEL_SMOOTH);
 	rsxSetDepthWriteEnable(context, 1);
-	rsxSetFrontFace(context, GCM_FRONTFACE_CCW);
-	// rsxSetFrontFace(context, GCM_FRONTFACE_CW);
-	// rsxSetCullFaceEnable(context, GCM_TRUE);
-	// rsxSetCullFace(context, GCM_CULL_FRONT);
+	//rsxSetFrontFace(context, GCM_FRONTFACE_CCW);
+	rsxSetFrontFace(context, GCM_FRONTFACE_CW);
+	rsxSetCullFaceEnable(context, GCM_TRUE);
+	rsxSetCullFace(context, GCM_CULL_FRONT);
 }
 
 void init_shader()
@@ -311,18 +312,19 @@ void init_shader()
 
 void RendererRSX::drawFrame()
 {
-	uint32_t i, offset, color = 0;
-	glm::mat4 rotX, rotY;
-	glm::vec4 objEyePos, objLightPos;
-	glm::mat4 viewMatrix, modelMatrix, modelMatrixIT, modelViewMatrix;
-	glm::vec4 lightPos = glm::vec4(250.0f, 150.0f, 150.0f, 1);
-	f32 globalAmbientColor[3] = {0.1f, 0.1f, 0.1f};
-	f32 lightColor[3] = {0.95f, 0.95f, 0.95f};
-	f32 materialColorDiffuse[3] = {0.5f, 0.0f, 0.0f};
-	f32 materialColorSpecular[3] = {0.7f, 0.6f, 0.6f};
-	f32 shininess = 17.8954f;
-	static f32 rot = 0.0f;
+	// uint32_t i, offset, color = 0;
+	// glm::mat4 rotX, rotY;
+	// glm::vec4 objEyePos, objLightPos;
+	// glm::mat4 viewMatrix, modelMatrix, modelMatrixIT, modelViewMatrix;
+	// glm::vec4 lightPos = glm::vec4(250.0f, 150.0f, 150.0f, 1);
+	// f32 globalAmbientColor[3] = {0.1f, 0.1f, 0.1f};
+	// f32 lightColor[3] = {0.95f, 0.95f, 0.95f};
+	// f32 materialColorDiffuse[3] = {0.5f, 0.0f, 0.0f};
+	// f32 materialColorSpecular[3] = {0.7f, 0.6f, 0.6f};
+	// f32 shininess = 17.8954f;
+	// static f32 rot = 0.0f;
 
+	uint32_t color = 0;
 	setDrawEnv();
 	setTexture(textureUnit->index);
 	rsxSetClearColor(context, color);
@@ -337,12 +339,12 @@ void RendererRSX::drawFrame()
 	 rsxSetZMinMaxControl(context, 0, 1, 1);
 
 
-	 for(i=0;i<8;i++)
+	 for(int i=0;i<8;i++)
 	 	rsxSetViewportClip(context, i, resolution.x, resolution.y);
 
-	rot += 2.0f;
-	if(rot >= 360.0f) 
-		rot = fmodf(rot, 360.0f);
+	// rot += 2.0f;
+	// if(rot >= 360.0f) 
+	// 	rot = fmodf(rot, 360.0f);
 }
 
 void RendererRSX::waitFinish()
@@ -603,13 +605,64 @@ void RendererRSX::EndFrame()
 {
 	usedTexture = nullptr;
 
-	DebugFont::setPosition(10, 10);
-	DebugFont::setColor(1.0f, 0.0f, 0.0f, 1.0f);
+	// DebugFont::setPosition(10, 10);
+	// DebugFont::setColor(1.0f, 0.0f, 0.0f, 1.0f);
 
-	nlohmann::ordered_json j;
-	j["Salut"] = rand() % 100;
-	DebugFont::print(j.dump(0).c_str());
+	// padInfo padinfo;
+	// ioPadGetInfo(&padinfo);
+	// int controllerIndex	= 0;
 
+	// if(padinfo.status[controllerIndex]) 
+	// {
+	// 	padData paddata = padData();
+	// 	u32 result2 = ioPadGetData(controllerIndex, &paddata);
+	// 	ioPadClearBuf(controllerIndex);
+	// 	padPeriphData padPeriphDataS;
+	// 	// s32 result = ioPadPeriphGetData(controllerIndex, &padPeriphDataS);
+
+	// 	// nlohmann::ordered_json j;
+	// 	// j["len"] = paddata.len;
+	// 	// for(int i = 0; i < 10; i++)
+	// 	// {
+	// 	// 	j[std::to_string(i)] = padPeriphDataS.button[i];
+	// 	// }
+	// 	// std::string jp = j.dump(0);
+	// 	// jp.erase(std::remove(jp.begin(), jp.end(), '\n'), jp.end());
+	// 	// DebugFont::print(jp.c_str());
+
+	// 	DebugFont::setPosition(10, 70);
+	// 	nlohmann::ordered_json j2;
+	// 	j2["len"] = paddata.len;
+	// 	j2["result"] = result2;
+	// 	for(int i = 0; i < 10; i++)
+	// 	{
+	// 		j2[std::to_string(i)] = paddata.button[i];
+	// 	}
+	// 	std::string jp2 = j2.dump(0);
+	// 	//jp2.erase(std::remove(jp2.begin(), jp2.end(), '\n'), jp2.end());
+	// 	DebugFont::print(jp2.c_str());
+	// 	//DebugFont::print(j2.dump(0).c_str());
+
+	// 	// j["ANA_R_H"] = paddata.ANA_R_H;
+	// 	// j["ANA_R_V"] = paddata.ANA_R_V;
+
+	// 	// int ANA_R_VInt = paddata.ANA_R_V;
+	// 	// j["ANA_R_VInt"] = ANA_R_VInt;
+
+	// 	// unsigned int ANA_R_VUInt = paddata.ANA_R_V;
+	// 	// j["ANA_R_VUInt"] = ANA_R_VUInt;
+	// 	// uint16_t ANA_R_VInt16 = paddata.ANA_R_V;
+	// 	// j["ANA_R_VInt16"] = ANA_R_VInt16;
+	// 	// uint8_t ANA_R_VInt8 = paddata.ANA_R_V;
+	// 	// j["ANA_R_VInt8"] = ANA_R_VInt8;
+
+	// 	// uint16_t* ANA_R_VInt16p = &paddata.ANA_R_V;
+	// 	// j["ANA_R_VInt16p"] = *ANA_R_VInt16p;
+
+	// 	//j["Salut"] = rand() % 100;
+
+		
+	// }
 	/*if (!dialog)
 	{*/
 	//sceGuFinish();
@@ -645,6 +698,9 @@ void RendererRSX::SetProjection2D(float projectionSize, float nearClippingPlane,
 
 void RendererRSX::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
 {
+	//projectionMatrix = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
+	// projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane));
+	projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, 100.0f));
 	//projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane));
 	// sceGumMatrixMode(GU_PROJECTION);
 	// sceGumLoadIdentity();
@@ -721,10 +777,10 @@ void RendererRSX::BindTexture(const Texture& texture)
 	uint32_t offset;
 	rsxAddressToOffset(texture.m_ps3buffer, &offset);
 
+	rsxInvalidateTextureCache(context, GCM_INVALIDATE_TEXTURE);
+
 	uint32_t pitch = (texture.GetWidth()*4);
 	gcmTexture gcmTexture;
-
-	rsxInvalidateTextureCache(context, GCM_INVALIDATE_TEXTURE);
 
 	gcmTexture.format		= (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
 	gcmTexture.mipmap		= 1;
@@ -829,7 +885,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	glm::vec4 lightPos = glm::vec4(250.0f, 150.0f, 150.0f, 1);
 	f32 globalAmbientColor[3] = {0.1f, 0.1f, 0.1f};
 	f32 lightColor[3] = {0.95f, 0.95f, 0.95f};
-	f32 materialColorDiffuse[3] = {0.5f, 0.0f, 0.0f};
+	f32 materialColorDiffuse[3] = {0.5f, 0.5f, 0.5f};
 	f32 materialColorSpecular[3] = {0.7f, 0.6f, 0.6f};
 	f32 shininess = 17.8954f;
     
@@ -842,56 +898,57 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
  	objEyePos = modelMatrixIT * glm::vec4(eye_pos.x, eye_pos.y, eye_pos.z, 1);
 	objLightPos = modelMatrixIT * lightPos;
 
-	// if (lastSettings.useDepth != settings.useDepth)
-	// {
-	// 	if (settings.useDepth)
-	// 	{
-	// 		rsxSetDepthTestEnable(context, GCM_TRUE);
-	// 	}
-	// 	else
-	// 	{
-	// 		rsxSetDepthTestEnable(context, GCM_FALSE);
-	// 	}
-	// }
+	if (lastSettings.useDepth != settings.useDepth)
+	{
+		if (settings.useDepth)
+		{
+			rsxSetDepthTestEnable(context, GCM_TRUE);
+		}
+		else
+		{
+			rsxSetDepthTestEnable(context, GCM_FALSE);
+		}
+	}
 
-	// if (lastSettings.renderingMode != settings.renderingMode)
-	// {
-    // 	if (settings.renderingMode == MaterialRenderingModes::Opaque)
-	// 	{
-	// 		rsxSetBlendEnable(context, GCM_FALSE);
-	// 		rsxSetAlphaTestEnable(context, GCM_FALSE);
-	// 	}
-	// 	else if (settings.renderingMode == MaterialRenderingModes::Cutout)
-	// 	{
-	// 		rsxSetBlendEnable(context, GCM_FALSE);
-	// 		rsxSetAlphaTestEnable(context, GCM_TRUE);
-	// 		rsxSetAlphaFunc(context, GCM_GEQUAL, static_cast<int>(material.GetAlphaCutoff() * 255));
-	// 	}
-	// 	else
-	// 	{
-	// 		rsxSetBlendEnable(context, GCM_TRUE);
-	// 		rsxSetBlendFunc(context, GCM_SRC_ALPHA, GCM_ONE_MINUS_SRC_ALPHA, GCM_SRC_ALPHA, GCM_ONE_MINUS_SRC_ALPHA);
-	// 		rsxSetBlendEquation(context, GCM_FUNC_ADD, GCM_FUNC_ADD);
-	// 	}
-	// }
+	if (lastSettings.renderingMode != settings.renderingMode)
+	{
+    	if (settings.renderingMode == MaterialRenderingModes::Opaque)
+		{
+			rsxSetBlendEnable(context, GCM_FALSE);
+			rsxSetAlphaTestEnable(context, GCM_FALSE);
+		}
+		else if (settings.renderingMode == MaterialRenderingModes::Cutout)
+		{
+			rsxSetBlendEnable(context, GCM_FALSE);
+			rsxSetAlphaTestEnable(context, GCM_TRUE);
+			rsxSetAlphaFunc(context, GCM_GEQUAL, static_cast<int>(material.GetAlphaCutoff() * 255));
+		}
+		else
+		{
+			rsxSetBlendEnable(context, GCM_TRUE);
+			rsxSetBlendFunc(context, GCM_SRC_ALPHA, GCM_ONE_MINUS_SRC_ALPHA, GCM_SRC_ALPHA, GCM_ONE_MINUS_SRC_ALPHA);
+			rsxSetBlendEquation(context, GCM_FUNC_ADD, GCM_FUNC_ADD);
+		}
+	}
 
-	// if (settings.renderingMode == MaterialRenderingModes::Transparent)
-	// {
-	// 	rsxSetDepthWriteEnable(context, GCM_FALSE);
-	// }
+	if (settings.renderingMode == MaterialRenderingModes::Transparent)
+	{
+		rsxSetDepthWriteEnable(context, GCM_FALSE);
+	}
 
-	// Keep in memory the used settings
-	// lastSettings.invertFaces = settings.invertFaces;
-	// lastSettings.renderingMode = settings.renderingMode;
-	// lastSettings.useDepth = settings.useDepth;
-	// lastSettings.useLighting = settings.useLighting;
-	// lastSettings.useTexture = settings.useTexture;
+	//Keep in memory the used settings
+	lastSettings.invertFaces = settings.invertFaces;
+	lastSettings.renderingMode = settings.renderingMode;
+	lastSettings.useDepth = settings.useDepth;
+	lastSettings.useLighting = settings.useLighting;
+	lastSettings.useTexture = settings.useTexture;
 
-	// if (usedTexture != texture.m_ps3buffer)
-	// {
-	// 	usedTexture = texture.m_ps3buffer;
-	// 	BindTexture(texture);
-	// }
+	if (usedTexture != texture.m_ps3buffer)
+	{
+		usedTexture = texture.m_ps3buffer;
+		BindTexture(texture);
+	}
+
 
 	// Set vertex array attributes
 	{
@@ -904,10 +961,12 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].x, &offset);
 		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 	}
-
+	
 	// Update shaders
 	{
 		rsxLoadVertexProgram(context, vpo, vp_ucode);
+		rsxLoadFragmentProgramLocation(context, fpo, fp_offset, GCM_LOCATION_RSX);
+
 		rsxSetVertexProgramParameter(context, vpo, projMatrix, (float*)&projectionMatrix);
 		rsxSetVertexProgramParameter(context, vpo, mvMatrix, (float*)&modelViewMatrix);
 
@@ -920,9 +979,8 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		rsxSetFragmentProgramParameter(context, fpo, Kd, materialColorDiffuse, fp_offset, GCM_LOCATION_RSX);
 		rsxSetFragmentProgramParameter(context, fpo, Ks, materialColorSpecular, fp_offset, GCM_LOCATION_RSX);
 
-		rsxLoadFragmentProgramLocation(context, fpo, fp_offset, GCM_LOCATION_RSX);
 	}
-	
+
 	rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE, 
 									   GCM_USER_CLIP_PLANE_DISABLE, 
 									   GCM_USER_CLIP_PLANE_DISABLE, 
@@ -931,9 +989,9 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 									   GCM_USER_CLIP_PLANE_DISABLE);
 
 	rsxAddressToOffset(&subMesh.indices[0], &offset);
+	rsxInvalidateVertexCache(context);
 	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, offset, subMesh.index_count, GCM_INDEX_TYPE_16B, GCM_LOCATION_RSX);
-
-	// rsxSetDepthWriteEnable(context, GCM_TRUE);
+	rsxSetDepthWriteEnable(context, GCM_TRUE);
 
 
 
