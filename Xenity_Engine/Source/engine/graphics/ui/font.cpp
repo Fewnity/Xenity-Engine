@@ -6,8 +6,10 @@
 
 #include "font.h"
 
+#if !defined(__PS3__) // Not support on PS3 currently, need to build ft2
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#endif
 
 #if defined(__PSP__)
 #include <pspkernel.h>
