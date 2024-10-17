@@ -67,11 +67,11 @@ std::string FilePSP::ReadAll()
 	std::string allText = "";
 	if (m_fileId >= 0)
 	{
-		const int pos = sceIoLseek(m_fileId, 0, SEEK_END);
+		const int size = sceIoLseek(m_fileId, 0, SEEK_END);
 		sceIoLseek(m_fileId, 0, SEEK_SET);
-		char* data = (char*)malloc(pos + 1);
-		data[pos] = 0;
-		sceIoRead(m_fileId, data, pos);
+		char* data = (char*)malloc(size + 1);
+		data[size] = 0;
+		sceIoRead(m_fileId, data, size);
 		allText = data;
 		free(data);
 	}

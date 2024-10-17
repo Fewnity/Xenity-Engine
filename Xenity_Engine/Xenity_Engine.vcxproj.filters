@@ -328,6 +328,7 @@
     <ClCompile Include="Source\unit_tests\unit_test_asset_manager.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_class_registry.cpp" />
     <ClCompile Include="Source\engine\file_system\file_ps3.cpp" />
+    <ClCompile Include="Source\engine\graphics\renderer\renderer_rsx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -766,6 +767,7 @@
     <ClInclude Include="Source\engine\debug\stack_debug_object.h" />
     <ClInclude Include="Source\engine\graphics\material_rendering_modes.h" />
     <ClInclude Include="Source\engine\file_system\file_ps3.h" />
+    <ClInclude Include="Source\engine\graphics\renderer\renderer_rsx.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

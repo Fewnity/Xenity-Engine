@@ -36,11 +36,10 @@ Add an option to create a material from a texture
 Add color to standard shader in psvita
 Fix light in fixed pipeline with 2 cameras
 Improve crash handling if opening a project that does not exists anymore
-Check FilePSP::ReadAll() sceIoLseek is twice add comment
 Automate SaveMetaFile and LoadMetaFile for each platforms
-Create a GetFileSize function in File class
 
 --- Can be done for the next release
+Create a GetFileSize function in File class
 Remove the old profiler
 New Input system
 Implement AudioManager::Stop for PSP and PsVita
