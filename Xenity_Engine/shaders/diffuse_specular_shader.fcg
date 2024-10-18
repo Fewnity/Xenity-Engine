@@ -3,33 +3,35 @@ void main
 	float4 position : TEXCOORD0,
 	float3 normal : TEXCOORD1,
 	float2 texcoord : TEXCOORD2,
-	
+
 	uniform float3 globalAmbient,
-	uniform float3 lightPosition,
-	uniform float3 lightColor,
-	uniform float3 eyePosition,
-	uniform float3 Kd,
-	uniform float3 Ks,
-	uniform float shininess,
+	//uniform float3 lightPosition,
+	//uniform float3 lightColor,
+	//uniform float3 eyePosition,
+	//uniform float3 Kd,
+	//uniform float3 Ks,
+	//uniform float shininess,
 	
 	uniform sampler2D texture,
 	
 	out float4 oColor
 )
 {
-	float3 N = normalize(normal);
+	//float3 N = normalize(normal);
 	
-	float3 L = normalize(lightPosition - position.xyz);
-	float diffuseLight = max(dot(N,L),0.0f);
-	float3 diffuse = Kd*lightColor*diffuseLight;
+	//float3 L = normalize(lightPosition - position.xyz);
+	//float diffuseLight = max(dot(N,L),0.0f);
+	//float3 diffuse = Kd*lightColor*diffuseLight;
 	
-	float3 V = normalize(eyePosition - position.xyz);
-	float3 H = normalize(L + V);
-	float specularLight = pow(max(dot(H,N),0.0f),shininess);
-	if(diffuseLight<=0) specularLight = 0;
-	float3 specular = Ks*specularLight;
-	float3 color = tex2D(texture,texcoord).xyz*(diffuse + globalAmbient) + specular;
-	oColor = float4(color,1.0f);
-	//float3 color = tex2D(texture,texcoord).xyz + ((diffuse + globalAmbient) + specular)*0.01f;
-	//oColor = float4(color,tex2D(texture,texcoord).w);
+	//float3 V = normalize(eyePosition - position.xyz);
+	//float3 H = normalize(L + V);
+	//float specularLight = pow(max(dot(H,N),0.0f),shininess);
+	//if(diffuseLight<=0) specularLight = 0;
+	//float3 specular = Ks*specularLight;
+	
+	//float3 color = tex2D(texture,texcoord).xyz*(diffuse + globalAmbient) + specular;
+	float3 color = tex2D(texture,texcoord).xyz*(globalAmbient);
+	float alpha = tex2D(texture,texcoord).w;
+	
+	oColor = float4(color, alpha);
 }

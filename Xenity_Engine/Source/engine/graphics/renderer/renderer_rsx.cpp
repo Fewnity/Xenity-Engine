@@ -29,70 +29,8 @@
 #include <rsxdebugfontrenderer.h>
 #include <sysutil/sysutil.h>
 
-#include "acid.h"
 #include "diffuse_specular_shader_vpo.h"
 #include "diffuse_specular_shader_fpo.h"
-
-#define DEGTORAD(a)			( (a) *  0.01745329252f )
-#define RADTODEG(a)			( (a) * 57.29577951f )
-
-// #include <vectormath/cpp/vectormath_aos.h>
-
-// using namespace Vectormath::Aos;
-
-template< class T >
-inline const T& min_(const T& a, const T& b)
-{
-	return a<b?a:b;
-}
-
-template< class T >
-inline const T& max_(const T& a, const T& b)
-{
-	return a<b?b:a;
-}
-
-template< class T >
-inline const T clamp(const T& val, const T& low, const T& high)
-{
-	return min_(max_(val, low), high);
-}
-
-struct S3DVertex
-{
-	S3DVertex() {};
-	S3DVertex(f32 x, f32 y, f32 z, f32 nx, f32 ny, f32 nz, f32 tu, f32 tv)
-		: pos(x, y, z), nrm(nx, ny, nz), u(tu), v(tv) {};
-
-	inline S3DVertex& operator=(const S3DVertex& other)
-	{
-		pos = other.pos;
-		nrm = other.nrm;
-		u = other.u;
-		v = other.v;
-		return *this;
-	}
-
-	glm::vec3 pos;
-	glm::vec3 nrm;
-
-	f32 u, v;
-};
-
-// template< class T >
-// class CMeshBuffer
-// {
-// public:
-// 	CMeshBuffer() : indices(NULL), cnt_indices(0), vertices(NULL), cnt_vertices(0) {};
-
-// 	u16 *indices;
-// 	u32 cnt_indices;
-
-// 	S3DVertex *vertices;
-// 	u32 cnt_vertices;
-// };
-
-// typedef CMeshBuffer<S3DVertex> SMeshBuffer;
 
 #define DEFUALT_CB_SIZE						0x80000		// 512Kb default command buffer size
 #define HOST_STATE_CB_SIZE					0x10000		// 64Kb state command buffer size (used for resetting certain default states)
@@ -186,61 +124,6 @@ extern "C"
 
 }
 
-void init_texture()
-{
-	uint32_t i;
-	u8 *buffer;
-	const u8 *data = acid.pixel_data;
-
-	texture_buffer = (uint32_t*)rsxMemalign(128, (acid.width*acid.height*4));
-	if(!texture_buffer) return;
-
-	rsxAddressToOffset(texture_buffer, &texture_offset);
-
-	buffer = (u8*)texture_buffer;
-	for(i=0;i<acid.width*acid.height*4;i+=4) {
-		buffer[i + 1] = *data++;
-		buffer[i + 2] = *data++;
-		buffer[i + 3] = *data++;
-		buffer[i + 0] = *data++;
-	}
-}
-
-void setTexture(u8 textureUnit)
-{
-	uint32_t width = 128;
-	uint32_t height = 128;
-	uint32_t pitch = (width*4);
-	gcmTexture texture;
-
-	if(!texture_buffer) return;
-
-	rsxInvalidateTextureCache(context, GCM_INVALIDATE_TEXTURE);
-
-	texture.format		= (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
-	texture.mipmap		= 1;
-	texture.dimension	= GCM_TEXTURE_DIMS_2D;
-	texture.cubemap		= GCM_FALSE;
-	texture.remap		= ((GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_B_SHIFT) |
-						   (GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_G_SHIFT) |
-						   (GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_R_SHIFT) |
-						   (GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_A_SHIFT) |
-						   (GCM_TEXTURE_REMAP_COLOR_B << GCM_TEXTURE_REMAP_COLOR_B_SHIFT) |
-						   (GCM_TEXTURE_REMAP_COLOR_G << GCM_TEXTURE_REMAP_COLOR_G_SHIFT) |
-						   (GCM_TEXTURE_REMAP_COLOR_R << GCM_TEXTURE_REMAP_COLOR_R_SHIFT) |
-						   (GCM_TEXTURE_REMAP_COLOR_A << GCM_TEXTURE_REMAP_COLOR_A_SHIFT));
-	texture.width		= width;
-	texture.height		= height;
-	texture.depth		= 1;
-	texture.location	= GCM_LOCATION_RSX;
-	texture.pitch		= pitch;
-	texture.offset		= texture_offset;
-	rsxLoadTexture(context, textureUnit, &texture);
-	rsxTextureControl(context, textureUnit, GCM_TRUE, 0<<8, 12<<8, GCM_TEXTURE_MAX_ANISO_1);
-	rsxTextureFilter(context, textureUnit, 0, GCM_TEXTURE_LINEAR, GCM_TEXTURE_LINEAR, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
-	rsxTextureWrapMode(context, textureUnit, GCM_TEXTURE_CLAMP_TO_EDGE, GCM_TEXTURE_CLAMP_TO_EDGE, GCM_TEXTURE_CLAMP_TO_EDGE, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
-}
-
 void RendererRSX::setDrawEnv()
 {
 	rsxSetColorMask(context, GCM_COLOR_MASK_B |
@@ -276,7 +159,7 @@ void RendererRSX::setDrawEnv()
 	rsxSetDepthFunc(context, GCM_LESS);
 	rsxSetShadeModel(context, GCM_SHADE_MODEL_SMOOTH);
 	rsxSetDepthWriteEnable(context, 1);
-	//rsxSetFrontFace(context, GCM_FRONTFACE_CCW);
+	
 	rsxSetFrontFace(context, GCM_FRONTFACE_CW);
 	rsxSetCullFaceEnable(context, GCM_TRUE);
 	rsxSetCullFace(context, GCM_CULL_FRONT);
@@ -312,21 +195,9 @@ void init_shader()
 
 void RendererRSX::drawFrame()
 {
-	// uint32_t i, offset, color = 0;
-	// glm::mat4 rotX, rotY;
-	// glm::vec4 objEyePos, objLightPos;
-	// glm::mat4 viewMatrix, modelMatrix, modelMatrixIT, modelViewMatrix;
-	// glm::vec4 lightPos = glm::vec4(250.0f, 150.0f, 150.0f, 1);
-	// f32 globalAmbientColor[3] = {0.1f, 0.1f, 0.1f};
-	// f32 lightColor[3] = {0.95f, 0.95f, 0.95f};
-	// f32 materialColorDiffuse[3] = {0.5f, 0.0f, 0.0f};
-	// f32 materialColorSpecular[3] = {0.7f, 0.6f, 0.6f};
-	// f32 shininess = 17.8954f;
-	// static f32 rot = 0.0f;
-
 	uint32_t color = 0;
 	setDrawEnv();
-	setTexture(textureUnit->index);
+	
 	rsxSetClearColor(context, color);
 	rsxSetClearDepthStencil(context, 0xffffff00);
 	rsxClearSurface(context, GCM_CLEAR_R |
@@ -336,15 +207,10 @@ void RendererRSX::drawFrame()
 							GCM_CLEAR_S |
 							GCM_CLEAR_Z);
 
-	 rsxSetZMinMaxControl(context, 0, 1, 1);
-
+	rsxSetZMinMaxControl(context, GCM_FALSE, GCM_TRUE, GCM_FALSE);
 
 	 for(int i=0;i<8;i++)
 	 	rsxSetViewportClip(context, i, resolution.x, resolution.y);
-
-	// rot += 2.0f;
-	// if(rot >= 360.0f) 
-	// 	rot = fmodf(rot, 360.0f);
 }
 
 void RendererRSX::waitFinish()
@@ -391,12 +257,13 @@ void RendererRSX::initVideoConfiguration()
 
     if(rval) 
 	{
-        printf("Error: videoGetResolutionAvailability failed. No usable resolution.\n");
-        exit(1);
+		Debug::Print("RSX: videoGetResolutionAvailability failed. No usable resolution.");
+		
+		// Try to force a resolution
+		resId = 1;
+		rval = videoGetResolution(resId, &vResolution);
     }
 
-	// resId = 1;
-	// rval = videoGetResolution(resId, &vResolution);
 	
     videoConfiguration config = {
         (u8)resId, 
@@ -405,22 +272,19 @@ void RendererRSX::initVideoConfiguration()
         {0, 0, 0, 0, 0, 0, 0, 0, 0}, 
         (uint32_t)vResolution.width*4
     };
-	printf("resId %d\n", resId);
-	printf("resolution %d\n", config.resolution);
-	printf("format %d\n", config.format);
-	printf("aspect %d\n", config.aspect);
-	printf("pitch %d\n", config.pitch);
-	printf("VIDEO_PRIMARY %d", VIDEO_PRIMARY);
+
     rval = videoConfigure(VIDEO_PRIMARY, &config, NULL, 0);
     if(rval) 
 	{
-        printf("Error: videoConfigure failed.\n");
+        Debug::Print("RSX: videoConfigure failed.");
         exit(1);
     }
 
     videoState state;
 
     rval = videoGetState(VIDEO_PRIMARY, 0, &state);
+
+	// Better to replace this by aspect_ratio = vResolution.width/vResolution.height; ?
     switch(state.displayMode.aspect) {
         case VIDEO_ASPECT_4_3:
             aspect_ratio = 4.0f/3.0f;
@@ -541,7 +405,6 @@ int RendererRSX::Init()
 	void *host_addr = memalign(HOST_ADDR_ALIGNMENT, HOSTBUFFER_SIZE);
 	init_screen(host_addr, HOSTBUFFER_SIZE);
 	init_shader();
-	init_texture();
 
 	Window::SetResolution(resolution.x, resolution.y);
 
@@ -569,36 +432,17 @@ void RendererRSX::Stop()
 
 void RendererRSX::NewFrame()
 {
-	//Debug::Print("RendererRSX::NewFrame");
-
 	sysUtilCheckCallback();
 	drawFrame();
 	
-	// DebugFont::setPosition(10, 10);
-	// DebugFont::setColor(1.0f, 0.0f, 0.0f, 1.0f);
-
-	// nlohmann::ordered_json j;
-	// j["Salut"] = rand() % 100;
-	// DebugFont::print(j.dump(0).c_str());
-
-	//flip();
-
 	return;
 
-	//sceGuStart(GU_DIRECT, list);
 	for (int i = 0; i < maxLightCount; i++)
 	{
 		lastUpdatedLights[i] = nullptr;
 	}
 	lastUsedColor = 0x00000000;
 	lastUsedColor2 = 0xFFFFFFFF;
-	// sceGuClearColor(0);
-	// sceGuClearDepth(1);
-	/*if (dialog)
-	{
-		sceGuFinish();
-		sceGuSync(0, 0);
-	}*/
 }
 
 void RendererRSX::EndFrame()
@@ -607,74 +451,13 @@ void RendererRSX::EndFrame()
 
 	// DebugFont::setPosition(10, 10);
 	// DebugFont::setColor(1.0f, 0.0f, 0.0f, 1.0f);
-
-	// padInfo padinfo;
-	// ioPadGetInfo(&padinfo);
-	// int controllerIndex	= 0;
-
-	// if(padinfo.status[controllerIndex]) 
-	// {
-	// 	padData paddata = padData();
-	// 	u32 result2 = ioPadGetData(controllerIndex, &paddata);
-	// 	ioPadClearBuf(controllerIndex);
-	// 	padPeriphData padPeriphDataS;
-	// 	// s32 result = ioPadPeriphGetData(controllerIndex, &padPeriphDataS);
-
-	// 	// nlohmann::ordered_json j;
-	// 	// j["len"] = paddata.len;
-	// 	// for(int i = 0; i < 10; i++)
-	// 	// {
-	// 	// 	j[std::to_string(i)] = padPeriphDataS.button[i];
-	// 	// }
-	// 	// std::string jp = j.dump(0);
-	// 	// jp.erase(std::remove(jp.begin(), jp.end(), '\n'), jp.end());
-	// 	// DebugFont::print(jp.c_str());
-
-	// 	DebugFont::setPosition(10, 70);
-	// 	nlohmann::ordered_json j2;
-	// 	j2["len"] = paddata.len;
-	// 	j2["result"] = result2;
-	// 	for(int i = 0; i < 10; i++)
-	// 	{
-	// 		j2[std::to_string(i)] = paddata.button[i];
-	// 	}
-	// 	std::string jp2 = j2.dump(0);
-	// 	//jp2.erase(std::remove(jp2.begin(), jp2.end(), '\n'), jp2.end());
-	// 	DebugFont::print(jp2.c_str());
-	// 	//DebugFont::print(j2.dump(0).c_str());
-
-	// 	// j["ANA_R_H"] = paddata.ANA_R_H;
-	// 	// j["ANA_R_V"] = paddata.ANA_R_V;
-
-	// 	// int ANA_R_VInt = paddata.ANA_R_V;
-	// 	// j["ANA_R_VInt"] = ANA_R_VInt;
-
-	// 	// unsigned int ANA_R_VUInt = paddata.ANA_R_V;
-	// 	// j["ANA_R_VUInt"] = ANA_R_VUInt;
-	// 	// uint16_t ANA_R_VInt16 = paddata.ANA_R_V;
-	// 	// j["ANA_R_VInt16"] = ANA_R_VInt16;
-	// 	// uint8_t ANA_R_VInt8 = paddata.ANA_R_V;
-	// 	// j["ANA_R_VInt8"] = ANA_R_VInt8;
-
-	// 	// uint16_t* ANA_R_VInt16p = &paddata.ANA_R_V;
-	// 	// j["ANA_R_VInt16p"] = *ANA_R_VInt16p;
-
-	// 	//j["Salut"] = rand() % 100;
-
-		
-	// }
-	/*if (!dialog)
-	{*/
-	//sceGuFinish();
-	//sceGuSync(0, 0);
-	//}
+	//DebugFont::print("");
 
 	if (Screen::IsVSyncEnabled())
 	{
 		//sceDisplayWaitVblankStart();
 	}
 	flip();
-	//sceGuSwapBuffers();
 }
 
 void RendererRSX::SetViewport(int x, int y, int width, int height)
@@ -700,7 +483,7 @@ void RendererRSX::SetProjection3D(float fov, float nearClippingPlane, float farC
 {
 	//projectionMatrix = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
 	// projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane));
-	projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, 100.0f));
+	projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane));
 	//projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane));
 	// sceGumMatrixMode(GU_PROJECTION);
 	// sceGumLoadIdentity();
@@ -719,7 +502,6 @@ glm::mat4 cameraViewMatrix;
 
 void RendererRSX::SetCameraPosition(const Camera& camera)
 {
-	//camPos = camera.GetTransformRaw()->GetPosition();
 	cameraViewMatrix = camera.m_cameraTransformMatrix;
 	// sceGumMatrixMode(GU_VIEW);
 	// sceGumLoadMatrix((ScePspFMatrix4*)&camera.m_cameraTransformMatrix);
@@ -813,62 +595,10 @@ void RendererRSX::BindTexture(const Texture& texture)
 	const int wrap = GetWrapModeEnum(texture.GetWrapMode());
 	
 	rsxTextureWrapMode(context, textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
-
-	// PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(texture.m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
-
-	// sceGuTexMode(TypeToGUPSM(type), texture.GetMipmaplevelCount(), 0, 1);
-	// sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
-	// // Set mipmap behavior
-	// if (texture.GetUseMipmap())
-	// 	sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
-	// // sceGuTexLevelMode(GU_TEXTURE_CONST, 1); // Set mipmap level to use
-	// // sceGuTexLevelMode(GU_TEXTURE_SLOPE, 2); //??? has no effect
-
-	// sceGuTexImage(0, texture.pW, texture.pH, texture.pW, texture.data[0]);
-	// // Send mipmap data
-	// if (texture.GetUseMipmap())
-	// {
-	// 	sceGuTexImage(1, texture.pW / 2, texture.pH / 2, texture.pW / 2, texture.data[1]);
-	// 	// sceGuTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
-	// 	// sceGuTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
-	// }
-	// ApplyTextureFilters(texture);
 }
 
 void RendererRSX::ApplyTextureFilters(const Texture& texture)
 {
-	// int minFilterValue = GU_LINEAR;
-	// int magfilterValue = GU_LINEAR;
-	// if (texture.GetFilter() == Filter::Bilinear)
-	// {
-	// 	if (texture.GetUseMipmap())
-	// 	{
-	// 		minFilterValue = GU_LINEAR_MIPMAP_LINEAR;
-	// 	}
-	// 	else
-	// 	{
-	// 		minFilterValue = GU_LINEAR;
-	// 	}
-	// 	magfilterValue = GU_LINEAR;
-	// }
-	// else if (texture.GetFilter() == Filter::Point)
-	// {
-	// 	if (texture.GetUseMipmap())
-	// 	{
-	// 		minFilterValue = GU_NEAREST_MIPMAP_NEAREST;
-	// 	}
-	// 	else
-	// 	{
-	// 		minFilterValue = GU_NEAREST;
-	// 	}
-	// 	magfilterValue = GU_NEAREST;
-	// }
-	// const int wrap = GetWrapModeEnum(texture.GetWrapMode());
-
-	// // Apply filters
-	// sceGuTexFilter(minFilterValue, magfilterValue);
-	// sceGuTexWrap(wrap, wrap);
-
 }
 
 void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings)
@@ -883,7 +613,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	glm::vec4 objEyePos, objLightPos;
 	glm::mat4 viewMatrix, modelMatrix, modelMatrixIT, modelViewMatrix;
 	glm::vec4 lightPos = glm::vec4(250.0f, 150.0f, 150.0f, 1);
-	f32 globalAmbientColor[3] = {0.1f, 0.1f, 0.1f};
+	f32 globalAmbientColor[3] = {0.8f, 0.7f, 0.7f};
 	f32 lightColor[3] = {0.95f, 0.95f, 0.95f};
 	f32 materialColorDiffuse[3] = {0.5f, 0.5f, 0.5f};
 	f32 materialColorSpecular[3] = {0.7f, 0.6f, 0.6f};
@@ -949,7 +679,6 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		BindTexture(texture);
 	}
 
-
 	// Set vertex array attributes
 	{
 		rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].normX, &offset);
@@ -970,14 +699,14 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		rsxSetVertexProgramParameter(context, vpo, projMatrix, (float*)&projectionMatrix);
 		rsxSetVertexProgramParameter(context, vpo, mvMatrix, (float*)&modelViewMatrix);
 
-		rsxSetFragmentProgramParameter(context, fpo, eyePosition, (float*)&objEyePos, fp_offset, GCM_LOCATION_RSX);
+		// rsxSetFragmentProgramParameter(context, fpo, eyePosition, (float*)&objEyePos, fp_offset, GCM_LOCATION_RSX);
 		rsxSetFragmentProgramParameter(context, fpo, globalAmbient, globalAmbientColor, fp_offset, GCM_LOCATION_RSX);
-		rsxSetFragmentProgramParameter(context, fpo, litPosition, (float*)&objLightPos, fp_offset, GCM_LOCATION_RSX);
-		rsxSetFragmentProgramParameter(context, fpo, litColor, lightColor, fp_offset, GCM_LOCATION_RSX);
-		rsxSetFragmentProgramParameter(context, fpo, spec, &shininess, fp_offset, GCM_LOCATION_RSX);
+		// rsxSetFragmentProgramParameter(context, fpo, litPosition, (float*)&objLightPos, fp_offset, GCM_LOCATION_RSX);
+		// rsxSetFragmentProgramParameter(context, fpo, litColor, lightColor, fp_offset, GCM_LOCATION_RSX);
+		// rsxSetFragmentProgramParameter(context, fpo, spec, &shininess, fp_offset, GCM_LOCATION_RSX);
 
-		rsxSetFragmentProgramParameter(context, fpo, Kd, materialColorDiffuse, fp_offset, GCM_LOCATION_RSX);
-		rsxSetFragmentProgramParameter(context, fpo, Ks, materialColorSpecular, fp_offset, GCM_LOCATION_RSX);
+		// rsxSetFragmentProgramParameter(context, fpo, Kd, materialColorDiffuse, fp_offset, GCM_LOCATION_RSX);
+		// rsxSetFragmentProgramParameter(context, fpo, Ks, materialColorSpecular, fp_offset, GCM_LOCATION_RSX);
 
 	}
 
@@ -1332,7 +1061,7 @@ int RendererRSX::GetWrapModeEnum(WrapMode wrapMode)
 	{
 	case WrapMode::ClampToEdge:
 	case WrapMode::ClampToBorder:
-		mode = GCM_TEXTURE_CLAMP;
+		mode = GCM_TEXTURE_CLAMP_TO_EDGE;
 		break;
 	case WrapMode::Repeat:
 		mode = GCM_TEXTURE_REPEAT;

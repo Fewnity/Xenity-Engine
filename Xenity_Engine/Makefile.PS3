@@ -31,7 +31,8 @@ CONTENTID	:=	UP0001-$(APPID)_00-0000000000000000
 #---------------------------------------------------------------------------------
 
 CFLAGS		=	-mcpu=cell $(MACHDEP) $(INCLUDE)
-CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -DDEBUG -fpermissive -O1
+# CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -DDEBUG -fpermissive -O2
+CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -fpermissive -O2
 
 LDFLAGS		=	$(MACHDEP) -Wl,-Map,$(notdir $@).map
 
@@ -69,19 +70,12 @@ export BUILDDIR	:=	$(CURDIR)/$(BUILD)
 #---------------------------------------------------------------------------------
 # automatically build a list of object files for our project
 #---------------------------------------------------------------------------------
-# CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CFILES := $(shell find $(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) -type f -name '*.c')
 CFILES := $(patsubst $(CURDIR)/%,%,$(CFILES))
-#CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
-# CPPFILES	:=	$(shell find $(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) -name '*.cpp')
 CPPFILES := $(shell find $(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) -type f -name '*.cpp')
 CPPFILES := $(patsubst $(CURDIR)/%,%,$(CPPFILES))
 sFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
-# CFILES		:=	$(shell find $(SOURCES) -type f -name '*.c')
-# CPPFILES	:=	$(shell find $(SOURCES) -type f -name '*.cpp')
-# sFILES		:=	$(shell find $(SOURCES) -type f -name '*.s')
-# SFILES		:=	$(shell find $(SOURCES) -type f -name '*.S')
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 VCGFILES	:=	$(foreach dir,$(SHADERS),$(notdir $(wildcard $(dir)/*.vcg)))
 FCGFILES	:=	$(foreach dir,$(SHADERS),$(notdir $(wildcard $(dir)/*.fcg)))
@@ -106,37 +100,6 @@ export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
 					$(addsuffix .o,$(FPOFILES)) \
 					$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) \
 					$(sFILES:.s=.o) $(SFILES:.S=.o)
-
-# export OFILES2	:=	$(CPPFILES:.cpp=.o)
-
-# export OFILES      := $(patsubst %.c,$(BUILD)/%.o,$(CFILES)) \
-#                $(patsubst %.cpp,$(BUILD)/%.o,$(CPPFILES)) \
-#                $(patsubst %.s,$(BUILD)/%.o,$(sFILES)) \
-#                $(patsubst %.S,$(BUILD)/%.o,$(SFILES))
-
-# export OFILES	:=	$(addprefix $(BUILD)/,$(addsuffix .o,$(notdir $(BINFILES)))) \
-# 			$(addprefix $(BUILD)/,$(addsuffix .o,$(notdir $(VPOFILES)))) \
-# 			$(addprefix $(BUILD)/,$(addsuffix .o,$(notdir $(FPOFILES)))) \
-# 			$(addprefix $(BUILD)/,$(CPPFILES:.cpp=.o)) \
-# 			$(addprefix $(BUILD)/,$(CFILES:.c=.o)) \
-# 			$(addprefix $(BUILD)/,$(sFILES:.s=.o)) \
-# 			$(addprefix $(BUILD)/,$(SFILES:.S=.o))
-
-# $(info CFILES = $(CFILES))
-# $(info CPPFILES = $(CPPFILES))
-
-# Generate the object file paths, maintaining the source directory structure
-# export OFILES      := $(patsubst %.c,$(BUILD)/%.o,$(CFILES)) \
-#                $(patsubst %.cpp,$(BUILD)/%.o,$(CPPFILES)) \
-#                $(patsubst %.s,$(BUILD)/%.o,$(sFILES)) \
-#                $(patsubst %.S,$(BUILD)/%.o,$(SFILES))
-
-# Replace the directory part of the file paths to maintain structure
-# OFILES      := $(foreach file,$(CFILES),$(BUILD)/$(notdir $(file:.c=.o))) \
-#                $(foreach file,$(CPPFILES),$(BUILD)/$(notdir $(file:.cpp=.o))) \
-#                $(foreach file,$(sFILES),$(BUILD)/$(notdir $(file:.s=.o))) \
-#                $(foreach file,$(SFILES),$(BUILD)/$(notdir $(file:.S=.o)))
-# $(info OFILES = $(OFILES))
 
 #---------------------------------------------------------------------------------
 # build a list of include paths
