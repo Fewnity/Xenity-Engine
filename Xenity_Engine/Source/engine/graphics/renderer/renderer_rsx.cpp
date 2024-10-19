@@ -41,65 +41,65 @@
 
 uint32_t sLabelVal = 1;
 uint32_t running = 0;
-RSXDebugFontRenderer *debugFontRenderer = nullptr;
-gcmContextData *context = nullptr;
+RSXDebugFontRenderer* debugFontRenderer = nullptr;
+gcmContextData* context = nullptr;
 
 uint32_t curr_fb = 0;
 uint32_t first_fb = 1;
 
 uint32_t depth_pitch;
 uint32_t depth_offset;
-uint32_t *depth_buffer = nullptr;
+uint32_t* depth_buffer = nullptr;
 
 uint32_t color_pitch;
 uint32_t color_offset[FRAME_BUFFER_COUNT];
-uint32_t *color_buffer[FRAME_BUFFER_COUNT];
+uint32_t* color_buffer[FRAME_BUFFER_COUNT];
 f32 aspect_ratio;
 videoResolution vResolution;
 static uint32_t sResolutionIds[] = {
-    VIDEO_RESOLUTION_1080, 
-    VIDEO_RESOLUTION_720, 
-    VIDEO_RESOLUTION_480, 
-    VIDEO_RESOLUTION_576
+	VIDEO_RESOLUTION_1080,
+	VIDEO_RESOLUTION_720,
+	VIDEO_RESOLUTION_480,
+	VIDEO_RESOLUTION_576
 };
-static size_t RESOLUTION_ID_COUNT = sizeof(sResolutionIds)/sizeof(uint32_t);
+static size_t RESOLUTION_ID_COUNT = sizeof(sResolutionIds) / sizeof(uint32_t);
 
 u32 vp_offset;
 
 u32 fp_offset;
-u32 *fp_buffer;
+u32* fp_buffer;
 
-u32 *texture_buffer;
+u32* texture_buffer;
 u32 texture_offset;
 
 // vertex shader
-rsxProgramConst *projMatrix;
-rsxProgramConst *mvMatrix;
+rsxProgramConst* projMatrix;
+rsxProgramConst* mvMatrix;
 
 // fragment shader
-rsxProgramAttrib *textureUnit;
-rsxProgramConst *eyePosition;
-rsxProgramConst *globalAmbient;
-rsxProgramConst *litPosition;
-rsxProgramConst *litColor;
-rsxProgramConst *Kd;
-rsxProgramConst *Ks;
-rsxProgramConst *spec;
+rsxProgramAttrib* textureUnit;
+rsxProgramConst* eyePosition;
+rsxProgramConst* globalAmbient;
+rsxProgramConst* litPosition;
+rsxProgramConst* litColor;
+rsxProgramConst* Kd;
+rsxProgramConst* Ks;
+rsxProgramConst* spec;
 
 glm::vec3 eye_pos = glm::vec3(0.0f, 0.0f, 5.0f);
 glm::vec3 eye_dir = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
 
-void *vp_ucode = NULL;
-rsxVertexProgram *vpo = (rsxVertexProgram*)diffuse_specular_shader_vpo;
+void* vp_ucode = NULL;
+rsxVertexProgram* vpo = (rsxVertexProgram*)diffuse_specular_shader_vpo;
 
-void *fp_ucode = NULL;
-rsxFragmentProgram *fpo = (rsxFragmentProgram*)diffuse_specular_shader_fpo;
+void* fp_ucode = NULL;
+rsxFragmentProgram* fpo = (rsxFragmentProgram*)diffuse_specular_shader_fpo;
 
 glm::mat4 transformationMatrix = glm::mat4(1);
 glm::mat4 projectionMatrix;
 
-extern "C" 
+extern "C"
 {
 
 	static void program_exit_callback()
@@ -108,17 +108,17 @@ extern "C"
 		rsxFinish(context, 1);
 	}
 
-	static void sysutil_exit_callback(u64 status, u64 param, void *usrdata)
+	static void sysutil_exit_callback(u64 status, u64 param, void* usrdata)
 	{
-		switch(status) {
-			case SYSUTIL_EXIT_GAME:
-				running = 0;
-				break;
-			case SYSUTIL_DRAW_BEGIN:
-			case SYSUTIL_DRAW_END:
-				break;
-			default:
-				break;
+		switch (status) {
+		case SYSUTIL_EXIT_GAME:
+			running = 0;
+			break;
+		case SYSUTIL_DRAW_BEGIN:
+		case SYSUTIL_DRAW_END:
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -127,9 +127,9 @@ extern "C"
 void RendererRSX::setDrawEnv()
 {
 	rsxSetColorMask(context, GCM_COLOR_MASK_B |
-							GCM_COLOR_MASK_G |
-							GCM_COLOR_MASK_R |
-							GCM_COLOR_MASK_A);
+		GCM_COLOR_MASK_G |
+		GCM_COLOR_MASK_R |
+		GCM_COLOR_MASK_A);
 
 	rsxSetColorMaskMrt(context, 0);
 
@@ -143,13 +143,13 @@ void RendererRSX::setDrawEnv()
 	h = resolution.y;
 	min = 0.0f;
 	max = 1.0f;
-	scale[0] = w*0.5f;
-	scale[1] = h*-0.5f;
-	scale[2] = (max - min)*0.5f;
+	scale[0] = w * 0.5f;
+	scale[1] = h * -0.5f;
+	scale[2] = (max - min) * 0.5f;
 	scale[3] = 0.0f;
-	offset[0] = x + w*0.5f;
-	offset[1] = y + h*0.5f;
-	offset[2] = (max + min)*0.5f;
+	offset[0] = x + w * 0.5f;
+	offset[1] = y + h * 0.5f;
+	offset[2] = (max + min) * 0.5f;
 	offset[3] = 0.0f;
 
 	rsxSetViewport(context, x, y, w, h, min, max, scale, offset);
@@ -159,7 +159,7 @@ void RendererRSX::setDrawEnv()
 	rsxSetDepthFunc(context, GCM_LESS);
 	rsxSetShadeModel(context, GCM_SHADE_MODEL_SMOOTH);
 	rsxSetDepthWriteEnable(context, 1);
-	
+
 	rsxSetFrontFace(context, GCM_FRONTFACE_CW);
 	rsxSetCullFaceEnable(context, GCM_TRUE);
 	rsxSetCullFace(context, GCM_CULL_FRONT);
@@ -197,20 +197,20 @@ void RendererRSX::drawFrame()
 {
 	uint32_t color = 0;
 	setDrawEnv();
-	
+
 	rsxSetClearColor(context, color);
 	rsxSetClearDepthStencil(context, 0xffffff00);
 	rsxClearSurface(context, GCM_CLEAR_R |
-							GCM_CLEAR_G |
-							GCM_CLEAR_B |
-							GCM_CLEAR_A |
-							GCM_CLEAR_S |
-							GCM_CLEAR_Z);
+		GCM_CLEAR_G |
+		GCM_CLEAR_B |
+		GCM_CLEAR_A |
+		GCM_CLEAR_S |
+		GCM_CLEAR_Z);
 
 	rsxSetZMinMaxControl(context, GCM_FALSE, GCM_TRUE, GCM_FALSE);
 
-	 for(int i=0;i<8;i++)
-	 	rsxSetViewportClip(context, i, resolution.x, resolution.y);
+	for (int i = 0; i < 8; i++)
+		rsxSetViewportClip(context, i, resolution.x, resolution.y);
 }
 
 void RendererRSX::waitFinish()
@@ -220,7 +220,7 @@ void RendererRSX::waitFinish()
 	rsxFlushBuffer(context);
 
 	// vu32 = volatile uint32_t
-	while(*(vu32*)gcmGetLabelAddress(GCM_LABEL_INDEX)!=sLabelVal)
+	while (*(vu32*)gcmGetLabelAddress(GCM_LABEL_INDEX) != sLabelVal)
 		usleep(30);
 
 	++sLabelVal;
@@ -238,65 +238,65 @@ void RendererRSX::waitRSXIdle()
 
 void RendererRSX::initVideoConfiguration()
 {
-    s32 rval = 0;
-    s32 resId = 0;
+	s32 rval = 0;
+	s32 resId = 0;
 
-    for (size_t i = 0; i < RESOLUTION_ID_COUNT; i++) 
+	for (size_t i = 0; i < RESOLUTION_ID_COUNT; i++)
 	{
-        rval = videoGetResolutionAvailability(VIDEO_PRIMARY, sResolutionIds[i], VIDEO_ASPECT_AUTO, 0);
-        if (rval != 1) 
+		rval = videoGetResolutionAvailability(VIDEO_PRIMARY, sResolutionIds[i], VIDEO_ASPECT_AUTO, 0);
+		if (rval != 1)
 			continue;
 
-        resId = sResolutionIds[i];
+		resId = sResolutionIds[i];
 
-        rval = videoGetResolution(resId, &vResolution);
+		rval = videoGetResolution(resId, &vResolution);
 
-        if(!rval) 
+		if (!rval)
 			break;
-    }
+	}
 
-    if(rval) 
+	if (rval)
 	{
 		Debug::Print("RSX: videoGetResolutionAvailability failed. No usable resolution.");
-		
+
 		// Try to force a resolution
 		resId = 1;
 		rval = videoGetResolution(resId, &vResolution);
-    }
+	}
 
-	
-    videoConfiguration config = {
-        (u8)resId, 
-        VIDEO_BUFFER_FORMAT_XRGB, 
-        VIDEO_ASPECT_AUTO, 
-        {0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-        (uint32_t)vResolution.width*4
-    };
 
-    rval = videoConfigure(VIDEO_PRIMARY, &config, NULL, 0);
-    if(rval) 
+	videoConfiguration config = {
+		(u8)resId,
+		VIDEO_BUFFER_FORMAT_XRGB,
+		VIDEO_ASPECT_AUTO,
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		(uint32_t)vResolution.width * 4
+	};
+
+	rval = videoConfigure(VIDEO_PRIMARY, &config, NULL, 0);
+	if (rval)
 	{
-        Debug::Print("RSX: videoConfigure failed.");
-        exit(1);
-    }
+		Debug::Print("RSX: videoConfigure failed.");
+		exit(1);
+	}
 
-    videoState state;
+	videoState state;
 
-    rval = videoGetState(VIDEO_PRIMARY, 0, &state);
+	rval = videoGetState(VIDEO_PRIMARY, 0, &state);
 
 	// Better to replace this by aspect_ratio = vResolution.width/vResolution.height; ?
-    switch(state.displayMode.aspect) {
-        case VIDEO_ASPECT_4_3:
-            aspect_ratio = 4.0f/3.0f;
-            break;
-        case VIDEO_ASPECT_16_9:
-            aspect_ratio = 16.0f/9.0f;
-            break;
-        default:
-            printf("unknown aspect ratio %x\n", state.displayMode.aspect);
-            aspect_ratio = 16.0f/9.0f;
-            break;
-    }
+	switch (state.displayMode.aspect) {
+	case VIDEO_ASPECT_4_3:
+		aspect_ratio = 4.0f / 3.0f;
+		break;
+	case VIDEO_ASPECT_16_9:
+		aspect_ratio = 16.0f / 9.0f;
+		break;
+	default:
+		printf("unknown aspect ratio %x\n", state.displayMode.aspect);
+		aspect_ratio = 16.0f / 9.0f;
+		break;
+	}
 
 	resolution.x = vResolution.width;
 	resolution.y = vResolution.height;
@@ -306,42 +306,42 @@ void RendererRSX::setRenderTarget(uint32_t index)
 {
 	gcmSurface sf;
 
-	sf.colorFormat		= GCM_SURFACE_X8R8G8B8;
-	sf.colorTarget		= GCM_SURFACE_TARGET_0;
-	sf.colorLocation[0]	= GCM_LOCATION_RSX;
-	sf.colorOffset[0]	= color_offset[index];
-	sf.colorPitch[0]	= color_pitch;
+	sf.colorFormat = GCM_SURFACE_X8R8G8B8;
+	sf.colorTarget = GCM_SURFACE_TARGET_0;
+	sf.colorLocation[0] = GCM_LOCATION_RSX;
+	sf.colorOffset[0] = color_offset[index];
+	sf.colorPitch[0] = color_pitch;
 
-	sf.colorLocation[1]	= GCM_LOCATION_RSX;
-	sf.colorLocation[2]	= GCM_LOCATION_RSX;
-	sf.colorLocation[3]	= GCM_LOCATION_RSX;
-	sf.colorOffset[1]	= 0;
-	sf.colorOffset[2]	= 0;
-	sf.colorOffset[3]	= 0;
-	sf.colorPitch[1]	= 64;
-	sf.colorPitch[2]	= 64;
-	sf.colorPitch[3]	= 64;
+	sf.colorLocation[1] = GCM_LOCATION_RSX;
+	sf.colorLocation[2] = GCM_LOCATION_RSX;
+	sf.colorLocation[3] = GCM_LOCATION_RSX;
+	sf.colorOffset[1] = 0;
+	sf.colorOffset[2] = 0;
+	sf.colorOffset[3] = 0;
+	sf.colorPitch[1] = 64;
+	sf.colorPitch[2] = 64;
+	sf.colorPitch[3] = 64;
 
-	sf.depthFormat		= GCM_SURFACE_ZETA_Z24S8;
-	sf.depthLocation	= GCM_LOCATION_RSX;
-	sf.depthOffset		= depth_offset;
-	sf.depthPitch		= depth_pitch;
+	sf.depthFormat = GCM_SURFACE_ZETA_Z24S8;
+	sf.depthLocation = GCM_LOCATION_RSX;
+	sf.depthOffset = depth_offset;
+	sf.depthPitch = depth_pitch;
 
-	sf.type				= GCM_SURFACE_TYPE_LINEAR;
-	sf.antiAlias		= GCM_SURFACE_CENTER_1;
+	sf.type = GCM_SURFACE_TYPE_LINEAR;
+	sf.antiAlias = GCM_SURFACE_CENTER_1;
 
-	sf.width			= resolution.x;
-	sf.height			= resolution.y;
-	sf.x				= 0;
-	sf.y				= 0;
+	sf.width = resolution.x;
+	sf.height = resolution.y;
+	sf.x = 0;
+	sf.y = 0;
 
 	rsxSetSurface(context, &sf);
 }
 
-void RendererRSX::init_screen(void *host_addr, uint32_t size)
+void RendererRSX::init_screen(void* host_addr, uint32_t size)
 {
-    uint32_t zs_depth = 4;
-    uint32_t color_depth = 4;
+	uint32_t zs_depth = 4;
+	uint32_t color_depth = 4;
 
 	rsxInit(&context, DEFUALT_CB_SIZE, size, host_addr);
 
@@ -351,17 +351,17 @@ void RendererRSX::init_screen(void *host_addr, uint32_t size)
 
 	gcmSetFlipMode(GCM_FLIP_VSYNC);
 
-	color_pitch = resolution.x*color_depth;
-	depth_pitch = resolution.x*zs_depth;
+	color_pitch = resolution.x * color_depth;
+	depth_pitch = resolution.x * zs_depth;
 
-	for (uint32_t i=0;i < FRAME_BUFFER_COUNT;i++) 
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	{
-		color_buffer[i] = (uint32_t*)rsxMemalign(64, (resolution.y*color_pitch));
+		color_buffer[i] = (uint32_t*)rsxMemalign(64, (resolution.y * color_pitch));
 		rsxAddressToOffset(color_buffer[i], &color_offset[i]);
 		gcmSetDisplayBuffer(i, color_offset[i], color_pitch, resolution.x, resolution.y);
 	}
 
-	depth_buffer = (uint32_t*)rsxMemalign(64, resolution.y*depth_pitch);
+	depth_buffer = (uint32_t*)rsxMemalign(64, resolution.y * depth_pitch);
 	rsxAddressToOffset(depth_buffer, &depth_offset);
 
 	debugFontRenderer = new RSXDebugFontRenderer(context);
@@ -369,7 +369,7 @@ void RendererRSX::init_screen(void *host_addr, uint32_t size)
 
 void RendererRSX::waitflip()
 {
-	while(gcmGetFlipStatus() != 0)
+	while (gcmGetFlipStatus() != 0)
 		usleep(200);
 
 	gcmResetFlipStatus();
@@ -377,9 +377,9 @@ void RendererRSX::waitflip()
 
 void RendererRSX::flip()
 {
-	if(!first_fb) 
+	if (!first_fb)
 		waitflip();
-	else 
+	else
 		gcmResetFlipStatus();
 
 	gcmSetFlip(context, curr_fb);
@@ -402,7 +402,7 @@ int RendererRSX::Init()
 	int result = 0;
 
 	//maxLightCount = 4;
-	void *host_addr = memalign(HOST_ADDR_ALIGNMENT, HOSTBUFFER_SIZE);
+	void* host_addr = memalign(HOST_ADDR_ALIGNMENT, HOSTBUFFER_SIZE);
 	init_screen(host_addr, HOSTBUFFER_SIZE);
 	init_shader();
 
@@ -413,7 +413,7 @@ int RendererRSX::Init()
 
 	atexit(program_exit_callback);
 	sysUtilRegisterCallback(0, sysutil_exit_callback, NULL);
-	
+
 	projectionMatrix = glm::transpose(glm::perspective(glm::radians(45.0f), aspect_ratio, 1.0f, 3000.0f));
 	setDrawEnv();
 	setRenderTarget(curr_fb);
@@ -434,7 +434,7 @@ void RendererRSX::NewFrame()
 {
 	sysUtilCheckCallback();
 	drawFrame();
-	
+
 	return;
 
 	for (int i = 0; i < maxLightCount; i++)
@@ -551,9 +551,9 @@ void RendererRSX::SetTransform(const glm::mat4& mat)
 
 void RendererRSX::BindTexture(const Texture& texture)
 {
-    if(!texture.m_ps3buffer)
+	if (!texture.m_ps3buffer)
 	{
-       return;
+		return;
 	}
 
 	uint32_t offset;
@@ -561,39 +561,39 @@ void RendererRSX::BindTexture(const Texture& texture)
 
 	rsxInvalidateTextureCache(context, GCM_INVALIDATE_TEXTURE);
 
-	uint32_t pitch = (texture.GetWidth()*4);
+	uint32_t pitch = (texture.GetWidth() * 4);
 	gcmTexture gcmTexture;
 
-	gcmTexture.format		= (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
-	gcmTexture.mipmap		= 1;
-	gcmTexture.dimension	= GCM_TEXTURE_DIMS_2D;
-	gcmTexture.cubemap		= GCM_FALSE;
-	gcmTexture.remap		= ((GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_B_SHIFT) |
-						   (GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_G_SHIFT) |
-						   (GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_R_SHIFT) |
-						   (GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_A_SHIFT) |
-						   (GCM_TEXTURE_REMAP_COLOR_B << GCM_TEXTURE_REMAP_COLOR_B_SHIFT) |
-						   (GCM_TEXTURE_REMAP_COLOR_G << GCM_TEXTURE_REMAP_COLOR_G_SHIFT) |
-						   (GCM_TEXTURE_REMAP_COLOR_R << GCM_TEXTURE_REMAP_COLOR_R_SHIFT) |
-						   (GCM_TEXTURE_REMAP_COLOR_A << GCM_TEXTURE_REMAP_COLOR_A_SHIFT));
-	gcmTexture.width		= texture.GetWidth();
-	gcmTexture.height		= texture.GetHeight();
-	gcmTexture.depth		= 1;
-	gcmTexture.location	= GCM_LOCATION_RSX;
-	gcmTexture.pitch		= pitch;
-	gcmTexture.offset		= offset;
+	gcmTexture.format = (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
+	gcmTexture.mipmap = 1;
+	gcmTexture.dimension = GCM_TEXTURE_DIMS_2D;
+	gcmTexture.cubemap = GCM_FALSE;
+	gcmTexture.remap = ((GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_B_SHIFT) |
+		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_G_SHIFT) |
+		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_R_SHIFT) |
+		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_A_SHIFT) |
+		(GCM_TEXTURE_REMAP_COLOR_B << GCM_TEXTURE_REMAP_COLOR_B_SHIFT) |
+		(GCM_TEXTURE_REMAP_COLOR_G << GCM_TEXTURE_REMAP_COLOR_G_SHIFT) |
+		(GCM_TEXTURE_REMAP_COLOR_R << GCM_TEXTURE_REMAP_COLOR_R_SHIFT) |
+		(GCM_TEXTURE_REMAP_COLOR_A << GCM_TEXTURE_REMAP_COLOR_A_SHIFT));
+	gcmTexture.width = texture.GetWidth();
+	gcmTexture.height = texture.GetHeight();
+	gcmTexture.depth = 1;
+	gcmTexture.location = GCM_LOCATION_RSX;
+	gcmTexture.pitch = pitch;
+	gcmTexture.offset = offset;
 	rsxLoadTexture(context, textureUnit->index, &gcmTexture);
-	rsxTextureControl(context, textureUnit->index, GCM_TRUE, 0<<8, 12<<8, GCM_TEXTURE_MAX_ANISO_1);
+	rsxTextureControl(context, textureUnit->index, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
 	int minFilterValue = GCM_TEXTURE_LINEAR;
-	int magfilterValue = GCM_TEXTURE_LINEAR; 
+	int magfilterValue = GCM_TEXTURE_LINEAR;
 	if (texture.GetFilter() == Filter::Point)
 	{
 		minFilterValue = GCM_TEXTURE_NEAREST;
-		magfilterValue = GCM_TEXTURE_NEAREST; 
+		magfilterValue = GCM_TEXTURE_NEAREST;
 	}
 	rsxTextureFilter(context, textureUnit->index, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
 	const int wrap = GetWrapModeEnum(texture.GetWrapMode());
-	
+
 	rsxTextureWrapMode(context, textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
 }
 
@@ -611,21 +611,20 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	uint32_t i, offset, color = 0;
 	glm::mat4 rotX, rotY;
 	glm::vec4 objEyePos, objLightPos;
-	glm::mat4 viewMatrix, modelMatrix, modelMatrixIT, modelViewMatrix;
+	glm::mat4 modelMatrixIT, modelViewMatrix;
 	glm::vec4 lightPos = glm::vec4(250.0f, 150.0f, 150.0f, 1);
-	f32 globalAmbientColor[3] = {0.8f, 0.7f, 0.7f};
-	f32 lightColor[3] = {0.95f, 0.95f, 0.95f};
-	f32 materialColorDiffuse[3] = {0.5f, 0.5f, 0.5f};
-	f32 materialColorSpecular[3] = {0.7f, 0.6f, 0.6f};
+	f32 globalAmbientColor[3] = { 0.8f, 0.7f, 0.7f };
+	f32 lightColor[3] = { 0.95f, 0.95f, 0.95f };
+	f32 materialColorDiffuse[3] = { 0.5f, 0.5f, 0.5f };
+	f32 materialColorSpecular[3] = { 0.7f, 0.6f, 0.6f };
 	f32 shininess = 17.8954f;
-    
-	eye_pos = glm::vec3(camPos.x, camPos.y, camPos.z);
-	viewMatrix = cameraViewMatrix;
-	modelMatrix = transformationMatrix;
-	modelMatrixIT = glm::inverse(modelMatrix);
-	modelViewMatrix = glm::transpose(viewMatrix * modelMatrix);
 
- 	objEyePos = modelMatrixIT * glm::vec4(eye_pos.x, eye_pos.y, eye_pos.z, 1);
+	eye_pos = glm::vec3(camPos.x, camPos.y, camPos.z);
+
+	modelMatrixIT = glm::inverse(transformationMatrix);
+	modelViewMatrix = glm::transpose(cameraViewMatrix * transformationMatrix);
+
+	objEyePos = modelMatrixIT * glm::vec4(eye_pos.x, eye_pos.y, eye_pos.z, 1);
 	objLightPos = modelMatrixIT * lightPos;
 
 	if (lastSettings.useDepth != settings.useDepth)
@@ -642,7 +641,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 	if (lastSettings.renderingMode != settings.renderingMode)
 	{
-    	if (settings.renderingMode == MaterialRenderingModes::Opaque)
+		if (settings.renderingMode == MaterialRenderingModes::Opaque)
 		{
 			rsxSetBlendEnable(context, GCM_FALSE);
 			rsxSetAlphaTestEnable(context, GCM_FALSE);
@@ -690,7 +689,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].x, &offset);
 		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 	}
-	
+
 	// Update shaders
 	{
 		rsxLoadVertexProgram(context, vpo, vp_ucode);
@@ -710,12 +709,12 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 	}
 
-	rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE, 
-									   GCM_USER_CLIP_PLANE_DISABLE, 
-									   GCM_USER_CLIP_PLANE_DISABLE, 
-									   GCM_USER_CLIP_PLANE_DISABLE, 
-									   GCM_USER_CLIP_PLANE_DISABLE, 
-									   GCM_USER_CLIP_PLANE_DISABLE);
+	rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE,
+		GCM_USER_CLIP_PLANE_DISABLE,
+		GCM_USER_CLIP_PLANE_DISABLE,
+		GCM_USER_CLIP_PLANE_DISABLE,
+		GCM_USER_CLIP_PLANE_DISABLE,
+		GCM_USER_CLIP_PLANE_DISABLE);
 
 	rsxAddressToOffset(&subMesh.indices[0], &offset);
 	rsxInvalidateVertexCache(context);
@@ -875,7 +874,7 @@ void RendererRSX::SetTextureData(const Texture& texture, unsigned int textureTyp
 	// if(!texture->m_ps3buffer) 
 	//     return;
 
-    // uint32_t texture_offset;
+	// uint32_t texture_offset;
 	// rsxAddressToOffset(texture_buffer, &texture_offset);
 
 	// unsigned char* upBuffer = (u8*)texture->m_ps3buffer;
@@ -933,7 +932,7 @@ void RendererRSX::SetLight(const int lightIndex, const Light& light, const Vecto
 	// 	sceGuLight(lightIndex, GU_SPOTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
 	// 	sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
 	// 	sceGuLightColor(lightIndex, GU_DIFFUSE, fixedColor.GetUnsignedIntABGR());
-		
+
 	// 	sceGuLightSpot(lightIndex, &rot, light.GetSpotSmoothness() * 5, 1 - (light.GetSpotAngle() * light.GetSpotAngle()) / 8100);
 	// }
 	// else
@@ -943,7 +942,7 @@ void RendererRSX::SetLight(const int lightIndex, const Light& light, const Vecto
 	// 	sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
 	// }
 	// sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
-	
+
 	// float quadraticAttenuation = light.GetQuadraticValue();
 	// float linearAttenuation = light.GetLinearValue();
 	// float constAttenuation = 1;

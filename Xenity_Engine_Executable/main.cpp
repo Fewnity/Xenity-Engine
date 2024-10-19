@@ -13,8 +13,10 @@
 PSP_HEAP_THRESHOLD_SIZE_KB(1024); // Reduce heap size to give the memory to threads
 PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
+#elif defined(__PS3__)
+// #include <sys/process.h>
+// SYS_PROCESS_PARAM(1001, 0x100000); // Crash on real PS3, why?
 #endif
-
 
 //------------------------------- Link to the documentation: https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc
 
