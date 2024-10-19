@@ -88,7 +88,6 @@ bool Font::CreateFont(Font& font)
 		Debug::PrintError("[Font::CreateFont] Failed to load font", true);
 		return false;
 	}
-
 #else
 	const int fileBufferSize = m_fileSize;
 	unsigned char* fileData = nullptr;
@@ -98,7 +97,6 @@ bool Font::CreateFont(Font& font)
 		Debug::PrintError("[Font::CreateFont] Failed to load font from memory", true);
 		return false;
 	}
-	free(fileData);
 #endif
 	int charPixelHeight = 48;
 	// int charPixelHeight = 21;
@@ -123,7 +121,6 @@ bool Font::CreateFont(Font& font)
 
 	int xOffset = 0;
 	int yOffset = 0;
-
 	for (unsigned char c = 0; c < 255; c++)
 	{
 		try
@@ -210,7 +207,9 @@ bool Font::CreateFont(Font& font)
 
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
-
+#if !defined(EDITOR)
+	free(fileData);
+#endif
 #if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
