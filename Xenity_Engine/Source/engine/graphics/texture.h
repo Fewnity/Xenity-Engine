@@ -242,13 +242,6 @@ protected:
 	}
 
 #if defined(__PSP__)
-	/**
-	 * @brief Create texture data for a mipmap level
-	 * @param level Mipmap level
-	 * @param texData Base texture data
-	 */
-	void SetTextureLevel(int level, const unsigned char *texData);
-
 	// One vector element for each mipmap level
 	std::vector<void *> data;
 	std::vector<bool> inVram;
@@ -273,14 +266,13 @@ protected:
 	static std::shared_ptr<Texture> MakeTexture();
 
 	void LoadFileReference() override;
-	void OnLoadFileReferenceFinished() override;
 	void UnloadFileReference() override;
 
 	/**
 	 * @brief Set texture data
 	 * @param data Texture data
 	 */
-	void SetData(const unsigned char* data);
+	virtual void SetData(const unsigned char* data) = 0;
 
 	/**
 	* @brief [Internal] Get texture ID
