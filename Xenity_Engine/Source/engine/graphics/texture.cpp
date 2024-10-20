@@ -250,16 +250,16 @@ void Texture::LoadTexture()
 	m_fileStatus = FileStatus::FileStatus_Loaded;
 }
 
-void Texture::Unload()
-{
-	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
-	ClearSpriteSelections();
-	Engine::GetRenderer().DeleteTexture(*this);
-
-#if defined (DEBUG)
-	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
-#endif
-}
+//void Texture::Unload()
+//{
+//	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+//
+//	ClearSpriteSelections();
+//	Engine::GetRenderer().DeleteTexture(*this);
+//
+//#if defined (DEBUG)
+//	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
+//#endif
+//}
 
 #pragma endregion

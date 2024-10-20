@@ -6,6 +6,8 @@
 
 #pragma once
 
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
+
 #include <vector>
 #include <engine/api.h>
 #include <engine/file_system/file_reference.h>
@@ -29,4 +31,11 @@ protected:
 	void OnLoadFileReferenceFinished() override;
 
 	void SetData(const unsigned char* data) override;
+
+	void Bind() const override;
+	void ApplyTextureFilters() const;
+	int GetWrapModeEnum(WrapMode wrapMode) const;
+	void Unload() override;
 };
+
+#endif

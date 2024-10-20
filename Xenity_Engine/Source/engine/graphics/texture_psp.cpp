@@ -54,7 +54,7 @@ void TexturePSP::OnLoadFileReferenceFinished()
 	isValid = true;
 }
 
-void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigned int height)
+void TexturePSP::swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigned int height)
 {
 	unsigned int blockx, blocky;
 	unsigned int j;
@@ -89,7 +89,7 @@ void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigne
 }
 
 // See https://github.com/pspdev/pspsdk/blob/master/src/debug///scr_printf.c
-void copy_texture_data(void* dest, const void* src, int width, int height, const PSPTextureType destType, const PSPTextureType srcType)
+void TexturePSP::copy_texture_data(void* dest, const void* src, int width, int height, const PSPTextureType destType, const PSPTextureType srcType)
 {
 	/*for (unsigned int y = 0; y < height; y++)
 	{
@@ -173,7 +173,7 @@ void copy_texture_data(void* dest, const void* src, int width, int height, const
 	}
 }
 
-unsigned int GetColorByteCount(PSPTextureType psm)
+unsigned int TexturePSP::GetColorByteCount(PSPTextureType psm)
 {
 	switch (psm)
 	{
@@ -329,6 +329,128 @@ void TexturePSP::SetData(const unsigned char* texData)
 	}
 
 	isValid = true;
+}
+
+int TexturePSP::TypeToGUPSM(PSPTextureType psm) const
+{
+	switch (psm)
+	{
+		//case GU_PSM_T4:
+		//case GU_PSM_T8:
+		//case GU_PSM_T16:
+		/*case GU_PSM_T32:
+		case GU_PSM_DXT1:
+		case GU_PSM_DXT3:
+		case GU_PSM_DXT5:*/
+
+	case PSPTextureType::RGBA_5650:
+		return GU_PSM_5650;
+	case PSPTextureType::RGBA_5551:
+		return GU_PSM_5551;
+	case PSPTextureType::RGBA_4444:
+		return GU_PSM_4444;
+
+	case PSPTextureType::RGBA_8888:
+		return GU_PSM_8888;
+
+	default:
+		return 0;
+	}
+}
+
+void TexturePSP::Bind() const
+{
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
+
+	sceGuTexMode(TypeToGUPSM(type), GetMipmaplevelCount(), 0, 1);
+	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
+	// Set mipmap behavior
+	if (GetUseMipmap())
+		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
+	// sceGuTexLevelMode(GU_TEXTURE_CONST, 1); // Set mipmap level to use
+	// sceGuTexLevelMode(GU_TEXTURE_SLOPE, 2); //??? has no effect
+
+	sceGuTexImage(0, pW, pH, pW, data[0]);
+	// Send mipmap data
+	if (GetUseMipmap())
+	{
+		sceGuTexImage(1, pW / 2, pH / 2, pW / 2, data[1]);
+		// sceGuTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
+		// sceGuTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
+	}
+	ApplyTextureFilters();
+}
+
+void TexturePSP::ApplyTextureFilters() const
+{
+	int minFilterValue = GU_LINEAR;
+	int magfilterValue = GU_LINEAR;
+	if (GetFilter() == Filter::Bilinear)
+	{
+		if (GetUseMipmap())
+		{
+			minFilterValue = GU_LINEAR_MIPMAP_LINEAR;
+		}
+		else
+		{
+			minFilterValue = GU_LINEAR;
+		}
+		magfilterValue = GU_LINEAR;
+	}
+	else if (GetFilter() == Filter::Point)
+	{
+		if (GetUseMipmap())
+		{
+			minFilterValue = GU_NEAREST_MIPMAP_NEAREST;
+		}
+		else
+		{
+			minFilterValue = GU_NEAREST;
+		}
+		magfilterValue = GU_NEAREST;
+	}
+	const int wrap = GetWrapModeEnum(GetWrapMode());
+
+	// Apply filters
+	sceGuTexFilter(minFilterValue, magfilterValue);
+	sceGuTexWrap(wrap, wrap);
+
+}
+
+int TexturePSP::GetWrapModeEnum(WrapMode wrapMode) const
+{
+	int mode = GU_REPEAT;
+	switch (wrapMode)
+	{
+	case WrapMode::ClampToEdge:
+	case WrapMode::ClampToBorder:
+		mode = GU_CLAMP;
+		break;
+
+	case WrapMode::Repeat:
+		mode = GU_REPEAT;
+		break;
+	}
+	return mode;
+}
+
+void TexturePSP::Unload()
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	ClearSpriteSelections();
+	const int textureLevelCount = inVram.size();
+	for (int i = 0; i < textureLevelCount; i++)
+	{
+		if (inVram[i])
+			vfree(data[i]);
+		else
+			free(data[i]);
+	}
+
+#if defined (DEBUG)
+	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
+#endif
 }
 
 #endif

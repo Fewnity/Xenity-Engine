@@ -297,7 +297,8 @@ protected:
 	/**
 	 * @brief Unload texture data
 	 */
-	void Unload();
+	virtual void Unload() = 0;
+	virtual void Bind() const = 0;
 
 	std::vector<TextureSettings*> m_settings;
 	unsigned char *m_buffer = nullptr;

@@ -246,60 +246,60 @@ int TypeToGUPSM(PSPTextureType psm)
 
 void RendererGU::BindTexture(const Texture& texture)
 {
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(texture.m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
+	//PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(texture.m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
 
-	sceGuTexMode(TypeToGUPSM(type), texture.GetMipmaplevelCount(), 0, 1);
-	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
-	// Set mipmap behavior
-	if (texture.GetUseMipmap())
-		sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
-	// sceGuTexLevelMode(GU_TEXTURE_CONST, 1); // Set mipmap level to use
-	// sceGuTexLevelMode(GU_TEXTURE_SLOPE, 2); //??? has no effect
+	//sceGuTexMode(TypeToGUPSM(type), texture.GetMipmaplevelCount(), 0, 1);
+	//sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
+	//// Set mipmap behavior
+	//if (texture.GetUseMipmap())
+	//	sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
+	//// sceGuTexLevelMode(GU_TEXTURE_CONST, 1); // Set mipmap level to use
+	//// sceGuTexLevelMode(GU_TEXTURE_SLOPE, 2); //??? has no effect
 
-	sceGuTexImage(0, texture.pW, texture.pH, texture.pW, texture.data[0]);
-	// Send mipmap data
-	if (texture.GetUseMipmap())
-	{
-		sceGuTexImage(1, texture.pW / 2, texture.pH / 2, texture.pW / 2, texture.data[1]);
-		// sceGuTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
-		// sceGuTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
-	}
-	ApplyTextureFilters(texture);
+	//sceGuTexImage(0, texture.pW, texture.pH, texture.pW, texture.data[0]);
+	//// Send mipmap data
+	//if (texture.GetUseMipmap())
+	//{
+	//	sceGuTexImage(1, texture.pW / 2, texture.pH / 2, texture.pW / 2, texture.data[1]);
+	//	// sceGuTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
+	//	// sceGuTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
+	//}
+	//ApplyTextureFilters(texture);
 }
 
 void RendererGU::ApplyTextureFilters(const Texture& texture)
 {
-	int minFilterValue = GU_LINEAR;
-	int magfilterValue = GU_LINEAR;
-	if (texture.GetFilter() == Filter::Bilinear)
-	{
-		if (texture.GetUseMipmap())
-		{
-			minFilterValue = GU_LINEAR_MIPMAP_LINEAR;
-		}
-		else
-		{
-			minFilterValue = GU_LINEAR;
-		}
-		magfilterValue = GU_LINEAR;
-	}
-	else if (texture.GetFilter() == Filter::Point)
-	{
-		if (texture.GetUseMipmap())
-		{
-			minFilterValue = GU_NEAREST_MIPMAP_NEAREST;
-		}
-		else
-		{
-			minFilterValue = GU_NEAREST;
-		}
-		magfilterValue = GU_NEAREST;
-	}
-	const int wrap = GetWrapModeEnum(texture.GetWrapMode());
+	//int minFilterValue = GU_LINEAR;
+	//int magfilterValue = GU_LINEAR;
+	//if (texture.GetFilter() == Filter::Bilinear)
+	//{
+	//	if (texture.GetUseMipmap())
+	//	{
+	//		minFilterValue = GU_LINEAR_MIPMAP_LINEAR;
+	//	}
+	//	else
+	//	{
+	//		minFilterValue = GU_LINEAR;
+	//	}
+	//	magfilterValue = GU_LINEAR;
+	//}
+	//else if (texture.GetFilter() == Filter::Point)
+	//{
+	//	if (texture.GetUseMipmap())
+	//	{
+	//		minFilterValue = GU_NEAREST_MIPMAP_NEAREST;
+	//	}
+	//	else
+	//	{
+	//		minFilterValue = GU_NEAREST;
+	//	}
+	//	magfilterValue = GU_NEAREST;
+	//}
+	//const int wrap = GetWrapModeEnum(texture.GetWrapMode());
 
-	// Apply filters
-	sceGuTexFilter(minFilterValue, magfilterValue);
-	sceGuTexWrap(wrap, wrap);
+	//// Apply filters
+	//sceGuTexFilter(minFilterValue, magfilterValue);
+	//sceGuTexWrap(wrap, wrap);
 
 }
 
@@ -408,7 +408,8 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	if (usedTexture != texture.data[0])
 	{
 		usedTexture = texture.data[0];
-		BindTexture(texture);
+		texture.Bind();
+		//BindTexture(texture);
 	}
 	sceGuTexOffset(material.GetOffset().x, material.GetOffset().y);
 	sceGuTexScale(material.GetTiling().x, material.GetTiling().y);

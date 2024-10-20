@@ -207,8 +207,8 @@ void RendererOpengl::SetTransform(const glm::mat4& mat)
 
 void RendererOpengl::BindTexture(const Texture& texture)
 {
-	glBindTexture(GL_TEXTURE_2D, texture.GetTextureId());
-	ApplyTextureFilters(texture);
+	/*glBindTexture(GL_TEXTURE_2D, texture.GetTextureId());
+	ApplyTextureFilters(texture);*/
 	//float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
@@ -397,7 +397,8 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	if (usedTexture != texture.GetTextureId())
 	{
 		usedTexture = texture.GetTextureId();
-		BindTexture(texture);
+		texture.Bind();
+		//BindTexture(texture);
 	}
 
 	if constexpr (Graphics::UseOpenGLFixedFunctions)
@@ -471,7 +472,6 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	glVertexPointer(3, GL_FLOAT, stride, &ver[0].x);
 
 	const RGBA& vec4Color = color.GetRGBA();
-	const Vector4 colorToUse = Vector4(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	glColor4f(vec4Color.r, vec4Color.g, vec4Color.b, vec4Color.a);
 	lastUsedColor = 0x00000000;
 	lastUsedColor2 = 0xFFFFFFFF;
@@ -481,8 +481,8 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 
 unsigned int RendererOpengl::CreateNewTexture()
 {
-	unsigned int textureId;
-	glGenTextures(1, &textureId);
+	unsigned int textureId = 0;
+	//glGenTextures(1, &textureId);
 	return textureId;
 }
 
@@ -494,9 +494,9 @@ void RendererOpengl::DeleteTexture(Texture& texture)
 
 void RendererOpengl::SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer)
 {
-	glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture.GetWidth(), texture.GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
-	if (texture.GetUseMipmap())
-		glGenerateMipmap(GL_TEXTURE_2D);
+	//glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture.GetWidth(), texture.GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
+	//if (texture.GetUseMipmap())
+	//	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)

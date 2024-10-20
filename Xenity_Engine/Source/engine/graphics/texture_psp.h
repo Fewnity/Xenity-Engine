@@ -37,6 +37,15 @@ protected:
 	 */
 	void SetTextureLevel(int level, const unsigned char* texData);
 	void SetData(const unsigned char* data) override;
+
+	void Bind() const override;
+	void ApplyTextureFilters() const;
+	int GetWrapModeEnum(WrapMode wrapMode) const;
+	int TypeToGUPSM(PSPTextureType psm) const;
+	void Unload() override;
+	unsigned int GetColorByteCount(PSPTextureType psm);
+	void copy_texture_data(void* dest, const void* src, int width, int height, const PSPTextureType destType, const PSPTextureType srcType);
+	void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigned int height);
 };
 
 #endif
