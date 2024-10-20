@@ -27,6 +27,8 @@ public:
 	TexturePSP();
 	~TexturePSP();
 
+	std::vector<void*> data;
+
 protected:
 	void OnLoadFileReferenceFinished() override;
 
@@ -45,7 +47,13 @@ protected:
 	void Unload() override;
 	unsigned int GetColorByteCount(PSPTextureType psm);
 	void copy_texture_data(void* dest, const void* src, int width, int height, const PSPTextureType destType, const PSPTextureType srcType);
-	void swizzle_fast(u8* out, const u8* in, const unsigned int width, const unsigned int height);
+	void swizzle_fast(uint8_t* out, const uint8_t* in, const unsigned int width, const unsigned int height);
+
+	// One vector element for each mipmap level
+	std::vector<bool> inVram;
+
+	unsigned int pW = 0;
+	unsigned int pH = 0;
 };
 
 #endif

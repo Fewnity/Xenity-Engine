@@ -35,7 +35,6 @@ TexturePS3::TexturePS3()
 
 TexturePS3::~TexturePS3()
 {
-	Debug::Print("TexturePS3::~TexturePS3()" + std::to_string(textureId), true);
 	this->UnloadFileReference();
 }
 
@@ -69,6 +68,82 @@ void TexturePS3::SetData(const unsigned char* texData)
 	}
 
 	isValid = true;
+}
+
+void TexturePS3::BindTexture()
+{
+	if (!m_ps3buffer)
+	{
+		return;
+	}
+
+	uint32_t offset;
+	rsxAddressToOffset(m_ps3buffer, &offset);
+
+	rsxInvalidateTextureCache(context, GCM_INVALIDATE_TEXTURE);
+
+	uint32_t pitch = (GetWidth() * 4);
+	gcmTexture gcmTexture;
+
+	gcmTexture.format = (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
+	gcmTexture.mipmap = 1;
+	gcmTexture.dimension = GCM_TEXTURE_DIMS_2D;
+	gcmTexture.cubemap = GCM_FALSE;
+	gcmTexture.remap = ((GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_B_SHIFT) |
+		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_G_SHIFT) |
+		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_R_SHIFT) |
+		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_A_SHIFT) |
+		(GCM_TEXTURE_REMAP_COLOR_B << GCM_TEXTURE_REMAP_COLOR_B_SHIFT) |
+		(GCM_TEXTURE_REMAP_COLOR_G << GCM_TEXTURE_REMAP_COLOR_G_SHIFT) |
+		(GCM_TEXTURE_REMAP_COLOR_R << GCM_TEXTURE_REMAP_COLOR_R_SHIFT) |
+		(GCM_TEXTURE_REMAP_COLOR_A << GCM_TEXTURE_REMAP_COLOR_A_SHIFT));
+	gcmTexture.width = texture.GetWidth();
+	gcmTexture.height = texture.GetHeight();
+	gcmTexture.depth = 1;
+	gcmTexture.location = GCM_LOCATION_RSX;
+	gcmTexture.pitch = pitch;
+	gcmTexture.offset = offset;
+	rsxLoadTexture(context, textureUnit->index, &gcmTexture);
+	rsxTextureControl(context, textureUnit->index, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
+	int minFilterValue = GCM_TEXTURE_LINEAR;
+	int magfilterValue = GCM_TEXTURE_LINEAR;
+	if (GetFilter() == Filter::Point)
+	{
+		minFilterValue = GCM_TEXTURE_NEAREST;
+		magfilterValue = GCM_TEXTURE_NEAREST;
+	}
+	rsxTextureFilter(context, textureUnit->index, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
+	const int wrap = GetWrapModeEnum(GetWrapMode());
+
+	rsxTextureWrapMode(context, textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
+}
+
+int TexturePS3::GetWrapModeEnum(WrapMode wrapMode)
+{
+	int mode = 0;
+	switch (wrapMode)
+	{
+	case WrapMode::ClampToEdge:
+	case WrapMode::ClampToBorder:
+		mode = GCM_TEXTURE_CLAMP_TO_EDGE;
+		break;
+	case WrapMode::Repeat:
+		mode = GCM_TEXTURE_REPEAT;
+		break;
+	}
+	return mode;
+}
+
+void TexturePS3::Unload()
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	ClearSpriteSelections();
+	rsxFree(m_ps3buffer);
+
+#if defined (DEBUG)
+	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
+#endif
 }
 
 #endif

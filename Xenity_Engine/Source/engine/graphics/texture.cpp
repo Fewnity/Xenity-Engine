@@ -104,12 +104,6 @@ std::shared_ptr<Texture> Texture::MakeTexture()
 	return newTexture;
 }
 
-Texture::~Texture()
-{
-	Debug::Print("Texture::~Texture()" + std::to_string(textureId), true);
-	this->UnloadFileReference();
-}
-
 void Texture::LoadFileReference()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
@@ -249,17 +243,5 @@ void Texture::LoadTexture()
 	}
 	m_fileStatus = FileStatus::FileStatus_Loaded;
 }
-
-//void Texture::Unload()
-//{
-//	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-//
-//	ClearSpriteSelections();
-//	Engine::GetRenderer().DeleteTexture(*this);
-//
-//#if defined (DEBUG)
-//	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
-//#endif
-//}
 
 #pragma endregion

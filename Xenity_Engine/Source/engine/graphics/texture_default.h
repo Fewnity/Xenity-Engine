@@ -27,6 +27,14 @@ public:
 	TextureDefault();
 	~TextureDefault();
 
+	/**
+	* @brief [Internal] Get texture ID
+	*/
+	unsigned int GetTextureId() const
+	{
+		return textureId;
+	}
+
 protected:
 	void OnLoadFileReferenceFinished() override;
 
@@ -36,6 +44,8 @@ protected:
 	void ApplyTextureFilters() const;
 	int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
+
+	unsigned int textureId = 0;
 };
 
 #endif

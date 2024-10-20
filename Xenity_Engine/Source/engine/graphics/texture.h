@@ -92,8 +92,6 @@ class API Texture : public FileReference, public Reflective
 {
 public:
 	Texture();
-	~Texture();
-
 
 	inline void SetSize(int width, int height)
 	{
@@ -241,14 +239,7 @@ protected:
 		return std::dynamic_pointer_cast<Texture>(shared_from_this());
 	}
 
-#if defined(__PSP__)
-	// One vector element for each mipmap level
-	std::vector<void *> data;
-	std::vector<bool> inVram;
-
-	unsigned int pW = 0;
-	unsigned int pH = 0;
-#elif defined(_EE)
+#if defined(_EE)
 	// GSTEXTURE ps2Tex;
 	texbuffer_t texbuff;
 #endif
@@ -275,14 +266,6 @@ protected:
 	virtual void SetData(const unsigned char* data) = 0;
 
 	/**
-	* @brief [Internal] Get texture ID
-	*/
-	inline unsigned int GetTextureId() const
-	{
-		return textureId;
-	}
-
-	/**
 	 * @brief Create the texture
 	 * @param filter Texture filter
 	 * @param useMipMap Use mip map
@@ -301,13 +284,11 @@ protected:
 	virtual void Bind() const = 0;
 
 	std::vector<TextureSettings*> m_settings;
-	unsigned char *m_buffer = nullptr;
-	unsigned char *m_ps3buffer = nullptr;
-	unsigned int textureId = 0;
+	unsigned char* m_buffer = nullptr;
 	int m_width = 0, height = 0, nrChannels = 0;
 
-	bool isValid = false;
 #if defined(EDITOR)
 	TextureResolutions previousResolution = TextureResolutions::R_2048x2048;
 #endif
+	bool isValid = false;
 };

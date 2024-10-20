@@ -208,7 +208,7 @@ void InspectorMenu::DrawFilePreview()
 		// If the file is a texture, get the texture id
 		if (loadedPreview->m_fileType == FileType::File_Texture)
 		{
-			textureId = std::dynamic_pointer_cast<Texture>(loadedPreview)->GetTextureId();
+			textureId = EditorUI::GetTextureId(*std::dynamic_pointer_cast<Texture>(loadedPreview));
 		}
 
 		// If the preview is a text, calculate the text size
@@ -546,7 +546,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 				ImGui::SetCursorPosX(lastCursorX);
 				ImGui::SetCursorPosY(lastCursorY);
 				Engine::GetRenderer().BindTexture(*texture);
-				ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 			}
 
 		}
@@ -581,7 +581,7 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 			if (texture)
 			{
 				Engine::GetRenderer().BindTexture(*texture);
-				ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 				ImGui::SameLine();
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 			}
@@ -635,7 +635,7 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 		ImGui::SetCursorPosX(35);
 		ImGui::SetCursorPosY(cursorY + 1);
 		Engine::GetRenderer().BindTexture(*texture);
-		ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+		ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 	}
 
 	ImGui::SetCursorPosX(finalCursorX);
@@ -673,7 +673,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 					if (texture)
 					{
 						Engine::GetRenderer().BindTexture(*texture);
-						ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+						ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 						ImGui::SameLine();
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 					}
@@ -738,7 +738,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 		if (texture)
 		{
 			Engine::GetRenderer().BindTexture(*texture);
-			ImGui::Image((ImTextureID)(size_t)texture->GetTextureId(), ImVec2(23, 23));
+			ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 		}
 
 		ImGui::SetCursorPosX(lastCursorX);

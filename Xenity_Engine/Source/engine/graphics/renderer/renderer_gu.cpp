@@ -7,6 +7,15 @@
 #if defined(__PSP__)
 #include "renderer_gu.h"
 
+#include <pspkernel.h>
+
+#include <memory>
+#include <glm/gtc/type_ptr.hpp>
+#include <vram.h>
+#include <pspdisplay.h>
+#include <pspgu.h>
+#include <pspgum.h>
+
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/asset_management/asset_manager.h>
@@ -19,16 +28,9 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/ui/screen.h>
+#include <engine/graphics/texture_psp.h>
 
 static unsigned int __attribute__((aligned(16))) list[262144];
-#include <pspkernel.h>
-
-#include <memory>
-#include <glm/gtc/type_ptr.hpp>
-#include <vram.h>
-#include <pspdisplay.h>
-#include <pspgu.h>
-#include <pspgum.h>
 
 #define PSP_BUF_WIDTH 512
 #define PSP_SCR_WIDTH 480
@@ -217,90 +219,12 @@ void RendererGU::SetTransform(const glm::mat4& mat)
 	sceGuSetMatrix(GU_MODEL, (ScePspFMatrix4*)&mat);
 }
 
-int TypeToGUPSM(PSPTextureType psm)
-{
-	switch (psm)
-	{
-		//case GU_PSM_T4:
-		//case GU_PSM_T8:
-		//case GU_PSM_T16:
-		/*case GU_PSM_T32:
-		case GU_PSM_DXT1:
-		case GU_PSM_DXT3:
-		case GU_PSM_DXT5:*/
-
-	case PSPTextureType::RGBA_5650:
-		return GU_PSM_5650;
-	case PSPTextureType::RGBA_5551:
-		return GU_PSM_5551;
-	case PSPTextureType::RGBA_4444:
-		return GU_PSM_4444;
-
-	case PSPTextureType::RGBA_8888:
-		return GU_PSM_8888;
-
-	default:
-		return 0;
-	}
-}
-
 void RendererGU::BindTexture(const Texture& texture)
 {
-	//PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(texture.m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
-
-	//sceGuTexMode(TypeToGUPSM(type), texture.GetMipmaplevelCount(), 0, 1);
-	//sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
-	//// Set mipmap behavior
-	//if (texture.GetUseMipmap())
-	//	sceGuTexLevelMode(GU_TEXTURE_AUTO, -1); // Greater is lower quality
-	//// sceGuTexLevelMode(GU_TEXTURE_CONST, 1); // Set mipmap level to use
-	//// sceGuTexLevelMode(GU_TEXTURE_SLOPE, 2); //??? has no effect
-
-	//sceGuTexImage(0, texture.pW, texture.pH, texture.pW, texture.data[0]);
-	//// Send mipmap data
-	//if (texture.GetUseMipmap())
-	//{
-	//	sceGuTexImage(1, texture.pW / 2, texture.pH / 2, texture.pW / 2, texture.data[1]);
-	//	// sceGuTexImage(2, texture->pW / 4, texture->pH / 4, texture->pW / 4, texture->data[2]);
-	//	// sceGuTexImage(3, texture->pW / 8, texture->pH / 8, texture->pW / 8, texture->data[3]);
-	//}
-	//ApplyTextureFilters(texture);
 }
 
 void RendererGU::ApplyTextureFilters(const Texture& texture)
 {
-	//int minFilterValue = GU_LINEAR;
-	//int magfilterValue = GU_LINEAR;
-	//if (texture.GetFilter() == Filter::Bilinear)
-	//{
-	//	if (texture.GetUseMipmap())
-	//	{
-	//		minFilterValue = GU_LINEAR_MIPMAP_LINEAR;
-	//	}
-	//	else
-	//	{
-	//		minFilterValue = GU_LINEAR;
-	//	}
-	//	magfilterValue = GU_LINEAR;
-	//}
-	//else if (texture.GetFilter() == Filter::Point)
-	//{
-	//	if (texture.GetUseMipmap())
-	//	{
-	//		minFilterValue = GU_NEAREST_MIPMAP_NEAREST;
-	//	}
-	//	else
-	//	{
-	//		minFilterValue = GU_NEAREST;
-	//	}
-	//	magfilterValue = GU_NEAREST;
-	//}
-	//const int wrap = GetWrapModeEnum(texture.GetWrapMode());
-
-	//// Apply filters
-	//sceGuTexFilter(minFilterValue, magfilterValue);
-	//sceGuTexWrap(wrap, wrap);
-
 }
 
 void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings)
@@ -405,11 +329,11 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	}
 
 	// Bind texture
-	if (usedTexture != texture.data[0])
+	const TexturePSP& guTexture = dynamic_cast<const TexturePSP&>(texture);
+	if (usedTexture != guTexture.data[0])
 	{
-		usedTexture = texture.data[0];
+		usedTexture = guTexture.data[0];
 		texture.Bind();
-		//BindTexture(texture);
 	}
 	sceGuTexOffset(material.GetOffset().x, material.GetOffset().y);
 	sceGuTexScale(material.GetTiling().x, material.GetTiling().y);
@@ -441,14 +365,6 @@ unsigned int RendererGU::CreateNewTexture()
 
 void RendererGU::DeleteTexture(Texture& texture)
 {
-	const int textureLevelCount = texture.inVram.size();
-	for (int i = 0; i < textureLevelCount; i++)
-	{
-		if (texture.inVram[i])
-			vfree(texture.data[i]);
-		else
-			free(texture.data[i]);
-	}
 }
 
 void RendererGU::SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer)

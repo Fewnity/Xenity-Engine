@@ -148,7 +148,7 @@ void SpriteEditorMenu::DrawSpriteSheet()
 	const float bottomY = winPos.y + (spriteToEdit->GetHeight() * zoom) / 2.0f + availSize.y / 2.0f + oldCursorYPos + spriteToEdit->GetHeight() * offset.y * zoom;
 
 	// Draw sprite sheet
-	ImGui::GetWindowDrawList()->AddImage((ImTextureID)(size_t)spriteToEdit->GetTextureId(), ImVec2(topX, topY), ImVec2(bottomX, bottomY));
+	ImGui::GetWindowDrawList()->AddImage((ImTextureID)(size_t)EditorUI::GetTextureId(*spriteToEdit), ImVec2(topX, topY), ImVec2(bottomX, bottomY));
 
 	// Draw all sprite selection lines
 	const size_t spriteSelectionCount = spriteSelections.size();
@@ -211,7 +211,7 @@ void SpriteEditorMenu::DrawToolWindow()
 			const float uvBottomY = (spriteToEdit->GetHeight() - currentSelection.position.y) / spriteToEdit->GetHeight();
 
 			// Draw sprite preview
-			ImGui::Image((ImTextureID)(size_t)spriteToEdit->GetTextureId(), ImVec2(150, 150), ImVec2(uvBottomX, uvTopY), ImVec2(uvTopX, uvBottomY));
+			ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*spriteToEdit), ImVec2(150, 150), ImVec2(uvBottomX, uvTopY), ImVec2(uvTopX, uvBottomY));
 
 			// Draw button to select the sprite selection
 			const std::string selectButtonText = "Select" + EditorUI::GenerateItemId();

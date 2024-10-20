@@ -39,6 +39,8 @@ Add color to standard shader in psvita
 Fix light in fixed pipeline with 2 cameras
 Improve crash handling if opening a project that does not exists anymore
 Automate SaveMetaFile and LoadMetaFile for each platforms
+Implement delete mesh and texture for RSX
+Check DrawExplorerItem bind texture function
 
 --- Can be done for the next release
 Create a GetFileSize function in File class

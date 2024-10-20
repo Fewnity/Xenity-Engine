@@ -163,6 +163,8 @@ public:
 	*/
 	static std::string GetPrettyVariableName(std::string variableName);
 
+	static unsigned int GetTextureId(const Texture& texture);
+
 	/**
 	* @brief Draw a centered text
 	* @param text Text to draw

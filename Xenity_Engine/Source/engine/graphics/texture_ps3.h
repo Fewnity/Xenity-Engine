@@ -31,6 +31,12 @@ protected:
 	void OnLoadFileReferenceFinished() override;
 
 	void SetData(const unsigned char* data) override;
+
+	void Bind() const override;
+	int GetWrapModeEnum(WrapMode wrapMode) const;
+	void Unload() override;
+
+	unsigned char* m_ps3buffer = nullptr;
 };
 
 #endif

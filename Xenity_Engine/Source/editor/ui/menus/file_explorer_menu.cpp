@@ -27,6 +27,7 @@
 #include <engine/engine.h>
 
 #include "create_class_menu.h"
+#include <engine/graphics/texture_default.h>
 
 void FileExplorerMenu::Init()
 {
@@ -89,7 +90,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	Engine::GetRenderer().BindTexture(*iconTexture);
-	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)iconTexture->GetTextureId(), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(*iconTexture), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	const bool hovered = ImGui::IsItemHovered();
 
 	// Create an unique popupid
@@ -114,7 +115,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		imageCursorPos.y -= iconSize / 3 / 2;
 
 		ImGui::SetCursorPos(imageCursorPos);
-		ImGui::Image((ImTextureID)(size_t)matTexture->GetTextureId(), ImVec2(iconSize / 3, iconSize / 3), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+		ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*matTexture), ImVec2(iconSize / 3, iconSize / 3), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	}
 
 	ImGui::SetCursorPos(finalImageCursorPos);
@@ -341,7 +342,8 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, c
 			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.directory.get(), sizeof(ProjectDirectory));
 		}
 
-		ImGui::Image((ImTextureID)(size_t)iconTexture.GetTextureId(), ImVec2(iconSize, iconSize));
+		const TextureDefault& openglTexture = dynamic_cast<const TextureDefault&>(iconTexture);
+		ImGui::Image((ImTextureID)(size_t)openglTexture.GetTextureId(), ImVec2(iconSize, iconSize));
 		ImGui::TextWrapped("%s", itemName.c_str());
 		ImGui::EndDragDropSource();
 	}
@@ -364,7 +366,7 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 		case FileType::File_Texture:
 		{
 			tex = std::dynamic_pointer_cast<Texture>(fileExplorerItem.file);
-			if (tex->GetTextureId() == 0)
+			if (EditorUI::GetTextureId(*tex) == 0)
 			{
 				tex = EditorUI::icons[(int)IconName::Icon_Image];
 			}
@@ -394,7 +396,7 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 		case FileType::File_Material:
 		{
 			std::shared_ptr<Material> mat = std::dynamic_pointer_cast<Material>(fileExplorerItem.file);
-			if (!mat->GetTexture() || mat->GetTexture()->GetTextureId() == 0)
+			if (!mat->GetTexture() || EditorUI::GetTextureId(*mat->GetTexture()) == 0)
 			{
 				tex = AssetManager::defaultTexture;
 			}

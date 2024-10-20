@@ -49,7 +49,7 @@ public:
 		const int cursorPos = (int)ImGui::GetCursorPosX();
 		const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 		ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
-		ImGui::ImageButton(std::string("SelectAssetMenuItem" + std::to_string(index)).c_str(), (ImTextureID)(size_t)icon.GetTextureId(), ImVec2(iconSize, iconSize));
+		ImGui::ImageButton(std::string("SelectAssetMenuItem" + std::to_string(index)).c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(icon), ImVec2(iconSize, iconSize));
 
 		const float windowWidth = ImGui::GetContentRegionAvail().x;
 		const float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;

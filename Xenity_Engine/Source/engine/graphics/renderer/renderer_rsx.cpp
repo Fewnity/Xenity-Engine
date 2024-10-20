@@ -675,7 +675,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	if (usedTexture != texture.m_ps3buffer)
 	{
 		usedTexture = texture.m_ps3buffer;
-		BindTexture(texture);
+		texture.Bind();
 	}
 
 	// Set vertex array attributes

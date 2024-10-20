@@ -343,6 +343,8 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 					vfree(subMesh->data);
 				else
 					free(subMesh->data);
+#elif defined(__PS3__)
+				rsxFree(subMesh->data);
 #else
 				free(subMesh->data);
 #endif
@@ -351,7 +353,11 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 
 			if (subMesh->indices)
 			{
+#if defined(__PS3__)
+				rsxFree(subMesh->indices);
+#else
 				free(subMesh->indices);
+#endif
 				subMesh->indices = nullptr;
 			}
 #if defined (DEBUG)

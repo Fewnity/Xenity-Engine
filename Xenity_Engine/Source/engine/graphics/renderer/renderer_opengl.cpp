@@ -35,6 +35,7 @@
 #include <engine/graphics/texture.h>
 
 #include <engine/tools/math.h>
+#include <engine/graphics/texture_default.h>
 
 
 RendererOpengl::RendererOpengl()
@@ -393,12 +394,11 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 	//Bind all the data
 	glBindVertexArray(subMesh.VAO);
-
-	if (usedTexture != texture.GetTextureId())
+	const TextureDefault& openglTexture = dynamic_cast<const TextureDefault&>(texture);
+	if (usedTexture != openglTexture.GetTextureId())
 	{
-		usedTexture = texture.GetTextureId();
+		usedTexture = openglTexture.GetTextureId();
 		texture.Bind();
-		//BindTexture(texture);
 	}
 
 	if constexpr (Graphics::UseOpenGLFixedFunctions)
@@ -482,21 +482,15 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 unsigned int RendererOpengl::CreateNewTexture()
 {
 	unsigned int textureId = 0;
-	//glGenTextures(1, &textureId);
 	return textureId;
 }
 
 void RendererOpengl::DeleteTexture(Texture& texture)
 {
-	unsigned int textureId = texture.GetTextureId();
-	glDeleteTextures(1, &textureId);
 }
 
 void RendererOpengl::SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer)
 {
-	//glTexImage2D(GL_TEXTURE_2D, 0, textureType, texture.GetWidth(), texture.GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, buffer);
-	//if (texture.GetUseMipmap())
-	//	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)
@@ -688,7 +682,6 @@ void RendererOpengl::SetFogValues(float start, float end, const Color& color)
 	float floatColor[] = { rgba.r, rgba.g, rgba.b, 1.0f };
 
 	glFogfv(GL_FOG_COLOR, floatColor);
-
 }
 
 unsigned int RendererOpengl::CreateBuffer()
@@ -723,11 +716,17 @@ void RendererOpengl::DeleteVertexArray(unsigned int bufferId)
 void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 {
 	if (subMesh.VAO != 0)
+	{
 		DeleteVertexArray(subMesh.VAO);
+	}
 	if (subMesh.VBO != 0)
+	{
 		DeleteBuffer(subMesh.VBO);
+	}
 	if (subMesh.EBO != 0)
+	{
 		DeleteBuffer(subMesh.EBO);
+	}
 }
 
 void RendererOpengl::UploadMeshData(const MeshData& meshData)

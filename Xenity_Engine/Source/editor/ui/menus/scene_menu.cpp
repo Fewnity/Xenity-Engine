@@ -24,6 +24,7 @@
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/tools/math.h>
+#include <engine/graphics/texture_default.h>
 
 
 void SceneMenu::Init()
@@ -828,10 +829,15 @@ void SceneMenu::Draw()
 bool SceneMenu::DrawImageButton(bool enabled, const Texture& texture, const std::string& buttonId, bool& isHovered)
 {
 	if (!enabled)
+	{
 		ImGui::BeginDisabled();
-	const bool clicked = ImGui::ImageButton(buttonId.c_str(), (ImTextureID)(size_t)texture.GetTextureId(), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	}
+
+	const bool clicked = ImGui::ImageButton(buttonId.c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(texture), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	if (!enabled)
+	{
 		ImGui::EndDisabled();
+	}
 
 	if (ImGui::IsItemHovered())
 	{

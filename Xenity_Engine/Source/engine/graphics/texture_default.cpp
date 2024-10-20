@@ -141,7 +141,9 @@ void TextureDefault::OnLoadFileReferenceFinished()
 	unsigned int textureType = GL_RGBA; // rgba
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, GetWidth(), GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, m_buffer);
 	if (GetUseMipmap())
+	{
 		glGenerateMipmap(GL_TEXTURE_2D);
+	}
 
 	free(m_buffer);
 	isValid = true;
@@ -160,7 +162,9 @@ void TextureDefault::SetData(const unsigned char *texData)
 	unsigned int textureType = GL_LUMINANCE_ALPHA;
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, GetWidth(), GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, texData);
 	if (GetUseMipmap())
+	{
 		glGenerateMipmap(GL_TEXTURE_2D);
+	}
 
 	isValid = true;
 }

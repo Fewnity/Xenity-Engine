@@ -15,6 +15,7 @@
 #include <engine/engine_settings.h>
 #include <engine/file_system/file_system.h>
 #include <engine/game_elements/gameplay_manager.h>
+#include <engine/graphics/texture_default.h>
 
 using json = nlohmann::json;
 
@@ -171,12 +172,12 @@ void BuildSettingsMenu::Draw()
 				cursorPos.y += 5;
 				ImGui::SetCursorPosX(cursorPos.x + 5);
 				ImGui::SetCursorPosY(cursorPos.y);
-				ImGui::Image((ImTextureID)(size_t)platform.icon->GetTextureId(), ImVec2(imageSize, imageSize), ImVec2(0, 0), ImVec2(1, 1), tint);
+				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*platform.icon), ImVec2(imageSize, imageSize), ImVec2(0, 0), ImVec2(1, 1), tint);
 
 				// Draw icon shadow
 				ImGui::SetCursorPosX(cursorPos.x + 5 + 2);
 				ImGui::SetCursorPosY(cursorPos.y + 2);
-				ImGui::Image((ImTextureID)(size_t)platform.icon->GetTextureId(), ImVec2(imageSize, imageSize), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 0.2f));
+				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*platform.icon), ImVec2(imageSize, imageSize), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 0.2f));
 
 				// Draw text
 				ImGui::SameLine();

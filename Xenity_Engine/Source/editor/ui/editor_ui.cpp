@@ -20,6 +20,7 @@
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/graphics/texture_default.h>
 
 using json = nlohmann::json;
 
@@ -178,6 +179,13 @@ std::string EditorUI::GetPrettyVariableName(std::string variableName)
 		}
 	}
 	return variableName;
+}
+
+unsigned int EditorUI::GetTextureId(const Texture& texture)
+{
+	const TextureDefault& openglTexture = dynamic_cast<const TextureDefault&>(texture);
+
+	return openglTexture.GetTextureId();
 }
 
 /**
