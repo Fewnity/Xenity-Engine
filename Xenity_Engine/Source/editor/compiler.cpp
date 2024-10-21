@@ -31,6 +31,7 @@
 #include <engine/file_system/file_system.h>
 #include <engine/application.h>
 #include <engine/graphics/texture.h>
+#include <engine/constants.h>
 
 namespace fs = std::filesystem;
 
@@ -43,14 +44,6 @@ std::string  Compiler::compilerExecFileName = "";
 
 CompilationMethod Compiler::compilationMethod = CompilationMethod::MSVC;
 bool Compiler::isCompilationCancelled = false;
-
-#define ENGINE_EDITOR "Xenity_Editor"
-#define ENGINE_GAME "Xenity_Engine"
-#define ASSETS_FOLDER "assets/"
-#define ENGINE_ASSETS_FOLDER "engine_assets/"
-#define PUBLIC_ENGINE_ASSETS_FOLDER "public_engine_assets/"
-#define MSVC_START_FILE_64BITS "vcvars64.bat"
-#define MSVC_START_FILE_32BITS "vcvars32.bat"
 
 std::string MakePathAbsolute(const std::string& path, const std::string& root)
 {
@@ -206,16 +199,16 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (params.buildType == BuildType::EditorHotReloading)
 		{
-			if (!fs::exists(engineFolderLocation + ENGINE_EDITOR + ".lib") ||
-				!fs::exists(engineFolderLocation + ENGINE_EDITOR + ".dll"))
+			if (!fs::exists(engineFolderLocation + ENGINE_EDITOR_FOLDER + ".lib") ||
+				!fs::exists(engineFolderLocation + ENGINE_EDITOR_FOLDER + ".dll"))
 			{
 				error |= (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB;
 			}
 		}
 		else
 		{
-			if (!fs::exists(engineFolderLocation + ENGINE_GAME + ".lib") ||
-				!fs::exists(engineFolderLocation + ENGINE_GAME + ".dll"))
+			if (!fs::exists(engineFolderLocation + ENGINE_GAME_FOLDER + ".lib") ||
+				!fs::exists(engineFolderLocation + ENGINE_GAME_FOLDER + ".dll"))
 			{
 				error |= (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB;
 			}
@@ -612,25 +605,25 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 
 	if (params.buildType == BuildType::EditorHotReloading) // In hot reloading mode:
 	{
-		const std::string engineLibPath = engineFolderLocation + ENGINE_EDITOR + ".lib";
+		const std::string engineLibPath = engineFolderLocation + ENGINE_EDITOR_FOLDER + ".lib";
 
 		// Copy engine editor lib to the temp build folder
-		CopyUtils::AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_EDITOR + ".lib");
+		CopyUtils::AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_EDITOR_FOLDER + ".lib");
 		// Copy editor header
 		CopyUtils::AddCopyEntry(false, engineProjectLocation + "Source/xenity_editor.h", params.tempPath + "xenity_editor.h");
 	}
 	else // In build mode:
 	{
-		const std::string engineLibPath = engineFolderLocation + ENGINE_GAME + ".lib";
-		const std::string engineDllPath = engineFolderLocation + ENGINE_GAME + ".dll";
+		const std::string engineLibPath = engineFolderLocation + ENGINE_GAME_FOLDER + ".lib";
+		const std::string engineDllPath = engineFolderLocation + ENGINE_GAME_FOLDER + ".dll";
 		const std::string sdlDllPath = engineFolderLocation + "SDL3.dll";
 		const std::string glfwDllPath = engineFolderLocation + "glfw3.dll";
 		const std::string freetypeDllPath = engineFolderLocation + "freetype.dll";
 
 		// Copy engine game lib to the temp build folder
-		CopyUtils::AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_GAME + ".lib");
+		CopyUtils::AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_GAME_FOLDER + ".lib");
 		// Copy all DLLs to the export folder
-		CopyUtils::AddCopyEntry(false, engineDllPath, params.exportPath + ENGINE_GAME + ".dll");
+		CopyUtils::AddCopyEntry(false, engineDllPath, params.exportPath + ENGINE_GAME_FOLDER + ".dll");
 		CopyUtils::AddCopyEntry(false, sdlDllPath, params.exportPath + "SDL3.dll");
 		CopyUtils::AddCopyEntry(false, glfwDllPath, params.exportPath + "glfw3.dll");
 		CopyUtils::AddCopyEntry(false, freetypeDllPath, params.exportPath + "freetype.dll");
@@ -1117,11 +1110,11 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	// Add the .lib file to use
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
-		command += " " + std::string(ENGINE_GAME) + ".lib";
+		command += " " + std::string(ENGINE_GAME_FOLDER) + ".lib";
 	}
 	else
 	{
-		command += " " + std::string(ENGINE_EDITOR) + ".lib";
+		command += " " + std::string(ENGINE_EDITOR_FOLDER) + ".lib";
 	}
 
 	command += " /link";
@@ -1161,7 +1154,7 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 #endif
 	command += " -I \"" + engineProjectLocation + "include\"";
 	command += " -I \"" + engineProjectLocation + "Source\"";
-	command += " main.cpp " + std::string(ENGINE_GAME) + ".lib";
+	command += " main.cpp " + std::string(ENGINE_GAME_FOLDER) + ".lib";
 	//command += " >nul"; // Mute output
 	return command;
 }

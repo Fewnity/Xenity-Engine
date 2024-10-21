@@ -45,7 +45,9 @@ void MeshManager::DrawMesh(const Transform& transform, const MeshData::SubMesh& 
 	const Vector3& scale = transform.GetScale();
 
 	if (scale.x * scale.y * scale.z < 0)
+	{
 		renderSettings.invertFaces = !renderSettings.invertFaces;
+	}
 
 	Graphics::DrawSubMesh(subMesh, material, renderSettings, transform.GetTransformationMatrix(), false);
 }

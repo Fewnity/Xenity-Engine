@@ -1119,6 +1119,7 @@
     <ClInclude Include="include\bullet\LinearMath\btCpuFeatureUtility.h" />
     <ClInclude Include="include\bullet\LinearMath\btSpatialAlgebra.h" />
     <ClInclude Include="include\bullet\LinearMath\btThreads.h" />
+    <ClInclude Include="Source\engine\constants.h" />
     <ClInclude Include="Source\engine\file_system\file_ps3.h" />
     <ClInclude Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.h" />
     <ClInclude Include="include\bullet\btBulletCollisionCommon.h" />

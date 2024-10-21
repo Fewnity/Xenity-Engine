@@ -59,25 +59,37 @@ void Lod::UseLevel(const std::weak_ptr<MeshRenderer>& levelToEnable, const std::
 {
 	// Set levelToEnable as visible and other as not visible
 	if (levelToEnable.lock())
+	{
 		levelToEnable.lock()->m_culled = false;
+	}
 
 	if (levelToDisable0.lock())
+	{
 		levelToDisable0.lock()->m_culled = true;
+	}
 
 	if (levelToDisable1.lock())
+	{
 		levelToDisable1.lock()->m_culled = true;
+	}
 }
 
 void Lod::SetAllLevel(bool visible)
 {
 	if (m_lod0MeshRenderer.lock())
+	{
 		m_lod0MeshRenderer.lock()->m_culled = !visible;
+	}
 
 	if (m_lod1MeshRenderer.lock())
+	{
 		m_lod1MeshRenderer.lock()->m_culled = !visible;
+	}
 
 	if (m_lod2MeshRenderer.lock())
+	{
 		m_lod2MeshRenderer.lock()->m_culled = !visible;
+	}
 }
 
 Lod::~Lod()

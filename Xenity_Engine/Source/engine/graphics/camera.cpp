@@ -29,6 +29,7 @@
 #include <engine/assertions/assertions.h>
 #include <engine/debug/debug.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/constants.h>
 #include "graphics.h"
 
 #pragma region Constructors / Destructor
@@ -37,7 +38,7 @@ Camera::Camera()
 {
 	m_componentName = "Camera";
 
-	m_fov = 60;
+	m_fov = DEFAULT_CAMERA_FOV;
 	m_isProjectionDirty = true;
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)

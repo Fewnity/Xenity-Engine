@@ -13,11 +13,7 @@
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
 
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#define MAX_LIGHT_COUNT 10
-#else
-#define MAX_LIGHT_COUNT 4
-#endif
+#include <engine/constants.h>
 
 class Light;
 class Material;

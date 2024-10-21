@@ -228,7 +228,7 @@ void InspectorMenu::DrawFilePreview()
 		{
 			const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
 			const ImVec2 availArea = ImGui::GetContentRegionAvail();
-			Engine::GetRenderer().BindTexture(*texture);
+			texture->Bind();
 			ImGui::Image((ImTextureID)(size_t)textureId, availArea);
 
 			const std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
@@ -545,7 +545,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 			{
 				ImGui::SetCursorPosX(lastCursorX);
 				ImGui::SetCursorPosY(lastCursorY);
-				Engine::GetRenderer().BindTexture(*texture);
+				texture->Bind();
 				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 			}
 
@@ -580,7 +580,7 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 
 			if (texture)
 			{
-				Engine::GetRenderer().BindTexture(*texture);
+				texture->Bind();
 				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 				ImGui::SameLine();
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
@@ -634,7 +634,7 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 	{
 		ImGui::SetCursorPosX(35);
 		ImGui::SetCursorPosY(cursorY + 1);
-		Engine::GetRenderer().BindTexture(*texture);
+		texture->Bind();
 		ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 	}
 
@@ -672,7 +672,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 
 					if (texture)
 					{
-						Engine::GetRenderer().BindTexture(*texture);
+						texture->Bind();
 						ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 						ImGui::SameLine();
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
@@ -737,7 +737,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 
 		if (texture)
 		{
-			Engine::GetRenderer().BindTexture(*texture);
+			texture->Bind();
 			ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
 		}
 

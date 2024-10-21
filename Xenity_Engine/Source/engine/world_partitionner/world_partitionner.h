@@ -7,9 +7,6 @@
 class Light;
 class MeshRenderer;
 
-#define CHUNK_SIZE 10
-#define CHUNK_HALF_SIZE (CHUNK_SIZE / 2.0f)
-
 class WorldPartitionner
 {
 public:

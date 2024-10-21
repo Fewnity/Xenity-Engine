@@ -81,7 +81,7 @@ public:
 		return m_useLighting;
 	}
 
-	MaterialRenderingModes GetRenderingMode() 
+	MaterialRenderingModes GetRenderingMode() const
 	{
 		return m_renderingMode;
 	}

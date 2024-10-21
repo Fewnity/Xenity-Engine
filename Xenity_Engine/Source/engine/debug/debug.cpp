@@ -22,6 +22,7 @@
 #include <engine/file_system/file.h>
 #include <engine/time/time.h>
 #include <engine/audio/audio_manager.h>
+#include <engine/constants.h>
 #include "performance.h"
 
 std::shared_ptr<File> Debug::s_file = nullptr;
@@ -235,9 +236,9 @@ int Debug::Init()
 	if (!EngineSettings::values.useDebugger)
 		return 0;
 
-	std::string fileName = "xenity_engine_debug.txt";
+	std::string fileName = DEBUG_LOG_FILE;
 #if defined(__vita__)
-	fileName = "ux0:data/xenity_engine/" + fileName;
+	fileName = PSVITA_DEBUG_LOG_FOLDER + fileName;
 #endif
 	FileSystem::s_fileSystem->Delete(fileName);
 
@@ -245,7 +246,7 @@ int Debug::Init()
 
 	if (!s_file->Open(FileMode::WriteCreateFile))
 	{
-		Print("-------- Debug file not created --------", true);
+		PrintError("-------- Debug file not created --------");
 		return -1;
 	}
 	debugMutex = new MyMutex("DebugMutex");

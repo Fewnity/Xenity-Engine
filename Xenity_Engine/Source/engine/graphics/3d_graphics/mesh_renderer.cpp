@@ -6,6 +6,10 @@
 
 #include "mesh_renderer.h"
 
+#if defined(EDITOR)
+#include <editor/gizmo.h>
+#endif
+
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/3d_graphics/mesh_manager.h>
 #include <engine/graphics/material.h>
@@ -18,11 +22,8 @@
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/engine.h>
 #include <engine/debug/stack_debug_object.h>
-
-#if defined(EDITOR)
-#include <editor/gizmo.h>
-#endif
 #include <engine/debug/debug.h>
+
 using namespace std;
 
 // #pragma region MeshRenderer Constructors / Destructor
@@ -67,7 +68,7 @@ void MeshRenderer::OnDrawGizmosSelected()
 	const Vector3& tPos = GetTransformRaw()->GetPosition();
 	for (auto& chunk : worldChunkPositions)
 	{
-		Gizmo::DrawLine(tPos, chunk + Vector3(CHUNK_HALF_SIZE));
+		Gizmo::DrawLine(tPos, chunk + Vector3(WORLD_CHUNK_HALF_SIZE));
 	}
 
 	const Color lightLineColor = Color::CreateFromRGBAFloat(1, 0, 0, 1);

@@ -229,8 +229,8 @@ void TexturePSP::SetTextureLevel(int level, const unsigned char* texData)
 {
 	XASSERT(texData != nullptr, "[TexturePSP::SetTextureLevel] texData is nullptr");
 
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
-	bool tryPutInVram = reinterpret_cast<TextureSettingsPSP*>(m_settings[static_cast<int>(Application::GetAssetPlatform())])->tryPutInVram;
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[Application::GetAssetPlatform()])->type;
+	bool tryPutInVram = reinterpret_cast<TextureSettingsPSP*>(m_settings[Application::GetAssetPlatform()])->tryPutInVram;
 
 	bool needResize = false;
 	int bytePerPixel = GetColorByteCount(type);
@@ -359,7 +359,7 @@ int TexturePSP::TypeToGUPSM(PSPTextureType psm) const
 
 void TexturePSP::Bind() const
 {
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[static_cast<int>(Application::GetAssetPlatform())])->type;
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[Application::GetAssetPlatform()])->type;
 
 	sceGuTexMode(TypeToGUPSM(type), GetMipmaplevelCount(), 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);

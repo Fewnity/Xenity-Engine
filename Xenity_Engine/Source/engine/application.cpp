@@ -11,6 +11,7 @@
 #endif
 
 #include <engine/asset_management/project_manager.h>
+#include <engine/constants.h>
 #include "engine.h"
 
 void Application::OpenURL(const std::string& url)

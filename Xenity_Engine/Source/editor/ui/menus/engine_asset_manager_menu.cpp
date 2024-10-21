@@ -15,6 +15,7 @@
 #include <engine/asset_management/project_manager.h>
 #include <engine/file_system/file_system.h>
 #include <engine/asset_management/asset_manager.h>
+#include <engine/constants.h>
 
 #include <json.hpp>
 using json = nlohmann::json;

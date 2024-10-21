@@ -21,7 +21,7 @@ File::File(const std::string& _path) : UniqueId(true)
 
 #if defined(_EE)
 	//_path = "mass:" + _path;
-	this->path = "mass:" + _path;
+	this->m_path = "mass:" + _path;
 #else
 	this->m_path = _path;
 	//_path = "host0:" + _path;

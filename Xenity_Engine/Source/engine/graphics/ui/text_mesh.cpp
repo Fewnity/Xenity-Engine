@@ -50,7 +50,7 @@ TextMesh::~TextMesh()
 
 void TextMesh::SetOrderInLayer(int orderInLayer)
 {
-	this->m_orderInLayer = orderInLayer;
+	m_orderInLayer = orderInLayer;
 	Graphics::SetDrawOrderListAsDirty();
 }
 
@@ -58,18 +58,18 @@ void TextMesh::SetOrderInLayer(int orderInLayer)
 
 void TextMesh::SetText(const std::string& text)
 {
-	if (this->m_text != text)
+	if (m_text != text)
 	{
-		this->m_text = text;
+		m_text = text;
 		m_isTextInfoDirty = true;
 	}
 }
 
 void TextMesh::SetFont(const std::shared_ptr<Font>& font)
 {
-	if (this->m_font != font)
+	if (m_font != font)
 	{
-		this->m_font = font;
+		m_font = font;
 		m_isTextInfoDirty = true;
 	}
 }
@@ -124,31 +124,30 @@ void TextMesh::DrawCommand(const RenderCommand& renderCommand)
 
 void TextMesh::SetFontSize(float fontSize)
 {
-	this->m_fontSize = fontSize;
+	m_fontSize = fontSize;
 	m_isTextInfoDirty = true;
 }
 
 void TextMesh::SetLineSpacing(float lineSpacing)
 {
-	this->m_lineSpacing = lineSpacing;
+	m_lineSpacing = lineSpacing;
 	m_isTextInfoDirty = true;
 }
 
 void TextMesh::SetCharacterSpacing(float characterSpacing)
 {
-	this->m_characterSpacing = characterSpacing;
+	m_characterSpacing = characterSpacing;
 	m_isTextInfoDirty = true;
-
 }
 
 void TextMesh::SetVerticalAlignment(VerticalAlignment verticalAlignment)
 {
-	this->m_verticalAlignment = verticalAlignment;
+	m_verticalAlignment = verticalAlignment;
 	m_isTextInfoDirty = true;
 }
 
 void TextMesh::SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
 {
-	this->m_horizontalAlignment = horizontalAlignment;
+	m_horizontalAlignment = horizontalAlignment;
 	m_isTextInfoDirty = true;
 }

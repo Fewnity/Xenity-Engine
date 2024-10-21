@@ -10,8 +10,6 @@
  * [Internal] Classes not visible to users
  */
 
-#define PROJECT_SETTINGS_FILE_NAME "project_settings.json"
-
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -28,9 +26,6 @@ class File;
 class Scene;
 class Directory;
 struct CompilerParams;
-
-#define META_EXTENSION ".meta"
-#define PROJECTS_LIST_FILE "projects.json"
 
 class ProjectDirectory
 {

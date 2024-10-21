@@ -24,8 +24,6 @@
 
 #include "audio_source.h"
 
-#define SOUND_FREQUENCY 44100
-
 class AudioClip;
 class AudioClipStream;
 

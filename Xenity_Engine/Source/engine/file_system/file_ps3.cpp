@@ -13,13 +13,14 @@
 
 #include <engine/engine_settings.h>
 #include <engine/debug/debug.h>
+#include <engine/constants.h>
 #include "directory.h"
 #include "file.h"
 
 static constexpr int FS_SEEK_SET = 0;
 static constexpr int FS_SEEK_END = 2;
 
-FilePS3::FilePS3(const std::string& _path) : File("/dev_hdd0/xenity_engine/" + _path)
+FilePS3::FilePS3(const std::string& _path) : File(PS3_DATA_FOLDER + _path)
 {
 }
 
@@ -51,8 +52,6 @@ void FilePS3::Write(const std::string& data)
 		sysFsLseek(m_fileId, 0, FS_SEEK_END, &pos);
 		u64 written;
 		sysFsWrite(m_fileId, data.c_str(), data.size(), &written);
-		// sceIoLseek(m_fileId, 0, SEEK_END);
-		// const int b = sceIoWrite(m_fileId, data.c_str(), data.size());
 	}
 }
 
@@ -103,17 +102,10 @@ unsigned char* FilePS3::ReadAllBinary(size_t& size)
 		uint64_t pos;
 		sysFsLseek(m_fileId, 0, FS_SEEK_SET, &pos);
 		data = (char*)malloc(file_stat.size + 1);
-		// sceIoRead(m_fileId, data, file_stat.size);
 
 		uint64_t read;
 		sysFsRead(m_fileId, data, file_stat.size, &read);
 		size = file_stat.size;
-		// SceIoStat file_stat;
-		// sceIoGetstat(m_path.c_str(), &file_stat);
-		// sceIoLseek(m_fileId, 0, SEEK_SET);
-		// data = (char*)malloc(file_stat.st_size + 1);
-		// sceIoRead(m_fileId, data, file_stat.st_size);
-		// size = file_stat.st_size;
 	}
 	return (unsigned char*)data;
 }
@@ -166,14 +158,6 @@ bool FilePS3::Open(FileMode fileMode)
 	{
 		isOpen = true;
 	}
-
-	// if (fileMode == FileMode::WriteCreateFile)
-	// 	params |= PSP_O_CREAT;
-	// m_fileId = sceIoOpen(m_path.c_str(), params, 0777);
-	// if (m_fileId >= 0)
-	// {
-	// 	isOpen = true;
-	// }
 
 	return isOpen;
 }

@@ -42,7 +42,7 @@ int currentBuffer = 0;
 #include <engine/debug/debug.h>
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
-
+#include <engine/constants.h>
 
 bool AudioManager::s_isAdding = false;
 Channel* AudioManager::s_channel;
@@ -54,10 +54,8 @@ MyMutex* AudioManager::s_myMutex = nullptr;
 std::shared_ptr<ProfilerBenchmark> audioBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> audioBenchmark2 = nullptr;
 
-#define audiosize 2048
-
 static_assert(buffSize % 16 == 0, "buffSize must be a multiple of 16");
-static_assert(audiosize % 16 == 0, "audiosize must be a multiple of 16");
+static_assert(AUDIO_BUFFER_SIZE % 16 == 0, "AUDIO_BUFFER_SIZE must be a multiple of 16");
 
 short MixSoundToBuffer(short bufferValue, short soundValue)
 {
@@ -200,8 +198,8 @@ int audio_thread(SceSize args, void* argp)
 		if (sceAudioGetChannelRestLength(0) == 0)
 		{
 			//audioBenchmark2->Start();
-			int16_t wave_buf[audiosize * 2] = { 0 };
-			AudioManager::FillChannelBuffer((short*)wave_buf, audiosize, AudioManager::s_channel);
+			int16_t wave_buf[AUDIO_BUFFER_SIZE * 2] = { 0 };
+			AudioManager::FillChannelBuffer((short*)wave_buf, AUDIO_BUFFER_SIZE, AudioManager::s_channel);
 			sceAudioOutput(0, PSP_AUDIO_VOLUME_MAX, wave_buf);
 			//audioBenchmark2->Stop();
 		}
@@ -217,8 +215,8 @@ int audio_thread(SceSize args, void* argp)
 	{
 		if (sceAudioOutGetRestSample(AudioManager::s_channel->m_port) == 0)
 		{
-			int16_t wave_buf[audiosize * 2] = { 0 };
-			AudioManager::FillChannelBuffer((short*)wave_buf, audiosize, AudioManager::s_channel);
+			int16_t wave_buf[AUDIO_BUFFER_SIZE * 2] = { 0 };
+			AudioManager::FillChannelBuffer((short*)wave_buf, AUDIO_BUFFER_SIZE, AudioManager::s_channel);
 			sceAudioOutOutput(AudioManager::s_channel->m_port, wave_buf);
 		}
 	}
@@ -335,7 +333,7 @@ Channel::Channel()
 {
 #if defined(__vita__)
 	// This will allow to open only one channel because of SCE_AUDIO_OUT_PORT_TYPE_BGM
-	m_port = sceAudioOutOpenPort(SCE_AUDIO_OUT_PORT_TYPE_BGM, audiosize, SOUND_FREQUENCY, (SceAudioOutMode)m_mode);
+	m_port = sceAudioOutOpenPort(SCE_AUDIO_OUT_PORT_TYPE_BGM, AUDIO_BUFFER_SIZE, SOUND_FREQUENCY, (SceAudioOutMode)m_mode);
 	int volA[2] = { m_vol, m_vol };
 	sceAudioOutSetVolume(m_port, (SceAudioOutChannelFlag)(SCE_AUDIO_VOLUME_FLAG_L_CH | SCE_AUDIO_VOLUME_FLAG_R_CH), volA);
 #endif
@@ -355,7 +353,7 @@ int AudioManager::Init()
 
 #if defined(__PSP__)
 	pspAudioInit();
-	sceAudioChReserve(0, audiosize, 0);
+	sceAudioChReserve(0, AUDIO_BUFFER_SIZE, 0);
 	SceUID thd_id = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x18, 0x10000, 0, NULL);
 	XASSERT(thd_id >= 0, "[AudioManager::Init] thd_id is bad");
 	if (thd_id >= 0)

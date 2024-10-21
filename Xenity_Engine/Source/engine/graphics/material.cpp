@@ -8,7 +8,6 @@
 
 #include <json.hpp>
 
-
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
 #include <engine/engine.h>

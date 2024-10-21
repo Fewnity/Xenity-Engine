@@ -66,13 +66,6 @@ protected:
 		return m_attachedRigidbody;
 	}
 
-	/**
-	* @brief [Internal] Check if two box colliders are triggering each other
-	* @param a The first box collider
-	* @param b The second box collider
-	*/
-	static bool CheckTrigger(const SphereCollider& a, const SphereCollider& b);
-
 	float m_size = 1;
 	Vector3 m_offset = Vector3(0);
 };

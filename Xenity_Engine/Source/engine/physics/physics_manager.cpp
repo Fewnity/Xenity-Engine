@@ -18,10 +18,11 @@
 #include "rigidbody.h"
 #include "collision_event.h"
 #include <engine/debug/stack_debug_object.h>
+#include <engine/constants.h>
 
 std::vector<RigidBody*> PhysicsManager::s_rigidBodies;
 std::vector<ColliderInfo> PhysicsManager::s_colliders;
-Vector3 PhysicsManager::s_gravity = Vector3(0, -20, 0);
+Vector3 PhysicsManager::s_gravity = Vector3(0, DEFAULT_GRAVITY_Y, 0);
 
 btDynamicsWorld* PhysicsManager::s_physDynamicsWorld = nullptr;
 btBroadphaseInterface* physBroadphase = nullptr;

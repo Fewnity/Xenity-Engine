@@ -39,7 +39,6 @@ Add color to standard shader in psvita
 Fix light in fixed pipeline with 2 cameras
 Improve crash handling if opening a project that does not exists anymore
 Automate SaveMetaFile and LoadMetaFile for each platforms
-Check DrawExplorerItem bind texture function
 Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
 Create a constant file
 Separate audio platform specific code
@@ -47,6 +46,8 @@ Separate mesh platform specific code
 Separate shader platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
+Add size_t check on all platforms
+Use const std::string& for file implementations
 
 --- Can be done for the next release
 Create a GetFileSize function in File class

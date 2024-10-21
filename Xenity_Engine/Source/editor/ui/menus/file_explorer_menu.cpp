@@ -89,7 +89,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	std::shared_ptr<Texture> iconTexture = GetItemIcon(item);
 
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
-	Engine::GetRenderer().BindTexture(*iconTexture);
+	iconTexture->Bind();
 	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(*iconTexture), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	const bool hovered = ImGui::IsItemHovered();
 
@@ -110,7 +110,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	if (item.file && item.file->GetFileType() == FileType::File_Material)
 	{
 		std::shared_ptr<Texture> matTexture = EditorUI::icons[(int)IconName::Icon_Material];
-		Engine::GetRenderer().BindTexture(*matTexture);
+		matTexture->Bind();
 		imageCursorPos.x -= iconSize / 3 / 2;
 		imageCursorPos.y -= iconSize / 3 / 2;
 

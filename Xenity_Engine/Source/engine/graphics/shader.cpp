@@ -33,9 +33,9 @@
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#define GLFW_DLL
+//#define GLFW_INCLUDE_NONE
+//#include <GLFW/glfw3.h>
+//#define GLFW_DLL
 #elif defined(__vita__)
 #include <vitaGL.h>
 #endif

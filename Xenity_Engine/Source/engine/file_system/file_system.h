@@ -15,11 +15,6 @@
 #include <engine/api.h>
 #include <engine/unique_id/unique_id.h>
 
-#if defined(__vita__)
-#define PSVITA_PATH R"(ux0:data\xenity_engine\)"
-#define PSVITA_BASE_DIR "ux0:"
-#endif
-
 class Directory;
 class File;
 

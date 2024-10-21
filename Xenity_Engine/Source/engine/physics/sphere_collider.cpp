@@ -54,11 +54,6 @@ void SphereCollider::OnReflectionUpdated()
 	OnTransformUpdated();
 }
 
-bool SphereCollider::CheckTrigger(const SphereCollider& a, const SphereCollider& b)
-{
-	return false;
-}
-
 SphereCollider::~SphereCollider()
 {
 	GetTransform()->GetOnTransformScaled().Unbind(&SphereCollider::OnTransformScaled, this);

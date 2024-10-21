@@ -14,10 +14,9 @@
 #include <engine/debug/performance.h>
 #include <engine/debug/memory_tracker.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/constants.h>
 
 #pragma region Constructors / Destructor
-
-#define DEFAULT_GAMEOBJECT_NAME "GameObject"
 
 std::shared_ptr<GameObject> CreateGameObject()
 {

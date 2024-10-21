@@ -18,6 +18,7 @@
 #include <engine/tools/benchmark.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/constants.h>
 
 std::map<int, WorldPartitionner::XNode> WorldPartitionner::Tree::children;
 
@@ -108,9 +109,9 @@ void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 
 	for (auto& position : meshRenderer->worldChunkPositions)
 	{
-		const int x = static_cast<int>(position.x / CHUNK_SIZE);
-		const int y = static_cast<int>(position.y / CHUNK_SIZE);
-		const int z = static_cast<int>(position.z / CHUNK_SIZE);
+		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
+		const int y = static_cast<int>(position.y / WORLD_CHUNK_SIZE);
+		const int z = static_cast<int>(position.z / WORLD_CHUNK_SIZE);
 
 		XNode& xNode = Tree::children[x];
 		YNode& yNode = xNode.children[y];
@@ -136,9 +137,9 @@ void WorldPartitionner::RemoveLight(Light* light)
 
 	for (auto& position : light->worldChunkPositions)
 	{
-		const int x = static_cast<int>(position.x / CHUNK_SIZE);
-		const int y = static_cast<int>(position.y / CHUNK_SIZE);
-		const int z = static_cast<int>(position.z / CHUNK_SIZE);
+		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
+		const int y = static_cast<int>(position.y / WORLD_CHUNK_SIZE);
+		const int z = static_cast<int>(position.z / WORLD_CHUNK_SIZE);
 
 		XNode& xNode = Tree::children[x];
 		YNode& yNode = xNode.children[y];
@@ -178,13 +179,13 @@ void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 		return;
 
 	std::vector<Vector3Fast> intersectedCubes;
-	getCubesIntersectedBySphere(intersectedCubes, Vector3Fast(sphere.position.x, sphere.position.y, sphere.position.z), sphere.radius, CHUNK_SIZE);
+	getCubesIntersectedBySphere(intersectedCubes, Vector3Fast(sphere.position.x, sphere.position.y, sphere.position.z), sphere.radius, WORLD_CHUNK_SIZE);
 
 	for (const Vector3Fast& cube : intersectedCubes)
 	{
-		const int x = static_cast<int>(cube.x / CHUNK_SIZE);
-		const int y = static_cast<int>(cube.y / CHUNK_SIZE);
-		const int z = static_cast<int>(cube.z / CHUNK_SIZE);
+		const int x = static_cast<int>(cube.x / WORLD_CHUNK_SIZE);
+		const int y = static_cast<int>(cube.y / WORLD_CHUNK_SIZE);
+		const int z = static_cast<int>(cube.z / WORLD_CHUNK_SIZE);
 
 		XNode& xNode = Tree::children[x];
 		YNode& yNode = xNode.children[y];
@@ -223,12 +224,12 @@ void WorldPartitionner::ProcessLight(Light* light)
 			Sphere sphere;
 			sphere.position = light->GetTransform()->GetPosition();
 			sphere.radius = light->GetMaxLightDistance();
-			getCubesIntersectedBySphere(intersectedCubes, Vector3Fast(sphere.position.x, sphere.position.y, sphere.position.z), sphere.radius, CHUNK_SIZE);
+			getCubesIntersectedBySphere(intersectedCubes, Vector3Fast(sphere.position.x, sphere.position.y, sphere.position.z), sphere.radius, WORLD_CHUNK_SIZE);
 			for (const Vector3Fast& cube : intersectedCubes)
 			{
-				const int x = static_cast<int>(cube.x / CHUNK_SIZE);
-				const int y = static_cast<int>(cube.y / CHUNK_SIZE);
-				const int z = static_cast<int>(cube.z / CHUNK_SIZE);
+				const int x = static_cast<int>(cube.x / WORLD_CHUNK_SIZE);
+				const int y = static_cast<int>(cube.y / WORLD_CHUNK_SIZE);
+				const int z = static_cast<int>(cube.z / WORLD_CHUNK_SIZE);
 
 				XNode& xNode = Tree::children[x];
 				YNode& yNode = xNode.children[y];
@@ -259,19 +260,19 @@ void WorldPartitionner::DrawChunk(const Chunk& chunk, int x, int y, int z)
 		return;
 
 #if defined(EDITOR)
-	const Vector3 pos = Vector3(static_cast<float>(x * CHUNK_SIZE), static_cast<float>(y * CHUNK_SIZE), static_cast<float>(z * CHUNK_SIZE));
+	const Vector3 pos = Vector3(static_cast<float>(x * WORLD_CHUNK_SIZE), static_cast<float>(y * WORLD_CHUNK_SIZE), static_cast<float>(z * WORLD_CHUNK_SIZE));
 
 	// Bottom vertex
-	const Vector3 v1 = pos + Vector3(-CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);
-	const Vector3 v2 = pos + Vector3(-CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE, CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);
-	const Vector3 v3 = pos + Vector3(CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);
-	const Vector3 v4 = pos + Vector3(CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE, CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);
+	const Vector3 v1 = pos + Vector3(-WORLD_CHUNK_HALF_SIZE, -WORLD_CHUNK_HALF_SIZE, -WORLD_CHUNK_HALF_SIZE) + Vector3(WORLD_CHUNK_HALF_SIZE);
+	const Vector3 v2 = pos + Vector3(-WORLD_CHUNK_HALF_SIZE, -WORLD_CHUNK_HALF_SIZE, WORLD_CHUNK_HALF_SIZE) + Vector3(WORLD_CHUNK_HALF_SIZE);
+	const Vector3 v3 = pos + Vector3(WORLD_CHUNK_HALF_SIZE, -WORLD_CHUNK_HALF_SIZE, -WORLD_CHUNK_HALF_SIZE) + Vector3(WORLD_CHUNK_HALF_SIZE);
+	const Vector3 v4 = pos + Vector3(WORLD_CHUNK_HALF_SIZE, -WORLD_CHUNK_HALF_SIZE, WORLD_CHUNK_HALF_SIZE) + Vector3(WORLD_CHUNK_HALF_SIZE);
 
 	// Top vertex
-	const Vector3 v5 = pos + Vector3(-CHUNK_HALF_SIZE, CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);
-	const Vector3 v6 = pos + Vector3(-CHUNK_HALF_SIZE, CHUNK_HALF_SIZE, CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);
-	const Vector3 v7 = pos + Vector3(CHUNK_HALF_SIZE, CHUNK_HALF_SIZE, -CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);
-	const Vector3 v8 = pos + Vector3(CHUNK_HALF_SIZE, CHUNK_HALF_SIZE, CHUNK_HALF_SIZE) + Vector3(CHUNK_HALF_SIZE);
+	const Vector3 v5 = pos + Vector3(-WORLD_CHUNK_HALF_SIZE, WORLD_CHUNK_HALF_SIZE, -WORLD_CHUNK_HALF_SIZE) + Vector3(WORLD_CHUNK_HALF_SIZE);
+	const Vector3 v6 = pos + Vector3(-WORLD_CHUNK_HALF_SIZE, WORLD_CHUNK_HALF_SIZE, WORLD_CHUNK_HALF_SIZE) + Vector3(WORLD_CHUNK_HALF_SIZE);
+	const Vector3 v7 = pos + Vector3(WORLD_CHUNK_HALF_SIZE, WORLD_CHUNK_HALF_SIZE, -WORLD_CHUNK_HALF_SIZE) + Vector3(WORLD_CHUNK_HALF_SIZE);
+	const Vector3 v8 = pos + Vector3(WORLD_CHUNK_HALF_SIZE, WORLD_CHUNK_HALF_SIZE, WORLD_CHUNK_HALF_SIZE) + Vector3(WORLD_CHUNK_HALF_SIZE);
 
 	// Bottom
 	Gizmo::DrawLine(v1, v2);

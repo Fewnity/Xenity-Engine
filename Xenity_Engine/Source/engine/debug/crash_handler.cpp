@@ -22,13 +22,14 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/component.h>
 #include <engine/assertions/assertions.h>
+#include <engine/constants.h>
 #include "debug.h"
 
 void CrashHandler::Handler(int signum)
 {
 #if defined(_WIN32) || defined(_WIN64)
 	// Create crash dump file
-	std::shared_ptr<File> file = FileSystem::MakeFile("crash_dump.txt");
+	std::shared_ptr<File> file = FileSystem::MakeFile(CRASH_DUMP_FILE);
 	bool isFileDumpOpened = file->Open(FileMode::WriteCreateFile);
 
 	const std::string crashDetectedMessage = "!!! Crash detected !!!";
@@ -167,9 +168,9 @@ void CrashHandler::Handler(int signum)
 	raise(SIGBREAK);
 	exit(signum);
 #elif defined(__LINUX__)
-Debug::Print("AN ERROR");
+	Debug::Print("AN ERROR");
 
-const int maxStackTraceSize = 30;
+	const int maxStackTraceSize = 30;
 	void* stackTrace[maxStackTraceSize];
 	int stackTraceSize = backtrace(stackTrace, maxStackTraceSize);
 	char** stackSymbols = backtrace_symbols(stackTrace, stackTraceSize);

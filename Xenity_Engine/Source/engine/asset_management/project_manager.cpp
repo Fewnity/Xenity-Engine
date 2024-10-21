@@ -53,6 +53,7 @@
 #include <engine/graphics/icon.h>
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/constants.h>
 
 using json = nlohmann::ordered_json;
 
@@ -901,7 +902,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const 
 	// Temp fix for PS3
 	std::string filePathFixed;
 #if defined(__PS3__)
-	filePathFixed = "/dev_hdd0/xenity_engine/";
+	filePathFixed = PS3_DATA_FOLDER;
 #endif
 	filePathFixed += filePath;
 
