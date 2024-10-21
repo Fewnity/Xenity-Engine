@@ -61,10 +61,6 @@ void Cooker::CookAssets(const CookSettings& settings)
 	fileDataBase.SaveToFile(settings.exportPath + "db.bin");
 }
 
-void Cooker::CookAsset(const CookSettings& settings, const std::shared_ptr<FileReference>& fileReference, const std::string& exportFolderPath)
-{
-}
-
 void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
 {
 	uint64_t cookedFileSize = 0;
@@ -85,7 +81,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 
 		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
 		const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
-		TextureResolutions textureResolution = texture->m_settings[static_cast<int>(settings.platform)]->resolution;
+		TextureResolutions textureResolution = texture->m_settings[settings.platform]->resolution;
 
 		int newWidth = width;
 		int newHeight = height;

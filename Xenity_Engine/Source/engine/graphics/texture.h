@@ -7,6 +7,7 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #if defined(_EE)
 #include <draw.h>
 // #include <gsKit.h>
@@ -105,7 +106,7 @@ public:
 	 */
 	inline void SetFilter(const Filter filter)
 	{
-		m_settings[static_cast<int>(Application::GetAssetPlatform())]->filter = filter;
+		m_settings.at(Application::GetAssetPlatform())->filter = filter;
 	}
 
 	/**
@@ -114,7 +115,7 @@ public:
 	 */
 	inline void SetWrapMode(const WrapMode mode)
 	{
-		m_settings[static_cast<int>(Application::GetAssetPlatform())]->wrapMode = mode;
+		m_settings.at(Application::GetAssetPlatform())->wrapMode = mode;
 	}
 
 	/**
@@ -139,7 +140,7 @@ public:
 	 */
 	inline void SetPixelPerUnit(int value)
 	{
-		m_settings[static_cast<int>(Application::GetAssetPlatform())]->pixelPerUnit = value;
+		m_settings.at(Application::GetAssetPlatform())->pixelPerUnit = value;
 	}
 
 	/**
@@ -147,7 +148,7 @@ public:
 	 */
 	inline int GetPixelPerUnit() const
 	{
-		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->pixelPerUnit;
+		return m_settings.at(Application::GetAssetPlatform())->pixelPerUnit;
 	}
 
 	/**
@@ -155,7 +156,7 @@ public:
 	 */
 	inline bool GetUseMipmap() const
 	{
-		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap;
+		return m_settings.at(Application::GetAssetPlatform())->useMipMap;
 	}
 
 	/**
@@ -163,7 +164,7 @@ public:
 	 */
 	inline Filter GetFilter() const
 	{
-		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->filter;
+		return m_settings.at(Application::GetAssetPlatform())->filter;
 	}
 	
 	/**
@@ -171,7 +172,7 @@ public:
 	 */
 	inline WrapMode GetWrapMode() const
 	{
-		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->wrapMode;
+		return m_settings.at(Application::GetAssetPlatform())->wrapMode;
 	}
 
 protected:
@@ -223,12 +224,12 @@ protected:
 	*/
 	inline int GetMipmaplevelCount() const
 	{
-		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount;
+		return m_settings.at(Application::GetAssetPlatform())->mipmaplevelCount;
 	}
 
 	inline TextureResolutions GetCookResolution() const
 	{
-		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->resolution;
+		return m_settings.at(Application::GetAssetPlatform())->resolution;
 	}
 
 	/**
@@ -283,7 +284,7 @@ protected:
 	virtual void Unload() = 0;
 	virtual void Bind() const = 0;
 
-	std::vector<TextureSettings*> m_settings;
+	std::map<AssetPlatform, TextureSettings*> m_settings;
 	unsigned char* m_buffer = nullptr;
 	int m_width = 0, height = 0, nrChannels = 0;
 

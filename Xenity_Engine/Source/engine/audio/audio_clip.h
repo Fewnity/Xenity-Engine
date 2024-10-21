@@ -8,6 +8,7 @@
 #include <engine/api.h>
 
 #include <memory>
+#include <map>
 
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
@@ -65,19 +66,19 @@ protected:
 		short* m_data = nullptr;
 	};
 
-	std::vector<AudioClipSettings*> m_settings;
+	std::map<AssetPlatform, AudioClipSettings*> m_settings;
 
 	/**
 	* [Internal] Is the audio clip stored in memory?
 	*/
 	inline bool IsStoredInMemory() const
 	{
-		return m_settings[static_cast<int>(Application::GetAssetPlatform())]->m_loadedInMemory;
+		return m_settings.at(Application::GetAssetPlatform())->m_loadedInMemory;
 	}
 
 	inline void SetIsStoredInMemory(bool value) const
 	{
-		m_settings[static_cast<int>(Application::GetAssetPlatform())]->m_loadedInMemory = value;
+		m_settings.at(Application::GetAssetPlatform())->m_loadedInMemory = value;
 	}
 
 	/**

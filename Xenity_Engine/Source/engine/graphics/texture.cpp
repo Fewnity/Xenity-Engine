@@ -57,10 +57,10 @@ Texture::Texture()
 	TextureSettingsPSVITA* textureSettingsPSVITA = new TextureSettingsPSVITA();
 	TextureSettingsPS3* textureSettingsPS3 = new TextureSettingsPS3();
 
-	m_settings.push_back(textureSettingsStandalone);
-	m_settings.push_back(textureSettingsPSP);
-	m_settings.push_back(textureSettingsPSVITA);
-	m_settings.push_back(textureSettingsPS3);
+	m_settings[AssetPlatform::AP_Standalone] = textureSettingsStandalone;
+	m_settings[AssetPlatform::AP_PSP] = textureSettingsPSP;
+	m_settings[AssetPlatform::AP_PsVita] = textureSettingsPSVITA;
+	m_settings[AssetPlatform::AP_PS3] = textureSettingsPS3;
 }
 
 ReflectiveData Texture::GetReflectiveData()
@@ -72,7 +72,8 @@ ReflectiveData Texture::GetReflectiveData()
 ReflectiveData Texture::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
-	ReflectiveData reflectedVariablesPlatform = m_settings[static_cast<int>(platform)]->GetReflectiveData();
+	// Add platform specific settings variables to the list of reflected variables
+	ReflectiveData reflectedVariablesPlatform = m_settings[platform]->GetReflectiveData();
 	reflectedVariables.insert(reflectedVariables.end(), reflectedVariablesPlatform.begin(), reflectedVariablesPlatform.end());
 	return reflectedVariables;
 }
@@ -162,7 +163,7 @@ void Texture::CreateTexture(const Filter filter, const bool useMipMap)
 
 	SetFilter(filter);
 
-	m_settings[static_cast<int>(Application::GetAssetPlatform())]->useMipMap = useMipMap;
+	m_settings[Application::GetAssetPlatform()]->useMipMap = useMipMap;
 
 	LoadTexture();
 }

@@ -22,15 +22,15 @@ ReflectiveData AudioClipSettings::GetReflectiveData()
 AudioClip::AudioClip()
 {
 	// Create platform specific settings
-	AudioClipSettingsStandalone* audioClipSettingsStandalone = new AudioClipSettingsStandalone();
-	AudioClipSettingsPSP* audioClipSettingsPSP = new AudioClipSettingsPSP();
-	AudioClipSettingsPSVITA* audioClipSettingsPSVITA = new AudioClipSettingsPSVITA();
-	AudioClipSettingsPS3* audioClipSettingsPS3 = new AudioClipSettingsPS3();
+	AudioClipSettingsStandalone* settingsStandalone = new AudioClipSettingsStandalone();
+	AudioClipSettingsPSP* settingsPSP = new AudioClipSettingsPSP();
+	AudioClipSettingsPSVITA* settingsPSVITA = new AudioClipSettingsPSVITA();
+	AudioClipSettingsPS3* settingsPS3 = new AudioClipSettingsPS3();
 
-	m_settings.push_back(audioClipSettingsStandalone);
-	m_settings.push_back(audioClipSettingsPSP);
-	m_settings.push_back(audioClipSettingsPSVITA);
-	m_settings.push_back(audioClipSettingsPS3);
+	m_settings[AssetPlatform::AP_Standalone] = settingsStandalone;
+	m_settings[AssetPlatform::AP_PSP] = settingsPSP;
+	m_settings[AssetPlatform::AP_PsVita] = settingsPSVITA;
+	m_settings[AssetPlatform::AP_PS3] = settingsPS3;
 }
 
 ReflectiveData AudioClip::GetReflectiveData()
@@ -43,7 +43,7 @@ ReflectiveData AudioClip::GetMetaReflectiveData(AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	// Add platform specific settings variables to the list of reflected variables
-	ReflectiveData reflectedVariablesPlatform = m_settings[static_cast<int>(platform)]->GetReflectiveData();
+	ReflectiveData reflectedVariablesPlatform = m_settings[platform]->GetReflectiveData();
 	reflectedVariables.insert(reflectedVariables.end(), reflectedVariablesPlatform.begin(), reflectedVariablesPlatform.end());
 	return reflectedVariables;
 }

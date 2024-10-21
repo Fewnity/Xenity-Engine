@@ -21,7 +21,6 @@ public:
 	static FileDataBase fileDataBase;
 
 	static void CookAssets(const CookSettings& settings);
-	static void CookAsset(const CookSettings& settings, const std::shared_ptr<FileReference>& fileReference, const std::string& exportFolderPath);
 	static void CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath);
 };
 

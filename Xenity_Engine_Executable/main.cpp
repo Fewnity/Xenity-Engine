@@ -27,7 +27,7 @@ Add undo/redo commands to DrawVector functions
 Rework the documentation
 Rename member variables to m_memberVariableName
 Check after compilation components names
-Set isTrigger and generateCollisionEvents has protected?
+Set isTrigger and generateCollisionEvents as protected?
 Check why the compiler search for main.cpp in the engine's folder
 Remove TestComponent in release builds
 Fix SaveMenuSettings
@@ -39,8 +39,14 @@ Add color to standard shader in psvita
 Fix light in fixed pipeline with 2 cameras
 Improve crash handling if opening a project that does not exists anymore
 Automate SaveMetaFile and LoadMetaFile for each platforms
-Implement delete mesh and texture for RSX
 Check DrawExplorerItem bind texture function
+Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
+Create a constant file
+Separate audio platform specific code
+Separate mesh platform specific code
+Separate shader platform specific code
+Separate socket platform specific code
+Separate time platform specific code?
 
 --- Can be done for the next release
 Create a GetFileSize function in File class
