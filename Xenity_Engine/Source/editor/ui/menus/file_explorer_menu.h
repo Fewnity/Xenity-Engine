@@ -59,6 +59,8 @@ private:
 	*/
 	void OpenItem(const FileExplorerItem& item);
 
+	void SetFileToRename(const std::shared_ptr<FileReference>& file, const std::shared_ptr<ProjectDirectory>& directory);
+
 	bool fileHovered = false;
 	std::string renamingString = "";
 

@@ -59,6 +59,16 @@ void FileExplorerMenu::OpenItem(const FileExplorerItem& item)
 	}
 }
 
+void FileExplorerMenu::SetFileToRename(const std::shared_ptr<FileReference>& file, const std::shared_ptr<ProjectDirectory>& directory)
+{
+	fileToRename = file;
+	directoryToRename = directory;
+	if (fileToRename)
+		renamingString = fileToRename->m_file->GetFileName();
+	else if (directoryToRename)
+		renamingString = directoryToRename->GetFolderName();
+}
+
 void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, const int colCount, const float offset, const FileExplorerItem& item, const int itemIndex)
 {
 	//Get name
@@ -224,25 +234,29 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				FileSystem::s_fileSystem->CreateFolder(fileExplorerItem.directory->path + "\\new Folder");
 				ProjectManager::RefreshProjectDirectory();
 			});
-		createItem->AddItem("Scene", [&fileExplorerItem]()
+		createItem->AddItem("Scene", [this, &fileExplorerItem]()
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newScene", FileType::File_Scene, true);
-
+				std::shared_ptr<File> newFile = Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newScene", FileType::File_Scene, true);
+				std::shared_ptr<FileReference> newFileRef = ProjectManager::GetFileReferenceByFile(*newFile);
+				SetFileToRename(newFileRef, nullptr);
 			});
-		createItem->AddItem("Skybox", [&fileExplorerItem]()
+		createItem->AddItem("Skybox", [this, &fileExplorerItem]()
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newSkybox", FileType::File_Skybox, true);
-
+				std::shared_ptr<File> newFile = Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newSkybox", FileType::File_Skybox, true);
+				std::shared_ptr<FileReference> newFileRef = ProjectManager::GetFileReferenceByFile(*newFile);
+				SetFileToRename(newFileRef, nullptr);
 			});
-		createItem->AddItem("Shader", [&fileExplorerItem]()
+		createItem->AddItem("Shader", [this, &fileExplorerItem]()
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newShader", FileType::File_Shader, true);
-
+				std::shared_ptr<File> newFile = Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newShader", FileType::File_Shader, true);
+				std::shared_ptr<FileReference> newFileRef = ProjectManager::GetFileReferenceByFile(*newFile);
+				SetFileToRename(newFileRef, nullptr);
 			});
-		createItem->AddItem("Material", [&fileExplorerItem]()
+		createItem->AddItem("Material", [this, &fileExplorerItem]()
 			{
-				Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newMaterial", FileType::File_Material, true);
-
+				std::shared_ptr<File> newFile = Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newMaterial", FileType::File_Material, true);
+				std::shared_ptr<FileReference> newFileRef = ProjectManager::GetFileReferenceByFile(*newFile);
+				SetFileToRename(newFileRef, nullptr);
 			});
 		createItem->AddItem("C++ Class", [&fileExplorerItem]()
 			{
@@ -260,7 +274,6 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 					renamingString = fileToRename->m_file->GetFileName();
 				else if (directoryToRename)
 					renamingString = directoryToRename->GetFolderName();
-
 			});
 		RenameItem->SetIsVisible(itemSelected);
 		RightClickMenuItem* openMenuItem = fileExplorerRightClickMenu.AddItem("Open", [this, &fileExplorerItem]()
@@ -283,6 +296,20 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 			{
 				ProjectManager::RefreshProjectDirectory();
 			});
+		if (fileExplorerItem.file && fileExplorerItem.file->GetFileType() == FileType::File_Texture)
+		{
+			fileExplorerRightClickMenu.AddItem("Create material for this", [&fileExplorerItem]()
+				{
+					std::shared_ptr<File> file = Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newMaterial", FileType::File_Material, true);
+					if (file) 
+					{
+						std::shared_ptr<FileReference> newMaterialFileRef = ProjectManager::GetFileReferenceByFile(*file);
+						std::shared_ptr<Material> newMaterial = std::dynamic_pointer_cast<Material>(newMaterialFileRef);
+						newMaterial->SetTexture(std::dynamic_pointer_cast<Texture>(fileExplorerItem.file));
+						newMaterialFileRef->OnReflectionUpdated();
+					}
+				});
+		}
 		RightClickMenuItem* deleteMenuItem = fileExplorerRightClickMenu.AddItem("Delete", [&fileExplorerItem]()
 			{
 				if (fileExplorerItem.file)
