@@ -21,8 +21,8 @@ New features, refactor, bug fixes, optimizations or documentations everything is
 ✔️ | PlayStation Portable
 ✔️ | PlayStation Vita
 ❌ | PlayStation 2
-❌ | PlayStation 3
-🚧 | Linux
+🚧 | PlayStation 3 (Missing network, lighting and audio)
+🚧 | Linux (Missing audio)
 
 Features:
 
@@ -58,7 +58,7 @@ Features:
 (For PSP and PsVita, you will need Docker Desktop installed and configured).
 
 ## Docker Setup
-Docker Desktop is needed to compile PSP and PsVita games.<br>
+Docker Desktop is needed to compile PSP, PS3 and PsVita games.<br>
 Download Docker Desktop: https://www.docker.com/products/docker-desktop/
 
 Then install the Docker Image in "Window->Docker Configuration", the process can take several minutes especially if you have a slow computer or a slow internet connection.
