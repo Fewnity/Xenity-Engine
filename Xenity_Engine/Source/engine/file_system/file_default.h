@@ -23,7 +23,7 @@ class API FileDefault : public File
 {
 public:
 	FileDefault() = delete;
-	explicit FileDefault(std::string _path);
+	explicit FileDefault(const std::string& _path);
 	FileDefault(const FileDefault& other) = delete;
 	FileDefault& operator=(const FileDefault&) = delete;
 

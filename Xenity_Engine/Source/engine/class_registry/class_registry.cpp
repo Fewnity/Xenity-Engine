@@ -144,7 +144,9 @@ void ClassRegistry::RegisterEngineComponents()
 	AddComponentClass<BoxCollider>("BoxCollider");
 	AddComponentClass<SphereCollider>("SphereCollider");
 	AddComponentClass<Lod>("Lod");
+#if defined(DEBUG)
 	AddComponentClass<TestComponent>("TestComponent");
+#endif
 	AddComponentClass<MissingScript>("MissingScript", false);
 }
 

@@ -18,6 +18,8 @@ using json = nlohmann::json;
 
 SkyBox::SkyBox()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	AssetManager::AddReflection(this);
 }
 

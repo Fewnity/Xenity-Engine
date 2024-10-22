@@ -713,7 +713,7 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	default:
 	{
 		XASSERT(false, "[Editor::CreateNewFile] Try to created an unsupported file");
-		break;
+		return nullptr;
 	}
 	}
 

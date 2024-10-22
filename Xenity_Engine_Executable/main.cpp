@@ -29,27 +29,23 @@ Rename member variables to m_memberVariableName
 Check after compilation components names
 Set isTrigger and generateCollisionEvents as protected?
 Check why the compiler search for main.cpp in the engine's folder
-Remove TestComponent in release builds
-Fix SaveMenuSettings
 Use lighting and color does not work together material fixed pipeline
 Disable "Use lighting" do not block all lights
 Reload material file on game stop
-Add an option to create a material from a texture
 Add color to standard shader in psvita
-Fix light in fixed pipeline with 2 cameras
 Improve crash handling if opening a project that does not exists anymore
 Automate SaveMetaFile and LoadMetaFile for each platforms
 Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
-Create a constant file
 Separate audio platform specific code
 Separate mesh platform specific code
 Separate shader platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
-Add size_t check on all platforms
-Use const std::string& for file implementations
+Put in rename mode when creating a new file
 
 --- Can be done for the next release
+Add size_t check on all platforms
+Fix light in fixed pipeline with 2 cameras
 Create a GetFileSize function in File class
 Remove the old profiler
 New Input system

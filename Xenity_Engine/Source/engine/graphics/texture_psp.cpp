@@ -324,7 +324,7 @@ void TexturePSP::SetData(const unsigned char* texData)
 		SetTextureLevel(1, texData);
 		// SetTextureLevel(2, texData);
 		// SetTextureLevel(3, texData);
-		m_settings[static_cast<int>(Application::GetAssetPlatform())]->mipmaplevelCount = 1;
+		m_settings[Application::GetAssetPlatform()]->mipmaplevelCount = 1;
 	}
 
 	isValid = true;
@@ -359,7 +359,7 @@ int TexturePSP::TypeToGUPSM(PSPTextureType psm) const
 
 void TexturePSP::Bind() const
 {
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[Application::GetAssetPlatform()])->type;
+	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings.at(Application::GetAssetPlatform()))->type;
 
 	sceGuTexMode(TypeToGUPSM(type), GetMipmaplevelCount(), 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);

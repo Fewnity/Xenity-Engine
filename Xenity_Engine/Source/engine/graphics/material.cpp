@@ -27,6 +27,8 @@ using json = nlohmann::json;
 
 Material::Material()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	SetAttribute("color", Vector3(1, 1, 1));
 	AssetManager::AddMaterial(this);
 	AssetManager::AddReflection(this);
@@ -255,6 +257,8 @@ void Material::OnReflectionUpdated()
 	SetAlphaCutoff(m_alphaCutoff);
 
 #if defined(EDITOR)
+	Graphics::isRenderingBatchDirty = true;
+
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
 	jsonData["Version"] = s_version;

@@ -25,7 +25,7 @@ class API FilePS2 : public File
 {
 public:
 	FilePS2() = delete;
-	explicit FilePS2(std::string _path);
+	explicit FilePS2(const std::string& _path);
 	FilePS2(const FilePS2& other) = delete;
 	FilePS2& operator=(const FilePS2&) = delete;
 

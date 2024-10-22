@@ -12,7 +12,7 @@
 #include <engine/engine_settings.h>
 #include <engine/debug/debug.h>
 
-FileDefault::FileDefault(std::string _path) : File(_path)
+FileDefault::FileDefault(const std::string& _path) : File(_path)
 {
 }
 

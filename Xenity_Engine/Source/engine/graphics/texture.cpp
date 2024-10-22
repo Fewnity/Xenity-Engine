@@ -52,6 +52,8 @@
 
 Texture::Texture()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	TextureSettingsStandalone* textureSettingsStandalone = new TextureSettingsStandalone();
 	TextureSettingsPSP* textureSettingsPSP = new TextureSettingsPSP();
 	TextureSettingsPSVITA* textureSettingsPSVITA = new TextureSettingsPSVITA();
@@ -94,6 +96,8 @@ void Texture::OnReflectionUpdated()
 
 std::shared_ptr<Texture> Texture::MakeTexture()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(__PSP__)
 	std::shared_ptr<Texture> newTexture = std::make_shared<TexturePSP>();
 #elif defined(__PS3__)

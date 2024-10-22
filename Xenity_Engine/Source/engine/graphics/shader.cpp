@@ -213,6 +213,8 @@ std::shared_ptr<Light> defaultDarkLight = std::make_shared<Light>();
 
 void Shader::Init()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	defaultDarkLight->SetIntensity(0);
 	m_canvasCameraTransformationMatrix = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
 
@@ -232,6 +234,7 @@ void Shader::Init()
 
 Shader::Shader()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 }
 
 /// <summary>

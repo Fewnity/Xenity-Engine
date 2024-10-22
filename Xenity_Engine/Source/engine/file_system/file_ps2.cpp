@@ -29,7 +29,7 @@
 #include "file.h"
 
 
-FilePS2::FilePS2(std::string _path) : File(_path)
+FilePS2::FilePS2(const std::string& _path) : File(_path)
 {
 }
 
