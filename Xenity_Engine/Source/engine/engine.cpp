@@ -325,7 +325,7 @@ void Engine::Loop()
 #else
 	const ProjectLoadingErrors projectLoaded = ProjectManager::LoadProject("./");
 #endif
-	if (projectLoaded != ProjectLoadingErrors::NoAssetFolder)
+	if (projectLoaded != ProjectLoadingErrors::Success)
 	{
 		Debug::Print("-------- Failed to load the game -------- Error code: " + std::to_string(static_cast<int>(projectLoaded)), true);
 		return;
