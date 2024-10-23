@@ -502,7 +502,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	projectFolderPath = folderPath + name + "/";
 	SaveProjectSettings();
 
-	return LoadProject(projectFolderPath);
+	return LoadProject(projectFolderPath) == ProjectLoadingErrors::Success;
 #else
 	return false;
 #endif
@@ -605,7 +605,7 @@ void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
 }
 #endif
 
-bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
+ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathToLoad)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -622,9 +622,14 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 	projectFolderPath = projectPathToLoad;
 	assetFolderPath = projectPathToLoad + "assets/";
 
+
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 
 #if defined(EDITOR)
+	if (!std::filesystem::exists(assetFolderPath)) 
+	{
+		return ProjectLoadingErrors::NoAssetFolder;
+	}
 	FileSystem::s_fileSystem->CreateFolder(projectFolderPath + "/temp/");
 	FileSystem::s_fileSystem->CreateFolder(projectFolderPath + "/additional_assets/");
 #endif
@@ -701,7 +706,7 @@ bool ProjectManager::LoadProject(const std::string& projectPathToLoad)
 
 	Debug::Print("Project loaded", true);
 
-	return projectLoaded;
+	return ProjectLoadingErrors::Success;
 }
 
 void ProjectManager::UnloadProject()

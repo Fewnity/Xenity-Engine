@@ -775,6 +775,7 @@
     <ClInclude Include="Source\engine\graphics\texture_ps3.h" />
     <ClInclude Include="Source\engine\graphics\texture_psp.h" />
     <ClInclude Include="Source\engine\constants.h" />
+    <ClInclude Include="Source\engine\project_management\project_errors.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

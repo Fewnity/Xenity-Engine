@@ -27,13 +27,10 @@ Add undo/redo commands to DrawVector functions
 Rework the documentation
 Rename member variables to m_memberVariableName
 Check after compilation components names
-Set isTrigger and generateCollisionEvents as protected?
 Check why the compiler search for main.cpp in the engine's folder
-Use lighting and color does not work together material fixed pipeline
 Disable "Use lighting" do not block all lights
 Reload material file on game stop
 Add color to standard shader in psvita
-Improve crash handling if opening a project that does not exists anymore
 Automate SaveMetaFile and LoadMetaFile for each platforms
 Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
 Separate audio platform specific code
@@ -41,7 +38,6 @@ Separate mesh platform specific code
 Separate shader platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
-Put in rename mode when creating a new file
 
 --- Can be done for the next release
 Add size_t check on all platforms

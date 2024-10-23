@@ -321,13 +321,13 @@ void Engine::Loop()
 	// Load the game if the executable is not the Editor
 #if !defined(EDITOR)
 #if defined(_EE) || defined(__PS3__)
-	const bool projectLoaded = ProjectManager::LoadProject("");
+	const ProjectLoadingErrors projectLoaded = ProjectManager::LoadProject("");
 #else
-	const bool projectLoaded = ProjectManager::LoadProject("./");
+	const ProjectLoadingErrors projectLoaded = ProjectManager::LoadProject("./");
 #endif
-	if (!projectLoaded)
+	if (projectLoaded != ProjectLoadingErrors::NoAssetFolder)
 	{
-		Debug::Print("-------- Failed to load the game --------", true);
+		Debug::Print("-------- Failed to load the game -------- Error code: " + std::to_string(static_cast<int>(projectLoaded)), true);
 		return;
 	}
 #endif

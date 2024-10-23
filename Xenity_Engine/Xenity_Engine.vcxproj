@@ -1360,6 +1360,7 @@
     <ClInclude Include="Source\engine\graphics\texture_ps3.h" />
     <ClInclude Include="Source\engine\graphics\texture_psp.h" />
     <ClInclude Include="Source\engine\physics\sphere_collider.h" />
+    <ClInclude Include="Source\engine\project_management\project_errors.h" />
     <ClInclude Include="Source\engine\vectors\quaternion.h" />
     <ClInclude Include="Source\engine\tools\scope_benchmark.h" />
     <ClInclude Include="Source\engine\file_system\data_base\bit_file.h" />

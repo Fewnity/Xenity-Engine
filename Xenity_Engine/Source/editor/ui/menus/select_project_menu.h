@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <engine/asset_management/project_list_item.h>
+#include <engine/project_management/project_errors.h>
 
 class SelectProjectMenu : public Menu
 {
@@ -22,6 +23,8 @@ private:
 	void OnLoadButtonClick();
 	void DrawProjectsList();
 	void DeleteProject(size_t projectIndex, bool deleteFiles);
+	void ShowProjectError(ProjectLoadingErrors error);
+
 	std::vector<ProjectListItem> projectsList;
 	ProjectListItem* selectedProject = nullptr;
 };

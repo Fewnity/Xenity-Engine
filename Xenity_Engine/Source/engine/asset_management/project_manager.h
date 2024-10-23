@@ -20,6 +20,7 @@
 #include <engine/asset_management/project_list_item.h>
 #include <engine/file_system/data_base/file_data_base.h>
 #include <engine/file_system/file_system.h>
+#include <engine/project_management/project_errors.h>
 
 class FileReference;
 class File;
@@ -126,7 +127,7 @@ public:
 	* @param projectPathToLoad Project path
 	* @return True if the project has been loaded
 	*/
-	static bool LoadProject(const std::string& projectPathToLoad);
+	static ProjectLoadingErrors LoadProject(const std::string& projectPathToLoad);
 
 	/**
 	* @brief Unload a project

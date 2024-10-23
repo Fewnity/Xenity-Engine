@@ -87,7 +87,8 @@ void SelectProjectMenu::OnLoadButtonClick()
 	const std::string projectPath = EditorUI::OpenFolderDialog("Select project folder", "");
 	if (!projectPath.empty())
 	{
-		if (ProjectManager::LoadProject(projectPath))
+		ProjectLoadingErrors result = ProjectManager::LoadProject(projectPath);
+		if (result == ProjectLoadingErrors::Success)
 		{
 			// Check if the project is already in the opened projects list
 			bool projectAlreadyInList = false;
@@ -117,7 +118,7 @@ void SelectProjectMenu::OnLoadButtonClick()
 		}
 		else
 		{
-			Debug::PrintError("[SelectProjectMenu::OnLoadButtonClick] This is not a Xenity Project", true);
+			ShowProjectError(result);
 		}
 	}
 }
@@ -142,7 +143,7 @@ void SelectProjectMenu::DrawProjectsList()
 			selectedProject = &project;
 			ImGui::OpenPopup(std::to_string(*(size_t*)selectedProject).c_str());
 		}
-		if (selectedProject == &project) 
+		if (selectedProject == &project)
 		{
 
 			if (ImGui::BeginPopup(std::to_string(*(size_t*)selectedProject).c_str()))
@@ -162,7 +163,7 @@ void SelectProjectMenu::DrawProjectsList()
 				if (ImGui::MenuItem("Delete"))
 				{
 					DialogResult result = EditorUI::OpenDialog("Delete " + project.name, "Are you sure you want to delete the " + project.name + " project?\n(Files will be deleted)", DialogType::Dialog_Type_YES_NO_CANCEL);
-					if (result == DialogResult::Dialog_YES) 
+					if (result == DialogResult::Dialog_YES)
 					{
 						DeleteProject(i, true);
 						i--;
@@ -177,13 +178,14 @@ void SelectProjectMenu::DrawProjectsList()
 		ImGui::SetCursorPos(ImVec2(cursorPos.x, cursorPos.y));
 		if (ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availWidth, 60)))
 		{
-			if (ProjectManager::LoadProject(project.path))
+			ProjectLoadingErrors result = ProjectManager::LoadProject(project.path);
+			if (result == ProjectLoadingErrors::Success)
 			{
 				Editor::currentMenu = MenuGroup::Menu_Editor;
 			}
 			else
 			{
-				Debug::PrintError("[SelectProjectMenu::DrawProjectsList] This is not a Xenity Project", true);
+				ShowProjectError(result);
 			}
 		}
 		ImGui::EndGroup();
@@ -207,4 +209,18 @@ void SelectProjectMenu::DeleteProject(size_t projectIndex, bool deleteFiles)
 	}
 	projectsList.erase(projectsList.begin() + projectIndex);
 	ProjectManager::SaveProjectsList(projectsList);
+}
+
+void SelectProjectMenu::ShowProjectError(ProjectLoadingErrors error)
+{
+	if (error == ProjectLoadingErrors::NoAssetFolder)
+	{
+		EditorUI::OpenDialog("Error", "This is not a Xenity Project, no asset folder found.", DialogType::Dialog_Type_OK);
+		Debug::PrintError("[SelectProjectMenu::DrawProjectsList] This is not a Xenity Project", true);
+	}
+	else 
+	{
+		EditorUI::OpenDialog("Error", "Cannot open project.", DialogType::Dialog_Type_OK);
+		Debug::PrintError("[SelectProjectMenu::ShowProjectError] Cannot open project", true);
+	}
 }
