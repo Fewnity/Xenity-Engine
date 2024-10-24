@@ -12,8 +12,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#define _USE_MATH_DEFINES
-#include <math.h>
+//#define _USE_MATH_DEFINES
+//#include <cmath>
 
 #if defined(EDITOR)
 #include <editor/gizmo.h>
@@ -34,12 +34,9 @@
 
 #pragma region Constructors / Destructor
 
-Camera::Camera()
+Camera::Camera() : m_fov(DEFAULT_CAMERA_FOV), m_isProjectionDirty(true)
 {
 	m_componentName = "Camera";
-
-	m_fov = DEFAULT_CAMERA_FOV;
-	m_isProjectionDirty = true;
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	glGenFramebuffers(1, &m_framebuffer);
@@ -199,7 +196,7 @@ Vector2 Camera::ScreenTo2DWorld(int x, int y)
 
 Vector2 Camera::MouseTo2DWorld()
 {
-	return ScreenTo2DWorld((int)InputSystem::mousePosition.x, (int)InputSystem::mousePosition.y);
+	return ScreenTo2DWorld(static_cast<int>(InputSystem::mousePosition.x), static_cast<int>(InputSystem::mousePosition.y));
 }
 
 void Camera::UpdateProjection()
@@ -371,7 +368,7 @@ void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 	{
 		m_width = resolution.x;
 		m_height = resolution.y;
-		m_aspect = (float)m_width / (float)m_height;
+		m_aspect = static_cast<float>(m_width) / static_cast<float>(m_height);
 
 		m_needFrameBufferUpdate = true;
 		m_isProjectionDirty = true;

@@ -148,13 +148,13 @@ protected:
 		unsigned int outerCutOff = 0;
 	};
 
-	static std::vector<PointLightVariableNames*> s_pointlightVariableNames;
-	static std::vector<DirectionalLightsVariableNames*> s_directionallightVariableNames;
-	static std::vector<SpotLightVariableNames*> s_spotlightVariableNames;
+	static std::vector<PointLightVariableNames> s_pointlightVariableNames;
+	static std::vector<DirectionalLightsVariableNames> s_directionallightVariableNames;
+	static std::vector<SpotLightVariableNames> s_spotlightVariableNames;
 
-	std::vector<PointLightVariableIds*> m_pointlightVariableIds;
-	std::vector<DirectionalLightsVariableIds*> m_directionallightVariableIds;
-	std::vector<SpotLightVariableIds*> m_spotlightVariableIds;
+	std::vector<PointLightVariableIds> m_pointlightVariableIds;
+	std::vector<DirectionalLightsVariableIds> m_directionallightVariableIds;
+	std::vector<SpotLightVariableIds> m_spotlightVariableIds;
 
 	enum class ShaderType
 	{

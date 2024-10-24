@@ -83,7 +83,7 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 	AudioManager::s_myMutex->Lock();
 
 	// For each sound, add it's buffer to the sound buffer and change seek of audio stream
-	int playedSoundsCount = (int)channel->m_playedSoundsCount;
+	int playedSoundsCount = channel->m_playedSoundsCount;
 	for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 	{
 		PlayedSound* sound = channel->m_playedSounds[soundIndex];
@@ -562,7 +562,7 @@ void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 	AudioManager::s_myMutex->Unlock();
 }
 
-MyMutex::MyMutex(const std::string& mutexName)
+MyMutex::MyMutex([[maybe_unused]] const std::string& mutexName)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 

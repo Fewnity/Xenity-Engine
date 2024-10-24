@@ -101,20 +101,21 @@ void NetworkManager::Init()
 
 std::shared_ptr<Socket> NetworkManager::GetClientSocket()
 {
+#if defined(_WIN32) || defined(_WIN64)
 	SOCKADDR_IN sin;
 	SOCKADDR_IN csin;
 	int newSocketId = 1;
 	int newClientSocketId = 1;
-	newSocketId = socket(AF_INET, SOCK_STREAM, 0);
+	newSocketId = static_cast<int>(socket(AF_INET, SOCK_STREAM, 0));
 	sin.sin_addr.s_addr = INADDR_ANY;
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(6004);
-	bind(newSocketId, (SOCKADDR*)&sin, sizeof(sin));
+	bind(newSocketId, reinterpret_cast<SOCKADDR*>(& sin), sizeof(sin));
 	listen(newSocketId, 0);
-	while (1) /* Boucle infinie. Exercice : améliorez ce code. */
+	while (true) /* Boucle infinie. Exercice : améliorez ce code. */
 	{
 		int sinsize = sizeof(csin);
-		if ((newClientSocketId = accept(newSocketId, (SOCKADDR*)&csin, &sinsize)) != INVALID_SOCKET)
+		if ((newClientSocketId = accept(newSocketId, reinterpret_cast<SOCKADDR*>(&csin), &sinsize)) != INVALID_SOCKET)
 		{
 			Debug::Print("New client connected");
 			break;
@@ -128,6 +129,9 @@ std::shared_ptr<Socket> NetworkManager::GetClientSocket()
 	std::shared_ptr<Socket> myNewSocket = std::make_shared<Socket>(newClientSocketId);
 	s_sockets.push_back(myNewSocket);
 	return myNewSocket;
+#else
+	return nullptr;
+#endif
 }
 
 void NetworkManager::Update()
@@ -258,7 +262,7 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 //		return nullptr;
 //	}
 //#endif
-	if ((newSocketId = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	if ((newSocketId = static_cast<int>(socket(AF_INET, SOCK_STREAM, 0))) < 0)
 	{
 		Debug::PrintError("[NetworkManager::CreateSocket] Could not create socket");
 		return nullptr;
@@ -273,7 +277,7 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 		Debug::PrintError("[NetworkManager::CreateSocket] inet_pton error occured");
 		return nullptr;
 	}
-	if (connect(newSocketId, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
+	if (connect(newSocketId, reinterpret_cast<struct sockaddr*>(&serv_addr), sizeof(serv_addr)) < 0)
 	{
 		Debug::PrintError("[NetworkManager::CreateSocket] Connect Failed");
 		return nullptr;

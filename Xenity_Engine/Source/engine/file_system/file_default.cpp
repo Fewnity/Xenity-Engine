@@ -89,7 +89,6 @@ unsigned char* FileDefault::ReadAllBinary(size_t& size)
 		return nullptr;
 	}
 
-	char* data = nullptr;
 	m_file.seekg(0, std::ios_base::end);
 	const std::streampos pos = m_file.tellg();
 	m_file.seekg(0, std::ios_base::beg);
@@ -99,7 +98,7 @@ unsigned char* FileDefault::ReadAllBinary(size_t& size)
 		return nullptr;
 	}
 
-	data = (char*)malloc(pos);
+	char* data = static_cast<char*>(malloc(pos));
 	if (!data) 
 	{
 		size = 0;
@@ -108,7 +107,7 @@ unsigned char* FileDefault::ReadAllBinary(size_t& size)
 
 	m_file.read(data, pos);
 	size = pos;
-	return (unsigned char*)data;
+	return reinterpret_cast<unsigned char*>(data);
 }
 
 unsigned char* FileDefault::ReadBinary(size_t offset, size_t size)
@@ -119,9 +118,8 @@ unsigned char* FileDefault::ReadBinary(size_t offset, size_t size)
 		return nullptr;
 	}
 
-	char* data = nullptr;
 	m_file.seekg(offset, std::ios_base::beg);
-	data = (char*)malloc(size);
+	char* data = static_cast<char*>(malloc(size));
 	m_file.read(data, size);
 
 	return (unsigned char*)data;
@@ -136,7 +134,7 @@ bool FileDefault::CheckIfExist()
 	}
 	else
 	{
-		std::ios_base::openmode params = std::fstream::in;
+		const std::ios_base::openmode params = std::fstream::in;
 
 		m_file.open(m_path, params);
 

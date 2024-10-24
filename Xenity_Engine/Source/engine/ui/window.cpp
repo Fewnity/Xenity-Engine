@@ -79,7 +79,7 @@ int Window::GetTitleBarHeight()
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 	int size = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	SDL_GetWindowBordersSize(s_window, &size, 0, 0, 0);
+	SDL_GetWindowBordersSize(s_window, &size, nullptr, nullptr, nullptr);
 #endif
 	return size;
 }
@@ -99,24 +99,24 @@ int Window::Init()
 	const int sdlInitResult = SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS);
 	if (sdlInitResult != 0)
 	{
-		return (int)WindowError::WND_ERROR_SDL_INIT;
+		return static_cast<int>(WindowError::WND_ERROR_SDL_INIT);
 	}
 
 	// Create SDL Window
 	s_window = SDL_CreateWindow(ENGINE_NAME, s_width, s_height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 	if (s_window == nullptr)
 	{
-		return (int)WindowError::WND_ERROR_SDL_CREATE_WINDOW;
+		return static_cast<int>(WindowError::WND_ERROR_SDL_CREATE_WINDOW);
 	}
 
 	// Create OpenGL Context
 	SDL_GLContext context = SDL_GL_CreateContext(s_window);
 	if (context == nullptr)
 	{
-		return (int)WindowError::WND_ERROR_SDL_GL_CONTEXT;
+		return static_cast<int>(WindowError::WND_ERROR_SDL_GL_CONTEXT);
 	}
 
-	gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+	gladLoadGLLoader(reinterpret_cast<GLADloadproc>(SDL_GL_GetProcAddress));
 	SDL_GL_SetSwapInterval(1);
 	OnResize();
 
@@ -193,5 +193,5 @@ void Window::SetFullScreenMode(bool enable)
 void Window::UpdateAspectRatio()
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
-	s_aspect = (float)s_width / (float)s_height;
+	s_aspect = static_cast<float>(s_width) / static_cast<float>(s_height);
 }

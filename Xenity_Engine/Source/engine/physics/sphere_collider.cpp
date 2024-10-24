@@ -46,7 +46,7 @@ void SphereCollider::OnReflectionUpdated()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		rb->UpdateGeneratesEvents();
 	}
@@ -115,7 +115,7 @@ void SphereCollider::CreateCollision(bool forceCreation)
 	m_bulletCollisionShape->setLocalScaling(btVector3(m_size / 2.0f * maxScale, m_size / 2.0f * maxScale, m_size / 2.0f * maxScale));
 	m_bulletCollisionShape->setUserPointer(this);
 
-	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		if (!m_isTrigger)
 			rb->AddShape(m_bulletCollisionShape, m_offset * scale);
@@ -157,7 +157,7 @@ void SphereCollider::OnTransformScaled()
 		const float maxScale = scale.Max();
 		m_bulletCollisionShape->setLocalScaling(btVector3(m_size / 2.0f * maxScale, m_size / 2.0f * maxScale, m_size / 2.0f * maxScale));
 
-		if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+		if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 		{
 			rb->RemoveShape(m_bulletCollisionShape);
 			rb->RemoveTriggerShape(m_bulletCollisionShape);
@@ -187,7 +187,7 @@ void SphereCollider::OnTransformUpdated()
 
 void SphereCollider::SetDefaultSize()
 {
-	std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
+	const std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
 	if (mesh && mesh->GetMeshData())
 	{
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();

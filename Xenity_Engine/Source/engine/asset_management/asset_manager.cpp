@@ -519,6 +519,10 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 	case FileType::File_Shader:
 		newFile = FileSystem::MakeFile("engine_assets/empty_default/standardShader.standardShader");
 		break;
+	default:
+		XASSERT(false, "[AssetManager::GetDefaultFileData] Invalid file type");
+		Debug::PrintError("[AssetManager::GetDefaultFileData] Invalid file type", true);
+		return "";
 	}
 
 	if (newFile && newFile->Open(FileMode::ReadOnly))

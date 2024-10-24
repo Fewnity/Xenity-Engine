@@ -14,7 +14,7 @@
 
 Collider::~Collider()
 {
-	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		//Remove from the rigidbody
 		const size_t colliderCount = rb->colliders.size();
@@ -61,7 +61,7 @@ void Collider::FindRigidbody()
 {
 	const bool isAttached = m_attachedRigidbody.lock() != nullptr;
 	m_attachedRigidbody = GetGameObject()->GetComponent<RigidBody>();
-	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		if (!isAttached)
 		{
@@ -75,7 +75,7 @@ void Collider::SetRigidbody(const std::shared_ptr<RigidBody>& rb)
 {
 	const bool isAttached = m_attachedRigidbody.lock() != nullptr;
 	m_attachedRigidbody = rb;
-	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		if (!isAttached)
 		{

@@ -173,7 +173,7 @@ void Light::OnDrawGizmos()
 	else if (m_type == LightType::Spot)
 		icon = IconName::Icon_Spot_Light;
 
-	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)icon], color);
+	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[static_cast<int>(icon)], color);
 
 #endif
 }

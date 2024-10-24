@@ -26,12 +26,12 @@ public:
 	* @brief Set mesh data
 	* @param meshData The mesh data
 	*/
-	void SetMeshData(std::shared_ptr <MeshData> meshData);
+	void SetMeshData(const std::shared_ptr <MeshData>& meshData);
 
 	/**
 	* @brief Get mesh data
 	*/
-	inline const std::shared_ptr<MeshData>& GetMeshData()
+	inline const std::shared_ptr<MeshData>& GetMeshData() const
 	{
 		return m_meshData;
 	}
@@ -44,7 +44,7 @@ public:
 		return m_materials;
 	}
 
-	void SetMaterial(std::shared_ptr <Material> material, int index);
+	void SetMaterial(const std::shared_ptr <Material>& material, int index);
 
 	inline std::shared_ptr <Material> GetMaterial(int index) const
 	{

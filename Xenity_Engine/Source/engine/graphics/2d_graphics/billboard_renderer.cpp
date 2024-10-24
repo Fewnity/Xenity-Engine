@@ -92,8 +92,8 @@ void BillboardRenderer::OnEnabled()
 /// <summary>
 /// Draw sprite
 /// </summary>
-void BillboardRenderer::DrawCommand(const RenderCommand& renderCommand)
+void BillboardRenderer::DrawCommand([[maybe_unused]] const RenderCommand& renderCommand)
 {
-	const std::shared_ptr<Transform>& transform = GetTransform();
+	const Transform* transform = GetTransformRaw();
 	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera->GetTransformRaw()->GetRotation() * transform->GetRotation(), transform->GetScale(), m_color, *m_material, m_texture.get());
 }

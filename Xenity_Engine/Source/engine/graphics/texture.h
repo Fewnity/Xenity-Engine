@@ -284,7 +284,7 @@ protected:
 	virtual void Unload() = 0;
 	virtual void Bind() const = 0;
 
-	std::map<AssetPlatform, TextureSettings*> m_settings;
+	std::map<AssetPlatform, std::unique_ptr<TextureSettings>> m_settings;
 	unsigned char* m_buffer = nullptr;
 	int m_width = 0, height = 0, nrChannels = 0;
 

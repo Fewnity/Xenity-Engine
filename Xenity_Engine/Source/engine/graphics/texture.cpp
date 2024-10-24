@@ -54,15 +54,15 @@ Texture::Texture()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	TextureSettingsStandalone* textureSettingsStandalone = new TextureSettingsStandalone();
-	TextureSettingsPSP* textureSettingsPSP = new TextureSettingsPSP();
-	TextureSettingsPSVITA* textureSettingsPSVITA = new TextureSettingsPSVITA();
-	TextureSettingsPS3* textureSettingsPS3 = new TextureSettingsPS3();
+	std::unique_ptr<TextureSettings> textureSettingsStandalone = std::make_unique<TextureSettingsStandalone>();
+	std::unique_ptr<TextureSettings> textureSettingsPSP = std::make_unique<TextureSettingsPSP>();
+	std::unique_ptr<TextureSettings> textureSettingsPSVITA = std::make_unique<TextureSettingsPSVITA>();
+	std::unique_ptr<TextureSettings> textureSettingsPS3 = std::make_unique<TextureSettingsPS3>();
 
-	m_settings[AssetPlatform::AP_Standalone] = textureSettingsStandalone;
-	m_settings[AssetPlatform::AP_PSP] = textureSettingsPSP;
-	m_settings[AssetPlatform::AP_PsVita] = textureSettingsPSVITA;
-	m_settings[AssetPlatform::AP_PS3] = textureSettingsPS3;
+	m_settings[AssetPlatform::AP_Standalone] = std::move(textureSettingsStandalone);
+	m_settings[AssetPlatform::AP_PSP] = std::move(textureSettingsPSP);
+	m_settings[AssetPlatform::AP_PsVita] = std::move(textureSettingsPSVITA);
+	m_settings[AssetPlatform::AP_PS3] = std::move(textureSettingsPS3);
 }
 
 ReflectiveData Texture::GetReflectiveData()
@@ -216,7 +216,7 @@ void Texture::LoadTexture()
 			newHeight = cookResolution;
 		}
 
-		m_buffer = (unsigned char*)malloc(newWidth * newHeight * 4);
+		m_buffer = static_cast<unsigned char*>(malloc(newWidth * newHeight * 4));
 		stbir_resize_uint8(data2, m_width, height, 0, m_buffer, newWidth, newHeight, 0, 4);
 		free(data2);
 		m_width = newWidth;

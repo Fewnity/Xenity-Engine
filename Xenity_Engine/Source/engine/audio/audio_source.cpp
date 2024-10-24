@@ -101,7 +101,7 @@ void AudioSource::Play()
 	if (m_audioClip != nullptr)
 	{
 		m_isPlaying = true;
-		std::shared_ptr<AudioSource> sharedThis = GetThisShared();
+		const std::shared_ptr<AudioSource> sharedThis = GetThisShared();
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 		std::thread t(&AudioManager::PlayAudioSource, sharedThis);
 		t.detach();
@@ -146,6 +146,6 @@ void AudioSource::Stop()
 void AudioSource::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)IconName::Icon_Audio_Source], Color::CreateFromRGBFloat(1, 1, 1));
+	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[static_cast<int>(IconName::Icon_Audio_Source)], Color::CreateFromRGBFloat(1, 1, 1));
 #endif
 }

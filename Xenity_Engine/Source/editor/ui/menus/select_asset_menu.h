@@ -69,10 +69,10 @@ public:
 	void SearchFiles(FileType type) 
 	{
 		const std::vector<FileInfo> projectFiles = ProjectManager::GetFilesByType(type);
-		const int fileCount = (int)projectFiles.size();
-		for (int i = 0; i < fileCount; i++)
+		const size_t fileCount = projectFiles.size();
+		for (size_t i = 0; i < fileCount; i++)
 		{
-			std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(projectFiles[i].file->GetUniqueId());
+			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(projectFiles[i].file->GetUniqueId());
 			fileRef->LoadFileReference();
 			foundFiles.push_back(fileRef);
 		}

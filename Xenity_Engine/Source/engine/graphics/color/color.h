@@ -40,8 +40,6 @@ protected:
 class API Color : public Reflective
 {
 public:
-	Color();
-
 	/**
 	* @brief Create color from ints
 	* @param r Red level [0;255]

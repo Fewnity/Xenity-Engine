@@ -13,9 +13,6 @@
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#define GLFW_DLL
 #elif defined(__vita__)
 #include <vitaGL.h>
 #endif
@@ -62,7 +59,6 @@ int RendererOpengl::Init()
 
 	Window::SetResolution(960, 544);
 #elif defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
-	result = glfwInit();
 	Window::SetResolution(1280, 720);
 #endif
 
@@ -100,7 +96,7 @@ void RendererOpengl::Stop()
 #if defined(__vita__)
 	vglEnd();
 #else
-	glfwTerminate();
+	//glfwTerminate();
 #endif
 }
 
@@ -150,7 +146,7 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 #if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 	const GLfloat zNear = nearClippingPlane;
 	const GLfloat zFar = farClippingPlane;
-	const GLfloat fH = tan(float(fov / 360.0f * 3.14159f)) * zNear;
+	const GLfloat fH = tan(fov / 360.0f * 3.14159f) * zNear;
 	const GLfloat fW = fH * aspect;
 	glFrustum(-fW, fW, -fH, fH, zNear, zFar);
 #elif defined(__vita__)

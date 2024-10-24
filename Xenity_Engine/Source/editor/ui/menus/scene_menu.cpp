@@ -43,7 +43,7 @@ void SceneMenu::Init()
 bool IntersectionPoint(const Vector3& origin, const Vector3& direction, const Vector3& plane, Vector3& intersection)
 {
 	// V�rifie si la ligne est parall�le au plan
-	const double dotProduct = direction.Dot(plane);
+	const float dotProduct = direction.Dot(plane);
 	if (std::abs(dotProduct) < 1e-6) {
 		// La ligne est parall�le au plan
 		//std::cerr << "La ligne est parall�le au plan, aucune intersection." << std::endl;

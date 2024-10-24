@@ -42,7 +42,7 @@ public:
 	* @brief Get spline value at t
 	* @param t [0;1]
 	*/
-	Vector3 GetValueAt(const float t) const;
+	[[nodiscard]] Vector3 GetValueAt(const float t) const;
 private:
 	std::vector<SplinePoint*> splinePoints;
 };

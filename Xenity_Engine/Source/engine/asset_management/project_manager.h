@@ -177,7 +177,7 @@ public:
 	* @brief Save project settings
 	*/
 	static void SaveProjectSettings();
-	static void SaveProjectSettings(const std::string folderPath);
+	static void SaveProjectSettings(const std::string& folderPath);
 
 	/**
 	* @brief Get project name

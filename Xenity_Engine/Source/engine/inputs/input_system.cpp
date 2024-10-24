@@ -59,7 +59,7 @@ void InputSystem::Init()
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
 		s_inputs[i] = Input();
-		s_inputs[i].code = (KeyCode)i;
+		s_inputs[i].code = static_cast<KeyCode>(i);
 	}
 
 	CrossAddInputs(s_keyMap, s_buttonMap, s_inputs);
@@ -94,28 +94,26 @@ void InputSystem::ShowMouse()
 int InputSystem::GetTouchScreenCount()
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
-	return (int)screens.size();
+	return static_cast<int>(screens.size());
 }
 
 int InputSystem::GetTouchCount(const int screenIndex)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
-	const int screenCount = (int)screens.size();
+	const int screenCount = static_cast<int>(screens.size());
 
 	if (screenCount <= screenIndex)
 		return 0;
 
-	return (int)screens[screenIndex]->touches.size();
+	return static_cast<int>(screens[screenIndex]->touches.size());
 }
 
 Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
-	const int screenCount = (int)screens.size();
+	const int screenCount = static_cast<int>(screens.size());
 
-	if (screenCount <= screenIndex)
-		return Touch();
-	else if (screens[screenIndex]->touches.size() <= touchIndex)
+	if (screenCount <= screenIndex || screens[screenIndex]->touches.size() <= touchIndex)
 		return Touch();
 
 	return screens[screenIndex]->touches[touchIndex];
@@ -204,11 +202,11 @@ void InputSystem::Read(const SDL_Event& event)
 		mousePosition.x = mouseX;
 		mousePosition.y = mouseY;
 #else
-		std::shared_ptr<GameMenu> gameMenu = Editor::GetMenu<GameMenu>();
-		std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
+		const std::shared_ptr<GameMenu> gameMenu = Editor::GetMenu<GameMenu>();
+		const std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
 		std::shared_ptr<SceneMenu> sceneMenu = nullptr;
 
-		for (std::shared_ptr<SceneMenu> menu : sceneMenus)
+		for (const std::shared_ptr<SceneMenu>& menu : sceneMenus)
 		{
 			if (menu->IsHovered()) 
 			{
@@ -266,14 +264,14 @@ void InputSystem::Read(const SDL_Event& event)
 			// Get mouse speed
 			xSpeed = event.motion.xrel / w * a;
 			ySpeed = -event.motion.yrel / h;
-			xSpeedRaw = (int)event.motion.xrel;
-			ySpeedRaw = (int)-event.motion.yrel;
+			xSpeedRaw = static_cast<int>(event.motion.xrel);
+			ySpeedRaw = static_cast<int>(-event.motion.yrel);
 		}
 		mouseSpeed.x = xSpeed;
 		mouseSpeed.y = ySpeed;
 
-		mouseSpeedRaw.x = (float)xSpeedRaw;
-		mouseSpeedRaw.y = (float)ySpeedRaw;
+		mouseSpeedRaw.x = static_cast<float>(xSpeedRaw);
+		mouseSpeedRaw.y = static_cast<float>(ySpeedRaw);
 
 		break;
 	}
@@ -344,7 +342,7 @@ void InputSystem::Read()
 
 	for (size_t touchRawI = 0; touchRawI < touchesRawCount; touchRawI++)
 	{
-		TouchRaw touchRaw = touchesRaw[touchRawI];
+		const TouchRaw touchRaw = touchesRaw[touchRawI];
 		TouchScreen* screen = screens[touchRaw.screenIndex];
 		bool newInput = true;
 		size_t foundInputIndex = 0;
@@ -412,7 +410,7 @@ void InputSystem::ClearInputs()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
-		SetInputInactive((KeyCode)i);
+		SetInputInactive(static_cast<KeyCode>(i));
 	}
 	mouseSpeed.x = 0;
 	mouseSpeed.y = 0;

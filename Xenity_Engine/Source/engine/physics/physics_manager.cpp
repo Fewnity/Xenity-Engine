@@ -206,12 +206,12 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 	const size_t goAComponentsCount = goA.m_components.size();
 	const size_t goBComponentsCount = goB.m_components.size();
 
-	CollisionEvent collisionEvent = CollisionEvent(a, b);
-	CollisionEvent collisionEventOther = CollisionEvent(b, a);
+	const CollisionEvent collisionEvent = CollisionEvent(a, b);
+	const CollisionEvent collisionEventOther = CollisionEvent(b, a);
 
 	for (size_t i = 0; i < goAComponentsCount; i++)
 	{
-		std::shared_ptr<Component>& component = goA.m_components[i];
+		const std::shared_ptr<Component>& component = goA.m_components[i];
 		if (component)
 		{
 			if (state == 0)
@@ -240,7 +240,7 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 
 	for (size_t i = 0; i < goBComponentsCount; i++)
 	{
-		std::shared_ptr<Component>& component = goB.m_components[i];
+		const std::shared_ptr<Component>& component = goB.m_components[i];
 		if (component)
 		{
 			if (state == 0)

@@ -11,15 +11,13 @@
 #include <psprtc.h>
 #endif
 
-using namespace std::chrono;
-
 /// <summary>
 /// Start the benchmark timer
 /// </summary>
 void Benchmark::Start()
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
-	m_start_point = high_resolution_clock::now();
+	m_start_point = std::chrono::high_resolution_clock::now();
 #elif defined(__PSP__)
 	sceRtcGetCurrentTick(&m_startTick);
 #endif
@@ -31,10 +29,10 @@ void Benchmark::Start()
 void Benchmark::Stop()
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__vita__) || defined(__LINUX__)
-	m_end_point = high_resolution_clock::now();
+	m_end_point = std::chrono::high_resolution_clock::now();
 
-	const long long start = time_point_cast<microseconds>(m_start_point).time_since_epoch().count();
-	const long long end = time_point_cast<microseconds>(m_end_point).time_since_epoch().count();
+	const int64_t start = std::chrono::time_point_cast<std::chrono::microseconds>(m_start_point).time_since_epoch().count();
+	const int64_t end = std::chrono::time_point_cast<std::chrono::microseconds>(m_end_point).time_since_epoch().count();
 
 	m_time = end - start;
 #elif defined(__PSP__)

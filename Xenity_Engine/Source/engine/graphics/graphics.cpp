@@ -314,9 +314,9 @@ void Graphics::Draw()
 				}
 
 				// Get the grid axis
-				std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
+				const std::vector<std::shared_ptr<SceneMenu>> sceneMenus = Editor::GetMenus<SceneMenu>();
 				int gridAxis = 0;
-				for (std::shared_ptr<SceneMenu>& sceneMenu : sceneMenus)
+				for (const std::shared_ptr<SceneMenu>& sceneMenu : sceneMenus)
 				{
 					if (sceneMenu->weakCamera.lock() == usedCamera)
 					{
@@ -326,14 +326,14 @@ void Graphics::Draw()
 				}
 
 				DrawEditorGrid(camPos, gridAxis);
-				DrawSelectedItemBoundingBox(camPos);
+				DrawSelectedItemBoundingBox();
 
 				// Draw all gizmos
 				{
 					SCOPED_PROFILER("Graphics::DrawGizmo", scopeBenchmarkDrawGizmo);
 					for (const std::weak_ptr<Component>& weakComponent : GameplayManager::orderedComponents)
 					{
-						if (std::shared_ptr<Component> component = weakComponent.lock())
+						if (const std::shared_ptr<Component> component = weakComponent.lock())
 						{
 							if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 							{
@@ -468,19 +468,19 @@ void Graphics::DeleteAllDrawables()
 	isRenderingBatchDirty = true;
 }
 
-void Graphics::AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd)
+void Graphics::AddDrawable(IDrawable* drawableToAdd)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
 	XASSERT(drawableToAdd != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr");
 
-	orderedIDrawable.push_back(drawableToAdd.get());
+	orderedIDrawable.push_back(drawableToAdd);
 	iDrawablesCount++;
 	isRenderingBatchDirty = true;
 	SetDrawOrderListAsDirty();
 }
 
-void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove)
+void Graphics::RemoveDrawable(const IDrawable* drawableToRemove)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
@@ -491,7 +491,7 @@ void Graphics::RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove
 
 	for (int i = 0; i < iDrawablesCount; i++)
 	{
-		if (orderedIDrawable[i] == drawableToRemove.get())
+		if (orderedIDrawable[i] == drawableToRemove)
 		{
 			orderedIDrawable.erase(orderedIDrawable.begin() + i);
 			iDrawablesCount--;
@@ -685,7 +685,7 @@ void Graphics::CheckLods()
 	SCOPED_PROFILER("Graphics::CheckLods", scopeBenchmark);
 	for (int i = 0; i < lodsCount; i++)
 	{
-		std::shared_ptr<Lod> lod = lods[i].lock();
+		const std::shared_ptr<Lod> lod = lods[i].lock();
 		if (lod)
 		{
 			lod->CheckLod();
@@ -703,7 +703,7 @@ void Graphics::DrawSubMesh(const Vector3& position, const Quaternion& rotation, 
 
 #if defined(EDITOR)
 
-void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
+void Graphics::DrawSelectedItemBoundingBox()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -711,7 +711,7 @@ void Graphics::DrawSelectedItemBoundingBox(const Vector3& cameraPosition)
 	const std::vector<std::weak_ptr<GameObject>>& selectedGameObjects = Editor::GetSelectedGameObjects();
 	for (const std::weak_ptr<GameObject>& selectedGOWeak : selectedGameObjects)
 	{
-		std::shared_ptr<GameObject> selectedGO = selectedGOWeak.lock();
+		const std::shared_ptr<GameObject> selectedGO = selectedGOWeak.lock();
 		if (!selectedGO)
 			continue;
 
@@ -780,7 +780,7 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 		return;
 	}
 
-	float distance;
+	float distance = 0;
 	if (gridAxis == 0)
 	{
 		distance = fabs(cameraPosition.y);
@@ -821,12 +821,12 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 		// For XZ
 		for (int z = static_cast<int>(-lineCount + cameraPosition.z / coef); z < lineCount + cameraPosition.z / coef; z++)
 		{
-			float zPos = static_cast<float>(z * coef);
+			const float zPos = static_cast<float>(z * coef);
 			Engine::GetRenderer().DrawLine(Vector3(-lineLenght - cameraPosition.x, 0, zPos), Vector3(lineLenght - cameraPosition.x, 0, zPos), color, renderSettings);
 		}
 		for (int x = static_cast<int>(-lineCount + cameraPosition.x / coef); x < lineCount + cameraPosition.x / coef; x++)
 		{
-			float xPos = static_cast<float>(-x * coef);
+			const float xPos = static_cast<float>(-x * coef);
 			Engine::GetRenderer().DrawLine(Vector3(xPos, 0, -lineLenght + cameraPosition.z), Vector3(xPos, 0, lineLenght + cameraPosition.z), color, renderSettings);
 		}
 	}
@@ -866,11 +866,11 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 
 	SCOPED_PROFILER("Graphics::DrawEditorTool", scopeBenchmark);
 
-	std::shared_ptr< SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
+	const std::shared_ptr< SceneMenu> sceneMenu = Editor::GetMenu<SceneMenu>();
 	// Draw tool
 	if (Editor::GetSelectedGameObjects().size() == 1 && sceneMenu)
 	{
-		std::shared_ptr<GameObject> selectedGo = Editor::GetSelectedGameObjects()[0].lock();
+		const std::shared_ptr<GameObject> selectedGo = Editor::GetSelectedGameObjects()[0].lock();
 		if (!selectedGo)
 			return;
 

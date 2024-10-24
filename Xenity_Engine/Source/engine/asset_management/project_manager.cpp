@@ -101,12 +101,12 @@ uint64_t ProjectManager::ReadFileId(const File& file)
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
 	uint64_t id = -1;
-	std::string metaFilePath = file.GetPath() + META_EXTENSION;
+	const std::string metaFilePath = file.GetPath() + META_EXTENSION;
 
 #if defined(_EE)
 	metaFilePath = metaFilePath.substr(5);
 #endif
-	std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaFilePath);
+	const std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaFilePath);
 
 	if (!metaFile->CheckIfExist()) // If there is not meta for this file
 	{
@@ -233,7 +233,7 @@ void ProjectManager::FindAllProjectFiles()
 		for (const auto& compatibleFile : compatibleFiles)
 		{
 			const std::shared_ptr<File>& file = compatibleFile.file.file;
-			uint64_t fileId = ReadFileId(*file);
+			const uint64_t fileId = ReadFileId(*file);
 			if (fileId == -1)
 			{
 				fileWithoutMeta.push_back(file);
@@ -333,7 +333,7 @@ void ProjectManager::FindAllProjectFiles()
 
 	// Get all project directories and open one
 	CreateProjectDirectories(*projectDirectoryBase, *projectDirectory);
-	std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(*projectDirectory, oldPath);
+	const std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(*projectDirectory, oldPath);
 	if (lastOpenedDir)
 		Editor::SetCurrentProjectDirectory(lastOpenedDir);
 	else
@@ -364,7 +364,7 @@ void ProjectManager::CreateVisualStudioSettings()
 			const size_t vsCodeTextSize = vsCodeText.size();
 
 			// Replace tag by the include folder path
-			int beg, end;
+			int beg = 0, end = 0;
 			for (size_t i = 0; i < vsCodeTextSize; i++)
 			{
 				if (StringTagFinder::FindTag(vsCodeText, i, vsCodeTextSize, "{ENGINE_SOURCE_PATH}", beg, end))
@@ -381,7 +381,7 @@ void ProjectManager::CreateVisualStudioSettings()
 			FileSystem::s_fileSystem->Delete(filePath);
 
 			// Create the vscode settings file
-			std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
+			const std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
 			const bool isNewFileOpen = vsCodeParamFile->Open(FileMode::WriteCreateFile);
 			if (isNewFileOpen)
 			{
@@ -477,7 +477,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/assets/Scenes/");
 
 	// Create default scene
-	std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "/assets/Scenes/MainScene.xen", UniqueId::GenerateUniqueId(true)));
+	const std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "/assets/Scenes/MainScene.xen", UniqueId::GenerateUniqueId(true)));
 	if (sceneRef->m_file->Open(FileMode::WriteCreateFile))
 	{
 		const std::string data = AssetManager::GetDefaultFileData(FileType::File_Scene);
@@ -572,7 +572,7 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 
 #if defined(EDITOR)
 
-void ProjectManager::OnProjectCompiled(CompilerParams params, bool result)
+void ProjectManager::OnProjectCompiled([[maybe_unused]] CompilerParams params, bool result)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -769,7 +769,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	for (size_t i = 0; i < sceneCount; i++)
 	{
 		ids.push_back(sceneFiles[i].file->GetUniqueId());
-		std::shared_ptr<File> jsonFile = sceneFiles[i].file;
+		const std::shared_ptr<File> jsonFile = sceneFiles[i].file;
 		const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
 		if (isOpen)
 		{
@@ -796,7 +796,7 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 					if (!idAlreadyInList)
 					{
 						ids.push_back(idKv.value());
-						std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
+						const std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
 						if (fileRef)
 						{
 							FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
@@ -912,7 +912,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const 
 	filePathFixed += filePath;
 
 #if defined(EDITOR)
-	std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
+	const std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
 	const uint64_t fileId = ProjectManager::ReadFileId(*file);
 #else
 	uint64_t fileId = -1;
@@ -933,7 +933,7 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPat
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	ProjectSettings settings;
-	std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectPath + PROJECT_SETTINGS_FILE_NAME);
+	const std::shared_ptr<File> projectFile = FileSystem::MakeFile(projectPath + PROJECT_SETTINGS_FILE_NAME);
 	std::string jsonString = "";
 
 	// Read file
@@ -977,7 +977,7 @@ void ProjectManager::LoadProjectSettings()
 	projectSettings = GetProjectSettings(projectFolderPath);
 }
 
-void ProjectManager::SaveProjectSettings(const std::string folderPath)
+void ProjectManager::SaveProjectSettings(const std::string& folderPath)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -987,7 +987,7 @@ void ProjectManager::SaveProjectSettings(const std::string folderPath)
 
 	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(projectSettings.GetReflectiveData());
 
-	std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
+	const std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
 	if (projectFile->Open(FileMode::WriteCreateFile))
 	{
 		projectFile->Write(projectData.dump(0));
@@ -1009,8 +1009,8 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	const std::shared_ptr<File>& file = fileReference.m_file;
 #if defined(EDITOR)
-	std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
-	bool exists = metaFile->CheckIfExist();
+	const std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
+	const bool exists = metaFile->CheckIfExist();
 	if (!file || (!fileReference.m_isMetaDirty && exists))
 		return;
 
@@ -1047,7 +1047,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	std::vector<ProjectListItem> projects;
-	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
+	const std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
 	const bool isOpen = file->Open(FileMode::ReadOnly);
 	if (isOpen)
 	{
@@ -1114,7 +1114,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::string& path, const uint64_t id)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
-	std::shared_ptr<File> file = FileSystem::MakeFile(path);
+	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 
 	const FileType type = GetFileType(file->GetFileExtension());
 	switch (type)
@@ -1248,7 +1248,7 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 	const std::string path = fileReference.m_file->GetPath() + META_EXTENSION;
 
 #if defined(EDITOR)
-	std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
+	const std::shared_ptr<File> metaFile = FileSystem::MakeFile(path);
 	if (metaFile->Open(FileMode::ReadOnly))
 #else
 	if (true)

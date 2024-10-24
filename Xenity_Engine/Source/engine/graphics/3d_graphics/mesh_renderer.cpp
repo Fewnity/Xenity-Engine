@@ -33,7 +33,7 @@ bool IsSphereInFrustum(const Frustum& frustum, const Sphere& sphere)
 	for (const Plane& plane : frustum.planes)
 	{
 		// Distance between the center of the sphere and the plane
-		float distance = plane.A * sphere.position.x +
+		const float distance = plane.A * sphere.position.x +
 			plane.B * sphere.position.y +
 			plane.C * sphere.position.z +
 			plane.D;
@@ -182,7 +182,7 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 	}
 }
 
-void MeshRenderer::SetMeshData(std::shared_ptr<MeshData> meshData)
+void MeshRenderer::SetMeshData(const std::shared_ptr<MeshData>& meshData)
 {
 	m_meshData = meshData;
 	if (meshData)
@@ -197,7 +197,7 @@ void MeshRenderer::SetMeshData(std::shared_ptr<MeshData> meshData)
 	Graphics::isRenderingBatchDirty = true;
 }
 
-void MeshRenderer::SetMaterial(std::shared_ptr<Material> material, int index)
+void MeshRenderer::SetMaterial(const std::shared_ptr<Material>& material, int index)
 {
 	XASSERT(index < m_materials.size(), "[MeshRenderer::SetMaterial] Index is out of bounds");
 	if (index < m_materials.size())

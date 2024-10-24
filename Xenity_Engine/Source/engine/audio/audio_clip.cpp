@@ -22,15 +22,15 @@ ReflectiveData AudioClipSettings::GetReflectiveData()
 AudioClip::AudioClip()
 {
 	// Create platform specific settings
-	AudioClipSettingsStandalone* settingsStandalone = new AudioClipSettingsStandalone();
-	AudioClipSettingsPSP* settingsPSP = new AudioClipSettingsPSP();
-	AudioClipSettingsPSVITA* settingsPSVITA = new AudioClipSettingsPSVITA();
-	AudioClipSettingsPS3* settingsPS3 = new AudioClipSettingsPS3();
+	std::unique_ptr<AudioClipSettings> settingsStandalone = std::make_unique<AudioClipSettingsStandalone>();
+	std::unique_ptr<AudioClipSettings> settingsPSP = std::make_unique<AudioClipSettingsPSP>();
+	std::unique_ptr<AudioClipSettings> settingsPSVITA = std::make_unique<AudioClipSettingsPSVITA>();
+	std::unique_ptr<AudioClipSettings> settingsPS3 = std::make_unique<AudioClipSettingsPS3>();
 
-	m_settings[AssetPlatform::AP_Standalone] = settingsStandalone;
-	m_settings[AssetPlatform::AP_PSP] = settingsPSP;
-	m_settings[AssetPlatform::AP_PsVita] = settingsPSVITA;
-	m_settings[AssetPlatform::AP_PS3] = settingsPS3;
+	m_settings[AssetPlatform::AP_Standalone] = std::move(settingsStandalone);
+	m_settings[AssetPlatform::AP_PSP] = std::move(settingsPSP);
+	m_settings[AssetPlatform::AP_PsVita] = std::move(settingsPSVITA);
+	m_settings[AssetPlatform::AP_PS3] = std::move(settingsPS3);
 }
 
 ReflectiveData AudioClip::GetReflectiveData()
@@ -63,7 +63,7 @@ void AudioClip::LoadFileReference()
 	{
 		if (m_file->Open(FileMode::ReadOnly))
 		{
-			m_audioMemory.m_data = (short*)m_file->ReadAllBinary(m_audioMemory.m_dataLength);
+			m_audioMemory.m_data = reinterpret_cast<short*>(m_file->ReadAllBinary(m_audioMemory.m_dataLength));
 			m_file->Close();
 			if (!m_audioMemory.m_data || m_audioMemory.m_dataLength == 0)
 			{

@@ -66,7 +66,7 @@ protected:
 		short* m_data = nullptr;
 	};
 
-	std::map<AssetPlatform, AudioClipSettings*> m_settings;
+	std::map<AssetPlatform, std::unique_ptr<AudioClipSettings>> m_settings;
 
 	/**
 	* [Internal] Is the audio clip stored in memory?

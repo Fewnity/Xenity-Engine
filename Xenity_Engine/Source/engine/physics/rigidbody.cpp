@@ -377,8 +377,8 @@ void RigidBody::Awake()
 	btEmptyShape* emptyShape2 = new btEmptyShape();
 	AddTriggerShape(emptyShape2, Vector3(0, 0, 0));
 
-	std::vector<std::shared_ptr<Collider>> col = GetGameObject()->GetComponents<Collider>();
-	for(std::shared_ptr<Collider>& c : col)
+	const std::vector<std::shared_ptr<Collider>> col = GetGameObject()->GetComponents<Collider>();
+	for(const std::shared_ptr<Collider>& c : col)
 	{
 		c->SetRigidbody(std::dynamic_pointer_cast<RigidBody>(shared_from_this()));
 		c->CreateCollision(true);

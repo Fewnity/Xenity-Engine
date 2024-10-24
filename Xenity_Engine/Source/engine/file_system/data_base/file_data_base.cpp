@@ -51,7 +51,7 @@ void FileDataBase::SaveToFile(const std::string& path)
 
 	FileSystem::s_fileSystem->Delete(path);
 
-	std::shared_ptr<File> file = FileSystem::MakeFile(path);
+	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool openResult = file->Open(FileMode::WriteCreateFile);
 	XASSERT(openResult, "Failed to create data base file" + path);
 	if (openResult)
@@ -73,7 +73,7 @@ void FileDataBase::LoadFromFile(const std::string& path)
 
 	Clear();
 
-	std::shared_ptr<File> file = FileSystem::MakeFile(path);
+	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool openResult = file->Open(FileMode::ReadOnly);
 
 	XASSERT(openResult, "Data base file not found");

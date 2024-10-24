@@ -47,7 +47,7 @@ void BoxCollider::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 	CalculateBoundingBox();
-	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		rb->UpdateGeneratesEvents();
 	}
@@ -62,7 +62,7 @@ void BoxCollider::OnTransformScaled()
 		const Vector3& scale = GetTransform()->GetScale();
 		m_bulletCollisionShape->setLocalScaling(btVector3(s_size.x / 2.0f * scale.x, s_size.y / 2.0f * scale.y, s_size.z / 2.0f * scale.z));
 
-		if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+		if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 		{
 			rb->RemoveShape(m_bulletCollisionShape);
 			rb->RemoveTriggerShape(m_bulletCollisionShape);
@@ -82,7 +82,7 @@ void BoxCollider::OnTransformUpdated()
 		const Transform& transform = *GetTransform();
 
 		const glm::mat4x4& matrix = transform.GetTransformationMatrix();
-		Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
+		const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
 
 		m_bulletCollisionObject->setWorldTransform(btTransform(
 			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
@@ -133,7 +133,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 	m_bulletCollisionShape->setLocalScaling(btVector3(s_size.x / 2.0f * scale.x, s_size.y / 2.0f * scale.y, s_size.z / 2.0f * scale.z));
 	m_bulletCollisionShape->setUserPointer(this);
 
-	if (std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		if (!m_isTrigger)
 			rb->AddShape(m_bulletCollisionShape, m_offset * scale);
@@ -222,7 +222,7 @@ void BoxCollider::OnDrawGizmosSelected()
 
 void BoxCollider::SetDefaultSize()
 {
-	std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
+	const std::shared_ptr<MeshRenderer> mesh = GetGameObject()->GetComponent<MeshRenderer>();
 	if (mesh && mesh->GetMeshData())
 	{
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();

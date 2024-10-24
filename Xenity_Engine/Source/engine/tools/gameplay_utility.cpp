@@ -39,7 +39,7 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 	if (parent == nullptr)
 		newGameObjectName = Editor::GetIncrementedGameObjectName(goToDuplicate->GetName());
 #endif
-	std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+	const std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 
 	ReflectionUtils::ReflectiveToReflective(*goToDuplicate.get(), *newGameObject.get());
 	newGameObject->SetName(newGameObjectName);
@@ -62,11 +62,11 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 	const size_t componentCount = goToDuplicateComponents.size();
 	for (size_t i = 0; i < componentCount; i++)
 	{
-		std::shared_ptr<Component> componentToDuplicate = goToDuplicateComponents[i];
-		std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentToDuplicate->GetComponentName(), *newGameObject);
+		const std::shared_ptr<Component> componentToDuplicate = goToDuplicateComponents[i];
+		const std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentToDuplicate->GetComponentName(), *newGameObject);
 		newComponent->SetIsEnabled(componentToDuplicate->IsEnabled());
-		ReflectiveData newReflection = newComponent->GetReflectiveData();
-		ReflectiveData reflectionToCopy = componentToDuplicate->GetReflectiveData();
+		const ReflectiveData newReflection = newComponent->GetReflectiveData();
+		const ReflectiveData reflectionToCopy = componentToDuplicate->GetReflectiveData();
 
 		json copiedValues;
 		copiedValues["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectionToCopy);

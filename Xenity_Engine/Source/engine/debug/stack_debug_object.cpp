@@ -2,11 +2,8 @@
 
 #include <engine/debug/debug.h>
 
-StackDebugObject::StackDebugObject(const std::string& name, const uint32_t level)
+StackDebugObject::StackDebugObject(const std::string& name, const uint32_t level) : m_name(name), m_level(level)
 {
-	m_name = name;
-	m_level = level;
-
 	if (m_level <= STACK_DEBUG_LEVEL)
 	{
 		Debug::Print("In " + m_name, true);

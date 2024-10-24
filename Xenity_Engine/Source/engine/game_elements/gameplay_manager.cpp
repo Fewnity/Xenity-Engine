@@ -128,7 +128,7 @@ void GameplayManager::UpdateComponents()
 		// Update components
 		for (int i = 0; i < componentsCount; i++)
 		{
-			if (std::shared_ptr<Component> component = orderedComponents[i].lock())
+			if (const std::shared_ptr<Component> component = orderedComponents[i].lock())
 			{
 				if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
 				{
@@ -241,7 +241,7 @@ void GameplayManager::RemoveDestroyedComponents()
 	const size_t componentToDestroyCount = componentsToDestroy.size();
 	for (size_t i = 0; i < componentToDestroyCount; i++)
 	{
-		std::shared_ptr<Component>& component = componentsToDestroy[i];
+		const std::shared_ptr<Component>& component = componentsToDestroy[i];
 		if (component)
 		{
 			component->RemoveReferences();

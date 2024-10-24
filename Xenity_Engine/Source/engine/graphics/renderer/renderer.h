@@ -31,7 +31,7 @@ struct LightsIndices;
 
 struct RenderingSettings
 {
-	MaterialRenderingModes renderingMode;
+	MaterialRenderingModes renderingMode = MaterialRenderingModes::Opaque;
 	bool useDepth = false;
 	bool invertFaces = false;
 	bool useTexture = true;

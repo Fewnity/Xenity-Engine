@@ -87,13 +87,13 @@ public:
 	* @brief Add a drawable
 	* @param drawableToAdd Drawable to add
 	*/
-	static void AddDrawable(const std::shared_ptr<IDrawable>& drawableToAdd);
+	static void AddDrawable(IDrawable* drawableToAdds);
 
 	/**
 	* @brief Remove a drawable
 	* @param drawableToRemove Drawable to remove
 	*/
-	static void RemoveDrawable(const std::shared_ptr<IDrawable>& drawableToRemove);
+	static void RemoveDrawable(const IDrawable* drawableToRemove);
 
 	/**
 	* @brief Add a lod
@@ -191,7 +191,7 @@ private:
 	* @brief Draw selected item bounding box
 	* @param cameraPosition The camera position
 	*/
-	static void DrawSelectedItemBoundingBox(const Vector3& cameraPosition);
+	static void DrawSelectedItemBoundingBox();
 
 	/**
 	* @brief Draw editor grid

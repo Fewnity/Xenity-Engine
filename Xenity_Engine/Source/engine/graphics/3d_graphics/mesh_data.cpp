@@ -48,18 +48,18 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 	m_hasNormal = useNormals;
 	m_hasColor = useVertexColor;
 
-	m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::POSITION_32_BITS);
+	m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::POSITION_32_BITS));
 	if(useUV)
 	{
-		m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::UV_32_BITS);
+		m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::UV_32_BITS));
 	}
 	if (useNormals)
 	{
-		m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
+		m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::NORMAL_32_BITS));
 	}
 	if (useVertexColor)
 	{
-		m_vertexDescriptor = (VertexElements)((uint32_t)m_vertexDescriptor | (uint32_t)VertexElements::COLOR);
+		m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::COLOR));
 	}
 
 	AllocSubMesh(vcount, index_count);
@@ -134,7 +134,7 @@ void MeshData::AddVertex(float u, float v, const Color& color, float x, float y,
 	m_subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
 	m_subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 #else
-	((Vertex*)m_subMeshes[subMeshIndex]->data)[index] = vert;
+	reinterpret_cast<Vertex*>(m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -152,7 +152,7 @@ void MeshData::AddVertex(float x, float y, float z, unsigned int index, unsigned
 	m_subMeshes[subMeshIndex]->c_verts[index][2] = z;
 	m_subMeshes[subMeshIndex]->c_verts[index][3] = 1;
 #else
-	((VertexNoColorNoUv*)m_subMeshes[subMeshIndex]->data)[index] = vert;
+	reinterpret_cast<VertexNoColorNoUv*>(m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -182,7 +182,7 @@ void MeshData::AddVertex(float u, float v, float x, float y, float z, unsigned i
 	m_subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
 	m_subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
 #else
-	((VertexNoColor*)m_subMeshes[subMeshIndex]->data)[index] = vert;
+	reinterpret_cast<VertexNoColor*>(m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -215,7 +215,7 @@ void MeshData::AddVertex(float u, float v, float nx, float ny, float nz, float x
 	m_subMeshes[subMeshIndex]->c_colours[index][2] = 1.0f;
 	m_subMeshes[subMeshIndex]->c_colours[index][3] = 1.0f;
 #else
-	((VertexNormalsNoColor*)m_subMeshes[subMeshIndex]->data)[index] = vert;
+	reinterpret_cast<VertexNormalsNoColor*>(m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -240,7 +240,7 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 	m_subMeshes[subMeshIndex]->c_st[index][2] = 1.0f;
 	m_subMeshes[subMeshIndex]->c_st[index][3] = 0.0f;
 #else
-	((VertexNormalsNoColorNoUv*)m_subMeshes[subMeshIndex]->data)[index] = vert;
+	reinterpret_cast<VertexNormalsNoColorNoUv*>(m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
 }
 
@@ -257,33 +257,33 @@ void MeshData::ComputeBoundingBox()
 	{
 		SubMesh* subMesh = m_subMeshes[i];
 
-		int verticesCount = subMesh->vertice_count;
+		const int verticesCount = subMesh->vertice_count;
 		for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
 		{
 			Vector3 vert;
-			if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+			if (static_cast<uint32_t>(m_vertexDescriptor) & static_cast<uint32_t>(VertexElements::NORMAL_32_BITS))
 			{
-				if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				if (static_cast<uint32_t>(m_vertexDescriptor) & static_cast<uint32_t>(VertexElements::UV_32_BITS))
 				{
-					VertexNormalsNoColor& vertex = ((VertexNormalsNoColor*)subMesh->data)[vertexIndex];
+					const VertexNormalsNoColor& vertex = (reinterpret_cast<VertexNormalsNoColor*>(subMesh->data))[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
 				}
 				else 
 				{
-					VertexNormalsNoColorNoUv& vertex = ((VertexNormalsNoColorNoUv*)subMesh->data)[vertexIndex];
+					const VertexNormalsNoColorNoUv& vertex = (reinterpret_cast<VertexNormalsNoColorNoUv*>(subMesh->data))[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
 				}
 			}
 			else 
 			{
-				if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				if (static_cast<uint32_t>(m_vertexDescriptor) & static_cast<uint32_t>(VertexElements::UV_32_BITS))
 				{
-					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
+					const VertexNoColor& vertex = (reinterpret_cast<VertexNoColor*>(subMesh->data))[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
 				}
 				else
 				{
-					VertexNoColorNoUv& vertex = ((VertexNoColorNoUv*)subMesh->data)[vertexIndex];
+					const VertexNoColorNoUv& vertex = (reinterpret_cast<VertexNoColorNoUv*>(subMesh->data))[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
 				}
 			}
@@ -315,7 +315,7 @@ void MeshData::ComputeBoundingBox()
 
 void MeshData::ComputeBoundingSphere()
 {
-	Vector3 spherePosition = (m_minBoundingBox + m_maxBoundingBox) / 2.0f;
+	const Vector3 spherePosition = (m_minBoundingBox + m_maxBoundingBox) / 2.0f;
 
 	const Vector3 halfDiagonal = (m_maxBoundingBox - m_minBoundingBox) / 2.0f;
 	const float sphereRadius = sqrt(halfDiagonal.x * halfDiagonal.x + halfDiagonal.y * halfDiagonal.y + halfDiagonal.z * halfDiagonal.z);
@@ -527,7 +527,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	}
 	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::POSITION_16_BITS)
 	{
-		newSubMesh->vertexMemSize += sizeof(short[3]);
+		newSubMesh->vertexMemSize += sizeof(uint16_t[3]);
 	}
 
 	// Add normal size
@@ -537,7 +537,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	}
 	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_16_BITS)
 	{
-		newSubMesh->vertexMemSize += sizeof(short[3]);
+		newSubMesh->vertexMemSize += sizeof(uint16_t[3]);
 	}
 	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_8_BITS)
 	{
@@ -551,7 +551,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	}
 	else if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::UV_16_BITS)
 	{
-		newSubMesh->vertexMemSize += sizeof(short[2]);
+		newSubMesh->vertexMemSize += sizeof(uint16_t[2]);
 	}
 
 	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::COLOR)

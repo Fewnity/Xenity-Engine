@@ -15,7 +15,7 @@ ReflectiveData Icon::GetReflectiveData()
 
 std::shared_ptr<Icon> Icon::MakeIcon()
 {
-	std::shared_ptr<Icon> newFileRef = std::make_shared<Icon>();
+	const std::shared_ptr<Icon> newFileRef = std::make_shared<Icon>();
 	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }

@@ -106,7 +106,7 @@ bool Engine::s_isInitialized = false;
 std::unique_ptr<GameInterface> Engine::s_game = nullptr;
 Event<>* Engine::s_onWindowFocusEvent = new Event<>();
 
-void Engine::OnCloseSignal(int)
+void Engine::OnCloseSignal([[maybe_unused]] int s)
 {
 	s_isRunning = false;
 }
@@ -118,7 +118,7 @@ int Engine::Init()
 #endif
 
 	//  Init random
-	srand((unsigned int)time(NULL));
+	srand(static_cast<unsigned int>(time(nullptr)));
 
 #if defined(__PSP__)
 	SetupCallbacks();
@@ -378,7 +378,7 @@ void Engine::Loop()
 				if (tryResult)
 				{
 					std::string lastComponentMessage = "Error in game's code! Stopping the game...\n";
-					std::shared_ptr<Component> lastComponent = GameplayManager::GetLastUpdatedComponent().lock();
+					const std::shared_ptr<Component> lastComponent = GameplayManager::GetLastUpdatedComponent().lock();
 					if (lastComponent)
 					{
 						lastComponentMessage += "Component name: " + lastComponent->GetComponentName();

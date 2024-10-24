@@ -24,7 +24,7 @@
 class API TextureDefault : public Texture
 {
 public:
-	TextureDefault();
+	TextureDefault() = default;
 	~TextureDefault();
 
 	/**

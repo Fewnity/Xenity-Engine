@@ -20,10 +20,6 @@
 
 #pragma region Constructors / Destructor
 
-Component::Component()
-{
-}
-
 Component::~Component()
 {
 }
@@ -56,11 +52,11 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 	if (firstUse)
 	{
 		// Move this code in a OnGameObjectSet function in the specific component?
-		std::shared_ptr<Component> thisShared = shared_from_this();
+		const std::shared_ptr<Component> thisShared = shared_from_this();
 		// If the component is a drawble, add to the drawable list
 		if (auto result = std::dynamic_pointer_cast<IDrawable>(thisShared))
 		{
-			Graphics::AddDrawable(result);
+			Graphics::AddDrawable(static_cast<IDrawable*>(this));
 		}
 		else if (auto result = std::dynamic_pointer_cast<Lod>(thisShared))
 		{

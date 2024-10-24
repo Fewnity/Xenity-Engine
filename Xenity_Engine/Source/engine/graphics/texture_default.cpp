@@ -37,10 +37,6 @@
 
 #include "renderer/renderer.h"
 
-TextureDefault::TextureDefault()
-{
-}
-
 TextureDefault::~TextureDefault()
 {
 	Debug::Print("TextureDefault::~TextureDefault()" + std::to_string(textureId), true);
@@ -138,7 +134,7 @@ void TextureDefault::OnLoadFileReferenceFinished()
 	glGenTextures(1, &textureId);
 	Bind();
 
-	unsigned int textureType = GL_RGBA; // rgba
+	const unsigned int textureType = GL_RGBA; // rgba
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, GetWidth(), GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, m_buffer);
 	if (GetUseMipmap())
 	{
@@ -159,7 +155,7 @@ void TextureDefault::SetData(const unsigned char *texData)
 	glGenTextures(1, &textureId);
 	Bind();
 
-	unsigned int textureType = GL_LUMINANCE_ALPHA;
+	const unsigned int textureType = GL_LUMINANCE_ALPHA;
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, GetWidth(), GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, texData);
 	if (GetUseMipmap())
 	{

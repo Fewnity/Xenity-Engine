@@ -243,7 +243,7 @@ ReflectiveData Material::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Material::GetMetaReflectiveData(AssetPlatform platform)
+ReflectiveData Material::GetMetaReflectiveData([[maybe_unused]] AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;

@@ -50,10 +50,10 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 
-	VertexElements vertexDescriptor = *(VertexElements*)fileData;
+	VertexElements vertexDescriptor = *reinterpret_cast<VertexElements*>(fileData);
 	fileData += sizeof(VertexElements);
 
-	uint32_t subMeshCount = *(uint32_t*)fileData;
+	uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);
 
 #if defined(__PS3__)
 	vertexDescriptor = SwapEndian(vertexDescriptor);
@@ -74,10 +74,10 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	// Read all sub meshes
 	for (uint32_t i = 0; i < subMeshCount; i++)
 	{
-		uint32_t vertice_count;
-		uint32_t index_count;
-		uint32_t vertexMemSize;
-		uint32_t indexMemSize;
+		uint32_t vertice_count = 0;
+		uint32_t index_count = 0;
+		uint32_t vertexMemSize = 0;
+		uint32_t indexMemSize = 0;
 
 		// Use memcpy to avoid alignment issues
 		memcpy(&vertice_count, fileData, sizeof(uint32_t));

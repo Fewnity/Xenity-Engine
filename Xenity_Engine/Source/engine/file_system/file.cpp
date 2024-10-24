@@ -32,8 +32,8 @@ File::File(const std::string& _path) : UniqueId(true)
 
 	// Remove all folders from path
 	int finalPos = 0;
-	const int lastSlashPos = (int)m_path.find_last_of('\\');
-	const int lastSlashPos2 = (int)m_path.find_last_of('/');
+	const int lastSlashPos = static_cast<int>(m_path.find_last_of('\\'));
+	const int lastSlashPos2 = static_cast<int>(m_path.find_last_of('/'));
 
 	if (lastSlashPos != -1 || lastSlashPos2 != -1)
 	{
@@ -46,7 +46,7 @@ File::File(const std::string& _path) : UniqueId(true)
 	const std::string fileName = m_path.substr(finalPos);
 
 	// Remove file extension from path
-	int nextPointPos = (int)fileName.find_first_of('.');
+	int nextPointPos = static_cast<int>(fileName.find_first_of('.'));
 	if (nextPointPos == -1)
 		nextPointPos = INT32_MAX;
 	m_name = fileName.substr(0, nextPointPos);

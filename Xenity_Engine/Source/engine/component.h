@@ -25,7 +25,7 @@ class Transform;
 class API Component : public UniqueId, public Reflective, public std::enable_shared_from_this<Component>
 {
 public:
-	Component();
+	Component() = default;
 	Component(const Component& other) = delete;
 	Component& operator=(const Component&) = delete;
 

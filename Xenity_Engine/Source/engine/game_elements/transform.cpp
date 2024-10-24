@@ -330,7 +330,7 @@ void Transform::UpdateTransformationMatrix()
 	if(m_position.x != 0.0f || m_position.y != 0.0f || m_position.z != 0.0f)
 		transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-m_position.x, m_position.y, m_position.z));
 
-	glm::mat4 RotationMatrix2 = glm::toMat4(glm::quat(m_rotationQuaternion.w, m_rotationQuaternion.x, -m_rotationQuaternion.y, -m_rotationQuaternion.z));
+	const glm::mat4 RotationMatrix2 = glm::toMat4(glm::quat(m_rotationQuaternion.w, m_rotationQuaternion.x, -m_rotationQuaternion.y, -m_rotationQuaternion.z));
 	transformationMatrix *= RotationMatrix2;
 
 	for (int i = 0; i < 3; i++)
@@ -362,7 +362,7 @@ void Transform::UpdateWorldScale()
 		const int childCount = lockGameObject->GetChildrenCount();
 		for (int i = 0; i < childCount; i++)
 		{
-			std::shared_ptr<GameObject> child = lockGameObject->GetChildren()[i].lock();
+			const std::shared_ptr<GameObject> child = lockGameObject->GetChildren()[i].lock();
 			child->GetTransform()->UpdateWorldScale();
 		}
 	}

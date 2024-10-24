@@ -51,10 +51,10 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 {
 	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
 	{
-		std::shared_ptr<GameObject> gameobject = GameplayManager::gameObjects[i];
+		const std::shared_ptr<GameObject> gameobject = GameplayManager::gameObjects[i];
 
 		GameObjectAccessor gameobjectAcc = GameObjectAccessor(gameobject);
-		std::vector<std::shared_ptr<Component>>& gameobjectComponents = gameobjectAcc.GetComponents();
+		const std::vector<std::shared_ptr<Component>>& gameobjectComponents = gameobjectAcc.GetComponents();
 
 		const int componentCount = gameobject->GetComponentCount();
 		for (int compI = 0; compI < componentCount; compI++)
@@ -68,10 +68,8 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 	return std::shared_ptr<Component>();
 }
 
-GameObject::GameObject()
+GameObject::GameObject() : m_name(DEFAULT_GAMEOBJECT_NAME)
 {
-	m_name = DEFAULT_GAMEOBJECT_NAME;
-
 #if defined (DEBUG)
 	Performance::s_gameObjectMemoryTracker->Allocate(sizeof(GameObject));
 #endif
@@ -157,7 +155,7 @@ void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
 		// Remove the new child from his old parent's children list
 		if (newChild->m_parent.lock())
 		{
-			std::shared_ptr<GameObject> oldParent = newChild->m_parent.lock();
+			const std::shared_ptr<GameObject> oldParent = newChild->m_parent.lock();
 			const int parentChildCount = oldParent->m_childCount;
 			for (int i = 0; i < parentChildCount; i++)
 			{
@@ -341,7 +339,7 @@ void GameObject::UpdateActive(const GameObject& changed)
 	{
 		for (int i = 0; i < m_componentCount; i++)
 		{
-			std::shared_ptr<Component>& component = m_components[i];
+			const std::shared_ptr<Component>& component = m_components[i];
 			if (component)
 			{
 				if (m_localActive) 

@@ -88,7 +88,7 @@ void SpriteRenderer::OnEnabled()
 	Graphics::isRenderingBatchDirty = true;
 }
 
-void SpriteRenderer::DrawCommand(const RenderCommand& renderCommand)
+void SpriteRenderer::DrawCommand([[maybe_unused]] const RenderCommand& renderCommand)
 {
-	SpriteManager::DrawSprite(*GetTransform(), m_color, *m_material, m_texture.get());
+	SpriteManager::DrawSprite(*GetTransformRaw(), m_color, *m_material, m_texture.get());
 }

@@ -208,9 +208,9 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useLighting = renderCommand.material->GetUseLighting();
 	renderSettings.renderingMode = renderCommand.material->GetRenderingMode();
 
-	static Quaternion rotation = Quaternion::Identity();
+	static const Quaternion rotation = Quaternion::Identity();
 
-	const int camCount = (int)Graphics::cameras.size();
+	const size_t camCount = Graphics::cameras.size();
 
 	const Vector3& camScale = Graphics::usedCamera->GetTransformRaw()->GetScale();
 	const glm::mat4& camMat = Graphics::usedCamera->GetTransformRaw()->GetTransformationMatrix();

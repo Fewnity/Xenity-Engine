@@ -18,7 +18,7 @@ void Application::OpenURL(const std::string& url)
 {
 #if defined(_WIN32) || defined(_WIN64)
 	const std::wstring wLink = std::wstring(url.begin(), url.end());
-	ShellExecute(0, 0, wLink.c_str(), 0, 0, SW_SHOW);
+	ShellExecute(nullptr, nullptr, wLink.c_str(), nullptr, nullptr, SW_SHOW);
 #endif
 }
 

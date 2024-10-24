@@ -53,7 +53,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	j["Version"] = s_sceneVersion;
 
 	// For each gameobject:
-	for (std::shared_ptr<GameObject>& go : GameplayManager::gameObjects)
+	for (const std::shared_ptr<GameObject>& go : GameplayManager::gameObjects)
 	{
 		const std::string gameObjectId = std::to_string(go->GetUniqueId());
 
@@ -146,7 +146,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		if (!path.empty())
 		{
 			FileSystem::s_fileSystem->Delete(path);
-			std::shared_ptr<File> file = FileSystem::MakeFile(path);
+			const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			if (file->Open(FileMode::WriteCreateFile))
 			{
 				const std::string jsonData = j.dump(2);
@@ -252,7 +252,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 		// Create all GameObjects and Components
 		for (const auto& gameObjectKV : jsonData["GameObjects"].items())
 		{
-			std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+			const std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 			// Set gameobject id
 			const uint64_t id = std::stoull(gameObjectKV.key());
 			newGameObject->SetUniqueId(id);
@@ -290,7 +290,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 					{
 						// If the component is missing (the class doesn't exist anymore or the game is not compiled
 						// Create a missing script and copy component data to avoid data loss
-						std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
+						const std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
 						comp = missingScript;
 						missingScript->data = componentKV.value();
 						newGameObject->m_components.push_back(missingScript);
@@ -316,7 +316,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 				// For each child, set his parent
 				for (const auto& kv2 : kv.value()["Children"].items())
 				{
-					std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
+					const std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
 					if (goChild)
 					{
 						goChild->SetParent(parentGameObject);
@@ -332,7 +332,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			if (go)
 			{
 				// Update transform
-				std::shared_ptr<Transform> transform = go->GetTransform();
+				const std::shared_ptr<Transform> transform = go->GetTransform();
 				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
 				//transform->SetRotation(Quaternion::Euler(transform->GetLocalEulerAngles().x, transform->GetLocalEulerAngles().y, transform->GetLocalEulerAngles().z));
 				transform->m_isTransformationMatrixDirty = true;
@@ -432,7 +432,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 
 	XASSERT(scene != nullptr, "[SceneManager::LoadScene] scene is nullptr");
 
-	bool canceled = OnQuit();
+	const bool canceled = OnQuit();
 	if (canceled)
 		return;
 

@@ -195,7 +195,7 @@ bool Font::CreateFont(Font& font)
 	newAtlas->SetSize(atlasSize, atlasSize);
 	newAtlas->SetChannelCount(channelCount);
 #if defined(__PSP__)
-	reinterpret_cast<TextureSettingsPSP*>(newAtlas->m_settings[AssetPlatform::AP_PSP])->type = PSPTextureType::RGBA_4444;
+	reinterpret_cast<TextureSettingsPSP*>(newAtlas->m_settings[AssetPlatform::AP_PSP].get())->type = PSPTextureType::RGBA_4444;
 #endif
 	newAtlas->SetData(atlas);
 	newAtlas->SetFilter(Filter::Bilinear);

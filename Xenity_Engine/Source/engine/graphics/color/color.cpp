@@ -12,19 +12,6 @@
 #include <engine/tools/math.h>
 #include <engine/debug/stack_debug_object.h>
 
-/**
- * @brief Create color from RGB
- *
- * @param r Red [0;255]
- * @param g Green [0;255]
- * @param b Blue [0;255]
- * @return Color
- */
-
-Color::Color()
-{
-}
-
 std::string Color::ToString() const
 {
 	std::stringstream stream;
@@ -89,8 +76,8 @@ void Color::SetFromRGBA(int r, int g, int b, int a)
 	m_rgba.g = Math::Clamp(g / 255.0f, 0, 1);
 	m_rgba.b = Math::Clamp(b / 255.0f, 0, 1);
 	m_rgba.a = Math::Clamp(a / 255.0f, 0, 1);
-	m_rgbaInt = ((int)(m_rgba.r * 255) << 24) + ((int)(m_rgba.g * 255) << 16) + ((int)(m_rgba.b * 255) << 8) + ((int)(m_rgba.a * 255) << 0);
-	m_abgrInt = ((int)(m_rgba.a * 255) << 24) + ((int)(m_rgba.b * 255) << 16) + ((int)(m_rgba.g * 255) << 8) + ((int)(m_rgba.r * 255) << 0);
+	m_rgbaInt = (static_cast<int>(m_rgba.r * 255) << 24) + (static_cast<int>(m_rgba.g * 255) << 16) + (static_cast<int>(m_rgba.b * 255) << 8) + (static_cast<int>(m_rgba.a * 255) << 0);
+	m_abgrInt = (static_cast<int>(m_rgba.a * 255) << 24) + (static_cast<int>(m_rgba.b * 255) << 16) + (static_cast<int>(m_rgba.g * 255) << 8) + (static_cast<int>(m_rgba.r * 255) << 0);
 }
 
 void Color::SetFromRGBAfloat(float r, float g, float b, float a)
@@ -99,14 +86,14 @@ void Color::SetFromRGBAfloat(float r, float g, float b, float a)
 	m_rgba.g = Math::Clamp(g, 0, 1);
 	m_rgba.b = Math::Clamp(b, 0, 1);
 	m_rgba.a = Math::Clamp(a, 0, 1);
-	m_rgbaInt = ((int)(m_rgba.r * 255) << 24) + ((int)(m_rgba.g * 255) << 16) + ((int)(m_rgba.b * 255) << 8) + ((int)(m_rgba.a * 255) << 0);
-	m_abgrInt = ((int)(m_rgba.a * 255) << 24) + ((int)(m_rgba.b * 255) << 16) + ((int)(m_rgba.g * 255) << 8) + ((int)(m_rgba.r * 255) << 0);
+	m_rgbaInt = (static_cast<int>(m_rgba.r * 255) << 24) + (static_cast<int>(m_rgba.g * 255) << 16) + (static_cast<int>(m_rgba.b * 255) << 8) + (static_cast<int>(m_rgba.a * 255) << 0);
+	m_abgrInt = (static_cast<int>(m_rgba.a * 255) << 24) + (static_cast<int>(m_rgba.b * 255) << 16) + (static_cast<int>(m_rgba.g * 255) << 8) + (static_cast<int>(m_rgba.r * 255) << 0);
 }
 
 void Color::UpdateUnsignedInts()
 {
-	m_rgbaInt = ((int)(m_rgba.r * 255) << 24) + ((int)(m_rgba.g * 255) << 16) + ((int)(m_rgba.b * 255) << 8) + ((int)(m_rgba.a * 255) << 0);
-	m_abgrInt = ((int)(m_rgba.a * 255) << 24) + ((int)(m_rgba.b * 255) << 16) + ((int)(m_rgba.g * 255) << 8) + ((int)(m_rgba.r * 255) << 0);
+	m_rgbaInt = (static_cast<int>(m_rgba.r * 255) << 24) + (static_cast<int>(m_rgba.g * 255) << 16) + (static_cast<int>(m_rgba.b * 255) << 8) + (static_cast<int>(m_rgba.a * 255) << 0);
+	m_abgrInt = (static_cast<int>(m_rgba.a * 255) << 24) + (static_cast<int>(m_rgba.b * 255) << 16) + (static_cast<int>(m_rgba.g * 255) << 8) + (static_cast<int>(m_rgba.r * 255) << 0);
 }
 
 ReflectiveData RGBA::GetReflectiveData()

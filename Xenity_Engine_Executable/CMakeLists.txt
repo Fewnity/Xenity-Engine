@@ -52,13 +52,8 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 if(MODE STREQUAL "psp")
 message(STATUS "BUILD PSP")
 
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -D_PSP_FW_VERSION=660")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -D_PSP_FW_VERSION=660 -LARGE_MEMORY=1")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto -falign-functions=32 -ftree-vectorize -O2 -LARGE_MEMORY=1")
-
-add_definitions("-LARGE_MEMORY=1")
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto -falign-functions=32 -ftree-vectorize -O1")
 
 include_directories(${PSPDEV}/psp/include/freetype2)
 

@@ -29,7 +29,7 @@ void CrashHandler::Handler(int signum)
 {
 #if defined(_WIN32) || defined(_WIN64)
 	// Create crash dump file
-	std::shared_ptr<File> file = FileSystem::MakeFile(CRASH_DUMP_FILE);
+	const std::shared_ptr<File> file = FileSystem::MakeFile(CRASH_DUMP_FILE);
 	bool isFileDumpOpened = file->Open(FileMode::WriteCreateFile);
 
 	const std::string crashDetectedMessage = "!!! Crash detected !!!";
@@ -99,7 +99,7 @@ void CrashHandler::Handler(int signum)
 				SymGetLineFromAddr(process, (DWORD64)(stack[frames - i - 1]), &dwDisplacement, line); // Get file infos
 			SymFromAddr(process, (DWORD64)(stack[frames - i - 1]), 0, symbol); // Get symbol infos
 
-			std::string name = symbol->Name;
+			const std::string name = symbol->Name;
 			//Check functions name to print only useful functions names
 			if (name == "main") // Beginning of the call stack
 			{
@@ -116,7 +116,7 @@ void CrashHandler::Handler(int signum)
 				std::string message;
 				if (line)
 				{
-					std::string fileName = line->FileName;
+					const std::string fileName = line->FileName;
 					//message = std::to_string(functionCount) + ": " + name + "() in " + fileName;
 					message = std::to_string(functionCount) + ": " + name + " " + fileName + " at line " + std::to_string(line->LineNumber-1); // LineNumber is not very accurate
 				}
@@ -150,7 +150,7 @@ void CrashHandler::Handler(int signum)
 		}
 		else 
 		{
-			std::string lastComponentMessage = "The crash has occurred outside of the user game loop.";
+			const std::string lastComponentMessage = "The crash has occurred outside of the user game loop.";
 			Debug::Print(lastComponentMessage);
 			if (isFileDumpOpened)
 				file->Write(lastComponentMessage + "\n");

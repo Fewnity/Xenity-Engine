@@ -33,7 +33,7 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 #endif
 	SetErrorMode(0);
 
-	const bool result = library != NULL;
+	const bool result = library != nullptr;
 	if (!result)
 	{
 		// "https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-"
@@ -51,7 +51,7 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 void DynamicLibrary::UnloadGameLibrary()
 {
 #if defined(_WIN32) || defined(_WIN64)
-	if (library != NULL)
+	if (library != nullptr)
 	{
 		if (FreeLibrary(library))
 		{
@@ -70,10 +70,10 @@ std::unique_ptr<GameInterface> DynamicLibrary::CreateGame()
 	GameInterface* gameInterface = nullptr;
 
 #if defined(_WIN32) || defined(_WIN64)
-	if (library != NULL)
+	if (library != nullptr)
 	{
 		// Find the "CreateGame" function
-		CreateGameFunction ProcAdd = (CreateGameFunction)GetProcAddress(library, "CreateGame");
+		CreateGameFunction ProcAdd = reinterpret_cast<CreateGameFunction>(GetProcAddress(library, "CreateGame"));
 		if (ProcAdd)
 		{
 			gameInterface = (ProcAdd)();

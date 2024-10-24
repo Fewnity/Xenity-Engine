@@ -21,8 +21,6 @@
 #include <engine/debug/debug.h>
 #include <engine/debug/stack_debug_object.h>
 
-using namespace std::chrono;
-
 float Time::timeScale = 1;
 float Time::time = 0;
 float Time::unscaledTime = 0;
@@ -59,7 +57,7 @@ void Time::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	start_point = high_resolution_clock::now();
+	start_point = std::chrono::high_resolution_clock::now();
 	end_point = start_point;
 #elif defined(__PSP__)
 	sceRtcGetCurrentTick(&currentTick);
@@ -89,10 +87,10 @@ void Time::UpdateTime()
 	const float tempDeltaTime = (currentTick - lastTick) / (float)kBUSCLK;
 	lastTick = currentTick;
 #else
-	const long long start = time_point_cast<milliseconds>(start_point).time_since_epoch().count();
-	const long long end = time_point_cast<milliseconds>(end_point).time_since_epoch().count();
+	const int64_t start = std::chrono::time_point_cast<std::chrono::milliseconds>(start_point).time_since_epoch().count();
+	const int64_t end = std::chrono::time_point_cast<std::chrono::milliseconds>(end_point).time_since_epoch().count();
 	end_point = start_point;
-	start_point = high_resolution_clock::now();
+	start_point = std::chrono::high_resolution_clock::now();
 	const float tempDeltaTime = (start - end) / 1000.0f;
 #endif
 	deltaTime = tempDeltaTime * timeScale;

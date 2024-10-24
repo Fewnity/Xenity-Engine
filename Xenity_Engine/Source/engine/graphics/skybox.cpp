@@ -28,14 +28,9 @@ SkyBox::~SkyBox()
 	AssetManager::RemoveReflection(this);
 }
 
-SkyBox::SkyBox(const std::shared_ptr<Texture>& front, const std::shared_ptr<Texture>& back, const std::shared_ptr<Texture>& up, const std::shared_ptr<Texture>& down, const std::shared_ptr<Texture>& left, const std::shared_ptr<Texture>& right)
+SkyBox::SkyBox(const std::shared_ptr<Texture>& _front, const std::shared_ptr<Texture>& _back, const std::shared_ptr<Texture>& _up, const std::shared_ptr<Texture>& _down, const std::shared_ptr<Texture>& _left, const std::shared_ptr<Texture>& _right)
+	: front(_front), back(_back), up(_up), down(_down), left(_left), right(_right)
 {
-	this->front = front;
-	this->back = back;
-	this->up = up;
-	this->down = down;
-	this->left = left;
-	this->right = right;
 }
 
 ReflectiveData SkyBox::GetReflectiveData()
@@ -50,7 +45,7 @@ ReflectiveData SkyBox::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData SkyBox::GetMetaReflectiveData(AssetPlatform platform)
+ReflectiveData SkyBox::GetMetaReflectiveData([[maybe_unused]] AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;
@@ -131,7 +126,7 @@ void SkyBox::UnloadFileReference()
 
 std::shared_ptr<SkyBox> SkyBox::MakeSkyBox()
 {
-	std::shared_ptr<SkyBox> newFileRef = std::make_shared<SkyBox>();
+	const std::shared_ptr<SkyBox> newFileRef = std::make_shared<SkyBox>();
 	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }

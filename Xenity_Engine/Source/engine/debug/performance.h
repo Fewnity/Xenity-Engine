@@ -24,7 +24,7 @@
 
 #if defined(USE_PROFILER)
 #define SCOPED_PROFILER(name, variableName) static const size_t hash##variableName = Performance::RegisterScopProfiler(name, std::hash<std::string>{}(name)); \
-ScopeBenchmark variableName = ScopeBenchmark(hash##variableName)
+const ScopeBenchmark variableName = ScopeBenchmark(hash##variableName)
 #else
 #define SCOPED_PROFILER(name, variableName)
 #endif
