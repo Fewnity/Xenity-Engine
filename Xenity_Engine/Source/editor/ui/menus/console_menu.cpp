@@ -13,6 +13,7 @@
 
 #include <engine/debug/debug.h>
 #include <engine/game_elements/gameplay_manager.h>
+#include <engine/network/network.h>
 
 ConsoleMenu::~ConsoleMenu()
 {
@@ -26,14 +27,14 @@ void ConsoleMenu::Init()
 	GameplayManager::GetOnPlayEvent().Bind(&ConsoleMenu::OnPlay, this);
 }
 
-void ConsoleMenu::OnNewDebug() 
+void ConsoleMenu::OnNewDebug()
 {
 	needUpdateScrool = 1;
 }
 
 void ConsoleMenu::OnPlay()
 {
-	if(clearOnPlay)
+	if (clearOnPlay)
 		Debug::ClearDebugLogs();
 }
 
@@ -49,7 +50,7 @@ void ConsoleMenu::Draw()
 
 		ImGui::SetCursorPosY(startCusorPos.y * 2);
 		const size_t historyCount = Debug::s_debugMessageHistory.size();
-		
+
 		if (needUpdateScrool != 0)
 			needUpdateScrool++;
 
@@ -65,7 +66,7 @@ void ConsoleMenu::Draw()
 			ImGui::Text("%s", Debug::GetDebugString().c_str());
 			RightClickMenu rightClickMenu = RightClickMenu("ConsoleMenuRightClick");
 			RightClickMenuState rightClickState = rightClickMenu.Check(false);
-			if (rightClickState != RightClickMenuState::Closed) 
+			if (rightClickState != RightClickMenuState::Closed)
 			{
 				rightClickMenu.AddItem("Clear", []() { Debug::ClearDebugLogs(); });
 			}
@@ -77,20 +78,20 @@ void ConsoleMenu::Draw()
 			{
 				const DebugHistory& history = Debug::s_debugMessageHistory[i];
 
-				ImVec4 color = ImVec4(1,1,1,1);
+				ImVec4 color = ImVec4(1, 1, 1, 1);
 				if (history.type == DebugType::Log)
 				{
 					if (!showLogs)
 						continue;
 				}
-				else if (history.type == DebugType::Warning) 
+				else if (history.type == DebugType::Warning)
 				{
 					if (!showWarnings)
 						continue;
 
 					color = ImVec4(1, 1, 0, 1);
 				}
-				else if (history.type == DebugType::Error) 
+				else if (history.type == DebugType::Error)
 				{
 					if (!showErrors)
 						continue;
@@ -101,16 +102,16 @@ void ConsoleMenu::Draw()
 				ImGui::TextColored(color, "[%d] %s", history.count, history.message.c_str());
 				RightClickMenu rightClickMenu = RightClickMenu("ConsoleItemRightClickMenu" + std::to_string(i) + "," + std::to_string(id));
 				RightClickMenuState rightClickState = rightClickMenu.Check(false);
-				if (rightClickState != RightClickMenuState::Closed) 
+				if (rightClickState != RightClickMenuState::Closed)
 				{
-					rightClickMenu.AddItem("Copy", [&history]() { 
-							ImGui::SetClipboardText(history.message.c_str());
-					});
+					rightClickMenu.AddItem("Copy", [&history]() {
+						ImGui::SetClipboardText(history.message.c_str());
+						});
 				}
 				rightClickMenu.Draw();
 			}
 		}
-		if (needUpdateScrool == 5) 
+		if (needUpdateScrool == 5)
 		{
 			if (ImGui::GetScrollY() != maxScrollSize)
 			{
@@ -143,7 +144,7 @@ void ConsoleMenu::Draw()
 		}
 		EditorUI::EndButtonColor();
 
-		if (!consoleMode) 
+		if (!consoleMode)
 		{
 			ImGui::SameLine();
 			EditorUI::SetButtonColor(showLogs);
@@ -169,6 +170,34 @@ void ConsoleMenu::Draw()
 			}
 			EditorUI::EndButtonColor();
 		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("Connect to client"))
+		{
+			clientSocket = NetworkManager::GetClientSocket();
+			totalClientText = "";
+		}
+
+		if (clientSocket)
+		{
+			const std::string clientData = clientSocket->GetIncommingData();
+			if (!clientData.empty())
+			{
+				totalClientText += clientData;
+			}
+
+			size_t startPos = totalClientText.find_first_of('{');
+			size_t endPos = totalClientText.find_first_of('}');
+			while (startPos != -1 && startPos < endPos)
+			{
+				Debug::Print("Client: " + totalClientText.substr(startPos, endPos+1));
+				totalClientText = totalClientText.substr(endPos+1);
+
+				startPos = totalClientText.find_first_of('{');
+				endPos = totalClientText.find_first_of('}');
+			}
+		}
+
 		ImGui::EndChild();
 
 		CalculateWindowValues();

@@ -8,6 +8,8 @@
 
 #include "menu.h"
 
+class Socket;
+
 class ConsoleMenu : public Menu
 {
 public:
@@ -26,5 +28,7 @@ private:
 	int lastHistoryCount = 0;
 	float maxScrollSize;
 	int needUpdateScrool = 0;
+	std::shared_ptr<Socket> clientSocket;
+	std::string totalClientText;
 };
 

@@ -81,11 +81,53 @@ void NetworkManager::Init()
 
 	sceUtilityNetconfInitStart(&s_pspNetworkData);
 #else
+#if defined(_WIN32) || defined(_WIN64)
+	WSADATA WSAData;
+	int startupResult = WSAStartup(MAKEWORD(2, 0), &WSAData);
+	if (startupResult != 0)
+	{
+		Debug::PrintError("[NetworkManager::CreateSocket] Could not start win socket");
+	}
+#endif
+
+#if !defined(EDITOR)
 	if (EngineSettings::values.useOnlineDebugger)
 	{
 		Debug::ConnectToOnlineConsole();
 	}
 #endif
+#endif
+}
+
+std::shared_ptr<Socket> NetworkManager::GetClientSocket()
+{
+	SOCKADDR_IN sin;
+	SOCKADDR_IN csin;
+	int newSocketId = 1;
+	int newClientSocketId = 1;
+	newSocketId = socket(AF_INET, SOCK_STREAM, 0);
+	sin.sin_addr.s_addr = INADDR_ANY;
+	sin.sin_family = AF_INET;
+	sin.sin_port = htons(6004);
+	bind(newSocketId, (SOCKADDR*)&sin, sizeof(sin));
+	listen(newSocketId, 0);
+	while (1) /* Boucle infinie. Exercice : améliorez ce code. */
+	{
+		int sinsize = sizeof(csin);
+		if ((newClientSocketId = accept(newSocketId, (SOCKADDR*)&csin, &sinsize)) != INVALID_SOCKET)
+		{
+			Debug::Print("New client connected");
+			break;
+			/*send(csock, "Hello world!\r\n", 14, 0);
+			closesocket(csock);*/
+		}
+	}
+	unsigned long nonblocking_long = false ? 0 : 1;
+	ioctlsocket(newClientSocketId, FIONBIO, &nonblocking_long);
+
+	std::shared_ptr<Socket> myNewSocket = std::make_shared<Socket>(newClientSocketId);
+	s_sockets.push_back(myNewSocket);
+	return myNewSocket;
 }
 
 void NetworkManager::Update()
@@ -108,8 +150,6 @@ void Socket::Update()
 
 	char recvBuff[1024];
 	int recvd_len;
-
-	m_incommingData.clear();
 
 	// Read a maximum of 1022 char in one loop
 	while ((recvd_len = recv(m_socketId, recvBuff, 1023, 0)) > 0) // if recv returns 0, the socket has been closed. (Sometimes yes, sometimes not, lol)
@@ -209,15 +249,15 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 	struct sockaddr_in serv_addr;
 
 	// memset(recvBuff, '0', sizeof(recvBuff));
-#if defined(_WIN32) || defined(_WIN64)
-	WSADATA WSAData;
-	int startupResult = WSAStartup(MAKEWORD(2, 0), &WSAData);
-	if (startupResult != 0)
-	{
-		Debug::PrintError("[NetworkManager::CreateSocket] Could not start win socket");
-		return nullptr;
-	}
-#endif
+//#if defined(_WIN32) || defined(_WIN64)
+//	WSADATA WSAData;
+//	int startupResult = WSAStartup(MAKEWORD(2, 0), &WSAData);
+//	if (startupResult != 0)
+//	{
+//		Debug::PrintError("[NetworkManager::CreateSocket] Could not start win socket");
+//		return nullptr;
+//	}
+//#endif
 	if ((newSocketId = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		Debug::PrintError("[NetworkManager::CreateSocket] Could not create socket");
@@ -254,5 +294,6 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 #endif
 #endif
 	std::shared_ptr<Socket> myNewSocket = std::make_shared<Socket>(newSocketId);
+	s_sockets.push_back(myNewSocket);
 	return myNewSocket;
 }
