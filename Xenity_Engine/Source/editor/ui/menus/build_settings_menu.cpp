@@ -63,13 +63,13 @@ void BuildSettingsMenu::Init()
 	psvitaPlatform.platform = Platform::P_PsVita;
 	psvitaPlatform.settings = std::make_shared<PlatformSettingsPsVita>(onSettingChangedEvent);
 
-	BuildPlatform ps2Platform = BuildPlatform();
+	/*BuildPlatform ps2Platform = BuildPlatform();
 	ps2Platform.name = "PS2";
 	ps2Platform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PS2];
 	ps2Platform.isSupported = false;
 	ps2Platform.supportBuildAndRun = false;
 	ps2Platform.supportBuildAndRunOnHardware = false;
-	ps2Platform.platform = Platform::P_PS2;
+	ps2Platform.platform = Platform::P_PS2;*/
 
 	BuildPlatform ps3Platform = BuildPlatform();
 	ps3Platform.name = "PS3";
@@ -79,21 +79,21 @@ void BuildSettingsMenu::Init()
 	ps3Platform.supportBuildAndRunOnHardware = false;
 	ps3Platform.platform = Platform::P_PS3;
 
-	BuildPlatform ps4Platform = BuildPlatform();
+	/*BuildPlatform ps4Platform = BuildPlatform();
 	ps4Platform.name = "PS4";
 	ps4Platform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PS4];
 	ps4Platform.isSupported = false;
 	ps4Platform.supportBuildAndRun = false;
 	ps4Platform.supportBuildAndRunOnHardware = false;
-	ps4Platform.platform = Platform::P_PS4;
+	ps4Platform.platform = Platform::P_PS4;*/
 
 	buildPlatforms.push_back(windowsPlatform);
 	buildPlatforms.push_back(pspPlatform);
 	buildPlatforms.push_back(psvitaPlatform);
 	buildPlatforms.push_back(linuxPlatform);
-	buildPlatforms.push_back(ps2Platform);
+	//buildPlatforms.push_back(ps2Platform);
 	buildPlatforms.push_back(ps3Platform);
-	buildPlatforms.push_back(ps4Platform);
+	//buildPlatforms.push_back(ps4Platform);
 
 	onSettingChangedEvent->Bind(&BuildSettingsMenu::OnSettingChanged, this);
 }
