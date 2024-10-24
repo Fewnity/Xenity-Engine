@@ -101,6 +101,9 @@ void UnitTestManager::TryTest(UnitTest& RegisterEnumStringsMap)
 	}
 	else
 	{
-		Debug::PrintError(RegisterEnumStringsMap.GetName() + ": " + errorOut, true);
+		if (errorOut.empty())
+			Debug::PrintError(RegisterEnumStringsMap.GetName() + " Failed", true);
+		else
+			Debug::PrintError(RegisterEnumStringsMap.GetName() + ": " + errorOut.substr(0, errorOut.size() -1), true);
 	}
 }
