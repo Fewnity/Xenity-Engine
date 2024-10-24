@@ -40,7 +40,7 @@ ReflectiveData Font::GetReflectiveData()
 	return reflectedVariables;
 }
 
-ReflectiveData Font::GetMetaReflectiveData(AssetPlatform platform)
+ReflectiveData Font::GetMetaReflectiveData([[maybe_unused]] AssetPlatform platform)
 {
 	ReflectiveData reflectedVariables;
 	return reflectedVariables;
