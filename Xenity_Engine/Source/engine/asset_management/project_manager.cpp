@@ -1019,10 +1019,12 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 	metaData["id"] = fileReference.m_fileId;
 	metaData["MetaVersion"] = metaVersion;
 
-	metaData["Standalone"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_Standalone));
-	metaData["PSP"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_PSP));
-	metaData["PSVITA"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_PsVita));
-	metaData["PS3"]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(AssetPlatform::AP_PS3));
+	// Save platform specific data
+	for (size_t i = 0; i < static_cast<size_t>(AssetPlatform::AP_COUNT); i++)
+	{
+		const AssetPlatform platform = static_cast<AssetPlatform>(i);
+		metaData[s_assetPlatformNames[i]]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(platform));
+	}
 
 	if (metaFile->Open(FileMode::WriteCreateFile))
 	{
@@ -1275,14 +1277,15 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 			return;
 		}
 
-		if (Application::GetAssetPlatform() == AssetPlatform::AP_Standalone || Application::IsInEditor())
-			ReflectionUtils::JsonToReflectiveData(metaData["Standalone"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_Standalone));
-		if (Application::GetAssetPlatform() == AssetPlatform::AP_PSP || Application::IsInEditor())
-			ReflectionUtils::JsonToReflectiveData(metaData["PSP"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PSP));
-		if (Application::GetAssetPlatform() == AssetPlatform::AP_PsVita || Application::IsInEditor())
-			ReflectionUtils::JsonToReflectiveData(metaData["PSVITA"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PsVita));
-		if (Application::GetAssetPlatform() == AssetPlatform::AP_PS3 || Application::IsInEditor())
-			ReflectionUtils::JsonToReflectiveData(metaData["PS3"], fileReference.GetMetaReflectiveData(AssetPlatform::AP_PS3));
+		// Load platform specific data
+		for (size_t i = 0; i < static_cast<size_t>(AssetPlatform::AP_COUNT); i++)
+		{
+			const AssetPlatform platform = static_cast<AssetPlatform>(i);
+			if (Application::GetAssetPlatform() == platform || Application::IsInEditor())
+			{
+				ReflectionUtils::JsonToReflectiveData(metaData[s_assetPlatformNames[i]], fileReference.GetMetaReflectiveData(platform));
+			}
+		}
 
 		fileReference.m_file->SetUniqueId(metaData["id"]);
 		fileReference.m_fileId = metaData["id"];

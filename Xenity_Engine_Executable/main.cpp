@@ -31,7 +31,7 @@ Check why the compiler search for main.cpp in the engine's folder
 Disable "Use lighting" do not block all lights
 Reload material file on game stop
 Add color to standard shader in psvita
-Automate SaveMetaFile and LoadMetaFile for each platforms
+use unique_ptr in file_data_base, meshdata, audiomanager, AudioClipStream
 Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
 Separate audio platform specific code
 Separate mesh platform specific code

@@ -28,3 +28,12 @@ ENUM(AssetPlatform,
 	AP_PS3,
 	//AP_PS4,
 	AP_COUNT);
+
+static const char* s_assetPlatformNames[static_cast<int>(AssetPlatform::AP_COUNT)] = {
+	"Standalone",
+	"PSP",
+	"PSVITA",
+	//"PS2",
+	"PS3"
+	//"PS4"
+};
