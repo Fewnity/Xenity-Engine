@@ -49,7 +49,7 @@ MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertex
 	m_hasColor = useVertexColor;
 
 	m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::POSITION_32_BITS));
-	if(useUV)
+	if (useUV)
 	{
 		m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::UV_32_BITS));
 	}
@@ -255,7 +255,7 @@ void MeshData::ComputeBoundingBox()
 	bool firstValue = true;
 	for (int i = 0; i < m_subMeshCount; i++)
 	{
-		SubMesh* subMesh = m_subMeshes[i];
+		std::unique_ptr<SubMesh>& subMesh = m_subMeshes[i];
 
 		const int verticesCount = subMesh->vertice_count;
 		for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
@@ -268,13 +268,13 @@ void MeshData::ComputeBoundingBox()
 					const VertexNormalsNoColor& vertex = (reinterpret_cast<VertexNormalsNoColor*>(subMesh->data))[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
 				}
-				else 
+				else
 				{
 					const VertexNormalsNoColorNoUv& vertex = (reinterpret_cast<VertexNormalsNoColorNoUv*>(subMesh->data))[vertexIndex];
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
 				}
 			}
-			else 
+			else
 			{
 				if (static_cast<uint32_t>(m_vertexDescriptor) & static_cast<uint32_t>(VertexElements::UV_32_BITS))
 				{
@@ -287,7 +287,7 @@ void MeshData::ComputeBoundingBox()
 					vert = Vector3(vertex.x, vertex.y, vertex.z);
 				}
 			}
-			
+
 			if (firstValue)
 			{
 				m_minBoundingBox.x = vert.x;
@@ -331,51 +331,21 @@ void MeshData::Unload()
 
 void MeshData::FreeMeshData(bool deleteSubMeshes)
 {
-	for (int i = 0; i < m_subMeshCount; i++)
-	{
-		SubMesh* subMesh = m_subMeshes[i];
-		if (subMesh)
-		{
-			if (subMesh->data)
-			{
-#if defined(__PSP__)
-				if(isOnVram)
-					vfree(subMesh->data);
-				else
-					free(subMesh->data);
-#elif defined(__PS3__)
-				rsxFree(subMesh->data);
-#else
-				free(subMesh->data);
-#endif
-				subMesh->data = nullptr;
-			}
-
-			if (subMesh->indices)
-			{
-#if defined(__PS3__)
-				rsxFree(subMesh->indices);
-#else
-				free(subMesh->indices);
-#endif
-				subMesh->indices = nullptr;
-			}
-#if defined (DEBUG)
-			Performance::s_meshDataMemoryTracker->Deallocate(subMesh->debugVertexMemSize);
-			Performance::s_meshDataMemoryTracker->Deallocate(subMesh->debugIndexMemSize);
-#endif
-			if (deleteSubMeshes && Engine::IsRunning(true))
-			{
-				Engine::GetRenderer().DeleteSubMeshData(*subMesh);
-				delete subMesh;
-			}
-		}
-	}
-
 	if (deleteSubMeshes)
 	{
 		m_subMeshes.clear();
 		m_subMeshCount = 0;
+	}
+	else // Only free data, do not delete sub meshes
+	{
+		for (int i = 0; i < m_subMeshCount; i++)
+		{
+			const std::unique_ptr<SubMesh>& subMesh = m_subMeshes[i];
+			if (subMesh)
+			{
+				subMesh->FreeData();
+			}
+		}
 	}
 }
 
@@ -402,7 +372,7 @@ void MeshData::LoadFileReference()
 #else
 		result = BinaryMeshLoader::LoadMesh(*this);
 #endif
-		if (result) 
+		if (result)
 		{
 			m_fileStatus = FileStatus::FileStatus_Loaded;
 		}
@@ -411,15 +381,15 @@ void MeshData::LoadFileReference()
 			m_fileStatus = FileStatus::FileStatus_Failed;
 		}
 		OnLoadFileReferenceFinished();
-//#if defined(EDITOR)
-//		isLoading = true;
-//
-//		AsyncFileLoading::AddFile(shared_from_this());
-//
-//		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
-//		threadLoading.detach();
-//#else
-//#endif
+		//#if defined(EDITOR)
+		//		isLoading = true;
+		//
+		//		AsyncFileLoading::AddFile(shared_from_this());
+		//
+		//		std::thread threadLoading = std::thread(WavefrontLoader::LoadFromRawData, std::dynamic_pointer_cast<MeshData>(shared_from_this()));
+		//		threadLoading.detach();
+		//#else
+		//#endif
 	}
 }
 
@@ -494,15 +464,15 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 {
 	XASSERT(vcount != 0 || index_count != 0, "[MeshData::AllocSubMesh] vcount and index_count are 0");
 
-	MeshData::SubMesh* newSubMesh = new MeshData::SubMesh();
+	std::unique_ptr<MeshData::SubMesh> newSubMesh = std::make_unique<MeshData::SubMesh>();
 	newSubMesh->meshData = this;
-	if (index_count != 0 && m_hasIndices) 
+	if (index_count != 0 && m_hasIndices)
 	{
 		newSubMesh->indexMemSize = sizeof(unsigned short) * index_count;
 #if defined(__PSP__)
 		newSubMesh->indices = (unsigned short*)memalign(16, newSubMesh->indexMemSize);
 #elif defined(__PS3__)
-		newSubMesh->indices = (unsigned short*)rsxMemalign(128,newSubMesh->indexMemSize);
+		newSubMesh->indices = (unsigned short*)rsxMemalign(128, newSubMesh->indexMemSize);
 #else
 		newSubMesh->indices = (unsigned short*)malloc(newSubMesh->indexMemSize);
 #endif
@@ -515,10 +485,9 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 		if (newSubMesh->indices == nullptr)
 		{
 			Debug::PrintError("[MeshData::AllocSubMesh] No memory for Indices", true);
-			delete newSubMesh;
 			return;
 		}
-	}
+}
 
 	// Add position size
 	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::POSITION_32_BITS)
@@ -563,12 +532,12 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 
 	// Allocate memory for mesh data
 #if defined(__PSP__)
-	isOnVram = true;
+	newSubMesh->isOnVram = true;
 
 	newSubMesh->data = (void*)vramalloc(newSubMesh->vertexMemSize);
 	if (!newSubMesh->data)
 	{
-		isOnVram = false;
+		newSubMesh->isOnVram = false;
 		newSubMesh->data = (void*)memalign(16, newSubMesh->vertexMemSize);
 	}
 #elif defined(_EE)
@@ -593,10 +562,23 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	// packet2_add_u32(newSubMesh->meshPacket, 128);
 	// packet2_add_u32(newSubMesh->meshPacket, 128);
 #elif defined(__PS3__)
-	newSubMesh->data = (void*)rsxMemalign(128,newSubMesh->vertexMemSize);
+	newSubMesh->data = (void*)rsxMemalign(128, newSubMesh->vertexMemSize);
 #else
-
 	newSubMesh->data = (void*)malloc(newSubMesh->vertexMemSize);
+#endif
+
+#if !defined(_EE)
+	if (newSubMesh->data == nullptr)
+	{
+		Debug::PrintWarning("[MeshData::AllocSubMesh] No memory for Vertex", true);
+		return;
+	}
+#else
+	if (newSubMesh->c_verts == nullptr || newSubMesh->c_colours == nullptr || newSubMesh->c_st == nullptr)
+	{
+		Debug::PrintWarning("[MeshData::AllocSubMesh] No ps2 memory for Vertex", true);
+		return;
+	}
 #endif
 
 #if defined (DEBUG)
@@ -604,28 +586,68 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	newSubMesh->debugVertexMemSize = newSubMesh->vertexMemSize;
 #endif
 
-#if !defined(_EE)
-	if (newSubMesh->data == nullptr)
-	{
-		Debug::PrintWarning("[MeshData::AllocSubMesh] No memory for Vertex", true);
-		free(newSubMesh->indices);
-		delete newSubMesh;
-		return;
-	}
-#else
-	if (newSubMesh->c_verts == nullptr || newSubMesh->c_colours == nullptr || newSubMesh->c_st == nullptr)
-	{
-		Debug::PrintWarning("[MeshData::AllocSubMesh] No ps2 memory for Vertex", true);
-		free(newSubMesh->c_verts);
-		free(newSubMesh->c_colours);
-		free(newSubMesh->c_st);
-		delete newSubMesh;
-		return;
-	}
-#endif
 	newSubMesh->index_count = index_count;
 	newSubMesh->vertice_count = vcount;
 
-	m_subMeshes.push_back(newSubMesh);
+	m_subMeshes.push_back(std::move(newSubMesh));
 	m_subMeshCount++;
+}
+
+void MeshData::SubMesh::FreeData()
+{
+	Debug::Print("[MeshData::SubMesh::FreeData] Freeing data");
+
+#if !defined(_EE)
+	if (data)
+	{
+#if defined(__PSP__)
+		if (isOnVram)
+			vfree(data);
+		else
+			free(data);
+#elif defined(__PS3__)
+		rsxFree(data);
+#else
+		free(data);
+#endif
+		data = nullptr;
+}
+
+	if (indices)
+	{
+#if defined(__PS3__)
+		rsxFree(indices);
+#else
+		free(indices);
+#endif
+		indices = nullptr;
+	}
+#else
+	if (c_verts == nullptr)
+	{
+		free(c_verts);
+	}
+	if (c_colours == nullptr)
+	{
+		free(c_colours);
+	}
+	if (c_st == nullptr)
+	{
+		free(c_st);
+	}
+#endif
+
+#if defined (DEBUG)
+	Performance::s_meshDataMemoryTracker->Deallocate(debugVertexMemSize);
+	Performance::s_meshDataMemoryTracker->Deallocate(debugIndexMemSize);
+#endif
+	if (Engine::IsRunning(true))
+	{
+		Engine::GetRenderer().DeleteSubMeshData(*this);
+	}
+	}
+
+MeshData::SubMesh::~SubMesh()
+{
+	FreeData();
 }

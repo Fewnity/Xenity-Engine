@@ -143,7 +143,7 @@ void Tilemap::FillChunks()
 			{
 				int yChunk = (int)floor(y / (float)chunkSize);
 				MeshData* mesh = chunks[(size_t)xChunk + (size_t)yChunk * chunkCount]->meshes[(size_t)tile->textureId - 1];
-				MeshData::SubMesh* subMesh = mesh->m_subMeshes[0];
+				std::unique_ptr<MeshData::SubMesh>& subMesh = mesh->m_subMeshes[0];
 
 				int indiceOff = subMesh->index_count;
 				int verticeOff = subMesh->vertice_count;

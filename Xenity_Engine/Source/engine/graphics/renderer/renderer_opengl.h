@@ -65,7 +65,7 @@ public:
 	void SetFogValues(float start, float end, const Color& color) override;
 
 	void DeleteSubMeshData(MeshData::SubMesh& subMesh) override;
-	void UploadMeshData(const MeshData& meshData) override;
+	void UploadMeshData(MeshData& meshData) override;
 
 	//Shader
 	unsigned int CreateShader(Shader::ShaderType type) override;

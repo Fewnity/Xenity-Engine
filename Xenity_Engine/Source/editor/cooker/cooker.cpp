@@ -123,7 +123,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		meshFile.write((char*)&meshData->m_subMeshCount, sizeof(uint32_t));
 
 		// Write submeshes data
-		for (auto subMesh : meshData->m_subMeshes)
+		for (std::unique_ptr<MeshData::SubMesh>& subMesh : meshData->m_subMeshes)
 		{
 			meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
 			meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));

@@ -97,7 +97,7 @@ public:
 	virtual void DeleteTexture(Texture& texture) = 0;
 
 	// Mesh
-	virtual void UploadMeshData(const MeshData& meshData) = 0;
+	virtual void UploadMeshData(MeshData& meshData) = 0;
 	virtual void DeleteSubMeshData(MeshData::SubMesh& subMesh) = 0;
 	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings) = 0;
 	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings) = 0;

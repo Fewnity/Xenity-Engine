@@ -7,6 +7,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #if defined(_EE)
 #include <draw3d.h>
@@ -75,6 +76,8 @@ public:
 	{
 	public:
 		SubMesh() = default;
+		void FreeData();
+		~SubMesh();
 		unsigned short *indices = nullptr;
 		MeshData* meshData = nullptr;
 		void *data = nullptr;
@@ -86,16 +89,23 @@ public:
 #endif
 		uint32_t index_count = 0;
 		uint32_t vertice_count = 0;
+
 #if defined(_EE)
 		VECTOR *c_verts = nullptr;
 		VECTOR *c_colours = nullptr;
 		VECTOR *c_st = nullptr;
 		packet2_t *meshPacket = nullptr;
 #endif
+
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 		unsigned int VBO = 0;
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;
+#endif
 
+#if defined(__PSP__)
+		bool isOnVram = true;
+#endif
 	};
 
 	MeshData();
@@ -217,7 +227,7 @@ protected:
 	Vector3 m_minBoundingBox;
 	Vector3 m_maxBoundingBox;
 
-	std::vector<SubMesh *> m_subMeshes;
+	std::vector<std::unique_ptr<SubMesh>> m_subMeshes;
 
 	/**
 	* @brief Send the mesh data to the GPU
@@ -276,9 +286,6 @@ protected:
 	int pspDrawParam = 0;
 #endif
 
-#if defined(__PSP__)
-	bool isOnVram = true;
-#endif
 	void Unload();
 
 	/**

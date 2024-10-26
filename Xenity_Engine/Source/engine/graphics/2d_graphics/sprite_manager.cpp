@@ -45,7 +45,7 @@ void SpriteManager::Init()
 	s_spriteMeshData->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3, 0);
 	s_spriteMeshData->m_hasIndices = true;
 
-	MeshData::SubMesh* subMesh = s_spriteMeshData->m_subMeshes[0];
+	std::unique_ptr<MeshData::SubMesh>& subMesh = s_spriteMeshData->m_subMeshes[0];
 	subMesh->indices[0] = 0;
 	subMesh->indices[1] = 2;
 	subMesh->indices[2] = 1;

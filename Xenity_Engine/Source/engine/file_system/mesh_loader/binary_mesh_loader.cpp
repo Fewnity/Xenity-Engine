@@ -97,7 +97,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #endif // defined(__PS3__)
 
 		mesh.AllocSubMesh(vertice_count, index_count);
-		MeshData::SubMesh* subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
+		std::unique_ptr<MeshData::SubMesh>& subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
 
 		// Copy vertices data
 		memcpy(subMesh->data, fileData, vertexMemSize);

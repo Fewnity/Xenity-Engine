@@ -165,7 +165,7 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		RenderCommand command = RenderCommand();
 		command.material = material.get();
 		command.drawable = this;
-		command.subMesh = m_meshData->m_subMeshes[i];
+		command.subMesh = m_meshData->m_subMeshes[i].get();
 		command.transform = GetTransformRaw();
 		command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 		if (material->GetRenderingMode() == MaterialRenderingModes::Opaque || material->GetRenderingMode() == MaterialRenderingModes::Cutout)

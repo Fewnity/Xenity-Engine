@@ -172,7 +172,7 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 	mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 4 + indice, 0);
 	mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 5 + indice, 0);
 
-	MeshData::SubMesh *subMesh = mesh->m_subMeshes[0];
+	std::unique_ptr<MeshData::SubMesh>& subMesh = mesh->m_subMeshes[0];
 	subMesh->indices[0 + indiceIndex] = 0 + indice;
 	subMesh->indices[1 + indiceIndex] = 2 + indice;
 	subMesh->indices[2 + indiceIndex] = 1 + indice;

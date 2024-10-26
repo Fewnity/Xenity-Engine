@@ -318,9 +318,9 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 	command.material = m_material.get();
 	command.drawable = this;
 	if (!m_mesh)
-		command.subMesh = SpriteManager::GetBasicSpriteMeshData()->m_subMeshes[0];
+		command.subMesh = SpriteManager::GetBasicSpriteMeshData()->m_subMeshes[0].get();
 	else
-		command.subMesh = m_mesh->m_subMeshes[0];
+		command.subMesh = m_mesh->m_subMeshes[0].get();
 	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 	if (m_material->GetRenderingMode() == MaterialRenderingModes::Opaque || m_material->GetRenderingMode() == MaterialRenderingModes::Cutout)

@@ -533,7 +533,7 @@ void RendererGU::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 {
 }
 
-void RendererGU::UploadMeshData(const MeshData& meshData)
+void RendererGU::UploadMeshData(MeshData& meshData)
 {
 }
 

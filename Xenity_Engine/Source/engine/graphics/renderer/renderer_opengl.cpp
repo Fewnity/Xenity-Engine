@@ -725,11 +725,11 @@ void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 	}
 }
 
-void RendererOpengl::UploadMeshData(const MeshData& meshData)
+void RendererOpengl::UploadMeshData(MeshData& meshData)
 {
 	for (int i = 0; i < meshData.m_subMeshCount; i++)
 	{
-		MeshData::SubMesh* newSubMesh = meshData.m_subMeshes[i];
+		std::unique_ptr<MeshData::SubMesh>& newSubMesh = meshData.m_subMeshes[i];
 
 		if (newSubMesh->VAO == 0)
 			newSubMesh->VAO = CreateVertexArray();

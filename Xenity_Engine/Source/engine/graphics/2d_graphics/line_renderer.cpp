@@ -118,7 +118,7 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	m_meshData->AddVertex(1.0f, 0.0f, end.x + fixedXWidth, end.y + fixedYWidth, 0.0f, 2, 0);
 	m_meshData->AddVertex(0.0f, 1.0f, start.x + fixedXWidth, start.y + fixedYWidth, 0.0f, 3, 0);
 
-	MeshData::SubMesh*& subMesh = m_meshData->m_subMeshes[0];
+	std::unique_ptr<MeshData::SubMesh>& subMesh = m_meshData->m_subMeshes[0];
 	subMesh->indices[0] = 0;
 	subMesh->indices[1] = 2;
 	subMesh->indices[2] = 1;
