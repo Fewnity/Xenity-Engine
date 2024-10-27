@@ -88,12 +88,12 @@ public:
 		return m_loop;
 	}
 
-	inline std::shared_ptr<AudioClip> GetAudioClip()
+	inline const std::shared_ptr<AudioClip>& GetAudioClip()
 	{
 		return m_audioClip;
 	}
 
-	inline void SetAudioClip(std::shared_ptr<AudioClip> audioClip)
+	inline void SetAudioClip(const std::shared_ptr<AudioClip>& audioClip)
 	{
 		m_audioClip = audioClip;
 	}

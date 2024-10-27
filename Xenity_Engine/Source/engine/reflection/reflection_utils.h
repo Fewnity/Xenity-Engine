@@ -91,7 +91,7 @@ public:
 	* @param dataList Reflective data list to fill
 	* @return True if the file has been read successfully
 	*/
-	static bool FileToReflectiveData(std::shared_ptr<File> file, const ReflectiveData& dataList);
+	static bool FileToReflectiveData(const std::shared_ptr<File>& file, const ReflectiveData& dataList);
 
 	/**
 	* @brief Write Reflective data in a list
@@ -99,7 +99,7 @@ public:
 	* @param file File to write in
 	* @return True if the data has been written successfully
 	*/
-	static bool ReflectiveDataToFile(const ReflectiveData& dataList, std::shared_ptr<File> file);
+	static bool ReflectiveDataToFile(const ReflectiveData& dataList, const std::shared_ptr<File>& file);
 
 	/**
 	* @brief Write Reflective data in a list

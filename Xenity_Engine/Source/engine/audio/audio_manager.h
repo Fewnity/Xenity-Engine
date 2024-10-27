@@ -23,16 +23,17 @@
 #endif
 
 #include "audio_source.h"
+#include <engine/audio/audio_clip_stream.h>
 
 class AudioClip;
-class AudioClipStream;
 
 class PlayedSound
 {
 public:
+	PlayedSound();
 	~PlayedSound();
 	uint64_t m_seekPosition = 0;
-	AudioClipStream* m_audioClipStream = nullptr;
+	std::unique_ptr<AudioClipStream> m_audioClipStream = nullptr;
 	std::weak_ptr<AudioSource> m_audioSource;
 	short* m_buffer = nullptr;
 	uint32_t m_seekNext = 0;

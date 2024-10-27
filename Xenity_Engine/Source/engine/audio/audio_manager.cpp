@@ -93,7 +93,7 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 		if (sound->m_isPlaying)
 #endif
 		{
-			AudioClipStream* stream = sound->m_audioClipStream;
+			const std::unique_ptr<AudioClipStream>& stream = sound->m_audioClipStream;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 			const float leftPan = std::max<float>(0.0f, std::min<float>(0.5f, 1 - sound->m_pan)) * 2;
 			const float rightPan = std::max<float>(0.0f, std::min<float>(0.5f, sound->m_pan)) * 2;
@@ -276,7 +276,7 @@ int fillAudioBufferThread()
 		{
 			auto& sound = AudioManager::s_channel->m_playedSounds[soundIndex];
 
-			AudioClipStream* stream = sound->m_audioClipStream;
+			const std::unique_ptr<AudioClipStream>& stream = sound->m_audioClipStream;
 
 			int bufferSizeToUse = quarterBuffSize;
 			if (stream->GetChannelCount() == 1)
@@ -433,11 +433,14 @@ void AudioManager::Stop()
 #endif
 }
 
+PlayedSound::PlayedSound()
+{
+}
+
 PlayedSound::~PlayedSound()
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
-	delete m_audioClipStream;
 	free(m_buffer);
 }
 
@@ -473,9 +476,8 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		// create PlayedSound and copy audio source values
 		PlayedSound* newPlayedSound = new PlayedSound();
 		newPlayedSound->m_buffer = (short*)calloc((size_t)buffSize, sizeof(short));
-		AudioClipStream* newAudioClipStream = new AudioClipStream();
-		newPlayedSound->m_audioClipStream = newAudioClipStream;
-		newAudioClipStream->OpenStream(*audioSource->GetAudioClip());
+		newPlayedSound->m_audioClipStream = std::make_unique<AudioClipStream>();
+		newPlayedSound->m_audioClipStream->OpenStream(*audioSource->GetAudioClip());
 		newPlayedSound->m_audioSource = audioSource;
 		newPlayedSound->m_seekPosition = 0;
 		newPlayedSound->m_needFillFirstHalfBuffer = true;

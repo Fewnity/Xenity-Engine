@@ -2,10 +2,9 @@
 
 #include <engine/assertions/assertions.h>
 
-MemoryTracker::MemoryTracker(const std::string& name)
+MemoryTracker::MemoryTracker(const std::string& name) : m_name(name)
 {
 	XASSERT(!name.empty(), "[MemoryTracker::MemoryTracker] Name is empty");
-	m_name = name;
 }
 
 void MemoryTracker::Allocate(size_t size)

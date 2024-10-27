@@ -170,11 +170,14 @@ void TextureDefault::Unload()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	ClearSpriteSelections();
-	glDeleteTextures(1, &textureId);
-
+	if (textureId != -1)
+	{
+		glDeleteTextures(1, &textureId);
+		textureId = -1;
 #if defined (DEBUG)
-	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
+		Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
 #endif
+	}
 }
 
 #endif

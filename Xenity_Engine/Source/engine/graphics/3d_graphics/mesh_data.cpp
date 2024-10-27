@@ -645,7 +645,7 @@ void MeshData::SubMesh::FreeData()
 	{
 		Engine::GetRenderer().DeleteSubMeshData(*this);
 	}
-	}
+}
 
 MeshData::SubMesh::~SubMesh()
 {

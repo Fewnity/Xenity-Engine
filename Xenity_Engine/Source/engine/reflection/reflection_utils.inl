@@ -533,7 +533,7 @@ inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_jso
 
 #pragma region IO
 
-inline bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, const ReflectiveData& dataList)
+inline bool ReflectionUtils::FileToReflectiveData(const std::shared_ptr<File>& file, const ReflectiveData& dataList)
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
@@ -571,7 +571,7 @@ inline bool ReflectionUtils::FileToReflectiveData(std::shared_ptr<File> file, co
 	return ok;
 }
 
-inline bool ReflectionUtils::ReflectiveDataToFile(const ReflectiveData& dataList, std::shared_ptr<File> file)
+inline bool ReflectionUtils::ReflectiveDataToFile(const ReflectiveData& dataList, const std::shared_ptr<File>& file)
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
