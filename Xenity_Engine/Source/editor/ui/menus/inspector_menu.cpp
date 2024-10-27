@@ -260,7 +260,7 @@ void InspectorMenu::DrawFilePreview()
 				if (AudioManager::s_channel->m_playedSounds[i]->m_audioSource.lock() == Editor::audioSource.lock())
 				{
 					// Get audio stream
-					stream = AudioManager::s_channel->m_playedSounds[i]->m_audioClipStream;
+					stream = AudioManager::s_channel->m_playedSounds[i]->m_audioClipStream.get();
 					break;
 				}
 			}
