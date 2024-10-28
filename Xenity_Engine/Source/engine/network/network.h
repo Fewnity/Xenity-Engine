@@ -25,7 +25,7 @@ public:
 	Socket() = delete;
 	explicit Socket(int socketId)
 	{
-		this->m_socketId = socketId;
+		m_socketId = socketId;
 	}
 	Socket(const Socket& other) = delete;
 	Socket& operator=(const Socket&) = delete;

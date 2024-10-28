@@ -32,7 +32,7 @@ public:
 	*/
 	unsigned int GetTextureId() const
 	{
-		return textureId;
+		return m_textureId;
 	}
 
 protected:
@@ -45,7 +45,7 @@ protected:
 	int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
 
-	unsigned int textureId = 0;
+	unsigned int m_textureId = 0;
 };
 
 #endif

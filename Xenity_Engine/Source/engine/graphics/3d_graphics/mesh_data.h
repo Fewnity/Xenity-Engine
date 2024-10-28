@@ -201,7 +201,7 @@ public:
 	*/
 	const Sphere& GetBoundingSphere() const
 	{
-		return boundingSphere;
+		return m_boundingSphere;
 	}
 
 protected:
@@ -260,7 +260,7 @@ protected:
 	bool m_isQuad = false;
 	bool m_isValid = true;
 
-	Sphere boundingSphere;
+	Sphere m_boundingSphere;
 
 	VertexElements m_vertexDescriptor = VertexElements::NONE;
 

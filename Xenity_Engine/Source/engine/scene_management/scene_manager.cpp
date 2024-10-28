@@ -109,12 +109,12 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	}
 
 	// Save lighting data
-	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::settings.GetReflectiveData());
+	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::s_settings.GetReflectiveData());
 
 	// Add skybox file to the usedFile list
-	if (Graphics::settings.skybox != nullptr)
+	if (Graphics::s_settings.skybox != nullptr)
 	{
-		usedFilesIds.push_back(Graphics::settings.skybox->m_fileId);
+		usedFilesIds.push_back(Graphics::s_settings.skybox->m_fileId);
 	}
 
 	// Save the usedFilesIds list
@@ -416,7 +416,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 	// Load lighting values
 	if (jsonData.contains("Lighting"))
 	{
-		ReflectionUtils::JsonToReflectiveData(jsonData["Lighting"], Graphics::settings.GetReflectiveData());
+		ReflectionUtils::JsonToReflectiveData(jsonData["Lighting"], Graphics::s_settings.GetReflectiveData());
 		Graphics::OnLightingSettingsReflectionUpdate();
 	}
 

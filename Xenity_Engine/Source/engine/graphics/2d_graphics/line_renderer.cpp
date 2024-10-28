@@ -40,7 +40,7 @@ void LineRenderer::OnReflectionUpdated()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 LineRenderer::~LineRenderer()
@@ -81,12 +81,12 @@ void LineRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 
 void LineRenderer::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void LineRenderer::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 /// <summary>

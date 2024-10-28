@@ -169,7 +169,7 @@ protected:
 	friend class RendererGsKit;
 	friend class RendererVU1;
 
-	std::vector<Vector3> worldChunkPositions;
+	std::vector<Vector3> m_worldChunkPositions;
 	int m_indexInLightList = -1;
 	int m_indexInShaderList = -1;
 	//Spot and point light

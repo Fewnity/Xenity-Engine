@@ -40,7 +40,7 @@ void TextMesh::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 	m_isTextInfoDirty = true;
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 TextMesh::~TextMesh()
@@ -77,17 +77,17 @@ void TextMesh::SetFont(const std::shared_ptr<Font>& font)
 void TextMesh::SetMaterial(std::shared_ptr<Material> _material)
 {
 	m_material = _material;
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void TextMesh::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void TextMesh::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void TextMesh::CreateRenderCommands(RenderBatch& renderBatch)

@@ -271,12 +271,12 @@ void Tilemap::CreateRenderCommands(RenderBatch& renderBatch)
 
 void Tilemap::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void Tilemap::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void Tilemap::DrawCommand(const RenderCommand& renderCommand)

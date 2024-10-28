@@ -320,8 +320,8 @@ void MeshData::ComputeBoundingSphere()
 	const Vector3 halfDiagonal = (m_maxBoundingBox - m_minBoundingBox) / 2.0f;
 	const float sphereRadius = sqrt(halfDiagonal.x * halfDiagonal.x + halfDiagonal.y * halfDiagonal.y + halfDiagonal.z * halfDiagonal.z);
 
-	boundingSphere.position = spherePosition;
-	boundingSphere.radius = sphereRadius;
+	m_boundingSphere.position = spherePosition;
+	m_boundingSphere.radius = sphereRadius;
 }
 
 void MeshData::Unload()

@@ -36,7 +36,7 @@ void BillboardRenderer::OnReflectionUpdated()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 BillboardRenderer::~BillboardRenderer()
@@ -70,23 +70,23 @@ void BillboardRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 void BillboardRenderer::SetMaterial(const std::shared_ptr<Material>& material)
 {
 	m_material = material;
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void BillboardRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
 {
 	m_texture = texture;
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void BillboardRenderer::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void BillboardRenderer::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 /// <summary>

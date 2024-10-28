@@ -342,8 +342,8 @@ protected:
 	/**
 	* [Internal] Set if the camera is for the editor
 	*/
-	void SetIsEditor(bool _isEditor)
+	void SetIsEditor(bool isEditor)
 	{
-		m_isEditor = _isEditor;
+		m_isEditor = isEditor;
 	}
 };

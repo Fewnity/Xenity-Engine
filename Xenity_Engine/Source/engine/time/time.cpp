@@ -21,11 +21,11 @@
 #include <engine/debug/debug.h>
 #include <engine/debug/stack_debug_object.h>
 
-float Time::timeScale = 1;
-float Time::time = 0;
-float Time::unscaledTime = 0;
-float Time::deltaTime = 0;
-float Time::unscaledDeltaTime = 0;
+float Time::s_timeScale = 1;
+float Time::s_time = 0;
+float Time::s_unscaledTime = 0;
+float Time::s_deltaTime = 0;
+float Time::s_unscaledDeltaTime = 0;
 
 #if defined(__PSP__)
 uint64_t lastTick;
@@ -48,7 +48,7 @@ void Time::SetTimeScale(float _timeScale)
 	if (_timeScale < 0)
 		_timeScale = 0;
 
-	Time::timeScale = _timeScale;
+	Time::s_timeScale = _timeScale;
 }
 
 #pragma endregion
@@ -93,20 +93,20 @@ void Time::UpdateTime()
 	start_point = std::chrono::high_resolution_clock::now();
 	const float tempDeltaTime = (start - end) / 1000.0f;
 #endif
-	deltaTime = tempDeltaTime * timeScale;
-	unscaledDeltaTime = tempDeltaTime;
+	s_deltaTime = tempDeltaTime * s_timeScale;
+	s_unscaledDeltaTime = tempDeltaTime;
 	
-	if (deltaTime >= 0.3333f) 
+	if (s_deltaTime >= 0.3333f) 
 	{
-		deltaTime = 0.3333f;
+		s_deltaTime = 0.3333f;
 	}
 
 	// Should we enable this?
-	/*if (unscaledDeltaTime >= 0.3333)
+	/*if (s_unscaledDeltaTime >= 0.3333)
 	{
-		unscaledDeltaTime = 0.3333;
+		s_unscaledDeltaTime = 0.3333;
 	}*/
 
-	time += deltaTime;
-	unscaledTime += unscaledDeltaTime;
+	s_time += s_deltaTime;
+	s_unscaledTime += s_unscaledDeltaTime;
 }

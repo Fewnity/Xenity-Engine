@@ -74,7 +74,7 @@ void ParticleSystem::OnReflectionUpdated()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 	if (m_speedMin > m_speedMax)
 		m_speedMin = m_speedMax;
 	else if (m_speedMax < m_speedMin)
@@ -298,12 +298,12 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 
 void ParticleSystem::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void ParticleSystem::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)

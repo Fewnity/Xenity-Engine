@@ -203,7 +203,7 @@ void Camera::UpdateProjection()
 {
 	XASSERT(m_aspect > 0, "m_aspect is incorrect!");
 
-	if constexpr (Graphics::UseOpenGLFixedFunctions)
+	if constexpr (Graphics::s_UseOpenGLFixedFunctions)
 	{
 		if (m_projectionType == ProjectionTypes::Perspective)
 		{

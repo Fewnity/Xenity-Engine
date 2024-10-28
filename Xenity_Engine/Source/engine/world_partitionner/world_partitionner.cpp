@@ -107,7 +107,7 @@ void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 
 	XASSERT(meshRenderer, "The meshRenderer is null");
 
-	for (auto& position : meshRenderer->worldChunkPositions)
+	for (auto& position : meshRenderer->m_worldChunkPositions)
 	{
 		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
 		const int y = static_cast<int>(position.y / WORLD_CHUNK_SIZE);
@@ -125,8 +125,8 @@ void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 		}
 	}
 
-	meshRenderer->worldChunkPositions.clear();
-	meshRenderer->affectedByLights.clear();
+	meshRenderer->m_worldChunkPositions.clear();
+	meshRenderer->m_affectedByLights.clear();
 }
 
 void WorldPartitionner::RemoveLight(Light* light)
@@ -135,7 +135,7 @@ void WorldPartitionner::RemoveLight(Light* light)
 
 	XASSERT(light, "The light is null");
 
-	for (auto& position : light->worldChunkPositions)
+	for (auto& position : light->m_worldChunkPositions)
 	{
 		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
 		const int y = static_cast<int>(position.y / WORLD_CHUNK_SIZE);
@@ -155,15 +155,15 @@ void WorldPartitionner::RemoveLight(Light* light)
 		for (MeshRenderer* meshRenderer : chunk.meshes)
 		{
 			// Add the light if it's not already in the list
-			auto it = std::find(meshRenderer->affectedByLights.begin(), meshRenderer->affectedByLights.end(), light);
-			if (it != meshRenderer->affectedByLights.end())
+			auto it = std::find(meshRenderer->m_affectedByLights.begin(), meshRenderer->m_affectedByLights.end(), light);
+			if (it != meshRenderer->m_affectedByLights.end())
 			{
-				meshRenderer->affectedByLights.erase(it);
+				meshRenderer->m_affectedByLights.erase(it);
 			}
 		}
 	}
 
-	light->worldChunkPositions.clear();
+	light->m_worldChunkPositions.clear();
 }
 
 void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
@@ -193,17 +193,17 @@ void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 		Chunk& chunk = zNode.chunk;
 		chunk.meshes.push_back(meshRenderer);
 
-		meshRenderer->worldChunkPositions.push_back(Vector3(cube.x, cube.y, cube.z));
+		meshRenderer->m_worldChunkPositions.push_back(Vector3(cube.x, cube.y, cube.z));
 
 		// Add light to mesh
 		for (Light* light : chunk.lights)
 		{
 			// Add the light if it's not already in the list
-			auto it = std::find(meshRenderer->affectedByLights.begin(), meshRenderer->affectedByLights.end(), light);
+			auto it = std::find(meshRenderer->m_affectedByLights.begin(), meshRenderer->m_affectedByLights.end(), light);
 
-			if (it == meshRenderer->affectedByLights.end())
+			if (it == meshRenderer->m_affectedByLights.end())
 			{
-				meshRenderer->affectedByLights.push_back(light);
+				meshRenderer->m_affectedByLights.push_back(light);
 			}
 		}
 	}
@@ -237,14 +237,14 @@ void WorldPartitionner::ProcessLight(Light* light)
 				Chunk& chunk = zNode.chunk;
 				chunk.lights.push_back(light);
 
-				light->worldChunkPositions.push_back(Vector3(cube.x, cube.y, cube.z));
+				light->m_worldChunkPositions.push_back(Vector3(cube.x, cube.y, cube.z));
 
 				for (MeshRenderer* meshRenderer : chunk.meshes)
 				{
-					auto it = std::find(meshRenderer->affectedByLights.begin(), meshRenderer->affectedByLights.end(), light);
-					if (it == meshRenderer->affectedByLights.end())
+					auto it = std::find(meshRenderer->m_affectedByLights.begin(), meshRenderer->m_affectedByLights.end(), light);
+					if (it == meshRenderer->m_affectedByLights.end())
 					{
-						meshRenderer->affectedByLights.push_back(light);
+						meshRenderer->m_affectedByLights.push_back(light);
 					}
 				}
 			}

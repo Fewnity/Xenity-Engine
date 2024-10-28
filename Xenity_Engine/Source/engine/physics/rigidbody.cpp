@@ -150,7 +150,7 @@ void RigidBody::RemoveReferences()
 void RigidBody::UpdateGeneratesEvents()
 {
 	bool hasEvents = false;
-	for (auto& collider : colliders)
+	for (auto& collider : m_colliders)
 	{
 		if (collider->m_generateCollisionEvents)
 		{
@@ -303,7 +303,7 @@ RigidBody::~RigidBody()
 	GetTransform()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
 
 	AssetManager::RemoveReflection(this);
-	for (Collider* c : colliders)
+	for (Collider* c : m_colliders)
 	{
 		c->SetRigidbody(nullptr);
 	}

@@ -39,13 +39,13 @@
 
 TextureDefault::~TextureDefault()
 {
-	Debug::Print("TextureDefault::~TextureDefault()" + std::to_string(textureId), true);
+	Debug::Print("TextureDefault::~TextureDefault()" + std::to_string(m_textureId), true);
 	this->UnloadFileReference();
 }
 
 void TextureDefault::Bind() const
 {
-	glBindTexture(GL_TEXTURE_2D, textureId);
+	glBindTexture(GL_TEXTURE_2D, m_textureId);
 	ApplyTextureFilters();
 	//float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
@@ -131,7 +131,7 @@ void TextureDefault::OnLoadFileReferenceFinished()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	glGenTextures(1, &textureId);
+	glGenTextures(1, &m_textureId);
 	Bind();
 
 	const unsigned int textureType = GL_RGBA; // rgba
@@ -152,7 +152,7 @@ void TextureDefault::SetData(const unsigned char *texData)
 
 	XASSERT(texData != nullptr, "[TextureDefault::SetTextureLevel] texData is nullptr");
 
-	glGenTextures(1, &textureId);
+	glGenTextures(1, &m_textureId);
 	Bind();
 
 	const unsigned int textureType = GL_LUMINANCE_ALPHA;
@@ -170,10 +170,10 @@ void TextureDefault::Unload()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	ClearSpriteSelections();
-	if (textureId != -1)
+	if (m_textureId != -1)
 	{
-		glDeleteTextures(1, &textureId);
-		textureId = -1;
+		glDeleteTextures(1, &m_textureId);
+		m_textureId = -1;
 #if defined (DEBUG)
 		Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
 #endif

@@ -40,7 +40,7 @@ void TextRenderer::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 	m_isTextInfoDirty = true;
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 TextRenderer::~TextRenderer()
@@ -71,7 +71,7 @@ void TextRenderer::SetFont(const std::shared_ptr<Font>& font)
 	{
 		m_font = font;
 		m_isTextInfoDirty = true;
-		Graphics::isRenderingBatchDirty = true;
+		Graphics::s_isRenderingBatchDirty = true;
 	}
 }
 
@@ -83,17 +83,17 @@ std::shared_ptr<Material> TextRenderer::GetMaterial()
 void TextRenderer::SetMaterial(std::shared_ptr<Material> material)
 {
 	m_material = material;
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void TextRenderer::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void TextRenderer::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void TextRenderer::CreateRenderCommands(RenderBatch& renderBatch)

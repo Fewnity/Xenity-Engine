@@ -123,18 +123,18 @@ std::shared_ptr<Material> Material::MakeMaterial()
 /// </summary>
 void Material::Use()
 {
-	const bool matChanged = Graphics::currentMaterial != shared_from_this();
+	const bool matChanged = Graphics::s_currentMaterial != shared_from_this();
 	const bool cameraChanged = m_lastUsedCamera.lock() != Graphics::usedCamera;
-	const bool drawTypeChanged = Graphics::currentMode != m_lastUpdatedType;
+	const bool drawTypeChanged = Graphics::s_currentMode != m_lastUpdatedType;
 
 	if (matChanged || cameraChanged || drawTypeChanged)
 	{
-		Graphics::currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
+		Graphics::s_currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
 		SCOPED_PROFILER("Material::OnMaterialChanged", scopeBenchmark);
 		if (m_shader)
 		{
 			m_lastUsedCamera = Graphics::usedCamera;
-			m_lastUpdatedType = Graphics::currentMode;
+			m_lastUpdatedType = Graphics::s_currentMode;
 
 			m_shader->Use();
 			Update();
@@ -152,7 +152,7 @@ void Material::Use()
 		else
 		{
 			Engine::GetRenderer().UseShaderProgram(0);
-			Graphics::currentShader = nullptr;
+			Graphics::s_currentShader = nullptr;
 		}
 	}
 }
@@ -171,7 +171,7 @@ void Material::Update()
 
 		{
 			//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::UpdateProj");
-			if (Graphics::currentMode == IDrawableTypes::Draw_UI)
+			if (Graphics::s_currentMode == IDrawableTypes::Draw_UI)
 			{
 				m_shader->SetShaderCameraPositionCanvas();
 				m_shader->SetShaderProjectionCanvas();
@@ -257,7 +257,7 @@ void Material::OnReflectionUpdated()
 	SetAlphaCutoff(m_alphaCutoff);
 
 #if defined(EDITOR)
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());

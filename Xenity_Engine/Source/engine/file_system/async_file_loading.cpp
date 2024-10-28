@@ -26,7 +26,7 @@ void AsyncFileLoading::FinishThreadedFileLoading()
 		{
 			s_threadLoadedFiles[i]->OnLoadFileReferenceFinished();
 			s_threadLoadedFiles.erase(s_threadLoadedFiles.begin() + i);
-			Graphics::isRenderingBatchDirty = true; // Move this in a better location ???
+			Graphics::s_isRenderingBatchDirty = true; // Move this in a better location ???
 			threadFileCount--;
 			i--;
 		}

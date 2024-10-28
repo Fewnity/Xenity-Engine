@@ -294,6 +294,6 @@ protected:
 
 	bool m_useTessellation = false;
 	std::unordered_map<std::string, unsigned int> m_uniformsIds;
-	std::vector<Light*> currentLights;
-	std::vector<Light*> currentDirectionalLights;
+	std::vector<Light*> m_currentLights;
+	std::vector<Light*> m_currentDirectionalLights;
 };

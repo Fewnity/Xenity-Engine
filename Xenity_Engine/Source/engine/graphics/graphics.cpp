@@ -47,14 +47,14 @@
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::shared_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
-int Graphics::iDrawablesCount = 0;
-int Graphics::lodsCount = 0;
+int Graphics::s_iDrawablesCount = 0;
+int Graphics::s_lodsCount = 0;
 
-std::vector<IDrawable*> Graphics::orderedIDrawable;
+std::vector<IDrawable*> Graphics::s_orderedIDrawable;
 
-std::vector<std::weak_ptr<Lod>> Graphics::lods;
+std::vector<std::weak_ptr<Lod>> Graphics::s_lods;
 
-bool Graphics::drawOrderListDirty = true;
+bool Graphics::s_drawOrderListDirty = true;
 
 std::shared_ptr<ProfilerBenchmark> orderBenchmark = nullptr;
 std::shared_ptr<ProfilerBenchmark> skyboxBenchmark = nullptr;
@@ -64,17 +64,17 @@ std::shared_ptr<ProfilerBenchmark> drawEndFrameBenchmark = nullptr;
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
 
-std::shared_ptr <Shader> Graphics::currentShader = nullptr;
-std::shared_ptr <Material> Graphics::currentMaterial = nullptr;
-IDrawableTypes Graphics::currentMode = IDrawableTypes::Draw_3D;
+std::shared_ptr <Shader> Graphics::s_currentShader = nullptr;
+std::shared_ptr <Material> Graphics::s_currentMaterial = nullptr;
+IDrawableTypes Graphics::s_currentMode = IDrawableTypes::Draw_3D;
 
-bool Graphics::isRenderingBatchDirty = true;
+bool Graphics::s_isRenderingBatchDirty = true;
 RenderBatch renderBatch;
 
-GraphicsSettings Graphics::settings;
+GraphicsSettings Graphics::s_settings;
 
-std::vector <Light*> Graphics::directionalLights;
-bool Graphics::isLightUpdateNeeded = true;
+std::vector <Light*> Graphics::s_directionalLights;
+bool Graphics::s_isLightUpdateNeeded = true;
 bool Graphics::s_isGridRenderingEnabled = true;
 float  Graphics::s_gridAlphaMultiplier = 1;
 
@@ -82,7 +82,7 @@ void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	settings.skybox = skybox_;
+	s_settings.skybox = skybox_;
 }
 
 ReflectiveData GraphicsSettings::GetReflectiveData()
@@ -101,8 +101,8 @@ void Graphics::OnLightingSettingsReflectionUpdate()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	Engine::GetRenderer().SetFog(settings.isFogEnabled);
-	Engine::GetRenderer().SetFogValues(settings.fogStart, settings.fogEnd, settings.fogColor);
+	Engine::GetRenderer().SetFog(s_settings.isFogEnabled);
+	Engine::GetRenderer().SetFogValues(s_settings.fogStart, s_settings.fogEnd, s_settings.fogColor);
 }
 
 void Graphics::Init()
@@ -141,28 +141,28 @@ void Graphics::Stop()
 
 	cameras.clear();
 	usedCamera.reset();
-	iDrawablesCount = 0;
-	lods.clear();
-	lodsCount = 0;
-	orderedIDrawable.clear();
-	isRenderingBatchDirty = true;
+	s_iDrawablesCount = 0;
+	s_lods.clear();
+	s_lodsCount = 0;
+	s_orderedIDrawable.clear();
+	s_isRenderingBatchDirty = true;
 	renderBatch.Reset();
-	settings.skybox.reset();
+	s_settings.skybox.reset();
 	skyPlane.reset();
-	currentShader.reset();
-	currentMaterial.reset();
+	s_currentShader.reset();
+	s_currentMaterial.reset();
 }
 
 void Graphics::SetDefaultValues()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	settings.isFogEnabled = false;
-	settings.fogStart = 10;
-	settings.fogEnd = 50;
-	settings.fogColor = Color::CreateFromRGB(152, 152, 152);
-	settings.skyColor = Color::CreateFromRGB(25, 25, 25);
-	settings.skybox.reset();
+	s_settings.isFogEnabled = false;
+	s_settings.fogStart = 10;
+	s_settings.fogEnd = 50;
+	s_settings.fogColor = Color::CreateFromRGB(152, 152, 152);
+	s_settings.skyColor = Color::CreateFromRGB(25, 25, 25);
+	s_settings.skybox.reset();
 }
 
 void Graphics::Draw()
@@ -174,7 +174,7 @@ void Graphics::Draw()
 	Engine::GetRenderer().NewFrame();
 
 	usedCamera.reset();
-	currentMaterial = nullptr;
+	s_currentMaterial = nullptr;
 
 	OrderDrawables();
 	
@@ -195,10 +195,10 @@ void Graphics::Draw()
 				mat->m_updated = false;
 			}
 
-			currentMode = IDrawableTypes::Draw_3D;
+			s_currentMode = IDrawableTypes::Draw_3D;
 
 			needUpdateCamera = true;
-			isLightUpdateNeeded = true;
+			s_isLightUpdateNeeded = true;
 
 			// Update camera and bind frame buffer
 			usedCamera->UpdateProjection();
@@ -206,10 +206,10 @@ void Graphics::Draw()
 			usedCamera->BindFrameBuffer();
 			const Vector3& camPos = usedCamera->GetTransformRaw()->GetPosition();
 
-			Engine::GetRenderer().SetClearColor(settings.skyColor);
+			Engine::GetRenderer().SetClearColor(s_settings.skyColor);
 			Engine::GetRenderer().Clear();
 
-			if constexpr (UseOpenGLFixedFunctions)
+			if constexpr (s_UseOpenGLFixedFunctions)
 			{
 				Engine::GetRenderer().SetCameraPosition(*usedCamera);
 			}
@@ -218,13 +218,13 @@ void Graphics::Draw()
 			DrawSkybox(camPos);
 			skyboxBenchmark->Stop();
 
-			Engine::GetRenderer().SetFog(settings.isFogEnabled);
+			Engine::GetRenderer().SetFog(s_settings.isFogEnabled);
 
 			drawAllBenchmark->Start();
 
 			{
 				SCOPED_PROFILER("Graphics::CallOnNewRender", scopeBenchmarkNewRender);
-				for (IDrawable* drawable : orderedIDrawable)
+				for (IDrawable* drawable : s_orderedIDrawable)
 				{
 					drawable->OnNewRender();
 				}
@@ -251,7 +251,7 @@ void Graphics::Draw()
 				}
 			}
 
-			currentMode = IDrawableTypes::Draw_2D;
+			s_currentMode = IDrawableTypes::Draw_2D;
 			for (const RenderCommand& com : renderBatch.spriteCommands)
 			{
 				if (com.isEnabled)
@@ -259,8 +259,8 @@ void Graphics::Draw()
 			}
 
 			if (!usedCamera->IsEditor())
-				currentMode = IDrawableTypes::Draw_UI;
-			if constexpr (UseOpenGLFixedFunctions)
+				s_currentMode = IDrawableTypes::Draw_UI;
+			if constexpr (s_UseOpenGLFixedFunctions)
 			{
 				if (!usedCamera->IsEditor())
 				{
@@ -284,10 +284,10 @@ void Graphics::Draw()
 				Engine::GetRenderer().SetFog(false);
 
 				//Draw editor scene grid
-				if (currentMode != IDrawableTypes::Draw_3D)
+				if (s_currentMode != IDrawableTypes::Draw_3D)
 				{
-					currentMode = IDrawableTypes::Draw_3D;
-					if constexpr (UseOpenGLFixedFunctions)
+					s_currentMode = IDrawableTypes::Draw_3D;
+					if constexpr (s_UseOpenGLFixedFunctions)
 					{
 						usedCamera->UpdateProjection();
 					}
@@ -297,11 +297,11 @@ void Graphics::Draw()
 				Engine::GetRenderer().SetCameraPosition(*usedCamera);
 
 				// Currently lines do not support shaders
-				if constexpr (!UseOpenGLFixedFunctions)
+				if constexpr (!s_UseOpenGLFixedFunctions)
 				{
 					Engine::GetRenderer().UseShaderProgram(0);
-					currentShader = nullptr;
-					currentMaterial = nullptr;
+					s_currentShader = nullptr;
+					s_currentMaterial = nullptr;
 				}
 
 				if (usedCamera->GetProjectionType() == ProjectionTypes::Perspective)
@@ -445,12 +445,12 @@ void Graphics::OrderDrawables()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	orderBenchmark->Start();
-	if (isRenderingBatchDirty)
+	if (s_isRenderingBatchDirty)
 	{
 		SCOPED_PROFILER("Graphics::OrderDrawables", scopeBenchmark);
-		isRenderingBatchDirty = false;
+		s_isRenderingBatchDirty = false;
 		renderBatch.Reset();
-		for (IDrawable* drawable : orderedIDrawable)
+		for (IDrawable* drawable : s_orderedIDrawable)
 		{
 			drawable->CreateRenderCommands(renderBatch);
 		}
@@ -463,9 +463,9 @@ void Graphics::DeleteAllDrawables()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	orderedIDrawable.clear();
-	iDrawablesCount = 0;
-	isRenderingBatchDirty = true;
+	s_orderedIDrawable.clear();
+	s_iDrawablesCount = 0;
+	s_isRenderingBatchDirty = true;
 }
 
 void Graphics::AddDrawable(IDrawable* drawableToAdd)
@@ -474,9 +474,9 @@ void Graphics::AddDrawable(IDrawable* drawableToAdd)
 
 	XASSERT(drawableToAdd != nullptr, "[Graphics::AddDrawable] drawableToAdd is nullptr");
 
-	orderedIDrawable.push_back(drawableToAdd);
-	iDrawablesCount++;
-	isRenderingBatchDirty = true;
+	s_orderedIDrawable.push_back(drawableToAdd);
+	s_iDrawablesCount++;
+	s_isRenderingBatchDirty = true;
 	SetDrawOrderListAsDirty();
 }
 
@@ -489,13 +489,13 @@ void Graphics::RemoveDrawable(const IDrawable* drawableToRemove)
 	if (!Engine::IsRunning(true))
 		return;
 
-	for (int i = 0; i < iDrawablesCount; i++)
+	for (int i = 0; i < s_iDrawablesCount; i++)
 	{
-		if (orderedIDrawable[i] == drawableToRemove)
+		if (s_orderedIDrawable[i] == drawableToRemove)
 		{
-			orderedIDrawable.erase(orderedIDrawable.begin() + i);
-			iDrawablesCount--;
-			isRenderingBatchDirty = true;
+			s_orderedIDrawable.erase(s_orderedIDrawable.begin() + i);
+			s_iDrawablesCount--;
+			s_isRenderingBatchDirty = true;
 			break;
 		}
 	}
@@ -507,8 +507,8 @@ void Graphics::AddLod(const std::weak_ptr<Lod>& lodToAdd)
 
 	XASSERT(lodToAdd.lock() != nullptr, "[Graphics::AddLod] lodToAdd is nullptr");
 
-	lods.push_back(lodToAdd);
-	lodsCount++;
+	s_lods.push_back(lodToAdd);
+	s_lodsCount++;
 }
 
 void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
@@ -520,12 +520,12 @@ void Graphics::RemoveLod(const std::weak_ptr<Lod>& lodToRemove)
 	if (!Engine::IsRunning(true))
 		return;
 
-	for (int i = 0; i < lodsCount; i++)
+	for (int i = 0; i < s_lodsCount; i++)
 	{
-		if (lods[i].lock() == lodToRemove.lock())
+		if (s_lods[i].lock() == lodToRemove.lock())
 		{
-			lods.erase(lods.begin() + i);
-			lodsCount--;
+			s_lods.erase(s_lods.begin() + i);
+			s_lodsCount--;
 			break;
 		}
 	}
@@ -567,14 +567,14 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 
 	drawMeshBenchmark->Start();
 
-	if constexpr (!UseOpenGLFixedFunctions)
+	if constexpr (!s_UseOpenGLFixedFunctions)
 	{
 		material.Use();
 
-		if (!currentShader)
+		if (!s_currentShader)
 			return;
 
-		currentShader->SetShaderModel(matrix);
+		s_currentShader->SetShaderModel(matrix);
 	}
 	else
 	{
@@ -593,20 +593,20 @@ void Graphics::SetDrawOrderListAsDirty()
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
-	drawOrderListDirty = true;
+	s_drawOrderListDirty = true;
 }
 
 void Graphics::CreateLightLists()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	directionalLights.clear();
+	s_directionalLights.clear();
 	const std::vector<Light*>& lights = AssetManager::GetLights();
 	for (Light* light : lights)
 	{
 		if (light->GetType() == LightType::Directional && light->IsEnabled() && light->GetGameObjectRaw()->IsLocalActive())
 		{
-			directionalLights.push_back(light);
+			s_directionalLights.push_back(light);
 		}
 	}
 }
@@ -635,7 +635,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	SCOPED_PROFILER("Graphics::DrawSkybox", scopeBenchmark);
-	if (settings.skybox)
+	if (s_settings.skybox)
 	{
 		Engine::GetRenderer().SetFog(false);
 		const float scaleF = 10.01f;
@@ -650,27 +650,27 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 
 		const std::shared_ptr<Texture>& texture = AssetManager::unlitMaterial->m_texture;
 
-		AssetManager::unlitMaterial->m_texture = settings.skybox->down;
+		AssetManager::unlitMaterial->m_texture = s_settings.skybox->down;
 		static const Quaternion q0 = Quaternion::Euler(0, 180, 0);
 		Graphics::DrawSubMesh(Vector3(0, -5, 0) + cameraPosition, q0, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->m_texture = settings.skybox->up;
+		AssetManager::unlitMaterial->m_texture = s_settings.skybox->up;
 		static const Quaternion q1 = Quaternion::Euler(180, 180, 0);
 		Graphics::DrawSubMesh(Vector3(0, 5, 0) + cameraPosition, q1, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->m_texture = settings.skybox->front;
+		AssetManager::unlitMaterial->m_texture = s_settings.skybox->front;
 		static const Quaternion q2 = Quaternion::Euler(90, 0, 180);
 		Graphics::DrawSubMesh(Vector3(0, 0, 5) + cameraPosition, q2, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->m_texture = settings.skybox->back;
+		AssetManager::unlitMaterial->m_texture = s_settings.skybox->back;
 		static const Quaternion q3 = Quaternion::Euler(90, 0, 0);
 		Graphics::DrawSubMesh(Vector3(0, 0, -5) + cameraPosition, q3, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->m_texture = settings.skybox->left;
+		AssetManager::unlitMaterial->m_texture = s_settings.skybox->left;
 		static const Quaternion q4 = Quaternion::Euler(90, -90, 0);
 		Graphics::DrawSubMesh(Vector3(5, 0, 0) + cameraPosition, q4, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
-		AssetManager::unlitMaterial->m_texture = settings.skybox->right;
+		AssetManager::unlitMaterial->m_texture = s_settings.skybox->right;
 		static const Quaternion q5 = Quaternion::Euler(90, 0, -90);
 		Graphics::DrawSubMesh(Vector3(-5, 0, 0) + cameraPosition, q5, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
@@ -683,9 +683,9 @@ void Graphics::CheckLods()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	SCOPED_PROFILER("Graphics::CheckLods", scopeBenchmark);
-	for (int i = 0; i < lodsCount; i++)
+	for (int i = 0; i < s_lodsCount; i++)
 	{
-		const std::shared_ptr<Lod> lod = lods[i].lock();
+		const std::shared_ptr<Lod> lod = s_lods[i].lock();
 		if (lod)
 		{
 			lod->CheckLod();

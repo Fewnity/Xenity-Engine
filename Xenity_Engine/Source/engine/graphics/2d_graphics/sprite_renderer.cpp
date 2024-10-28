@@ -35,7 +35,7 @@ void SpriteRenderer::OnReflectionUpdated()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 SpriteRenderer::~SpriteRenderer()
@@ -69,23 +69,23 @@ void SpriteRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 void SpriteRenderer::SetMaterial(const std::shared_ptr<Material>& material)
 {
 	m_material = material;
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void SpriteRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
 {
 	m_texture = texture;
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void SpriteRenderer::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void SpriteRenderer::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void SpriteRenderer::DrawCommand([[maybe_unused]] const RenderCommand& renderCommand)

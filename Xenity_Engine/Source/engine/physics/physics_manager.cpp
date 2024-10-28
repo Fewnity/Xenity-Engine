@@ -112,7 +112,7 @@ void PhysicsManager::AddEvent(Collider* collider, Collider* otherCollider, bool 
 					//std::cout << "First trigger collision: " << collider->GetGameObject()->GetName() << " ToString" << collider->ToString() << std::endl;
 					s_colliders[i].collisions[otherCollider] = CollisionState::FirstFrame;
 				}
-				//colliders[i].collisions.push_back(collisionInfo);
+				//m_colliders[i].collisions.push_back(collisionInfo);
 			}
 			break;
 		}

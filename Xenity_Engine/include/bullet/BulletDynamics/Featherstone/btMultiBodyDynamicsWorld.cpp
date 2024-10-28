@@ -78,7 +78,7 @@ void	btMultiBodyDynamicsWorld::calculateSimulationIslands()
 		}
 	}
 
-	//merge islands linked by Featherstone link colliders
+	//merge islands linked by Featherstone link m_colliders
 	for (int i=0;i<m_multiBodies.size();i++)
 	{
 		btMultiBody* body = m_multiBodies[i];

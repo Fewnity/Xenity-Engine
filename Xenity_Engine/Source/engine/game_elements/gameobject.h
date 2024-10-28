@@ -206,7 +206,7 @@ public:
 		return m_parent;
 	}
 
-	inline std::weak_ptr<GameObject> GetChild(int index)
+	inline const std::weak_ptr<GameObject>& GetChild(int index)
 	{
 		return m_children[index];
 	}

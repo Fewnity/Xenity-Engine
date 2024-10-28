@@ -23,7 +23,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 // For the Alpha Release
 /*
 --- Needed
-Add undo/redo commands to DrawVector functions
 Rework the documentation
 Rename member variables to m_memberVariableName
 Check after compilation components names
@@ -31,7 +30,7 @@ Check why the compiler search for main.cpp in the engine's folder
 Disable "Use lighting" do not block all lights
 Reload material file on game stop
 Add color to standard shader in psvita
-use unique_ptr in file_data_base, meshdata, audiomanager, AudioClipStream
+use unique_ptr in file_data_base, meshdata
 Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
 Separate audio platform specific code
 Separate mesh platform specific code

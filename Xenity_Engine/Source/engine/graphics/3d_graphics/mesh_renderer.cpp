@@ -59,14 +59,14 @@ void MeshRenderer::OnDrawGizmosSelected()
 
 #if defined(EDITOR)
 	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-	Gizmo::DrawSphere(boundingSphere.position, boundingSphere.radius);
+	Gizmo::DrawSphere(m_boundingSphere.position, m_boundingSphere.radius);
 
 	const Color meshLineColor = Color::CreateFromRGBAFloat(0, 0, 1, 1);
 
 	Gizmo::SetColor(meshLineColor);
 
 	const Vector3& tPos = GetTransformRaw()->GetPosition();
-	for (auto& chunk : worldChunkPositions)
+	for (auto& chunk : m_worldChunkPositions)
 	{
 		Gizmo::DrawLine(tPos, chunk + Vector3(WORLD_CHUNK_HALF_SIZE));
 	}
@@ -75,7 +75,7 @@ void MeshRenderer::OnDrawGizmosSelected()
 
 	Gizmo::SetColor(lightLineColor);
 
-	for (auto& light : affectedByLights)
+	for (auto& light : m_affectedByLights)
 	{
 		Gizmo::DrawLine(tPos, light->GetTransformRaw()->GetPosition());
 	}
@@ -101,7 +101,7 @@ void MeshRenderer::OnNewRender()
 {
 	if (Graphics::usedCamera)
 	{
-		outOfFrustum = !IsSphereInFrustum(Graphics::usedCamera->frustum, boundingSphere);
+		m_outOfFrustum = !IsSphereInFrustum(Graphics::usedCamera->frustum, m_boundingSphere);
 	}
 }
 
@@ -128,9 +128,9 @@ void MeshRenderer::OnReflectionUpdated()
 	}
 
 	m_matCount = m_materials.size();
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 
-	boundingSphere = ProcessBoundingSphere();
+	m_boundingSphere = ProcessBoundingSphere();
 	WorldPartitionner::ProcessMeshRenderer(this);
 }
 
@@ -194,7 +194,7 @@ void MeshRenderer::SetMeshData(const std::shared_ptr<MeshData>& meshData)
 	{
 
 	}
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void MeshRenderer::SetMaterial(const std::shared_ptr<Material>& material, int index)
@@ -203,26 +203,26 @@ void MeshRenderer::SetMaterial(const std::shared_ptr<Material>& material, int in
 	if (index < m_materials.size())
 	{
 		m_materials[index] = material;
-		Graphics::isRenderingBatchDirty = true;
+		Graphics::s_isRenderingBatchDirty = true;
 	}
 }
 
 void MeshRenderer::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void MeshRenderer::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	if (m_culled || outOfFrustum)
+	if (m_culled || m_outOfFrustum)
 		return;
 
-	if constexpr (!Graphics::UseOpenGLFixedFunctions)
+	if constexpr (!Graphics::s_UseOpenGLFixedFunctions)
 	{
 		if (renderCommand.material->GetShader() == nullptr || renderCommand.material->GetShader()->GetFileStatus() != FileStatus::FileStatus_Loaded)
 		{
@@ -232,16 +232,16 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 
 	if (renderCommand.material->GetUseLighting())
 	{
-		const size_t lightCount = affectedByLights.size();
+		const size_t lightCount = m_affectedByLights.size();
 
 		const std::shared_ptr<Shader>& shader = renderCommand.material->GetShader();
-		const size_t directionalLightCount = Graphics::directionalLights.size();
+		const size_t directionalLightCount = Graphics::s_directionalLights.size();
 
 		// Check if the lights have changed
-		bool needLightUpdate = Graphics::isLightUpdateNeeded;
+		bool needLightUpdate = Graphics::s_isLightUpdateNeeded;
 		if (!needLightUpdate)
 		{
-			if (shader->currentLights.size() != lightCount || shader->currentDirectionalLights.size() != directionalLightCount)
+			if (shader->m_currentLights.size() != lightCount || shader->m_currentDirectionalLights.size() != directionalLightCount)
 			{
 				needLightUpdate = true;
 			}
@@ -252,7 +252,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 					bool found = false;
 					for (size_t j = 0; j < lightCount; j++)
 					{
-						if (affectedByLights[i] == shader->currentLights[j])
+						if (m_affectedByLights[i] == shader->m_currentLights[j])
 						{
 							found = true;
 							break;
@@ -270,21 +270,21 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 		// Update light buffer
 		if (needLightUpdate)
 		{
-			Graphics::isLightUpdateNeeded = false;
+			Graphics::s_isLightUpdateNeeded = false;
 			int pointLightCount = 0;
 			int spotLightCount = 0;
 
 			LightsIndices lightsIndices;
 			lightsIndices.usedDirectionalLightCount = directionalLightCount;
-			shader->currentLights = affectedByLights;
-			shader->currentDirectionalLights = Graphics::directionalLights;
+			shader->m_currentLights = m_affectedByLights;
+			shader->m_currentDirectionalLights = Graphics::s_directionalLights;
 
 			for (size_t i = 0; i < lightCount; i++)
 			{
-				const Light* light = affectedByLights[i];
+				const Light* light = m_affectedByLights[i];
 				if (light->GetType() == LightType::Point)
 				{
-					if constexpr (Graphics::UseOpenGLFixedFunctions)
+					if constexpr (Graphics::s_UseOpenGLFixedFunctions)
 						lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInLightList + 1;
 					else
 						lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInShaderList + 1;
@@ -293,7 +293,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 				}
 				else if (light->GetType() == LightType::Spot)
 				{
-					if constexpr (Graphics::UseOpenGLFixedFunctions)
+					if constexpr (Graphics::s_UseOpenGLFixedFunctions)
 						lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInLightList + 1;
 					else
 						lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInShaderList + 1;
@@ -304,15 +304,15 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 
 			for (size_t i = 0; i < directionalLightCount; i++)
 			{
-				if constexpr (Graphics::UseOpenGLFixedFunctions)
-					lightsIndices.directionalLightIndices[i].x = Graphics::directionalLights[i]->m_indexInLightList + 1;
+				if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+					lightsIndices.directionalLightIndices[i].x = Graphics::s_directionalLights[i]->m_indexInLightList + 1;
 				else
-					lightsIndices.directionalLightIndices[i].x = Graphics::directionalLights[i]->m_indexInShaderList + 1;
+					lightsIndices.directionalLightIndices[i].x = Graphics::s_directionalLights[i]->m_indexInShaderList + 1;
 			}
 
 			lightsIndices.usedPointLightCount = pointLightCount;
 			lightsIndices.usedSpotLightCount = spotLightCount;
-			if constexpr (Graphics::UseOpenGLFixedFunctions)
+			if constexpr (Graphics::s_UseOpenGLFixedFunctions)
 			{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 				Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
@@ -337,6 +337,6 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 
 void MeshRenderer::OnTransformPositionUpdated()
 {
-	boundingSphere = ProcessBoundingSphere();
+	m_boundingSphere = ProcessBoundingSphere();
 	WorldPartitionner::ProcessMeshRenderer(this);
 }

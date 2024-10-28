@@ -247,7 +247,7 @@ Shader::~Shader()
 {
 	if (m_fileStatus == FileStatus::FileStatus_Loaded)
 	{
-		if constexpr (!Graphics::UseOpenGLFixedFunctions)
+		if constexpr (!Graphics::s_UseOpenGLFixedFunctions)
 		{
 			if (Engine::IsRunning(true))
 			{
@@ -284,7 +284,7 @@ void Shader::LoadFileReference()
 
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		if constexpr (Graphics::UseOpenGLFixedFunctions) 
+		if constexpr (Graphics::s_UseOpenGLFixedFunctions) 
 		{
 			m_fileStatus = FileStatus::FileStatus_Loaded;
 			return;
@@ -421,10 +421,10 @@ unsigned int Shader::GetProgramId() const
 /// </summary>
 bool Shader::Use()
 {
-	if (Graphics::currentShader != shared_from_this())
+	if (Graphics::s_currentShader != shared_from_this())
 	{
 		Engine::GetRenderer().UseShaderProgram(m_programId);
-		Graphics::currentShader = std::dynamic_pointer_cast<Shader>(shared_from_this());
+		Graphics::s_currentShader = std::dynamic_pointer_cast<Shader>(shared_from_this());
 		return true;
 	}
 	return false;

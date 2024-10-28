@@ -143,28 +143,28 @@ public:
 	static void SetDrawOrderListAsDirty();
 
 #if defined(__PSP__) || defined(_EE) || defined(__PS3__)
-	static constexpr bool UseOpenGLFixedFunctions = true;
+	static constexpr bool s_UseOpenGLFixedFunctions = true;
 #else
-	static constexpr bool UseOpenGLFixedFunctions = false;
+	static constexpr bool s_UseOpenGLFixedFunctions = false;
 #endif
 
 	static std::vector<std::weak_ptr<Camera>> cameras;
 	API static std::shared_ptr<Camera> usedCamera;
 	static bool needUpdateCamera;
 
-	static std::vector <IDrawable*> orderedIDrawable;
-	static std::vector<std::weak_ptr<Lod>> lods;
+	static std::vector <IDrawable*> s_orderedIDrawable;
+	static std::vector<std::weak_ptr<Lod>> s_lods;
 
 	
-	static std::shared_ptr <Shader> currentShader;
-	static std::shared_ptr <Material> currentMaterial;
-	static IDrawableTypes currentMode;
-	static bool isRenderingBatchDirty;
-	static GraphicsSettings settings;
+	static std::shared_ptr <Shader> s_currentShader;
+	static std::shared_ptr <Material> s_currentMaterial;
+	static IDrawableTypes s_currentMode;
+	static bool s_isRenderingBatchDirty;
+	static GraphicsSettings s_settings;
 
-	static std::vector <Light*> directionalLights;
+	static std::vector <Light*> s_directionalLights;
 	static void CreateLightLists();
-	static bool isLightUpdateNeeded;
+	static bool s_isLightUpdateNeeded;
 	static void SetIsGridRenderingEnabled(bool enabled);
 	static bool IsGridRenderingEnabled();
 
@@ -207,7 +207,7 @@ private:
 	static void DrawEditorTool(const Vector3& cameraPosition);
 #endif
 
-	static int iDrawablesCount;
-	static int lodsCount;
-	static bool drawOrderListDirty;
+	static int s_iDrawablesCount;
+	static int s_lodsCount;
+	static bool s_drawOrderListDirty;
 };

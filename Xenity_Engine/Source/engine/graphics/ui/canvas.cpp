@@ -37,12 +37,12 @@ void Canvas::OnReflectionUpdated()
 
 void Canvas::OnDisabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void Canvas::OnEnabled()
 {
-	Graphics::isRenderingBatchDirty = true;
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void Canvas::CreateRenderCommands(RenderBatch& renderBatch)

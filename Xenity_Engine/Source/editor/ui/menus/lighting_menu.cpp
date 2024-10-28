@@ -27,13 +27,13 @@ void LightingMenu::Draw()
 		bool changed = false;
 		ImGui::Text("Lighting");
 		ImGui::Separator();
-		EditorUI::DrawInput("Skybox", Graphics::settings.skybox);
+		EditorUI::DrawInput("Skybox", Graphics::s_settings.skybox);
 
 		//std::shared_ptr<int> t;
 		//std::reference_wrapper<std::shared_ptr<int>> ref = std::ref(t);
 		//EditorUI::DrawFileReference(&ref, "r", t);
 
-		if (EditorUI::DrawInput("Color", Graphics::settings.skyColor) != ValueInputState::NO_CHANGE)
+		if (EditorUI::DrawInput("Color", Graphics::s_settings.skyColor) != ValueInputState::NO_CHANGE)
 			changed = true;
 
 		/*ImGui::Spacing();

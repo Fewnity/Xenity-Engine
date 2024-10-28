@@ -79,7 +79,7 @@ void AssetManager::OnProjectLoaded()
 
 	defaultTexture = AssetManager::LoadEngineAsset<Texture>("public_engine_assets/textures/default_texture.png");
 	defaultTexture->LoadFileReference();
-	if constexpr (!Graphics::UseOpenGLFixedFunctions)
+	if constexpr (!Graphics::s_UseOpenGLFixedFunctions)
 	{
 		// Load shaders
 		standardShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard.shader");

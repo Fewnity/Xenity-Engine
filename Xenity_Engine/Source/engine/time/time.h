@@ -20,7 +20,7 @@ public:
 	*/
 	static inline float GetTime()
 	{
-		return time;
+		return s_time;
 	}
 
 	/**
@@ -28,7 +28,7 @@ public:
 	*/
 	static inline float GetUnscaledTime()
 	{
-		return unscaledTime;
+		return s_unscaledTime;
 	}
 
 	/**
@@ -36,14 +36,14 @@ public:
 	*/
 	static inline float GetDeltaTime()
 	{
-		return deltaTime;
+		return s_deltaTime;
 	}
 	/**
 	* @brief Get unscaled delta time
 	*/
 	static inline float GetUnscaledDeltaTime()
 	{
-		return unscaledDeltaTime;
+		return s_unscaledDeltaTime;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public:
 	*/
 	static inline float GetTimeScale()
 	{
-		return timeScale;
+		return s_timeScale;
 	}
 
 	/**
@@ -73,9 +73,9 @@ private:
 	*/
 	static void UpdateTime();
 
-	static float timeScale;
-	static float time;
-	static float deltaTime;
-	static float unscaledTime;
-	static float unscaledDeltaTime;
+	static float s_timeScale;
+	static float s_time;
+	static float s_deltaTime;
+	static float s_unscaledTime;
+	static float s_unscaledDeltaTime;
 };

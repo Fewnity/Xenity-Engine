@@ -17,12 +17,12 @@ Collider::~Collider()
 	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 	{
 		//Remove from the rigidbody
-		const size_t colliderCount = rb->colliders.size();
+		const size_t colliderCount = rb->m_colliders.size();
 		for (size_t i = 0; i < colliderCount; i++)
 		{
-			if (rb->colliders[i] == this)
+			if (rb->m_colliders[i] == this)
 			{
-				rb->colliders.erase(rb->colliders.begin() + i);
+				rb->m_colliders.erase(rb->m_colliders.begin() + i);
 				rb->UpdateGeneratesEvents();
 				break;
 			}
@@ -65,7 +65,7 @@ void Collider::FindRigidbody()
 	{
 		if (!isAttached)
 		{
-			rb->colliders.push_back(this);
+			rb->m_colliders.push_back(this);
 			rb->UpdateGeneratesEvents();
 		}
 	}
@@ -79,7 +79,7 @@ void Collider::SetRigidbody(const std::shared_ptr<RigidBody>& rb)
 	{
 		if (!isAttached)
 		{
-			rb->colliders.push_back(this);
+			rb->m_colliders.push_back(this);
 			rb->UpdateGeneratesEvents();
 		}
 	}

@@ -56,7 +56,7 @@ public:
 
 	const Sphere& GetBoundingSphere() const
 	{
-		return boundingSphere;
+		return m_boundingSphere;
 	}
 
 	void OnDrawGizmosSelected() override;
@@ -66,10 +66,10 @@ protected:
 
 	void OnNewRender() override;
 	void OnComponentAttached() override;
-	std::vector<Vector3> worldChunkPositions;
-	std::vector<Light*> affectedByLights;
+	std::vector<Vector3> m_worldChunkPositions;
+	std::vector<Light*> m_affectedByLights;
 	Sphere ProcessBoundingSphere() const;
-	Sphere boundingSphere;
+	Sphere m_boundingSphere;
 
 	friend class Lod;
 
@@ -103,5 +103,5 @@ protected:
 	size_t m_matCount = 0;
 
 	bool m_culled = false;
-	bool outOfFrustum = false;
+	bool m_outOfFrustum = false;
 };

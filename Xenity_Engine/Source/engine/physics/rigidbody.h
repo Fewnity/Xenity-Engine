@@ -71,7 +71,7 @@ protected:
 	void RemoveReferences()  override;
 
 	bool m_disableEvent = false;
-	std::vector<Collider*> colliders;
+	std::vector<Collider*> m_colliders;
 	bool m_generatesEvents = false;
 	void UpdateGeneratesEvents();
 
