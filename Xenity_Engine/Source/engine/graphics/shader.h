@@ -296,4 +296,5 @@ protected:
 	std::unordered_map<std::string, unsigned int> m_uniformsIds;
 	std::vector<Light*> m_currentLights;
 	std::vector<Light*> m_currentDirectionalLights;
+	static constexpr uint32_t INVALID_SHADER_UNIFORM = -1;
 };

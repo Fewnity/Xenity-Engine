@@ -27,7 +27,6 @@ Rework the documentation
 Rename member variables to m_memberVariableName
 Check after compilation components names
 Check why the compiler search for main.cpp in the engine's folder
-Disable "Use lighting" do not block all lights
 Reload material file on game stop
 Add color to standard shader in psvita
 use unique_ptr in file_data_base, meshdata

@@ -284,7 +284,7 @@ void Shader::LoadFileReference()
 
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		if constexpr (Graphics::s_UseOpenGLFixedFunctions) 
+		if constexpr (Graphics::s_UseOpenGLFixedFunctions)
 		{
 			m_fileStatus = FileStatus::FileStatus_Loaded;
 			return;
@@ -711,6 +711,15 @@ void Shader::SetPointLightData(const Light& light, const int index)
 	if (index >= MAX_LIGHT_COUNT)
 		return;
 
+	const PointLightVariableIds& ids = m_pointlightVariableIds[index];
+
+	// Check uniforms
+	XASSERT(ids.color != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light color uniform");
+	XASSERT(ids.position != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light position uniform");
+	XASSERT(ids.constant != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light constant uniform");
+	XASSERT(ids.linear != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light linear uniform");
+	XASSERT(ids.quadratic != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light quadratic uniform");
+
 	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 	Vector3 pos = Vector3(0);
@@ -720,7 +729,6 @@ void Shader::SetPointLightData(const Light& light, const int index)
 		pos.x = -pos.x;
 	}
 
-	const PointLightVariableIds& ids = m_pointlightVariableIds[index];
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.color, lightColor * light.GetIntensity());
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.position, pos);
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.constant, lightConstant);
@@ -738,6 +746,12 @@ void Shader::SetDirectionalLightData(const Light& light, const int index)
 	if (index >= MAX_LIGHT_COUNT)
 		return;
 
+	const DirectionalLightsVariableIds& ids = m_directionallightVariableIds[index];
+
+	// Check uniforms
+	XASSERT(ids.color != INVALID_SHADER_UNIFORM, "[Shader::SetDirectionalLightData] The shader does not have a directional light color uniform");
+	XASSERT(ids.direction != INVALID_SHADER_UNIFORM, "[Shader::SetDirectionalLightData] The shader does not have a directional light direction uniform");
+
 	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
@@ -748,7 +762,6 @@ void Shader::SetDirectionalLightData(const Light& light, const int index)
 		dir.x = -dir.x;
 	}
 
-	const DirectionalLightsVariableIds& ids = m_directionallightVariableIds[index];
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.color, lightColor * light.GetIntensity());
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.direction, dir);
 }
@@ -768,6 +781,18 @@ void Shader::SetSpotLightData(const Light& light, const int index)
 	if (index >= MAX_LIGHT_COUNT)
 		return;
 
+	const SpotLightVariableIds& ids = m_spotlightVariableIds[index];
+
+	// Check uniforms
+	XASSERT(ids.color != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light color uniform");
+	XASSERT(ids.position != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light position uniform");
+	XASSERT(ids.direction != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light direction uniform");
+	XASSERT(ids.constant != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light constant uniform");
+	XASSERT(ids.linear != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light linear uniform");
+	XASSERT(ids.quadratic != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light quadratic uniform");
+	XASSERT(ids.cutOff != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light cutOff uniform");
+	XASSERT(ids.outerCutOff != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light outerCutOff uniform");
+
 	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
 
@@ -783,7 +808,6 @@ void Shader::SetSpotLightData(const Light& light, const int index)
 		dir.x = -dir.x;
 	}
 
-	const SpotLightVariableIds& ids = m_spotlightVariableIds[index];
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.color, lightColor * light.GetIntensity());
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.position, pos);
 	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.direction, dir);
@@ -797,21 +821,39 @@ void Shader::SetSpotLightData(const Light& light, const int index)
 /// <summary>
 /// Send lights data to the shader
 /// </summary>
-void Shader::UpdateLights(bool disableLights)
+void Shader::UpdateLights(bool useLighting)
 {
 	Vector4 ambientLight = Vector4(0, 0, 0, 0);
 
-	if (disableLights)
+	const PointLightVariableIds& pointLightIds = m_pointlightVariableIds[0];
+	const DirectionalLightsVariableIds& directionalLightsids = m_directionallightVariableIds[0];
+	const SpotLightVariableIds& spotLightids = m_spotlightVariableIds[0];
+
+	int directionalUsed = 0;
+	int pointUsed = 0;
+	int spotUsed = 0;
+	bool hasLightUniforms = false;
+
+	// Set the first light of each type to a dark light in the shader
+	// Update values only if the shader has lighting uniforms
+	if (directionalLightsids.color != INVALID_SHADER_UNIFORM)
 	{
-		int directionalUsed = 0;
-		int pointUsed = 0;
-		int spotUsed = 0;
-
-		// Set the first light of each type to a dark light in the shader
 		SetDirectionalLightData(*defaultDarkLight, 0);
+		hasLightUniforms = true;
+	}
+	if (pointLightIds.color != INVALID_SHADER_UNIFORM)
+	{
 		SetPointLightData(*defaultDarkLight, 0);
+		hasLightUniforms = true;
+	}
+	if (spotLightids.color != INVALID_SHADER_UNIFORM)
+	{
 		SetSpotLightData(*defaultDarkLight, 0);
+		hasLightUniforms = true;
+	}
 
+	if (hasLightUniforms)
+	{
 		int offset = 1;
 		const int lightCount = AssetManager::GetLightCount();
 
@@ -821,22 +863,22 @@ void Shader::UpdateLights(bool disableLights)
 			const Light& light = *AssetManager::GetLight(lightI);
 			if (light.IsEnabled() && light.GetGameObjectRaw()->IsLocalActive())
 			{
-				if (light.m_type == LightType::Directional)
+				if (light.m_type == LightType::Directional && directionalLightsids.color != INVALID_SHADER_UNIFORM)
 				{
 					SetDirectionalLightData(light, directionalUsed + offset);
 					directionalUsed++;
 				}
-				else if (light.m_type == LightType::Point)
+				else if (light.m_type == LightType::Point && pointLightIds.color != INVALID_SHADER_UNIFORM)
 				{
 					SetPointLightData(light, pointUsed + offset);
 					pointUsed++;
 				}
-				else if (light.m_type == LightType::Spot)
+				else if (light.m_type == LightType::Spot && spotLightids.color != INVALID_SHADER_UNIFORM)
 				{
 					SetSpotLightData(light, spotUsed + offset);
 					spotUsed++;
 				}
-				else if (light.m_type == LightType::Ambient)
+				else if (light.m_type == LightType::Ambient && m_ambientLightLocation != INVALID_SHADER_UNIFORM)
 				{
 					ambientLight += light.color.GetRGBA().ToVector4() * light.m_intensity;
 				}
@@ -844,7 +886,10 @@ void Shader::UpdateLights(bool disableLights)
 		}
 	}
 
-	SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
+	if (m_ambientLightLocation != -1)
+	{
+		SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
+	}
 }
 
 std::shared_ptr<Shader> Shader::MakeShader()

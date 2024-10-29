@@ -161,7 +161,7 @@ protected:
 	MaterialRenderingModes m_renderingMode = MaterialRenderingModes::Opaque;
 	float m_alphaCutoff = 0.5f;
 	bool m_updated = false;
-	bool m_useLighting = false;
+	bool m_useLighting = false; // Defines if the material uses lighting or not in fixed pipeline mode (PSP)
 
 	static constexpr int s_version = 1;
 };
