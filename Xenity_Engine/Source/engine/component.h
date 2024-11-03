@@ -153,6 +153,7 @@ private:
 	friend class InspectorMenu;
 	friend class SceneManager;
 	friend class PhysicsManager;
+	friend class ClassRegistry;
 
 	/**
 	* @brief [Internal] Set component's GameObject

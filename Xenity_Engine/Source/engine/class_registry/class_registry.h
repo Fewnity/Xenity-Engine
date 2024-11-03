@@ -15,11 +15,15 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/file_system/file_type.h>
 #include <engine/assertions/assertions.h>
+#include <engine/debug/debug.h>
 
 #if defined (EDITOR)
 class Menu;
 #endif
 class Component;
+
+#define REGISTER_COMPONENT(component) ClassRegistry::AddComponentClass<component>(#component)
+#define REGISTER_INVISIBLE_COMPONENT(component) ClassRegistry::AddComponentClass<component>(#component, false)
 
 class API ClassRegistry
 {

@@ -74,7 +74,9 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 
 	if (s_nameToComponent.find(name) != s_nameToComponent.end()) // Check if the component is in the list
 	{
-		return s_nameToComponent[name].first(gameObject); // Call the function to add the component to the gameObject
+		std::shared_ptr<Component> component = s_nameToComponent[name].first(gameObject);
+		component->m_componentName = name;
+		return component; // Call the function to add the component to the gameObject
 	}
 	else
 	{
@@ -127,27 +129,27 @@ void ClassRegistry::RegisterEngineComponents()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	// List all Engine components
-	AddComponentClass<Light>("Light");
-	AddComponentClass<Camera>("Camera");
-	AddComponentClass<TextRenderer>("TextRenderer");
-	AddComponentClass<Canvas>("Canvas");
-	AddComponentClass<RectTransform>("RectTransform");
-	AddComponentClass<TextMesh>("TextMesh");
-	AddComponentClass<MeshRenderer>("MeshRenderer");
-	AddComponentClass<Tilemap>("Tilemap");
-	AddComponentClass<SpriteRenderer>("SpriteRenderer");
-	AddComponentClass<BillboardRenderer>("BillboardRenderer");
-	AddComponentClass<LineRenderer>("LineRenderer");
-	AddComponentClass<AudioSource>("AudioSource");
-	AddComponentClass<ParticleSystem>("ParticleSystem");
-	AddComponentClass<RigidBody>("RigidBody");
-	AddComponentClass<BoxCollider>("BoxCollider");
-	AddComponentClass<SphereCollider>("SphereCollider");
-	AddComponentClass<Lod>("Lod");
+	REGISTER_COMPONENT(Light);
+	REGISTER_COMPONENT(Camera);
+	REGISTER_COMPONENT(TextRenderer);
+	REGISTER_COMPONENT(Canvas);
+	REGISTER_COMPONENT(RectTransform);
+	REGISTER_COMPONENT(TextMesh);
+	REGISTER_COMPONENT(MeshRenderer);
+	REGISTER_COMPONENT(Tilemap);
+	REGISTER_COMPONENT(SpriteRenderer);
+	REGISTER_COMPONENT(BillboardRenderer);
+	REGISTER_COMPONENT(LineRenderer);
+	REGISTER_COMPONENT(AudioSource);
+	REGISTER_COMPONENT(ParticleSystem);
+	REGISTER_COMPONENT(RigidBody);
+	REGISTER_COMPONENT(BoxCollider);
+	REGISTER_COMPONENT(SphereCollider);
+	REGISTER_COMPONENT(Lod);
 #if defined(DEBUG)
-	AddComponentClass<TestComponent>("TestComponent");
+	REGISTER_COMPONENT(TestComponent);
 #endif
-	AddComponentClass<MissingScript>("MissingScript", false);
+	REGISTER_INVISIBLE_COMPONENT(MissingScript);
 }
 
 void ClassRegistry::RegisterEngineFileClasses()
