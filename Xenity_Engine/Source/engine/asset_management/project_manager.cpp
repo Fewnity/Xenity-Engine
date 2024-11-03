@@ -677,9 +677,12 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	Engine::s_game = std::make_unique<Game>();
 #endif //  defined(_WIN32) || defined(_WIN64)
 #endif // !defined(__LINUX__)
+
 	// Fill class registery
 	if (Engine::s_game)
+	{
 		Engine::s_game->Start();
+	}
 
 #if defined(EDITOR)
 	CreateVisualStudioSettings();
