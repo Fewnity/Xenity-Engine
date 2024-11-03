@@ -15,6 +15,8 @@
 #include <csignal>
 #endif
 
+#include <engine/debug/memory_info.h>
+
 // Editor
 #if defined(EDITOR)
 #include <imgui/imgui_impl_sdl3.h>
@@ -148,6 +150,7 @@ int Engine::Init()
 		// Not a critical module, do not stop the engine
 	}
 
+	MemoryInfo::Init();
 	CrashHandler::Init();
 
 #if defined(DEBUG)

@@ -17,6 +17,7 @@
 #include <engine/debug/memory_tracker.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
+#include <engine/debug/memory_info.h>
 
 void ProfilerMenu::Init()
 {
@@ -25,6 +26,7 @@ void ProfilerMenu::Init()
 void ProfilerMenu::Draw()
 {
 	UpdateFpsCounter();
+	UpdateMemoryCounter();
 	const std::string windowName = "Debug###Debug" + std::to_string(id);
 	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
@@ -40,8 +42,8 @@ void ProfilerMenu::Draw()
 		ImGui::Text("Triangles Count: %d", Performance::GetDrawTrianglesCount());
 		ImGui::Text("Materials update count: %d", Performance::GetUpdatedMaterialCount());
 
-#if defined(DEBUG)
 		DrawMemoryStats();
+#if defined(DEBUG)
 		DrawProfilerBenchmarks();
 		DrawFilesList();
 #endif
@@ -90,10 +92,38 @@ void ProfilerMenu::UpdateFpsCounter()
 	fpsHistory[FPS_HISTORY_SIZE - 1] = lastFps;
 }
 
+void ProfilerMenu::UpdateMemoryCounter()
+{
+	for (int i = 0; i < USED_MEMORY_HISTORY_SIZE - 1; i++)
+	{
+		usedMemoryHistory[i] = usedMemoryHistory[i + 1];
+	}
+	usedMemoryHistory[USED_MEMORY_HISTORY_SIZE - 1] = MemoryInfo::GetUsedMemory() / 1000;
+
+	for (int i = 0; i < USED_VIDE_MEMORY_HISTORY_SIZE - 1; i++)
+	{
+		usedVideoMemoryHistory[i] = usedVideoMemoryHistory[i + 1];
+	}
+	usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE - 1] = MemoryInfo::GetUsedVideoMemory() / 1000;
+}
+
 void ProfilerMenu::DrawMemoryStats()
 {
 	if (ImGui::CollapsingHeader("Memory stats", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
+		ImGui::Text("Used memory:");
+		const std::string usedMemoryText = std::to_string((size_t)usedMemoryHistory[USED_MEMORY_HISTORY_SIZE - 1]) + " KiloBytes" + "###USED_MEMORY_COUNTER";
+		ImGui::PlotLines(usedMemoryText.c_str(), usedMemoryHistory, USED_MEMORY_HISTORY_SIZE, 0, "", 0);
+
+		ImGui::Separator();
+
+		ImGui::Text("Used video memory:");
+		const std::string usedVideoMemoryText = std::to_string((size_t)usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE - 1]) + " KiloBytes" + "###USED_MEMORY_COUNTER";
+		ImGui::PlotLines(usedVideoMemoryText.c_str(), usedVideoMemoryHistory, USED_VIDE_MEMORY_HISTORY_SIZE, 0, "", 0);
+
+#if defined(DEBUG)
+		ImGui::Separator();
+
 		MemoryTracker* goMem = Performance::s_gameObjectMemoryTracker;
 
 		ImGui::Text("%s:", goMem->m_name.c_str());
@@ -114,6 +144,7 @@ void ProfilerMenu::DrawMemoryStats()
 		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", textureMem->m_allocatedMemory - textureMem->m_deallocatedMemory, textureMem->m_allocatedMemory);
 		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (textureMem->m_allocatedMemory - textureMem->m_deallocatedMemory) / 1000000.0f, textureMem->m_allocatedMemory / 1000000.0f);
 		ImGui::Text("Alloc count: %d, Delete count: %d", textureMem->m_allocCount, textureMem->m_deallocCount);
+#endif
 	}
 }
 

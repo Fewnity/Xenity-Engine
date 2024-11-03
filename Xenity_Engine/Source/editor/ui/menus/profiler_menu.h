@@ -8,6 +8,8 @@
 
 #include "menu.h"
 #define FPS_HISTORY_SIZE 400
+#define USED_MEMORY_HISTORY_SIZE 1000
+#define USED_VIDE_MEMORY_HISTORY_SIZE 1000
 
 class TimelineItem 
 {
@@ -30,6 +32,8 @@ private:
 	* Read current fps and store it in the history
 	*/
 	void UpdateFpsCounter();
+
+	void UpdateMemoryCounter();
 
 	/**
 	* Draw all profiler benchmarks
@@ -54,6 +58,8 @@ private:
 	float nextFpsUpdate = 0;
 	float lastFps = 0;
 	float fpsHistory[FPS_HISTORY_SIZE] = { 0 };
+	float usedMemoryHistory[USED_MEMORY_HISTORY_SIZE] = { 0 };
+	float usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE] = { 0 };
 	bool counterInitialised = false;
 	std::vector<TimelineItem> timelineItems;
 	bool isPaused = false;

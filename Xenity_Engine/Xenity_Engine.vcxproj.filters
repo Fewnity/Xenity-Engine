@@ -332,6 +332,7 @@
     <ClCompile Include="Source\engine\graphics\texture_default.cpp" />
     <ClCompile Include="Source\engine\graphics\texture_ps3.cpp" />
     <ClCompile Include="Source\engine\graphics\texture_psp.cpp" />
+    <ClCompile Include="Source\engine\debug\memory_info.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -776,6 +777,7 @@
     <ClInclude Include="Source\engine\graphics\texture_psp.h" />
     <ClInclude Include="Source\engine\constants.h" />
     <ClInclude Include="Source\engine\project_management\project_errors.h" />
+    <ClInclude Include="Source\engine\debug\memory_info.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />
