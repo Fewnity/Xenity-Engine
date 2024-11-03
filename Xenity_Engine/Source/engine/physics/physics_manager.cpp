@@ -182,7 +182,7 @@ public:
 		//colObj0Wrap->m_collisionObject->
 	//	std::cout << "Collision detected between objects " << colObj0Wrap->getCollisionObject() << " and " << colObj1Wrap->getCollisionObject() << std::endl;
 		//std::cout << partId0 << " " << index0 << " and " << partId1 << "   " << index1 << std::endl;
-		if (col0 && col1 && col0->GetGameObject() != col1->GetGameObject())
+		if (col0 && col1 && col0->GetGameObjectRaw() != col1->GetGameObjectRaw())
 			PhysicsManager::AddEvent(col0, col1, col0->IsTrigger() || col1->IsTrigger());
 
 		return false;
@@ -201,70 +201,77 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	GameObject& goA = *a->GetGameObject();
-	GameObject& goB = *b->GetGameObject();
-	const size_t goAComponentsCount = goA.m_components.size();
-	const size_t goBComponentsCount = goB.m_components.size();
-
 	const CollisionEvent collisionEvent = CollisionEvent(a, b);
 	const CollisionEvent collisionEventOther = CollisionEvent(b, a);
 
-	for (size_t i = 0; i < goAComponentsCount; i++)
+	std::shared_ptr<GameObject> aParent = a->GetGameObject();
+	while (aParent != nullptr)
 	{
-		const std::shared_ptr<Component>& component = goA.m_components[i];
-		if (component)
+		const size_t goAComponentsCount = aParent->m_components.size();
+		for (size_t i = 0; i < goAComponentsCount; i++)
 		{
-			if (state == 0)
+			const std::shared_ptr<Component>& component = aParent->m_components[i];
+			if (component)
 			{
-				if (!isTrigger)
-					component->OnCollisionEnter(collisionEvent);
-				else
-					component->OnTriggerEnter(collisionEvent);
-			}
-			else if (state == 1)
-			{
-				if (!isTrigger)
-					component->OnCollisionStay(collisionEvent);
-				else
-					component->OnTriggerStay(collisionEvent);
-			}
-			else if (state == 2)
-			{
-				if (!isTrigger)
-					component->OnCollisionExit(collisionEvent);
-				else
-					component->OnTriggerExit(collisionEvent);
+				if (state == 0)
+				{
+					if (!isTrigger)
+						component->OnCollisionEnter(collisionEvent);
+					else
+						component->OnTriggerEnter(collisionEvent);
+				}
+				else if (state == 1)
+				{
+					if (!isTrigger)
+						component->OnCollisionStay(collisionEvent);
+					else
+						component->OnTriggerStay(collisionEvent);
+				}
+				else if (state == 2)
+				{
+					if (!isTrigger)
+						component->OnCollisionExit(collisionEvent);
+					else
+						component->OnTriggerExit(collisionEvent);
+				}
 			}
 		}
+		aParent = aParent->GetParent().lock();
 	}
 
-	for (size_t i = 0; i < goBComponentsCount; i++)
+	std::shared_ptr<GameObject> bParent = b->GetGameObject();
+	while (bParent != nullptr)
 	{
-		const std::shared_ptr<Component>& component = goB.m_components[i];
-		if (component)
+		const size_t goBComponentsCount = bParent->m_components.size();
+		for (size_t i = 0; i < goBComponentsCount; i++)
 		{
-			if (state == 0)
+			const std::shared_ptr<Component>& component = bParent->m_components[i];
+			if (component)
 			{
-				if (!isTrigger)
-					component->OnCollisionEnter(collisionEventOther);
-				else
-					component->OnTriggerEnter(collisionEventOther);
-			}
-			else if (state == 1)
-			{
-				if (!isTrigger)
-					component->OnCollisionStay(collisionEventOther);
-				else
-					component->OnTriggerStay(collisionEventOther);
-			}
-			else if (state == 2)
-			{
-				if (!isTrigger)
-					component->OnCollisionExit(collisionEventOther);
-				else
-					component->OnTriggerExit(collisionEventOther);
+				if (state == 0)
+				{
+					if (!isTrigger)
+						component->OnCollisionEnter(collisionEventOther);
+					else
+						component->OnTriggerEnter(collisionEventOther);
+				}
+				else if (state == 1)
+				{
+					if (!isTrigger)
+						component->OnCollisionStay(collisionEventOther);
+					else
+						component->OnTriggerStay(collisionEventOther);
+				}
+				else if (state == 2)
+				{
+					if (!isTrigger)
+						component->OnCollisionExit(collisionEventOther);
+					else
+						component->OnTriggerExit(collisionEventOther);
+				}
 			}
 		}
+		bParent = bParent->GetParent().lock();
 	}
 }
 
