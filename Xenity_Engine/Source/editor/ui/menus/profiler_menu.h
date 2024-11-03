@@ -11,6 +11,14 @@
 #define USED_MEMORY_HISTORY_SIZE 1000
 #define USED_VIDE_MEMORY_HISTORY_SIZE 1000
 
+class ClassicProfilerItem
+{
+public:
+	ClassicProfilerItem(const std::string& _name) : name(_name) {}
+	const std::string& name;
+	uint64_t totalTime = 0;
+};
+
 class TimelineItem 
 {
 public:
@@ -62,6 +70,7 @@ private:
 	float usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE] = { 0 };
 	bool counterInitialised = false;
 	std::vector<TimelineItem> timelineItems;
+	std::vector<ClassicProfilerItem> classicProfilerItems;
 	bool isPaused = false;
 	uint64_t lastStartTime;
 	uint64_t lastEndTime;

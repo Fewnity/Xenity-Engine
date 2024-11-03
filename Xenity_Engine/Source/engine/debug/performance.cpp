@@ -16,8 +16,8 @@ int Performance::s_drawCallCount = 0;
 int Performance::s_drawTriangleCount = 0;
 int Performance::s_updatedMaterialCount = 0;
 std::unordered_map<std::string, ProfilerCategory*> Performance::s_profilerCategories;
-std::unordered_map<size_t, std::vector<ScopTimerResult>> Performance::s_scopProfilerList;
-std::unordered_map<size_t, std::string> Performance::s_scopProfilerNames;
+std::unordered_map<size_t, std::vector<ScopTimerResult>> Performance::s_scopProfilerList; // Hash, List
+std::unordered_map<size_t, std::string> Performance::s_scopProfilerNames; // Hash, Name
 
 int Performance::s_tickCount = 0;
 float Performance::s_averageCoolDown = 0;

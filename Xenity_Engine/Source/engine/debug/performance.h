@@ -17,10 +17,7 @@
 #include <functional>
 
 #include <engine/tools/scope_benchmark.h>
-
-#if defined(EDITOR)
-#define USE_PROFILER
-#endif
+#include <engine/constants.h>
 
 #if defined(USE_PROFILER)
 #define SCOPED_PROFILER(name, variableName) static const size_t hash##variableName = Performance::RegisterScopProfiler(name, std::hash<std::string>{}(name)); \
@@ -142,8 +139,8 @@ public:
 	static size_t RegisterScopProfiler(const std::string& name, size_t hash);
 
 	static std::unordered_map<std::string, ProfilerCategory*> s_profilerCategories;
-	static std::unordered_map<size_t, std::vector<ScopTimerResult>> s_scopProfilerList;
-	static std::unordered_map<size_t, std::string> s_scopProfilerNames;
+	static std::unordered_map<size_t, std::vector<ScopTimerResult>> s_scopProfilerList; // Hash, List
+	static std::unordered_map<size_t, std::string> s_scopProfilerNames; // Hash, Name
 
 	static MemoryTracker* s_gameObjectMemoryTracker;
 	static MemoryTracker* s_meshDataMemoryTracker;

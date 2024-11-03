@@ -228,120 +228,168 @@ void ProfilerMenu::DrawFilesList()
 
 void ProfilerMenu::DrawProfilerGraph()
 {
+	const std::string pauseText = isPaused ? "Resume Profilers" : "Pause Profilers";
+	if (ImGui::Button(pauseText.c_str()))
+	{
+		isPaused = !isPaused;
+	}
+
+	uint64_t offsetTime = lastStartTime;
+	uint64_t endTime = lastEndTime;
+	bool needUpdate = true;
+
+	auto UpdateProfilers = [this, &offsetTime, &endTime, &needUpdate]()
+		{
+			if (needUpdate)
+			{
+				needUpdate = false;
+
+				offsetTime = Performance::s_scopProfilerList[std::hash<std::string>{}("Engine::Loop")][0].start;
+				endTime = Performance::s_scopProfilerList[std::hash<std::string>{}("Engine::Loop")][0].end;
+
+				CreateTimelineItems();
+
+				lastStartTime = offsetTime;
+				lastEndTime = endTime;
+			}
+		};
+
+	if (ImGui::CollapsingHeader("Basic Profiler", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+	{
+		if (Performance::s_scopProfilerList.empty())
+		{
+			ImGui::Text("No profiler data available");
+		}
+		else
+		{
+			if (!isPaused)
+			{
+				UpdateProfilers();
+			}
+			static ImGuiTableFlags tableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH;
+			if (ImGui::BeginTable("Tabke", 3, tableflags))
+			{
+				ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableSetupColumn("Total time", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableSetupColumn("Engine time", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableHeadersRow();
+
+				for (const auto& profilerLine : classicProfilerItems)
+				{
+					ImGui::TableNextRow();
+					const uint64_t totalEngineTime = endTime - offsetTime;
+					ImGui::TableSetColumnIndex(0);
+					ImGui::Text("%s", profilerLine.name.c_str());
+					ImGui::TableSetColumnIndex(1);
+					ImGui::Text("%d microseconds", profilerLine.totalTime);
+					ImGui::TableSetColumnIndex(2);
+					ImGui::Text("%.2f%%", ((double)profilerLine.totalTime / (double)totalEngineTime) * 100);
+				}
+
+				ImGui::EndTable();
+			}
+		}
+	}
+
 	if (ImGui::CollapsingHeader("Profiler Graph", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		// If the profiler is not running, display a message
-		if(Performance::s_scopProfilerList.empty())
+		if (Performance::s_scopProfilerList.empty())
 		{
 			ImGui::Text("No profiler data available");
-			return;
 		}
-
-		const std::string pauseText = isPaused ? "Resume Profiler" : "Pause Profiler";
-		if (ImGui::Button(pauseText.c_str()))
+		else
 		{
-			isPaused = !isPaused;
-		}
+			float lineHeigh = 1;
 
-		float lineHeigh = 1;
-
-		uint64_t offsetTime = lastStartTime;
-		uint64_t endTime = lastEndTime;
-
-		// If the profiler not paused, update the timeline items
-		if (!isPaused)
-		{
-			lastMaxLevel = 0;
-			offsetTime = Performance::s_scopProfilerList[std::hash<std::string>{}("Engine::Loop")][0].start;
-			endTime = Performance::s_scopProfilerList[std::hash<std::string>{}("Engine::Loop")][0].end;
-
-			CreateTimelineItems();
-
-			lastStartTime = offsetTime;
-			lastEndTime = endTime;
-		}
-
-		// Draw graph
-		ImDrawList* draw_list = ImPlot::GetPlotDrawList();
-		if (ImPlot::BeginPlot("Profiler", ImVec2(-1, 500)))
-		{
-			// Set the axis limits
-			ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, (endTime - offsetTime));
-			ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, lastMaxLevel + 1);
-
-			const ImPlotPoint mousePoint = ImPlot::GetPlotMousePos();
-			ImVec2 mousePixelPos = ImPlot::PlotToPixels(mousePoint.x, mousePoint.y);
-
-			int hoveredItemIndex = -1;
-			const size_t timelineItemsCount = timelineItems.size();
-			for (size_t i = 0; i < timelineItemsCount; i++)
+			// If the profiler not paused, update the timeline items
+			if (!isPaused)
 			{
-				const TimelineItem& item = timelineItems[i];
-				if (ImPlot::BeginItem(item.name.c_str()))
-				{
-					// Get the item position in pixels and draw it
-					const ImVec2 open_pos = ImPlot::PlotToPixels((item.start - offsetTime), item.level * lineHeigh);
-					const ImVec2 close_pos = ImPlot::PlotToPixels((item.end - offsetTime), item.level * lineHeigh + lineHeigh);
-					draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImPlot::GetCurrentItem()->Color));
+				UpdateProfilers();
+			}
 
-					// Check if the mouse is over the item
-					if (mousePixelPos.x >= open_pos.x && mousePixelPos.x <= close_pos.x)
+			// Draw graph
+			ImDrawList* draw_list = ImPlot::GetPlotDrawList();
+			if (ImPlot::BeginPlot("Profiler", ImVec2(-1, 500)))
+			{
+				// Set the axis limits
+				ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, (endTime - offsetTime));
+				ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, lastMaxLevel + 1);
+
+				const ImPlotPoint mousePoint = ImPlot::GetPlotMousePos();
+				ImVec2 mousePixelPos = ImPlot::PlotToPixels(mousePoint.x, mousePoint.y);
+
+				int hoveredItemIndex = -1;
+				const size_t timelineItemsCount = timelineItems.size();
+				for (size_t i = 0; i < timelineItemsCount; i++)
+				{
+					const TimelineItem& item = timelineItems[i];
+					if (ImPlot::BeginItem(item.name.c_str()))
 					{
-						if (mousePixelPos.y >= close_pos.y && mousePixelPos.y <= open_pos.y)
+						// Get the item position in pixels and draw it
+						const ImVec2 open_pos = ImPlot::PlotToPixels((item.start - offsetTime), item.level * lineHeigh);
+						const ImVec2 close_pos = ImPlot::PlotToPixels((item.end - offsetTime), item.level * lineHeigh + lineHeigh);
+						draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImPlot::GetCurrentItem()->Color));
+
+						// Check if the mouse is over the item
+						if (mousePixelPos.x >= open_pos.x && mousePixelPos.x <= close_pos.x)
 						{
-							hoveredItemIndex = i;
+							if (mousePixelPos.y >= close_pos.y && mousePixelPos.y <= open_pos.y)
+							{
+								hoveredItemIndex = i;
+							}
 						}
+
+						ImPlot::EndItem();
+					}
+				}
+
+				if (hoveredItemIndex != -1)
+				{
+					const TimelineItem hoveredItem = timelineItems[hoveredItemIndex];
+					uint64_t itemTime = hoveredItem.end - hoveredItem.start;
+
+					const float oldMouseX = mousePixelPos.x;
+					const float oldMouseY = mousePixelPos.y;
+
+					// Draw hovered item name
+					{
+						const std::string& mouseText = hoveredItem.name;
+						ImVec2 textSize = ImGui::CalcTextSize(mouseText.c_str());
+						mousePixelPos.y -= textSize.y * 3;
+						mousePixelPos.x -= textSize.x / 2.0f;
+						draw_list->AddRectFilled(ImVec2(mousePixelPos.x, mousePixelPos.y), ImVec2(mousePixelPos.x + textSize.x, mousePixelPos.y + textSize.y), ImGui::GetColorU32(ImVec4(0, 0, 0, 0.6f)));
+						draw_list->AddText(mousePixelPos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), mouseText.c_str());
+						mousePixelPos.x = oldMouseX;
+						mousePixelPos.y = oldMouseY;
+						mousePixelPos.y -= textSize.y * 2;
 					}
 
-					ImPlot::EndItem();
+					// Draw time text
+					{
+						std::string mouseText = std::to_string(itemTime) + " microseconds";
+						ImVec2 textSize = ImGui::CalcTextSize(mouseText.c_str());
+						mousePixelPos.x -= textSize.x / 2.0f;
+						draw_list->AddRectFilled(ImVec2(mousePixelPos.x, mousePixelPos.y), ImVec2(mousePixelPos.x + textSize.x, mousePixelPos.y + textSize.y), ImGui::GetColorU32(ImVec4(0, 0, 0, 0.6f)));
+						draw_list->AddText(mousePixelPos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), mouseText.c_str());
+						mousePixelPos.x = oldMouseX;
+						mousePixelPos.y = oldMouseY;
+						mousePixelPos.y -= textSize.y * 1;
+					}
+
+					// Draw percentage text
+					{
+						std::string mouseText = std::to_string((static_cast<float>(hoveredItem.end - hoveredItem.start) / static_cast<float>(endTime - offsetTime)) * 100);
+						mouseText = mouseText.substr(0, mouseText.find('.') + 3) + "%";
+						ImVec2 textSize = ImGui::CalcTextSize(mouseText.c_str());
+						mousePixelPos.x -= textSize.x / 2.0f;
+						draw_list->AddRectFilled(ImVec2(mousePixelPos.x, mousePixelPos.y), ImVec2(mousePixelPos.x + textSize.x, mousePixelPos.y + textSize.y), ImGui::GetColorU32(ImVec4(0, 0, 0, 0.6f)));
+						draw_list->AddText(mousePixelPos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), mouseText.c_str());
+					}
 				}
+
+				ImPlot::EndPlot();
 			}
-
-			if (hoveredItemIndex != -1)
-			{
-				const TimelineItem hoveredItem = timelineItems[hoveredItemIndex];
-				uint64_t itemTime = hoveredItem.end - hoveredItem.start;
-
-				const float oldMouseX = mousePixelPos.x;
-				const float oldMouseY = mousePixelPos.y;
-
-				// Draw hovered item name
-				{
-					const std::string& mouseText = hoveredItem.name;
-					ImVec2 textSize = ImGui::CalcTextSize(mouseText.c_str());
-					mousePixelPos.y -= textSize.y * 3;
-					mousePixelPos.x -= textSize.x / 2.0f;
-					draw_list->AddRectFilled(ImVec2(mousePixelPos.x, mousePixelPos.y), ImVec2(mousePixelPos.x + textSize.x, mousePixelPos.y + textSize.y), ImGui::GetColorU32(ImVec4(0, 0, 0, 0.6f)));
-					draw_list->AddText(mousePixelPos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), mouseText.c_str());
-					mousePixelPos.x = oldMouseX;
-					mousePixelPos.y = oldMouseY;
-					mousePixelPos.y -= textSize.y * 2;
-				}
-
-				// Draw time text
-				{
-					std::string mouseText = std::to_string(itemTime) + " microseconds";
-					ImVec2 textSize = ImGui::CalcTextSize(mouseText.c_str());
-					mousePixelPos.x -= textSize.x / 2.0f;
-					draw_list->AddRectFilled(ImVec2(mousePixelPos.x, mousePixelPos.y), ImVec2(mousePixelPos.x + textSize.x, mousePixelPos.y + textSize.y), ImGui::GetColorU32(ImVec4(0, 0, 0, 0.6f)));
-					draw_list->AddText(mousePixelPos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), mouseText.c_str());
-					mousePixelPos.x = oldMouseX;
-					mousePixelPos.y = oldMouseY;
-					mousePixelPos.y -= textSize.y * 1;
-				}
-
-				// Draw percentage text
-				{
-					std::string mouseText = std::to_string((static_cast<float>(hoveredItem.end - hoveredItem.start) / static_cast<float>(endTime - offsetTime)) * 100);
-					mouseText = mouseText.substr(0, mouseText.find('.') + 3) + "%";
-					ImVec2 textSize = ImGui::CalcTextSize(mouseText.c_str());
-					mousePixelPos.x -= textSize.x / 2.0f;
-					draw_list->AddRectFilled(ImVec2(mousePixelPos.x, mousePixelPos.y), ImVec2(mousePixelPos.x + textSize.x, mousePixelPos.y + textSize.y), ImGui::GetColorU32(ImVec4(0, 0, 0, 0.6f)));
-					draw_list->AddText(mousePixelPos, ImGui::GetColorU32(ImVec4(1, 1, 1, 1)), mouseText.c_str());
-				}
-			}
-
-			ImPlot::EndPlot();
 		}
 	}
 }
@@ -349,10 +397,16 @@ void ProfilerMenu::DrawProfilerGraph()
 void ProfilerMenu::CreateTimelineItems()
 {
 	timelineItems.clear();
+	classicProfilerItems.clear();
+	lastMaxLevel = 0;
 	for (const auto& valCategory : Performance::s_scopProfilerList)
 	{
+		ClassicProfilerItem& classicProfilerItem = classicProfilerItems.emplace_back(Performance::s_scopProfilerNames[valCategory.first]);
+
 		for (const auto& value : valCategory.second)
 		{
+			classicProfilerItem.totalTime += value.end - value.start;
+
 			TimelineItem item(Performance::s_scopProfilerNames[valCategory.first]);
 			item.start = value.start;
 			item.end = value.end;

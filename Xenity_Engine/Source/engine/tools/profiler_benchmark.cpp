@@ -9,13 +9,14 @@
 #include <engine/debug/performance.h>
 #include <engine/engine_settings.h>
 #include <engine/assertions/assertions.h>
+#include <engine/constants.h>
 
 ProfilerBenchmark::ProfilerBenchmark(const std::string& category, const std::string& name)
 {
 	XASSERT(!category.empty(), "[ProfilerBenchmark::ProfilerBenchmark] category is empty");
 	XASSERT(!name.empty(), "[ProfilerBenchmark::ProfilerBenchmark] name is empty");
 
-#if defined(EDITOR) && defined(DEBUG)
+#if defined(USE_PROFILER)
 	//If the profiler is new, created a new one
 	if (Performance::s_profilerCategories.count(category) == 0)
 	{
@@ -36,7 +37,7 @@ ProfilerBenchmark::~ProfilerBenchmark()
 
 void ProfilerBenchmark::Start()
 {
-#if defined(EDITOR)&& defined(DEBUG)
+#if defined(USE_PROFILER)
 	if (EngineSettings::values.useProfiler)
 		m_bench->Start();
 #endif
@@ -44,7 +45,7 @@ void ProfilerBenchmark::Start()
 
 void ProfilerBenchmark::Stop()
 {
-#if defined(EDITOR)&& defined(DEBUG)
+#if defined(USE_PROFILER)
 	if (EngineSettings::values.useProfiler)
 	{
 		m_bench->Stop();
