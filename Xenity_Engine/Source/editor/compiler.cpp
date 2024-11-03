@@ -1077,7 +1077,7 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	// MD Use dll to compile (MDd for debug mode)
 	// DIMPORT define "IMPORT"
 #if defined(DEBUG)
-	command += "cl /std:c++17 /MP /EHsc /MDd /DIMPORT /DNOMINMAX"; // Start compilation
+	command += "cl /std:c++17 /MP /EHsc /MDd /DDEBUG /DIMPORT /DNOMINMAX"; // Start compilation
 #else
 	command += "cl /std:c++17 /O2 /MP /EHsc /MD /DIMPORT /DNOMINMAX"; // Start compilation
 #endif
