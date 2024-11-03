@@ -478,7 +478,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 					}
 					else if (toolMode == ToolMode::Tool_Rotate)
 						//startObjectValue = selectedGoTransform->GetLocalEulerAngles();
-						startObjectRotation = selectedGoTransform->GetRotation();
+						startObjectRotation = selectedGoTransform->GetLocalRotation();
 					else if (toolMode == ToolMode::Tool_Scale)
 						startObjectValue = selectedGoTransform->GetLocalScale();
 
