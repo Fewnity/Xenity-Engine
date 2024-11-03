@@ -193,7 +193,7 @@ void main()
 
 	float alpha = texture(material.diffuse, (TexCoord * tiling) + offset).a* color.w;
 
-	gl_FragColor = vec4(color.xyz * result, alpha); //Add texture color
+	gl_FragColor = vec4(result * color.xyz, alpha); //Add texture color
 }
 
 //-------------- {psvita}
@@ -281,6 +281,7 @@ uniform SpotLight spotLights[NR_SPOT_LIGHTS];
 uniform DirectionalLight directionalLights[NR_DIRECTIONAL_LIGHTS];
 
 uniform vec3 cameraPos;
+uniform vec4 color;
 
 varying vec2 TexCoord;
 varying vec3 Normals;
@@ -431,6 +432,6 @@ void main()
 	// Apply ambient light
 	result += vec3(tex2D(material.diffuse, (TexCoord * tiling) + offset)) * ambientLight;
 
-	float alpha = tex2D(material.diffuse, (TexCoord * tiling) + offset).a;
-	gl_FragColor = vec4(result, alpha); //Add texture color
+	float alpha = tex2D(material.diffuse, (TexCoord * tiling) + offset).a * color.w;
+	gl_FragColor = vec4(result * color.xyz, alpha); //Add texture color
 }
