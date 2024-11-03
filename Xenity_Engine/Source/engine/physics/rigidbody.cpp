@@ -19,7 +19,6 @@
 
 RigidBody::RigidBody()
 {
-	m_componentName = "RigidBody";
 	AssetManager::AddReflection(this);
 }
 

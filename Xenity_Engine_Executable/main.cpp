@@ -35,7 +35,6 @@ Separate shader platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
 Better engine stop (Detect when the user is closing the game, and clear the scene, stop modules...)
-Remplace m_componentName by a ref/pointer in Component
 Add a gitignore file in new projects
 
 --- Can be done for the next release

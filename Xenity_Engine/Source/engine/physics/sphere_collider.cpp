@@ -28,7 +28,6 @@
 
 SphereCollider::SphereCollider()
 {
-	m_componentName = "SphereCollider";
 	AssetManager::AddReflection(this);
 }
 

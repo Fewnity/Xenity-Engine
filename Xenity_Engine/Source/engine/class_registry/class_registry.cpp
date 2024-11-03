@@ -75,7 +75,6 @@ std::shared_ptr<Component> ClassRegistry::AddComponentFromName(const std::string
 	if (s_nameToComponent.find(name) != s_nameToComponent.end()) // Check if the component is in the list
 	{
 		std::shared_ptr<Component> component = s_nameToComponent[name].first(gameObject);
-		component->m_componentName = name;
 		return component; // Call the function to add the component to the gameObject
 	}
 	else

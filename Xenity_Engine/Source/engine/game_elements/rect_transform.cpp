@@ -20,8 +20,6 @@
 
 RectTransform::RectTransform()
 {
-	m_componentName = "RectTransform";
-
 	AssetManager::AddReflection(this);
 }
 

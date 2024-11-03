@@ -28,7 +28,6 @@
 
 Tilemap::Tilemap()
 {
-	m_componentName = "Tilemap";
 	AssetManager::AddReflection(this);
 }
 

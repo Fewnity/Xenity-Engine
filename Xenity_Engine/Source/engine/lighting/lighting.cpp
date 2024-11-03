@@ -29,7 +29,6 @@
 
 Light::Light()
 {
-	m_componentName = "Light";
 	AssetManager::AddReflection(this);
 }
 

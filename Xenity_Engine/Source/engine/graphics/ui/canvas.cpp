@@ -75,8 +75,6 @@ void Canvas::DrawCommand(const RenderCommand& renderCommand)
 
 Canvas::Canvas()
 {
-	m_componentName = "Canvas";
-
 	AssetManager::AddReflection(this);
 }
 

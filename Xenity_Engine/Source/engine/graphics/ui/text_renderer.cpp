@@ -17,8 +17,6 @@
 
 TextRenderer::TextRenderer()
 {
-	m_componentName = "TextRenderer";
-
 	AssetManager::AddReflection(this);
 	m_material = AssetManager::unlitMaterial;
 }

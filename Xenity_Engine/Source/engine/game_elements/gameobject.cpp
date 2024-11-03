@@ -15,6 +15,7 @@
 #include <engine/debug/memory_tracker.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/constants.h>
+#include <engine/class_registry/class_registry.h>
 
 #pragma region Constructors / Destructor
 
@@ -225,6 +226,7 @@ void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componen
 	if (!componentToAdd)
 		return;
 
+	componentToAdd->m_componentName = &ClassRegistry::GetClassNameById(typeid(*componentToAdd.get()).hash_code());
 	m_components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
 	m_componentCount++;

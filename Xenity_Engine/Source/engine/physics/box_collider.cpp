@@ -27,7 +27,6 @@
 
 BoxCollider::BoxCollider()
 {
-	m_componentName = "BoxCollider";
 	AssetManager::AddReflection(this);
 	CalculateBoundingBox();
 }

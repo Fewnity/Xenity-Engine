@@ -36,8 +36,6 @@
 
 Camera::Camera() : m_fov(DEFAULT_CAMERA_FOV), m_isProjectionDirty(true)
 {
-	m_componentName = "Camera";
-
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	glGenFramebuffers(1, &m_framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);

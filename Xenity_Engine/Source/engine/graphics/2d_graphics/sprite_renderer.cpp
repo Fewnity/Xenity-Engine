@@ -18,7 +18,6 @@
 
 SpriteRenderer::SpriteRenderer()
 {
-	m_componentName = "SpriteRenderer";
 	AssetManager::AddReflection(this);
 }
 

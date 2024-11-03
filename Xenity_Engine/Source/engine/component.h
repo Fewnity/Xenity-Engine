@@ -129,7 +129,7 @@ public:
 	inline const std::string& GetComponentName() const
 	{
 		//XASSERT(!m_componentName.empty(), "The component's name is empty");
-		return m_componentName;
+		return *m_componentName;
 	}
 
 	/**
@@ -137,7 +137,7 @@ public:
 	*/
 	inline virtual std::string ToString()
 	{
-		return "{" + m_componentName + "}";
+		return "{" + *m_componentName + "}";
 	}
 
 	inline int GetUpdatePriority() const
@@ -175,7 +175,7 @@ protected:
 	virtual void OnTriggerStay(CollisionEvent info) {};
 	virtual void OnTriggerExit(CollisionEvent info) {};
 
-	std::string m_componentName = "";
+	const std::string* m_componentName = nullptr;
 
 private:
 	std::weak_ptr <GameObject> m_gameObject;

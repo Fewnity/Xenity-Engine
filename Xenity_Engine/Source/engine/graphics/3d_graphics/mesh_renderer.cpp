@@ -49,7 +49,6 @@ bool IsSphereInFrustum(const Frustum& frustum, const Sphere& sphere)
 
 MeshRenderer::MeshRenderer()
 {
-	m_componentName = "MeshRenderer";
 	AssetManager::AddReflection(this);
 }
 

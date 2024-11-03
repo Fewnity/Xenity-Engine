@@ -17,8 +17,6 @@
 
 TextMesh::TextMesh()
 {
-	m_componentName = "TextMesh";
-
 	AssetManager::AddReflection(this);
 	m_material = AssetManager::standardMaterial;
 }

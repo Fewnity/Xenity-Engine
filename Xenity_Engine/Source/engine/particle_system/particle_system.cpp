@@ -29,7 +29,6 @@
 
 ParticleSystem::ParticleSystem()
 {
-	m_componentName = "ParticleSystem";
 	AssetManager::AddReflection(this);
 
 	AllocateParticlesMemory();

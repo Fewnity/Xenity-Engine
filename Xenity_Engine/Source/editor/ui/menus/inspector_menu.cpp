@@ -654,9 +654,11 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 
 		bool isEnable = comp->IsEnabled();
 
-		std::shared_ptr<Texture> texture = EditorUI::componentsIcons[comp->m_componentName];
+		std::shared_ptr<Texture> texture = EditorUI::componentsIcons.at(comp->GetComponentName());
 		if (!texture)
+		{
 			texture = EditorUI::componentsIcons["Default"];
+		}
 
 		const std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowOverlap))

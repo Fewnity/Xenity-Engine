@@ -13,8 +13,8 @@
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
 #include <engine/unique_id/unique_id.h>
+#include <engine/component.h>
 
-class Component;
 class Transform;
 
 /**

@@ -18,7 +18,6 @@
 
 BillboardRenderer::BillboardRenderer()
 {
-	m_componentName = "BillboardRenderer";
 	AssetManager::AddReflection(this);
 	//material = AssetManager::standardMaterial;
 }

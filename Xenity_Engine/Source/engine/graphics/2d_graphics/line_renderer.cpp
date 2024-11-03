@@ -21,7 +21,6 @@
 
 LineRenderer::LineRenderer()
 {
-	m_componentName = "LineRenderer";
 }
 
 ReflectiveData LineRenderer::GetReflectiveData()

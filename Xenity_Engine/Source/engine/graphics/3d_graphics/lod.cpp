@@ -14,7 +14,6 @@
 
 Lod::Lod()
 {
-	m_componentName = "Lod";
 }
 
 ReflectiveData Lod::GetReflectiveData()
