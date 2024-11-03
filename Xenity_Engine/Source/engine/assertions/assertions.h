@@ -10,10 +10,12 @@
 #include <string>
 #include <cassert>
 
+#include <engine/api.h>
+
 /**
 * @brief Function to call when an assert fails to print a message in the logs
 */
-void OnAssertionFailed(const std::string& message);
+API void OnAssertionFailed(const std::string& message);
 
 // XASSERT is a macro to assert a condition and print a message in the logs in debug mode
 #if defined(DEBUG)
