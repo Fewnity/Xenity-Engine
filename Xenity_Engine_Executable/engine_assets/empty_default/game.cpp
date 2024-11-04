@@ -9,7 +9,7 @@
 */
 void Game::Start()
 {
-	//ClassRegistry::AddComponentClass<MyClass>("MyClass");
+	//REGISTER_COMPONENT(MyClass);
 }
 
 GameInterface *CreateGame()
