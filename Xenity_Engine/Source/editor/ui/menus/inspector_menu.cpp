@@ -654,7 +654,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 
 		bool isEnable = comp->IsEnabled();
 
-		std::shared_ptr<Texture> texture = EditorUI::componentsIcons.at(comp->GetComponentName());
+		std::shared_ptr<Texture> texture = EditorUI::componentsIcons[comp->GetComponentName()];
 		if (!texture)
 		{
 			texture = EditorUI::componentsIcons["Default"];
