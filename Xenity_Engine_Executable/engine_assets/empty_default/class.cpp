@@ -6,8 +6,6 @@
 */
 {CLASSNAME}::{CLASSNAME}()
 {
-    // Register class name
-    componentName = "{CLASSNAME}";
 }
 
 /**
