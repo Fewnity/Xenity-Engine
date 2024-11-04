@@ -496,6 +496,15 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 		Debug::PrintError("[ProjectManager::CreateProject] Error when copying default assets into the project.", true);
 	}
 
+	try
+	{
+		std::filesystem::copy_file("engine_assets/empty_default/.gitignore", folderPath + name + "/.gitignore", std::filesystem::copy_options::overwrite_existing);
+	}
+	catch (const std::exception&)
+	{
+		Debug::PrintError("[ProjectManager::CreateProject] Error when copying .gitignore file into the project.", true);
+	}
+
 	projectSettings.projectName = name;
 	projectSettings.gameName = name;
 	projectSettings.startScene = sceneRef;
