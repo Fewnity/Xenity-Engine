@@ -25,7 +25,6 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Rework the documentation
 Rename member variables to m_memberVariableName
-Check after compilation components names
 Check why the compiler search for main.cpp in the engine's folder
 Reload material file on game stop
 Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
@@ -35,7 +34,6 @@ Separate shader platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
 Better engine stop (Detect when the user is closing the game, and clear the scene, stop modules...)
-Add a gitignore file in new projects
 
 --- Can be done for the next release
 Add size_t check on all platforms

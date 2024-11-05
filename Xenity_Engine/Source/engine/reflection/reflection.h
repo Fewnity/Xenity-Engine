@@ -14,6 +14,7 @@
 
 #include <engine/api.h>
 #include <engine/tools/template_utils.h>
+#include <engine/assertions/assertions.h>
 
 class GameObject;
 class Transform;
@@ -123,6 +124,10 @@ struct API ReflectiveEntry
 
 typedef std::vector<ReflectiveEntry> ReflectiveData;
 
+#define BEGIN_REFLECTION() ReflectiveData reflectedVariables
+#define ADD_VARIABLE(variable, isPublic) Reflective::AddVariable(reflectedVariables, variable, #variable, isPublic)
+#define END_REFLECTION() return reflectedVariables
+
 /**
 * @brief Class to inherit if you want to access child's variables to fill variables from json or save them to json
 */
@@ -143,7 +148,7 @@ public:
 
 protected:
 
-/**
+	/**
 	* @brief Add a variable to the list of variables (basic Reflectives)
 	* @param vector The list of variables
 	* @param value The variable value
@@ -154,6 +159,8 @@ protected:
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
 	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
 		const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<Reflective>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
@@ -170,6 +177,8 @@ protected:
 	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value && !std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
 	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
 		const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<T>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
@@ -178,6 +187,8 @@ protected:
 	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
 	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, const bool isPublic)
 	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
 		const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, isPublic, type, true);
 		return newReflectiveEntry;
@@ -193,6 +204,8 @@ protected:
 	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
 	static ReflectiveEntry& AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
 	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
 		const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<int>((int&)value), variableName, false, isPublic, type, true);
 		return newReflectiveEntry;
@@ -208,6 +221,8 @@ protected:
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
 	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::weak_ptr<T>& value, const std::string& variableName, const bool isPublic)
 	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
 		const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::weak_ptr<Component>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
@@ -223,6 +238,8 @@ protected:
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
 	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, const bool isPublic)
 	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
 		const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::weak_ptr<Component>>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
@@ -239,6 +256,8 @@ protected:
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
 	static AddVariable(ReflectiveData& vector, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
 	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
 		const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, isPublic, type, false);
 		for (ReflectiveEntry& otherEntry : vector)
@@ -264,6 +283,8 @@ protected:
 	std::enable_if_t<!std::is_pointer<T>::value, ReflectiveEntry&>
 	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic)
 	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
 		const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(map, value, variableName, visibleInFileInspector, isPublic, type, false);
 		return newReflectiveEntry;
