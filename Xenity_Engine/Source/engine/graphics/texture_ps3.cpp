@@ -26,6 +26,7 @@
 #include <engine/asset_management/project_manager.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/graphics/renderer/renderer_rsx.h>
 
 #include "renderer/renderer.h"
 
@@ -70,7 +71,7 @@ void TexturePS3::SetData(const unsigned char* texData)
 	isValid = true;
 }
 
-void TexturePS3::BindTexture()
+void TexturePS3::Bind() const
 {
 	if (!m_ps3buffer)
 	{
@@ -79,7 +80,7 @@ void TexturePS3::BindTexture()
 
 	uint32_t offset;
 	rsxAddressToOffset(m_ps3buffer, &offset);
-
+	gcmContextData* context = RendererRSX::context;
 	rsxInvalidateTextureCache(context, GCM_INVALIDATE_TEXTURE);
 
 	uint32_t pitch = (GetWidth() * 4);
@@ -97,14 +98,14 @@ void TexturePS3::BindTexture()
 		(GCM_TEXTURE_REMAP_COLOR_G << GCM_TEXTURE_REMAP_COLOR_G_SHIFT) |
 		(GCM_TEXTURE_REMAP_COLOR_R << GCM_TEXTURE_REMAP_COLOR_R_SHIFT) |
 		(GCM_TEXTURE_REMAP_COLOR_A << GCM_TEXTURE_REMAP_COLOR_A_SHIFT));
-	gcmTexture.width = texture.GetWidth();
-	gcmTexture.height = texture.GetHeight();
+	gcmTexture.width = GetWidth();
+	gcmTexture.height = GetHeight();
 	gcmTexture.depth = 1;
 	gcmTexture.location = GCM_LOCATION_RSX;
 	gcmTexture.pitch = pitch;
 	gcmTexture.offset = offset;
-	rsxLoadTexture(context, textureUnit->index, &gcmTexture);
-	rsxTextureControl(context, textureUnit->index, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
+	rsxLoadTexture(context, RendererRSX::textureUnit->index, &gcmTexture);
+	rsxTextureControl(context, RendererRSX::textureUnit->index, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
 	int minFilterValue = GCM_TEXTURE_LINEAR;
 	int magfilterValue = GCM_TEXTURE_LINEAR;
 	if (GetFilter() == Filter::Point)
@@ -112,13 +113,13 @@ void TexturePS3::BindTexture()
 		minFilterValue = GCM_TEXTURE_NEAREST;
 		magfilterValue = GCM_TEXTURE_NEAREST;
 	}
-	rsxTextureFilter(context, textureUnit->index, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
+	rsxTextureFilter(context, RendererRSX::textureUnit->index, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
 	const int wrap = GetWrapModeEnum(GetWrapMode());
 
-	rsxTextureWrapMode(context, textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
+	rsxTextureWrapMode(context, RendererRSX::textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
 }
 
-int TexturePS3::GetWrapModeEnum(WrapMode wrapMode)
+int TexturePS3::GetWrapModeEnum(WrapMode wrapMode) const
 {
 	int mode = 0;
 	switch (wrapMode)

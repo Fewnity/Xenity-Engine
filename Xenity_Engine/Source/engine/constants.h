@@ -10,7 +10,9 @@
 // ------------------------- Files/directories names
 //
 // General
-#define PS3_DATA_FOLDER "/dev_hdd0/xenity_engine/"
+#define PS3_DATA_FOLDER "/dev_hdd0/xenity_engine/" // When using data from hard drive
+//#define PS3_DATA_FOLDER "/dev_usb/xenity_engine/" // When using data from usb
+
 #define PROJECT_SETTINGS_FILE_NAME "project_settings.json"
 #define META_EXTENSION ".meta"
 #define PROJECTS_LIST_FILE "projects.json"

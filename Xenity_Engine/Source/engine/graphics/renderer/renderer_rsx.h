@@ -17,6 +17,9 @@
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/texture.h>
 #include <engine/vectors/vector2_int.h>
+#include <rsx/rsx.h>
+
+// class gcmContextData;
 
 class API RendererRSX : public Renderer
 {
@@ -52,11 +55,16 @@ public:
 	void SetFogValues(float start, float end, const Color& color) override;
 
 	void DeleteSubMeshData(MeshData::SubMesh& subMesh) override;
-	void UploadMeshData(const MeshData& meshData) override;
+	void UploadMeshData(MeshData& meshData) override;
 
 	void Setlights(const LightsIndices& lightsIndices, const Camera& camera) override;
 
+
+	static gcmContextData* context;
+	static rsxProgramAttrib* textureUnit; // Move this to shader
+
 private:
+
 	Vector2Int resolution;
 	void ApplyTextureFilters(const Texture& texture);
 	std::array<const Light*, MAX_LIGHT_COUNT> lastUpdatedLights;

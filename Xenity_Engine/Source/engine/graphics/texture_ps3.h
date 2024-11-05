@@ -27,6 +27,8 @@ public:
 	TexturePS3();
 	~TexturePS3();
 
+	unsigned char* m_ps3buffer = nullptr;
+	
 protected:
 	void OnLoadFileReferenceFinished() override;
 
@@ -36,7 +38,6 @@ protected:
 	int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
 
-	unsigned char* m_ps3buffer = nullptr;
 };
 
 #endif

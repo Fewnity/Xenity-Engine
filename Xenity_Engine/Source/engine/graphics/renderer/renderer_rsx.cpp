@@ -23,11 +23,12 @@
 
 #include <memory>
 #include <glm/gtc/type_ptr.hpp>
-#include <rsx/rsx.h>
+// #include <rsx/rsx.h>
 #include <io/pad.h> 
 #include <sysutil/video.h>
 #include <rsxdebugfontrenderer.h>
 #include <sysutil/sysutil.h>
+#include <engine/graphics/texture_ps3.h>
 
 #include "diffuse_specular_shader_vpo.h"
 #include "diffuse_specular_shader_fpo.h"
@@ -39,10 +40,11 @@
 #define GCM_LABEL_INDEX		255
 #define FRAME_BUFFER_COUNT					2
 
+gcmContextData* RendererRSX::context = nullptr;
+
 uint32_t sLabelVal = 1;
 uint32_t running = 0;
 RSXDebugFontRenderer* debugFontRenderer = nullptr;
-gcmContextData* context = nullptr;
 
 uint32_t curr_fb = 0;
 uint32_t first_fb = 1;
@@ -77,23 +79,23 @@ rsxProgramConst* projMatrix;
 rsxProgramConst* mvMatrix;
 
 // fragment shader
-rsxProgramAttrib* textureUnit;
-rsxProgramConst* eyePosition;
-rsxProgramConst* globalAmbient;
-rsxProgramConst* litPosition;
-rsxProgramConst* litColor;
-rsxProgramConst* Kd;
-rsxProgramConst* Ks;
-rsxProgramConst* spec;
+rsxProgramAttrib* RendererRSX::textureUnit = nullptr;
+rsxProgramConst* eyePosition = nullptr;
+rsxProgramConst* globalAmbient = nullptr;
+rsxProgramConst* litPosition = nullptr;
+rsxProgramConst* litColor = nullptr;
+rsxProgramConst* Kd = nullptr;
+rsxProgramConst* Ks = nullptr;
+rsxProgramConst* spec = nullptr;
 
 glm::vec3 eye_pos = glm::vec3(0.0f, 0.0f, 5.0f);
 glm::vec3 eye_dir = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
 
-void* vp_ucode = NULL;
+void* vp_ucode = nullptr;
 rsxVertexProgram* vpo = (rsxVertexProgram*)diffuse_specular_shader_vpo;
 
-void* fp_ucode = NULL;
+void* fp_ucode = nullptr;
 rsxFragmentProgram* fpo = (rsxFragmentProgram*)diffuse_specular_shader_fpo;
 
 glm::mat4 transformationMatrix = glm::mat4(1);
@@ -102,10 +104,10 @@ glm::mat4 projectionMatrix;
 extern "C"
 {
 
-	static void program_exit_callback()
+	void program_exit_callback()
 	{
-		gcmSetWaitFlip(context);
-		rsxFinish(context, 1);
+		gcmSetWaitFlip(RendererRSX::context);
+		rsxFinish(RendererRSX::context, 1);
 	}
 
 	static void sysutil_exit_callback(u64 status, u64 param, void* usrdata)
@@ -183,7 +185,7 @@ void init_shader()
 	memcpy(fp_buffer, fp_ucode, fpsize);
 	rsxAddressToOffset(fp_buffer, &fp_offset);
 
-	textureUnit = rsxFragmentProgramGetAttrib(fpo, "texture");
+	RendererRSX::textureUnit = rsxFragmentProgramGetAttrib(fpo, "texture");
 	eyePosition = rsxFragmentProgramGetConst(fpo, "eyePosition");
 	globalAmbient = rsxFragmentProgramGetConst(fpo, "globalAmbient");
 	litPosition = rsxFragmentProgramGetConst(fpo, "lightPosition");
@@ -551,50 +553,6 @@ void RendererRSX::SetTransform(const glm::mat4& mat)
 
 void RendererRSX::BindTexture(const Texture& texture)
 {
-	if (!texture.m_ps3buffer)
-	{
-		return;
-	}
-
-	uint32_t offset;
-	rsxAddressToOffset(texture.m_ps3buffer, &offset);
-
-	rsxInvalidateTextureCache(context, GCM_INVALIDATE_TEXTURE);
-
-	uint32_t pitch = (texture.GetWidth() * 4);
-	gcmTexture gcmTexture;
-
-	gcmTexture.format = (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
-	gcmTexture.mipmap = 1;
-	gcmTexture.dimension = GCM_TEXTURE_DIMS_2D;
-	gcmTexture.cubemap = GCM_FALSE;
-	gcmTexture.remap = ((GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_B_SHIFT) |
-		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_G_SHIFT) |
-		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_R_SHIFT) |
-		(GCM_TEXTURE_REMAP_TYPE_REMAP << GCM_TEXTURE_REMAP_TYPE_A_SHIFT) |
-		(GCM_TEXTURE_REMAP_COLOR_B << GCM_TEXTURE_REMAP_COLOR_B_SHIFT) |
-		(GCM_TEXTURE_REMAP_COLOR_G << GCM_TEXTURE_REMAP_COLOR_G_SHIFT) |
-		(GCM_TEXTURE_REMAP_COLOR_R << GCM_TEXTURE_REMAP_COLOR_R_SHIFT) |
-		(GCM_TEXTURE_REMAP_COLOR_A << GCM_TEXTURE_REMAP_COLOR_A_SHIFT));
-	gcmTexture.width = texture.GetWidth();
-	gcmTexture.height = texture.GetHeight();
-	gcmTexture.depth = 1;
-	gcmTexture.location = GCM_LOCATION_RSX;
-	gcmTexture.pitch = pitch;
-	gcmTexture.offset = offset;
-	rsxLoadTexture(context, textureUnit->index, &gcmTexture);
-	rsxTextureControl(context, textureUnit->index, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
-	int minFilterValue = GCM_TEXTURE_LINEAR;
-	int magfilterValue = GCM_TEXTURE_LINEAR;
-	if (texture.GetFilter() == Filter::Point)
-	{
-		minFilterValue = GCM_TEXTURE_NEAREST;
-		magfilterValue = GCM_TEXTURE_NEAREST;
-	}
-	rsxTextureFilter(context, textureUnit->index, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
-	const int wrap = GetWrapModeEnum(texture.GetWrapMode());
-
-	rsxTextureWrapMode(context, textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
 }
 
 void RendererRSX::ApplyTextureFilters(const Texture& texture)
@@ -672,9 +630,10 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 
-	if (usedTexture != texture.m_ps3buffer)
+	const TexturePS3& ps3Texture = dynamic_cast<const TexturePS3&>(texture);
+	if (usedTexture != ps3Texture.m_ps3buffer)
 	{
-		usedTexture = texture.m_ps3buffer;
+		usedTexture = ps3Texture.m_ps3buffer;
 		texture.Bind();
 	}
 
@@ -720,129 +679,6 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	rsxInvalidateVertexCache(context);
 	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, offset, subMesh.index_count, GCM_INDEX_TYPE_16B, GCM_LOCATION_RSX);
 	rsxSetDepthWriteEnable(context, GCM_TRUE);
-
-
-
-
-
-
-	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-	//float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
-	//float material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* NOT default value */
-	//float material_emission[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* default value */
-	// glMaterial(GU_DIFFUSE, 0xFFFFFFFF);
-	//  glMaterialfv(GU_FRONT, GU_AMBIENT, material_ambient);
-	//  glMaterialfv(GU_FRONT, GU_DIFFUSE, material_diffuse);
-	//  glMaterialfv(GU_FRONT, GU_SPECULAR, material_specular);
-	//  glMaterialfv(GU_FRONT, GU_EMISSION, material_emission);
-	//  glMaterialf(GU_FRONT, GU_SHININESS, 10.0);               /* NOT default value   */
-
-	// Apply rendering settings
-	// if (lastSettings.invertFaces != settings.invertFaces)
-	// {
-	// 	if (settings.invertFaces)
-	// 	{
-	// 		sceGuFrontFace(GU_CW);
-	// 	}
-	// 	else
-	// 	{
-	// 		sceGuFrontFace(GU_CCW);
-	// 	}
-	// }
-
-	// if (lastSettings.useDepth != settings.useDepth)
-	// {
-	// 	if (settings.useDepth)
-	// 	{
-	// 		sceGuEnable(GU_DEPTH_TEST);
-	// 	}
-	// 	else
-	// 	{
-	// 		sceGuDisable(GU_DEPTH_TEST);
-	// 	}
-	// }
-
-	// if (lastSettings.renderingMode != settings.renderingMode)
-	// {
-	// 	if (settings.renderingMode == MaterialRenderingModes::Opaque)
-	// 	{
-	// 		sceGuDisable(GU_BLEND);
-	// 		sceGuDisable(GU_ALPHA_TEST);
-	// 	}
-	// 	else if (settings.renderingMode == MaterialRenderingModes::Cutout)
-	// 	{
-	// 		sceGuDisable(GU_BLEND);
-	// 		sceGuEnable(GU_ALPHA_TEST);
-	// 		sceGuAlphaFunc(GU_GEQUAL, static_cast<int>(material.GetAlphaCutoff() * 255), 0xff);
-	// 	}
-	// 	else
-	// 	{
-	// 		sceGuEnable(GU_BLEND);
-	// 		sceGuBlendFunc(GU_ADD, GU_SRC_ALPHA, GU_ONE_MINUS_SRC_ALPHA, 0, 0);
-	// 		sceGuDisable(GU_ALPHA_TEST);
-	// 	}
-	// }
-
-	// if (lastSettings.useLighting != settings.useLighting)
-	// {
-	// 	if (settings.useLighting)
-	// 	{
-	// 		sceGuEnable(GU_LIGHTING);
-	// 	}
-	// 	else
-	// 	{
-	// 		sceGuDisable(GU_LIGHTING);
-	// 	}
-	// }
-
-	// if (lastSettings.useTexture != settings.useTexture)
-	// {
-	// 	sceGuEnable(GU_TEXTURE_2D);
-	// }
-
-	// // glDepthMask needs GL_FALSE here, pspsdk is doing this wrong, may change in a sdk update
-	// if (settings.renderingMode == MaterialRenderingModes::Transparent)
-	// {
-	// 	sceGuDepthMask(GU_TRUE);
-	// }
-
-	// // Keep in memory the used settings
-	// lastSettings.invertFaces = settings.invertFaces;
-	// lastSettings.renderingMode = settings.renderingMode;
-	// lastSettings.useDepth = settings.useDepth;
-	// lastSettings.useLighting = settings.useLighting;
-	// lastSettings.useTexture = settings.useTexture;
-
-	// if (lastUsedColor != material.GetColor().GetUnsignedIntABGR() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntABGR())
-	// {
-	// 	lastUsedColor = material.GetColor().GetUnsignedIntABGR();
-	// 	lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntABGR();
-	// 	sceGuColor((material.GetColor() * subMesh.meshData->unifiedColor).GetUnsignedIntABGR());
-	// }
-
-	// // Bind texture
-	// if (usedTexture != texture.data[0])
-	// {
-	// 	usedTexture = texture.data[0];
-	// 	BindTexture(texture);
-	// }
-	// sceGuTexOffset(material.GetOffset().x, material.GetOffset().y);
-	// sceGuTexScale(material.GetTiling().x, material.GetTiling().y);
-
-	// // Draw
-	// if (!subMesh.meshData->m_hasIndices)
-	// {
-	// 	sceGumDrawArray(GU_TRIANGLES, subMesh.meshData->pspDrawParam, subMesh.vertice_count, 0, subMesh.data);
-	// }
-	// else
-	// {
-	// 	sceGumDrawArray(GU_TRIANGLES, subMesh.meshData->pspDrawParam, subMesh.index_count, subMesh.indices, subMesh.data);
-	// }
-	// //Performance::AddDrawCall();
-
-
-	// // glDepthMask needs GL_TRUE here, pspsdk is doing this wrong, may change in a sdk update
-	// sceGuDepthMask(GU_FALSE);
 }
 
 void RendererRSX::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
@@ -856,35 +692,10 @@ unsigned int RendererRSX::CreateNewTexture()
 
 void RendererRSX::DeleteTexture(Texture& texture)
 {
-	// const int textureLevelCount = texture.inVram.size();
-	// for (int i = 0; i < textureLevelCount; i++)
-	// {
-	// 	if (texture.inVram[i])
-	// 		vfree(texture.data[i]);
-	// 	else
-	// 		free(texture.data[i]);
-	// }
 }
 
 void RendererRSX::SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer)
 {
-	//Debug::Print("SetTextureData");
-
-	// texture->m_ps3buffer = (uint32_t*)rsxMemalign(128, (texture.GetWidth() * texture.GetHeight() * 4));
-	// if(!texture->m_ps3buffer) 
-	//     return;
-
-	// uint32_t texture_offset;
-	// rsxAddressToOffset(texture_buffer, &texture_offset);
-
-	// unsigned char* upBuffer = (u8*)texture->m_ps3buffer;
-	// for(int i=0; i< texture.GetWidth() * texture.GetHeight() * 4; i+=4)
-	// {
-	// 	upBuffer[i + 1] = *buffer++;
-	// 	upBuffer[i + 2] = *buffer++;
-	// 	upBuffer[i + 3] = *buffer++;
-	// 	upBuffer[i + 0] = *buffer++;
-	// }
 }
 
 void RendererRSX::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)
@@ -1049,7 +860,7 @@ void RendererRSX::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 {
 }
 
-void RendererRSX::UploadMeshData(const MeshData& meshData)
+void RendererRSX::UploadMeshData(MeshData& meshData)
 {
 }
 
@@ -1065,22 +876,6 @@ int RendererRSX::GetWrapModeEnum(WrapMode wrapMode)
 	case WrapMode::Repeat:
 		mode = GCM_TEXTURE_REPEAT;
 		break;
-
-		// case WrapMode::ClampToEdge:
-		// 	mode = GU_CLAMP_TO_EDGE;
-		// 	break;
-		// case WrapMode::ClampToBorder:
-		// 	mode = GU_CLAMP_TO_BORDER;
-		// 	break;
-		// case WrapMode::MirroredRepeat:
-		// 	mode = GU_MIRRORED_REPEAT;
-		// 	break;
-		// case WrapMode::Repeat:
-		// 	mode = GU_REPEAT;
-		// 	break;
-		// case WrapMode::MirrorClampToEdge:
-		// 	mode = GU_MIRROR_CLAMP_TO_EDGE;
-		// 	break;
 	}
 	return mode;
 }
