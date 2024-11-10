@@ -293,19 +293,6 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		}
 	}
 
-	/*if (lastSettings.useBlend != settings.useBlend)
-	{
-		if (settings.useBlend)
-		{
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		}
-		else
-		{
-			glDisable(GL_BLEND);
-		}
-	}*/
-
 	if (lastSettings.renderingMode != settings.renderingMode)
 	{
 		if (settings.renderingMode == MaterialRenderingModes::Opaque)
