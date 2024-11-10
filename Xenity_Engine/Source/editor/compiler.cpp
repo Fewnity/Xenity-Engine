@@ -35,6 +35,9 @@
 
 namespace fs = std::filesystem;
 
+// Note: A docker copy command will create a directory of the source folder has not the same name as the dest folder.
+// If both folders have the same name, the content of src will be pasted in dst without creating a new folder
+
 Event<CompilerParams, bool> Compiler::OnCompilationEndedEvent;
 Event<CompilerParams> Compiler::OnCompilationStartedEvent;
 
@@ -44,6 +47,7 @@ std::string  Compiler::compilerExecFileName = "";
 
 CompilationMethod Compiler::compilationMethod = CompilationMethod::MSVC;
 bool Compiler::isCompilationCancelled = false;
+
 
 std::string MakePathAbsolute(const std::string& path, const std::string& root)
 {
@@ -99,7 +103,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	{
 		Debug::PrintWarning("[Compiler::Compile] Unable to clear the compilation folder", true);
 	}
-	
+
 	// Save project settings of the build
 	{
 		ProjectSettings projectSettingsCopy = ProjectManager::projectSettings;
@@ -125,6 +129,14 @@ CompileResult Compiler::Compile(CompilerParams params)
 	CookSettings cookSettings;
 	cookSettings.exportPath = params.tempPath + "cooked_assets/";
 	cookSettings.platform = Application::PlatformToAssetPlatform(params.buildPlatform.platform);
+	if (params.buildType == BuildType::BuildShaders) 
+	{
+		cookSettings.exportShadersOnly = true;
+	}
+	else 
+	{
+		cookSettings.exportShadersOnly = false;
+	}
 	Cooker::CookAssets(cookSettings);
 
 	// Compile depending on platform
@@ -136,6 +148,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 		break;
 	case Platform::P_PSP:
 	case Platform::P_PsVita:
+	case Platform::P_PS3:
 		//result = CompileWSL(params); // Deprecated
 		result = CompileInDocker(params);
 		break;
@@ -347,15 +360,29 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 	params.buildPlatform = buildPlatform;
 	params.buildType = buildType;
 	params.sourcePath = ProjectManager::GetAssetFolderPath();
-	params.tempPath = ProjectManager::GetProjectFolderPath() + ".build/";
 	params.exportPath = exportPath;
 
 	OnCompilationStartedEvent.Trigger(params);
 
+	if (buildType == BuildType::BuildShadersAndGame)
+	{
+		params.buildType = BuildType::BuildShaders;
+		params.tempPath = ProjectManager::GetProjectFolderPath() + ".shaders_build/";
+
+		// Compile
+		const CompileResult shaderResult = Compile(params);
+	}
+
+	if (buildType == BuildType::BuildShadersAndGame)
+	{
+		params.buildType = BuildType::BuildGame;
+		params.tempPath = ProjectManager::GetProjectFolderPath() + ".build/";
+	}
+
 	// Compile
 	const CompileResult result = Compile(params);
 
-	if (result != CompileResult::SUCCESS) 
+	if (result != CompileResult::SUCCESS)
 	{
 		DeleteTempFiles(params);
 		return result;
@@ -524,7 +551,10 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 		break;
 	}
 
-	OnCompilationEndedEvent.Trigger(params, result == CompileResult::SUCCESS);
+	if (params.buildType != BuildType::BuildShaders) 
+	{
+		OnCompilationEndedEvent.Trigger(params, result == CompileResult::SUCCESS);
+	}
 }
 
 std::string WindowsPathToWSL(const std::string& path)
@@ -811,7 +841,7 @@ bool Compiler::CreateDockerImage()
 
 void Compiler::CancelCompilation()
 {
-	if (compilationMethod == CompilationMethod::DOCKER) 
+	if (compilationMethod == CompilationMethod::DOCKER)
 	{
 		system("docker stop -t 0 XenityEngineBuild");
 		isCompilationCancelled = true;
@@ -869,7 +899,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	[[maybe_unused]] const int removeResult = system("docker remove XenityEngineBuild");
 
 	std::string prepareCompileCommand = "";
-	if (params.buildPlatform.platform == Platform::P_PSP) 
+	if (params.buildPlatform.platform == Platform::P_PSP)
 	{
 		std::shared_ptr<PlatformSettingsPSP> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPSP>(params.buildPlatform.settings);
 		std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
@@ -881,6 +911,11 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
 		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DVITA_TITLEID=" + platformSettings->gameId + debugDefine + " ..";
 	}
+	/*else if (params.buildPlatform.platform == Platform::P_PS3)
+	{
+		std::shared_ptr<PlatformSettingsPS3> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPS3>(params.buildPlatform.settings);
+		prepareCompileCommand = "make";
+	}*/
 
 	unsigned int threadNumber = std::thread::hardware_concurrency();
 	if (threadNumber == 0) // This function may returns 0, use 1 instead
@@ -889,62 +924,106 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 
 	std::string createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/build/ ; " + prepareCompileCommand + " ; cmake --build . -j" + std::to_string(threadNumber) + "\"";
+
+	if (params.buildType == BuildType::BuildShaders) 
+	{
+		createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/ ; ./compile_shaders.sh\"";
+	}
+	else if (params.buildPlatform.platform == Platform::P_PS3)
+	{
+		createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/ ; make\"";
+	}
+
 	[[maybe_unused]] const int createResult = system(createCommand.c_str());
 
-	const std::string copyEngineSourceCommand = "docker cp \"" + engineProjectLocation + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
-	[[maybe_unused]] const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
-	const std::string copyEngineLibrariesCommand = "docker cp \"" + engineProjectLocation + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
-	[[maybe_unused]] const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
-	const std::string copyMainCommand = "docker cp \"" + engineFolderLocation + "main.cpp\" XenityEngineBuild:\"/home/XenityBuild/Source/\"";
-	[[maybe_unused]] const int copyMainResult = system(copyMainCommand.c_str()); // main.cpp file
-	const std::string copyCmakeCommand = "docker cp \"" + engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
-	[[maybe_unused]] const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
-
-	// Copy source code in the build folder
-	try
+	if (params.buildType != BuildType::BuildShaders)
 	{
-		CopyGameSource(params);
+		const std::string copyEngineSourceCommand = "docker cp \"" + engineProjectLocation + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		[[maybe_unused]] const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
+		const std::string copyEngineLibrariesCommand = "docker cp \"" + engineProjectLocation + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		[[maybe_unused]] const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
+		const std::string copyMainCommand = "docker cp \"" + engineFolderLocation + "main.cpp\" XenityEngineBuild:\"/home/XenityBuild/Source/\"";
+		[[maybe_unused]] const int copyMainResult = system(copyMainCommand.c_str()); // main.cpp file
 	}
-	catch (const std::exception&)
+	else 
 	{
-		return CompileResult::ERROR_GAME_CODE_COPY;
+		const std::string copyCompileShadersCommand = "docker cp \"" + engineFolderLocation + "compile_shaders.sh\" XenityEngineBuild:\"/home/XenityBuild/compile_shaders.sh\"";
+		[[maybe_unused]] const int copyCompileShadersCommandResult = system(copyCompileShadersCommand.c_str()); // compile shaders script file
 	}
 
-	// Copy game source from the build folder to docker
-	const std::string copyGameSourceCommand = "docker cp \"" + params.tempPath + "source\" XenityEngineBuild:\"/home/XenityBuild/Source/game_code/\"";
-	[[maybe_unused]] const int copyGameSourceResult = system(copyGameSourceCommand.c_str());
+	if (params.buildPlatform.platform == Platform::P_PS3)
+	{
+		const std::string copyMakeFileCommand = "docker cp \"" + engineFolderLocation + "Makefile.PS3\" XenityEngineBuild:\"/home/XenityBuild/Makefile\"";
+		[[maybe_unused]] const int copyMakeFileCommandResult = system(copyMakeFileCommand.c_str()); // make file
+	}
+	else
+	{
+		const std::string copyCmakeCommand = "docker cp \"" + engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		[[maybe_unused]] const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
+	}
+
+	if (params.buildType != BuildType::BuildShaders)
+	{
+		// Copy source code in the build folder
+		try
+		{
+			CopyGameSource(params);
+		}
+		catch (const std::exception&)
+		{
+			return CompileResult::ERROR_GAME_CODE_COPY;
+		}
+
+		// Copy game source from the build folder to docker
+		const std::string copyGameSourceCommand = "docker cp \"" + params.tempPath + "source\" XenityEngineBuild:\"/home/XenityBuild/Source/game_code/\"";
+		[[maybe_unused]] const int copyGameSourceResult = system(copyGameSourceCommand.c_str());
+	}
 
 	if (isCompilationCancelled)
+	{
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
+	}
 
 	// Copy XMB/Livearea images
-	if (params.buildPlatform.platform == Platform::P_PsVita)
-	{
-		CopyAssetsToDocker(params);
-	}
-	else if (params.buildPlatform.platform == Platform::P_PSP)
+	if (params.buildPlatform.platform == Platform::P_PsVita ||
+		params.buildPlatform.platform == Platform::P_PSP ||
+		params.buildPlatform.platform == Platform::P_PS3)
 	{
 		CopyAssetsToDocker(params);
 	}
 
 	if (isCompilationCancelled)
+	{
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
+	}
 
 	const std::string startCommand = "docker start -a XenityEngineBuild";
 	[[maybe_unused]] const int startResult = system(startCommand.c_str());
 
 	if (isCompilationCancelled)
+	{
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
+	}
 
 	std::string fileName = "";
 	if (params.buildPlatform.platform == Platform::P_PSP)
+	{
 		fileName = "EBOOT.PBP";
+	}
 	else if (params.buildPlatform.platform == Platform::P_PsVita)
+	{
 		fileName = ProjectManager::GetGameName() + ".vpk";
+	}
 
 	// Copy final file
 	const std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName + "\" \"" + params.exportPath + fileName + "\"";
 	const int copyGameFileResult = system(copyGameFileCommand.c_str()); // Engine's source code + (game's code but to change later)
+
+	if (params.buildType == BuildType::BuildShaders)
+	{
+		const std::string copyCompiledShadersCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/shaders_to_compile/\" \"" + params.tempPath + "cooked_assets/" + "\"";
+		[[maybe_unused]] const int copyCompiledShadersCommandResult = system(copyCompiledShadersCommand.c_str());
+	}
 
 	// Copy prx file for build and run on psp hardware
 	if (params.buildPlatform.platform == Platform::P_PSP)
@@ -1038,6 +1117,12 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 			}
 		}
 	}
+	else if (params.buildPlatform.platform == Platform::P_PS3)
+	{
+		// Copy shaders to compile
+		const std::string copyShadersCommand = "docker cp \"" + params.tempPath + "cooked_assets/shaders_to_compile\" XenityEngineBuild:\"/home/XenityBuild\"";
+		[[maybe_unused]] const int copyShadersCommandResult = system(copyShadersCommand.c_str());
+	}
 }
 
 std::string Compiler::GetStartCompilerCommand()
@@ -1087,7 +1172,7 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	{
 		command += " /DEDITOR";
 	}
-	else 
+	else
 	{
 
 	}

@@ -23,7 +23,9 @@ ENUM(BuildType,
 	EditorHotReloading,
 	BuildGame,
 	BuildAndRunGame,
-	BuildAndRunOnHardwareGame);
+	BuildAndRunOnHardwareGame,
+	BuildShaders,
+	BuildShadersAndGame);
 
 ENUM(CompileResult, 
 	SUCCESS,

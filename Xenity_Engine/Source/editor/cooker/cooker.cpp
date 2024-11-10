@@ -14,6 +14,7 @@
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture.h>
+#include <engine/graphics/shader.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/debug/debug.h>
 
@@ -63,7 +64,6 @@ void Cooker::CookAssets(const CookSettings& settings)
 
 void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
 {
-	uint64_t cookedFileSize = 0;
 	const std::string exportPath = exportFolderPath + "/" + fileInfo.file->GetFileName() + fileInfo.file->GetFileExtension();
 
 	// We copy the cooked file to the export folder, and then we add the copied file to the binary file
@@ -75,7 +75,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		unsigned char* imageData = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
 		if (!imageData)
 		{
-			Debug::PrintError("Failed to load texture: " + texturePath);
+			Debug::PrintError("[Cooker::CookAsset] Failed to load texture: " + texturePath);
 			return;
 		}
 
@@ -116,6 +116,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		const std::shared_ptr<MeshData> meshData = std::dynamic_pointer_cast<MeshData>(fileRef);
 		meshData->LoadFileReference();
 
+		// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE
 		std::ofstream meshFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
 		// Write mesh data
@@ -134,6 +135,94 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		}
 		meshFile.close();
 	}
+	else if (fileInfo.type == FileType::File_Shader) // Cook shader
+	{
+		if (settings.platform == AssetPlatform::AP_PS3)
+		{
+			if (settings.exportShadersOnly)
+			{
+				if (!std::filesystem::exists(settings.exportPath + "shaders_to_compile/"))
+				{
+					std::filesystem::create_directories(settings.exportPath + "shaders_to_compile/");
+				}
+
+				const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+				const std::shared_ptr<Shader> shader = std::dynamic_pointer_cast<Shader>(fileRef);
+
+				const std::string vertexShaderCode = shader->GetShaderCode(Shader::ShaderType::Vertex_Shader, Platform::P_PS3);
+				const std::string fragmentShaderCode = shader->GetShaderCode(Shader::ShaderType::Fragment_Shader, Platform::P_PS3);
+
+				if (vertexShaderCode.empty() || fragmentShaderCode.empty())
+				{
+					Debug::PrintError("[Cooker::CookAsset] Failed to get shader code for shader: " + partialFilePath);
+					return;
+				}
+
+				const std::shared_ptr<File> vertexFile = FileSystem::MakeFile(settings.exportPath + "shaders_to_compile/" + std::to_string(fileRef->GetFileId()) + ".vcg");
+				vertexFile->Open(FileMode::WriteCreateFile);
+				vertexFile->Write(vertexShaderCode);
+				vertexFile->Close();
+
+				const std::shared_ptr<File> fragmentFile = FileSystem::MakeFile(settings.exportPath + "shaders_to_compile/" + std::to_string(fileRef->GetFileId()) + ".fcg");
+				fragmentFile->Open(FileMode::WriteCreateFile);
+				fragmentFile->Write(fragmentShaderCode);
+				fragmentFile->Close();
+
+				CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
+			}
+			else
+			{
+				const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+
+				std::string projetPath = ProjectManager::GetProjectFolderPath();
+				std::string vertexShaderCodePath = projetPath + ".shaders_build/cooked_assets/shaders_to_compile/" + std::to_string(fileRef->GetFileId()) + ".vco";
+				std::string fragmentShaderCodePath = projetPath + ".shaders_build/cooked_assets/shaders_to_compile/" + std::to_string(fileRef->GetFileId()) + ".fco";
+
+				const std::shared_ptr<File> vertexCodeFile = FileSystem::MakeFile(vertexShaderCodePath);
+				const std::shared_ptr<File> fragmentCodeFile = FileSystem::MakeFile(fragmentShaderCodePath);
+
+				bool vOpenResult = vertexCodeFile->Open(FileMode::ReadOnly);
+				if (!vOpenResult) 
+				{
+					Debug::PrintError("[Cooker::CookAsset] Failed to load shader code: " + vertexShaderCodePath);
+					return;
+				}
+				bool fOpenResult = fragmentCodeFile->Open(FileMode::ReadOnly);
+				if (!fOpenResult)
+				{
+					Debug::PrintError("[Cooker::CookAsset] Failed to load shader code: " + fragmentShaderCodePath);
+					vertexCodeFile->Close();
+					return;
+				}
+
+				size_t vertexBinaryCodeSize = 0;
+				unsigned char* vertexCodeBinary = vertexCodeFile->ReadAllBinary(vertexBinaryCodeSize);
+				vertexCodeFile->Close();
+
+				size_t fragmentBinaryCodeSize = 0;
+				unsigned char* fragmentCodeBinary = fragmentCodeFile->ReadAllBinary(fragmentBinaryCodeSize);
+				fragmentCodeFile->Close();
+
+				uint32_t vertexBinaryCodeSizeFixed = vertexBinaryCodeSize;
+				uint32_t fragmentBinaryCodeSizeFixed = fragmentBinaryCodeSize;
+
+				// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE
+				std::ofstream shaderFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+				shaderFile.write((char*)&vertexBinaryCodeSizeFixed, sizeof(uint32_t));
+				shaderFile.write((char*)vertexCodeBinary, vertexBinaryCodeSizeFixed);
+				shaderFile.write((char*)&fragmentBinaryCodeSizeFixed, sizeof(uint32_t));
+				shaderFile.write((char*)fragmentCodeBinary, fragmentBinaryCodeSizeFixed);
+				shaderFile.close();
+
+				free(vertexCodeBinary);
+				free(fragmentCodeBinary);
+			}
+		}
+		else 
+		{
+			CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
+		}
+	}
 	else // If file can't be cooked, just copy it
 	{
 		CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
@@ -145,13 +234,13 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 
 	CopyUtils::ExecuteCopyEntries();
 
-	cookedFileSize = fs::file_size(exportPath.c_str());
+	uint64_t cookedFileSize = cookedFileSize = fs::file_size(exportPath.c_str());
 
 	// Do not include audio in the binary file
 	size_t dataOffset = 0;
 	if (fileInfo.type != FileType::File_Audio)
 	{
-		std::shared_ptr<File> cookedFile = FileSystem::MakeFile(exportPath);
+		const std::shared_ptr<File> cookedFile = FileSystem::MakeFile(exportPath);
 		size_t cookedFileSizeOut;
 		cookedFile->Open(FileMode::ReadOnly);
 		unsigned char* fileData = cookedFile->ReadAllBinary(cookedFileSizeOut);
@@ -163,7 +252,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 
 	// Add the meta file to the binary file
 	size_t metaDataOffset = 0;
-	std::shared_ptr<File> cookedMetaFile = FileSystem::MakeFile(exportPath + ".meta");
+	const std::shared_ptr<File> cookedMetaFile = FileSystem::MakeFile(exportPath + ".meta");
 	size_t cookedMetaFileSizeOut;
 	bool cookedMetaOpen = cookedMetaFile->Open(FileMode::ReadOnly);
 	if (cookedMetaOpen)

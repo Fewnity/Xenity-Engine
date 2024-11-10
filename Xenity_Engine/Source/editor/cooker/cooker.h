@@ -13,6 +13,7 @@ struct CookSettings
 {
 	AssetPlatform platform;
 	std::string exportPath;
+	bool exportShadersOnly = false;
 };
 
 class Cooker

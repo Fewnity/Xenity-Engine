@@ -74,10 +74,11 @@ void BuildSettingsMenu::Init()
 	BuildPlatform ps3Platform = BuildPlatform();
 	ps3Platform.name = "PS3";
 	ps3Platform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PS3];
-	ps3Platform.isSupported = false;
+	ps3Platform.isSupported = true;
 	ps3Platform.supportBuildAndRun = false;
 	ps3Platform.supportBuildAndRunOnHardware = false;
 	ps3Platform.platform = Platform::P_PS3;
+	ps3Platform.settings = std::make_shared<PlatformSettingsPS3>(onSettingChangedEvent);
 
 	/*BuildPlatform ps4Platform = BuildPlatform();
 	ps4Platform.name = "PS4";
@@ -90,9 +91,9 @@ void BuildSettingsMenu::Init()
 	buildPlatforms.push_back(windowsPlatform);
 	buildPlatforms.push_back(pspPlatform);
 	buildPlatforms.push_back(psvitaPlatform);
+	buildPlatforms.push_back(ps3Platform);
 	buildPlatforms.push_back(linuxPlatform);
 	//buildPlatforms.push_back(ps2Platform);
-	buildPlatforms.push_back(ps3Platform);
 	//buildPlatforms.push_back(ps4Platform);
 
 	onSettingChangedEvent->Bind(&BuildSettingsMenu::OnSettingChanged, this);
@@ -226,7 +227,7 @@ void BuildSettingsMenu::Draw()
 				ImGui::Text("Preview image: PNG 310x180");
 				if (lastSettingError == 1)
 				{
-					ImGui::TextColored(ImVec4(1,0,0,1), "Error: Wrong background image size");
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong background image size");
 				}
 				else if (lastSettingError == 2)
 				{
@@ -243,7 +244,7 @@ void BuildSettingsMenu::Draw()
 				ImGui::Text("Background image: 8bits PNG 840x500");
 				ImGui::Text("Icon image: 8bits PNG 128x128");
 				ImGui::Text("Startup image: 8bits PNG 280x158");
-				ImGui::Text("Game Id: Must be exactly 9 characters and unique"); 
+				ImGui::Text("Game Id: Must be exactly 9 characters and unique");
 				ImGui::TextWrapped("Recommended: XXXXYYYYY where X = string of developer in uppercase and Y = a number for this app");
 				if (lastSettingError == 1)
 				{
@@ -266,7 +267,7 @@ void BuildSettingsMenu::Draw()
 			availColSize = ImGui::GetContentRegionAvail();
 			if (platform.supportBuildAndRunOnHardware)
 			{
-				ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y)*2 * EditorUI::GetUiScale());
+				ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y) * 2 * EditorUI::GetUiScale());
 				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x) * EditorUI::GetUiScale());
 				if (ImGui::Button("Build And Run On Hardware", ImVec2((180 + style.ItemSpacing.x) * EditorUI::GetUiScale(), 20 * EditorUI::GetUiScale())))
 				{
@@ -311,7 +312,7 @@ const BuildPlatform& BuildSettingsMenu::GetBuildPlatform(Platform platform)
 {
 	for (const BuildPlatform& buildPlatform : buildPlatforms)
 	{
-		if (buildPlatform.platform == platform) 
+		if (buildPlatform.platform == platform)
 		{
 			return buildPlatform;
 		}
@@ -398,5 +399,14 @@ void BuildSettingsMenu::StartBuild(const BuildPlatform& buildPlatform, BuildType
 
 	const std::string exportPath = EditorUI::OpenFolderDialog("Select an export folder", "");
 	if (!exportPath.empty())
-		Compiler::CompileGameThreaded(buildPlatform, BuildType::BuildGame, exportPath);
+	{
+		if (buildPlatform.platform == Platform::P_PS3)
+		{
+			Compiler::CompileGameThreaded(buildPlatform, BuildType::BuildShadersAndGame, exportPath);
+		}
+		else
+		{
+			Compiler::CompileGameThreaded(buildPlatform, BuildType::BuildGame, exportPath);
+		}
+	}
 }

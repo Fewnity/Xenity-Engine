@@ -33,7 +33,10 @@ public:
 
 	virtual int IsValid() = 0;
 
-private:
+	bool isDebugMode = false;
+	bool enableOnlineProfiler = false;
+
+protected:
 	Event<>* onChangeEvent = nullptr;
 };
 
@@ -59,8 +62,6 @@ public:
 	std::shared_ptr<Texture> backgroundImage;
 	std::shared_ptr<Texture> iconImage;
 	std::shared_ptr<Texture> previewImage;
-	bool isDebugMode = false;
-	bool enableOnlineProfiler = false;
 private:
 };
 
@@ -88,8 +89,24 @@ public:
 	std::shared_ptr<Texture> iconImage;
 	std::shared_ptr<Texture> startupImage;
 	std::string gameId = "";
-	bool isDebugMode = false;
-	bool enableOnlineProfiler = false;
+private:
+};
+
+class PlatformSettingsPS3 : public PlatformSettings
+{
+public:
+	PlatformSettingsPS3() = delete;
+	PlatformSettingsPS3(Event<>* onChangeEvent) : PlatformSettings(onChangeEvent) {}
+
+	ReflectiveData GetReflectiveData() override
+	{
+		ReflectiveData reflectedVariables;
+		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
+		return reflectedVariables;
+	}
+
+	int IsValid() override;
 private:
 };
 
@@ -111,8 +128,6 @@ public:
 	int IsValid() override;
 
 	std::shared_ptr<Icon> icon;
-	bool isDebugMode = false;
-	bool enableOnlineProfiler = false;
 private:
 };
 

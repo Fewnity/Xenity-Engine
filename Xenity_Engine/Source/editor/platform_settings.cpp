@@ -10,7 +10,11 @@
 
 int PlatformSettingsWindows::IsValid()
 {
+	return 0; // Valid
+}
 
+int PlatformSettingsPS3::IsValid()
+{
 	return 0; // Valid
 }
 
