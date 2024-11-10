@@ -17,10 +17,12 @@ include $(PSL1GHT)/ppu_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	Source include ../graphics/debugfont_renderer/source
+# SOURCES		:=	Source include ../graphics/debugfont_renderer/source
+SOURCES		:=	Source include
 DATA		:=	data
-SHADERS		:=	shaders ../graphics/debugfont_renderer/shaders
-INCLUDES	:=	include include/bullet Source ../graphics/debugfont_renderer/include
+# SHADERS		:=	shaders ../graphics/debugfont_renderer/shaders
+# INCLUDES	:=	include include/bullet Source ../graphics/debugfont_renderer/include
+INCLUDES	:=	include include/bullet Source
 
 TITLE		:=	RSX Test - PSL1GHT
 APPID		:=	RSX00003
