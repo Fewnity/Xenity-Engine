@@ -51,10 +51,23 @@ struct alignas(16) LightsIndices
 class Shader : public FileReference, public Reflective
 {
 public:
+	enum class ShaderType
+	{
+		Vertex_Shader,
+		Fragment_Shader,
+		Tessellation_Control_Shader,
+		Tessellation_Evaluation_Shader,
+	};
+
 	Shader();
 	~Shader();
 
+	std::string GetShaderCode(ShaderType type, Platform platform) const;
+
 protected:
+	std::string GetShaderCode(const std::string& fullShaderCode, ShaderType type, Platform platform) const;
+	std::string ReadShader() const;
+
 	friend class Renderer;
 	friend class AssetManager;
 	friend class ProjectManager;
@@ -155,15 +168,6 @@ protected:
 	std::vector<PointLightVariableIds> m_pointlightVariableIds;
 	std::vector<DirectionalLightsVariableIds> m_directionallightVariableIds;
 	std::vector<SpotLightVariableIds> m_spotlightVariableIds;
-
-	enum class ShaderType
-	{
-		Vertex_Shader,
-		Fragment_Shader,
-		Tessellation_Control_Shader,
-		Tessellation_Evaluation_Shader,
-	};
-
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;

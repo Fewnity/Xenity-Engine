@@ -266,6 +266,98 @@ Shader::~Shader()
 	}
 }
 
+std::string Shader::GetShaderCode(ShaderType type, Platform platform) const
+{
+	return GetShaderCode(ReadShader(), type, platform);
+}
+
+std::string Shader::GetShaderCode(const std::string& fullShaderCode, ShaderType type, Platform platform) const
+{
+	struct TagData
+	{
+		std::string tag;
+		int start = -1;
+		int end = -1;
+	};
+
+	std::map<Platform, TagData> platformStartIndex;
+	platformStartIndex[Platform::P_Windows].tag = "{pc}";
+	platformStartIndex[Platform::P_Linux].tag = "{pc}";
+	platformStartIndex[Platform::P_PsVita].tag = "{psvita}";
+	platformStartIndex[Platform::P_PS3].tag = "{ps3}";
+
+	for (auto& platformTagData : platformStartIndex)
+	{
+		platformTagData.second.start = fullShaderCode.find(platformTagData.second.tag);
+		if (platformTagData.second.start != -1)
+		{
+			platformTagData.second.end += platformTagData.second.start + platformTagData.second.tag.size() + 1;
+		}
+	}
+
+	if (platformStartIndex[platform].start == -1)
+	{
+		return "";
+	}
+
+	std::map<ShaderType, TagData> shaderStart;
+	shaderStart[ShaderType::Vertex_Shader].tag = "{vertex}";
+	shaderStart[ShaderType::Fragment_Shader].tag = "{fragment}";
+	for (auto& shaderTagData : shaderStart)
+	{
+		shaderTagData.second.start = fullShaderCode.find(shaderTagData.second.tag, platformStartIndex[platform].end);
+		if (shaderTagData.second.start != -1)
+		{
+			shaderTagData.second.end += shaderTagData.second.start + shaderTagData.second.tag.size() + 1;
+		}
+	}
+
+	if (shaderStart[type].start == -1)
+	{
+		return "";
+	}
+
+	size_t endIndex = -1;
+	for (auto& platformIndex : platformStartIndex)
+	{
+		if (platformIndex.second.start > shaderStart[type].start && endIndex > platformIndex.second.start && platformIndex.first != platform)
+		{
+			endIndex = platformIndex.second.start;
+		}
+	}
+	for (auto& typeIndex : shaderStart)
+	{
+		if (typeIndex.second.start > shaderStart[type].start && endIndex > typeIndex.second.start && typeIndex.first != type)
+		{
+			endIndex = typeIndex.second.start;
+		}
+	}
+
+	std::string result = fullShaderCode.substr(shaderStart[type].end, endIndex - shaderStart[type].end);
+
+	return result;
+}
+
+std::string Shader::ReadShader() const
+{
+	std::string shaderText = "";
+
+#if defined(EDITOR)
+	const bool openResult = m_file->Open(FileMode::ReadOnly);
+	if (openResult)
+	{
+		shaderText = m_file->ReadAll();
+		m_file->Close();
+	}
+#else
+	unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
+	shaderText = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
+	free(binData);
+#endif
+
+	return shaderText;
+}
+
 ReflectiveData Shader::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -290,116 +382,28 @@ void Shader::LoadFileReference()
 			return;
 		}
 
-		bool openResult = true;
-#if defined(EDITOR)
-		openResult = m_file->Open(FileMode::ReadOnly);
-#endif
-		if (openResult)
+		const std::string vertexShaderCode = GetShaderCode(ShaderType::Vertex_Shader, Application::GetPlatform());
+		const std::string fragmentShaderCode = GetShaderCode(ShaderType::Fragment_Shader, Application::GetPlatform());
+
+		if (!vertexShaderCode.empty() && !fragmentShaderCode.empty())
 		{
-			std::string shaderText;
+			const bool vertexRet = Compile(vertexShaderCode, ShaderType::Vertex_Shader);
+			const bool fragRet = Compile(fragmentShaderCode, ShaderType::Fragment_Shader);
 
-#if defined(EDITOR)
-			shaderText = m_file->ReadAll();
-			m_file->Close();
-#else
-			unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
-			shaderText = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
-			free(binData);
-#endif
-
-			const size_t textSize = shaderText.size();
-
-			if (textSize != 0)
+			if (vertexRet && fragRet)
 			{
-				int fragmentPos = -1;
-				int fragmentStartPos = -1;
-
-				int vertexPos = -1;
-				int vertexStartPos = -1;
-				bool foundPlatform = false;
-				Platform currentPlatform = Application::GetPlatform();
-
-				int unused = 0;
-				int end = 0;
-				bool foundEnd = false;
-
-				for (size_t i = 0; i < textSize - 1; i++)
-				{
-					if (StringTagFinder::FindTag(shaderText, i, textSize, "{pc}", unused, end))
-					{
-						if (foundPlatform)
-						{
-							foundEnd = true;
-							break;
-						}
-						if (currentPlatform == Platform::P_Windows || currentPlatform == Platform::P_Linux)
-						{
-							foundPlatform = true;
-						}
-					}
-					else if (StringTagFinder::FindTag(shaderText, i, textSize, "{psvita}", unused, end))
-					{
-						if (foundPlatform)
-						{
-							foundEnd = true;
-							break;
-						}
-						if (currentPlatform == Platform::P_PsVita)
-						{
-							foundPlatform = true;
-						}
-					}
-					else if (foundPlatform && StringTagFinder::FindTag(shaderText, i, textSize, "{fragment}", fragmentPos, fragmentStartPos))
-					{
-					}
-					else if (foundPlatform && StringTagFinder::FindTag(shaderText, i, textSize, "{vertex}", vertexPos, vertexStartPos))
-					{
-					}
-				}
-
-				if (vertexPos != -1 && fragmentPos != -1)
-				{
-					std::string fragShaderData;
-					if (foundEnd)
-						fragShaderData = shaderText.substr(fragmentStartPos, end - fragmentStartPos);
-					else
-						fragShaderData = shaderText.substr(fragmentStartPos);
-
-					const std::string vertexShaderData = shaderText.substr(vertexStartPos, fragmentPos - vertexStartPos);
-
-					const bool vertexRet = Compile(vertexShaderData, ShaderType::Vertex_Shader);
-					const bool fragRet = Compile(fragShaderData, ShaderType::Fragment_Shader);
-
-					if (vertexRet && fragRet)
-					{
-						Link();
-						m_fileStatus = FileStatus::FileStatus_Loaded;
-					}
-					else
-					{
-						Debug::PrintError("[Shader::LoadFileReference] Cannot link the shader, the compilation has failed: " + m_file->GetPath(), true);
-						m_fileStatus = FileStatus::FileStatus_Failed;
-					}
-
-					//m_useTessellation = true;
-					//LoadShader(tessellationEvaluationShaderPath, Tessellation_Evaluation_Shader);
-					//LoadShader(fragmentShaderPath, Fragment_Shader);
-				}
-				else
-				{
-					Debug::PrintError("[Shader::LoadFileReference] The shader structure is wrong: " + m_file->GetPath(), true);
-					m_fileStatus = FileStatus::FileStatus_Failed;
-				}
+				Link();
+				m_fileStatus = FileStatus::FileStatus_Loaded;
 			}
 			else
 			{
-				Debug::PrintError("[Shader::LoadFileReference] The shader file is empty: " + m_file->GetPath(), true);
+				Debug::PrintError("[Shader::LoadFileReference] Cannot link the shader, the compilation has failed: " + m_file->GetPath(), true);
 				m_fileStatus = FileStatus::FileStatus_Failed;
 			}
 		}
 		else
 		{
-			Debug::PrintError("[Shader::LoadFileReference] Fail to load the shader file: " + m_file->GetPath(), true);
+			Debug::PrintError("[Shader::LoadFileReference] The shader structure is wrong: " + m_file->GetPath(), true);
 			m_fileStatus = FileStatus::FileStatus_Failed;
 		}
 	}
