@@ -360,6 +360,7 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 	params.buildPlatform = buildPlatform;
 	params.buildType = buildType;
 	params.sourcePath = ProjectManager::GetAssetFolderPath();
+	params.tempPath = ProjectManager::GetProjectFolderPath() + ".build/";
 	params.exportPath = exportPath;
 
 	OnCompilationStartedEvent.Trigger(params);
