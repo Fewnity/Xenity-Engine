@@ -27,6 +27,8 @@
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/graphics/renderer/renderer_rsx.h>
+#include <engine/graphics/shader_rsx.h>
+#include <engine/graphics/graphics.h>
 
 #include "renderer/renderer.h"
 
@@ -104,8 +106,11 @@ void TexturePS3::Bind() const
 	gcmTexture.location = GCM_LOCATION_RSX;
 	gcmTexture.pitch = pitch;
 	gcmTexture.offset = offset;
-	rsxLoadTexture(context, RendererRSX::textureUnit->index, &gcmTexture);
-	rsxTextureControl(context, RendererRSX::textureUnit->index, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
+
+	const ShaderRSX& rsxShader = dynamic_cast<const ShaderRSX&>(*Graphics::s_currentShader);
+
+	rsxLoadTexture(context, rsxShader.m_textureUnit->index, &gcmTexture);
+	rsxTextureControl(context, rsxShader.m_textureUnit->index, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
 	int minFilterValue = GCM_TEXTURE_LINEAR;
 	int magfilterValue = GCM_TEXTURE_LINEAR;
 	if (GetFilter() == Filter::Point)
@@ -113,10 +118,10 @@ void TexturePS3::Bind() const
 		minFilterValue = GCM_TEXTURE_NEAREST;
 		magfilterValue = GCM_TEXTURE_NEAREST;
 	}
-	rsxTextureFilter(context, RendererRSX::textureUnit->index, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
+	rsxTextureFilter(context, rsxShader.m_textureUnit->index, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
 	const int wrap = GetWrapModeEnum(GetWrapMode());
 
-	rsxTextureWrapMode(context, RendererRSX::textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
+	rsxTextureWrapMode(context, rsxShader.m_textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
 }
 
 int TexturePS3::GetWrapModeEnum(WrapMode wrapMode) const

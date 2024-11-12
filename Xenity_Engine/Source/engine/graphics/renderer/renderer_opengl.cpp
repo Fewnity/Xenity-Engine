@@ -846,12 +846,12 @@ void RendererOpengl::SetShaderData(unsigned int shaderId, const char* data)
 
 void RendererOpengl::DeleteShader(unsigned int shaderId)
 {
-	glDeleteShader(shaderId);
+	//glDeleteShader(shaderId);
 }
 
 void RendererOpengl::DeleteShaderProgram(unsigned int programId)
 {
-	glDeleteProgram(programId);
+	//glDeleteProgram(programId);
 }
 
 void RendererOpengl::LinkShaderProgram(unsigned int programId)
@@ -866,7 +866,7 @@ void RendererOpengl::LinkShaderProgram(unsigned int programId)
 
 void RendererOpengl::UseShaderProgram(unsigned int programId)
 {
-	glUseProgram(programId);
+	glUseProgram(programId); // Cannot remove this for now
 }
 
 unsigned int RendererOpengl::GetShaderUniformLocation(unsigned int programId, const char* name)

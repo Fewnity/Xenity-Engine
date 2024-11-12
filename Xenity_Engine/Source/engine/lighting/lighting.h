@@ -164,6 +164,8 @@ protected:
 	friend class WorldPartitionner;
 	friend class MeshRenderer;
 	friend class Shader;
+	friend class ShaderOpenGL;
+	friend class ShaderRSX;
 	friend class RendererOpengl;
 	friend class RendererGU;
 	friend class RendererGsKit;

@@ -15,6 +15,7 @@
 #include <engine/debug/debug.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/material.h>
+#include <engine/graphics/shader_rsx.h>
 #include <engine/ui/window.h>
 #include <engine/graphics/camera.h>
 #include <engine/game_elements/gameobject.h>
@@ -26,12 +27,17 @@
 // #include <rsx/rsx.h>
 #include <io/pad.h> 
 #include <sysutil/video.h>
-#include <rsxdebugfontrenderer.h>
+//#include <rsxdebugfontrenderer.h>
 #include <sysutil/sysutil.h>
 #include <engine/graphics/texture_ps3.h>
+#include <malloc.h>
+#include <sysutil/sysutil.h>
+#include <sys/process.h>
 
-#include "diffuse_specular_shader_vpo.h"
-#include "diffuse_specular_shader_fpo.h"
+#include <unistd.h>
+
+//#include "diffuse_specular_shader_vpo.h"
+//#include "diffuse_specular_shader_fpo.h"
 
 #define DEFUALT_CB_SIZE						0x80000		// 512Kb default command buffer size
 #define HOST_STATE_CB_SIZE					0x10000		// 64Kb state command buffer size (used for resetting certain default states)
@@ -44,7 +50,7 @@ gcmContextData* RendererRSX::context = nullptr;
 
 uint32_t sLabelVal = 1;
 uint32_t running = 0;
-RSXDebugFontRenderer* debugFontRenderer = nullptr;
+//RSXDebugFontRenderer* debugFontRenderer = nullptr;
 
 uint32_t curr_fb = 0;
 uint32_t first_fb = 1;
@@ -66,17 +72,12 @@ static uint32_t sResolutionIds[] = {
 };
 static size_t RESOLUTION_ID_COUNT = sizeof(sResolutionIds) / sizeof(uint32_t);
 
-u32 vp_offset;
-
-u32 fp_offset;
-u32* fp_buffer;
-
-u32* texture_buffer;
-u32 texture_offset;
+//u32 fp_offset;
+//u32* fp_buffer;
 
 // vertex shader
-rsxProgramConst* projMatrix;
-rsxProgramConst* mvMatrix;
+// rsxProgramConst* projMatrix;
+// rsxProgramConst* mvMatrix;
 
 // fragment shader
 rsxProgramAttrib* RendererRSX::textureUnit = nullptr;
@@ -92,14 +93,16 @@ glm::vec3 eye_pos = glm::vec3(0.0f, 0.0f, 5.0f);
 glm::vec3 eye_dir = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
 
-void* vp_ucode = nullptr;
-rsxVertexProgram* vpo = (rsxVertexProgram*)diffuse_specular_shader_vpo;
+//void* vp_ucode = nullptr;
+//rsxVertexProgram* vpo = (rsxVertexProgram*)diffuse_specular_shader_vpo;
 
-void* fp_ucode = nullptr;
-rsxFragmentProgram* fpo = (rsxFragmentProgram*)diffuse_specular_shader_fpo;
+//void* fp_ucode = nullptr;
+//rsxFragmentProgram* fpo = (rsxFragmentProgram*)diffuse_specular_shader_fpo;
 
 glm::mat4 transformationMatrix = glm::mat4(1);
 glm::mat4 projectionMatrix;
+Vector3 camPos;
+glm::mat4 cameraViewMatrix;
 
 extern "C"
 {
@@ -169,7 +172,7 @@ void RendererRSX::setDrawEnv()
 
 void init_shader()
 {
-	uint32_t fpsize = 0;
+	/*uint32_t fpsize = 0;
 	uint32_t vpsize = 0;
 
 	rsxVertexProgramGetUCode(vpo, &vp_ucode, &vpsize);
@@ -192,7 +195,7 @@ void init_shader()
 	litColor = rsxFragmentProgramGetConst(fpo, "lightColor");
 	spec = rsxFragmentProgramGetConst(fpo, "shininess");
 	Ks = rsxFragmentProgramGetConst(fpo, "Ks");
-	Kd = rsxFragmentProgramGetConst(fpo, "Kd");
+	Kd = rsxFragmentProgramGetConst(fpo, "Kd");*/
 }
 
 void RendererRSX::drawFrame()
@@ -366,7 +369,7 @@ void RendererRSX::init_screen(void* host_addr, uint32_t size)
 	depth_buffer = (uint32_t*)rsxMemalign(64, resolution.y * depth_pitch);
 	rsxAddressToOffset(depth_buffer, &depth_offset);
 
-	debugFontRenderer = new RSXDebugFontRenderer(context);
+	//debugFontRenderer = new RSXDebugFontRenderer(context);
 }
 
 void RendererRSX::waitflip()
@@ -410,8 +413,8 @@ int RendererRSX::Init()
 
 	Window::SetResolution(resolution.x, resolution.y);
 
-	DebugFont::init();
-	DebugFont::setScreenRes(resolution.x, resolution.y);
+	//DebugFont::init();
+	//DebugFont::setScreenRes(resolution.x, resolution.y);
 
 	atexit(program_exit_callback);
 	sysUtilRegisterCallback(0, sysutil_exit_callback, NULL);
@@ -499,9 +502,6 @@ void RendererRSX::ResetView()
 	// sceGumRotateY(3.14159f);
 }
 
-Vector3 camPos;
-glm::mat4 cameraViewMatrix;
-
 void RendererRSX::SetCameraPosition(const Camera& camera)
 {
 	cameraViewMatrix = camera.m_cameraTransformMatrix;
@@ -566,6 +566,10 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
+	const ShaderRSX& rsxShader = dynamic_cast<const ShaderRSX&>(*material.GetShader());
+
+	Graphics::s_currentShader = rsxShader.GetShared();
+
 	uint32_t i, offset, color = 0;
 	glm::mat4 rotX, rotY;
 	glm::vec4 objEyePos, objLightPos;
@@ -651,21 +655,25 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 	// Update shaders
 	{
-		rsxLoadVertexProgram(context, vpo, vp_ucode);
-		rsxLoadFragmentProgramLocation(context, fpo, fp_offset, GCM_LOCATION_RSX);
+		// Bind shaders
+		rsxLoadVertexProgram(context, rsxShader.m_vertexProgram, rsxShader.m_vertexProgramCode);
+		rsxLoadFragmentProgramLocation(context, rsxShader.m_fragmentProgram, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
 
-		rsxSetVertexProgramParameter(context, vpo, projMatrix, (float*)&projectionMatrix);
-		rsxSetVertexProgramParameter(context, vpo, mvMatrix, (float*)&modelViewMatrix);
+		// Update vertex shader uniforms
+		if(rsxShader.m_projMatrix)
+		{
+			rsxSetVertexProgramParameter(context, rsxShader.m_vertexProgram, rsxShader.m_projMatrix, (float*)&projectionMatrix);
+		}
+		if(rsxShader.m_mvMatrix)
+		{
+			rsxSetVertexProgramParameter(context, rsxShader.m_vertexProgram, rsxShader.m_mvMatrix, (float*)&modelViewMatrix);
+		}
 
-		// rsxSetFragmentProgramParameter(context, fpo, eyePosition, (float*)&objEyePos, fp_offset, GCM_LOCATION_RSX);
-		rsxSetFragmentProgramParameter(context, fpo, globalAmbient, globalAmbientColor, fp_offset, GCM_LOCATION_RSX);
-		// rsxSetFragmentProgramParameter(context, fpo, litPosition, (float*)&objLightPos, fp_offset, GCM_LOCATION_RSX);
-		// rsxSetFragmentProgramParameter(context, fpo, litColor, lightColor, fp_offset, GCM_LOCATION_RSX);
-		// rsxSetFragmentProgramParameter(context, fpo, spec, &shininess, fp_offset, GCM_LOCATION_RSX);
-
-		// rsxSetFragmentProgramParameter(context, fpo, Kd, materialColorDiffuse, fp_offset, GCM_LOCATION_RSX);
-		// rsxSetFragmentProgramParameter(context, fpo, Ks, materialColorSpecular, fp_offset, GCM_LOCATION_RSX);
-
+		// Update fragment shader uniforms
+		if(rsxShader.m_globalAmbient)
+		{
+			rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_globalAmbient, globalAmbientColor, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
+		}
 	}
 
 	rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE,

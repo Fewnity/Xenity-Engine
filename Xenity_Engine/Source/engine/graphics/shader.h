@@ -64,115 +64,128 @@ public:
 
 	std::string GetShaderCode(ShaderType type, Platform platform) const;
 
+	std::shared_ptr<Shader> GetShared()
+	{
+		return std::dynamic_pointer_cast<Shader>(shared_from_this());
+	}
+
 protected:
+	virtual void CreateShader(Shader::ShaderType type) = 0;
+
 	std::string GetShaderCode(const std::string& fullShaderCode, ShaderType type, Platform platform) const;
 	std::string ReadShader() const;
+
+	/**
+	* Data needs to be deleted by the caller
+	*/
+	unsigned char* ReadShaderBinary(size_t& size) const;
 
 	friend class Renderer;
 	friend class AssetManager;
 	friend class ProjectManager;
 
-	class PointLightVariableNames 
-	{
-	public:
-		PointLightVariableNames() = delete;
-		explicit PointLightVariableNames(int index);
-		~PointLightVariableNames();
+	//class PointLightVariableNames 
+	//{
+	//public:
+	//	PointLightVariableNames() = delete;
+	//	explicit PointLightVariableNames(int index);
+	//	~PointLightVariableNames();
 
-		char* indices = nullptr;
-		char* color = nullptr;
-		char* position = nullptr;
-		char* constant = nullptr;
-		char* linear = nullptr;
-		char* quadratic = nullptr;
-	};
+	//	char* indices = nullptr;
+	//	char* color = nullptr;
+	//	char* position = nullptr;
+	//	char* constant = nullptr;
+	//	char* linear = nullptr;
+	//	char* quadratic = nullptr;
+	//};
 
-	class DirectionalLightsVariableNames
-	{
-	public:
-		DirectionalLightsVariableNames() = delete;
-		explicit DirectionalLightsVariableNames(int index);
-		~DirectionalLightsVariableNames();
+	//class DirectionalLightsVariableNames
+	//{
+	//public:
+	//	DirectionalLightsVariableNames() = delete;
+	//	explicit DirectionalLightsVariableNames(int index);
+	//	~DirectionalLightsVariableNames();
 
-		char* indices = nullptr;
-		char* color = nullptr;
-		char* direction = nullptr;
-	};
-
-
-	class SpotLightVariableNames
-	{
-	public:
-		SpotLightVariableNames() = delete;
-		explicit SpotLightVariableNames(int index);
-		~SpotLightVariableNames();
-
-		char* indices = nullptr;
-		char* color = nullptr;
-		char* position = nullptr;
-		char* direction = nullptr;
-		char* constant = nullptr;
-		char* linear = nullptr;
-		char* quadratic = nullptr;
-		char* cutOff = nullptr;
-		char* outerCutOff = nullptr;
-	};
-
-	class PointLightVariableIds
-	{
-	public:
-		PointLightVariableIds() = delete;
-		explicit PointLightVariableIds(int index, unsigned int programId);
-
-		unsigned int indices = 0;
-		unsigned int color = 0;
-		unsigned int position = 0;
-		unsigned int constant = 0;
-		unsigned int linear = 0;
-		unsigned int quadratic = 0;
-	};
-
-	class DirectionalLightsVariableIds
-	{
-	public:
-		DirectionalLightsVariableIds() = delete;
-		explicit DirectionalLightsVariableIds(int index, unsigned int programId);
-
-		unsigned int indices = 0;
-		unsigned int color = 0;
-		unsigned int direction = 0;
-	};
+	//	char* indices = nullptr;
+	//	char* color = nullptr;
+	//	char* direction = nullptr;
+	//};
 
 
-	class SpotLightVariableIds
-	{
-	public:
-		SpotLightVariableIds() = delete;
-		explicit SpotLightVariableIds(int index, unsigned int programId);
+	//class SpotLightVariableNames
+	//{
+	//public:
+	//	SpotLightVariableNames() = delete;
+	//	explicit SpotLightVariableNames(int index);
+	//	~SpotLightVariableNames();
 
-		unsigned int indices = 0;
-		unsigned int color = 0;
-		unsigned int position = 0;
-		unsigned int direction = 0;
-		unsigned int constant = 0;
-		unsigned int linear = 0;
-		unsigned int quadratic = 0;
-		unsigned int cutOff = 0;
-		unsigned int outerCutOff = 0;
-	};
+	//	char* indices = nullptr;
+	//	char* color = nullptr;
+	//	char* position = nullptr;
+	//	char* direction = nullptr;
+	//	char* constant = nullptr;
+	//	char* linear = nullptr;
+	//	char* quadratic = nullptr;
+	//	char* cutOff = nullptr;
+	//	char* outerCutOff = nullptr;
+	//};
 
-	static std::vector<PointLightVariableNames> s_pointlightVariableNames;
-	static std::vector<DirectionalLightsVariableNames> s_directionallightVariableNames;
-	static std::vector<SpotLightVariableNames> s_spotlightVariableNames;
+	//class PointLightVariableIds
+	//{
+	//public:
+	//	PointLightVariableIds() = delete;
+	//	explicit PointLightVariableIds(int index, unsigned int programId);
 
-	std::vector<PointLightVariableIds> m_pointlightVariableIds;
-	std::vector<DirectionalLightsVariableIds> m_directionallightVariableIds;
-	std::vector<SpotLightVariableIds> m_spotlightVariableIds;
+	//	unsigned int indices = 0;
+	//	unsigned int color = 0;
+	//	unsigned int position = 0;
+	//	unsigned int constant = 0;
+	//	unsigned int linear = 0;
+	//	unsigned int quadratic = 0;
+	//};
+
+	//class DirectionalLightsVariableIds
+	//{
+	//public:
+	//	DirectionalLightsVariableIds() = delete;
+	//	explicit DirectionalLightsVariableIds(int index, unsigned int programId);
+
+	//	unsigned int indices = 0;
+	//	unsigned int color = 0;
+	//	unsigned int direction = 0;
+	//};
+
+
+	//class SpotLightVariableIds
+	//{
+	//public:
+	//	SpotLightVariableIds() = delete;
+	//	explicit SpotLightVariableIds(int index, unsigned int programId);
+
+	//	unsigned int indices = 0;
+	//	unsigned int color = 0;
+	//	unsigned int position = 0;
+	//	unsigned int direction = 0;
+	//	unsigned int constant = 0;
+	//	unsigned int linear = 0;
+	//	unsigned int quadratic = 0;
+	//	unsigned int cutOff = 0;
+	//	unsigned int outerCutOff = 0;
+	//};
+
+	//static std::vector<PointLightVariableNames> s_pointlightVariableNames;
+	//static std::vector<DirectionalLightsVariableNames> s_directionallightVariableNames;
+	//static std::vector<SpotLightVariableNames> s_spotlightVariableNames;
+
+	//std::vector<PointLightVariableIds> m_pointlightVariableIds;
+	//std::vector<DirectionalLightsVariableIds> m_directionallightVariableIds;
+	//std::vector<SpotLightVariableIds> m_spotlightVariableIds;
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 
 	void LoadFileReference() override;
+	virtual void Load() = 0;
 
 	static std::shared_ptr<Shader> MakeShader();
 
@@ -187,40 +200,35 @@ protected:
 	static void Init();
 
 	/**
-	* @brief Get the shader program id
-	*/
-	unsigned int GetProgramId() const;
-
-	/**
 	* @brief Use the shader program
 	*/
-	bool Use();
+	virtual bool Use() = 0;
 
 	/**
 	* @brief Set the shader uniform of the camera position
 	*/
-	void SetShaderCameraPosition();
+	virtual void SetShaderCameraPosition() = 0;
 
 	/**
 	* @brief Set the shader uniform of the camera position for the canvas
 	*/
-	void SetShaderCameraPositionCanvas();
+	virtual void SetShaderCameraPositionCanvas() = 0;
 
 	/**
 	* @brief Set the shader uniform of the camera projection
 	*/
-	void SetShaderProjection();
+	virtual void SetShaderProjection() = 0;
 
 	/**
 	* @brief Set the shader uniform of the camera projection for the canvas
 	*/
-	void SetShaderProjectionCanvas();
+	virtual void SetShaderProjectionCanvas() = 0;
 
 	/**
 	* @brief Set the shader uniform of the object model
 	* @param trans The transformation matrix
 	*/
-	void SetShaderModel(const glm::mat4& trans);
+	virtual void SetShaderModel(const glm::mat4& trans) = 0;
 
 	/**
 	* @brief Set the shader uniform of the object model
@@ -228,77 +236,78 @@ protected:
 	* @param eulerAngle The euler angle of the object
 	* @param scale The scale of the object
 	*/
-	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale);
+	virtual void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale) = 0;
 
-	void SetLightIndices(const LightsIndices& lightsIndices);
+	virtual void SetLightIndices(const LightsIndices& lightsIndices) = 0;
 
 	/**
 	* @brief Set the shader uniform for basic types
 	*/
-	void SetShaderAttribut(const std::string& attribut, const Vector4& value);
-	void SetShaderAttribut(const std::string& attribut, const Vector3& value);
-	void SetShaderAttribut(const std::string& attribut, const Vector2& value);
-	void SetShaderAttribut(const std::string& attribut, float value);
-	void SetShaderAttribut(const std::string& attribut, int value);
+	virtual void SetShaderAttribut(const std::string& attribut, const Vector4& value) = 0;
+	virtual void SetShaderAttribut(const std::string& attribut, const Vector3& value) = 0;
+	virtual void SetShaderAttribut(const std::string& attribut, const Vector2& value) = 0;
+	virtual void SetShaderAttribut(const std::string& attribut, float value) = 0;
+	virtual void SetShaderAttribut(const std::string& attribut, int value) = 0;
 
 	/**
 	* @brief Update lights in the shader
 	*/
-	void UpdateLights(bool disableLights);
+	virtual void UpdateLights(bool disableLights) = 0;
 
 	/**
 	* @brief Link the shader programs
 	*/
-	void Link();
+	virtual void Link() = 0;
 
 	/**
 	* @brief Compile the shader
 	* @param filePath The file path of the shader
 	* @param type The type of the shader
 	*/
-	bool Compile(const std::string& filePath, ShaderType type);
+	virtual bool Compile(const std::string& filePath, ShaderType type) = 0;
 
 	/**
 	* @brief Set the shader uniform of a point light
 	* @param light The light to set
 	* @param index The index of the light
 	*/
-	void SetPointLightData(const Light& light, const int index);
+	virtual void SetPointLightData(const Light& light, const int index) = 0;
 
 	/**
 	* @brief Set the shader uniform of a directional light
 	* @param light The light to set
 	* @param index The index of the light
 	*/
-	void SetDirectionalLightData(const Light& light, const int index);
-	void SetAmbientLightData(const Vector3& color);
+	virtual void SetDirectionalLightData(const Light& light, const int index) = 0;
+	virtual void SetAmbientLightData(const Vector3& color) = 0;
 
 	/**
 	* @brief Set the shader uniform of a spot light
 	* @param light The light to set
 	* @param index The index of the light
 	*/
-	void SetSpotLightData(const Light& light, const int index);
+	virtual void SetSpotLightData(const Light& light, const int index) = 0;
 
 	static glm::mat4 m_canvasCameraTransformationMatrix;
 
-	unsigned int m_vertexShaderId = 0;
-	unsigned int m_fragmentShaderId = 0;
-	unsigned int m_tessellationShaderId = 0;
-	unsigned int m_tessellationEvaluationShaderId = 0;
-	unsigned int m_programId = 0;
-	unsigned int m_modelLocation = 0;
-	unsigned int m_projectionLocation = 0;
-	unsigned int m_cameraLocation = 0;
-	unsigned int m_ambientLightLocation = 0;
+	//unsigned int m_vertexShaderId = 0;
+	//unsigned int m_fragmentShaderId = 0;
+	//unsigned int m_tessellationShaderId = 0;
+	//unsigned int m_tessellationEvaluationShaderId = 0;
+	//unsigned int m_programId = 0;
+	//unsigned int m_modelLocation = 0;
+	//unsigned int m_projectionLocation = 0;
+	//unsigned int m_cameraLocation = 0;
+	//unsigned int m_ambientLightLocation = 0;
 
-	unsigned int m_usedPointLightCountLocation = 0;
-	unsigned int m_usedSpotLightCountLocation = 0;
-	unsigned int m_usedDirectionalLightCountLocation = 0;
+	//unsigned int m_usedPointLightCountLocation = 0;
+	//unsigned int m_usedSpotLightCountLocation = 0;
+	//unsigned int m_usedDirectionalLightCountLocation = 0;
 
 	bool m_useTessellation = false;
 	std::unordered_map<std::string, unsigned int> m_uniformsIds;
 	std::vector<Light*> m_currentLights;
 	std::vector<Light*> m_currentDirectionalLights;
 	static constexpr uint32_t INVALID_SHADER_UNIFORM = -1;
+	static std::shared_ptr<Light> defaultDarkLight;
 };

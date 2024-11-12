@@ -248,6 +248,8 @@ protected:
 	friend class SceneMenu;
 	friend class GameMenu;
 	friend class Shader;
+	friend class ShaderOpenGL;
+	friend class ShaderRSX;
 	friend class RendererOpengl;
 	friend class RendererGU;
 	friend class RendererGsKit;

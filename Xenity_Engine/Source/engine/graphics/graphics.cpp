@@ -43,6 +43,7 @@
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/time/time.h>
+#include "shader_opengl.h"
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::shared_ptr<Camera> Graphics::usedCamera;
@@ -122,6 +123,10 @@ void Graphics::Init()
 	Debug::Print("-------- Graphics initiated --------", true);
 
 	Shader::Init();
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
+	ShaderOpenGL::Init();
+#endif
+
 	SpriteManager::Init();
 	MeshManager::Init();
 	TextManager::Init();

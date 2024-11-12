@@ -1,0 +1,279 @@
+// SPDX-License-Identifier: MIT
+//
+// Copyright (c) 2022-2024 Gregory Machefer (Fewnity)
+//
+// This file is part of Xenity Engine
+
+#include "shader_rsx.h"
+
+#if defined(__PS3__)
+
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#include "graphics.h"
+#include <engine/application.h>
+#include <engine/file_system/file.h>
+#include <engine/debug/debug.h>
+#include <engine/engine.h>
+#include <engine/graphics/camera.h>
+#include <engine/game_elements/transform.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/lighting/lighting.h>
+
+#include <rsx/rsx.h>
+
+#include <engine/asset_management/asset_manager.h>
+
+template <typename T>
+T SwapEndian(T u)
+{
+    union
+    {
+        T u;
+        unsigned char u8[sizeof(T)];
+    } source, dest;
+
+    source.u = u;
+
+    for (size_t k = 0; k < sizeof(T); k++)
+        dest.u8[k] = source.u8[sizeof(T) - k - 1];
+
+    return dest.u;
+}
+
+ShaderRSX::~ShaderRSX()
+{
+	
+}
+
+void ShaderRSX::Init()
+{
+	
+}
+
+void ShaderRSX::Load()
+{
+	Debug::Print("ShaderRSX::Load");
+	// if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+	// {
+	// 	m_fileStatus = FileStatus::FileStatus_Loaded;
+	// 	return;
+	// }
+
+	size_t size = 0;
+	unsigned char* fullShader = ReadShaderBinary(size);
+
+	uint32_t vertexShaderCodeSize = 0;
+	memcpy(&vertexShaderCodeSize, fullShader, sizeof(uint32_t));
+	vertexShaderCodeSize = SwapEndian(vertexShaderCodeSize);
+	fullShader += sizeof(uint32_t);
+	Debug::Print("vertexShaderCodeSize: " + std::to_string(vertexShaderCodeSize));
+
+	// Read code
+	m_vertexProgram = (rsxVertexProgram*)fullShader;
+	fullShader += vertexShaderCodeSize;
+
+	uint32_t fragmentShaderCodeSize = 0;
+	memcpy(&fragmentShaderCodeSize, fullShader, sizeof(uint32_t));
+	fragmentShaderCodeSize = SwapEndian(fragmentShaderCodeSize);
+	fullShader += sizeof(uint32_t);
+	Debug::Print("fragmentShaderCodeSize: " + std::to_string(fragmentShaderCodeSize));
+
+	m_fragmentProgram = (rsxFragmentProgram*)fullShader;
+
+	{	
+
+		rsxVertexProgramGetUCode(m_vertexProgram, &m_vertexProgramCode, &m_vertexProgramSize);
+		printf("vertexProgramSize: %d\n", m_vertexProgramSize);
+
+		m_projMatrix = rsxVertexProgramGetConst(m_vertexProgram, "projMatrix");
+		m_mvMatrix = rsxVertexProgramGetConst(m_vertexProgram, "modelViewMatrix");
+
+		if(m_projMatrix)
+		{
+			Debug::Print("m_projMatrix");
+		}
+		else
+		{
+			Debug::Print("No m_projMatrix");
+		}
+
+		if(m_mvMatrix)
+		{
+			Debug::Print("m_mvMatrix");
+		}
+		else
+		{
+			Debug::Print("No m_mvMatrix");
+		}
+	}
+
+	{
+		rsxFragmentProgramGetUCode(m_fragmentProgram, &m_fragmentProgramCode, &m_fragmentProgramSize);
+		printf("fragmentProgramSize: %d\n", m_fragmentProgramSize);
+
+		m_fragmentProgramCodeOnGPU = (uint32_t*)rsxMemalign(64, m_fragmentProgramSize);
+		memcpy(m_fragmentProgramCodeOnGPU, m_fragmentProgramCode, m_fragmentProgramSize);
+		rsxAddressToOffset(m_fragmentProgramCodeOnGPU, &m_fp_offset);
+
+		m_globalAmbient = rsxFragmentProgramGetConst(m_fragmentProgram, "globalAmbient");
+		m_textureUnit = rsxFragmentProgramGetAttrib(m_fragmentProgram, "texture");
+
+		if(m_globalAmbient)
+		{
+			Debug::Print("m_globalAmbient");
+		}
+		else
+		{
+			Debug::Print("No m_globalAmbient");
+		}
+
+		if(m_textureUnit)
+		{
+			Debug::Print("m_textureUnit");
+		}
+		else
+		{
+			Debug::Print("No m_textureUnit");
+		}
+	}
+
+	m_fileStatus = FileStatus::FileStatus_Loaded;
+}
+
+bool ShaderRSX::Use()
+{
+	Debug::Print("ShaderRSX::Use");
+	if (Graphics::s_currentShader != shared_from_this())
+	{
+		
+		Graphics::s_currentShader = std::dynamic_pointer_cast<Shader>(shared_from_this());
+		return true;
+	}
+	return false;
+}
+
+bool ShaderRSX::Compile(const std::string& shaderData, ShaderType type)
+{
+	return true;
+}
+
+#pragma endregion
+
+#pragma region Uniform setters
+
+/// <summary>
+/// Send to the shader the 3D camera position
+/// </summary>
+void ShaderRSX::SetShaderCameraPosition()
+{
+	
+}
+
+/// <summary>
+/// Send to the shader the 2D camera position
+/// </summary>
+void ShaderRSX::SetShaderCameraPositionCanvas()
+{
+}
+
+/// <summary>
+/// Send to the shader the 2D camera projection
+/// </summary>
+void ShaderRSX::SetShaderProjection()
+{
+}
+
+void ShaderRSX::SetShaderProjectionCanvas()
+{
+}
+
+/// <summary>
+/// Send to the shader transform's model
+/// </summary>
+/// <param name="trans"></param>
+void ShaderRSX::SetShaderModel(const glm::mat4& trans)
+{
+}
+
+/// <summary>
+/// Send to the shader transform's model
+/// </summary>
+/// <param name="trans"></param>
+void ShaderRSX::SetShaderModel(const Vector3& position, const Vector3& rotation, const Vector3& scale)
+{
+}
+
+void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
+{
+}
+
+void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector4& value)
+{
+}
+
+void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector3& value)
+{
+}
+
+void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector2& value)
+{
+}
+
+void ShaderRSX::SetShaderAttribut(const std::string& attribut, float value)
+{
+}
+
+void ShaderRSX::SetShaderAttribut(const std::string& attribut, int value)
+{
+}
+
+void ShaderRSX::Link()
+{
+}
+
+/// <summary>
+/// Send to the shader the point light data
+/// </summary>
+/// <param name="light">Point light</param>
+/// <param name="index">Shader's point light index</param>
+void ShaderRSX::SetPointLightData(const Light& light, const int index)
+{
+}
+
+/// <summary>
+/// Send to the shader the directional light data
+/// </summary>
+/// <param name="light">Directional light</param>
+/// <param name="index">Shader's directional light index</param>
+void ShaderRSX::SetDirectionalLightData(const Light& light, const int index)
+{
+}
+
+void ShaderRSX::SetAmbientLightData(const Vector3& color)
+{
+}
+
+/// <summary>
+/// Send to the shader the spot light data
+/// </summary>
+/// <param name="light">Spot light</param>
+/// <param name="index">Shader's spot light index</param>
+void ShaderRSX::SetSpotLightData(const Light& light, const int index)
+{
+}
+
+/// <summary>
+/// Send lights data to the shader
+/// </summary>
+void ShaderRSX::UpdateLights(bool useLighting)
+{
+}
+
+void ShaderRSX::CreateShader(Shader::ShaderType type)
+{
+}
+
+#endif
