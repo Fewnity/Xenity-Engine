@@ -30,7 +30,6 @@
     <ClCompile Include="Source\engine\debug\performance.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
     <ClCompile Include="Source\engine\tools\profiler_benchmark.cpp" />
-    <ClCompile Include="Source\engine\monobehaviour.cpp" />
     <ClCompile Include="Source\engine\pathfinding\dijkstras.cpp" />
     <ClCompile Include="Source\engine\pathfinding\astar.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
@@ -370,7 +369,6 @@
     <ClInclude Include="Source\engine\graphics\2d_graphics\tile_map.h" />
     <ClInclude Include="Source\engine\tools\profiler_benchmark.h" />
     <ClInclude Include="Source\engine\graphics\camera_projection_types.h" />
-    <ClInclude Include="Source\engine\monobehaviour.h" />
     <ClInclude Include="Source\engine\pathfinding\dijkstras.h" />
     <ClInclude Include="Source\engine\pathfinding\astar.h" />
     <ClInclude Include="Source\engine\graphics\iDrawableTypes.h" />

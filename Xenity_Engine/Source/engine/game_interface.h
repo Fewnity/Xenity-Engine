@@ -15,7 +15,7 @@ public:
 	virtual ~GameInterface() = default;
 
 	/**
-	* @brief Start game by registering game's monobehaviours
+	* @brief Start game by registering game's components
 	*/
 	virtual void Start() = 0;
 };

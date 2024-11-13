@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <engine/monobehaviour.h>
 #include <engine/component.h>
 
 // GameObject / Transforms
