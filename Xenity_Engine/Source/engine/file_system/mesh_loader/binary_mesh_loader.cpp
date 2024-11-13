@@ -8,6 +8,7 @@
 #include <engine/asset_management/project_manager.h>
 #include <engine/debug/debug.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/tools/endian_utils.h>
 
 #if defined(__PSP__)
 #include <pspkernel.h>
@@ -25,23 +26,6 @@
 * indices data - indexMemSize bytes
 * ------
 */
-
-template <typename T>
-T SwapEndian(T u)
-{
-    union
-    {
-        T u;
-        unsigned char u8[sizeof(T)];
-    } source, dest;
-
-    source.u = u;
-
-    for (size_t k = 0; k < sizeof(T); k++)
-        dest.u8[k] = source.u8[sizeof(T) - k - 1];
-
-    return dest.u;
-}
 
 bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 {
@@ -90,10 +74,10 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		fileData += sizeof(uint32_t);
 
 #if defined(__PS3__)
-		vertice_count = SwapEndian(vertice_count);
-		index_count = SwapEndian(index_count);
-		vertexMemSize = SwapEndian(vertexMemSize);
-		indexMemSize = SwapEndian(indexMemSize);
+		vertice_count = EndianUtils::SwapEndian(vertice_count);
+		index_count = EndianUtils::SwapEndian(index_count);
+		vertexMemSize = EndianUtils::SwapEndian(vertexMemSize);
+		indexMemSize = EndianUtils::SwapEndian(indexMemSize);
 #endif // defined(__PS3__)
 
 		mesh.AllocSubMesh(vertice_count, index_count);
@@ -111,27 +95,27 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 				{
 					VertexNormalsNoColor& vertex = ((VertexNormalsNoColor*)subMesh->data)[vertexIndex];
-					vertex.x = SwapEndian(vertex.x);
-					vertex.y = SwapEndian(vertex.y);
-					vertex.z = SwapEndian(vertex.z);
+					vertex.x = EndianUtils::SwapEndian(vertex.x);
+					vertex.y = EndianUtils::SwapEndian(vertex.y);
+					vertex.z = EndianUtils::SwapEndian(vertex.z);
 
-					vertex.u = SwapEndian(vertex.u);
-					vertex.v = SwapEndian(vertex.v);
+					vertex.u = EndianUtils::SwapEndian(vertex.u);
+					vertex.v = EndianUtils::SwapEndian(vertex.v);
 
-					vertex.normX = SwapEndian(vertex.normX);
-					vertex.normY = SwapEndian(vertex.normY);
-					vertex.normZ = SwapEndian(vertex.normZ);
+					vertex.normX = EndianUtils::SwapEndian(vertex.normX);
+					vertex.normY = EndianUtils::SwapEndian(vertex.normY);
+					vertex.normZ = EndianUtils::SwapEndian(vertex.normZ);
 				}
 				else 
 				{
 					VertexNormalsNoColorNoUv& vertex = ((VertexNormalsNoColorNoUv*)subMesh->data)[vertexIndex];
-					vertex.x = SwapEndian(vertex.x);
-					vertex.y = SwapEndian(vertex.y);
-					vertex.z = SwapEndian(vertex.z);
+					vertex.x = EndianUtils::SwapEndian(vertex.x);
+					vertex.y = EndianUtils::SwapEndian(vertex.y);
+					vertex.z = EndianUtils::SwapEndian(vertex.z);
 
-					vertex.normX = SwapEndian(vertex.normX);
-					vertex.normY = SwapEndian(vertex.normY);
-					vertex.normZ = SwapEndian(vertex.normZ);
+					vertex.normX = EndianUtils::SwapEndian(vertex.normX);
+					vertex.normY = EndianUtils::SwapEndian(vertex.normY);
+					vertex.normZ = EndianUtils::SwapEndian(vertex.normZ);
 				}
 			}
 			else 
@@ -139,19 +123,19 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 				{
 					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
-					vertex.x = SwapEndian(vertex.x);
-					vertex.y = SwapEndian(vertex.y);
-					vertex.z = SwapEndian(vertex.z);
+					vertex.x = EndianUtils::SwapEndian(vertex.x);
+					vertex.y = EndianUtils::SwapEndian(vertex.y);
+					vertex.z = EndianUtils::SwapEndian(vertex.z);
 
-					vertex.y = SwapEndian(vertex.y);
-					vertex.v = SwapEndian(vertex.v);
+					vertex.y = EndianUtils::SwapEndian(vertex.y);
+					vertex.v = EndianUtils::SwapEndian(vertex.v);
 				}
 				else
 				{
 					VertexNoColorNoUv& vertex = ((VertexNoColorNoUv*)subMesh->data)[vertexIndex];
-					vertex.x = SwapEndian(vertex.x);
-					vertex.y = SwapEndian(vertex.y);
-					vertex.z = SwapEndian(vertex.z);
+					vertex.x = EndianUtils::SwapEndian(vertex.x);
+					vertex.y = EndianUtils::SwapEndian(vertex.y);
+					vertex.z = EndianUtils::SwapEndian(vertex.z);
 				}
 			}
 		}
@@ -166,7 +150,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 			for (int indexIndex = 0; indexIndex < index_count; indexIndex++)
 			{
 				unsigned short& index = ((unsigned short*)subMesh->indices)[indexIndex];
-				index = SwapEndian(index);
+				index = EndianUtils::SwapEndian(index);
 			}
 #endif // defined(__PS3__)
 		}

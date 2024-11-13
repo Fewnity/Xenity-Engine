@@ -336,6 +336,7 @@
     <ClCompile Include="Source\engine\graphics\shader_opengl.cpp" />
     <ClCompile Include="Source\engine\graphics\shader_rsx.cpp" />
     <ClCompile Include="Source\engine\graphics\shader_null.cpp" />
+    <ClCompile Include="Source\engine\tools\endian_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -784,6 +785,7 @@
     <ClInclude Include="Source\engine\graphics\shader_opengl.h" />
     <ClInclude Include="Source\engine\graphics\shader_rsx.h" />
     <ClInclude Include="Source\engine\graphics\shader_null.h" />
+    <ClInclude Include="Source\engine\tools\endian_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

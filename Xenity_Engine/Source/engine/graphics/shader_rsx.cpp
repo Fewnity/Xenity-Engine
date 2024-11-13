@@ -25,23 +25,7 @@
 #include <rsx/rsx.h>
 
 #include <engine/asset_management/asset_manager.h>
-
-template <typename T>
-T SwapEndian(T u)
-{
-    union
-    {
-        T u;
-        unsigned char u8[sizeof(T)];
-    } source, dest;
-
-    source.u = u;
-
-    for (size_t k = 0; k < sizeof(T); k++)
-        dest.u8[k] = source.u8[sizeof(T) - k - 1];
-
-    return dest.u;
-}
+#include <engine/tools/endian_utils.h>
 
 ShaderRSX::~ShaderRSX()
 {
@@ -67,7 +51,7 @@ void ShaderRSX::Load()
 
 	uint32_t vertexShaderCodeSize = 0;
 	memcpy(&vertexShaderCodeSize, fullShader, sizeof(uint32_t));
-	vertexShaderCodeSize = SwapEndian(vertexShaderCodeSize);
+	vertexShaderCodeSize = EndianUtils::SwapEndian(vertexShaderCodeSize);
 	fullShader += sizeof(uint32_t);
 	Debug::Print("vertexShaderCodeSize: " + std::to_string(vertexShaderCodeSize));
 
@@ -77,7 +61,7 @@ void ShaderRSX::Load()
 
 	uint32_t fragmentShaderCodeSize = 0;
 	memcpy(&fragmentShaderCodeSize, fullShader, sizeof(uint32_t));
-	fragmentShaderCodeSize = SwapEndian(fragmentShaderCodeSize);
+	fragmentShaderCodeSize = EndianUtils::SwapEndian(fragmentShaderCodeSize);
 	fullShader += sizeof(uint32_t);
 	Debug::Print("fragmentShaderCodeSize: " + std::to_string(fragmentShaderCodeSize));
 

@@ -512,6 +512,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\tools\endian_utils.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\ConstraintSolver\btNNCGConstraintSolver.cpp" />
@@ -1105,6 +1106,7 @@
     <None Include="Source\engine\reflection\reflection_utils.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\tools\endian_utils.h" />
     <ClInclude Include="include\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.h" />
     <ClInclude Include="include\bullet\BulletCollision\NarrowPhaseCollision\btComputeGjkEpaPenetration.h" />
     <ClInclude Include="include\bullet\BulletCollision\NarrowPhaseCollision\btGjkCollisionDescription.h" />
