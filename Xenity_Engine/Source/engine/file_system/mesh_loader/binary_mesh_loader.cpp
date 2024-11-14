@@ -40,8 +40,8 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);
 
 #if defined(__PS3__)
-	vertexDescriptor = SwapEndian(vertexDescriptor);
-	subMeshCount = SwapEndian(subMeshCount);
+	vertexDescriptor = EndianUtils::SwapEndian(vertexDescriptor);
+	subMeshCount = EndianUtils::SwapEndian(subMeshCount);
 #endif // defined(__PS3__)
 
 	fileData += sizeof(uint32_t);
