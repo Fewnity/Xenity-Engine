@@ -24,10 +24,8 @@
 
 #include <memory>
 #include <glm/gtc/type_ptr.hpp>
-// #include <rsx/rsx.h>
 #include <io/pad.h> 
 #include <sysutil/video.h>
-//#include <rsxdebugfontrenderer.h>
 #include <sysutil/sysutil.h>
 #include <engine/graphics/texture_ps3.h>
 #include <malloc.h>
@@ -35,9 +33,6 @@
 #include <sys/process.h>
 
 #include <unistd.h>
-
-//#include "diffuse_specular_shader_vpo.h"
-//#include "diffuse_specular_shader_fpo.h"
 
 #define DEFUALT_CB_SIZE						0x80000		// 512Kb default command buffer size
 #define HOST_STATE_CB_SIZE					0x10000		// 64Kb state command buffer size (used for resetting certain default states)
@@ -50,7 +45,6 @@ gcmContextData* RendererRSX::context = nullptr;
 
 uint32_t sLabelVal = 1;
 uint32_t running = 0;
-//RSXDebugFontRenderer* debugFontRenderer = nullptr;
 
 uint32_t curr_fb = 0;
 uint32_t first_fb = 1;
@@ -72,13 +66,6 @@ static uint32_t sResolutionIds[] = {
 };
 static size_t RESOLUTION_ID_COUNT = sizeof(sResolutionIds) / sizeof(uint32_t);
 
-//u32 fp_offset;
-//u32* fp_buffer;
-
-// vertex shader
-// rsxProgramConst* projMatrix;
-// rsxProgramConst* mvMatrix;
-
 // fragment shader
 rsxProgramAttrib* RendererRSX::textureUnit = nullptr;
 rsxProgramConst* eyePosition = nullptr;
@@ -92,12 +79,6 @@ rsxProgramConst* spec = nullptr;
 glm::vec3 eye_pos = glm::vec3(0.0f, 0.0f, 5.0f);
 glm::vec3 eye_dir = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
-
-//void* vp_ucode = nullptr;
-//rsxVertexProgram* vpo = (rsxVertexProgram*)diffuse_specular_shader_vpo;
-
-//void* fp_ucode = nullptr;
-//rsxFragmentProgram* fpo = (rsxFragmentProgram*)diffuse_specular_shader_fpo;
 
 glm::mat4 transformationMatrix = glm::mat4(1);
 glm::mat4 projectionMatrix;
@@ -168,34 +149,6 @@ void RendererRSX::setDrawEnv()
 	rsxSetFrontFace(context, GCM_FRONTFACE_CW);
 	rsxSetCullFaceEnable(context, GCM_TRUE);
 	rsxSetCullFace(context, GCM_CULL_FRONT);
-}
-
-void init_shader()
-{
-	/*uint32_t fpsize = 0;
-	uint32_t vpsize = 0;
-
-	rsxVertexProgramGetUCode(vpo, &vp_ucode, &vpsize);
-	printf("vpsize: %d\n", vpsize);
-
-	projMatrix = rsxVertexProgramGetConst(vpo, "projMatrix");
-	mvMatrix = rsxVertexProgramGetConst(vpo, "modelViewMatrix");
-
-	rsxFragmentProgramGetUCode(fpo, &fp_ucode, &fpsize);
-	printf("fpsize: %d\n", fpsize);
-
-	fp_buffer = (uint32_t*)rsxMemalign(64, fpsize);
-	memcpy(fp_buffer, fp_ucode, fpsize);
-	rsxAddressToOffset(fp_buffer, &fp_offset);
-
-	RendererRSX::textureUnit = rsxFragmentProgramGetAttrib(fpo, "texture");
-	eyePosition = rsxFragmentProgramGetConst(fpo, "eyePosition");
-	globalAmbient = rsxFragmentProgramGetConst(fpo, "globalAmbient");
-	litPosition = rsxFragmentProgramGetConst(fpo, "lightPosition");
-	litColor = rsxFragmentProgramGetConst(fpo, "lightColor");
-	spec = rsxFragmentProgramGetConst(fpo, "shininess");
-	Ks = rsxFragmentProgramGetConst(fpo, "Ks");
-	Kd = rsxFragmentProgramGetConst(fpo, "Kd");*/
 }
 
 void RendererRSX::drawFrame()
@@ -409,12 +362,8 @@ int RendererRSX::Init()
 	//maxLightCount = 4;
 	void* host_addr = memalign(HOST_ADDR_ALIGNMENT, HOSTBUFFER_SIZE);
 	init_screen(host_addr, HOSTBUFFER_SIZE);
-	init_shader();
 
 	Window::SetResolution(resolution.x, resolution.y);
-
-	//DebugFont::init();
-	//DebugFont::setScreenRes(resolution.x, resolution.y);
 
 	atexit(program_exit_callback);
 	sysUtilRegisterCallback(0, sysutil_exit_callback, NULL);
@@ -453,10 +402,6 @@ void RendererRSX::NewFrame()
 void RendererRSX::EndFrame()
 {
 	usedTexture = nullptr;
-
-	// DebugFont::setPosition(10, 10);
-	// DebugFont::setColor(1.0f, 0.0f, 0.0f, 1.0f);
-	//DebugFont::print("");
 
 	if (Screen::IsVSyncEnabled())
 	{
