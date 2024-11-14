@@ -203,7 +203,7 @@ std::shared_ptr<Shader> Shader::MakeShader()
 {
 #if defined(__PS3__)
 	std::shared_ptr<Shader> newFileRef = std::make_shared<ShaderRSX>();
-#elif defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#elif defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
 	std::shared_ptr<Shader> newFileRef = std::make_shared<ShaderOpenGL>();
 #else
 	std::shared_ptr<Shader> newFileRef = std::make_shared<ShaderNull>();
