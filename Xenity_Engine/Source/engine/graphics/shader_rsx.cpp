@@ -20,6 +20,7 @@
 #include <engine/debug/debug.h>
 #include <engine/engine.h>
 #include <engine/graphics/camera.h>
+#include <engine/graphics/renderer/renderer_rsx.h>
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/lighting/lighting.h>
@@ -74,9 +75,10 @@ void ShaderRSX::Load()
 		rsxVertexProgramGetUCode(m_vertexProgram, &m_vertexProgramCode, &m_vertexProgramSize);
 		printf("vertexProgramSize: %d\n", m_vertexProgramSize);
 
-		m_projMatrix = rsxVertexProgramGetConst(m_vertexProgram, "projMatrix");
-		m_mvMatrix = rsxVertexProgramGetConst(m_vertexProgram, "modelViewMatrix");
-
+		m_projMatrix = rsxVertexProgramGetConst(m_vertexProgram, "projection");
+		m_modelMatrix = rsxVertexProgramGetConst(m_vertexProgram, "camera");
+		m_viewMatrix = rsxVertexProgramGetConst(m_vertexProgram, "model");
+		
 		if(m_projMatrix)
 		{
 			Debug::Print("m_projMatrix");
@@ -86,13 +88,22 @@ void ShaderRSX::Load()
 			Debug::Print("No m_projMatrix");
 		}
 
-		if(m_mvMatrix)
+		if(m_modelMatrix)
 		{
-			Debug::Print("m_mvMatrix");
+			Debug::Print("m_modelMatrix");
 		}
 		else
 		{
-			Debug::Print("No m_mvMatrix");
+			Debug::Print("No m_modelMatrix");
+		}
+
+		if(m_viewMatrix)
+		{
+			Debug::Print("m_viewMatrix");
+		}
+		else
+		{
+			Debug::Print("No m_viewMatrix");
 		}
 	}
 
@@ -131,10 +142,10 @@ void ShaderRSX::Load()
 
 bool ShaderRSX::Use()
 {
-	Debug::Print("ShaderRSX::Use");
 	if (Graphics::s_currentShader != shared_from_this())
 	{
-		
+		rsxLoadVertexProgram(RendererRSX::context, m_vertexProgram, m_vertexProgramCode);
+		rsxLoadFragmentProgramLocation(RendererRSX::context, m_fragmentProgram, m_fp_offset, GCM_LOCATION_RSX);
 		Graphics::s_currentShader = std::dynamic_pointer_cast<Shader>(shared_from_this());
 		return true;
 	}
@@ -155,7 +166,23 @@ bool ShaderRSX::Compile(const std::string& shaderData, ShaderType type)
 /// </summary>
 void ShaderRSX::SetShaderCameraPosition()
 {
-	
+	if(m_viewMatrix)
+	{
+		const Transform* transform = Graphics::usedCamera->GetTransformRaw();
+
+		const Vector3& position = transform->GetPosition();
+
+		const Quaternion& baseQ = transform->GetRotation();
+		static const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
+		const Quaternion newQ = baseQ * offsetQ;
+
+		glm::mat4 RotationMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
+
+		if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
+			RotationMatrix = glm::translate(RotationMatrix, glm::vec3(position.x, -position.y, -position.z));
+
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_viewMatrix, (float*)&RotationMatrix);
+	}
 }
 
 /// <summary>
@@ -170,6 +197,10 @@ void ShaderRSX::SetShaderCameraPositionCanvas()
 /// </summary>
 void ShaderRSX::SetShaderProjection()
 {
+	if(m_projMatrix)
+	{
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_projMatrix, (float*)&Graphics::usedCamera->GetProjection());
+	}
 }
 
 void ShaderRSX::SetShaderProjectionCanvas()
@@ -182,6 +213,10 @@ void ShaderRSX::SetShaderProjectionCanvas()
 /// <param name="trans"></param>
 void ShaderRSX::SetShaderModel(const glm::mat4& trans)
 {
+	if(m_modelMatrix)
+	{
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_modelMatrix, (float*)&trans);
+	}
 }
 
 /// <summary>

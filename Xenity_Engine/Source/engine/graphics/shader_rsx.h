@@ -32,8 +32,8 @@ public:
 	rsxFragmentProgram* m_fragmentProgram = nullptr;
 
 	rsxProgramConst* m_projMatrix = nullptr;
-	rsxProgramConst* m_mvMatrix = nullptr;
-
+	rsxProgramConst* m_modelMatrix = nullptr;
+	rsxProgramConst* m_viewMatrix = nullptr;
 
 	rsxProgramConst* m_globalAmbient = nullptr;
 	rsxProgramAttrib* m_textureUnit = nullptr;

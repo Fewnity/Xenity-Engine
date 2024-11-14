@@ -69,11 +69,15 @@ Shader::~Shader()
 
 std::string Shader::GetShaderCode(ShaderType type, Platform platform) const
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	return GetShaderCode(ReadShader(), type, platform);
 }
 
 std::string Shader::GetShaderCode(const std::string& fullShaderCode, ShaderType type, Platform platform) const
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	struct TagData
 	{
 		std::string tag;
@@ -141,6 +145,8 @@ std::string Shader::GetShaderCode(const std::string& fullShaderCode, ShaderType 
 
 std::string Shader::ReadShader() const
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	std::string shaderText = "";
 
 #if defined(EDITOR)
@@ -161,6 +167,8 @@ std::string Shader::ReadShader() const
 
 unsigned char* Shader::ReadShaderBinary(size_t& size) const
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(EDITOR)
 	const bool openResult = m_file->Open(FileMode::ReadOnly);
 	if (openResult)
@@ -201,6 +209,8 @@ void Shader::LoadFileReference()
 
 std::shared_ptr<Shader> Shader::MakeShader()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 #if defined(__PS3__)
 	std::shared_ptr<Shader> newFileRef = std::make_shared<ShaderRSX>();
 #elif defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)

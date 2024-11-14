@@ -115,17 +115,17 @@ void main
 	float3 vertexNormal : NORMAL,
 	float2 vertexTexcoord : TEXCOORD0,
 	
-	uniform float4x4 projMatrix,
-	uniform float4x4 modelViewMatrix,
-	
+	uniform float4x4 projection,
+	uniform float4x4 camera,
+	uniform float4x4 model,
+
 	out float4 ePosition : POSITION,
 	out float4 oPosition : TEXCOORD0,
 	out float3 oNormal : TEXCOORD1,
 	out float2 oTexcoord : TEXCOORD2
 )
 {
-	ePosition = mul(mul(projMatrix, modelViewMatrix), float4(vertexPosition,1.0f));
-	
+	ePosition = mul(float4(vertexPosition, 1.0f), mul(camera, mul(model, projection)));
 	oPosition = float4(vertexPosition, 1.0f);
 	oNormal = vertexNormal;
 	oTexcoord = vertexTexcoord;
@@ -138,35 +138,20 @@ void main
 	float4 position : TEXCOORD0,
 	float3 normal : TEXCOORD1,
 	float2 texcoord : TEXCOORD2,
-
-	uniform float3 globalAmbient,
-	//uniform float3 lightPosition,
-	//uniform float3 lightColor,
-	//uniform float3 eyePosition,
-	//uniform float3 Kd,
-	//uniform float3 Ks,
-	//uniform float shininess,
 	
 	uniform sampler2D texture,
-	
+	// uniform vec4 color;
+	// uniform vec2 tiling;
+	// uniform vec2 offset;
+
 	out float4 oColor
 )
 {
-	//float3 N = normalize(normal);
+	// float3 result = color.xyz * tex2D(texture,texcoord).xyz;
+	// float alpha = tex2D(texture,texcoord).w * color.w;
 	
-	//float3 L = normalize(lightPosition - position.xyz);
-	//float diffuseLight = max(dot(N,L),0.0f);
-	//float3 diffuse = Kd*lightColor*diffuseLight;
-	
-	//float3 V = normalize(eyePosition - position.xyz);
-	//float3 H = normalize(L + V);
-	//float specularLight = pow(max(dot(H,N),0.0f),shininess);
-	//if(diffuseLight<=0) specularLight = 0;
-	//float3 specular = Ks*specularLight;
-	
-	//float3 color = tex2D(texture,texcoord).xyz*(diffuse + globalAmbient) + specular;
-	float3 color = tex2D(texture,texcoord).xyz*(globalAmbient);
+	float3 result = tex2D(texture,texcoord).xyz;
 	float alpha = tex2D(texture,texcoord).w;
-	
-	oColor = float4(color, alpha);
+
+	oColor = float4(result, alpha);
 }

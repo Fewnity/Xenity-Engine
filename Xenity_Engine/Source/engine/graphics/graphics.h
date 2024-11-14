@@ -142,7 +142,7 @@ public:
 	*/
 	static void SetDrawOrderListAsDirty();
 
-#if defined(__PSP__) || defined(_EE) || defined(__PS3__)
+#if defined(__PSP__) || defined(_EE)
 	static constexpr bool s_UseOpenGLFixedFunctions = true;
 #else
 	static constexpr bool s_UseOpenGLFixedFunctions = false;

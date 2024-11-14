@@ -23,6 +23,9 @@
 #include <engine/ui/screen.h>
 
 #include <memory>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <io/pad.h> 
 #include <sysutil/video.h>
@@ -68,22 +71,7 @@ static size_t RESOLUTION_ID_COUNT = sizeof(sResolutionIds) / sizeof(uint32_t);
 
 // fragment shader
 rsxProgramAttrib* RendererRSX::textureUnit = nullptr;
-rsxProgramConst* eyePosition = nullptr;
-rsxProgramConst* globalAmbient = nullptr;
-rsxProgramConst* litPosition = nullptr;
-rsxProgramConst* litColor = nullptr;
-rsxProgramConst* Kd = nullptr;
-rsxProgramConst* Ks = nullptr;
-rsxProgramConst* spec = nullptr;
 
-glm::vec3 eye_pos = glm::vec3(0.0f, 0.0f, 5.0f);
-glm::vec3 eye_dir = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
-
-glm::mat4 transformationMatrix = glm::mat4(1);
-glm::mat4 projectionMatrix;
-Vector3 camPos;
-glm::mat4 cameraViewMatrix;
 
 extern "C"
 {
@@ -368,7 +356,6 @@ int RendererRSX::Init()
 	atexit(program_exit_callback);
 	sysUtilRegisterCallback(0, sysutil_exit_callback, NULL);
 
-	projectionMatrix = glm::transpose(glm::perspective(glm::radians(45.0f), aspect_ratio, 1.0f, 3000.0f));
 	setDrawEnv();
 	setRenderTarget(curr_fb);
 
@@ -431,13 +418,6 @@ void RendererRSX::SetProjection2D(float projectionSize, float nearClippingPlane,
 
 void RendererRSX::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
 {
-	//projectionMatrix = glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane);
-	// projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane));
-	projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane));
-	//projectionMatrix = glm::transpose(glm::perspective(glm::radians(fov), aspect, nearClippingPlane, farClippingPlane));
-	// sceGumMatrixMode(GU_PROJECTION);
-	// sceGumLoadIdentity();
-	// sceGumPerspective(fov, Window::GetAspectRatio(), nearClippingPlane, farClippingPlane);
 }
 
 void RendererRSX::ResetView()
@@ -449,9 +429,6 @@ void RendererRSX::ResetView()
 
 void RendererRSX::SetCameraPosition(const Camera& camera)
 {
-	cameraViewMatrix = camera.m_cameraTransformMatrix;
-	// sceGumMatrixMode(GU_VIEW);
-	// sceGumLoadMatrix((ScePspFMatrix4*)&camera.m_cameraTransformMatrix);
 }
 
 void RendererRSX::SetCameraPosition(const Vector3& position, const Vector3& rotation)
@@ -492,8 +469,6 @@ void RendererRSX::SetTransform(const Vector3& position, const Vector3& rotation,
 
 void RendererRSX::SetTransform(const glm::mat4& mat)
 {
-	transformationMatrix = mat;
-	// sceGuSetMatrix(GU_MODEL, (ScePspFMatrix4*)&mat);
 }
 
 void RendererRSX::BindTexture(const Texture& texture)
@@ -511,28 +486,10 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
-	const ShaderRSX& rsxShader = dynamic_cast<const ShaderRSX&>(*material.GetShader());
+	const ShaderRSX& rsxShader = dynamic_cast<const ShaderRSX&>(*Graphics::s_currentShader);
 
-	Graphics::s_currentShader = rsxShader.GetShared();
-
-	uint32_t i, offset, color = 0;
-	glm::mat4 rotX, rotY;
-	glm::vec4 objEyePos, objLightPos;
-	glm::mat4 modelMatrixIT, modelViewMatrix;
-	glm::vec4 lightPos = glm::vec4(250.0f, 150.0f, 150.0f, 1);
+	uint32_t offset= 0;
 	f32 globalAmbientColor[3] = { 0.8f, 0.7f, 0.7f };
-	f32 lightColor[3] = { 0.95f, 0.95f, 0.95f };
-	f32 materialColorDiffuse[3] = { 0.5f, 0.5f, 0.5f };
-	f32 materialColorSpecular[3] = { 0.7f, 0.6f, 0.6f };
-	f32 shininess = 17.8954f;
-
-	eye_pos = glm::vec3(camPos.x, camPos.y, camPos.z);
-
-	modelMatrixIT = glm::inverse(transformationMatrix);
-	modelViewMatrix = glm::transpose(cameraViewMatrix * transformationMatrix);
-
-	objEyePos = modelMatrixIT * glm::vec4(eye_pos.x, eye_pos.y, eye_pos.z, 1);
-	objLightPos = modelMatrixIT * lightPos;
 
 	if (lastSettings.useDepth != settings.useDepth)
 	{
@@ -598,27 +555,10 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 	}
 
-	// Update shaders
+	// Update fragment shader uniforms
+	if(rsxShader.m_globalAmbient)
 	{
-		// Bind shaders
-		rsxLoadVertexProgram(context, rsxShader.m_vertexProgram, rsxShader.m_vertexProgramCode);
-		rsxLoadFragmentProgramLocation(context, rsxShader.m_fragmentProgram, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
-
-		// Update vertex shader uniforms
-		if(rsxShader.m_projMatrix)
-		{
-			rsxSetVertexProgramParameter(context, rsxShader.m_vertexProgram, rsxShader.m_projMatrix, (float*)&projectionMatrix);
-		}
-		if(rsxShader.m_mvMatrix)
-		{
-			rsxSetVertexProgramParameter(context, rsxShader.m_vertexProgram, rsxShader.m_mvMatrix, (float*)&modelViewMatrix);
-		}
-
-		// Update fragment shader uniforms
-		if(rsxShader.m_globalAmbient)
-		{
-			rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_globalAmbient, globalAmbientColor, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
-		}
+		rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_globalAmbient, globalAmbientColor, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
 	}
 
 	rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE,
