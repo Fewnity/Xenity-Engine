@@ -653,7 +653,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		const std::shared_ptr<Texture>& texture = AssetManager::unlitMaterial->m_texture;
+		const std::shared_ptr<Texture> texture = AssetManager::unlitMaterial->m_texture;
 
 		AssetManager::unlitMaterial->m_texture = s_settings.skybox->down;
 		static const Quaternion q0 = Quaternion::Euler(0, 180, 0);
