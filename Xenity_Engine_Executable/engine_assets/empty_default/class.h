@@ -1,9 +1,8 @@
 #pragma once
 
-#include <engine/monobehaviour.h>
 #include <engine/component.h>
 
-class {CLASSNAME} : public MonoBehaviour
+class {CLASSNAME} : public Component
 {
 public:
     {CLASSNAME}();
