@@ -79,32 +79,33 @@ void AssetManager::OnProjectLoaded()
 
 	defaultTexture = AssetManager::LoadEngineAsset<Texture>("public_engine_assets/textures/default_texture.png");
 	defaultTexture->LoadFileReference();
+
 	if constexpr (!Graphics::s_UseOpenGLFixedFunctions)
 	{
 		// Load shaders
 		standardShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard.shader");
-		standardOneLightEachShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_light_each.shader");
-		standardOnePointLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_point_light.shader");
-		standardOneSpotLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_spot_light.shader");
-		standardOneDirectionalLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_directional_light.shader");
+		// standardOneLightEachShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_light_each.shader");
+		// standardOnePointLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_point_light.shader");
+		// standardOneSpotLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_spot_light.shader");
+		// standardOneDirectionalLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_one_directional_light.shader");
 		//standardVertexLightShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_vertex_lighting.shader");
 		unlitShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/unlit.shader");
 		//lineShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/line.shader");
 
 		XASSERT(standardShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Shader is null");
-		XASSERT(standardOneLightEachShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Shader is null");
-		XASSERT(standardOnePointLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Shader is null");
-		XASSERT(standardOneSpotLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Shader is null");
-		XASSERT(standardOneDirectionalLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Shader is null");
+		// XASSERT(standardOneLightEachShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Shader is null");
+		// XASSERT(standardOnePointLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Shader is null");
+		// XASSERT(standardOneSpotLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Shader is null");
+		// XASSERT(standardOneDirectionalLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Shader is null");
 		//XASSERT(standardVertexLightShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null")
 		XASSERT(unlitShader != nullptr, "[AssetManager::OnProjectLoaded] Unlit Shader is null");
 		//XASSERT(lineShader != nullptr, "[AssetManager::OnProjectLoaded] Line Shader is null")
 
 		standardShader->LoadFileReference();
-		standardOneLightEachShader->LoadFileReference();
-		standardOnePointLightShader->LoadFileReference();
-		standardOneSpotLightShader->LoadFileReference();
-		standardOneDirectionalLightShader->LoadFileReference();
+		// standardOneLightEachShader->LoadFileReference();
+		// standardOnePointLightShader->LoadFileReference();
+		// standardOneSpotLightShader->LoadFileReference();
+		// standardOneDirectionalLightShader->LoadFileReference();
 		//standardVertexLightShader->LoadFileReference();
 		unlitShader->LoadFileReference();
 		//lineShader->LoadFileReference();
@@ -112,31 +113,32 @@ void AssetManager::OnProjectLoaded()
 
 	// Load materials
 	standardMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterial.mat");
-	standardOneLightEachMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneLightEach.mat");
-	standardOnePointLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOnePointLight.mat");
-	standardOneSpotLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneSpotLight.mat");
-	standardOneDirectionalLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneDirectionalLight.mat");
+	// standardOneLightEachMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneLightEach.mat");
+	// standardOnePointLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOnePointLight.mat");
+	// standardOneSpotLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneSpotLight.mat");
+	// standardOneDirectionalLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterialOneDirectionalLight.mat");
 	//standardVertexLightMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardVertexLightingMaterial.mat");
 	unlitMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/unlitMaterial.mat");
 	//lineMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/lineMaterial.mat");
 
 	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null");
-	XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Material is null");
-	XASSERT(standardOnePointLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Material is null");
-	XASSERT(standardOneSpotLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Material is null");
-	XASSERT(standardOneDirectionalLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Material is null");
+	// XASSERT(standardOneLightEachMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Light Material is null");
+	// XASSERT(standardOnePointLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Point Light Material is null");
+	// XASSERT(standardOneSpotLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Spot Light Material is null");
+	// XASSERT(standardOneDirectionalLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard One Directional Light Material is null");
 	//XASSERT(standardVertexLightMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Vertex Lighting Material is null");
 	XASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Unlit Material is null");
 	//XASSERT(lineMaterial != nullptr, "[AssetManager::OnProjectLoaded] Line Material is null");
 
 	standardMaterial->LoadFileReference();
-	standardOneLightEachMaterial->LoadFileReference();
-	standardOnePointLightMaterial->LoadFileReference();
-	standardOneSpotLightMaterial->LoadFileReference();
-	standardOneDirectionalLightMaterial->LoadFileReference();
+	// standardOneLightEachMaterial->LoadFileReference();
+	// standardOnePointLightMaterial->LoadFileReference();
+	// standardOneSpotLightMaterial->LoadFileReference();
+	// standardOneDirectionalLightMaterial->LoadFileReference();
 	//standardVertexLightMaterial->LoadFileReference();
 	unlitMaterial->LoadFileReference();
 	//lineMaterial->LoadFileReference();
+
 }
 
 void AssetManager::OnProjectUnloaded()
