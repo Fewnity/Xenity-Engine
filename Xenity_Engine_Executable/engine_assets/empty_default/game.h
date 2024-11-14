@@ -1,3 +1,5 @@
+//DO NOT MODIFY THIS FILE
+
 #if defined(EXPORT)
 // #define API __declspec(dllexport)
 #define API2
@@ -9,7 +11,6 @@
 
 #pragma once
 
-#include <memory>
 #include <engine/game_interface.h>
 
 class Game : public GameInterface
@@ -20,5 +21,8 @@ public:
 
 extern "C"
 {
-	API2 GameInterface *CreateGame();
+	inline API2 GameInterface* CreateGame()
+	{
+		return new Game();
+	}
 };

@@ -11,8 +11,3 @@ void Game::Start()
 {
 	//REGISTER_COMPONENT(MyClass);
 }
-
-GameInterface *CreateGame()
-{
-	return new Game();
-}
