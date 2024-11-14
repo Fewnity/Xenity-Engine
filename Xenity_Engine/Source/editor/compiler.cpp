@@ -930,7 +930,9 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 	else if (params.buildPlatform.platform == Platform::P_PS3)
 	{
-		createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/ ; make\"";
+		std::string removeSourceCommand = "rm -r Source/editor/ ; rm Source/glad.c ; rm -r include/freetype/ ; rm -r include/glad/ ; rm -r include/imgui/ ; rm -r include/implot/ ; rm -r include/SDL3/ ; rm -r include/KHR/ ;";
+
+		createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/ ; " + removeSourceCommand + "make -j" + std::to_string(threadNumber) + "\"";
 	}
 
 	[[maybe_unused]] const int createResult = system(createCommand.c_str());
@@ -1013,9 +1015,17 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	{
 		fileName = ProjectManager::GetGameName() + ".vpk";
 	}
+	else if (params.buildPlatform.platform == Platform::P_PS3)
+	{
+		fileName = "XenityBuild.self";
+	}
 
 	// Copy final file
-	const std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName + "\" \"" + params.exportPath + fileName + "\"";
+	std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName + "\" \"" + params.exportPath + fileName + "\"";
+	if (params.buildPlatform.platform == Platform::P_PS3)
+	{
+		copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/" + fileName + "\" \"" + params.exportPath + fileName + "\"";
+	}
 	const int copyGameFileResult = system(copyGameFileCommand.c_str()); // Engine's source code + (game's code but to change later)
 
 	if (params.buildType == BuildType::BuildShaders)
