@@ -15,10 +15,10 @@ class FileDataBaseEntry : public Reflective
 public:
 	std::string p; // Path
 	uint64_t id; // Unique id
-	uint64_t po; // Position in the binary file
-	uint64_t s; // Size
-	uint64_t mpo; // Meta position in the binary file
-	uint64_t ms; // Meta Size
+	uint64_t po; // Position in the binary file in byte
+	uint64_t s; // Size in byte
+	uint64_t mpo; // Meta position in the binary file in byte
+	uint64_t ms; // Meta Size in byte
 	FileType t; // Type
 
 private:

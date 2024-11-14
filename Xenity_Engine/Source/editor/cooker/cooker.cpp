@@ -271,10 +271,10 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	FileDataBaseEntry* fileDataBaseEntry = new FileDataBaseEntry();
 	fileDataBaseEntry->p = partialFilePath; // Path
 	fileDataBaseEntry->id = fileInfo.file->GetUniqueId(); // Unique id
-	fileDataBaseEntry->po = dataOffset; // Position in the binary file
-	fileDataBaseEntry->s = cookedFileSize; // Size
-	fileDataBaseEntry->mpo = metaDataOffset; // Meta position in the binary file
-	fileDataBaseEntry->ms = metaSize; // Meta Size
+	fileDataBaseEntry->po = dataOffset; // Position in the binary file in byte
+	fileDataBaseEntry->s = cookedFileSize; // Size in byte
+	fileDataBaseEntry->mpo = metaDataOffset; // Meta position in the binary file in byte
+	fileDataBaseEntry->ms = metaSize; // Meta Size in byte
 	fileDataBaseEntry->t = fileInfo.type; // Type
 
 	fileDataBase.AddFile(fileDataBaseEntry);
