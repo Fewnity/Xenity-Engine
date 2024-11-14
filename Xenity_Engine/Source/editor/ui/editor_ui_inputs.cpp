@@ -345,6 +345,173 @@ ValueInputState EditorUI::DrawInput(const std::string& inputName, Color& newValu
 	return state;
 }
 
+ValueInputState EditorUI::DrawReflectiveData(ReflectiveDataToDraw& reflectiveDataToDraw, const ReflectiveData& myMap, Event<>* _onValueChangedEvent)
+{
+	ValueInputState valueInputState = ValueInputState::NO_CHANGE;
+	onValueChangedEvent = _onValueChangedEvent;
+	for (const ReflectiveEntry& reflectionEntry : myMap)
+	{
+		if (reflectionEntry.isPublic)
+		{
+			reflectiveDataToDraw.currentEntry = reflectionEntry;
+			reflectiveDataToDraw.name = GetPrettyVariableName(reflectionEntry.variableName);
+			reflectiveDataToDraw.entryStack.push_back(reflectionEntry);
+			reflectiveDataToDraw.reflectiveDataStack.push_back(myMap);
+
+			ValueInputState tempValueInputState = ValueInputState::NO_CHANGE;
+			std::visit([&tempValueInputState, &reflectiveDataToDraw](auto& value)
+				{
+					tempValueInputState = DrawVariable(reflectiveDataToDraw, value);
+				}, reflectiveDataToDraw.currentEntry.variable.value());
+
+			reflectiveDataToDraw.entryStack.erase(reflectiveDataToDraw.entryStack.end() - 1);
+			reflectiveDataToDraw.reflectiveDataStack.erase(reflectiveDataToDraw.reflectiveDataStack.end() - 1);
+
+			if (tempValueInputState != ValueInputState::NO_CHANGE)
+			{
+				valueInputState = tempValueInputState;
+			}
+		}
+	}
+	if (onValueChangedEvent && valueInputState != ValueInputState::NO_CHANGE)
+	{
+		onValueChangedEvent->Trigger();
+	}
+	ImGui::Separator();
+	/*if(valueChanged)
+		valueInputState = ValueInputState::APPLIED;*/
+	return valueInputState;
+}
+
+bool EditorUI::DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
+{
+	bool valueChanged = false;
+	const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+	if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+	{
+		const size_t vectorSize = valuePtr.get().size();
+
+		const std::string tempName = reflectiveDataToDraw.name;
+		reflectiveDataToDraw.name = "";
+		ReflectiveEntry temp = reflectiveDataToDraw.currentEntry;
+		for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
+		{
+			Reflective* ptr = valuePtr.get()[vectorI];
+			if (ptr)
+			{
+				ValueInputState valueInputState = ValueInputState::NO_CHANGE;
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Empty name normally here!!!!
+				if (auto val = dynamic_cast<Vector2*>(ptr)) // Specific draw
+				{
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+				}
+				else if (auto val = dynamic_cast<Vector2Int*>(ptr)) // Specific draw
+				{
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+				}
+				else if (auto val = dynamic_cast<Vector3*>(ptr)) // Specific draw
+				{
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+				}
+				else if (auto val = dynamic_cast<Vector4*>(ptr)) // Specific draw
+				{
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+				}
+				else if (auto val = dynamic_cast<Color*>(ptr)) // Specific draw
+				{
+					valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+				}
+				else //Basic draw
+				{
+					const std::string headerName = tempName + "##ListHeader" + std::to_string((uint64_t)ptr);
+					if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+					{
+						valueInputState = DrawReflectiveData(reflectiveDataToDraw, ptr->GetReflectiveData(), nullptr);
+					}
+				}
+				if (valueInputState != ValueInputState::NO_CHANGE)
+				{
+					valueChanged = true;
+				}
+			}
+			else
+			{
+				ImGui::Text("Null element");
+			}
+		}
+		reflectiveDataToDraw.name = tempName;
+		const std::string addText = "Add " + GenerateItemId();
+		if (ImGui::Button(addText.c_str()))
+		{
+			valuePtr.get().push_back((Reflective*)temp.typeSpawner->Allocate());
+			valueChanged = true;
+		}
+
+		const std::string removeText = "Remove " + GenerateItemId();
+		if (ImGui::Button(removeText.c_str()))
+		{
+			if (vectorSize != 0)
+			{
+				delete valuePtr.get()[vectorSize - 1];
+				valuePtr.get().erase(valuePtr.get().begin() + vectorSize - 1);
+				valueChanged = true;
+			}
+		}
+		ImGui::Separator();
+	}
+	return valueChanged;
+}
+
+ValueInputState EditorUI::DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
+{
+	ValueInputState valueInputState = ValueInputState::NO_CHANGE;
+	bool valueChangedTemp = false;
+	valueChangedTemp = DrawVector(reflectiveDataToDraw, "Reflective", valuePtr);
+
+	if (valueChangedTemp)
+		valueInputState = ValueInputState::APPLIED;
+	return valueInputState;
+}
+
+ValueInputState EditorUI::DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<Reflective> valuePtr)
+{
+	ValueInputState valueInputState = ValueInputState::NO_CHANGE;
+
+	if (auto val = dynamic_cast<Vector2*>(&valuePtr.get())) // Specific draw
+	{
+		valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+	}
+	else if (auto val = dynamic_cast<Vector2Int*>(&valuePtr.get())) // Specific draw
+	{
+		valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+	}
+	else if (auto val = dynamic_cast<Vector3*>(&valuePtr.get())) // Specific draw
+	{
+		valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+	}
+	else if (auto val = dynamic_cast<Vector4*>(&valuePtr.get())) // Specific draw
+	{
+		valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+	}
+	else if (auto val = dynamic_cast<Color*>(&valuePtr.get())) // Specific draw
+	{
+		valueInputState = DrawInputReflective(reflectiveDataToDraw, val);
+	}
+	else //Basic draw
+	{
+		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t) & (valuePtr.get()));
+		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+		{
+			valueInputState = DrawReflectiveData(reflectiveDataToDraw, valuePtr.get().GetReflectiveData(), nullptr);
+		}
+	}
+
+	/*if(valueInputState != ValueInputState::NO_CHANGE)
+		valueChangedTemp = true;*/
+
+	return valueInputState;
+}
+
 #pragma endregion
 
 

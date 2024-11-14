@@ -1,6 +1,7 @@
 #include "binary_mesh_loader.h"
 
 #include <iostream>
+#include <cstring>
 
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/file_system/file.h>

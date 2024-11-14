@@ -13,6 +13,8 @@
 #if defined(__PS3__)
 #include <engine/api.h>
 
+#include <array>
+
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/texture.h>

@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <unordered_map>
+
 #include <engine/graphics/3d_graphics/mesh_data.h>
 
 class Material;

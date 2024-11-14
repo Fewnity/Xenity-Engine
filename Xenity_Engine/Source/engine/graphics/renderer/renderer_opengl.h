@@ -13,6 +13,8 @@
 #if !defined(_EE) && !defined(__PSP__) && !defined(__PS3__) // Improve conditions
 #include <engine/api.h>
 
+#include <array>
+
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/texture.h>

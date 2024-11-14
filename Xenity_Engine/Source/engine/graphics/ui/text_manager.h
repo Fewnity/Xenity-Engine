@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include <glm/glm.hpp>
+#include <glm/vec2.hpp>
 
 #include <engine/vectors/vector2.h>
 #include "text_alignments.h"

@@ -8,6 +8,7 @@
 #include <engine/debug/debug.h>
 #include <engine/tools/math.h>
 #include <engine/vectors/vector3.h>
+#include <glm/mat4x4.hpp>
 
 bool MathBasicTest::Start(std::string& errorOut)
 {

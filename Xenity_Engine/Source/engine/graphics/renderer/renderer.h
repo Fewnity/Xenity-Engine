@@ -10,7 +10,7 @@
  * [Internal]
  */
 
-#include <glm/glm.hpp>
+#include <glm/fwd.hpp>
 
 #include <vector>
 

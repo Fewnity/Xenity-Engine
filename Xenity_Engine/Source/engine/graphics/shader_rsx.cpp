@@ -4,9 +4,11 @@
 //
 // This file is part of Xenity Engine
 
+#if defined(__PS3__)
+
 #include "shader_rsx.h"
 
-#if defined(__PS3__)
+#include <cstring>
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/matrix_transform.hpp>

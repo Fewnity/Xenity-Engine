@@ -13,7 +13,7 @@ class Vector2Int;
 class Vector2;
 class Quaternion;
 
-#include <glm/glm.hpp>
+#include <glm/fwd.hpp>
 
 
 /**

@@ -10,7 +10,7 @@
 #include <variant>
 #include <vector>
 #include <optional>
-#include <json.hpp>
+#include <json_fwd.hpp>
 
 #include <engine/api.h>
 #include <engine/tools/template_utils.h>

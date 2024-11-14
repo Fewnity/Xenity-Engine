@@ -6,10 +6,10 @@
 
 #include "project_manager.h"
 
-#include <filesystem>
 #include <json.hpp>
 
 #if defined(EDITOR)
+#include <filesystem>
 #include <editor/editor.h>
 #include <editor/file_handler.h>
 #include <editor/compiler.h>

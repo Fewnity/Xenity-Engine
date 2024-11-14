@@ -5,7 +5,7 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <glm/glm.hpp>
+#include <glm/mat4x4.hpp>
 #include <memory>
 
 #include <engine/api.h>

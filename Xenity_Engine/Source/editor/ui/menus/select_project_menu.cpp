@@ -6,6 +6,8 @@
 
 #include "select_project_menu.h"
 
+#include <filesystem>
+
 #include <imgui/imgui.h>
 
 #include <engine/asset_management/project_manager.h>

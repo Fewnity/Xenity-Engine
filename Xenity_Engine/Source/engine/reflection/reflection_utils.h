@@ -12,10 +12,8 @@
  */
 
 #include <json.hpp>
-#include <unordered_map>
 #include "reflection.h"
 #include <engine/tools/template_utils.h>
-#include <engine/physics/collider.h>
 
 class File;
 

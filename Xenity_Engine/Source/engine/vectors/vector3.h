@@ -7,6 +7,8 @@
 #pragma once
 
 #include <algorithm>
+#include <cmath>
+
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
 
