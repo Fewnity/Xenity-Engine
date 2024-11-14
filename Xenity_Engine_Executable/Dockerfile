@@ -60,11 +60,11 @@ RUN cd /usr/local && tar -xvzf PSL1GHT.tar.gz && rm PSL1GHT.tar.gz
 RUN apt install -y nvidia-cg-toolkit
 
 RUN echo "export PS3DEV=/usr/local/ps3dev" >> /root/.bashrc
-RUN echo "export PATH=$PATH:$PS3DEV/bin" >> /root/.bashrc
-RUN echo "export PATH=$PATH:$PS3DEV/ppu/bin" >> /root/.bashrc
-RUN echo "export PATH=$PATH:$PS3DEV/spu/bin" >> /root/.bashrc
+RUN echo "export PATH=\$PATH:\$PS3DEV/bin" >> /root/.bashrc
+RUN echo "export PATH=\$PATH:\$PS3DEV/ppu/bin" >> /root/.bashrc
+RUN echo "export PATH=\$PATH:\$PS3DEV/spu/bin" >> /root/.bashrc
 RUN echo "export PSL1GHT=/usr/local/PSL1GHT/build" >> /root/.bashrc
-RUN echo "export PATH=$PATH:/usr/local/PSL1GHT/tools/cgcomp" >> /root/.bashrc
+RUN echo "export PATH=\$PATH:/usr/local/PSL1GHT/tools/cgcomp" >> /root/.bashrc
 
 # --------------------------- Create build folders
 RUN cd /home/ && mkdir XenityBuild && cd XenityBuild && mkdir Source && mkdir build && mkdir include && mkdir shaders_to_compile
