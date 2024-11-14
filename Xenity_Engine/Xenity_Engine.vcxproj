@@ -398,7 +398,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -430,7 +430,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -455,7 +455,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -482,7 +482,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -1048,7 +1048,6 @@
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="include\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
@@ -1732,7 +1731,6 @@
     <ClInclude Include="Source\engine\noise\noise.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
     <ClInclude Include="include\imgui\imgui.h" />
-    <ClInclude Include="include\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="include\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="include\imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="include\imgui\imgui_internal.h" />

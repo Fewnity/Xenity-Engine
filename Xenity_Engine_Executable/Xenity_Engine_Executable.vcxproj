@@ -384,7 +384,6 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib
     </Link>
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x64\glfw3.dll"  "$(ProjectDir)glfw3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
 
 copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
@@ -414,7 +413,6 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib
     </Link>
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x64\glfw3.dll"  "$(ProjectDir)glfw3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
 
 copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
@@ -442,7 +440,6 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib
     </Link>
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x64\glfw3.dll"  "$(ProjectDir)glfw3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
 
 copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.dll" "$(ProjectDir)Xenity_Engine.dll"
@@ -469,7 +466,6 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib
     </Link>
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
-copy  "$(SolutionDir)Xenity_Engine\libs\x64\glfw3.dll"  "$(ProjectDir)glfw3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
 
 copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.dll" "$(ProjectDir)Xenity_Engine.dll"
