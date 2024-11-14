@@ -53,7 +53,7 @@ if(MODE STREQUAL "psp")
 message(STATUS "BUILD PSP")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto -falign-functions=32 -ftree-vectorize -O1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto=auto -falign-functions=32 -ftree-vectorize -O1")
 
 include_directories(${PSPDEV}/psp/include/freetype2)
 
@@ -112,7 +112,7 @@ set(VITA_VERSION  "01.00")
 ## Flags and includes for building
 # Note that we make sure not to overwrite previous flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto -O2 -fcompare-debug-second")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto=auto -O2 -fcompare-debug-second")
 # Optional. You can specify more param.sfo flags this way.
 set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d PARENTAL_LEVEL=1")
 
