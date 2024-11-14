@@ -1,13 +1,13 @@
 #pragma once
 
 //
-// ------------------------- Version
+// -------------------------------------------------- Version
 //
 #define ENGINE_VERSION "0.1"
 #define ENGINE_DLL_VERSION "2" // Increase by one this number to invalidate compiled Dlls of games projects
 
 //
-// ------------------------- Files/directories names
+// -------------------------------------------------- Files/directories names
 //
 // General
 #define PS3_DATA_FOLDER "/dev_hdd0/xenity_engine/" // When using data from hard drive
@@ -31,22 +31,26 @@
 #define DEBUG_LOG_FILE "xenity_engine_debug.txt"
 #define PSVITA_DEBUG_LOG_FOLDER "ux0:data/xenity_engine/"
 
-// Audio
+//
+// -------------------------------------------------- Audio
+//
 #define SOUND_FREQUENCY 44100
 #define AUDIO_BUFFER_SIZE 2048
 
 //
-// ------------------------- GameObjects/Components
+// -------------------------------------------------- GameObjects/Components
 //
 #define DEFAULT_GAMEOBJECT_NAME "GameObject"
 
 #define DEFAULT_CAMERA_FOV 60.0f
 
-// ------------------------- Physics
+//
+// -------------------------------------------------- Physics
+//
 #define DEFAULT_GRAVITY_Y -20
 
 //
-// ------------------------- Graphics
+// -------------------------------------------------- Graphics
 //
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #define MAX_LIGHT_COUNT 10
@@ -54,7 +58,9 @@
 #define MAX_LIGHT_COUNT 4
 #endif
 
-// ------------------------- World partitionner
+//
+// -------------------------------------------------- World partitionner
+//
 #define WORLD_CHUNK_SIZE 10
 #define WORLD_CHUNK_HALF_SIZE (WORLD_CHUNK_SIZE / 2.0f)
 
