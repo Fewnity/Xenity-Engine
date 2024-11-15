@@ -183,6 +183,9 @@ unsigned char* Shader::ReadShaderBinary(size_t& size) const
 	size = m_fileSize;
 	return binData;
 #endif
+
+	size = 0;
+	return nullptr;
 }
 
 ReflectiveData Shader::GetReflectiveData()
