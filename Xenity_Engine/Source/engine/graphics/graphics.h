@@ -156,8 +156,8 @@ public:
 	static std::vector<std::weak_ptr<Lod>> s_lods;
 
 	
-	static std::shared_ptr <Shader> s_currentShader;
-	static std::shared_ptr <Material> s_currentMaterial;
+	static Shader* s_currentShader;
+	static Material* s_currentMaterial;
 	static IDrawableTypes s_currentMode;
 	static bool s_isRenderingBatchDirty;
 	static GraphicsSettings s_settings;
@@ -185,6 +185,8 @@ private:
 	* @brief Check lods
 	*/
 	static void CheckLods();
+
+	static void UpdateShadersCameraMatrices();
 
 #if defined(EDITOR)
 	/**

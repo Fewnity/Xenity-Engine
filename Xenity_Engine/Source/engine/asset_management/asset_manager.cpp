@@ -29,11 +29,13 @@
 
 bool initialised = false;
 
+std::vector<Shader*> AssetManager::shaders;
 std::vector<Material*> AssetManager::materials;
 std::vector<Reflective*> AssetManager::reflections;
 std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
 std::vector<Light*> AssetManager::lights;
 
+int AssetManager::shaderCount = 0;
 int AssetManager::materialCount = 0;
 int AssetManager::reflectionCount = 0;
 int AssetManager::fileReferenceCount = 0;
@@ -178,6 +180,16 @@ void AssetManager::AddMaterial(Material* material)
 	materialCount++;
 }
 
+void AssetManager::AddShader(Shader* shader)
+{
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
+	XASSERT(shader != nullptr, "[AssetManager::AddShader] Shader is null");
+
+	shaders.push_back(shader);
+	shaderCount++;
+}
+
 void AssetManager::AddReflection(Reflective* reflection)
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
@@ -283,6 +295,36 @@ void AssetManager::RemoveMaterial(const Material* material)
 	{
 		materials.erase(materials.begin() + materialIndex);
 		materialCount--;
+	}
+}
+
+void AssetManager::RemoveShader(const Shader* shader)
+{
+	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
+
+	XASSERT(shader != nullptr, "[AssetManager::RemoveMaterial] material is null");
+
+	if (!Engine::IsRunning(true))
+		return;
+
+	XASSERT(!shaders.empty(), "[AssetManager::RemoveMaterial] shaders is empty");
+
+	int shaderIndex = 0;
+	bool found = false;
+	for (int i = 0; i < shaderCount; i++)
+	{
+		if (shaders[i] == shader)
+		{
+			found = true;
+			shaderIndex = i;
+			break;
+		}
+	}
+
+	if (found)
+	{
+		shaders.erase(shaders.begin() + shaderIndex);
+		shaderCount--;
 	}
 }
 

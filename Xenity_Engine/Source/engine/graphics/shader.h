@@ -194,6 +194,7 @@ protected:
 	friend class Material;
 	friend class Graphics;
 	friend class RendererOpengl;
+	friend class RendererRSX;
 	friend class RendererGU;
 	friend class RendererGsKit;
 	friend class RendererVU1;
@@ -254,7 +255,7 @@ protected:
 	/**
 	* @brief Update lights in the shader
 	*/
-	virtual void UpdateLights(bool disableLights) = 0;
+	virtual void UpdateLights() = 0;
 
 	/**
 	* @brief Link the shader programs
@@ -307,7 +308,7 @@ protected:
 	//unsigned int m_usedDirectionalLightCountLocation = 0;
 
 	bool m_useTessellation = false;
-	std::unordered_map<std::string, unsigned int> m_uniformsIds;
+	
 	std::vector<Light*> m_currentLights;
 	std::vector<Light*> m_currentDirectionalLights;
 	static constexpr uint32_t INVALID_SHADER_UNIFORM = -1;

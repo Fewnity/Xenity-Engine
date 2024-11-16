@@ -271,10 +271,10 @@ void ShaderOpenGL::Load()
 
 bool ShaderOpenGL::Use()
 {
-	if (Graphics::s_currentShader != shared_from_this())
+	if (Graphics::s_currentShader != this)
 	{
 		glUseProgram(m_programId);
-		Graphics::s_currentShader = std::dynamic_pointer_cast<Shader>(shared_from_this());
+		Graphics::s_currentShader = this;
 		return true;
 	}
 	return false;
@@ -438,7 +438,7 @@ void ShaderOpenGL::SetLightIndices(const LightsIndices& lightsIndices)
 #endif
 }
 
-void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector4& value)
+unsigned int ShaderOpenGL::FindOrAddAttributId(const std::string& attribut)
 {
 	auto it = m_uniformsIds.find(attribut);
 	if (it == m_uniformsIds.end())
@@ -446,51 +446,37 @@ void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector4&
 		const unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(m_programId, attribut.c_str());
 		it = m_uniformsIds.emplace(attribut, id).first;
 	}
-	Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
+	return it->second;
+}
+
+void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector4& value)
+{
+	unsigned int attributId = FindOrAddAttributId(attribut);
+	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector3& value)
 {
-	auto it = m_uniformsIds.find(attribut);
-	if (it == m_uniformsIds.end())
-	{
-		const unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(m_programId, attribut.c_str());
-		it = m_uniformsIds.emplace(attribut, id).first;
-	}
-	Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
+	unsigned int attributId = FindOrAddAttributId(attribut);
+	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector2& value)
 {
-	auto it = m_uniformsIds.find(attribut);
-	if (it == m_uniformsIds.end())
-	{
-		const unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(m_programId, attribut.c_str());
-		it = m_uniformsIds.emplace(attribut, id).first;
-	}
-	Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
+	unsigned int attributId = FindOrAddAttributId(attribut);
+	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, float value)
 {
-	auto it = m_uniformsIds.find(attribut);
-	if (it == m_uniformsIds.end())
-	{
-		const unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(m_programId, attribut.c_str());
-		it = m_uniformsIds.emplace(attribut, id).first;
-	}
-	Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
+	unsigned int attributId = FindOrAddAttributId(attribut);
+	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, int value)
 {
-	auto it = m_uniformsIds.find(attribut);
-	if (it == m_uniformsIds.end())
-	{
-		const unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(m_programId, attribut.c_str());
-		it = m_uniformsIds.emplace(attribut, id).first;
-	}
-	Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
+	unsigned int attributId = FindOrAddAttributId(attribut);
+	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
 }
 
 void ShaderOpenGL::Link()
@@ -669,7 +655,7 @@ void ShaderOpenGL::SetSpotLightData(const Light& light, const int index)
 /// <summary>
 /// Send lights data to the shader
 /// </summary>
-void ShaderOpenGL::UpdateLights(bool useLighting)
+void ShaderOpenGL::UpdateLights()
 {
 	Vector4 ambientLight = Vector4(0, 0, 0, 0);
 

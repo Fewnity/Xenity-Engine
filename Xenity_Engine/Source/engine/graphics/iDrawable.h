@@ -25,12 +25,12 @@ protected:
 	/**
 	* @brief Create the render commands
 	*/
-	virtual void CreateRenderCommands(RenderBatch& renderBatch) { }
+	virtual void CreateRenderCommands(RenderBatch& renderBatch) = 0;
 
 	/**
 	* @brief Draw the command
 	*/
-	virtual void DrawCommand(const RenderCommand & renderCommand) {};
+	virtual void DrawCommand(const RenderCommand & renderCommand) = 0;
 
 	virtual void OnNewRender() {};
 };

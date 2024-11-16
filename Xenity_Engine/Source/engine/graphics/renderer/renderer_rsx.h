@@ -82,6 +82,7 @@ private:
 	RenderingSettings lastSettings;
 	unsigned int lastUsedColor = 0x00000000;
 	unsigned int lastUsedColor2 = 0xFFFFFFFF;
+	uint64_t lastShaderIdUsedColor = 0;
 	void flip();
 	void waitflip();
 	void init_screen(void *host_addr, uint32_t size);

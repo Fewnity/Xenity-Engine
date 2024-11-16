@@ -65,8 +65,8 @@ std::shared_ptr<ProfilerBenchmark> drawEndFrameBenchmark = nullptr;
 
 std::shared_ptr <MeshData> skyPlane = nullptr;
 
-std::shared_ptr <Shader> Graphics::s_currentShader = nullptr;
-std::shared_ptr <Material> Graphics::s_currentMaterial = nullptr;
+Shader* Graphics::s_currentShader = nullptr;
+Material* Graphics::s_currentMaterial = nullptr;
 IDrawableTypes Graphics::s_currentMode = IDrawableTypes::Draw_3D;
 
 bool Graphics::s_isRenderingBatchDirty = true;
@@ -154,8 +154,8 @@ void Graphics::Stop()
 	renderBatch.Reset();
 	s_settings.skybox.reset();
 	skyPlane.reset();
-	s_currentShader.reset();
-	s_currentMaterial.reset();
+	s_currentShader = nullptr;
+	s_currentMaterial = nullptr;
 }
 
 void Graphics::SetDefaultValues()
@@ -180,10 +180,21 @@ void Graphics::Draw()
 
 	usedCamera.reset();
 	s_currentMaterial = nullptr;
+	s_currentShader = nullptr;
 
 	OrderDrawables();
 	
+	const int shaderCount = AssetManager::GetShaderCount();
 	const int matCount = AssetManager::GetMaterialCount();
+
+	// Set material as dirty
+	for (int shaderIndex = 0; shaderIndex < shaderCount; shaderIndex++)
+	{
+		Shader* shader = AssetManager::GetShader(shaderIndex);
+		shader->Use();
+		shader->UpdateLights();
+	}
+
 	for (const std::weak_ptr<Camera>& weakCam : cameras)
 	{
 		usedCamera = weakCam.lock();
@@ -217,6 +228,10 @@ void Graphics::Draw()
 			if constexpr (s_UseOpenGLFixedFunctions)
 			{
 				Engine::GetRenderer().SetCameraPosition(*usedCamera);
+			}
+			else 
+			{
+				UpdateShadersCameraMatrices();
 			}
 
 			skyboxBenchmark->Start();
@@ -264,7 +279,14 @@ void Graphics::Draw()
 			}
 
 			if (!usedCamera->IsEditor())
+			{
 				s_currentMode = IDrawableTypes::Draw_UI;
+				if constexpr (!s_UseOpenGLFixedFunctions)
+				{
+					UpdateShadersCameraMatrices();
+				}
+			}
+
 			if constexpr (s_UseOpenGLFixedFunctions)
 			{
 				if (!usedCamera->IsEditor())
@@ -694,6 +716,26 @@ void Graphics::CheckLods()
 		if (lod)
 		{
 			lod->CheckLod();
+		}
+	}
+}
+
+void Graphics::UpdateShadersCameraMatrices()
+{
+	const int shaderCount = AssetManager::GetShaderCount();
+	for (int shaderIndex = 0; shaderIndex < shaderCount; shaderIndex++)
+	{
+		Shader* shader = AssetManager::GetShader(shaderIndex);
+		shader->Use();
+		if (Graphics::s_currentMode == IDrawableTypes::Draw_UI)
+		{
+			shader->SetShaderCameraPositionCanvas();
+			shader->SetShaderProjectionCanvas();
+		}
+		else
+		{
+			shader->SetShaderCameraPosition();
+			shader->SetShaderProjection();
 		}
 	}
 }

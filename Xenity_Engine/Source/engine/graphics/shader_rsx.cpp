@@ -115,16 +115,16 @@ void ShaderRSX::Load()
 		memcpy(m_fragmentProgramCodeOnGPU, m_fragmentProgramCode, m_fragmentProgramSize);
 		rsxAddressToOffset(m_fragmentProgramCodeOnGPU, &m_fp_offset);
 
-		m_globalAmbient = rsxFragmentProgramGetConst(m_fragmentProgram, "globalAmbient");
+		m_color = rsxFragmentProgramGetConst(m_fragmentProgram, "color");
 		m_textureUnit = rsxFragmentProgramGetAttrib(m_fragmentProgram, "texture");
 
-		if(m_globalAmbient)
+		if(m_color)
 		{
-			Debug::Print("m_globalAmbient");
+			Debug::Print("m_color");
 		}
 		else
 		{
-			Debug::Print("No m_globalAmbient");
+			Debug::Print("No m_color");
 		}
 
 		if(m_textureUnit)
@@ -142,11 +142,11 @@ void ShaderRSX::Load()
 
 bool ShaderRSX::Use()
 {
-	if (Graphics::s_currentShader != shared_from_this())
+	if (Graphics::s_currentShader != this)
 	{
 		rsxLoadVertexProgram(RendererRSX::context, m_vertexProgram, m_vertexProgramCode);
 		rsxLoadFragmentProgramLocation(RendererRSX::context, m_fragmentProgram, m_fp_offset, GCM_LOCATION_RSX);
-		Graphics::s_currentShader = std::dynamic_pointer_cast<Shader>(shared_from_this());
+		Graphics::s_currentShader = this;
 		return true;
 	}
 	return false;
@@ -225,22 +225,96 @@ void ShaderRSX::SetShaderModel(const glm::mat4& trans)
 /// <param name="trans"></param>
 void ShaderRSX::SetShaderModel(const Vector3& position, const Vector3& rotation, const Vector3& scale)
 {
+	//Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
 }
 
 void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
 {
 }
 
+ShaderRSX::RsxProgramConstPair* ShaderRSX::FindOrAddAttributId(const std::string& attribut)
+{
+	auto it = m_uniformsIds.find(attribut);
+	if (it == m_uniformsIds.end())
+	{
+		RsxProgramConstPair rsxProgramConstPair;
+		rsxProgramConst* vPConst = rsxVertexProgramGetConst(m_vertexProgram, attribut.c_str());
+		if (vPConst)
+		{
+			rsxProgramConstPair.programConst = vPConst;
+			rsxProgramConstPair.isVertexConst = true;
+		}
+		else
+		{
+			rsxProgramConst* fPConst = rsxFragmentProgramGetConst(m_fragmentProgram, attribut.c_str());
+			if (fPConst)
+			{
+				rsxProgramConstPair.programConst = fPConst;
+				rsxProgramConstPair.isVertexConst = false;
+			}
+			else
+			{
+				return nullptr;
+			}
+		}
+		it = m_uniformsIds.emplace(attribut, rsxProgramConstPair).first;
+	}
+
+	return &it->second;
+}
+
 void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector4& value)
 {
+	RsxProgramConstPair* attributId = FindOrAddAttributId(attribut);
+	if (!attributId)
+	{
+		return
+	}
+
+	if (attributId->isVertexConst)
+	{
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, attributId->programConst, (float*)&value.x);
+	}
+	else
+	{
+		rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, attributId->programConst, (float*)&value.x, m_fp_offset, GCM_LOCATION_RSX);
+	}
 }
 
 void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector3& value)
 {
+	RsxProgramConstPair* attributId = FindOrAddAttributId(attribut);
+	if (!attributId)
+	{
+		return
+	}
+
+	if (attributId->isVertexConst)
+	{
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, attributId->programConst, (float*)&value.x);
+	}
+	else
+	{
+		rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, attributId->programConst, (float*)&value.x, m_fp_offset, GCM_LOCATION_RSX);
+	}
 }
 
 void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector2& value)
 {
+	RsxProgramConstPair* attributId = FindOrAddAttributId(attribut);
+	if (!attributId)
+	{
+		return
+	}
+
+	if (attributId->isVertexConst)
+	{
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, attributId->programConst, (float*)&value.x);
+	}
+	else
+	{
+		rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, attributId->programConst, (float*)&value.x, m_fp_offset, GCM_LOCATION_RSX);
+	}
 }
 
 void ShaderRSX::SetShaderAttribut(const std::string& attribut, float value)
@@ -289,7 +363,7 @@ void ShaderRSX::SetSpotLightData(const Light& light, const int index)
 /// <summary>
 /// Send lights data to the shader
 /// </summary>
-void ShaderRSX::UpdateLights(bool useLighting)
+void ShaderRSX::UpdateLights()
 {
 }
 

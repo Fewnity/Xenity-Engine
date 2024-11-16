@@ -29,7 +29,6 @@ Material::Material()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	SetAttribute("color", Vector3(1, 1, 1));
 	AssetManager::AddMaterial(this);
 	AssetManager::AddReflection(this);
 }
@@ -123,17 +122,17 @@ std::shared_ptr<Material> Material::MakeMaterial()
 /// </summary>
 void Material::Use()
 {
-	const bool matChanged = Graphics::s_currentMaterial != shared_from_this();
-	const bool cameraChanged = m_lastUsedCamera.lock() != Graphics::usedCamera;
+	const bool matChanged = Graphics::s_currentMaterial != this;
+	const bool cameraChanged = m_lastUsedCamera != Graphics::usedCamera.get();
 	const bool drawTypeChanged = Graphics::s_currentMode != m_lastUpdatedType;
 
 	if (matChanged || cameraChanged || drawTypeChanged)
 	{
-		Graphics::s_currentMaterial = std::dynamic_pointer_cast<Material>(shared_from_this());
+		Graphics::s_currentMaterial = this;
 		SCOPED_PROFILER("Material::OnMaterialChanged", scopeBenchmark);
 		if (m_shader)
 		{
-			m_lastUsedCamera = Graphics::usedCamera;
+			m_lastUsedCamera = Graphics::usedCamera.get();
 			m_lastUpdatedType = Graphics::s_currentMode;
 
 			m_shader->Use();
@@ -169,23 +168,23 @@ void Material::Update()
 
 		//Send all uniforms
 
-		{
-			//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::UpdateProj");
-			if (Graphics::s_currentMode == IDrawableTypes::Draw_UI)
-			{
-				m_shader->SetShaderCameraPositionCanvas();
-				m_shader->SetShaderProjectionCanvas();
-			}
-			else
-			{
-				m_shader->SetShaderCameraPosition();
-				m_shader->SetShaderProjection();
-			}
-		}
+		//{
+		//	//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::UpdateProj");
+		//	if (Graphics::s_currentMode == IDrawableTypes::Draw_UI)
+		//	{
+		//		m_shader->SetShaderCameraPositionCanvas();
+		//		m_shader->SetShaderProjectionCanvas();
+		//	}
+		//	else
+		//	{
+		//		m_shader->SetShaderCameraPosition();
+		//		m_shader->SetShaderProjection();
+		//	}
+		//}
 
 		if (!m_updated)
 		{
-			m_shader->UpdateLights(m_useLighting);
+			//m_shader->UpdateLights();
 
 			m_shader->SetShaderAttribut("tiling", t_tiling);
 			m_shader->SetShaderAttribut("offset", t_offset);

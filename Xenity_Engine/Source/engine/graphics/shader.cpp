@@ -58,6 +58,7 @@ void Shader::Init()
 Shader::Shader()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+	AssetManager::AddShader(this);
 }
 
 /// <summary>
@@ -65,6 +66,8 @@ Shader::Shader()
 /// </summary>
 Shader::~Shader()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+	AssetManager::RemoveShader(this);
 }
 
 std::string Shader::GetShaderCode(ShaderType type, Platform platform) const

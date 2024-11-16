@@ -140,18 +140,15 @@ void main
 	float2 texcoord : TEXCOORD2,
 	
 	uniform sampler2D texture,
-	// uniform vec4 color;
-	// uniform vec2 tiling;
-	// uniform vec2 offset;
+	uniform vec4 color,
+	uniform vec2 tiling,
+	uniform vec2 offset,
 
 	out float4 oColor
 )
 {
-	// float3 result = color.xyz * tex2D(texture,texcoord).xyz;
-	// float alpha = tex2D(texture,texcoord).w * color.w;
+	float3 result = color.xyz * tex2D(texture, (texcoord * tiling) + offset).xyz;
+	float alpha = tex2D(texture, (texcoord * tiling) + offset).w * color.w;
 	
-	float3 result = tex2D(texture,texcoord).xyz;
-	float alpha = tex2D(texture,texcoord).w;
-
 	oColor = float4(result, alpha);
 }

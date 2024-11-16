@@ -52,6 +52,12 @@ public:
 	static void AddMaterial(Material* material);
 
 	/**
+	* @brief Adds a shader
+	* @param shader The shader to add
+	*/
+	static void AddShader(Shader* shader);
+
+	/**
 	* @brief Used in component constructor when the component has files references stored in variables
 	* @param reflection The reflection to add
 	*/
@@ -76,6 +82,12 @@ public:
 	* @param material The material to remove
 	*/
 	static void RemoveMaterial(const Material* material);
+
+	/**
+	* @brief Removes a shader
+	* @param shader The shader to remove
+	*/
+	static void RemoveShader(const Shader* shader);
 
 	/**
 	* @brief Used in component destructor when the component has files references stored in variables
@@ -114,6 +126,17 @@ public:
 	{
 		XASSERT(index < materials.size(), "[AssetManager::GetMaterial] index is invalid");
 		return materials[index];
+	}
+
+	/**
+	* @brief Get a shader by index
+	* @param index The index of the shader
+	* @return The shader
+	*/
+	static inline Shader* GetShader(const int index)
+	{
+		XASSERT(index < shaders.size(), "[AssetManager::GetShader] index is invalid");
+		return shaders[index];
 	}
 
 	/**
@@ -165,6 +188,14 @@ public:
 	static inline int GetMaterialCount()
 	{
 		return materialCount;
+	}
+
+	/**
+	* @brief Get the number of shaders
+	*/
+	static inline int GetShaderCount()
+	{
+		return shaderCount;
 	}
 
 	/**
@@ -225,10 +256,12 @@ public:
 private:
 
 	static int materialCount;
+	static int shaderCount;
 	static int reflectionCount;
 	static int fileReferenceCount;
 	static int lightCount;
 
+	static std::vector<Shader*> shaders;
 	static std::vector<Material*> materials;
 	static std::vector<Reflective*> reflections;
 	static std::vector<std::shared_ptr<FileReference>> fileReferences;

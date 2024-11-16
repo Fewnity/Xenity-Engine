@@ -30,13 +30,12 @@ Reload material file on game stop
 Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
 Separate audio platform specific code
 Separate mesh platform specific code
-Separate shader platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
 Better engine stop (Detect when the user is closing the game, and clear the scene, stop modules...)
 New shader system for PS3: Compile shader on docker, read the compiled shader in the engine and store binary in the bit file.
 Implement alpha testing on shaders
-Move SwapEndian function from shader_rsx/binary_mesh_loader to a new file
+Fix refresh file
 
 --- Can be done for the next release
 Add size_t check on all platforms

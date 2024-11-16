@@ -555,10 +555,14 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 	}
 
-	// Update fragment shader uniforms
-	if(rsxShader.m_globalAmbient)
+	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!Graphics::s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
-		rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_globalAmbient, globalAmbientColor, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
+		lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
+		lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntRGBA();
+		const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
+
+		lastShaderIdUsedColor = material.GetShader()->m_fileId;
+		rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_color, (float*)&colorMix.x, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
 	}
 
 	rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE,

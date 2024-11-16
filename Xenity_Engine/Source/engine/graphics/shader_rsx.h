@@ -35,7 +35,7 @@ public:
 	rsxProgramConst* m_modelMatrix = nullptr;
 	rsxProgramConst* m_viewMatrix = nullptr;
 
-	rsxProgramConst* m_globalAmbient = nullptr;
+	rsxProgramConst* m_color = nullptr;
 	rsxProgramAttrib* m_textureUnit = nullptr;
 
 protected:
@@ -95,7 +95,7 @@ protected:
 	/**
 	* @brief Update lights in the shader
 	*/
-	void UpdateLights(bool disableLights) override;
+	void UpdateLights() override;
 
 	/**
 	* @brief Link the shader programs
@@ -131,6 +131,15 @@ protected:
 	*/
 	void SetSpotLightData(const Light& light, const int index) override;
 
+	struct RsxProgramConstPair
+	{
+		rsxProgramConst* programConst;
+		bool isVertexConst;
+	};
+
+	RsxProgramConstPair* FindOrAddAttributId(const std::string& attribut);
+
+	std::unordered_map<std::string, RsxProgramConstPair> m_uniformsIds;
 };
 
 #endif

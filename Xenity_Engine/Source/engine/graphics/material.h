@@ -144,7 +144,7 @@ protected:
 	*/
 	void Update();
 
-	std::weak_ptr<Camera> m_lastUsedCamera;
+	Camera* m_lastUsedCamera;
 	//std::unordered_map <const char *, Texture*> uniformsTextures;
 	std::unordered_map <const char*, Vector2> m_uniformsVector2;
 	std::unordered_map <const char*, Vector3> m_uniformsVector3;

@@ -76,7 +76,7 @@ protected:
 	/**
 	* @brief Update lights in the shader
 	*/
-	void UpdateLights(bool disableLights) override;
+	void UpdateLights() override;
 
 	/**
 	* @brief Link the shader programs
@@ -111,6 +111,8 @@ protected:
 	* @param index The index of the light
 	*/
 	void SetSpotLightData(const Light& light, const int index) override;
+
+	unsigned int FindOrAddAttributId(const std::string& attribut);
 
 	class PointLightVariableNames
 	{
@@ -208,6 +210,7 @@ protected:
 	std::vector<PointLightVariableIds> m_pointlightVariableIds;
 	std::vector<DirectionalLightsVariableIds> m_directionallightVariableIds;
 	std::vector<SpotLightVariableIds> m_spotlightVariableIds;
+	std::unordered_map<std::string, unsigned int> m_uniformsIds;
 
 	unsigned int m_vertexShaderId = 0;
 	unsigned int m_fragmentShaderId = 0;

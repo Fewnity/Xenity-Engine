@@ -39,7 +39,7 @@ public:
 	void SetShaderAttribut(const std::string& attribut, float value) override {}
 	void SetShaderAttribut(const std::string& attribut, int value) override {}
 
-	void UpdateLights(bool disableLights) override {}
+	void UpdateLights() override {}
 
 	void Link() override {}
 
