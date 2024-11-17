@@ -63,6 +63,8 @@ protected:
 	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale) override;
 
 	void SetLightIndices(const LightsIndices& lightsIndices) override;
+	unsigned int GetShaderUniformLocation(const char* name);
+	static unsigned int GetShaderUniformLocation(unsigned int programId, const char* name);
 
 	/**
 	* @brief Set the shader uniform for basic types
@@ -72,6 +74,16 @@ protected:
 	void SetShaderAttribut(const std::string& attribut, const Vector2& value) override;
 	void SetShaderAttribut(const std::string& attribut, float value) override;
 	void SetShaderAttribut(const std::string& attribut, int value) override;
+
+	static void SetShaderAttribut(unsigned int attributId, const Vector4& value);
+	static void SetShaderAttribut(unsigned int attributId, const Vector3& value);
+	static void SetShaderAttribut(unsigned int attributId, const Vector2& value);
+	static void SetShaderAttribut(unsigned int attributId, const float value);
+	static void SetShaderAttribut(unsigned int attributId, const int value);
+	static void SetShaderAttribut(unsigned int attributId, const glm::mat4& trans);
+	static void SetShaderAttribut(unsigned int attributId, const glm::mat3& trans);
+
+	static int GetShaderTypeEnum(ShaderType shaderType);
 
 	/**
 	* @brief Update lights in the shader

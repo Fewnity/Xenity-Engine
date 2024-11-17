@@ -27,6 +27,7 @@
 #include <vitaGL.h>
 #endif
 #include <engine/asset_management/asset_manager.h>
+#include <glm/gtc/type_ptr.hpp>
 
 std::vector<ShaderOpenGL::PointLightVariableNames> ShaderOpenGL::s_pointlightVariableNames;
 std::vector<ShaderOpenGL::DirectionalLightsVariableNames> ShaderOpenGL::s_directionallightVariableNames;
@@ -35,53 +36,53 @@ unsigned int uboLightBlock;
 
 ShaderOpenGL::PointLightVariableIds::PointLightVariableIds(int index, unsigned int programId)
 {
-	indices = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index].indices);
-	color = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index].color);
-	position = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index].position);
-	constant = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index].constant);
-	linear = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index].linear);
-	quadratic = Engine::GetRenderer().GetShaderUniformLocation(programId, s_pointlightVariableNames[index].quadratic);
+	indices = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].indices);
+	color = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].color);
+	position = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].position);
+	constant = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].constant);
+	linear = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].linear);
+	quadratic = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].quadratic);
 
 	// Initialize values
-	Engine::GetRenderer().SetShaderAttribut(programId, color, Vector3(0, 0, 0));
-	Engine::GetRenderer().SetShaderAttribut(programId, position, Vector3(0, 0, 0));
-	Engine::GetRenderer().SetShaderAttribut(programId, constant, 1.0f);
-	Engine::GetRenderer().SetShaderAttribut(programId, linear, 0.0f);
-	Engine::GetRenderer().SetShaderAttribut(programId, quadratic, 0.0f);
+	SetShaderAttribut(color, Vector3(0, 0, 0));
+	SetShaderAttribut(position, Vector3(0, 0, 0));
+	SetShaderAttribut(constant, 1.0f);
+	SetShaderAttribut(linear, 0.0f);
+	SetShaderAttribut(quadratic, 0.0f);
 }
 
 ShaderOpenGL::DirectionalLightsVariableIds::DirectionalLightsVariableIds(int index, unsigned int programId)
 {
-	indices = Engine::GetRenderer().GetShaderUniformLocation(programId, s_directionallightVariableNames[index].indices);
-	color = Engine::GetRenderer().GetShaderUniformLocation(programId, s_directionallightVariableNames[index].color);
-	direction = Engine::GetRenderer().GetShaderUniformLocation(programId, s_directionallightVariableNames[index].direction);
+	indices = GetShaderUniformLocation(programId, s_directionallightVariableNames[index].indices);
+	color = GetShaderUniformLocation(programId, s_directionallightVariableNames[index].color);
+	direction = GetShaderUniformLocation(programId, s_directionallightVariableNames[index].direction);
 
 	// Initialize values
-	Engine::GetRenderer().SetShaderAttribut(programId, color, Vector3(0, 0, 0));
-	Engine::GetRenderer().SetShaderAttribut(programId, direction, Vector3(0, 0, 0));
+	SetShaderAttribut(color, Vector3(0, 0, 0));
+	SetShaderAttribut(direction, Vector3(0, 0, 0));
 }
 
 ShaderOpenGL::SpotLightVariableIds::SpotLightVariableIds(int index, unsigned int programId)
 {
-	indices = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].indices);
-	color = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].color);
-	position = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].position);
-	direction = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].direction);
-	constant = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].constant);
-	linear = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].linear);
-	quadratic = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].quadratic);
-	cutOff = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].cutOff);
-	outerCutOff = Engine::GetRenderer().GetShaderUniformLocation(programId, s_spotlightVariableNames[index].outerCutOff);
+	indices = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].indices);
+	color = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].color);
+	position = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].position);
+	direction = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].direction);
+	constant = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].constant);
+	linear = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].linear);
+	quadratic = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].quadratic);
+	cutOff = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].cutOff);
+	outerCutOff = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].outerCutOff);
 
 	// Initialize values
-	Engine::GetRenderer().SetShaderAttribut(programId, color, Vector3(0, 0, 0));
-	Engine::GetRenderer().SetShaderAttribut(programId, position, Vector3(0, 0, 0));
-	Engine::GetRenderer().SetShaderAttribut(programId, direction, Vector3(0, 0, 0));
-	Engine::GetRenderer().SetShaderAttribut(programId, constant, 1.0f);
-	Engine::GetRenderer().SetShaderAttribut(programId, linear, 0.0f);
-	Engine::GetRenderer().SetShaderAttribut(programId, quadratic, 0.0f);
-	Engine::GetRenderer().SetShaderAttribut(programId, cutOff, 0.0f);
-	Engine::GetRenderer().SetShaderAttribut(programId, outerCutOff, 0.0f);
+	SetShaderAttribut(color, Vector3(0, 0, 0));
+	SetShaderAttribut(position, Vector3(0, 0, 0));
+	SetShaderAttribut(direction, Vector3(0, 0, 0));
+	SetShaderAttribut(constant, 1.0f);
+	SetShaderAttribut(linear, 0.0f);
+	SetShaderAttribut(quadratic, 0.0f);
+	SetShaderAttribut(cutOff, 0.0f);
+	SetShaderAttribut(outerCutOff, 0.0f);
 }
 
 ShaderOpenGL::PointLightVariableNames::PointLightVariableNames(int index)
@@ -280,6 +281,29 @@ bool ShaderOpenGL::Use()
 	return false;
 }
 
+int ShaderOpenGL::GetShaderTypeEnum(ShaderType shaderType)
+{
+	int compileType = GL_VERTEX_SHADER;
+	switch (shaderType)
+	{
+	case Shader::ShaderType::Vertex_Shader:
+		compileType = GL_VERTEX_SHADER;
+		break;
+	case Shader::ShaderType::Fragment_Shader:
+		compileType = GL_FRAGMENT_SHADER;
+		break;
+#if !defined(__vita__)
+	case Shader::ShaderType::Tessellation_Control_Shader:
+		compileType = GL_TESS_CONTROL_SHADER;
+		break;
+	case Shader::ShaderType::Tessellation_Evaluation_Shader:
+		compileType = GL_TESS_EVALUATION_SHADER;
+		break;
+#endif
+	}
+	return compileType;
+}
+
 bool ShaderOpenGL::Compile(const std::string& shaderData, ShaderType type)
 {
 	XASSERT(!shaderData.empty(), "[Shader::Compile] shaderData is empty");
@@ -307,16 +331,20 @@ bool ShaderOpenGL::Compile(const std::string& shaderData, ShaderType type)
 	XASSERT(id != nullptr, "[Shader::Compile] Shader type not found, id is nullptr");
 
 	//Compile
-	*id = Engine::GetRenderer().CreateShader(type);
-	Engine::GetRenderer().SetShaderData(*id, shaderDataConst);
-	Engine::GetRenderer().CompileShader(*id);
+	*id = glCreateShader(GetShaderTypeEnum(type));
+	glShaderSource(*id, 1, &shaderDataConst, NULL);
 
-	int vResult = Engine::GetRenderer().GetShaderCompilationResult(*id);
+	glCompileShader(*id);
+
+	GLint vResult;
+	glGetShaderiv(*id, GL_COMPILE_STATUS, &vResult);
 
 	//On error
 	if (vResult == 0)
 	{
-		std::vector<char> errorLog = Engine::GetRenderer().GetCompilationError(*id);
+		int maxLength = 256;
+		std::vector<char> errorLog(maxLength);
+		glGetShaderInfoLog(*id, maxLength, &maxLength, &errorLog[0]);
 
 		std::string shaderError = "[Shader::Compile] Compilation error: ";
 		switch (type)
@@ -374,7 +402,7 @@ void ShaderOpenGL::SetShaderCameraPosition()
 		if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
 			RotationMatrix = glm::translate(RotationMatrix, glm::vec3(position.x, -position.y, -position.z));
 
-		Engine::GetRenderer().SetShaderAttribut(m_programId, m_cameraLocation, RotationMatrix); // Y position and rotation inverted
+		glUniformMatrix4fv(m_cameraLocation, 1, false, glm::value_ptr(RotationMatrix)); // Y position and rotation inverted
 	}
 }
 
@@ -383,7 +411,7 @@ void ShaderOpenGL::SetShaderCameraPosition()
 /// </summary>
 void ShaderOpenGL::SetShaderCameraPositionCanvas()
 {
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_cameraLocation, m_canvasCameraTransformationMatrix);
+	glUniformMatrix4fv(m_cameraLocation, 1, false, glm::value_ptr(m_canvasCameraTransformationMatrix));
 }
 
 /// <summary>
@@ -391,12 +419,12 @@ void ShaderOpenGL::SetShaderCameraPositionCanvas()
 /// </summary>
 void ShaderOpenGL::SetShaderProjection()
 {
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_projectionLocation, Graphics::usedCamera->GetProjection());
+	glUniformMatrix4fv(m_projectionLocation, 1, false, glm::value_ptr(Graphics::usedCamera->GetProjection()));
 }
 
 void ShaderOpenGL::SetShaderProjectionCanvas()
 {
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_projectionLocation, Graphics::usedCamera->GetCanvasProjection());
+	glUniformMatrix4fv(m_projectionLocation, 1, false, glm::value_ptr(Graphics::usedCamera->GetCanvasProjection()));
 }
 
 /// <summary>
@@ -405,8 +433,7 @@ void ShaderOpenGL::SetShaderProjectionCanvas()
 /// <param name="trans"></param>
 void ShaderOpenGL::SetShaderModel(const glm::mat4& trans)
 {
-	//Use();
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_modelLocation, trans);
+	SetShaderAttribut(m_modelLocation, trans);
 }
 
 /// <summary>
@@ -427,7 +454,7 @@ void ShaderOpenGL::SetShaderModel(const Vector3& position, const Vector3& rotati
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
 
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_modelLocation, transformationMatrix);
+	SetShaderAttribut(m_modelLocation, transformationMatrix);
 }
 
 void ShaderOpenGL::SetLightIndices(const LightsIndices& lightsIndices)
@@ -438,12 +465,22 @@ void ShaderOpenGL::SetLightIndices(const LightsIndices& lightsIndices)
 #endif
 }
 
+unsigned int ShaderOpenGL::GetShaderUniformLocation(const char* name)
+{
+	return glGetUniformLocation(m_programId, name);
+}
+
+unsigned int ShaderOpenGL::GetShaderUniformLocation(unsigned int programId, const char* name)
+{
+	return glGetUniformLocation(programId, name);
+}
+
 unsigned int ShaderOpenGL::FindOrAddAttributId(const std::string& attribut)
 {
 	auto it = m_uniformsIds.find(attribut);
 	if (it == m_uniformsIds.end())
 	{
-		const unsigned int id = Engine::GetRenderer().GetShaderUniformLocation(m_programId, attribut.c_str());
+		const unsigned int id = GetShaderUniformLocation(attribut.c_str());
 		it = m_uniformsIds.emplace(attribut, id).first;
 	}
 	return it->second;
@@ -452,56 +489,96 @@ unsigned int ShaderOpenGL::FindOrAddAttributId(const std::string& attribut)
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector4& value)
 {
 	unsigned int attributId = FindOrAddAttributId(attribut);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
+	glUniform4f(attributId, value.x, value.y, value.z, value.w);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector3& value)
 {
 	unsigned int attributId = FindOrAddAttributId(attribut);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
+	glUniform3f(attributId, value.x, value.y, value.z);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector2& value)
 {
 	unsigned int attributId = FindOrAddAttributId(attribut);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
+	glUniform2f(attributId, value.x, value.y);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, float value)
 {
 	unsigned int attributId = FindOrAddAttributId(attribut);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
+	glUniform1f(attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, int value)
 {
 	unsigned int attributId = FindOrAddAttributId(attribut);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, attributId, value);
+	glUniform1i(attributId, value);
+}
+
+void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const Vector4& value)
+{
+	glUniform4f(attributId, value.x, value.y, value.z, value.w);
+}
+
+void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const Vector3& value)
+{
+	glUniform3f(attributId, value.x, value.y, value.z);
+}
+
+void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const Vector2& value)
+{
+	glUniform2f(attributId, value.x, value.y);
+}
+
+void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const float value)
+{
+	glUniform1f(attributId, value);
+}
+
+void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const int value)
+{
+	glUniform1i(attributId, value);
+}
+
+void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const glm::mat4& trans)
+{
+	glUniformMatrix4fv(attributId, 1, false, glm::value_ptr(trans));
+}
+
+void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const glm::mat3& trans)
+{
+	glUniformMatrix3fv(attributId, 1, false, glm::value_ptr(trans));
 }
 
 void ShaderOpenGL::Link()
 {
-	m_programId = Engine::GetRenderer().CreateShaderProgram();
-	Engine::GetRenderer().AttachShader(m_programId, m_vertexShaderId);
+	m_programId = glCreateProgram();
+	glAttachShader(m_programId, m_vertexShaderId);
 
 	if (m_useTessellation)
 	{
-		Engine::GetRenderer().AttachShader(m_programId, m_tessellationShaderId);
-		Engine::GetRenderer().AttachShader(m_programId, m_tessellationEvaluationShaderId);
+		glAttachShader(m_programId, m_tessellationShaderId);
+		glAttachShader(m_programId, m_tessellationEvaluationShaderId);
 	}
-	Engine::GetRenderer().AttachShader(m_programId, m_fragmentShaderId);
+	glAttachShader(m_programId, m_fragmentShaderId);
 
-	Engine::GetRenderer().LinkShaderProgram(m_programId);
+#if defined(__vita__)
+	glBindAttribLocation(m_programId, 0, "position");
+	glBindAttribLocation(m_programId, 1, "uv");
+	glBindAttribLocation(m_programId, 2, "normal");
+#endif
+	glLinkProgram(m_programId);
 	Engine::GetRenderer().UseShaderProgram(m_programId);
 
-	m_modelLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "model");
-	m_projectionLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "projection");
-	m_cameraLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "camera");
-	m_ambientLightLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "ambientLight");
+	m_modelLocation = GetShaderUniformLocation("model");
+	m_projectionLocation = GetShaderUniformLocation("projection");
+	m_cameraLocation = GetShaderUniformLocation("camera");
+	m_ambientLightLocation = GetShaderUniformLocation("ambientLight");
 
-	m_usedPointLightCountLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "usedPointLightCount");
-	m_usedSpotLightCountLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "usedSpotLightCount");
-	m_usedDirectionalLightCountLocation = Engine::GetRenderer().GetShaderUniformLocation(m_programId, "usedDirectionalLightCount");
+	m_usedPointLightCountLocation = GetShaderUniformLocation("usedPointLightCount");
+	m_usedSpotLightCountLocation = GetShaderUniformLocation("usedSpotLightCount");
+	m_usedDirectionalLightCountLocation = GetShaderUniformLocation("usedDirectionalLightCount");
 
 	m_pointlightVariableIds.reserve(MAX_LIGHT_COUNT);
 	m_directionallightVariableIds.reserve(MAX_LIGHT_COUNT);
@@ -563,11 +640,11 @@ void ShaderOpenGL::SetPointLightData(const Light& light, const int index)
 		pos.x = -pos.x;
 	}
 
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.color, lightColor * light.GetIntensity());
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.position, pos);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.constant, lightConstant);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.linear, light.GetLinearValue());
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.quadratic, light.GetQuadraticValue());
+	SetShaderAttribut(ids.color, lightColor * light.GetIntensity());
+	SetShaderAttribut(ids.position, pos);
+	SetShaderAttribut(ids.constant, lightConstant);
+	SetShaderAttribut(ids.linear, light.GetLinearValue());
+	SetShaderAttribut(ids.quadratic, light.GetQuadraticValue());
 }
 
 /// <summary>
@@ -596,13 +673,13 @@ void ShaderOpenGL::SetDirectionalLightData(const Light& light, const int index)
 		dir.x = -dir.x;
 	}
 
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.color, lightColor * light.GetIntensity());
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.direction, dir);
+	SetShaderAttribut(ids.color, lightColor * light.GetIntensity());
+	SetShaderAttribut(ids.direction, dir);
 }
 
 void ShaderOpenGL::SetAmbientLightData(const Vector3& color)
 {
-	Engine::GetRenderer().SetShaderAttribut(m_programId, m_ambientLightLocation, color);
+	SetShaderAttribut(m_ambientLightLocation, color);
 }
 
 /// <summary>
@@ -642,14 +719,14 @@ void ShaderOpenGL::SetSpotLightData(const Light& light, const int index)
 		dir.x = -dir.x;
 	}
 
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.color, lightColor * light.GetIntensity());
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.position, pos);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.direction, dir);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.constant, lightConstant);
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.linear, light.GetLinearValue());
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.quadratic, light.GetQuadraticValue());
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.cutOff, glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness()))));
-	Engine::GetRenderer().SetShaderAttribut(m_programId, ids.outerCutOff, glm::cos(glm::radians(light.GetSpotAngle())));
+	SetShaderAttribut(ids.color, lightColor * light.GetIntensity());
+	SetShaderAttribut(ids.position, pos);
+	SetShaderAttribut(ids.direction, dir);
+	SetShaderAttribut(ids.constant, lightConstant);
+	SetShaderAttribut(ids.linear, light.GetLinearValue());
+	SetShaderAttribut(ids.quadratic, light.GetQuadraticValue());
+	SetShaderAttribut(ids.cutOff, glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness()))));
+	SetShaderAttribut(ids.outerCutOff, glm::cos(glm::radians(light.GetSpotAngle())));
 }
 
 /// <summary>

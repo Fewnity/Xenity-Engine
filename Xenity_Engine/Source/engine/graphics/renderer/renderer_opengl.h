@@ -70,35 +70,7 @@ public:
 	void UploadMeshData(MeshData& meshData) override;
 
 	//Shader
-	unsigned int CreateShader(Shader::ShaderType type) override;
-	unsigned int CreateShaderProgram() override;
-	void CompileShader(unsigned int shaderId) override;
-	int GetShaderCompilationResult(unsigned int shaderId) override;
-	std::vector<char> GetCompilationError(unsigned int shaderId) override;
-	void SetShaderData(unsigned int shaderId, const char* data) override;
-	void DeleteShader(unsigned int shaderId) override;
-	void DeleteShaderProgram(unsigned int programId) override;
-	void LinkShaderProgram(unsigned int programId) override;
-
 	void UseShaderProgram(unsigned int programId) override;
-	unsigned int GetShaderUniformLocation(unsigned int programId, const char* name) override;
-	void AttachShader(unsigned int programId, unsigned int shaderId) override;
-
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value) override;
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value) override;
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value) override;
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const float value) override;
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const int value) override;
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans) override;
-	void SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans) override;
-
-	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector4& value) override;
-	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector3& value) override;
-	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector2& value) override;
-	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const float value) override;
-	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const int value) override;
-	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat4& trans) override;
-	void SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat3& trans) override;
 
 	void Setlights(const LightsIndices& lightsIndices, const Camera& camera) override;
 
@@ -123,7 +95,7 @@ private:
 	std::array<const Light*, MAX_LIGHT_COUNT> lastUpdatedLights;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
-	int GetShaderTypeEnum(Shader::ShaderType shaderType);
+
 	RenderingSettings lastSettings;
 	unsigned int usedTexture = 0;
 	unsigned int lastUsedColor = 0x00000000;

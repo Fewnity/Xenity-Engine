@@ -471,7 +471,7 @@ void main
 
 	uniform sampler2D texture,
 
-	// uniform float3 ambientLight;
+	uniform float3 ambientLight,
 	uniform vec4 color,
 	uniform vec2 tiling,
 	uniform vec2 offset,
@@ -479,8 +479,12 @@ void main
 	out float4 oColor
 )
 {
-	float3 result = color.xyz * tex2D(texture, (texcoord * tiling) + offset).xyz;
-	float alpha = tex2D(texture, (texcoord * tiling) + offset).w * color.w;
+	float4 textureFrag = tex2D(texture, (texcoord * tiling) + offset);
+
+	float3 result = float3(0,0,0);
+	result += textureFrag.xyz * ambientLight;
+	result *= color.xyz;
+	float alpha = textureFrag.w * color.w;
 
 	oColor = float4(result, alpha);
 }

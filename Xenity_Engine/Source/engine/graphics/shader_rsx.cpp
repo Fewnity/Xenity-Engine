@@ -70,8 +70,7 @@ void ShaderRSX::Load()
 
 	m_fragmentProgram = (rsxFragmentProgram*)fullShader;
 
-	{	
-
+	{
 		rsxVertexProgramGetUCode(m_vertexProgram, &m_vertexProgramCode, &m_vertexProgramSize);
 		printf("vertexProgramSize: %d\n", m_vertexProgramSize);
 
@@ -117,6 +116,7 @@ void ShaderRSX::Load()
 
 		m_color = rsxFragmentProgramGetConst(m_fragmentProgram, "color");
 		m_textureUnit = rsxFragmentProgramGetAttrib(m_fragmentProgram, "texture");
+		m_ambientLightLocation = rsxFragmentProgramGetConst(m_fragmentProgram, "ambientLight");
 
 		if(m_color)
 		{
@@ -134,6 +134,15 @@ void ShaderRSX::Load()
 		else
 		{
 			Debug::Print("No m_textureUnit");
+		}
+
+		if(m_ambientLightLocation)
+		{
+			Debug::Print("m_ambientLightLocation");
+		}
+		else
+		{
+			Debug::Print("No m_ambientLightLocation");
 		}
 	}
 
@@ -268,7 +277,7 @@ void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector4& va
 	RsxProgramConstPair* attributId = FindOrAddAttributId(attribut);
 	if (!attributId)
 	{
-		return
+		return;
 	}
 
 	if (attributId->isVertexConst)
@@ -286,7 +295,7 @@ void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector3& va
 	RsxProgramConstPair* attributId = FindOrAddAttributId(attribut);
 	if (!attributId)
 	{
-		return
+		return;
 	}
 
 	if (attributId->isVertexConst)
@@ -304,7 +313,7 @@ void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector2& va
 	RsxProgramConstPair* attributId = FindOrAddAttributId(attribut);
 	if (!attributId)
 	{
-		return
+		return;
 	}
 
 	if (attributId->isVertexConst)
@@ -319,6 +328,20 @@ void ShaderRSX::SetShaderAttribut(const std::string& attribut, const Vector2& va
 
 void ShaderRSX::SetShaderAttribut(const std::string& attribut, float value)
 {
+	RsxProgramConstPair* attributId = FindOrAddAttributId(attribut);
+	if (!attributId)
+	{
+		return;
+	}
+
+	if (attributId->isVertexConst)
+	{
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, attributId->programConst, (float*)&value);
+	}
+	else
+	{
+		rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, attributId->programConst, (float*)&value, m_fp_offset, GCM_LOCATION_RSX);
+	}
 }
 
 void ShaderRSX::SetShaderAttribut(const std::string& attribut, int value)
@@ -349,6 +372,7 @@ void ShaderRSX::SetDirectionalLightData(const Light& light, const int index)
 
 void ShaderRSX::SetAmbientLightData(const Vector3& color)
 {
+	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_ambientLightLocation, (float*)&color.x, m_fp_offset, GCM_LOCATION_RSX);
 }
 
 /// <summary>
@@ -365,6 +389,42 @@ void ShaderRSX::SetSpotLightData(const Light& light, const int index)
 /// </summary>
 void ShaderRSX::UpdateLights()
 {
+	Vector4 ambientLight = Vector4(0, 0, 0, 0);
+
+	const int lightCount = AssetManager::GetLightCount();
+
+	//For each lights
+	for (int lightI = 0; lightI < lightCount; lightI++)
+	{
+		const Light& light = *AssetManager::GetLight(lightI);
+		if (light.IsEnabled() && light.GetGameObjectRaw()->IsLocalActive())
+		{
+			if (light.m_type == LightType::Directional)
+			{
+				// SetDirectionalLightData(light, directionalUsed + offset);
+				// directionalUsed++;
+			}
+			else if (light.m_type == LightType::Point)
+			{
+				// SetPointLightData(light, pointUsed + offset);
+				// pointUsed++;
+			}
+			else if (light.m_type == LightType::Spot)
+			{
+				// SetSpotLightData(light, spotUsed + offset);
+				// spotUsed++;
+			}
+			else if (light.m_type == LightType::Ambient)
+			{
+				ambientLight += light.color.GetRGBA().ToVector4() * light.m_intensity;
+			}
+		}
+	}
+
+	if(m_ambientLightLocation)
+	{
+		SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
+	}
 }
 
 void ShaderRSX::CreateShader(Shader::ShaderType type)

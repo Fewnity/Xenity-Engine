@@ -808,145 +808,9 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 	}
 }
 
-unsigned int RendererOpengl::CreateShader(Shader::ShaderType type)
-{
-	const int compileType = GetShaderTypeEnum(type);
-	return glCreateShader(compileType);
-}
-
-unsigned int RendererOpengl::CreateShaderProgram()
-{
-	return glCreateProgram();
-}
-
-void RendererOpengl::CompileShader(unsigned int shaderId)
-{
-	glCompileShader(shaderId);
-}
-
-int RendererOpengl::GetShaderCompilationResult(unsigned int shaderId)
-{
-	GLint vResult;
-	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &vResult);
-	return (int)vResult;
-}
-
-std::vector<char> RendererOpengl::GetCompilationError(unsigned int shaderId)
-{
-	int maxLength = 256;
-	std::vector<char> errorLog(maxLength);
-	glGetShaderInfoLog(shaderId, maxLength, &maxLength, &errorLog[0]);
-	return errorLog;
-}
-
-void RendererOpengl::SetShaderData(unsigned int shaderId, const char* data)
-{
-	glShaderSource(shaderId, 1, &data, NULL);
-}
-
-void RendererOpengl::DeleteShader(unsigned int shaderId)
-{
-	//glDeleteShader(shaderId);
-}
-
-void RendererOpengl::DeleteShaderProgram(unsigned int programId)
-{
-	//glDeleteProgram(programId);
-}
-
-void RendererOpengl::LinkShaderProgram(unsigned int programId)
-{
-#if defined(__vita__)
-	glBindAttribLocation(programId, 0, "position");
-	glBindAttribLocation(programId, 1, "uv");
-	glBindAttribLocation(programId, 2, "normal");
-#endif
-	glLinkProgram(programId);
-}
-
 void RendererOpengl::UseShaderProgram(unsigned int programId)
 {
 	glUseProgram(programId); // Cannot remove this for now
-}
-
-unsigned int RendererOpengl::GetShaderUniformLocation(unsigned int programId, const char* name)
-{
-	return glGetUniformLocation(programId, name);
-}
-
-void RendererOpengl::AttachShader(unsigned int programId, unsigned int shaderId)
-{
-	glAttachShader(programId, shaderId);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector4& value)
-{
-	glUniform4f(GetShaderUniformLocation(programId, attribut), value.x, value.y, value.z, value.w);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector3& value)
-{
-	glUniform3f(GetShaderUniformLocation(programId, attribut), value.x, value.y, value.z);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const Vector2& value)
-{
-	glUniform2f(GetShaderUniformLocation(programId, attribut), value.x, value.y);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const float value)
-{
-	glUniform1f(GetShaderUniformLocation(programId, attribut), value);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const int value)
-{
-	glUniform1i(GetShaderUniformLocation(programId, attribut), value);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat4& trans)
-{
-	glUniformMatrix4fv(GetShaderUniformLocation(programId, attribut), 1, false, glm::value_ptr(trans));
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, const char* attribut, const glm::mat3& trans)
-{
-	glUniformMatrix3fv(GetShaderUniformLocation(programId, attribut), 1, false, glm::value_ptr(trans));
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector4& value)
-{
-	glUniform4f(attributId, value.x, value.y, value.z, value.w);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector3& value)
-{
-	glUniform3f(attributId, value.x, value.y, value.z);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const Vector2& value)
-{
-	glUniform2f(attributId, value.x, value.y);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const float value)
-{
-	glUniform1f(attributId, value);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const int value)
-{
-	glUniform1i(attributId, value);
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat4& trans)
-{
-	glUniformMatrix4fv(attributId, 1, false, glm::value_ptr(trans));
-}
-
-void RendererOpengl::SetShaderAttribut(unsigned int programId, unsigned int attributId, const glm::mat3& trans)
-{
-	glUniformMatrix3fv(attributId, 1, false, glm::value_ptr(trans));
 }
 
 int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
@@ -962,7 +826,6 @@ int RendererOpengl::GetBufferTypeEnum(BufferType bufferType)
 		break;
 	}
 	return type;
-
 }
 
 // int RendererOpengl::GetBufferModeEnum(BufferMode bufferMode)
@@ -1057,29 +920,6 @@ int RendererOpengl::GetWrapModeEnum(WrapMode wrapMode)
 // 	}
 // 	return anisotropicValue;
 // }
-
-int RendererOpengl::GetShaderTypeEnum(Shader::ShaderType shaderType)
-{
-	int compileType = GL_VERTEX_SHADER;
-	switch (shaderType)
-	{
-	case Shader::ShaderType::Vertex_Shader:
-		compileType = GL_VERTEX_SHADER;
-		break;
-	case Shader::ShaderType::Fragment_Shader:
-		compileType = GL_FRAGMENT_SHADER;
-		break;
-#if !defined(__vita__)
-	case Shader::ShaderType::Tessellation_Control_Shader:
-		compileType = GL_TESS_CONTROL_SHADER;
-		break;
-	case Shader::ShaderType::Tessellation_Evaluation_Shader:
-		compileType = GL_TESS_EVALUATION_SHADER;
-		break;
-#endif
-	}
-	return compileType;
-}
 
 // int RendererOpengl::GetDrawModeEnum(DrawMode drawMode)
 // {

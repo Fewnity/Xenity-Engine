@@ -169,25 +169,8 @@ void Material::Update()
 		Performance::AddMaterialUpdate();
 
 		//Send all uniforms
-
-		//{
-		//	//ScopeBenchmark scopeBenchmark = ScopeBenchmark("Material::UpdateProj");
-		//	if (Graphics::s_currentMode == IDrawableTypes::Draw_UI)
-		//	{
-		//		m_shader->SetShaderCameraPositionCanvas();
-		//		m_shader->SetShaderProjectionCanvas();
-		//	}
-		//	else
-		//	{
-		//		m_shader->SetShaderCameraPosition();
-		//		m_shader->SetShaderProjection();
-		//	}
-		//}
-
 		if (!m_updated)
 		{
-			//m_shader->UpdateLights();
-
 			m_shader->SetShaderAttribut("tiling", t_tiling);
 			m_shader->SetShaderAttribut("offset", t_offset);
 
