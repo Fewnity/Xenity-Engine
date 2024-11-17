@@ -35,6 +35,8 @@ Material::Material()
 
 Material::~Material()
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	AssetManager::RemoveMaterial(this);
 	AssetManager::RemoveReflection(this);
 }
