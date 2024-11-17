@@ -43,15 +43,12 @@ void ShaderRSX::Init()
 void ShaderRSX::Load()
 {
 	Debug::Print("ShaderRSX::Load");
-	// if constexpr (Graphics::s_UseOpenGLFixedFunctions)
-	// {
-	// 	m_fileStatus = FileStatus::FileStatus_Loaded;
-	// 	return;
-	// }
 
 	size_t size = 0;
 	unsigned char* fullShader = ReadShaderBinary(size);
+	Debug::Print("size: " + std::to_string(size));
 
+	// Read vertex shader code size
 	uint32_t vertexShaderCodeSize = 0;
 	memcpy(&vertexShaderCodeSize, fullShader, sizeof(uint32_t));
 	vertexShaderCodeSize = EndianUtils::SwapEndian(vertexShaderCodeSize);
@@ -60,8 +57,17 @@ void ShaderRSX::Load()
 
 	// Read code
 	m_vertexProgram = (rsxVertexProgram*)fullShader;
+
+	// Check magic numbers and if the file is corrupted, the vertex shader size may be greater than the full shader size
+	if(((char*)m_vertexProgram)[0] != 'V' || ((char*)m_vertexProgram)[1] != 'P' || vertexShaderCodeSize >= size)
+	{
+		Debug::PrintError("Vertex program corrupted!");
+		m_fileStatus = FileStatus::FileStatus_Failed;
+		return;
+	}
 	fullShader += vertexShaderCodeSize;
 
+	// Read fragment shader code size
 	uint32_t fragmentShaderCodeSize = 0;
 	memcpy(&fragmentShaderCodeSize, fullShader, sizeof(uint32_t));
 	fragmentShaderCodeSize = EndianUtils::SwapEndian(fragmentShaderCodeSize);
@@ -69,6 +75,14 @@ void ShaderRSX::Load()
 	Debug::Print("fragmentShaderCodeSize: " + std::to_string(fragmentShaderCodeSize));
 
 	m_fragmentProgram = (rsxFragmentProgram*)fullShader;
+
+	// Check magic numbers and if the file is corrupted, the fragment shader size may be greater than the full shader size
+	if(((char*)m_fragmentProgram)[0] != 'F' || ((char*)m_fragmentProgram)[1] != 'P' || fragmentShaderCodeSize >= size)
+	{
+		Debug::PrintError("Cannot load fragment program!");
+		m_fileStatus = FileStatus::FileStatus_Failed;
+		return;
+	}
 
 	{
 		rsxVertexProgramGetUCode(m_vertexProgram, &m_vertexProgramCode, &m_vertexProgramSize);

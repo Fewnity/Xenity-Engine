@@ -132,7 +132,7 @@ void Material::Use()
 	{
 		Graphics::s_currentMaterial = this;
 		SCOPED_PROFILER("Material::OnMaterialChanged", scopeBenchmark);
-		if (m_shader)
+		if (m_shader && m_shader->GetFileStatus() == FileStatus::FileStatus_Loaded)
 		{
 			m_lastUsedCamera = Graphics::usedCamera.get();
 			m_lastUpdatedType = Graphics::s_currentMode;

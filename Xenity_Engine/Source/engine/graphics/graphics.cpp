@@ -191,6 +191,11 @@ void Graphics::Draw()
 	for (int shaderIndex = 0; shaderIndex < shaderCount; shaderIndex++)
 	{
 		Shader* shader = AssetManager::GetShader(shaderIndex);
+		if (shader->GetFileStatus() != FileStatus::FileStatus_Loaded)
+		{
+			continue;
+		}
+
 		shader->Use();
 		shader->UpdateLights();
 	}
@@ -598,8 +603,11 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 	{
 		material.Use();
 
-		if (!s_currentShader)
+		if (!s_currentShader || s_currentShader->GetFileStatus() != FileStatus::FileStatus_Loaded)
+		{
+			drawMeshBenchmark->Stop();
 			return;
+		}
 
 		s_currentShader->SetShaderModel(matrix);
 	}
@@ -722,10 +730,17 @@ void Graphics::CheckLods()
 
 void Graphics::UpdateShadersCameraMatrices()
 {
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
 	const int shaderCount = AssetManager::GetShaderCount();
 	for (int shaderIndex = 0; shaderIndex < shaderCount; shaderIndex++)
 	{
 		Shader* shader = AssetManager::GetShader(shaderIndex);
+		if (shader->GetFileStatus() != FileStatus::FileStatus_Loaded)
+		{
+			continue;
+		}
+
 		shader->Use();
 		if (Graphics::s_currentMode == IDrawableTypes::Draw_UI)
 		{
