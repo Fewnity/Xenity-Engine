@@ -34,7 +34,11 @@
 //
 // -------------------------------------------------- Audio
 //
+#if defined(__PS3__)
+#define SOUND_FREQUENCY 48000
+#else
 #define SOUND_FREQUENCY 44100
+#endif
 #define AUDIO_BUFFER_SIZE 2048
 
 //

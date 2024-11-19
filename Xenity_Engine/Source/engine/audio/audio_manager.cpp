@@ -32,6 +32,14 @@ int currentBuffer = 0;
 #include <thread>
 #elif defined(__LINUX__)
 #include <thread>
+#elif defined(__PS3__)
+#include <audio/audio.h>
+#include <sys/thread.h>
+#include <unistd.h>
+u64 snd_key;
+sys_event_queue_t snd_queue;
+audioPortParam params;
+audioPortConfig config;
 #endif
 
 #include "audio_clip.h"
@@ -43,6 +51,7 @@ int currentBuffer = 0;
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/constants.h>
+#include <engine/tools/endian_utils.h>
 
 bool AudioManager::s_isAdding = false;
 Channel* AudioManager::s_channel;
@@ -56,6 +65,7 @@ std::shared_ptr<ProfilerBenchmark> audioBenchmark2 = nullptr;
 
 static_assert(buffSize % 16 == 0, "buffSize must be a multiple of 16");
 static_assert(AUDIO_BUFFER_SIZE % 16 == 0, "AUDIO_BUFFER_SIZE must be a multiple of 16");
+
 
 short MixSoundToBuffer(short bufferValue, short soundValue)
 {
@@ -190,6 +200,32 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 	AudioManager::s_myMutex->Unlock();
 }
 
+#if defined(__PS3__)
+void audio_thread(void *arg)
+{
+	while (true)
+	{
+		u64 current_block = *(u64*)((u64)config.readIndex);
+		f32 *dataStart = (f32*)((u64)config.audioDataStart);
+		u32 audio_block_index = (current_block + 1)%config.numBlocks;
+
+		sys_event_t event;
+		s32 ret = sysEventQueueReceive(snd_queue, &event, 20*1000);
+		f32* buf = dataStart + config.channelCount*AUDIO_BLOCK_SAMPLES*audio_block_index;
+
+		int16_t wave_buf[AUDIO_BLOCK_SAMPLES * 2] = { 0 };
+		AudioManager::FillChannelBuffer((short*)wave_buf, AUDIO_BLOCK_SAMPLES, AudioManager::s_channel);
+		for (int i2 = 0; i2 < AUDIO_BLOCK_SAMPLES*2; i2++)
+		{
+			buf[i2] = (wave_buf[i2]) / 35535.0f;
+		}
+		usleep(2);
+	}
+	
+	sysThreadExit(0);
+}
+#endif
+
 #if defined(__PSP__)
 int audio_thread(SceSize args, void* argp)
 {
@@ -260,6 +296,8 @@ int audio_thread()
 
 #if defined(__vita__) || defined(__PSP__)
 int fillAudioBufferThread(SceSize args, void* argp)
+#elif defined(__PS3__)
+void fillAudioBufferThread(void* args)
 #else
 int fillAudioBufferThread()
 #endif
@@ -267,10 +305,17 @@ int fillAudioBufferThread()
 	while (true)
 	{
 		if (!Engine::IsRunning(true))
-			return 0;
+		{
+		#if defined(__PS3__)
+			return;
+		#else
+			return 0;	
+		#endif
+		}
 
 		AudioManager::s_myMutex->Lock();
 		const int playedSoundsCount = (int)AudioManager::s_channel->m_playedSoundsCount;
+
 		// Fill each stream buffers
 		for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 		{
@@ -322,7 +367,10 @@ int fillAudioBufferThread()
 
 #if defined(__vita__) || defined(__PSP__)
 		sceKernelDelayThread(16);
-#elif !defined(__PS3__)
+#elif defined(__PS3__)
+		sysThreadYield();
+		usleep(16);
+#else
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 #endif
 	}
@@ -411,6 +459,84 @@ int AudioManager::Init()
 	sendAudioThread.detach();
 	std::thread fillBufferThread = std::thread(fillAudioBufferThread);
 	fillBufferThread.detach();
+#elif (__PS3__)
+	int ret = audioInit();
+	if (ret != 0)
+	{
+		Debug::PrintError("[AudioManager::Init] audioInit error code: " + std::to_string(ret));
+		return 1;
+	}
+	u32 portNum;
+
+	//set some parameters we want
+	//either 2 or 8 channel
+	params.numChannels = AUDIO_PORT_2CH;
+	//8 16 or 32 block buffer
+	params.numBlocks = AUDIO_BLOCK_8;
+	//extended attributes
+	params.attrib = 0;
+	//sound level (1 is default)
+	params.level = 1;
+
+	ret = audioPortOpen(&params, &portNum);
+	if (ret != 0)
+	{
+		Debug::PrintError("[AudioManager::Init] audioPortOpen " + std::to_string(ret));
+		return 1;
+	}
+
+	ret = audioGetPortConfig(portNum, &config);
+	if (ret != 0)
+	{
+		Debug::PrintError("[AudioManager::Init] audioGetPortConfig " + std::to_string(ret));
+		return 1;
+	}
+
+	ret = audioCreateNotifyEventQueue(&snd_queue, &snd_key);
+	if (ret != 0)
+	{
+		Debug::PrintError("[AudioManager::Init] audioCreateNotifyEventQueue " + std::to_string(ret));
+		return 1;
+	}
+
+	ret = audioSetNotifyEventQueue(snd_key);
+	if (ret != 0)
+	{
+		Debug::PrintError("[AudioManager::Init] audioSetNotifyEventQueue " + std::to_string(ret));
+		return 1;
+	}
+
+	ret = sysEventQueueDrain(snd_queue);
+	if (ret != 0)
+	{
+		Debug::PrintError("[AudioManager::Init] sysEventQueueDrain " + std::to_string(ret));
+		return 1;
+	}
+
+	ret = audioPortStart(portNum);
+	if (ret != 0)
+	{
+		Debug::PrintError("[AudioManager::Init] audioPortStart " + std::to_string(ret));
+		return 1;
+	}
+
+	sys_ppu_thread_t id;
+	u64 prio = 1500;
+	size_t stacksize = 0x10000;
+	char *audioThreadname = (char*) malloc(13*sizeof(char));
+
+	strcpy(audioThreadname, "audio_thread");
+	void *threadarg = (void*)0x1337;
+	int tret = sysThreadCreate(&id, audio_thread, threadarg, prio, stacksize, THREAD_JOINABLE, audioThreadname);
+
+	sys_ppu_thread_t id2;
+	u64 prio2 = 1500;
+	size_t stacksize2 = 0x100000;
+	char *audioBufferThreadname = (char*) malloc(22*sizeof(char));
+	strcpy(audioBufferThreadname, "fillAudioBufferThread");
+	int tret2 = sysThreadCreate(&id2, fillAudioBufferThread, threadarg, prio2, stacksize2, THREAD_JOINABLE, audioBufferThreadname);
+	sysThreadDetach(id2);
+	sysThreadDetach(id);
 #endif
 	return 0;
 }
@@ -429,7 +555,8 @@ void AudioManager::Stop()
 
 	free(audioData);
 	free(audioData2);
-
+#elif (__PS3__)
+	int ret=audioQuit();
 #endif
 }
 

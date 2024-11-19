@@ -85,16 +85,6 @@ void AudioSource::SetLoop(bool isLooping)
 	m_loop = isLooping;
 }
 
-#if defined(__PSP__) || defined(__vita__)
-int test(SceSize args, void* argp) 
-{
-	std::shared_ptr<AudioSource> audioS = *(std::shared_ptr<AudioSource>*)argp;
-	AudioManager::PlayAudioSource(audioS);
-	sceKernelExitDeleteThread(0);
-	return 0;
-}
-#endif
-
 void AudioSource::Play()
 {
 	if (m_audioClip != nullptr)
@@ -105,20 +95,8 @@ void AudioSource::Play()
 		std::thread t(&AudioManager::PlayAudioSource, sharedThis);
 		t.detach();
 		//AudioManager::PlayAudioSource(GetThisShared());
-#elif defined(__PSP__)
-		AudioManager::PlayAudioSource(GetThisShared());
-		/*SceUID thd_id2 = sceKernelCreateThread("PlayAudioSource", test, 0x18, 0x10000, 0, NULL);
-		if (thd_id2 >= 0)
-		{
-			sceKernelStartThread(thd_id2, sizeof(std::shared_ptr<AudioSource>), &sharedThis);
-		}*/
-#elif defined(__vita__)
-		AudioManager::PlayAudioSource(GetThisShared());
-		/*SceUID thd_id2 = sceKernelCreateThread("PlayAudioSource", test, 0x40, 0x400000, 0, 0, NULL);
-		if (thd_id2 >= 0)
-		{
-			sceKernelStartThread(thd_id2, sizeof(std::shared_ptr<AudioSource>), &sharedThis);
-		}*/
+#elif defined(__PSP__) || defined(__vita__) || defined(__PS3__)
+		AudioManager::PlayAudioSource(sharedThis);
 #endif
 	}
 }

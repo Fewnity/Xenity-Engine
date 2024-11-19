@@ -20,9 +20,9 @@ New features, refactor, bug fixes, optimizations or documentations everything is
 ✔️ | Windows
 ✔️ | PlayStation Portable
 ✔️ | PlayStation Vita
+🚧 | PlayStation 3 (Missing network and lighting)
+🚧 | Linux (Missing audio and build system)
 ❌ | PlayStation 2
-🚧 | PlayStation 3 (Missing network, lighting and audio)
-🚧 | Linux (Missing audio)
 
 Features:
 
@@ -66,7 +66,7 @@ Then install the Docker Image in "Window->Docker Configuration", the process can
 ## Compatible files
 Images: `.png .jpg .bmp`
 
-Audio: `.wav .mp3`
+Audio: `.wav .mp3` (Please use 44100Hz audio except on PS3, you have to use 48000Hz audio)
 
 Mesh: `.obj (Triangulated only!)`
 
