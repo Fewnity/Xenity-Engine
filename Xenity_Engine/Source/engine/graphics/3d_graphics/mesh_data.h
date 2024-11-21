@@ -204,6 +204,11 @@ public:
 		return m_boundingSphere;
 	}
 
+	VertexElements GetVertexDescriptor() const
+	{
+		return m_vertexDescriptor;
+	}
+
 protected:
 	friend class RendererOpengl;
 	friend class RendererRSX;

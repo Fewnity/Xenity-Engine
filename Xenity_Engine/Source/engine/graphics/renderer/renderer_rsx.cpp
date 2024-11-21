@@ -376,12 +376,12 @@ void RendererRSX::NewFrame()
 	sysUtilCheckCallback();
 	drawFrame();
 
-	return;
+	// return;
 
-	for (int i = 0; i < maxLightCount; i++)
-	{
-		lastUpdatedLights[i] = nullptr;
-	}
+	// for (int i = 0; i < maxLightCount; i++)
+	// {
+	// 	lastUpdatedLights[i] = nullptr;
+	// }
 	lastUsedColor = 0x00000000;
 	lastUsedColor2 = 0xFFFFFFFF;
 }
@@ -486,7 +486,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
-	const ShaderRSX& rsxShader = dynamic_cast<const ShaderRSX&>(*Graphics::s_currentShader);
+	ShaderRSX& rsxShader = dynamic_cast<ShaderRSX&>(*Graphics::s_currentShader);
 
 	uint32_t offset= 0;
 	f32 globalAmbientColor[3] = { 0.8f, 0.7f, 0.7f };
@@ -545,14 +545,25 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 	// Set vertex array attributes
 	{
-		rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].normX, &offset);
-		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_NORMAL, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+		if((int)subMesh.meshData->GetVertexDescriptor() & (int)VertexElements::NORMAL_32_BITS)
+		{
+			rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].normX, &offset);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_NORMAL, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 
-		rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].u, &offset);
-		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, offset, sizeof(VertexNormalsNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].u, &offset);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, offset, sizeof(VertexNormalsNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 
-		rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].x, &offset);
-		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].x, &offset);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+		}
+		else
+		{
+			rsxAddressToOffset(&((VertexNoColor*)subMesh.data)[0].u, &offset);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, offset, sizeof(VertexNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+
+			rsxAddressToOffset(&((VertexNoColor*)subMesh.data)[0].x, &offset);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+		}
 	}
 
 	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!Graphics::s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
@@ -564,6 +575,9 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		lastShaderIdUsedColor = material.GetShader()->m_fileId;
 		rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_color, (float*)&colorMix.x, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
 	}
+
+	// While rsxSetUpdateFragmentProgramParameter is missing, we have to set the fragment shader to apply rsxSetFragmentProgramParameter calls
+	rsxShader.Use();
 
 	rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE,
 		GCM_USER_CLIP_PLANE_DISABLE,

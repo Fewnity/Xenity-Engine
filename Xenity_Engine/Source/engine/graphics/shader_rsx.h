@@ -39,14 +39,14 @@ public:
 	rsxProgramConst* m_color = nullptr;
 	rsxProgramAttrib* m_textureUnit = nullptr;
 
-protected:
-	void Load() override;
-	void CreateShader(Shader::ShaderType type) override;
-
 	/**
 	* @brief Use the shader program
 	*/
 	bool Use() override;
+protected:
+	void Load() override;
+	void CreateShader(Shader::ShaderType type) override;
+
 
 	/**
 	* @brief Set the shader uniform of the camera position

@@ -165,7 +165,7 @@ void ShaderRSX::Load()
 
 bool ShaderRSX::Use()
 {
-	if (Graphics::s_currentShader != this)
+	// if (Graphics::s_currentShader != this)
 	{
 		rsxLoadVertexProgram(RendererRSX::context, m_vertexProgram, m_vertexProgramCode);
 		rsxLoadFragmentProgramLocation(RendererRSX::context, m_fragmentProgram, m_fp_offset, GCM_LOCATION_RSX);
