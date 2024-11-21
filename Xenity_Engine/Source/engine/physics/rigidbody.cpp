@@ -359,10 +359,13 @@ void RigidBody::Awake()
 
 	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
 	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
-	m_bulletCompoundShape = new btCompoundShape();
+
+	// Set compound's enableDynamicAabbTree param to false, because it's not working on PS3 for some reasons...
+	m_bulletCompoundShape = new btCompoundShape(false);
 	m_bulletRigidbody->setCollisionShape(m_bulletCompoundShape);
 
-	m_bulletTriggerCompoundShape = new btCompoundShape();
+	// Set compound's enableDynamicAabbTree param to false, because it's not working on PS3 for some reasons...
+	m_bulletTriggerCompoundShape = new btCompoundShape(false);
 	m_bulletTriggerRigidbody->setCollisionShape(m_bulletTriggerCompoundShape);
 	m_bulletTriggerRigidbody->setCollisionFlags(m_bulletTriggerRigidbody->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
