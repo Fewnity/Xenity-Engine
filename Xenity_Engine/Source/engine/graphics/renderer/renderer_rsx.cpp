@@ -18,6 +18,7 @@
 #include <engine/graphics/shader_rsx.h>
 #include <engine/ui/window.h>
 #include <engine/graphics/camera.h>
+#include <engine/engine.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/ui/screen.h>
@@ -87,6 +88,7 @@ extern "C"
 		switch (status) {
 		case SYSUTIL_EXIT_GAME:
 			running = 0;
+			Engine::Quit();
 			break;
 		case SYSUTIL_DRAW_BEGIN:
 		case SYSUTIL_DRAW_END:

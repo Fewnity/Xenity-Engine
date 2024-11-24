@@ -30,8 +30,8 @@
 #include <editor/editor.h>
 #include <editor/ui/editor_ui.h>
 
-#include <engine/scene_management/scene_manager.h>
 #endif
+#include <engine/scene_management/scene_manager.h>
 
 #include <engine/cpu.h>
 
@@ -445,29 +445,34 @@ void Engine::Stop()
 	if (!s_isInitialized)
 		return;
 
-	s_isInitialized = false;
-	s_isRunning = false;
-
+	s_isRunning = true;
 #if defined(EDITOR)
-	SceneManager::ClearScene();
 	ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
+
+	s_isInitialized = false;
+
+	SceneManager::ClearScene();
+	AssetManager::RemoveUnusedFiles();
 	s_game.reset();
+	ProjectManager::UnloadProject();
+
+	AudioManager::Stop();
+	PhysicsManager::Stop();
+	Graphics::Stop();
 	if(s_renderer)
 	{
 		s_renderer->Stop();
 		s_renderer.reset();
 	}
-	AudioManager::Stop();
-	PhysicsManager::Stop();
-	Graphics::Stop();
 #if defined(EDITOR) && (defined(_WIN32) || defined(_WIN64))
 	PluginManager::Stop();
 #endif
-
 #if defined(__vita__)
 	sceKernelExitProcess(0);
 #endif
+
+	s_isRunning = false;
 }
 
 void Engine::Quit()
