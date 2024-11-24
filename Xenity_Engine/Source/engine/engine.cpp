@@ -457,7 +457,6 @@ void Engine::Stop()
 	s_game.reset();
 	ProjectManager::UnloadProject();
 
-	AudioManager::Stop();
 	PhysicsManager::Stop();
 	Graphics::Stop();
 	if(s_renderer)
@@ -473,6 +472,7 @@ void Engine::Stop()
 #endif
 
 	s_isRunning = false;
+	AudioManager::Stop();
 }
 
 void Engine::Quit()
