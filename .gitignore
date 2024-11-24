@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 *.vscode
+*.Identifier
 
 Xenity_Engine/build/CMakeFiles/
 Xenity_Engine/build/cmake_install.cmake
