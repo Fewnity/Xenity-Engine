@@ -92,7 +92,7 @@ private:
 	void waitFinish();
 	void setDrawEnv();
 	void drawFrame();
-
+	Color clearColor;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(AnisotropicLevel level);
 

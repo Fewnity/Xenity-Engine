@@ -95,7 +95,7 @@ public:
 	/**
 	* @brief Get RGBA
 	*/
-	inline const RGBA& GetRGBA() const
+	const RGBA& GetRGBA() const
 	{
 		return m_rgba;
 	}
@@ -103,7 +103,7 @@ public:
 	/**
 	* @brief Get RGBA value as an unsigned int
 	*/
-	inline unsigned int GetUnsignedIntRGBA() const
+	unsigned int GetUnsignedIntRGBA() const
 	{
 		return m_rgbaInt;
 	}
@@ -111,9 +111,17 @@ public:
 	/**
 	* @brief Get ABGR value as an unsigned int
 	*/
-	inline unsigned int GetUnsignedIntABGR() const
+	unsigned int GetUnsignedIntABGR() const
 	{
 		return m_abgrInt;
+	}
+
+	/**
+	* @brief Get ABGR value as an unsigned int
+	*/
+	unsigned int GetUnsignedIntARGB() const
+	{
+		return m_argbInt;
 	}
 
 	/**
@@ -133,6 +141,7 @@ protected:
 
 	// Color informations, default is white
 	RGBA m_rgba = RGBA(1, 1, 1, 1);
+	unsigned int m_argbInt = 0xFFFFFFFF;
 	unsigned int m_rgbaInt = 0xFFFFFFFF;
 	unsigned int m_abgrInt = 0xFFFFFFFF;
 };

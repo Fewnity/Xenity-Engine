@@ -141,10 +141,8 @@ void RendererRSX::setDrawEnv()
 
 void RendererRSX::drawFrame()
 {
-	uint32_t color = 0;
 	setDrawEnv();
-
-	rsxSetClearColor(context, color);
+	rsxSetClearColor(context, clearColor.GetUnsignedIntARGB());
 	rsxSetClearDepthStencil(context, 0xffffff00);
 	rsxClearSurface(context, GCM_CLEAR_R |
 		GCM_CLEAR_G |
@@ -404,7 +402,7 @@ void RendererRSX::SetViewport(int x, int y, int width, int height)
 
 void RendererRSX::SetClearColor(const Color& color)
 {
-	//sceGuClearColor(color.GetUnsignedIntABGR());
+	clearColor = color;
 }
 
 void RendererRSX::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)

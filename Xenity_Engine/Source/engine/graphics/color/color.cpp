@@ -21,6 +21,7 @@ std::string Color::ToString() const
 	stream << " B:" << m_rgba.b;
 	stream << " A:" << m_rgba.a;
 	stream << " | RGBA Hex:#" << std::hex << m_rgbaInt;
+	stream << " | ARGB Hex:#" << std::hex << m_argbInt;
 	stream << " | ABGR Hex:#" << std::hex << m_abgrInt;
 	stream << "}";
 	std::string result(stream.str());
@@ -76,8 +77,7 @@ void Color::SetFromRGBA(int r, int g, int b, int a)
 	m_rgba.g = Math::Clamp(g / 255.0f, 0, 1);
 	m_rgba.b = Math::Clamp(b / 255.0f, 0, 1);
 	m_rgba.a = Math::Clamp(a / 255.0f, 0, 1);
-	m_rgbaInt = (static_cast<int>(m_rgba.r * 255) << 24) + (static_cast<int>(m_rgba.g * 255) << 16) + (static_cast<int>(m_rgba.b * 255) << 8) + (static_cast<int>(m_rgba.a * 255) << 0);
-	m_abgrInt = (static_cast<int>(m_rgba.a * 255) << 24) + (static_cast<int>(m_rgba.b * 255) << 16) + (static_cast<int>(m_rgba.g * 255) << 8) + (static_cast<int>(m_rgba.r * 255) << 0);
+	UpdateUnsignedInts();
 }
 
 void Color::SetFromRGBAfloat(float r, float g, float b, float a)
@@ -86,12 +86,12 @@ void Color::SetFromRGBAfloat(float r, float g, float b, float a)
 	m_rgba.g = Math::Clamp(g, 0, 1);
 	m_rgba.b = Math::Clamp(b, 0, 1);
 	m_rgba.a = Math::Clamp(a, 0, 1);
-	m_rgbaInt = (static_cast<int>(m_rgba.r * 255) << 24) + (static_cast<int>(m_rgba.g * 255) << 16) + (static_cast<int>(m_rgba.b * 255) << 8) + (static_cast<int>(m_rgba.a * 255) << 0);
-	m_abgrInt = (static_cast<int>(m_rgba.a * 255) << 24) + (static_cast<int>(m_rgba.b * 255) << 16) + (static_cast<int>(m_rgba.g * 255) << 8) + (static_cast<int>(m_rgba.r * 255) << 0);
+	UpdateUnsignedInts();
 }
 
 void Color::UpdateUnsignedInts()
 {
+	m_argbInt = (static_cast<int>(m_rgba.a * 255) << 24) + (static_cast<int>(m_rgba.r * 255) << 16) + (static_cast<int>(m_rgba.g * 255) << 8) + (static_cast<int>(m_rgba.b * 255) << 0);
 	m_rgbaInt = (static_cast<int>(m_rgba.r * 255) << 24) + (static_cast<int>(m_rgba.g * 255) << 16) + (static_cast<int>(m_rgba.b * 255) << 8) + (static_cast<int>(m_rgba.a * 255) << 0);
 	m_abgrInt = (static_cast<int>(m_rgba.a * 255) << 24) + (static_cast<int>(m_rgba.b * 255) << 16) + (static_cast<int>(m_rgba.g * 255) << 8) + (static_cast<int>(m_rgba.r * 255) << 0);
 }
