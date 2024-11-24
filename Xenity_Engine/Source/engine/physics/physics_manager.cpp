@@ -45,7 +45,7 @@ void PhysicsManager::Init()
 
 	s_physDynamicsWorld = new btDiscreteDynamicsWorld(physDispatcher, physBroadphase, physSolver, physCollisionConfiguration);
 
-	s_physDynamicsWorld->setGravity(btVector3(0, -20, 0));
+	s_physDynamicsWorld->setGravity(btVector3(s_gravity.x, s_gravity.y, s_gravity.z));
 	s_physDynamicsWorld->getSolverInfo().m_numIterations = 4;
 }
 
