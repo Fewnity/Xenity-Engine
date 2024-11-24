@@ -35,6 +35,7 @@ Separate time platform specific code?
 Better engine stop (Detect when the user is closing the game, and clear the scene, stop modules...)
 Implement alpha testing on shaders
 Fix refresh file
+Fix missing script icon crash
 
 --- Can be done for the next release
 Add size_t check on all platforms
