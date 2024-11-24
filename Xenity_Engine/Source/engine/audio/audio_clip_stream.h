@@ -45,7 +45,7 @@ public:
 	* @param offset Offset in the buffer
 	* @param buff Buffer to fill
 	*/
-	void FillBuffer(int amount, int offset, short* buff);
+	void FillBuffer(uint64_t amount, short* buff);
 
 	/**
 	* @brief Get audio clip frequency in Hz
@@ -76,7 +76,7 @@ public:
 	/**
 	* @brief Get channel count
 	*/
-	inline int GetChannelCount() const
+	inline uint32_t GetChannelCount() const
 	{
 		return m_channelCount;
 	}
@@ -94,5 +94,5 @@ private:
 	drmp3* m_mp3Stream = nullptr;
 	drwav* m_wavStream = nullptr;
 	AudioType m_type = AudioType::Null;
-	int m_channelCount = 0;
+	uint32_t m_channelCount = 0;
 };

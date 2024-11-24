@@ -20,6 +20,8 @@
 #elif defined(__vita__)
 #include <psp2/audioout.h>
 #include <psp2/kernel/threadmgr.h>
+#elif defined(__PS3__)
+#include <sys/mutex.h>
 #endif
 
 #include "audio_source.h"
@@ -32,11 +34,12 @@ class PlayedSound
 public:
 	PlayedSound();
 	~PlayedSound();
-	uint64_t m_seekPosition = 0;
+	uint64_t m_bufferSeekPosition = 0;
 	std::unique_ptr<AudioClipStream> m_audioClipStream = nullptr;
 	std::weak_ptr<AudioSource> m_audioSource;
 	short* m_buffer = nullptr;
 	uint32_t m_seekNext = 0;
+	uint64_t m_audioSeekPosition = 0;
 	float m_volume = 1;
 	float m_pan = 0.5;
 	bool m_needFillFirstHalfBuffer = false;
@@ -53,7 +56,7 @@ public:
 	int m_port = 0;
 
 	std::vector<PlayedSound*> m_playedSounds;
-	int m_playedSoundsCount = 0;
+	size_t m_playedSoundsCount = 0;
 
 private:
 #if defined(__vita__)
@@ -73,7 +76,10 @@ public:
 	int mutexid = -1;
 	//#elif defined(__PSP__)
 	//SceLwMutexWorkarea workarea;
-#elif !defined(__PS3__)
+#elif defined(__PS3__)
+	sys_mutex_t mutex;
+	sys_mutex_attr_t mattr;
+#else
 	std::mutex m_audioMutex;
 #endif
 
@@ -86,7 +92,9 @@ public:
 		sceKernelLockMutex(mutexid, 1, nullptr);
 //#elif defined(__PSP__)
 //		sceKernelLockLwMutex(&workarea, 1, nullptr);
-#elif !defined(__PS3__)
+#elif defined(__PS3__)
+		sysMutexLock(mutex, 0);
+#else
 		m_audioMutex.lock();
 #endif
 	}
@@ -100,7 +108,9 @@ public:
 		sceKernelUnlockMutex(mutexid, 1);
 //#elif defined(__PSP__)
 //		sceKernelUnlockLwMutex(&workarea, 1);
-#elif !defined(__PS3__)
+#elif defined(__PS3__)
+		sysMutexUnlock(mutex);
+#else
 		m_audioMutex.unlock();
 #endif
 	}
@@ -142,6 +152,6 @@ public:
 	static Channel* s_channel;
 	static MyMutex* s_myMutex;
 
-	static void FillChannelBuffer(short* buffer, int length, Channel* channel);
+	static void FillChannelBuffer(short* buffer, uint64_t length, Channel* channel);
 private:
 };

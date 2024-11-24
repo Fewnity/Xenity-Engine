@@ -79,13 +79,13 @@ short MixSoundToBuffer(short bufferValue, short soundValue)
 	return newVal;
 }
 
-void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel)
+void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* channel)
 {
 	// Reset buffer
-	for (int i = 0; i < length; i++)
+	for (uint64_t i = 0; i < length; i++)
 	{
-		int leftBufferIndex = i * 2;
-		int rightBufferIndex = 1 + i * 2;
+		uint64_t leftBufferIndex = i * 2;
+		uint64_t rightBufferIndex = 1 + i * 2;
 		buffer[leftBufferIndex] = 0;
 		buffer[rightBufferIndex] = 0;
 	}
@@ -93,10 +93,21 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 	AudioManager::s_myMutex->Lock();
 
 	// For each sound, add it's buffer to the sound buffer and change seek of audio stream
-	int playedSoundsCount = channel->m_playedSoundsCount;
-	for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
+	size_t playedSoundsCount = channel->m_playedSoundsCount;
+	for (size_t soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 	{
 		PlayedSound* sound = channel->m_playedSounds[soundIndex];
+
+		// Security checks
+		if(sound->m_bufferSeekPosition < halfBuffSize && sound->m_needFillFirstHalfBuffer)
+		{
+			continue;
+		}
+		else if(sound->m_bufferSeekPosition > halfBuffSize && sound->m_needFillSecondHalfBuffer)
+		{
+			continue;
+		}
+
 #if defined(EDITOR)
 		if (sound->m_isPlaying && ((sound->m_audioSource.lock() && sound->m_audioSource.lock()->m_isEditor) || GameplayManager::GetGameState() == GameState::Playing))
 #else
@@ -113,7 +124,7 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 #endif
 			const float leftVolume = sound->m_volume * leftPan;
 			const float rightVolume = sound->m_volume * rightPan;
-			const int channelCount = stream->GetChannelCount();
+			const uint32_t channelCount = stream->GetChannelCount();
 			short* rightBuf = nullptr;
 			short* leftBuf = nullptr;
 			const uint32_t frequency = stream->GetFrequency();
@@ -123,7 +134,7 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 			const short* soundBuffer = sound->m_buffer;
 
 			bool deleteAudio = false;
-			for (int i = 0; i < length; i++)
+			for (uint64_t i = 0; i < length; i++)
 			{
 				// Add audio clip stream buffer to the channel buffer
 				leftBufferIndex = i * 2;
@@ -132,13 +143,13 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 				rightBuf = &buffer[rightBufferIndex];
 				if (channelCount == 2)
 				{
-					*leftBuf = MixSoundToBuffer(*leftBuf, (short)(soundBuffer[sound->m_seekPosition] * leftVolume));
-					*rightBuf = MixSoundToBuffer(*rightBuf, (short)(soundBuffer[sound->m_seekPosition + 1] * rightVolume));
+					*leftBuf = MixSoundToBuffer(*leftBuf, (short)(soundBuffer[sound->m_bufferSeekPosition] * leftVolume));
+					*rightBuf = MixSoundToBuffer(*rightBuf, (short)(soundBuffer[sound->m_bufferSeekPosition + 1] * rightVolume));
 				}
 				else
 				{
-					*leftBuf = MixSoundToBuffer(*leftBuf, (short)(soundBuffer[sound->m_seekPosition] * leftVolume));
-					*rightBuf = MixSoundToBuffer(*rightBuf, (short)(soundBuffer[sound->m_seekPosition] * rightVolume));
+					*leftBuf = MixSoundToBuffer(*leftBuf, (short)(soundBuffer[sound->m_bufferSeekPosition] * leftVolume));
+					*rightBuf = MixSoundToBuffer(*rightBuf, (short)(soundBuffer[sound->m_bufferSeekPosition] * rightVolume));
 				}
 
 				sound->m_seekNext += frequency;
@@ -149,43 +160,46 @@ void AudioManager::FillChannelBuffer(short* buffer, int length, Channel* channel
 					sound->m_seekNext -= SOUND_FREQUENCY;
 					if (channelCount == 2)
 					{
-						sound->m_seekPosition += 2;
+						sound->m_bufferSeekPosition += 2;
+						sound->m_audioSeekPosition += 2;
 					}
 					else
 					{
-						sound->m_seekPosition += 1;
+						sound->m_bufferSeekPosition += 1;
+						sound->m_audioSeekPosition += 1;
 					}
 
-					if (stream->GetSeekPosition() >= sampleCount) // If the stream ends, reset the seek or stop the stream
+					if (sound->m_audioSeekPosition >= sampleCount) // If the stream ends, reset the seek or stop the stream
 					{
 						if (sound->m_loop)
 						{
 							stream->ResetSeek();
-							sound->m_seekPosition = 0;
+							sound->m_bufferSeekPosition = 0;
+							sound->m_audioSeekPosition = 0;
 						}
 						else
 						{
 							deleteAudio = true;
-							//break;
+							break;
 						}
 					}
-					else if (sound->m_seekPosition == halfBuffSize) // If the buffer seek reach the middle of the buffer, ask for a new stream read
+					else if (sound->m_bufferSeekPosition == halfBuffSize) // If the buffer seek reach the middle of the buffer, ask for a new stream read
 					{
 						sound->m_needFillFirstHalfBuffer = true;
 					}
-					else if (sound->m_seekPosition == buffSize) // If the buffer seek reach the end, reset the buffer seek and ask for a new stream read
+					else if (sound->m_bufferSeekPosition == buffSize) // If the buffer seek reach the end, reset the buffer seek and ask for a new stream read
 					{
-						sound->m_seekPosition = 0;
+						sound->m_bufferSeekPosition = 0;
 						sound->m_needFillSecondHalfBuffer = true;
 					}
 				}
-				/*if (deleteAudio) // TODO: Why is working for short audio without this? Are we stopping the audio too early?
+				if (deleteAudio) // TODO: Why is working for short audio without this? Are we stopping the audio too early?
 				{
 					break;
-				}*/
+				}
 			}
 
-			// If the played sound needs to be deleted
+			//If the played sound needs to be deleted
 			if (deleteAudio)
 			{
 				delete sound;
@@ -314,16 +328,16 @@ int fillAudioBufferThread()
 		}
 
 		AudioManager::s_myMutex->Lock();
-		const int playedSoundsCount = (int)AudioManager::s_channel->m_playedSoundsCount;
+		const size_t playedSoundsCount = AudioManager::s_channel->m_playedSoundsCount;
 
 		// Fill each stream buffers
-		for (int soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
+		for (size_t soundIndex = 0; soundIndex < playedSoundsCount; soundIndex++)
 		{
 			auto& sound = AudioManager::s_channel->m_playedSounds[soundIndex];
 
 			const std::unique_ptr<AudioClipStream>& stream = sound->m_audioClipStream;
 
-			int bufferSizeToUse = quarterBuffSize;
+			size_t bufferSizeToUse = quarterBuffSize;
 			if (stream->GetChannelCount() == 1)
 			{
 				bufferSizeToUse = halfBuffSize;
@@ -331,30 +345,34 @@ int fillAudioBufferThread()
 
 			if (sound->m_needFillFirstHalfBuffer)
 			{
-				audioBenchmark->Start();
-				stream->FillBuffer(bufferSizeToUse, 0, sound->m_buffer);
+				// audioBenchmark->Start();
+				AudioManager::s_myMutex->Unlock();
+				stream->FillBuffer(bufferSizeToUse, sound->m_buffer);
+				AudioManager::s_myMutex->Lock();
 				sound->m_needFillFirstHalfBuffer = false;
-				audioBenchmark->Stop();
+				// audioBenchmark->Stop();
 			}
 			else if (sound->m_needFillSecondHalfBuffer)
 			{
-				audioBenchmark->Start();
-				stream->FillBuffer(bufferSizeToUse, halfBuffSize, sound->m_buffer);
+				// audioBenchmark->Start();
+				AudioManager::s_myMutex->Unlock();
+				stream->FillBuffer(bufferSizeToUse, sound->m_buffer + halfBuffSize);
+				AudioManager::s_myMutex->Lock();
 				sound->m_needFillSecondHalfBuffer = false;
-				audioBenchmark->Stop();
+				// audioBenchmark->Stop();
 			}
 		}
 
 		// Get audio sources values
 		if (Engine::s_canUpdateAudio)
 		{
-			const int count = (int)AudioManager::s_channel->m_playedSoundsCount;
-			for (int i = 0; i < count; i++)
+			const size_t count = AudioManager::s_channel->m_playedSoundsCount;
+			for (size_t i = 0; i < count; i++)
 			{
 				const auto& playedSound = AudioManager::s_channel->m_playedSounds[i];
-				std::shared_ptr<AudioSource> audioSource = playedSound->m_audioSource.lock();
-				if (audioSource) {
-
+				const std::shared_ptr<AudioSource> audioSource = playedSound->m_audioSource.lock();
+				if (audioSource) 
+				{
 					playedSound->m_volume = audioSource->GetVolume();
 					playedSound->m_pan = audioSource->GetPanning();
 					playedSound->m_isPlaying = audioSource->IsPlaying();
@@ -362,8 +380,8 @@ int fillAudioBufferThread()
 				}
 			}
 		}
-
 		AudioManager::s_myMutex->Unlock();
+
 
 #if defined(__vita__) || defined(__PSP__)
 		sceKernelDelayThread(16);
@@ -586,8 +604,8 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 
 	// Find if the audio source is already playing
 
-	const int count = s_channel->m_playedSoundsCount;
-	for (int i = 0; i < count; i++)
+	const size_t count = s_channel->m_playedSoundsCount;
+	for (size_t i = 0; i < count; i++)
 	{
 		const auto& playedSound = s_channel->m_playedSounds[i];
 		if (playedSound->m_audioSource.lock() == audioSource)
@@ -606,7 +624,7 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		newPlayedSound->m_audioClipStream = std::make_unique<AudioClipStream>();
 		newPlayedSound->m_audioClipStream->OpenStream(*audioSource->GetAudioClip());
 		newPlayedSound->m_audioSource = audioSource;
-		newPlayedSound->m_seekPosition = 0;
+		newPlayedSound->m_bufferSeekPosition = 0;
 		newPlayedSound->m_needFillFirstHalfBuffer = true;
 		newPlayedSound->m_needFillSecondHalfBuffer = true;
 
@@ -633,8 +651,8 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	bool found = false;
 
 	// Find audio source index
-	const int count = s_channel->m_playedSoundsCount;
-	for (int i = 0; i < count; i++)
+	const size_t count = s_channel->m_playedSoundsCount;
+	for (size_t i = 0; i < count; i++)
 	{
 		if (s_channel->m_playedSounds[i]->m_audioSource.lock() == audioSource)
 		{
@@ -670,8 +688,8 @@ void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 
 	// Find audio source index
 
-	const int count = s_channel->m_playedSoundsCount;
-	for (int i = 0; i < count; i++)
+	const size_t count = s_channel->m_playedSoundsCount;
+	for (size_t i = 0; i < count; i++)
 	{
 		if (s_channel->m_playedSounds[i]->m_audioSource.lock().get() == audioSource)
 		{
@@ -699,5 +717,8 @@ MyMutex::MyMutex([[maybe_unused]] const std::string& mutexName)
 	mutexid = sceKernelCreateMutex(mutexName.c_str(), 0, 1, NULL);
 	//#elif defined(__PSP__)
 	//	sceKernelCreateLwMutex(&workarea, mutexName.c_str(), 0, 1, NULL);
+#elif defined(__PS3__)
+	sysMutexAttrInitialize(mattr);
+	sysMutexCreate(&mutex, &mattr);
 #endif
 }
