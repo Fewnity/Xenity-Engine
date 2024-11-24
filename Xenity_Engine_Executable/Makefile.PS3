@@ -33,15 +33,15 @@ CONTENTID	:=	UP0001-$(APPID)_00-0000000000000000
 #---------------------------------------------------------------------------------
 
 CFLAGS		=	-mcpu=cell $(MACHDEP) $(INCLUDE)
-# CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -DDEBUG -fpermissive -O2
-CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -fpermissive -O2
+#CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -DDEBUG -fpermissive -O2
+CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -fpermissive -O3
 
 LDFLAGS		=	$(MACHDEP) -Wl,-Map,$(notdir $@).map
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:=	-lsimdmath -lrsx -lgcm_sys -lio -lsysutil -lrt -llv2 -lm -lsysfs
+LIBS	:=	-lsimdmath -lrsx -lgcm_sys -lio -lsysutil -lrt -llv2 -lm -lsysfs -laudio
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
