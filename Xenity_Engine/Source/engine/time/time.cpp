@@ -87,11 +87,11 @@ void Time::UpdateTime()
 	const float tempDeltaTime = (currentTick - lastTick) / (float)kBUSCLK;
 	lastTick = currentTick;
 #else
-	const int64_t start = std::chrono::time_point_cast<std::chrono::milliseconds>(start_point).time_since_epoch().count();
-	const int64_t end = std::chrono::time_point_cast<std::chrono::milliseconds>(end_point).time_since_epoch().count();
+	const int64_t start = std::chrono::time_point_cast<std::chrono::microseconds>(start_point).time_since_epoch().count();
+	const int64_t end = std::chrono::time_point_cast<std::chrono::microseconds>(end_point).time_since_epoch().count();
 	end_point = start_point;
 	start_point = std::chrono::high_resolution_clock::now();
-	const float tempDeltaTime = (start - end) / 1000.0f;
+	const float tempDeltaTime = (start - end) / 1000000.0f;
 #endif
 	s_deltaTime = tempDeltaTime * s_timeScale;
 	s_unscaledDeltaTime = tempDeltaTime;
