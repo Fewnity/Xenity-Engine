@@ -60,6 +60,12 @@ void RigidBody::SetVelocity(const Vector3& _velocity)
 	m_velocity = _velocity;
 }
 
+void RigidBody::ApplyTorque(const Vector3& torque)
+{
+	m_bulletRigidbody->activate();
+	m_bulletRigidbody->applyTorque(btVector3(torque.x, torque.y, torque.z));
+}
+
 void RigidBody::SetDrag(float _drag)
 {
 	if (_drag < 0)
