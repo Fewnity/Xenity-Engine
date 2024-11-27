@@ -42,6 +42,10 @@ public:
 	void SetVelocity(const Vector3& _velocity);
 
 	void ApplyTorque(const Vector3& torque);
+	Vector3 GetTorque();
+
+	void SetAngularVelocity(const Vector3& torque);
+	void AddAngularVelocity(const Vector3& torque);
 
 	inline float GetDrag() const { return m_drag; }
 	void SetDrag(float _drag);

@@ -62,8 +62,39 @@ void RigidBody::SetVelocity(const Vector3& _velocity)
 
 void RigidBody::ApplyTorque(const Vector3& torque)
 {
+	if (!m_bulletRigidbody)
+		return;
+
 	m_bulletRigidbody->activate();
 	m_bulletRigidbody->applyTorque(btVector3(torque.x, torque.y, torque.z));
+}
+
+Vector3 RigidBody::GetTorque()
+{
+	if (!m_bulletRigidbody)
+		return Vector3(0);
+
+	btVector3 torque = m_bulletRigidbody->getTotalTorque();
+	return Vector3(torque.x(), torque.y(), torque.z());
+}
+
+void RigidBody::AddAngularVelocity(const Vector3& velocity)
+{
+	if (!m_bulletRigidbody)
+		return;
+
+	m_bulletRigidbody->activate();
+	btVector3 angVel = m_bulletRigidbody->getAngularVelocity();
+	m_bulletRigidbody->setAngularVelocity(angVel + btVector3(velocity.x, velocity.y, velocity.z));
+}
+
+void RigidBody::SetAngularVelocity(const Vector3& torque)
+{
+	if (!m_bulletRigidbody)
+		return;
+
+	m_bulletRigidbody->activate();
+	m_bulletRigidbody->setAngularVelocity(btVector3(torque.x, torque.y, torque.z));
 }
 
 void RigidBody::SetDrag(float _drag)
