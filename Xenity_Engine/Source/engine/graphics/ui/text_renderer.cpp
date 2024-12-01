@@ -117,14 +117,22 @@ void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
 	if (m_isTextInfoDirty)
 	{
-		delete m_textInfo;
 		if (m_mesh)
+		{
+			delete m_textInfo;
 			m_mesh.reset();
-		m_textInfo = TextManager::GetTextInfomations(m_text, (int)m_text.size(), m_font, 1);
-		m_mesh = TextManager::CreateMesh(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, m_color, m_font, m_fontSize);
+		}
+		if(!m_text.empty())
+		{
+			m_textInfo = TextManager::GetTextInfomations(m_text, (int)m_text.size(), m_font, 1);
+			m_mesh = TextManager::CreateMesh(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, m_color, m_font, m_fontSize);
+		}
 		m_isTextInfoDirty = false;
 	}
-	TextManager::DrawText(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, *GetTransformRaw(), m_color, true, *m_mesh, *m_font, *m_material);
+	if (m_mesh)
+	{
+		TextManager::DrawText(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, *GetTransformRaw(), m_color, true, *m_mesh, *m_font, *m_material);
+	}
 }
 
 void TextRenderer::SetFontSize(float fontSize)
