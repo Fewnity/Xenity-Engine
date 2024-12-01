@@ -265,7 +265,7 @@ void TexturePSP::SetTextureLevel(int level, const unsigned char* texData)
 	if (resizedPW > 256 || resizedPH > 256)
 	{
 		isLevelInVram = false;
-		Debug::PrintWarning("Texture too big to be in vram", true);
+		Debug::PrintWarning("[TexturePSP::SetTextureLevel] Texture too big to be in vram", true);
 	}
 
 	// Allocate memory in ram or vram
@@ -282,7 +282,7 @@ void TexturePSP::SetTextureLevel(int level, const unsigned char* texData)
 		{
 			if (tryPutInVram)
 			{
-				Debug::PrintWarning("No enough free vram", true);
+				Debug::PrintWarning("[TexturePSP::SetTextureLevel] No enough free vram", true);
 			}
 			newData = (unsigned int*)memalign(16, byteCount);
 			isLevelInVram = false;
