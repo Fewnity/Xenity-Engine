@@ -171,6 +171,15 @@ vita_create_vpk(${GAME_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
   FILE data.xenb data.xenb
   FILE db.bin db.bin
 )
+elseif(MODE STREQUAL "LINUX") #--------------------------------------------- LINUX
+message(STATUS "BUILD LINUX")
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -fpermissive")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -rdynamic -fpermissive")
+add_definitions(-D__LINUX__=1)
+add_definitions(-DEDITOR=1)
+add_definitions(-DDEBUG=1)
 else()
 message(STATUS "BUILD WINDOWS")
 endif()
