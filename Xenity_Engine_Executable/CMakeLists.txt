@@ -45,6 +45,10 @@ else()
     list(FILTER SOURCES EXCLUDE REGEX "Source/unit_tests/.*")
 endif()
 
+if(PROFILER)
+	add_definitions(-DUSE_PROFILER)
+endif()
+
 # Ajoutez les fichiers source à l'exécutable
 add_executable(${PROJECT_NAME} ${SOURCES})
 

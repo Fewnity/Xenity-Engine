@@ -900,21 +900,18 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	std::string prepareCompileCommand = "";
 	if (params.buildPlatform.platform == Platform::P_PSP)
 	{
-		std::shared_ptr<PlatformSettingsPSP> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPSP>(params.buildPlatform.settings);
-		std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
-		prepareCompileCommand = "psp-cmake -DMODE=psp -DGAME_NAME=" + ProjectManager::GetGameName() + debugDefine + " ..";
+		const std::shared_ptr<const PlatformSettingsPSP> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPSP>(params.buildPlatform.settings);
+		const std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
+		const std::string profilerDefine = platformSettings->enableProfiler ? " -DPROFILER=1" : "";
+		prepareCompileCommand = "psp-cmake -DMODE=psp -DGAME_NAME=" + ProjectManager::GetGameName() + debugDefine + profilerDefine + " ..";
 	}
 	else if (params.buildPlatform.platform == Platform::P_PsVita)
 	{
-		std::shared_ptr<PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
-		std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
-		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DVITA_TITLEID=" + platformSettings->gameId + debugDefine + " ..";
+		const std::shared_ptr<const PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
+		const std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
+		const std::string profilerDefine = platformSettings->enableProfiler ? " -DPROFILER=1" : "";
+		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DVITA_TITLEID=" + platformSettings->gameId + debugDefine + profilerDefine + " ..";
 	}
-	/*else if (params.buildPlatform.platform == Platform::P_PS3)
-	{
-		std::shared_ptr<PlatformSettingsPS3> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPS3>(params.buildPlatform.settings);
-		prepareCompileCommand = "make";
-	}*/
 
 	unsigned int threadNumber = std::thread::hardware_concurrency();
 	if (threadNumber == 0) // This function may returns 0, use 1 instead

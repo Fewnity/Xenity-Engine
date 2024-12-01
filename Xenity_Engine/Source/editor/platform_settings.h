@@ -35,6 +35,7 @@ public:
 
 	bool isDebugMode = false;
 	bool enableOnlineProfiler = false;
+	bool enableProfiler = false;
 
 protected:
 	Event<>* onChangeEvent = nullptr;
@@ -50,6 +51,7 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage", true);
 		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage", true);
@@ -75,6 +77,7 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage", true);
 		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage", true);
@@ -102,6 +105,7 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		//Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		return reflectedVariables;
 	}
@@ -120,6 +124,7 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		//Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
+		//Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		Reflective::AddVariable(reflectedVariables, icon, "icon", true);
 		return reflectedVariables;
