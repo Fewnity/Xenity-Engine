@@ -95,8 +95,6 @@ void RendererOpengl::Stop()
 {
 #if defined(__vita__)
 	vglEnd();
-#else
-	//glfwTerminate();
 #endif
 }
 
