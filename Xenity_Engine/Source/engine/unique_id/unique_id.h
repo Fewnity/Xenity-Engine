@@ -18,13 +18,11 @@ class API UniqueId
 public:
 	inline UniqueId()
 	{
-		m_forFile = false;
-		m_uniqueId = GenerateUniqueId(m_forFile);
+		m_uniqueId = GenerateUniqueId(false);
 	}
 
 	inline UniqueId(bool _forFile)
 	{
-		m_forFile = _forFile;
 		m_uniqueId = GenerateUniqueId(_forFile);
 	}
 
@@ -84,6 +82,5 @@ private:
 	}
 
 	uint64_t m_uniqueId;
-	bool m_forFile = false;
 };
 
