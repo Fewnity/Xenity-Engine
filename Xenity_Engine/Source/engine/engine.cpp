@@ -184,7 +184,7 @@ int Engine::Init()
 #error "No renderer defined for this platform" 
 #endif
 
-	if(s_renderer)
+	if (s_renderer)
 	{
 		const int rendererInitResult = s_renderer->Init();
 		if (rendererInitResult != 0)
@@ -205,7 +205,7 @@ int Engine::Init()
 		Debug::PrintError("-------- Window init error code: " + std::to_string(windowInitResult) + " --------", true);
 		return -1;
 	}
-	if(s_renderer)
+	if (s_renderer)
 	{
 		s_renderer->Setup();
 	}
@@ -426,6 +426,15 @@ void Engine::Loop()
 			InputSystem::s_blockGameInput = false;
 		}
 
+		if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
+		{
+			std::string path = "profiler.bin";
+#if defined(__vita__)
+			path = PSVITA_DEBUG_LOG_FOLDER + path;
+#endif
+			Performance::SaveToBinary(path);
+		}
+
 #if defined(EDITOR)
 		editorDrawBenchmark->Start();
 		Editor::Draw();
@@ -459,7 +468,7 @@ void Engine::Stop()
 
 	PhysicsManager::Stop();
 	Graphics::Stop();
-	if(s_renderer)
+	if (s_renderer)
 	{
 		s_renderer->Stop();
 		s_renderer.reset();
