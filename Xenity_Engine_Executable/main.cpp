@@ -32,13 +32,13 @@ Separate audio platform specific code
 Separate mesh platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
-Better engine stop (Detect when the user is closing the game, and clear the scene, stop modules...)
 Implement alpha testing on shaders
 Fix refresh file
-Fix missing script icon crash
+Do not create a new mesh data in text renderer
+Disable update function call on many components
+Check peekinput for PSP
 
 --- Can be done for the next release
-Add size_t check on all platforms
 Fix light in fixed pipeline with 2 cameras
 Create a GetFileSize function in File class
 Remove the old profiler
@@ -48,7 +48,6 @@ Pre-open audio file for faster loading
 Replace CompatibleFile by FileInfo?
 Compress scene json files in builds
 Add assert if project settings file is not found
-Add an option to enable /disable the profiler in builds
 Add a debug option to show what assets are loaded in vram for psp
 Increase PsVita newlib memory?
 */
