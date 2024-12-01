@@ -26,6 +26,7 @@
 #include <engine/engine.h>
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/debug/performance.h>
 
 ParticleSystem::ParticleSystem()
 {
