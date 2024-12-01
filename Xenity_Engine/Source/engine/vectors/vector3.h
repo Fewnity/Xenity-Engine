@@ -86,6 +86,8 @@ public:
 	*/
 	float Magnitude() const;
 
+	float MagnitudeSquared() const;
+
 	/**
 	* @brief Get the dot product of this vector
 	*/

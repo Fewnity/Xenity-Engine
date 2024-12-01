@@ -109,6 +109,11 @@ Vector3 Vector3::Normalize()
 	return *(this);
 }
 
+float Vector3::MagnitudeSquared() const
+{
+	return powf(x, 2) + powf(y, 2) + powf(z, 2);
+}
+
 float Vector3::Magnitude() const
 {
 	return sqrtf(powf(x, 2) + powf(y, 2) + powf(z, 2));
