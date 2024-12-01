@@ -20,11 +20,13 @@
 
 #if defined(ENABLE_STACK_DEBUG_OBJECT)
 
-#if defined(__PS3__)
-#define STACK_DEBUG_OBJECT(level) StackDebugObject _stackDebugObject(__PRETTY_FUNCTION__, level)
-#else // else !defined(__PS3__)
+#if defined(__PS3__) || defined(__PSP__)  || defined(__vita__)
+#define STACK_DEBUG_OBJECT(level) StackDebugObject _stackDebugObject(__PRETTY_FUNCTION__, level) // __PRETTY_FUNCTION__ works on GCC
+#elif defined(_MSC_VER)
+#define STACK_DEBUG_OBJECT(level) StackDebugObject _stackDebugObject(__FUNCSIG__, level) // __FUNCSIG__ is MSVC onyl
+#else
 #define STACK_DEBUG_OBJECT(level) StackDebugObject _stackDebugObject(__FUNCTION__, level)
-#endif // !defined(__PS3__)
+#endif
 
 #else // #elif !defined(ENABLE_STACK_DEBUG_OBJECT)
 #define STACK_DEBUG_OBJECT
