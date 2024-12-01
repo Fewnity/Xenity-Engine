@@ -306,17 +306,23 @@ void PhysicsManager::Update()
 		for (size_t i = 0; i < rigidbodyCount; i++)
 		{
 			const RigidBody* rb = s_rigidBodies[i];
-			if (rb->m_generatesEvents)
+			if (rb->m_generatesEvents && rb->IsEnabled() && rb->GetGameObjectRaw()->IsLocalActive())
 			{
-				s_physDynamicsWorld->contactTest(rb->m_bulletRigidbody, resultCallback);
-				s_physDynamicsWorld->contactTest(rb->m_bulletTriggerRigidbody, resultCallback);
+				if (rb->m_bulletCompoundShape->getNumChildShapes() >= 2) // An empty shape is in the compound
+				{
+					s_physDynamicsWorld->contactTest(rb->m_bulletRigidbody, resultCallback);
+				}
+				if (rb->m_bulletTriggerCompoundShape->getNumChildShapes() >= 2) // An empty shape is in the compound
+				{
+					s_physDynamicsWorld->contactTest(rb->m_bulletTriggerRigidbody, resultCallback);
+				}
 			}
 		}
 
 		for (size_t i = 0; i < colliderCount; i++)
 		{
 			const ColliderInfo& colliderInfo = s_colliders[i];
-			if (colliderInfo.collider->m_generateCollisionEvents && colliderInfo.collider->m_bulletCollisionObject)
+			if (colliderInfo.collider->m_generateCollisionEvents && colliderInfo.collider->m_bulletCollisionObject && colliderInfo.collider->IsEnabled() && colliderInfo.collider->GetGameObjectRaw()->IsLocalActive())
 			{
 				s_physDynamicsWorld->contactTest(colliderInfo.collider->m_bulletCollisionObject, resultCallback);
 			}

@@ -156,6 +156,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 		m_bulletCollisionObject->setWorldTransform(startTransform);
 		m_bulletCollisionObject->setUserPointer(this);
 		m_bulletCollisionObject->setRestitution(1);
+		m_bulletCollisionObject->setActivationState(DISABLE_SIMULATION);
 
 		if (m_isTrigger)
 		{
