@@ -228,6 +228,7 @@ void BoxCollider::SetDefaultSize()
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
 		s_size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()));
 		m_offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
+		m_offset.x = -m_offset.x;
 		CalculateBoundingBox();
 	}
 }
