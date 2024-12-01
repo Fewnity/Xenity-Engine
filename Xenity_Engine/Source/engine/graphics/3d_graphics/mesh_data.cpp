@@ -595,7 +595,7 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 
 void MeshData::SubMesh::FreeData()
 {
-	Debug::Print("[MeshData::SubMesh::FreeData] Freeing data");
+	//Debug::Print("[MeshData::SubMesh::FreeData] Freeing data");
 
 #if !defined(_EE)
 	if (data)
