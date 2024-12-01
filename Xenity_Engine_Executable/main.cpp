@@ -38,6 +38,7 @@ Do not create a new mesh data in text renderer
 Disable update function call on many components
 Check peekinput for PSP
 Fix name with spaces with docker (PsVita)
+Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)
 
 --- Can be done for the next release
 Fix light in fixed pipeline with 2 cameras
