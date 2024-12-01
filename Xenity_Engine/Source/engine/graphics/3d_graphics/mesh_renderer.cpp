@@ -218,6 +218,7 @@ void MeshRenderer::OnEnabled()
 
 void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	if (m_culled || m_outOfFrustum)
 		return;
 
