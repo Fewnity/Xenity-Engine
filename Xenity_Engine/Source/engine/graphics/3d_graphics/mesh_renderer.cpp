@@ -221,9 +221,14 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 	if (m_culled || m_outOfFrustum)
 		return;
 
+	if (renderCommand.material->GetShader() == nullptr)
+	{
+		return;
+	}
+
 	if constexpr (!Graphics::s_UseOpenGLFixedFunctions)
 	{
-		if (renderCommand.material->GetShader() == nullptr || renderCommand.material->GetShader()->GetFileStatus() != FileStatus::FileStatus_Loaded)
+		if (renderCommand.material->GetShader()->GetFileStatus() != FileStatus::FileStatus_Loaded)
 		{
 			return;
 		}
