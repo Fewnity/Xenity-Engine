@@ -58,7 +58,7 @@ message(STATUS "BUILD PSP")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto=auto -falign-functions=32 -ftree-vectorize -O1")
-
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto=auto -falign-functions=32 -ftree-vectorize -O1 -g") # To use to get functions names in PPSSPP
 include_directories(${PSPDEV}/psp/include/freetype2)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -94,7 +94,7 @@ create_pbp_file(
     BACKGROUND_PATH psp_images/BG.PNG
     PREVIEW_PATH psp_images/PREVIEW.PNG
     TITLE ${GAME_NAME}
-    BUILD_PRX 1
+    BUILD_PRX 1 # To comment to get functions names in PPSSPP
 )
 elseif(MODE STREQUAL "psvita")
 message(STATUS "BUILD PSVITA")
