@@ -130,9 +130,11 @@ void GameplayManager::UpdateComponents()
 		{
 			if (const std::shared_ptr<Component> component = orderedComponents[i].lock())
 			{
-				if (component->GetGameObject()->IsLocalActive() && component->IsEnabled())
+				if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 				{
+#if defined(_WIN32) || defined(_WIN64)
 					s_lastUpdatedComponent = component;
+#endif
 					component->Update();
 				}
 			}

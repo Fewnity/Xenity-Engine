@@ -98,7 +98,7 @@ Sphere MeshRenderer::ProcessBoundingSphere() const
 
 void MeshRenderer::OnNewRender()
 {
-	if (Graphics::usedCamera)
+	if (Graphics::usedCamera && GetGameObjectRaw()->IsLocalActive() && IsEnabled())
 	{
 		m_outOfFrustum = !IsSphereInFrustum(Graphics::usedCamera->frustum, m_boundingSphere);
 	}
