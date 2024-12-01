@@ -286,19 +286,28 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 							comp->SetIsEnabled(isEnabled);
 						}
 					}
+#if defined(EDITOR)
 					else
 					{
 						// If the component is missing (the class doesn't exist anymore or the game is not compiled
 						// Create a missing script and copy component data to avoid data loss
 						const std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
-						comp = missingScript;
 						missingScript->data = componentKV.value();
-						newGameObject->m_components.push_back(missingScript);
-						newGameObject->m_componentCount++;
-						missingScript->SetGameObject(newGameObject);
+						newGameObject->AddExistingComponent(missingScript);
+						comp = missingScript;
 					}
-					allComponents.push_back(comp);
-					comp->SetUniqueId(compId);
+#endif
+					if (comp)
+					{
+						allComponents.push_back(comp);
+						comp->SetUniqueId(compId);
+					}
+					else 
+					{
+#if defined(EDITOR)
+						XASSERT(false, "[SceneManager::LoadScene] Missing script not created!");
+#endif
+					}
 				}
 			}
 		}
@@ -459,7 +468,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		try
 		{
 			ordered_json data;
-			if (!jsonString.empty()) 
+			if (!jsonString.empty())
 			{
 				data = ordered_json::parse(jsonString);
 			}
