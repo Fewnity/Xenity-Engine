@@ -101,9 +101,9 @@ std::string EditorUI::OpenFileDialog(const std::string& title, const std::string
 #elif defined(_WIN32) || defined(_WIN64)
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
-	IFileSaveDialog* pFileOpen;
+	IFileOpenDialog* pFileOpen;
 
-	HRESULT hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL, IID_PPV_ARGS(&pFileOpen));
+	HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_PPV_ARGS(&pFileOpen));
 
 	if (SUCCEEDED(hr))
 	{
