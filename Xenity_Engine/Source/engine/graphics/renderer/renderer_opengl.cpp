@@ -113,6 +113,8 @@ void RendererOpengl::NewFrame()
 
 void RendererOpengl::EndFrame()
 {
+	SCOPED_PROFILER("RendererOpengl::EndFrame", scopeBenchmark);
+
 	usedTexture = 0;
 #if defined(__vita__)
 	vglSwapBuffers(GL_FALSE);

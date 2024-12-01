@@ -200,6 +200,8 @@ void ParticleSystem::AllocateParticlesMemory()
 
 void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 {
+	SCOPED_PROFILER("ParticleSystem::DrawCommand", scopeBenchmark);
+
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;

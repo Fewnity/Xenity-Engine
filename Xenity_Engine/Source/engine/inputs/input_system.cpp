@@ -35,6 +35,7 @@
 #include "input_pad.h"
 #include "input_touch_raw.h"
 #include <engine/debug/stack_debug_object.h>
+#include <engine/debug/performance.h>
 
 
 Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int
@@ -122,6 +123,8 @@ Touch InputSystem::GetTouch(const int touchIndex, const int screenIndex)
 void InputSystem::UpdateControllers()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+	SCOPED_PROFILER("InputSystem::UpdateControllers", scopeBenchmark);
+
 	InputPad pad = CrossGetInputPad();
 	const float JoystickDeadZone = 0.25f;
 
@@ -336,6 +339,8 @@ void InputSystem::Read(const SDL_Event& event)
 void InputSystem::Read()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+	SCOPED_PROFILER("InputSystem::Read", scopeBenchmark);
+
 	const size_t screenCount = screens.size();
 	const std::vector<TouchRaw> touchesRaw = CrossUpdateTouch();
 	const size_t touchesRawCount = touchesRaw.size();
@@ -408,6 +413,9 @@ void InputSystem::Read()
 void InputSystem::ClearInputs()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+
+	SCOPED_PROFILER("InputSystem::ClearInputs", scopeBenchmark);
+
 	for (int i = 0; i < INPUT_COUNT; i++)
 	{
 		SetInputInactive(static_cast<KeyCode>(i));

@@ -123,6 +123,8 @@ void RendererGU::NewFrame()
 
 void RendererGU::EndFrame()
 {
+	SCOPED_PROFILER("RendererGU::EndFrame", scopeBenchmark);
+
 	usedTexture = nullptr;
 
 	/*if (!dialog)

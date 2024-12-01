@@ -49,6 +49,7 @@ int NetworkManager::s_result = -1;
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/debug/performance.h>
 
 bool NetworkManager::s_done = false;
 
@@ -137,6 +138,7 @@ std::shared_ptr<Socket> NetworkManager::GetClientSocket()
 void NetworkManager::Update()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+	SCOPED_PROFILER("NetworkManager::Update", scopeBenchmark);
 
 	const int socketCount = (int)s_sockets.size();
 	for (int i = 0; i < socketCount; i++)

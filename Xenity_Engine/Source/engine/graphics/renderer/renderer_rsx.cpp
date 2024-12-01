@@ -388,6 +388,8 @@ void RendererRSX::NewFrame()
 
 void RendererRSX::EndFrame()
 {
+	SCOPED_PROFILER("RendererRSX::EndFrame", scopeBenchmark);
+
 	usedTexture = nullptr;
 
 	if (Screen::IsVSyncEnabled())

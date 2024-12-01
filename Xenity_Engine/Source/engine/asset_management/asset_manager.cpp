@@ -26,6 +26,7 @@
 #include <engine/asset_management/project_manager.h>
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/debug/performance.h>
 
 bool initialised = false;
 
@@ -514,6 +515,7 @@ void AssetManager::RemoveLight(Light* light)
 void AssetManager::RemoveUnusedFiles()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+	SCOPED_PROFILER("AssetManager::RemoveUnusedFiles", scopeBenchmark);
 
 	int fileRefCount = GetFileReferenceCount();
 	for (int i = 0; i < fileRefCount; i++)
