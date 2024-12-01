@@ -335,6 +335,8 @@ void ProfilerMenu::DrawProfilerGraph()
 			ImDrawList* draw_list = ImPlot::GetPlotDrawList();
 			if (ImPlot::BeginPlot("Profiler", ImVec2(-1, 500)))
 			{
+				ImPlot::SetupLegend(ImPlotLocation_West, ImPlotLegendFlags_Outside);
+
 				// Set the axis limits
 				ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, (endTime - offsetTime));
 				ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, lastMaxLevel + 1);
