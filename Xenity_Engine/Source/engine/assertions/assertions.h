@@ -19,9 +19,9 @@ API void OnAssertionFailed(const std::string& message);
 
 // XASSERT is a macro to assert a condition and print a message in the logs in debug mode
 #if defined(DEBUG)
-#define XASSERT(x, message) if (!(x)) { OnAssertionFailed(message); assert(false); } 0
+#define XASSERT(condition, message) if (!(condition)) { OnAssertionFailed(message); assert(false); } 0
 #else
-#define XASSERT(x, message) 0
+#define XASSERT(condition, message) 0
 #endif
 
 // ------------------------------- Type assertions -------------------------------
@@ -40,3 +40,11 @@ static_assert(sizeof(uint16_t) == 2, "uint16_t is not 2 byte");
 static_assert(sizeof(int64_t) == 8, "int64_t is not 8 byte");
 static_assert(sizeof(int32_t) == 4, "int32_t is not 4 byte");
 static_assert(sizeof(int16_t) == 2, "int16_t is not 2 byte");
+
+#if defined(__PSP__)
+static_assert(sizeof(size_t) == sizeof(int32_t), "size_t is not 4 byte");
+#elif defined(__vita__)
+static_assert(sizeof(size_t) == sizeof(int32_t), "size_t is not 4 byte");
+#elif defined(__PS3__)
+static_assert(sizeof(size_t) == sizeof(uint64_t), "size_t is not 8 byte");
+#endif
