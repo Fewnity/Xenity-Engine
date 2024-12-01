@@ -139,13 +139,16 @@ public:
 	static size_t RegisterScopProfiler(const std::string& name, size_t hash);
 
 	static std::unordered_map<std::string, ProfilerCategory*> s_profilerCategories;
-	static std::unordered_map<size_t, std::vector<ScopTimerResult>> s_scopProfilerList; // Hash, List
-	static std::unordered_map<size_t, std::string> s_scopProfilerNames; // Hash, Name
+	static std::unordered_map<uint64_t, std::vector<ScopTimerResult>> s_scopProfilerList; // Hash, List
+	static std::unordered_map<uint64_t, std::string> s_scopProfilerNames; // Hash, Name
 
 	static MemoryTracker* s_gameObjectMemoryTracker;
 	static MemoryTracker* s_meshDataMemoryTracker;
 	static MemoryTracker* s_textureMemoryTracker;
 	static uint32_t s_benchmarkScopeLevel;
+
+	static void SaveToBinary(const std::string& path);
+	static void LoadFromBinary(const std::string& path);
 private:
 
 	/**

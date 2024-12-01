@@ -18,6 +18,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
 #include <engine/debug/memory_info.h>
+#include <editor/ui/editor_ui.h>
 
 void ProfilerMenu::Init()
 {
@@ -243,9 +244,17 @@ void ProfilerMenu::DrawProfilerGraph()
 			if (needUpdate)
 			{
 				needUpdate = false;
-
-				offsetTime = Performance::s_scopProfilerList[std::hash<std::string>{}("Engine::Loop")][0].start;
-				endTime = Performance::s_scopProfilerList[std::hash<std::string>{}("Engine::Loop")][0].end;
+				uint64_t engineLoopKey = 0;
+				for (const auto& profilerNamesKV : Performance::s_scopProfilerNames) 
+				{
+					if (profilerNamesKV.second == "Engine::Loop") 
+					{
+						engineLoopKey = profilerNamesKV.first;
+						break;
+					}
+				}
+				offsetTime = Performance::s_scopProfilerList[engineLoopKey][0].start;
+				endTime = Performance::s_scopProfilerList[engineLoopKey][0].end;
 
 				CreateTimelineItems();
 
@@ -253,6 +262,17 @@ void ProfilerMenu::DrawProfilerGraph()
 				lastEndTime = endTime;
 			}
 		};
+
+	if (ImGui::Button("Load profiler record file"))
+	{
+		std::string filePath = EditorUI::OpenFileDialog("Select record file", "");
+		if (!filePath.empty())
+		{
+			Performance::LoadFromBinary(filePath);
+			UpdateProfilers();
+			isPaused = true;
+		}
+	}
 
 	if (ImGui::CollapsingHeader("Basic Profiler", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
@@ -267,11 +287,12 @@ void ProfilerMenu::DrawProfilerGraph()
 				UpdateProfilers();
 			}
 			static ImGuiTableFlags tableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH;
-			if (ImGui::BeginTable("Tabke", 3, tableflags))
+			if (ImGui::BeginTable("Tabke", 4, tableflags))
 			{
 				ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
 				ImGui::TableSetupColumn("Total time", ImGuiTableColumnFlags_WidthStretch);
 				ImGui::TableSetupColumn("Engine time", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableSetupColumn("Call count in frame", ImGuiTableColumnFlags_WidthStretch);
 				ImGui::TableHeadersRow();
 
 				for (const auto& profilerLine : classicProfilerItems)
@@ -284,6 +305,8 @@ void ProfilerMenu::DrawProfilerGraph()
 					ImGui::Text("%d microseconds", profilerLine.totalTime);
 					ImGui::TableSetColumnIndex(2);
 					ImGui::Text("%.2f%%", ((double)profilerLine.totalTime / (double)totalEngineTime) * 100);
+					ImGui::TableSetColumnIndex(3);
+					ImGui::Text("%d", profilerLine.callCountInFrame);
 				}
 
 				ImGui::EndTable();
@@ -406,6 +429,7 @@ void ProfilerMenu::CreateTimelineItems()
 		for (const auto& value : valCategory.second)
 		{
 			classicProfilerItem.totalTime += value.end - value.start;
+			classicProfilerItem.callCountInFrame++;
 
 			TimelineItem item(Performance::s_scopProfilerNames[valCategory.first]);
 			item.start = value.start;

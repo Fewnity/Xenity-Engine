@@ -16,7 +16,8 @@ class ClassicProfilerItem
 public:
 	ClassicProfilerItem(const std::string& _name) : name(_name) {}
 	const std::string& name;
-	uint64_t totalTime = 0;
+	uint32_t totalTime = 0;
+	uint32_t callCountInFrame = 0;
 };
 
 class TimelineItem 

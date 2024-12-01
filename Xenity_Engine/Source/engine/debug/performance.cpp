@@ -6,18 +6,23 @@
 
 #include "performance.h"
 
+#include <cstring>
+
 #include <engine/time/time.h>
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
+#include <engine/file_system/file_system.h>
+#include <engine/file_system/file.h>
 #include "memory_tracker.h"
 #include <engine/debug/stack_debug_object.h>
+#include <engine/tools/endian_utils.h>
 
 int Performance::s_drawCallCount = 0;
 int Performance::s_drawTriangleCount = 0;
 int Performance::s_updatedMaterialCount = 0;
 std::unordered_map<std::string, ProfilerCategory*> Performance::s_profilerCategories;
-std::unordered_map<size_t, std::vector<ScopTimerResult>> Performance::s_scopProfilerList; // Hash, List
-std::unordered_map<size_t, std::string> Performance::s_scopProfilerNames; // Hash, Name
+std::unordered_map<uint64_t, std::vector<ScopTimerResult>> Performance::s_scopProfilerList; // Hash, List
+std::unordered_map<uint64_t, std::string> Performance::s_scopProfilerNames; // Hash, Name
 
 int Performance::s_tickCount = 0;
 float Performance::s_averageCoolDown = 0;
@@ -127,6 +132,143 @@ size_t Performance::RegisterScopProfiler(const std::string& name, size_t hash)
 	s_scopProfilerNames[hash] = name;
 
 	return hash;
+}
+
+template<typename T>
+void WriteData(std::vector<uint8_t>& buffer, T value)
+{
+	T newValue = value;
+#if defined(__PS3__)
+	newValue = EndianUtils::SwapEndian(newValue);
+#endif
+	buffer.insert(buffer.end(), ((uint8_t*)&newValue), ((uint8_t*)&newValue) + sizeof(newValue));
+}
+
+template<typename T>
+void WriteData(std::vector<uint8_t>& buffer, T* value, size_t size)
+{
+	buffer.insert(buffer.end(), ((uint8_t*)value), ((uint8_t*)value) + size);
+}
+
+void Performance::SaveToBinary(const std::string& path)
+{
+	Debug::Print("Saving profiler data...");
+	
+	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
+	const bool isOpen = file->Open(FileMode::WriteCreateFile);
+	if (isOpen) 
+	{
+		std::vector<uint8_t> data;
+		
+		// Write profiler names count
+		WriteData(data, static_cast<uint32_t>(s_scopProfilerNames.size()));
+
+		// Write profiler names
+		for (const auto& profilerNamesKV : s_scopProfilerNames) 
+		{
+			WriteData(data, profilerNamesKV.first); // Key
+			uint32_t strSize = static_cast<uint32_t>(profilerNamesKV.second.size());
+			WriteData(data, strSize); // Name length
+			WriteData(data, profilerNamesKV.second.data(), strSize); // Name string
+		}
+
+		// Write profiler record keys count
+		WriteData(data, static_cast<uint32_t>(s_scopProfilerList.size()));
+
+		// Write profiler records
+		for (const auto& profilerRecordListKV : s_scopProfilerList)
+		{
+			WriteData(data, profilerRecordListKV.first); // Key
+
+			// Write profiler records count
+			WriteData(data, static_cast<uint32_t>(profilerRecordListKV.second.size()));
+			
+			// Write profiler record data
+			for (const auto& profilerRecord : profilerRecordListKV.second)
+			{
+				WriteData(data, profilerRecord.start);
+				WriteData(data, profilerRecord.end);
+				WriteData(data, profilerRecord.level);
+			}
+		}
+
+		file->Write(std::string(data.begin(), data.end()));
+		file->Close();
+	}
+	else 
+	{
+		Debug::PrintError("[Performance::SaveToBinary] Failed to save profiler data");
+	}
+}
+
+template<typename T>
+T ReadData(unsigned char*& data)
+{
+	T valueToGet;
+	memcpy(&valueToGet, data, sizeof(valueToGet));
+	data += sizeof(valueToGet);
+	return valueToGet;
+}
+
+void Performance::LoadFromBinary(const std::string& path)
+{
+	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
+	const bool isOpen = file->Open(FileMode::ReadOnly);
+	if (isOpen)
+	{
+		// Read file
+		size_t size = 0;
+		unsigned char* data = file->ReadAllBinary(size);
+		unsigned char* originalDataPtr = data;
+
+		ResetProfiler();
+		s_scopProfilerNames.clear();
+
+		// Extract data
+
+		// Read profiler names count
+		uint32_t profilerNameCount = ReadData<uint32_t>(data);
+		for (size_t i = 0; i < profilerNameCount; i++)
+		{
+			uint64_t key = ReadData<uint64_t>(data);
+			uint32_t strSize = ReadData<uint32_t>(data);
+			std::string str = std::string(data, data + strSize);
+			data += strSize;
+
+			s_scopProfilerNames[key] = str;
+		}
+
+		// Read profiler record keys count
+		uint32_t profilerRecordKeyCount = ReadData<uint32_t>(data);
+
+		for (size_t i = 0; i < profilerRecordKeyCount; i++)
+		{
+			uint64_t key = ReadData<uint64_t>(data);
+
+			uint32_t profilerRecordCount = ReadData<uint32_t>(data);
+			std::vector<ScopTimerResult> scopTimerResultList;
+			for (size_t j = 0; j < profilerRecordCount; j++)
+			{
+				uint32_t startValue = ReadData<uint64_t>(data);
+				uint32_t endValue = ReadData<uint64_t>(data);
+				uint32_t levelValue = ReadData<uint32_t>(data);
+
+				ScopTimerResult result;
+				result.start = startValue;
+				result.end = endValue;
+				result.level = levelValue;
+
+				scopTimerResultList.push_back(result);
+			}
+			s_scopProfilerList[key] = scopTimerResultList;
+		}
+
+		free(originalDataPtr);
+	}
+	else
+	{
+		Debug::PrintError("[Performance::LoadFromBinary] Failed to load profiler data");
+	}
 }
 
 void Performance::ResetProfiler()
