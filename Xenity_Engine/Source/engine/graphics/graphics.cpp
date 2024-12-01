@@ -276,11 +276,14 @@ void Graphics::Draw()
 				}
 			}
 
-			s_currentMode = IDrawableTypes::Draw_2D;
-			for (const RenderCommand& com : renderBatch.spriteCommands)
 			{
-				if (com.isEnabled)
-					com.drawable->DrawCommand(com);
+				SCOPED_PROFILER("Graphics::Render2D", scopeBenchmarkRender2D);
+				s_currentMode = IDrawableTypes::Draw_2D;
+				for (const RenderCommand& com : renderBatch.spriteCommands)
+				{
+					if (com.isEnabled)
+						com.drawable->DrawCommand(com);
+				}
 			}
 
 			if (!usedCamera->IsEditor())
@@ -294,18 +297,23 @@ void Graphics::Draw()
 
 			if constexpr (s_UseOpenGLFixedFunctions)
 			{
+				SCOPED_PROFILER("Graphics::SetUiCamera", scopeBenchmarkSetUiCamera);
 				if (!usedCamera->IsEditor())
 				{
 					Engine::GetRenderer().SetCameraPosition(Vector3(0, 0, -1), Vector3(0, 0, 0));
 					Engine::GetRenderer().SetProjection2D(5, 0.03f, 100);
 				}
 			}
-			const size_t uiCommandCount = renderBatch.uiCommandIndex;
-			for (size_t commandIndex = 0; commandIndex < uiCommandCount; commandIndex++)
+
 			{
-				const RenderCommand& com = renderBatch.uiCommands[commandIndex];
-				if (com.isEnabled)
-					com.drawable->DrawCommand(com);
+				SCOPED_PROFILER("Graphics::RenderUI", scopeBenchmarkRender2D);
+				const size_t uiCommandCount = renderBatch.uiCommandIndex;
+				for (size_t commandIndex = 0; commandIndex < uiCommandCount; commandIndex++)
+				{
+					const RenderCommand& com = renderBatch.uiCommands[commandIndex];
+					if (com.isEnabled)
+						com.drawable->DrawCommand(com);
+				}
 			}
 
 			drawAllBenchmark->Stop();
@@ -595,7 +603,9 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr");
 
 	if (texture == nullptr)
+	{
 		texture = AssetManager::defaultTexture.get();
+	}
 
 	drawMeshBenchmark->Start();
 
