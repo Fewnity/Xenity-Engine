@@ -39,6 +39,9 @@ Disable update function call on many components
 Check peekinput for PSP
 Fix name with spaces with docker (PsVita)
 Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)
+Add assert in CreateNewMenuSettings
+Add more define for ClassRegistry
+Use all defines of ClassRegistry/Reflection everywhere
 
 --- Can be done for the next release
 Fix light in fixed pipeline with 2 cameras
