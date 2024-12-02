@@ -139,7 +139,12 @@ public:
 	static size_t RegisterScopProfiler(const std::string& name, size_t hash);
 
 	static std::unordered_map<std::string, ProfilerCategory*> s_profilerCategories;
-	static std::unordered_map<uint64_t, std::vector<ScopTimerResult>> s_scopProfilerList; // Hash, List
+	static std::vector<std::unordered_map<uint64_t, std::vector<ScopTimerResult>>> s_scopProfilerList;
+	static uint32_t s_currentProfilerFrame;
+	static uint32_t s_currentFrame;
+	static bool s_isPaused;
+	static constexpr uint32_t s_maxProfilerFrameCount = 200;
+
 	static std::unordered_map<uint64_t, std::string> s_scopProfilerNames; // Hash, Name
 
 	static MemoryTracker* s_gameObjectMemoryTracker;

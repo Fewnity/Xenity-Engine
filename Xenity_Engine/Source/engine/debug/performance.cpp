@@ -20,8 +20,11 @@
 int Performance::s_drawCallCount = 0;
 int Performance::s_drawTriangleCount = 0;
 int Performance::s_updatedMaterialCount = 0;
+uint32_t Performance::s_currentProfilerFrame = 0;
+uint32_t Performance::s_currentFrame = 0;
+bool Performance::s_isPaused = false;
 std::unordered_map<std::string, ProfilerCategory*> Performance::s_profilerCategories;
-std::unordered_map<uint64_t, std::vector<ScopTimerResult>> Performance::s_scopProfilerList; // Hash, List
+std::vector<std::unordered_map<uint64_t, std::vector<ScopTimerResult>>> Performance::s_scopProfilerList; // Hash, List
 std::unordered_map<uint64_t, std::string> Performance::s_scopProfilerNames; // Hash, Name
 
 int Performance::s_tickCount = 0;
@@ -40,7 +43,7 @@ void Performance::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	Debug::Print("-------- Profiler initiated --------", true);
-
+	s_scopProfilerList.resize(s_maxProfilerFrameCount);
 #if defined(DEBUG)
 	s_gameObjectMemoryTracker = new MemoryTracker("GameObjects");
 	s_meshDataMemoryTracker = new MemoryTracker("Mesh Data");
@@ -176,7 +179,7 @@ void Performance::SaveToBinary(const std::string& path)
 		WriteData(data, static_cast<uint32_t>(s_scopProfilerList.size()));
 
 		// Write profiler records
-		for (const auto& profilerRecordListKV : s_scopProfilerList)
+		for (const auto& profilerRecordListKV : s_scopProfilerList[s_currentProfilerFrame])
 		{
 			WriteData(data, profilerRecordListKV.first); // Key
 
@@ -260,7 +263,7 @@ void Performance::LoadFromBinary(const std::string& path)
 
 				scopTimerResultList.push_back(result);
 			}
-			s_scopProfilerList[key] = scopTimerResultList;
+			s_scopProfilerList[s_currentProfilerFrame][key] = scopTimerResultList;
 		}
 
 		free(originalDataPtr);
@@ -275,7 +278,14 @@ void Performance::ResetProfiler()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	s_scopProfilerList.clear();
+	s_currentFrame++;
+	s_currentProfilerFrame++;
+	if (s_currentProfilerFrame == s_maxProfilerFrameCount)
+	{
+		s_currentProfilerFrame = 0;
+	}
+
+	Performance::s_scopProfilerList[s_currentProfilerFrame].clear();
 
 	for (const auto& categoryKV : Performance::s_profilerCategories)
 	{

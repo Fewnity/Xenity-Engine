@@ -150,7 +150,7 @@ void ProfilerMenu::DrawMemoryStats()
 
 void ProfilerMenu::DrawProfilerBenchmarks()
 {
-	if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+	if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_Framed))
 	{
 		if (EngineSettings::values.useProfiler)
 		{
@@ -188,6 +188,7 @@ void ProfilerMenu::DrawProfilerGraph()
 	if (ImGui::Button(pauseText.c_str()))
 	{
 		isPaused = !isPaused;
+		Performance::s_isPaused = isPaused;
 	}
 
 	uint64_t offsetTime = lastStartTime;
@@ -208,8 +209,8 @@ void ProfilerMenu::DrawProfilerGraph()
 						break;
 					}
 				}
-				offsetTime = Performance::s_scopProfilerList[engineLoopKey][0].start;
-				endTime = Performance::s_scopProfilerList[engineLoopKey][0].end;
+				offsetTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame][engineLoopKey][0].start;
+				endTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame][engineLoopKey][0].end;
 
 				CreateTimelineItems();
 
@@ -226,6 +227,7 @@ void ProfilerMenu::DrawProfilerGraph()
 			Performance::LoadFromBinary(filePath);
 			UpdateProfilers();
 			isPaused = true;
+			Performance::s_isPaused = isPaused;
 		}
 	}
 
@@ -241,8 +243,30 @@ void ProfilerMenu::DrawProfilerGraph()
 			{
 				UpdateProfilers();
 			}
-			static ImGuiTableFlags tableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH;
-			if (ImGui::BeginTable("Tabke", 4, tableflags))
+
+			static ImGuiTableFlags profilerDumpListTableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH | ImGuiTableFlags_ScrollY;
+			if (ImGui::BeginTable("ProfilerDumpTable", 1, profilerDumpListTableflags, ImVec2(0, 200)))
+			{
+				ImGui::TableSetupColumn("id", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableHeadersRow();
+
+				int i = 0;
+				for (const auto& profilerLine : Performance::s_scopProfilerList)
+				{
+					ImGui::TableNextRow();
+					ImGui::TableSetColumnIndex(0);
+					std::string str = std::to_string(i);
+					if (ImGui::Selectable(str.c_str()))
+					{
+						selectedProfilingRow = i;
+						Debug::Print(std::to_string(i));
+					}
+					i++;
+				}
+				ImGui::EndTable();
+			}
+			static ImGuiTableFlags basicProfilerTableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH;
+			if (ImGui::BeginTable("BasicProfilerTable", 4, basicProfilerTableflags))
 			{
 				ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
 				ImGui::TableSetupColumn("Total time", ImGuiTableColumnFlags_WidthStretch);
@@ -379,7 +403,7 @@ void ProfilerMenu::CreateTimelineItems()
 	timelineItems.clear();
 	classicProfilerItems.clear();
 	lastMaxLevel = 0;
-	for (const auto& valCategory : Performance::s_scopProfilerList)
+	for (const auto& valCategory : Performance::s_scopProfilerList[Performance::s_currentProfilerFrame])
 	{
 		ClassicProfilerItem& classicProfilerItem = classicProfilerItems.emplace_back(Performance::s_scopProfilerNames[valCategory.first]);
 
@@ -393,7 +417,9 @@ void ProfilerMenu::CreateTimelineItems()
 			item.end = value.end;
 			item.level = value.level;
 			if (lastMaxLevel < value.level)
+			{
 				lastMaxLevel = value.level;
+			}
 			timelineItems.push_back(item);
 		}
 	}

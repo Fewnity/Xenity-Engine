@@ -28,5 +28,5 @@ ScopeBenchmark::~ScopeBenchmark()
 	const uint64_t end = std::chrono::time_point_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now()).time_since_epoch().count();
 #endif
 	Performance::s_benchmarkScopeLevel--;
-	Performance::s_scopProfilerList[m_hash].push_back({ m_start , end , m_scopeLevel });
+	Performance::s_scopProfilerList[Performance::s_currentProfilerFrame][m_hash].push_back({ m_start , end , m_scopeLevel });
 }

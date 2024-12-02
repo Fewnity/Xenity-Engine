@@ -71,5 +71,6 @@ private:
 	uint64_t lastStartTime;
 	uint64_t lastEndTime;
 	uint32_t lastMaxLevel;
+	uint32_t selectedProfilingRow = 0;
 };
 
