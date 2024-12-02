@@ -110,6 +110,7 @@ protected:
 	friend class FileExplorerMenu;
 	friend class Window;
 	friend class SceneManager;
+	friend class EngineDebugMenu;
 
 	std::shared_ptr<File> m_file = nullptr;
 	FileType m_fileType = FileType::File_Other;

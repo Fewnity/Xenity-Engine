@@ -46,7 +46,6 @@ void ProfilerMenu::Draw()
 		DrawMemoryStats();
 #if defined(DEBUG)
 		DrawProfilerBenchmarks();
-		DrawFilesList();
 #endif
 
 		DrawProfilerGraph();
@@ -179,50 +178,6 @@ void ProfilerMenu::DrawProfilerBenchmarks()
 		else
 		{
 			ImGui::Text("Profiler disabled");
-		}
-	}
-}
-
-void ProfilerMenu::DrawFilesList()
-{
-	if (ImGui::CollapsingHeader("Files", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
-	{
-		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
-		{
-			const std::shared_ptr<FileReference>& fileRef = AssetManager::GetFileReference(i);
-			if (fileRef && fileRef->GetFileStatus() != FileStatus::FileStatus_Loaded)
-			{
-				ImGui::SetCursorPosX(20);
-				if (fileRef->m_file)
-				{
-					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->m_fileId, fileRef->GetFileStatus() == FileStatus::FileStatus_Loaded, fileRef.use_count());
-					ImGui::SameLine();
-					ImGui::Text("%s%s", fileRef->m_file->GetFileName().c_str(), fileRef->m_file->GetFileExtension().c_str());
-				}
-				else
-				{
-					ImGui::Text("Missing file isLoaded:%d type:%d useCount:%ld", fileRef->GetFileStatus() == FileStatus::FileStatus_Loaded, static_cast<int>(fileRef->GetFileType()), fileRef.use_count());
-				}
-			}
-		}
-		ImGui::Text("-----------------------------------------------------");
-		for (int i = 0; i < AssetManager::GetFileReferenceCount(); i++)
-		{
-			const std::shared_ptr<FileReference>& fileRef = AssetManager::GetFileReference(i);
-			if (fileRef && fileRef->GetFileStatus() == FileStatus::FileStatus_Loaded)
-			{
-				ImGui::SetCursorPosX(20);
-				if (fileRef->m_file)
-				{
-					ImGui::Text("File%lld isLoaded:%d useCount:%ld :", fileRef->m_fileId, fileRef->GetFileStatus() == FileStatus::FileStatus_Loaded, fileRef.use_count());
-					ImGui::SameLine();
-					ImGui::Text("%s%s", fileRef->m_file->GetFileName().c_str(), fileRef->m_file->GetFileExtension().c_str());
-				}
-				else
-				{
-					ImGui::Text("missing file isLoaded:%d useCount:%ld", fileRef->GetFileStatus() == FileStatus::FileStatus_Loaded, fileRef.use_count());
-				}
-			}
 		}
 	}
 }

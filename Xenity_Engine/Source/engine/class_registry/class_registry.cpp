@@ -27,6 +27,7 @@
 #include <editor/ui/menus/docker_config_menu.h>
 #include <editor/ui/menus/build_settings_menu.h>
 #include <editor/ui/menus/engine_asset_manager_menu.h>
+#include <editor/ui/menus/engine_debug_menu.h>
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> ClassRegistry::s_nameToMenu;
 std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
 #endif
@@ -179,6 +180,7 @@ void ClassRegistry::RegisterMenus()
 	AddMenuClass<AboutMenu>("AboutMenu");
 	AddMenuClass<BuildSettingsMenu>("BuildSettingsMenu");
 	AddMenuClass<EngineAssetManagerMenu>("EngineAssetManagerMenu");
+	AddMenuClass<EngineDebugMenu>("EngineDebugMenu");
 
 	AddMenuClass<FileExplorerMenu>("FileExplorerMenu");
 	AddMenuClass<HierarchyMenu>("HierarchyMenu");

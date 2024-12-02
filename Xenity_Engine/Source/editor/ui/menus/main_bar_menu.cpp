@@ -423,6 +423,12 @@ void MainBarMenu::Draw()
 			{
 				Editor::AddMenu("ConsoleMenu", true);
 			}
+#if defined(DEBUG)
+			if (ImGui::MenuItem("Engine Debug"))
+			{
+				Editor::AddMenu("EngineDebugMenu", true);
+			}
+#endif
 			/*if (ImGui::MenuItem("Sprite Editor"))
 			{
 				Editor::AddMenu("SpriteEditorMenu", true);

@@ -191,6 +191,7 @@ void Editor::CreateNewMenuSettings()
 	AddMenuSetting(menuSettingList, "AboutMenu", false, true);
 	AddMenuSetting(menuSettingList, "BuildSettingsMenu", false, true);
 	AddMenuSetting(menuSettingList, "EngineAssetManagerMenu", false, true);
+	AddMenuSetting(menuSettingList, "EngineDebugMenu", false, true);
 
 	AddMenuSetting(menuSettingList, "FileExplorerMenu", true, false);
 	AddMenuSetting(menuSettingList, "HierarchyMenu", true, false);

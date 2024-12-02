@@ -54,11 +54,6 @@ private:
 	*/
 	void DrawMemoryStats();
 
-	/**
-	* Draw files reference count list
-	*/
-	void DrawFilesList();
-
 	void DrawProfilerGraph();
 
 	void CreateTimelineItems();
