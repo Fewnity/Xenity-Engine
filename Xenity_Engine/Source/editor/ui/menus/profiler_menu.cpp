@@ -28,7 +28,7 @@ void ProfilerMenu::Draw()
 {
 	UpdateFpsCounter();
 	UpdateMemoryCounter();
-	const std::string windowName = "Debug###Debug" + std::to_string(id);
+	const std::string windowName = "Profiling###Profiling" + std::to_string(id);
 	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
@@ -124,21 +124,21 @@ void ProfilerMenu::DrawMemoryStats()
 #if defined(DEBUG)
 		ImGui::Separator();
 
-		MemoryTracker* goMem = Performance::s_gameObjectMemoryTracker;
+		const MemoryTracker* goMem = Performance::s_gameObjectMemoryTracker;
 
 		ImGui::Text("%s:", goMem->m_name.c_str());
 		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", goMem->m_allocatedMemory - goMem->m_deallocatedMemory, goMem->m_allocatedMemory);
 		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (goMem->m_allocatedMemory - goMem->m_deallocatedMemory) / 1000000.0f, goMem->m_allocatedMemory / 1000000.0f);
 		ImGui::Text("Alloc count: %d, Delete count: %d", goMem->m_allocCount, goMem->m_deallocCount);
 
-		MemoryTracker* meshDataMem = Performance::s_meshDataMemoryTracker;
+		const MemoryTracker* meshDataMem = Performance::s_meshDataMemoryTracker;
 		ImGui::Separator();
 		ImGui::Text("%s:", meshDataMem->m_name.c_str());
 		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", meshDataMem->m_allocatedMemory - meshDataMem->m_deallocatedMemory, meshDataMem->m_allocatedMemory);
 		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (meshDataMem->m_allocatedMemory - meshDataMem->m_deallocatedMemory) / 1000000.0f, meshDataMem->m_allocatedMemory / 1000000.0f);
 		ImGui::Text("Alloc count: %d, Delete count: %d", meshDataMem->m_allocCount, meshDataMem->m_deallocCount);
 
-		MemoryTracker* textureMem = Performance::s_textureMemoryTracker;
+		const MemoryTracker* textureMem = Performance::s_textureMemoryTracker;
 		ImGui::Separator();
 		ImGui::Text("%s:", textureMem->m_name.c_str());
 		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", textureMem->m_allocatedMemory - textureMem->m_deallocatedMemory, textureMem->m_allocatedMemory);
@@ -195,11 +195,11 @@ void ProfilerMenu::DrawProfilerGraph()
 	uint64_t endTime = lastEndTime;
 	bool needUpdate = true;
 
-	if (isPaused) 
+	if (isPaused)
 	{
 		Performance::s_currentProfilerFrame = selectedProfilingRow;
 	}
-	else 
+	else
 	{
 		selectedProfilingRow = Performance::s_currentProfilerFrame;
 	}
@@ -210,16 +210,16 @@ void ProfilerMenu::DrawProfilerGraph()
 			{
 				needUpdate = false;
 				uint64_t engineLoopKey = 0;
-				for (const auto& profilerNamesKV : Performance::s_scopProfilerNames) 
+				for (const auto& profilerNamesKV : Performance::s_scopProfilerNames)
 				{
-					if (profilerNamesKV.second == "Engine::Loop") 
+					if (profilerNamesKV.second == "Engine::Loop")
 					{
 						engineLoopKey = profilerNamesKV.first;
 						break;
 					}
 				}
-				offsetTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame][engineLoopKey][0].start;
-				endTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame][engineLoopKey][0].end;
+				offsetTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults[engineLoopKey][0].start;
+				endTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults[engineLoopKey][0].end;
 
 				CreateTimelineItems();
 
@@ -240,48 +240,61 @@ void ProfilerMenu::DrawProfilerGraph()
 		}
 	}
 
-	if (ImGui::CollapsingHeader("Basic Profiler", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+
+	if (Performance::s_scopProfilerList.empty())
 	{
-		if (Performance::s_scopProfilerList.empty())
+		ImGui::Text("No profiler data available");
+	}
+	else
+	{
+		//if (!isPaused)
 		{
-			ImGui::Text("No profiler data available");
+			UpdateProfilers();
 		}
-		else
+
+		static ImGuiTableFlags profilerDumpListTableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH | ImGuiTableFlags_ScrollY;
+		if (ImGui::BeginTable("ProfilerDumpTable", 2, profilerDumpListTableflags, ImVec2(0, 200)))
 		{
-			//if (!isPaused)
-			{
-				UpdateProfilers();
-			}
+			ImGui::TableSetupColumn("id", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("duration", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupScrollFreeze(0,1);
+			ImGui::TableHeadersRow();
 
-			static ImGuiTableFlags profilerDumpListTableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH | ImGuiTableFlags_ScrollY;
-			if (ImGui::BeginTable("ProfilerDumpTable", 1, profilerDumpListTableflags, ImVec2(0, 200)))
+			uint32_t i = 0;
+			for (const auto& profilerLine : Performance::s_scopProfilerList)
 			{
-				ImGui::TableSetupColumn("id", ImGuiTableColumnFlags_WidthStretch);
-				ImGui::TableHeadersRow();
-
-				int i = 0;
-				for (const auto& profilerLine : Performance::s_scopProfilerList)
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				const std::string idStr = std::to_string(profilerLine.frameId);
+				if (ImGui::Selectable(idStr.c_str(), selectedProfilingRow == i))
 				{
-					ImGui::TableNextRow();
-					ImGui::TableSetColumnIndex(0);
-					std::string str = std::to_string(i);
-					if (ImGui::Selectable(str.c_str()))
-					{
-						selectedProfilingRow = i;
-						Debug::Print(std::to_string(i));
-						isPaused = true;
-					}
-					i++;
+					selectedProfilingRow = i;
+					isPaused = true;
 				}
-				ImGui::EndTable();
+
+				ImGui::TableSetColumnIndex(1);
+				const std::string frameDurationStr = std::to_string(profilerLine.frameDuration);
+				if (ImGui::Selectable(frameDurationStr.c_str(), selectedProfilingRow == i))
+				{
+					selectedProfilingRow = i;
+					isPaused = true;
+				}
+
+				i++;
 			}
-			static ImGuiTableFlags basicProfilerTableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH;
-			if (ImGui::BeginTable("BasicProfilerTable", 4, basicProfilerTableflags))
+			ImGui::EndTable();
+		}
+
+		if (ImGui::CollapsingHeader("Basic Profiler", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+		{
+			static ImGuiTableFlags basicProfilerTableflags = ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersH | ImGuiTableFlags_ScrollY;
+			if (ImGui::BeginTable("BasicProfilerTable", 4, basicProfilerTableflags, ImVec2(0, 300)))
 			{
 				ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
 				ImGui::TableSetupColumn("Total time", ImGuiTableColumnFlags_WidthStretch);
 				ImGui::TableSetupColumn("Engine time", ImGuiTableColumnFlags_WidthStretch);
 				ImGui::TableSetupColumn("Call count in frame", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableSetupScrollFreeze(0, 1);
 				ImGui::TableHeadersRow();
 
 				for (const auto& profilerLine : classicProfilerItems)
@@ -413,7 +426,7 @@ void ProfilerMenu::CreateTimelineItems()
 	timelineItems.clear();
 	classicProfilerItems.clear();
 	lastMaxLevel = 0;
-	for (const auto& valCategory : Performance::s_scopProfilerList[Performance::s_currentProfilerFrame])
+	for (const auto& valCategory : Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults)
 	{
 		ClassicProfilerItem& classicProfilerItem = classicProfilerItems.emplace_back(Performance::s_scopProfilerNames[valCategory.first]);
 

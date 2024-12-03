@@ -86,6 +86,13 @@ struct ScopTimerResult
 	uint32_t level;
 };
 
+struct ProfilerFrameAnalysis
+{
+	std::unordered_map<uint64_t, std::vector<ScopTimerResult>> timerResults;
+	uint32_t frameId;
+	uint32_t frameDuration;
+};
+
 class Performance
 {
 public:
@@ -138,14 +145,16 @@ public:
 
 	static size_t RegisterScopProfiler(const std::string& name, size_t hash);
 
+	static uint32_t GetProfilerFrameDuration(const std::unordered_map<uint64_t, std::vector<ScopTimerResult>>& profilerFrame);
+
 	static std::unordered_map<std::string, ProfilerCategory*> s_profilerCategories;
-	static std::vector<std::unordered_map<uint64_t, std::vector<ScopTimerResult>>> s_scopProfilerList;
+	static std::vector<ProfilerFrameAnalysis> s_scopProfilerList;  // Hash to the name, List
 	static uint32_t s_currentProfilerFrame;
 	static uint32_t s_currentFrame;
 	static bool s_isPaused;
 	static constexpr uint32_t s_maxProfilerFrameCount = 200;
 
-	static std::unordered_map<uint64_t, std::string> s_scopProfilerNames; // Hash, Name
+	static std::unordered_map<uint64_t, std::string> s_scopProfilerNames; // Hash to the name, Name
 
 	static MemoryTracker* s_gameObjectMemoryTracker;
 	static MemoryTracker* s_meshDataMemoryTracker;

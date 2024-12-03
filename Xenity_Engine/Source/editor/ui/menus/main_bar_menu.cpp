@@ -407,7 +407,7 @@ void MainBarMenu::Draw()
 			{
 				Editor::AddMenu("InspectorMenu", true);
 			}
-			if (ImGui::MenuItem("Profiler"))
+			if (ImGui::MenuItem("Profiling"))
 			{
 				Editor::AddMenu("ProfilerMenu", true);
 			}

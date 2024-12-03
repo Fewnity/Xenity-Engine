@@ -21,7 +21,7 @@ void EngineDebugMenu::Init()
 void EngineDebugMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
-	const bool visible = ImGui::Begin("Debug", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Engine Debug", &isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

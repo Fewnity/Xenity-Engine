@@ -30,6 +30,6 @@ ScopeBenchmark::~ScopeBenchmark()
 	Performance::s_benchmarkScopeLevel--;
 	if (!Performance::s_isPaused) 
 	{
-		Performance::s_scopProfilerList[Performance::s_currentProfilerFrame][m_hash].push_back({ m_start , end , m_scopeLevel });
+		Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults[m_hash].push_back({ m_start , end , m_scopeLevel });
 	}
 }

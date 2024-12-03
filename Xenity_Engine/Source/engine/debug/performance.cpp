@@ -24,7 +24,7 @@ uint32_t Performance::s_currentProfilerFrame = 0;
 uint32_t Performance::s_currentFrame = 0;
 bool Performance::s_isPaused = false;
 std::unordered_map<std::string, ProfilerCategory*> Performance::s_profilerCategories;
-std::vector<std::unordered_map<uint64_t, std::vector<ScopTimerResult>>> Performance::s_scopProfilerList; // Hash to the name, List
+std::vector<ProfilerFrameAnalysis> Performance::s_scopProfilerList; // Hash to the name, List
 std::unordered_map<uint64_t, std::string> Performance::s_scopProfilerNames; // Hash to the name, Name
 
 int Performance::s_tickCount = 0;
@@ -137,6 +137,23 @@ size_t Performance::RegisterScopProfiler(const std::string& name, size_t hash)
 	return hash;
 }
 
+uint32_t Performance::GetProfilerFrameDuration(const std::unordered_map<uint64_t, std::vector<ScopTimerResult>>& profilerFrame)
+{
+	uint64_t engineLoopKey = 0;
+	for (const auto& profilerNamesKV : Performance::s_scopProfilerNames)
+	{
+		if (profilerNamesKV.second == "Engine::Loop")
+		{
+			engineLoopKey = profilerNamesKV.first;
+			break;
+		}
+	}
+	uint64_t offsetTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults[engineLoopKey][0].start;
+	uint64_t endTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults[engineLoopKey][0].end;
+
+	return endTime - offsetTime;
+}
+
 template<typename T>
 void WriteData(std::vector<uint8_t>& buffer, T value)
 {
@@ -176,10 +193,10 @@ void Performance::SaveToBinary(const std::string& path)
 		}
 
 		// Write profiler record keys count
-		WriteData(data, static_cast<uint32_t>(s_scopProfilerList.size()));
+		WriteData(data, static_cast<uint32_t>(s_scopProfilerList[s_currentProfilerFrame].timerResults.size()));
 
 		// Write profiler records
-		for (const auto& profilerRecordListKV : s_scopProfilerList[s_currentProfilerFrame])
+		for (const auto& profilerRecordListKV : s_scopProfilerList[s_currentProfilerFrame].timerResults)
 		{
 			WriteData(data, profilerRecordListKV.first); // Key
 
@@ -263,7 +280,7 @@ void Performance::LoadFromBinary(const std::string& path)
 
 				scopTimerResultList.push_back(result);
 			}
-			s_scopProfilerList[s_currentProfilerFrame][key] = scopTimerResultList;
+			s_scopProfilerList[s_currentProfilerFrame].timerResults[key] = scopTimerResultList;
 		}
 
 		free(originalDataPtr);
@@ -278,16 +295,18 @@ void Performance::ResetProfiler()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
+	s_currentFrame++;
 	if (!s_isPaused)
 	{
-		s_currentFrame++;
+		Performance::s_scopProfilerList[s_currentProfilerFrame].frameDuration = GetProfilerFrameDuration(Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults);
 		s_currentProfilerFrame++;
 		if (s_currentProfilerFrame == s_maxProfilerFrameCount)
 		{
 			s_currentProfilerFrame = 0;
 		}
 
-		Performance::s_scopProfilerList[s_currentProfilerFrame].clear();
+		Performance::s_scopProfilerList[s_currentProfilerFrame].frameId = s_currentFrame;
+		Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults.clear();
 	}
 
 	for (const auto& categoryKV : Performance::s_profilerCategories)
