@@ -157,40 +157,40 @@ void ClassRegistry::RegisterEngineFileClasses()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	// List all Engine file classes
-	AddFileClass<Texture>("Texture", FileType::File_Texture);
-	AddFileClass<MeshData>("MeshData", FileType::File_Mesh);
-	AddFileClass<AudioClip>("AudioClip", FileType::File_Audio);
-	AddFileClass<Scene>("Scene", FileType::File_Scene);
-	AddFileClass<SkyBox>("SkyBox", FileType::File_Skybox);
-	AddFileClass<Font>("Font", FileType::File_Font);
-	AddFileClass<Shader>("Shader", FileType::File_Shader);
-	AddFileClass<Material>("Material", FileType::File_Material);
-	AddFileClass<Icon>("Icon", FileType::File_Icon);
+	REGISTER_FILE(Texture, FileType::File_Texture);
+	REGISTER_FILE(MeshData, FileType::File_Mesh);
+	REGISTER_FILE(AudioClip, FileType::File_Audio);
+	REGISTER_FILE(Scene, FileType::File_Scene);
+	REGISTER_FILE(SkyBox, FileType::File_Skybox);
+	REGISTER_FILE(Font, FileType::File_Font);
+	REGISTER_FILE(Shader, FileType::File_Shader);
+	REGISTER_FILE(Material, FileType::File_Material);
+	REGISTER_FILE(Icon, FileType::File_Icon);
 }
 #if defined (EDITOR)
 void ClassRegistry::RegisterMenus()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	AddMenuClass<CreateClassMenu>("CreateClassMenu");
-	AddMenuClass<LightingMenu>("LightingMenu");
-	AddMenuClass<ProjectSettingsMenu>("ProjectSettingsMenu");
-	AddMenuClass<EngineSettingsMenu>("EngineSettingsMenu");
-	AddMenuClass<DockerConfigMenu>("DockerConfigMenu");
-	AddMenuClass<AboutMenu>("AboutMenu");
-	AddMenuClass<BuildSettingsMenu>("BuildSettingsMenu");
-	AddMenuClass<EngineAssetManagerMenu>("EngineAssetManagerMenu");
-	AddMenuClass<EngineDebugMenu>("EngineDebugMenu");
+	REGISTER_MENU(CreateClassMenu);
+	REGISTER_MENU(LightingMenu);
+	REGISTER_MENU(ProjectSettingsMenu);
+	REGISTER_MENU(EngineSettingsMenu);
+	REGISTER_MENU(DockerConfigMenu);
+	REGISTER_MENU(AboutMenu);
+	REGISTER_MENU(BuildSettingsMenu);
+	REGISTER_MENU(EngineAssetManagerMenu);
+	REGISTER_MENU(EngineDebugMenu);
 
-	AddMenuClass<FileExplorerMenu>("FileExplorerMenu");
-	AddMenuClass<HierarchyMenu>("HierarchyMenu");
-	AddMenuClass<InspectorMenu>("InspectorMenu");
-	AddMenuClass<ProfilerMenu>("ProfilerMenu");
-	AddMenuClass<GameMenu>("GameMenu");
-	AddMenuClass<SceneMenu>("SceneMenu");
-	AddMenuClass<CompilingMenu>("CompilingMenu");
-	AddMenuClass<SelectProjectMenu>("SelectProjectMenu");
-	AddMenuClass<CreateProjectMenu>("CreateProjectMenu");
-	AddMenuClass<ConsoleMenu>("ConsoleMenu");
+	REGISTER_MENU(FileExplorerMenu);
+	REGISTER_MENU(HierarchyMenu);
+	REGISTER_MENU(InspectorMenu);
+	REGISTER_MENU(ProfilerMenu);
+	REGISTER_MENU(GameMenu);
+	REGISTER_MENU(SceneMenu);
+	REGISTER_MENU(CompilingMenu);
+	REGISTER_MENU(SelectProjectMenu);
+	REGISTER_MENU(CreateProjectMenu);
+	REGISTER_MENU(ConsoleMenu);
 }
 #endif

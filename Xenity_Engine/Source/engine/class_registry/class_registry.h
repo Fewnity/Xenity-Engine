@@ -19,11 +19,15 @@
 
 #if defined (EDITOR)
 class Menu;
+#define REGISTER_MENU(menu) AddMenuClass<menu>(#menu)
 #endif
 class Component;
 
 #define REGISTER_COMPONENT(component) ClassRegistry::AddComponentClass<component>(#component)
 #define REGISTER_INVISIBLE_COMPONENT(component) ClassRegistry::AddComponentClass<component>(#component, false)
+
+#define REGISTER_FILE(fileClass, fileType) AddFileClass<fileClass>(#fileClass, fileType)
+
 
 class API ClassRegistry
 {
