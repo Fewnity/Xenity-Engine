@@ -24,8 +24,8 @@ uint32_t Performance::s_currentProfilerFrame = 0;
 uint32_t Performance::s_currentFrame = 0;
 bool Performance::s_isPaused = false;
 std::unordered_map<std::string, ProfilerCategory*> Performance::s_profilerCategories;
-std::vector<std::unordered_map<uint64_t, std::vector<ScopTimerResult>>> Performance::s_scopProfilerList; // Hash, List
-std::unordered_map<uint64_t, std::string> Performance::s_scopProfilerNames; // Hash, Name
+std::vector<std::unordered_map<uint64_t, std::vector<ScopTimerResult>>> Performance::s_scopProfilerList; // Hash to the name, List
+std::unordered_map<uint64_t, std::string> Performance::s_scopProfilerNames; // Hash to the name, Name
 
 int Performance::s_tickCount = 0;
 float Performance::s_averageCoolDown = 0;
@@ -72,7 +72,7 @@ void Performance::AddDrawCall()
 void Performance::AddDrawTriangles(int count)
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
-	s_drawTriangleCount+= count;
+	s_drawTriangleCount += count;
 }
 
 void Performance::AddMaterialUpdate()
@@ -156,18 +156,18 @@ void WriteData(std::vector<uint8_t>& buffer, T* value, size_t size)
 void Performance::SaveToBinary(const std::string& path)
 {
 	Debug::Print("Saving profiler data...");
-	
+
 	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool isOpen = file->Open(FileMode::WriteCreateFile);
-	if (isOpen) 
+	if (isOpen)
 	{
 		std::vector<uint8_t> data;
-		
+
 		// Write profiler names count
 		WriteData(data, static_cast<uint32_t>(s_scopProfilerNames.size()));
 
 		// Write profiler names
-		for (const auto& profilerNamesKV : s_scopProfilerNames) 
+		for (const auto& profilerNamesKV : s_scopProfilerNames)
 		{
 			WriteData(data, profilerNamesKV.first); // Key
 			uint32_t strSize = static_cast<uint32_t>(profilerNamesKV.second.size());
@@ -185,7 +185,7 @@ void Performance::SaveToBinary(const std::string& path)
 
 			// Write profiler records count
 			WriteData(data, static_cast<uint32_t>(profilerRecordListKV.second.size()));
-			
+
 			// Write profiler record data
 			for (const auto& profilerRecord : profilerRecordListKV.second)
 			{
@@ -198,7 +198,7 @@ void Performance::SaveToBinary(const std::string& path)
 		file->Write(std::string(data.begin(), data.end()));
 		file->Close();
 	}
-	else 
+	else
 	{
 		Debug::PrintError("[Performance::SaveToBinary] Failed to save profiler data");
 	}
@@ -278,14 +278,17 @@ void Performance::ResetProfiler()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	s_currentFrame++;
-	s_currentProfilerFrame++;
-	if (s_currentProfilerFrame == s_maxProfilerFrameCount)
+	if (!s_isPaused)
 	{
-		s_currentProfilerFrame = 0;
-	}
+		s_currentFrame++;
+		s_currentProfilerFrame++;
+		if (s_currentProfilerFrame == s_maxProfilerFrameCount)
+		{
+			s_currentProfilerFrame = 0;
+		}
 
-	Performance::s_scopProfilerList[s_currentProfilerFrame].clear();
+		Performance::s_scopProfilerList[s_currentProfilerFrame].clear();
+	}
 
 	for (const auto& categoryKV : Performance::s_profilerCategories)
 	{

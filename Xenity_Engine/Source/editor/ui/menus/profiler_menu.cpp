@@ -195,6 +195,15 @@ void ProfilerMenu::DrawProfilerGraph()
 	uint64_t endTime = lastEndTime;
 	bool needUpdate = true;
 
+	if (isPaused) 
+	{
+		Performance::s_currentProfilerFrame = selectedProfilingRow;
+	}
+	else 
+	{
+		selectedProfilingRow = Performance::s_currentProfilerFrame;
+	}
+
 	auto UpdateProfilers = [this, &offsetTime, &endTime, &needUpdate]()
 		{
 			if (needUpdate)
@@ -239,7 +248,7 @@ void ProfilerMenu::DrawProfilerGraph()
 		}
 		else
 		{
-			if (!isPaused)
+			//if (!isPaused)
 			{
 				UpdateProfilers();
 			}
@@ -260,6 +269,7 @@ void ProfilerMenu::DrawProfilerGraph()
 					{
 						selectedProfilingRow = i;
 						Debug::Print(std::to_string(i));
+						isPaused = true;
 					}
 					i++;
 				}
@@ -305,7 +315,7 @@ void ProfilerMenu::DrawProfilerGraph()
 			float lineHeigh = 1;
 
 			// If the profiler not paused, update the timeline items
-			if (!isPaused)
+			//if (!isPaused)
 			{
 				UpdateProfilers();
 			}
