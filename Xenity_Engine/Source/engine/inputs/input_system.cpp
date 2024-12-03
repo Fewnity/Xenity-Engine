@@ -193,7 +193,7 @@ void InputSystem::UpdateControllers()
 void InputSystem::Read(const SDL_Event& event)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-	UpdateControllers();
+
 	switch (event.type)
 	{
 	case SDL_EVENT_MOUSE_MOTION:

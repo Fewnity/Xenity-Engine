@@ -252,6 +252,9 @@ void Engine::CheckEvents()
 	SCOPED_PROFILER("Engine::CheckEvents", scopeBenchmark);
 	int focusCount = 0;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+
+	InputSystem::UpdateControllers();
+
 	// Check SDL event
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
