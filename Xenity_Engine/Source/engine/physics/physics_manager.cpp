@@ -285,10 +285,10 @@ void PhysicsManager::Update()
 
 	const size_t colliderCount = s_colliders.size();
 
-	//physDynamicsWorld->stepSimulation(Time::GetDeltaTime(), 1, 0.01666666f / 3.0f);
 	{
 		SCOPED_PROFILER("PhysicsManager::Update|StepSimulation", scopeBenchmark2);
-		s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime());
+		//s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime(), 2, Time::GetDeltaTime() / 2); // Increase physics accuracy but trigger won't work properly
+		s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime(), 0);
 	}
 
 	{

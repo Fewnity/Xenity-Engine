@@ -374,7 +374,10 @@ void Engine::Loop()
 			if (ProjectManager::IsProjectLoaded())
 			{
 				AssetManager::RemoveUnusedFiles();
-
+				if (GameplayManager::GetGameState() == GameState::Playing)
+				{
+					PhysicsManager::Update();
+				}
 				// Update all components
 				componentsUpdateBenchmark->Start();
 #if defined(EDITOR)
@@ -399,11 +402,6 @@ void Engine::Loop()
 #else
 				GameplayManager::UpdateComponents();
 #endif
-
-				if (GameplayManager::GetGameState() == GameState::Playing)
-				{
-					PhysicsManager::Update();
-				}
 
 				// Remove all destroyed gameobjects and components
 				GameplayManager::RemoveDestroyedGameObjects();
