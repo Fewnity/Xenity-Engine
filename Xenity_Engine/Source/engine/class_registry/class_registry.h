@@ -228,6 +228,21 @@ public:
 		return s_classInfos[0].name;
 	}
 
+	static size_t GetClassInfosCount()
+	{
+		return s_classInfos.size();
+	}
+
+	static size_t GetFileClassInfosCount()
+	{
+		return s_fileClassInfos.size();
+	}
+
+	static size_t GetMenuClassInfosCount()
+	{
+		return s_menuClassInfos.size();
+	}
+
 private:
 
 	static std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> s_nameToComponent;

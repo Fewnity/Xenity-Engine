@@ -203,6 +203,8 @@ void Editor::CreateNewMenuSettings()
 	AddMenuSetting(menuSettingList, "SelectProjectMenu", true, false);
 	AddMenuSetting(menuSettingList, "CreateProjectMenu", true, false);
 	AddMenuSetting(menuSettingList, "ConsoleMenu", true, false);
+
+	XASSERT(menuSettingList.size() == ClassRegistry::GetMenuClassInfosCount(), "[Editor::CreateNewMenuSettings] Menu count is not correct");
 }
 
 void Editor::OnFileModified()
