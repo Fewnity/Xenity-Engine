@@ -187,17 +187,19 @@ void Graphics::Draw()
 	const int shaderCount = AssetManager::GetShaderCount();
 	const int matCount = AssetManager::GetMaterialCount();
 
-	// Set material as dirty
-	for (int shaderIndex = 0; shaderIndex < shaderCount; shaderIndex++)
+	if constexpr (!s_UseOpenGLFixedFunctions)
 	{
-		Shader* shader = AssetManager::GetShader(shaderIndex);
-		if (shader->GetFileStatus() != FileStatus::FileStatus_Loaded)
+		for (int shaderIndex = 0; shaderIndex < shaderCount; shaderIndex++)
 		{
-			continue;
-		}
+			Shader* shader = AssetManager::GetShader(shaderIndex);
+			if (shader->GetFileStatus() != FileStatus::FileStatus_Loaded)
+			{
+				continue;
+			}
 
-		shader->Use();
-		shader->UpdateLights();
+			shader->Use();
+			shader->UpdateLights();
+		}
 	}
 
 	for (const std::weak_ptr<Camera>& weakCam : cameras)
