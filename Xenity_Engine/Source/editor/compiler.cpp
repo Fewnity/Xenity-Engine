@@ -897,20 +897,23 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	[[maybe_unused]] const int stopResult = system("docker stop XenityEngineBuild");
 	[[maybe_unused]] const int removeResult = system("docker remove XenityEngineBuild");
 
+	std::string gameNameWithoutSpace = ProjectManager::GetGameName();
+	std::replace(gameNameWithoutSpace.begin(), gameNameWithoutSpace.end(), ' ', '_');
+
 	std::string prepareCompileCommand = "";
 	if (params.buildPlatform.platform == Platform::P_PSP)
 	{
 		const std::shared_ptr<const PlatformSettingsPSP> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPSP>(params.buildPlatform.settings);
 		const std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
 		const std::string profilerDefine = platformSettings->enableProfiler ? " -DPROFILER=1" : "";
-		prepareCompileCommand = "psp-cmake -DMODE=psp -DGAME_NAME=" + ProjectManager::GetGameName() + debugDefine + profilerDefine + " ..";
+		prepareCompileCommand = "psp-cmake -DMODE=psp -DGAME_NAME=" + gameNameWithoutSpace + debugDefine + profilerDefine + " ..";
 	}
 	else if (params.buildPlatform.platform == Platform::P_PsVita)
 	{
 		const std::shared_ptr<const PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
 		const std::string debugDefine = platformSettings->isDebugMode ? " -DDEBUG=1" : "";
 		const std::string profilerDefine = platformSettings->enableProfiler ? " -DPROFILER=1" : "";
-		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + ProjectManager::GetGameName() + " -DVITA_TITLEID=" + platformSettings->gameId + debugDefine + profilerDefine + " ..";
+		prepareCompileCommand = "cmake -DMODE=psvita -DGAME_NAME=" + gameNameWithoutSpace + " -DVITA_TITLEID=" + platformSettings->gameId + debugDefine + profilerDefine + " ..";
 	}
 
 	unsigned int threadNumber = std::thread::hardware_concurrency();
@@ -1010,7 +1013,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 	else if (params.buildPlatform.platform == Platform::P_PsVita)
 	{
-		fileName = ProjectManager::GetGameName() + ".vpk";
+		fileName = gameNameWithoutSpace + ".vpk";
 	}
 	else if (params.buildPlatform.platform == Platform::P_PS3)
 	{
