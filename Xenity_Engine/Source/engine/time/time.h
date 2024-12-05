@@ -62,11 +62,13 @@ public:
 
 private:
 	friend class Engine;
+	friend class GameplayManager;
 
 	/**
 	* @brief [Internal] Init time system
 	*/
 	static void Init();
+	static void Reset();
 
 	/**
 	* @brief [Internal] Update time values

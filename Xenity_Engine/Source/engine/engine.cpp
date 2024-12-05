@@ -337,8 +337,7 @@ void Engine::Loop()
 		return;
 	}
 #endif
-
-	Time::UpdateTime();
+	Time::Reset();
 	s_canUpdateAudio = true;
 	while (s_isRunning)
 	{

@@ -18,6 +18,7 @@
 #include <engine/tools/scope_benchmark.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/time/time.h>
 
 int GameplayManager::gameObjectCount = 0;
 bool GameplayManager::componentsListDirty = true;
@@ -71,6 +72,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 		SceneManager::RestoreScene();
 		s_gameState = newGameState;
 		s_OnPlayEvent.Trigger();
+		Time::Reset();
 	}
 	else if (newGameState == GameState::Stopped && s_gameState != GameState::Stopped) // Stop game
 	{

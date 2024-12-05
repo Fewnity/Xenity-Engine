@@ -56,6 +56,12 @@ void Time::SetTimeScale(float _timeScale)
 void Time::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+	Reset();
+	Debug::Print("-------- Time system initiated --------", true);
+}
+
+void Time::Reset()
+{
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	start_point = std::chrono::high_resolution_clock::now();
 	end_point = start_point;
@@ -66,7 +72,8 @@ void Time::Init()
 	sceRtcGetCurrentTick(&currentTick);
 	lastTick = currentTick;
 #endif
-	Debug::Print("-------- Time system initiated --------", true);
+	s_time = 0;
+	s_unscaledTime = 0;
 }
 
 void Time::UpdateTime()
@@ -87,11 +94,9 @@ void Time::UpdateTime()
 	const float tempDeltaTime = (currentTick - lastTick) / (float)kBUSCLK;
 	lastTick = currentTick;
 #else
-	const int64_t start = std::chrono::time_point_cast<std::chrono::microseconds>(start_point).time_since_epoch().count();
-	const int64_t end = std::chrono::time_point_cast<std::chrono::microseconds>(end_point).time_since_epoch().count();
+	const float tempDeltaTime = std::chrono::duration<float>(start_point - end_point).count();
 	end_point = start_point;
 	start_point = std::chrono::high_resolution_clock::now();
-	const float tempDeltaTime = (start - end) / 1000000.0f;
 #endif
 	s_deltaTime = tempDeltaTime * s_timeScale;
 	s_unscaledDeltaTime = tempDeltaTime;
