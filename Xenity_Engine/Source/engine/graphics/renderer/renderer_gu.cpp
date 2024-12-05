@@ -91,6 +91,12 @@ int RendererGU::Init()
 
 	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 
+	lastSettings.invertFaces = false;
+	lastSettings.renderingMode = MaterialRenderingModes::Opaque;
+	lastSettings.useDepth = true;
+	lastSettings.useLighting = false;
+	lastSettings.useTexture = true;
+
 	return result;
 }
 
