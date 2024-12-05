@@ -126,6 +126,7 @@ typedef std::vector<ReflectiveEntry> ReflectiveData;
 
 #define BEGIN_REFLECTION() ReflectiveData reflectedVariables
 #define ADD_VARIABLE(variable, isPublic) Reflective::AddVariable(reflectedVariables, variable, #variable, isPublic)
+#define ADD_VARIABLE_CUSTOM(variable, name, isPublic) Reflective::AddVariable(reflectedVariables, variable, name, isPublic)
 #define END_REFLECTION() return reflectedVariables
 
 /**
