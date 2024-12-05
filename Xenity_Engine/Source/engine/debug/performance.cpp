@@ -106,6 +106,7 @@ int Performance::GetUpdatedMaterialCount()
 void Performance::Update()
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
+#if defined(USE_PROFILER)
 	if (EngineSettings::values.useProfiler)
 	{
 		s_tickCount++;
@@ -127,6 +128,7 @@ void Performance::Update()
 		}
 		ResetCounters();
 	}
+#endif
 }
 
 size_t Performance::RegisterScopProfiler(const std::string& name, size_t hash)
