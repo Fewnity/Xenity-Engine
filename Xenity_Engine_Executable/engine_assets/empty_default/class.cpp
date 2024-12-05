@@ -27,7 +27,7 @@ void {CLASSNAME}::Update()
 */
 ReflectiveData {CLASSNAME}::GetReflectiveData()
 {
-    ReflectiveData reflectedVariables;
-    // Reflective::AddVariable(reflectedVariables, variableName, "variableName", true); // true = isVisibleInInspector
-    return reflectedVariables;
+    BEGIN_REFLECTION();
+    // ADD_VARIABLE(variableName, true); // Set true to make the variable visible in the inspector
+    END_REFLECTION();
 }

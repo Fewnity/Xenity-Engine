@@ -1,7 +1,6 @@
 //DO NOT MODIFY THIS FILE
 
 #if defined(EXPORT)
-// #define API __declspec(dllexport)
 #define API2
 #elif defined(IMPORT)
 #define API2 __declspec(dllexport)

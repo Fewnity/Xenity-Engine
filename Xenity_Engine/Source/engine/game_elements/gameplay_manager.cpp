@@ -84,7 +84,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 	{
 		s_gameState = newGameState;
 	}
-	else if ((newGameState == GameState::Paused && s_gameState == GameState::Paused)) // Pause / UnPause
+	else if ((newGameState == GameState::Paused && s_gameState == GameState::Paused)) // UnPause
 	{
 		s_gameState = GameState::Playing;
 	}

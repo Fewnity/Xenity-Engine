@@ -1,4 +1,5 @@
 #include "game.h"
+
 #include <engine/class_registry/class_registry.h>
 
 //----- Include all your classes here:
