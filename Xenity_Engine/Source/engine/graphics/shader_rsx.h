@@ -8,8 +8,11 @@
 
 #if defined(__PS3__)
 
-#include <engine/graphics/shader.h>
+#include <unordered_map>
+
 #include <rsx/rsx.h>
+
+#include <engine/graphics/shader.h>
 
 /**
 * @brief [Internal] Shader file class

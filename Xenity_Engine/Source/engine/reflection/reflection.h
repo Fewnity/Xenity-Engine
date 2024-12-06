@@ -5,10 +5,7 @@
 // This file is part of Xenity Engine
 
 #pragma once
-#include <string>
-#include <memory>
 #include <variant>
-#include <vector>
 #include <optional>
 #include <json_fwd.hpp>
 

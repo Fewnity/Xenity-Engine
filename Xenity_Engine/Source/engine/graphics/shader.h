@@ -8,12 +8,10 @@
 
 #include <string>
 #include <memory>
-#include <unordered_map>
 
-#include <glm/mat4x4.hpp>
+#include <glm/fwd.hpp>
 
 #include <engine/file_system/file_reference.h>
-#include <engine/reflection/reflection.h>
 
 #include <engine/constants.h>
 

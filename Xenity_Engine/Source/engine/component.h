@@ -6,9 +6,6 @@
 
 #pragma once
 
-#include <string>
-#include <memory>
-
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
 #include <engine/reflection/enum_utils.h>

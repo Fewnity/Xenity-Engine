@@ -6,9 +6,6 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
-
 // Type traits for checking if a type is a shared_ptr, weak_ptr, or vector
 
 template<class T>

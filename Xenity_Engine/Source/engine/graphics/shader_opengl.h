@@ -8,8 +8,9 @@
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
 
-#include <engine/graphics/shader.h>
+#include <unordered_map>
 
+#include <engine/graphics/shader.h>
 /**
 * @brief [Internal] Shader file class
 */
