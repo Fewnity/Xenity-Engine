@@ -238,10 +238,12 @@ public:
 		return s_fileClassInfos.size();
 	}
 
+#if defined(EDITOR)
 	static size_t GetMenuClassInfosCount()
 	{
 		return s_menuClassInfos.size();
 	}
+#endif
 
 private:
 
