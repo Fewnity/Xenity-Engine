@@ -1,6 +1,7 @@
 #!/bin/bash
 
 folder="./shaders_to_compile"
+
 echo "Compile Shaders..."
 
 for file in "$folder"/*; do
