@@ -94,12 +94,6 @@
 #include <engine/vectors/vector3.h>
 #include "debug/stack_debug_object.h"
 
-std::shared_ptr<ProfilerBenchmark> engineLoopBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> componentsUpdateBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> drawIDrawablesBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> editorUpdateBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> editorDrawBenchmark = nullptr;
-
 std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
 bool Engine::s_canUpdateAudio = false;
 bool Engine::s_isRunning = true;
@@ -238,8 +232,6 @@ int Engine::Init()
 	s_isInitialized = true;
 	Debug::Print("-------- Engine fully initiated --------\n", true);
 
-	CreateBenchmarks();
-
 #if defined(DEBUG)
 	UnitTestManager::StartAllTests();
 #endif
@@ -343,7 +335,6 @@ void Engine::Loop()
 	{
 		{
 			SCOPED_PROFILER("Engine::Loop", scopeBenchmark);
-			engineLoopBenchmark->Start();
 
 			// Update time, inputs and network
 			Time::UpdateTime();
@@ -359,7 +350,6 @@ void Engine::Loop()
 #if defined(EDITOR)
 			AsyncFileLoading::FinishThreadedFileLoading();
 
-			editorUpdateBenchmark->Start();
 			Editor::Update();
 
 			const std::shared_ptr<Menu> gameMenu = Editor::GetMenu<GameMenu>();
@@ -368,7 +358,6 @@ void Engine::Loop()
 			else
 				InputSystem::s_blockGameInput = true;
 
-			editorUpdateBenchmark->Stop();
 #endif
 
 			if (ProjectManager::IsProjectLoaded())
@@ -378,8 +367,8 @@ void Engine::Loop()
 				{
 					PhysicsManager::Update();
 				}
+
 				// Update all components
-				componentsUpdateBenchmark->Start();
 #if defined(EDITOR)
 				// Catch game's code error to prevent the editor to crash
 				const bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
@@ -407,14 +396,10 @@ void Engine::Loop()
 				GameplayManager::RemoveDestroyedGameObjects();
 				GameplayManager::RemoveDestroyedComponents();
 
-				componentsUpdateBenchmark->Stop();
-
 				s_canUpdateAudio = true;
 
 				// Draw
-				drawIDrawablesBenchmark->Start();
 				Graphics::Draw();
-				drawIDrawablesBenchmark->Stop();
 			}
 			else
 			{
@@ -436,13 +421,10 @@ void Engine::Loop()
 		}
 
 #if defined(EDITOR)
-		editorDrawBenchmark->Start();
 		Editor::Draw();
-		editorDrawBenchmark->Stop();
 #endif
 		Debug::SendProfilerDataToServer();
 		Window::UpdateScreen();
-		engineLoopBenchmark->Stop();
 		Performance::Update();
 	}
 }
@@ -497,16 +479,4 @@ void Engine::Quit()
 #else
 	s_isRunning = false;
 #endif
-}
-
-void Engine::CreateBenchmarks()
-{
-	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
-	engineLoopBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Engine loop");
-	// gameLoopBenchmark = new ProfilerBenchmark("Engine loop", "Game update");
-	componentsUpdateBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Components update");
-	drawIDrawablesBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Draw");
-	editorUpdateBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor update");
-	editorDrawBenchmark = std::make_shared<ProfilerBenchmark>("Engine loop", "Editor draw");
 }

@@ -86,11 +86,6 @@ private:
 	static void OnCloseSignal(int);
 
 	/**
-	 * @brief Create some benchmark for profiling
-	 */
-	static void CreateBenchmarks();
-
-	/**
 	 * @brief Check event (SDL)
 	 */
 	static void CheckEvents();

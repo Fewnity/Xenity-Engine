@@ -19,15 +19,12 @@
 #include <engine/graphics/texture.h>
 #include "font.h"
 
-std::shared_ptr<ProfilerBenchmark> textBenchmark = nullptr;
-
 /**
  * @brief Init text manager
  *
  */
 void TextManager::Init()
 {
-	textBenchmark = std::make_shared<ProfilerBenchmark>("Text", "Text");
 }
 
 std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Color &color, const std::shared_ptr<Font> &font, float scale)
@@ -35,7 +32,6 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	if (!font->GetFontAtlas())
 		return nullptr;
 
-	textBenchmark->Start();
 	const int textLenght = (int)text.size();
 
 	// if (textLenght == 0)
@@ -111,7 +107,6 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 #if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif
-	textBenchmark->Stop();
 	return mesh;
 }
 

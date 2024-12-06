@@ -19,8 +19,6 @@
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/texture.h>
 
-class ProfilerBenchmark;
-
 enum class BufferType
 {
 	Array_Buffer,

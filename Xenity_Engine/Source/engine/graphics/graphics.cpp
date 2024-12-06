@@ -57,12 +57,6 @@ std::vector<std::weak_ptr<Lod>> Graphics::s_lods;
 
 bool Graphics::s_drawOrderListDirty = true;
 
-std::shared_ptr<ProfilerBenchmark> orderBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> skyboxBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> drawAllBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> drawMeshBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> drawEndFrameBenchmark = nullptr;
-
 std::shared_ptr <MeshData> skyPlane = nullptr;
 
 Shader* Graphics::s_currentShader = nullptr;
@@ -112,12 +106,6 @@ void Graphics::Init()
 
 	ProjectManager::GetProjectLoadedEvent().Bind(&Graphics::OnProjectLoaded);
 
-	orderBenchmark = std::make_shared<ProfilerBenchmark>("Draw", "Order Drawables");
-	skyboxBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Skybox");
-	drawAllBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Drawables");
-	drawMeshBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "Mesh");
-	drawEndFrameBenchmark = std::make_shared <ProfilerBenchmark>("Draw", "End frame");
-
 	SetDefaultValues();
 
 	Debug::Print("-------- Graphics initiated --------", true);
@@ -137,12 +125,6 @@ void Graphics::Stop()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	ProjectManager::GetProjectLoadedEvent().Unbind(&Graphics::OnProjectLoaded);
-
-	orderBenchmark.reset();
-	skyboxBenchmark.reset();
-	drawAllBenchmark.reset();
-	drawMeshBenchmark.reset();
-	drawEndFrameBenchmark.reset();
 
 	cameras.clear();
 	usedCamera.reset();
@@ -241,13 +223,9 @@ void Graphics::Draw()
 				UpdateShadersCameraMatrices();
 			}
 
-			skyboxBenchmark->Start();
 			DrawSkybox(camPos);
-			skyboxBenchmark->Stop();
 
 			Engine::GetRenderer().SetFog(s_settings.isFogEnabled);
-
-			drawAllBenchmark->Start();
 
 			{
 				SCOPED_PROFILER("Graphics::CallOnNewRender", scopeBenchmarkNewRender);
@@ -317,8 +295,6 @@ void Graphics::Draw()
 						com.drawable->DrawCommand(com);
 				}
 			}
-
-			drawAllBenchmark->Stop();
 
 #if defined(EDITOR)
 			if (usedCamera->IsEditor())
@@ -414,9 +390,7 @@ void Graphics::Draw()
 	Engine::GetRenderer().SetClearColor(Color::CreateFromRGB(15, 15, 15));
 	Engine::GetRenderer().Clear();
 #endif
-	drawEndFrameBenchmark->Start();
 	Engine::GetRenderer().EndFrame();
-	drawEndFrameBenchmark->Stop();
 
 	//usedCamera.reset();
 }
@@ -486,7 +460,6 @@ void Graphics::OrderDrawables()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	orderBenchmark->Start();
 	if (s_isRenderingBatchDirty)
 	{
 		SCOPED_PROFILER("Graphics::OrderDrawables", scopeBenchmark);
@@ -497,8 +470,6 @@ void Graphics::OrderDrawables()
 			drawable->CreateRenderCommands(renderBatch);
 		}
 	}
-
-	orderBenchmark->Stop();
 }
 
 void Graphics::DeleteAllDrawables()
@@ -609,15 +580,12 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 		texture = AssetManager::defaultTexture.get();
 	}
 
-	drawMeshBenchmark->Start();
-
 	if constexpr (!s_UseOpenGLFixedFunctions)
 	{
 		material.Use();
 
 		if (!s_currentShader || s_currentShader->GetFileStatus() != FileStatus::FileStatus_Loaded)
 		{
-			drawMeshBenchmark->Stop();
 			return;
 		}
 
@@ -633,7 +601,6 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 	}
 
 	Engine::GetRenderer().DrawSubMesh(subMesh, material, *texture, renderSettings);
-	drawMeshBenchmark->Stop();
 }
 
 void Graphics::SetDrawOrderListAsDirty()

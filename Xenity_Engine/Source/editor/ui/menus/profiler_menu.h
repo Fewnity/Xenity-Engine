@@ -45,15 +45,13 @@ private:
 	void UpdateMemoryCounter();
 
 	/**
-	* Draw all profiler benchmarks
-	*/
-	void DrawProfilerBenchmarks();
-
-	/**
 	* Draw memory stats
 	*/
 	void DrawMemoryStats();
 
+	/**
+	* Draw all profiler benchmarks
+	*/
 	void DrawProfilerGraph();
 
 	void CreateTimelineItems();
@@ -72,5 +70,6 @@ private:
 	uint64_t lastEndTime;
 	uint32_t lastMaxLevel;
 	uint32_t selectedProfilingRow = 0;
+	uint32_t lastFrame = 0;
 };
 

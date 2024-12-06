@@ -60,9 +60,6 @@ int halfBuffSize = 0;
 int quarterBuffSize = 0;
 MyMutex* AudioManager::s_myMutex = nullptr;
 
-std::shared_ptr<ProfilerBenchmark> audioBenchmark = nullptr;
-std::shared_ptr<ProfilerBenchmark> audioBenchmark2 = nullptr;
-
 static_assert(buffSize % 16 == 0, "buffSize must be a multiple of 16");
 static_assert(AUDIO_BUFFER_SIZE % 16 == 0, "AUDIO_BUFFER_SIZE must be a multiple of 16");
 
@@ -247,11 +244,9 @@ int audio_thread(SceSize args, void* argp)
 	{
 		if (sceAudioGetChannelRestLength(0) == 0)
 		{
-			//audioBenchmark2->Start();
 			int16_t wave_buf[AUDIO_BUFFER_SIZE * 2] = { 0 };
 			AudioManager::FillChannelBuffer((short*)wave_buf, AUDIO_BUFFER_SIZE, AudioManager::s_channel);
 			sceAudioOutput(0, PSP_AUDIO_VOLUME_MAX, wave_buf);
-			//audioBenchmark2->Stop();
 		}
 		sceKernelDelayThread(2);
 	}
@@ -345,21 +340,17 @@ int fillAudioBufferThread()
 
 			if (sound->m_needFillFirstHalfBuffer)
 			{
-				// audioBenchmark->Start();
 				AudioManager::s_myMutex->Unlock();
 				stream->FillBuffer(bufferSizeToUse, sound->m_buffer);
 				AudioManager::s_myMutex->Lock();
 				sound->m_needFillFirstHalfBuffer = false;
-				// audioBenchmark->Stop();
 			}
 			else if (sound->m_needFillSecondHalfBuffer)
 			{
-				// audioBenchmark->Start();
 				AudioManager::s_myMutex->Unlock();
 				stream->FillBuffer(bufferSizeToUse, sound->m_buffer + halfBuffSize);
 				AudioManager::s_myMutex->Lock();
 				sound->m_needFillSecondHalfBuffer = false;
-				// audioBenchmark->Stop();
 			}
 		}
 
@@ -409,8 +400,6 @@ int AudioManager::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	audioBenchmark = std::make_shared<ProfilerBenchmark>("Audio", "Audio");
-	audioBenchmark2 = std::make_shared<ProfilerBenchmark>("Audio", "Sub");
 	halfBuffSize = buffSize / 2;
 	quarterBuffSize = buffSize / 4;
 
