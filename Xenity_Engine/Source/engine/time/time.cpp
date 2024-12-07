@@ -101,16 +101,15 @@ void Time::UpdateTime()
 	s_deltaTime = tempDeltaTime * s_timeScale;
 	s_unscaledDeltaTime = tempDeltaTime;
 	
-	if (s_deltaTime >= 0.3333f) 
+	if (s_deltaTime >= 0.2f) 
 	{
-		s_deltaTime = 0.3333f;
+		s_deltaTime = 0.2f;
 	}
 
-	// Should we enable this?
-	/*if (s_unscaledDeltaTime >= 0.3333)
+	if (s_unscaledDeltaTime >= 0.2f)
 	{
-		s_unscaledDeltaTime = 0.3333;
-	}*/
+		s_unscaledDeltaTime = 0.2f;
+	}
 
 	s_time += s_deltaTime;
 	s_unscaledTime += s_unscaledDeltaTime;
