@@ -111,12 +111,12 @@ struct API ReflectiveEntry
 	uint64_t typeId = 0;
 	TypeSpawner* typeSpawner = nullptr;
 	std::string variableName;
+	double minSliderValue = 0.0;
+	double maxSliderValue = 0.0;
 	bool visibleInFileInspector = false;
 	bool isPublic = false;
 	bool isEnum = false;
 	bool isSlider = false;
-	double minSliderValue = 0.0;
-	double maxSliderValue = 0.0;
 };
 
 typedef std::vector<ReflectiveEntry> ReflectiveData;
