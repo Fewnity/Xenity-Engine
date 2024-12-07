@@ -404,7 +404,6 @@ void RigidBody::Awake()
 	UpdateRigidBodyFriction();
 
 	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
-	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
 
 	// Set compound's enableDynamicAabbTree param to false, because it's not working on PS3 for some reasons...
 	m_bulletCompoundShape = new btCompoundShape(false);
@@ -419,11 +418,10 @@ void RigidBody::Awake()
 	m_bulletTriggerRigidbody->activate();
 
 	// Add an empty shape to enable gravity with an empty rigidbody
-	btEmptyShape* emptyShape = new btEmptyShape();
-	AddShape(emptyShape, Vector3(0, 0, 0));
-
-	btEmptyShape* emptyShape2 = new btEmptyShape();
-	AddTriggerShape(emptyShape2, Vector3(0, 0, 0));
+	m_emptyShape = new btEmptyShape();
+	AddShape(m_emptyShape, Vector3(0, 0, 0));
+	m_isEmpty = true;
+	m_isTriggerEmpty = true;
 
 	const std::vector<std::shared_ptr<Collider>> col = GetGameObject()->GetComponents<Collider>();
 	for(const std::shared_ptr<Collider>& c : col)
@@ -437,15 +435,20 @@ void RigidBody::Awake()
 
 void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)
 {
-	m_shapes.push_back(shape);
-
 	PhysicsManager::s_physDynamicsWorld->removeRigidBody(m_bulletRigidbody);
 	{
 		btTransform offsetTransform;
 		offsetTransform.setIdentity();
 		offsetTransform.setOrigin(btVector3(offset.x, offset.y, offset.z));
 
+		if (m_bulletCompoundShape->getNumChildShapes() == 1)
+		{
+			m_bulletCompoundShape->removeChildShape(m_emptyShape);
+		}
+
 		m_bulletCompoundShape->addChildShape(offsetTransform, shape);
+
+		m_isEmpty = false;
 
 		UpdateRigidBodyMass();
 	}
@@ -454,8 +457,6 @@ void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)
 
 void RigidBody::AddTriggerShape(btCollisionShape* shape, const Vector3& offset)
 {
-	m_triggerShapes.push_back(shape);
-
 	PhysicsManager::s_physDynamicsWorld->removeRigidBody(m_bulletTriggerRigidbody);
 	{
 		btTransform offsetTransform;
@@ -463,6 +464,8 @@ void RigidBody::AddTriggerShape(btCollisionShape* shape, const Vector3& offset)
 		offsetTransform.setOrigin(btVector3(offset.x, offset.y, offset.z));
 
 		m_bulletTriggerCompoundShape->addChildShape(offsetTransform, shape);
+
+		m_isTriggerEmpty = false;
 	}
 	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
 }
@@ -473,6 +476,20 @@ void RigidBody::RemoveShape(btCollisionShape* shape)
 	{
 		m_bulletCompoundShape->removeChildShape(shape);
 
+		if (m_bulletCompoundShape->getNumChildShapes() == 0)
+		{
+			btTransform offsetTransform;
+			offsetTransform.setIdentity();
+			offsetTransform.setOrigin(btVector3(0, 0, 0));
+
+			m_bulletCompoundShape->addChildShape(offsetTransform, m_emptyShape);
+			m_isEmpty = false;
+		}
+		else 
+		{
+			m_isEmpty = true;
+		}
+
 		UpdateRigidBodyMass();
 	}
 	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
@@ -481,10 +498,18 @@ void RigidBody::RemoveShape(btCollisionShape* shape)
 void RigidBody::RemoveTriggerShape(btCollisionShape* shape)
 {
 	PhysicsManager::s_physDynamicsWorld->removeRigidBody(m_bulletTriggerRigidbody);
+
+	m_bulletTriggerCompoundShape->removeChildShape(shape);
+
+	if (m_bulletTriggerCompoundShape->getNumChildShapes() != 0)
 	{
-		m_bulletTriggerCompoundShape->removeChildShape(shape);
+		PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
+		m_isTriggerEmpty = false;
 	}
-	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
+	else 
+	{
+		m_isTriggerEmpty = true;
+	}
 }
 
 ReflectiveData LockedAxis::GetReflectiveData()

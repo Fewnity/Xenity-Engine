@@ -308,11 +308,11 @@ void PhysicsManager::Update()
 			const RigidBody* rb = s_rigidBodies[i];
 			if (rb->m_generatesEvents && rb->IsEnabled() && rb->GetGameObjectRaw()->IsLocalActive())
 			{
-				if (rb->m_bulletCompoundShape->getNumChildShapes() >= 2) // An empty shape is in the compound
+				if (!rb->m_isEmpty)
 				{
 					s_physDynamicsWorld->contactTest(rb->m_bulletRigidbody, resultCallback);
 				}
-				if (rb->m_bulletTriggerCompoundShape->getNumChildShapes() >= 2) // An empty shape is in the compound
+				if (rb->m_isTriggerEmpty)
 				{
 					s_physDynamicsWorld->contactTest(rb->m_bulletTriggerRigidbody, resultCallback);
 				}

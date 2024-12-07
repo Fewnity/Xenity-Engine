@@ -16,6 +16,7 @@ class BoxCollider;
 class btRigidBody;
 class btCollisionShape;
 class btCompoundShape;
+class btEmptyShape;
 
 class LockedAxis : public Reflective
 {
@@ -113,11 +114,11 @@ protected:
 
 	btRigidBody* m_bulletRigidbody = nullptr;
 	btCompoundShape* m_bulletCompoundShape = nullptr;
-	std::vector<btCollisionShape*> m_shapes;
 
 	btRigidBody* m_bulletTriggerRigidbody = nullptr;
 	btCompoundShape* m_bulletTriggerCompoundShape = nullptr;
-	std::vector<btCollisionShape*> m_triggerShapes;
+
+	btEmptyShape* m_emptyShape = nullptr;
 
 	float m_drag = 0.1f;
 	float m_angularDrag = 0.1f;
@@ -126,6 +127,8 @@ protected:
 	float m_gravityMultiplier = 1.0f;
 	float m_friction = 0.1f;
 	bool m_isStatic = false;
+	bool m_isEmpty = false;
+	bool m_isTriggerEmpty = false;
 
 	/**
 	 * @brief [Internal]
