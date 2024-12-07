@@ -238,6 +238,9 @@ void Performance::LoadFromBinary(const std::string& path)
 	const bool isOpen = file->Open(FileMode::ReadOnly);
 	if (isOpen)
 	{
+		Performance::s_scopProfilerList[s_currentProfilerFrame].frameId = s_currentFrame;
+		Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults.clear();
+
 		// Read file
 		size_t size = 0;
 		unsigned char* data = file->ReadAllBinary(size);

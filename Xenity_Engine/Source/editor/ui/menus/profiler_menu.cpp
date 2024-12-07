@@ -199,10 +199,12 @@ void ProfilerMenu::DrawProfilerGraph()
 			std::string filePath = EditorUI::OpenFileDialog("Select record file", "");
 			if (!filePath.empty())
 			{
+				selectedProfilingRow = Performance::s_currentProfilerFrame;
+				lastFrame = Performance::s_currentFrame;
+				isPaused = true;
+				Performance::s_isPaused = true;
 				Performance::LoadFromBinary(filePath);
 				UpdateProfilers();
-				isPaused = true;
-				Performance::s_isPaused = isPaused;
 			}
 		}
 
