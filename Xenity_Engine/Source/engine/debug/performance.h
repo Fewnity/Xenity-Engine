@@ -152,7 +152,7 @@ public:
 	static uint32_t s_currentProfilerFrame;
 	static uint32_t s_currentFrame;
 	static bool s_isPaused;
-	static constexpr uint32_t s_maxProfilerFrameCount = 200;
+	static constexpr uint32_t s_maxProfilerFrameCount = 400;
 
 	static std::unordered_map<uint64_t, std::string> s_scopProfilerNames; // Hash to the name, Name
 
