@@ -68,6 +68,10 @@
 #define WORLD_CHUNK_SIZE 10
 #define WORLD_CHUNK_HALF_SIZE (WORLD_CHUNK_SIZE / 2.0f)
 
+//
+// -------------------------------------------------- Profiling
+//
+
 #if defined(EDITOR)
 #define USE_PROFILER
 #endif
