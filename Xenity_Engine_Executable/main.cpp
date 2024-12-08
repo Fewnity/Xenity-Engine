@@ -37,15 +37,13 @@ Fix refresh file
 Do not create a new mesh data in text renderer
 Disable update function call on many components
 Check peekinput for PSP
-Fix name with spaces with docker (PsVita)
-Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)
-Add assert in CreateNewMenuSettings
-Use all defines of Reflection in every projects
+Fix lighting intensity in fixed pipeline opengl
+Use buttonMap instead of keyMap in input system for Consoles
 
 --- Can be done for the next release
+Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)
 Fix light in fixed pipeline with 2 cameras
 Create a GetFileSize function in File class
-Remove the old profiler
 New Input system
 Implement AudioManager::Stop for PSP and PsVita
 Pre-open audio file for faster loading
@@ -66,7 +64,6 @@ Check File::GetFolderPath() for psvita, remove ux0:
 Add ImageRenderer for canvas
 Add buttons for canvas
 Finish rect transform support
-Finish Windows controllers support
 Add the ability to change values with mouse when sliding
 Clean Component::SetGameObject code
 
@@ -77,7 +74,6 @@ Move/Store engine name and version somewhere
 --- To do soon:
 Reload texture/mesh/audio if modified (only if scene is stopped)
 Add filter to file dialog
-First PSP frame does not use light
 Multiple gameobject selection
 
 --- To do in a long time
