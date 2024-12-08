@@ -20,7 +20,9 @@ struct TouchRaw;
 
 API void CrossAddInputs(std::map<int, Input*>& s_keyMap, std::map<int, Input*>& s_buttonMap, Input* inputs);
 API void CrossInputsInit();
-API InputPad CrossGetInputPad();
+API void CrossOnControllerAdded(const int controllerId);
+API void CrossOnControllerRemoved(const int controllerId);
+API InputPad CrossGetInputPad(const int controllerId);
 API std::vector<TouchRaw> CrossUpdateTouch();
 
 #endif

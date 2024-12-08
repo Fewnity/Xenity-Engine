@@ -19,7 +19,7 @@ class TouchRaw;
 
 void CrossAddInputs(std::map<int, Input*>& s_keyMap, std::map<int, Input*>& s_buttonMap, Input* inputs);
 void CrossInputsInit();
-InputPad CrossGetInputPad();
+InputPad CrossGetInputPad(const int controllerId);
 std::vector<TouchRaw> CrossUpdateTouch();
 
 #endif

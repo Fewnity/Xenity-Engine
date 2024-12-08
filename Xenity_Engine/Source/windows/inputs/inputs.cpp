@@ -100,49 +100,74 @@ void CrossAddInputs(std::map<int, Input*>& s_keyMap, std::map<int, Input*>& s_bu
 	//s_buttonMap[SDL_CONTROLLER_BUTTON_GUIDE] = &inputs[(int)KeyCode::SELECT];
 }
 
-SDL_Gamepad* controller0;
+std::vector<SDL_Gamepad*> controllers;
 
 void CrossInputsInit()
 {
-	int gamepadsCount;
-	SDL_JoystickID* ids = SDL_GetGamepads(&gamepadsCount);
-	if (gamepadsCount > 0) 
+	controllers.resize(8);
+}
+
+API void CrossOnControllerAdded(const int controllerId)
+{
+	SDL_Gamepad* controller = SDL_OpenGamepad(controllerId);
+
+	const int playerIndex = SDL_GetGamepadPlayerIndex(controller);
+	if (playerIndex < 0)
 	{
-		controller0 = SDL_OpenGamepad(ids[0]);
+		SDL_CloseGamepad(controller);
+		return;
+	}
+
+	controllers[playerIndex] = controller;
+}
+
+API void CrossOnControllerRemoved(const int controllerId)
+{
+	size_t controllerCount = controllers.size();
+	for (size_t i = 0; i < controllerCount; i++)
+	{
+		if (SDL_GetGamepadInstanceID(controllers[i]) == controllerId)
+		{
+			SDL_CloseGamepad(controllers[i]);
+			controllers[i] = nullptr;
+			break;
+		}
 	}
 }
 
-InputPad CrossGetInputPad()
+InputPad CrossGetInputPad(const int controllerId)
 {
 	InputPad pad = InputPad();
+	SDL_Gamepad* controller = controllers[controllerId];
+	if (controller)
+	{
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_SOUTH] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_SOUTH);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_EAST] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_EAST);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_WEST] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_WEST);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_NORTH] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_NORTH);
 
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_SOUTH] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_SOUTH);
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_EAST] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_EAST);
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_WEST] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_WEST);
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_NORTH] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_NORTH);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_DPAD_LEFT] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_DPAD_LEFT);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_DPAD_RIGHT] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_DPAD_RIGHT);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_DPAD_UP] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_DPAD_UP);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_DPAD_DOWN] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_DPAD_DOWN);
 
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_DPAD_LEFT] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_DPAD_LEFT);
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_DPAD_RIGHT] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_DPAD_RIGHT);
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_DPAD_UP] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_DPAD_UP);
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_DPAD_DOWN] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_DPAD_DOWN);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_BACK] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_BACK);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_START] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_START);
 
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_BACK] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_BACK);
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_START] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_START);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_LEFT_SHOULDER] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_LEFT_SHOULDER);
+		pad.pressedButtons[SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER] = SDL_GetGamepadButton(controller, SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER);
 
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_LEFT_SHOULDER] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_LEFT_SHOULDER);
-	pad.pressedButtons[SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER] = SDL_GetGamepadButton(controller0, SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER);
+		const int16_t rightXValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_RIGHTX);
+		const int16_t rightYValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_RIGHTY);
+		const int16_t leftXValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_LEFTX);
+		const int16_t leftYValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_LEFTY);
 
-	int16_t rightXValue = SDL_GetGamepadAxis(controller0, SDL_GAMEPAD_AXIS_RIGHTX);
-	int16_t rightYValue = SDL_GetGamepadAxis(controller0, SDL_GAMEPAD_AXIS_RIGHTY);
-	int16_t leftXValue = SDL_GetGamepadAxis(controller0, SDL_GAMEPAD_AXIS_LEFTX);
-	int16_t leftYValue = SDL_GetGamepadAxis(controller0, SDL_GAMEPAD_AXIS_LEFTY);
+		pad.lx = ((leftXValue) / 65536.0f) * 2;
+		pad.ly = ((leftYValue) / 65536.0f) * 2;
 
-	pad.lx = ((leftXValue) / 65536.0f) * 2;
-	pad.ly = ((leftYValue) / 65536.0f) * 2;
-
-
-	pad.rx = ((rightXValue) / 65536.0f) * 2;
-	pad.ry = ((rightYValue) / 65536.0f) * 2;
+		pad.rx = ((rightXValue) / 65536.0f) * 2;
+		pad.ry = ((rightYValue) / 65536.0f) * 2;
+	}
 
 	return pad;
 }

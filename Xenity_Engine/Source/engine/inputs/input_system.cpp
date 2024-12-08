@@ -42,33 +42,35 @@ Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int
 Vector2 InputSystem::mouseSpeed = Vector2();
 Vector2 InputSystem::mouseSpeedRaw = Vector2();
 
-Vector2 InputSystem::leftJoystick = Vector2();
-Vector2 InputSystem::rightJoystick = Vector2();
-Input InputSystem::s_inputs[INPUT_COUNT];
+Vector2 InputSystem::leftJoystick[MAX_CONTROLLER];
+Vector2 InputSystem::rightJoystick[MAX_CONTROLLER];
+Input InputSystem::s_inputs[MAX_CONTROLLER][INPUT_COUNT];
 float InputSystem::mouseWheel = 0;
 bool InputSystem::s_hidedMouse = false;
-std::map<int, Input*> InputSystem::s_keyMap;
-std::map<int, Input*> InputSystem::s_buttonMap;
+std::map<int, Input*> InputSystem::s_keyMap[MAX_CONTROLLER];
+std::map<int, Input*> InputSystem::s_buttonMap[MAX_CONTROLLER];
 std::vector<InputSystem::TouchScreen*> InputSystem::screens;
 bool InputSystem::s_blockGameInput = false;
 
 void InputSystem::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-	s_keyMap = std::map<int, Input*>();
-	s_buttonMap = std::map<int, Input*>();
-	for (int i = 0; i < INPUT_COUNT; i++)
+	for (int controllerIndex = 0; controllerIndex < MAX_CONTROLLER; controllerIndex++)
 	{
-		s_inputs[i] = Input();
-		s_inputs[i].code = static_cast<KeyCode>(i);
+		s_keyMap[controllerIndex] = std::map<int, Input*>();
+		s_buttonMap[controllerIndex] = std::map<int, Input*>();
+		for (int i = 0; i < INPUT_COUNT; i++)
+		{
+			s_inputs[controllerIndex][i] = Input();
+			s_inputs[controllerIndex][i].code = static_cast<KeyCode>(i);
+		}
+		CrossAddInputs(s_keyMap[controllerIndex], s_buttonMap[controllerIndex], s_inputs[controllerIndex]);
 	}
-
-	CrossAddInputs(s_keyMap, s_buttonMap, s_inputs);
 	CrossInputsInit();
 
-#ifdef __vita__
-	screens.push_back(new InputSystem::TouchScreen());
-	screens.push_back(new InputSystem::TouchScreen());
+#if defined(__vita__)
+	screens.push_back(new InputSystem::TouchScreen()); // Front
+	screens.push_back(new InputSystem::TouchScreen()); // Back
 #endif
 
 	Debug::Print("-------- Input System initiated --------", true);
@@ -125,68 +127,71 @@ void InputSystem::UpdateControllers()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	SCOPED_PROFILER("InputSystem::UpdateControllers", scopeBenchmark);
 
-	InputPad pad = CrossGetInputPad();
-	const float JoystickDeadZone = 0.25f;
+	for (int controllerIndex = 0; controllerIndex < MAX_CONTROLLER; controllerIndex++)
+	{
+		InputPad pad = CrossGetInputPad(controllerIndex);
+		const float JoystickDeadZone = 0.25f;
 
-	if (pad.lx < JoystickDeadZone && pad.lx > -JoystickDeadZone && fabs(pad.ly) < JoystickDeadZone)
-	{
-		pad.lx = 0;
-	}
-	if (pad.ly < JoystickDeadZone && pad.ly > -JoystickDeadZone && fabs(pad.lx) < JoystickDeadZone)
-	{
-		pad.ly = 0;
-	}
-	if (pad.rx < JoystickDeadZone && pad.rx > -JoystickDeadZone && fabs(pad.ry) < JoystickDeadZone)
-	{
-		pad.rx = 0;
-	}
-	if (pad.ry < JoystickDeadZone && pad.ry > -JoystickDeadZone && fabs(pad.rx) < JoystickDeadZone)
-	{
-		pad.ry = 0;
-	}
+		if (pad.lx < JoystickDeadZone && pad.lx > -JoystickDeadZone && fabs(pad.ly) < JoystickDeadZone)
+		{
+			pad.lx = 0;
+		}
+		if (pad.ly < JoystickDeadZone && pad.ly > -JoystickDeadZone && fabs(pad.lx) < JoystickDeadZone)
+		{
+			pad.ly = 0;
+		}
+		if (pad.rx < JoystickDeadZone && pad.rx > -JoystickDeadZone && fabs(pad.ry) < JoystickDeadZone)
+		{
+			pad.rx = 0;
+		}
+		if (pad.ry < JoystickDeadZone && pad.ry > -JoystickDeadZone && fabs(pad.rx) < JoystickDeadZone)
+		{
+			pad.ry = 0;
+		}
 
-	leftJoystick.x = pad.lx;
-	leftJoystick.y = pad.ly;
+		leftJoystick[controllerIndex].x = pad.lx;
+		leftJoystick[controllerIndex].y = pad.ly;
 
-	rightJoystick.x = pad.rx;
-	rightJoystick.y = pad.ry;
+		rightJoystick[controllerIndex].x = pad.rx;
+		rightJoystick[controllerIndex].y = pad.ry;
 
 #if defined(__PSP__) || defined(__vita__) || defined(__PS3__)
-	const auto mapE = s_keyMap.end();
-	for (auto mapB = s_keyMap.begin(); mapB != mapE; ++mapB)
-	{
-		if (pad.buttons & mapB->first) // If the input is pressed
+		const auto mapE = s_keyMap[controllerIndex].end();
+		for (auto mapB = s_keyMap[controllerIndex].begin(); mapB != mapE; ++mapB)
 		{
-			if (!mapB->second->held)
+			if (pad.buttons & mapB->first) // If the input is pressed
 			{
-				SetInput(true, mapB->second->code);
+				if (!mapB->second->held)
+				{
+					SetInput(true, mapB->second->code, controllerIndex);
+				}
+			}
+			else
+			{
+				if (mapB->second->held)
+				{
+					SetInput(false, mapB->second->code, controllerIndex);
+				}
 			}
 		}
-		else
-		{
-			if (mapB->second->held)
-			{
-				SetInput(false, mapB->second->code);
-			}
-		}
-	}
 #else
-	// Windows
-	const auto pressedButtonsEnd = pad.pressedButtons.end();
-	for (auto pressedButtonsBeg = pad.pressedButtons.begin(); pressedButtonsBeg != pressedButtonsEnd; ++pressedButtonsBeg)
-	{
-		if (pressedButtonsBeg->second)
+		// Windows
+		const auto pressedButtonsEnd = pad.pressedButtons.end();
+		for (auto pressedButtonsBeg = pad.pressedButtons.begin(); pressedButtonsBeg != pressedButtonsEnd; ++pressedButtonsBeg)
 		{
-			if (!s_buttonMap[pressedButtonsBeg->first]->held)
-				SetInput(true, s_buttonMap[pressedButtonsBeg->first]->code);
+			if (pressedButtonsBeg->second)
+			{
+				if (!s_buttonMap[controllerIndex][pressedButtonsBeg->first]->held)
+					SetInput(true, s_buttonMap[controllerIndex][pressedButtonsBeg->first]->code, controllerIndex);
+			}
+			else
+			{
+				if (s_buttonMap[controllerIndex][pressedButtonsBeg->first]->held)
+					SetInput(false, s_buttonMap[controllerIndex][pressedButtonsBeg->first]->code, controllerIndex);
+			}
 		}
-		else
-		{
-			if (s_buttonMap[pressedButtonsBeg->first]->held)
-				SetInput(false, s_buttonMap[pressedButtonsBeg->first]->code);
-		}
-	}
 #endif
+	}
 }
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
@@ -286,13 +291,13 @@ void InputSystem::Read(const SDL_Event& event)
 		switch (event.button.button)
 		{
 		case SDL_BUTTON_RIGHT:
-			SetInput(true, KeyCode::MOUSE_RIGHT);
+			SetInput(true, KeyCode::MOUSE_RIGHT, PLAYER_1);
 			break;
 		case SDL_BUTTON_LEFT:
-			SetInput(true, KeyCode::MOUSE_LEFT);
+			SetInput(true, KeyCode::MOUSE_LEFT, PLAYER_1);
 			break;
 		case SDL_BUTTON_MIDDLE:
-			SetInput(true, KeyCode::MOUSE_MIDDLE);
+			SetInput(true, KeyCode::MOUSE_MIDDLE, PLAYER_1);
 			break;
 		}
 		break;
@@ -303,13 +308,13 @@ void InputSystem::Read(const SDL_Event& event)
 		switch (event.button.button)
 		{
 		case SDL_BUTTON_RIGHT:
-			SetInput(false, KeyCode::MOUSE_RIGHT);
+			SetInput(false, KeyCode::MOUSE_RIGHT, PLAYER_1);
 			break;
 		case SDL_BUTTON_LEFT:
-			SetInput(false, KeyCode::MOUSE_LEFT);
+			SetInput(false, KeyCode::MOUSE_LEFT, PLAYER_1);
 			break;
 		case SDL_BUTTON_MIDDLE:
-			SetInput(false, KeyCode::MOUSE_MIDDLE);
+			SetInput(false, KeyCode::MOUSE_MIDDLE, PLAYER_1);
 			break;
 		}
 		break;
@@ -317,15 +322,37 @@ void InputSystem::Read(const SDL_Event& event)
 
 	case SDL_EVENT_KEY_DOWN:
 	{
-		if (s_keyMap.count(event.key.key) != 0)
-			SetInput(true, s_keyMap[event.key.key]->code);
+		if (s_keyMap[PLAYER_1].count(event.key.key) != 0)
+		{
+			SetInput(true, s_keyMap[PLAYER_1][event.key.key]->code, PLAYER_1);
+		}
 		break;
 	}
 
 	case SDL_EVENT_KEY_UP:
 	{
-		if (s_keyMap.count(event.key.key) != 0)
-			SetInput(false, s_keyMap[event.key.key]->code);
+		if (s_keyMap[PLAYER_1].count(event.key.key) != 0)
+		{
+			SetInput(false, s_keyMap[PLAYER_1][event.key.key]->code, PLAYER_1);
+		}
+		break;
+	}
+
+	case SDL_EVENT_GAMEPAD_ADDED:
+	{
+		CrossOnControllerAdded(event.gdevice.which);
+#if defined(EDITOR)
+		Debug::Print("Gamepad detected, ID: " + std::to_string(event.gdevice.which));
+#endif
+		break;
+	}
+
+	case SDL_EVENT_GAMEPAD_REMOVED:
+	{
+		CrossOnControllerRemoved(event.gdevice.which);
+#if defined(EDITOR)
+		Debug::Print("Gamepad removed, ID: " + std::to_string(event.gdevice.which));
+#endif
 		break;
 	}
 
@@ -333,6 +360,7 @@ void InputSystem::Read(const SDL_Event& event)
 		mouseWheel = event.wheel.y;
 		break;
 	}
+
 }
 #endif
 
@@ -416,10 +444,14 @@ void InputSystem::ClearInputs()
 
 	SCOPED_PROFILER("InputSystem::ClearInputs", scopeBenchmark);
 
-	for (int i = 0; i < INPUT_COUNT; i++)
+	for (int controllerIndex = 0; controllerIndex < MAX_CONTROLLER; controllerIndex++)
 	{
-		SetInputInactive(static_cast<KeyCode>(i));
+		for (int i = 0; i < INPUT_COUNT; i++)
+		{
+			SetInputInactive(static_cast<KeyCode>(i), controllerIndex);
+		}
 	}
+
 	mouseSpeed.x = 0;
 	mouseSpeed.y = 0;
 	mouseSpeedRaw.x = 0;

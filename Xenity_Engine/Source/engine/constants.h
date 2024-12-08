@@ -71,3 +71,12 @@
 #if defined(EDITOR)
 #define USE_PROFILER
 #endif
+
+//
+// -------------------------------------------------- Inputs
+//
+#if defined(__PS3__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#define MAX_CONTROLLER 8
+#else
+#define MAX_CONTROLLER 1
+#endif

@@ -37,7 +37,7 @@ void CrossInputsInit()
 	sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
 }
 
-InputPad CrossGetInputPad()
+InputPad CrossGetInputPad(const int controllerId)
 {
 	InputPad pad = InputPad();
 	sceCtrlReadBufferPositive(&ctrl, 1);

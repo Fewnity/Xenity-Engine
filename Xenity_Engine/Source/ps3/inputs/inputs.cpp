@@ -47,7 +47,7 @@ void CrossInputsInit()
 
 InputPad oldPad = InputPad();
 
-InputPad CrossGetInputPad()
+InputPad CrossGetInputPad(const int controllerId)
 {
 	InputPad pad = InputPad();
 

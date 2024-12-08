@@ -45,7 +45,7 @@ void CrossInputsInit()
 	sceTouchEnableTouchForce(SCE_TOUCH_PORT_BACK);
 }
 
-InputPad CrossGetInputPad()
+InputPad CrossGetInputPad(const int controllerId)
 {
 	InputPad pad = InputPad();
 	sceCtrlPeekBufferPositive(0, &ctrl, 1);

@@ -16,6 +16,16 @@
 
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector2_int.h>
+#include <engine/constants.h>
+
+#define PLAYER_1 0
+#define PLAYER_2 1
+#define PLAYER_3 2
+#define PLAYER_4 3
+#define PLAYER_5 4
+#define PLAYER_6 5
+#define PLAYER_7 6
+#define PLAYER_8 7
 
 enum class KeyCode
 {
@@ -167,39 +177,97 @@ public:
 	* @brief Return true if the key has just been pressed
 	* @param Key code to check
 	*/
-	static inline bool GetKeyDown(const KeyCode keyCode)
+	static inline bool GetKeyDown(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
+		{
 			return false;
+		}
 #endif
-		return s_inputs[(int)keyCode].pressed;
+
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return false;
+		}
+
+		return s_inputs[controllerIndex][(int)keyCode].pressed;
 	}
 
 	/**
 	* @brief Return true if the key is held
 	* @param Key code to check
 	*/
-	static inline bool GetKey(const KeyCode keyCode)
+	static inline bool GetKey(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
+		{
 			return false;
+		}
 #endif
-		return s_inputs[(int)keyCode].held;
+
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return false;
+		}
+
+		return s_inputs[controllerIndex][(int)keyCode].held;
 	}
 
 	/**
 	* @brief Return true if the key has just been released
 	* @param Key code to check
 	*/
-	static inline bool GetKeyUp(const KeyCode keyCode)
+	static inline bool GetKeyUp(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
+		{
 			return false;
+		}
 #endif
-		return s_inputs[(int)keyCode].released;
+
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return false;
+		}
+
+		return s_inputs[controllerIndex][(int)keyCode].released;
+	}
+
+	static Vector2 GetLeftJoystick(const int controllerIndex = 0)
+	{
+#if defined(EDITOR)
+		if (s_blockGameInput)
+		{
+			return Vector2(0);
+		}
+#endif
+
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return Vector2(0);
+		}
+
+		return leftJoystick[controllerIndex];
+	}
+
+	static Vector2 GetRightJoystick(const int controllerIndex = 0)
+	{
+#if defined(EDITOR)
+		if (s_blockGameInput)
+		{
+			return Vector2(0);
+		}
+#endif
+
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return Vector2(0);
+		}
+
+		return rightJoystick[controllerIndex];
 	}
 
 	/**
@@ -231,14 +299,14 @@ public:
 	*/
 	static void ShowMouse();
 
-	static Vector2 leftJoystick;
-	static Vector2 rightJoystick;
 	static Vector2 mousePosition;
 	static Vector2 mouseSpeed;
 	static Vector2 mouseSpeedRaw;
 	static float mouseWheel;
 
 private:
+	static Vector2 leftJoystick[MAX_CONTROLLER];
+	static Vector2 rightJoystick[MAX_CONTROLLER];
 	friend class Engine;
 
 	struct TouchScreen
@@ -277,47 +345,47 @@ private:
 	/**
 	* @brief Set inputs state
 	*/
-	static inline void SetInput(const bool pressed, const KeyCode keyCode)
+	static inline void SetInput(const bool pressed, const KeyCode keyCode, const int controllerIndex)
 	{
 		if (pressed)
-			SetInputPressed(keyCode);
+			SetInputPressed(keyCode, controllerIndex);
 		else
-			SetInputReleased(keyCode);
+			SetInputReleased(keyCode, controllerIndex);
 	}
 
 	/**
 	* @brief Set an input as pressed
 	*/
-	static inline void SetInputPressed(const KeyCode keyCode)
+	static inline void SetInputPressed(const KeyCode keyCode, const int controllerIndex)
 	{
-		if (!s_inputs[(int)keyCode].held)
+		if (!s_inputs[controllerIndex][(int)keyCode].held)
 		{
-			s_inputs[(int)keyCode].pressed = true;
-			s_inputs[(int)keyCode].held = true;
+			s_inputs[controllerIndex][(int)keyCode].pressed = true;
+			s_inputs[controllerIndex][(int)keyCode].held = true;
 		}
 	}
 
 	/**
 	* @brief Set an input as released
 	*/
-	static inline void SetInputReleased(const KeyCode keyCode)
+	static inline void SetInputReleased(const KeyCode keyCode, const int controllerIndex)
 	{
-		s_inputs[(int)keyCode].released = true;
-		s_inputs[(int)keyCode].held = false;
+		s_inputs[controllerIndex][(int)keyCode].released = true;
+		s_inputs[controllerIndex][(int)keyCode].held = false;
 	}
 
 	/**
 	* @brief Set an input states to false
 	*/
-	static inline void SetInputInactive(const KeyCode keyCode)
+	static inline void SetInputInactive(const KeyCode keyCode, const int controllerIndex)
 	{
-		s_inputs[(int)keyCode].pressed = false;
-		s_inputs[(int)keyCode].released = false;
+		s_inputs[controllerIndex][(int)keyCode].pressed = false;
+		s_inputs[controllerIndex][(int)keyCode].released = false;
 	}
 
 	static bool s_hidedMouse;
-	static Input s_inputs[INPUT_COUNT];
-	static std::map<int, Input*> s_keyMap;
-	static std::map<int, Input*> s_buttonMap;
+	static Input s_inputs[MAX_CONTROLLER][INPUT_COUNT];
+	static std::map<int, Input*> s_keyMap[MAX_CONTROLLER];
+	static std::map<int, Input*> s_buttonMap[MAX_CONTROLLER];
 	static std::vector<TouchScreen*> screens;
 };
