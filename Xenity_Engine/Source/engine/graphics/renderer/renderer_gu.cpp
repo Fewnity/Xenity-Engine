@@ -455,7 +455,7 @@ void RendererGU::DisableAllLight()
 	}
 }
 
-void RendererGU::Setlights(const LightsIndices& lightsIndices, const Camera& camera)
+void RendererGU::Setlights(const LightsIndices& lightsIndices)
 {
 	DisableAllLight();
 	const int lightCount = AssetManager::GetLightCount();

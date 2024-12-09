@@ -70,7 +70,7 @@ public:
 	//Shader
 	void UseShaderProgram(unsigned int programId) override;
 
-	void Setlights(const LightsIndices& lightsIndices, const Camera& camera) override;
+	void Setlights(const LightsIndices& lightsIndices) override;
 
 private:
 	void ApplyTextureFilters(const Texture& texture);

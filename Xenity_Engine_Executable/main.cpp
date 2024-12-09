@@ -39,6 +39,7 @@ Disable update function call on many components
 Check peekinput for PSP
 Fix lighting intensity in fixed pipeline opengl
 Use buttonMap instead of keyMap in input system for Consoles
+Fix light not working when added
 
 --- Can be done for the next release
 Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)

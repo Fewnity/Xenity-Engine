@@ -55,7 +55,7 @@ public:
 	void DeleteSubMeshData(MeshData::SubMesh& subMesh) override;
 	void UploadMeshData(MeshData& meshData) override;
 
-	void Setlights(const LightsIndices& lightsIndices, const Camera& camera) override;
+	void Setlights(const LightsIndices& lightsIndices) override;
 
 private:
 	void ApplyTextureFilters(const Texture& texture);

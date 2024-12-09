@@ -578,7 +578,7 @@ void RendererOpengl::DisableAllLight()
 	}
 }
 
-void RendererOpengl::Setlights(const LightsIndices& lightsIndices, const Camera& camera)
+void RendererOpengl::Setlights(const LightsIndices& lightsIndices)
 {
 	DisableAllLight();
 	const int lightCount = AssetManager::GetLightCount();

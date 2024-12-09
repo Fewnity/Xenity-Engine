@@ -322,7 +322,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 				Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
 #endif
-				Engine::GetRenderer().Setlights(lightsIndices, *Graphics::usedCamera);
+				Engine::GetRenderer().Setlights(lightsIndices);
 			}
 			else
 			{

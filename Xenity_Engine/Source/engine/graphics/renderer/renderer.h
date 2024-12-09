@@ -103,7 +103,7 @@ public:
 	virtual void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings) = 0;
 	virtual void DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings) = 0;
 
-	virtual void Setlights(const LightsIndices& lightsIndices, const Camera& camera) = 0;
+	virtual void Setlights(const LightsIndices& lightsIndices) = 0;
 
 	//Shader
 	virtual void UseShaderProgram(unsigned int programId) {}
