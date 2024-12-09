@@ -118,13 +118,6 @@ void RendererGU::NewFrame()
 	}
 	lastUsedColor = 0x00000000;
 	lastUsedColor2 = 0xFFFFFFFF;
-	// sceGuClearColor(0);
-	// sceGuClearDepth(1);
-	/*if (dialog)
-	{
-		sceGuFinish();
-		sceGuSync(0, 0);
-	}*/
 }
 
 void RendererGU::EndFrame()
@@ -382,7 +375,9 @@ void RendererGU::SetTextureData(const Texture& texture, unsigned int textureType
 void RendererGU::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)
 {
 	if (lightIndex >= maxLightCount)
+	{
 		return;
+	}
 
 	float intensity = light.m_intensity;
 	const Color& color = light.color;
@@ -391,8 +386,11 @@ void RendererGU::SetLight(const int lightIndex, const Light& light, const Vector
 
 	sceGuEnable(GU_LIGHT0 + lightIndex);
 
+	// Do not reupdate values if this light has been already updated in the same frame
 	if (lastUpdatedLights[lightIndex] == &light)
+	{
 		return;
+	}
 
 	lastUpdatedLights[lightIndex] = &light;
 

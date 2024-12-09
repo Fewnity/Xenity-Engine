@@ -158,8 +158,6 @@ void Graphics::Draw()
 
 	SCOPED_PROFILER("Graphics::Draw", scopeBenchmark);
 
-	Engine::GetRenderer().NewFrame();
-
 	usedCamera.reset();
 	s_currentMaterial = nullptr;
 	s_currentShader = nullptr;
@@ -190,6 +188,8 @@ void Graphics::Draw()
 
 		if (usedCamera->IsEnabled() && usedCamera->GetGameObjectRaw()->IsLocalActive())
 		{
+			Engine::GetRenderer().NewFrame();
+
 			SortTransparentDrawables();
 			CheckLods();
 

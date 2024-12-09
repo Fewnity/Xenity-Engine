@@ -81,6 +81,10 @@ void RendererOpengl::Setup()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 
 #if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 	glEnable(GL_MULTISAMPLE);
@@ -89,6 +93,12 @@ void RendererOpengl::Setup()
 	// Disable ambient light
 	GLfloat globalAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+
+	lastSettings.invertFaces = false;
+	lastSettings.renderingMode = MaterialRenderingModes::Opaque;
+	lastSettings.useDepth = true;
+	lastSettings.useLighting = false;
+	lastSettings.useTexture = true;
 }
 
 void RendererOpengl::Stop()
@@ -481,7 +491,9 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 	// This won't compile on PsVita, and if the code compile, it would not work because the fixed pipeline is broken on vitagl
 #if !defined(__vita__)
 	if (lightIndex >= maxLightCount)
+	{
 		return;
+	}
 
 	float intensity = light.m_intensity;
 	const Color& color = light.color;
@@ -489,11 +501,13 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 
 	glEnable(GL_LIGHT0 + lightIndex);
 
+	// Do not reupdate values if this light has been already updated in the same frame
 	if (lastUpdatedLights[lightIndex] == &light)
+	{
 		return;
+	}
 
 	lastUpdatedLights[lightIndex] = &light;
-
 
 	float lightAttenuation[1] = { light.GetQuadraticValue() };
 	float lightLinearAttenuation[1] = { light.GetLinearValue() };
@@ -511,8 +525,10 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 
 	// Adapt the intensity depending of the light type
 	float typeIntensity = 1;
-	if (type == LightType::Directional || type == LightType::Ambient)
+	if (type == LightType::Directional)
 		typeIntensity = 2;
+	if (type == LightType::Ambient)
+		typeIntensity = 4;
 	else if (type == LightType::Point)
 		typeIntensity = 2;
 	else if (type == LightType::Spot)
