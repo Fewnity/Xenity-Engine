@@ -81,12 +81,26 @@ void UnitTestManager::StartAllTests()
 
 	//------------------------------------------------------------------ ClassRegistry Test
 	{
-		ClassRegistryAddComponentFromNameTest classRegistryAddComponentFromNameTest = ClassRegistryAddComponentFromNameTest("Class Registry");
+		ClassRegistryAddComponentFromNameTest classRegistryAddComponentFromNameTest = ClassRegistryAddComponentFromNameTest("Class Registry Add Component From Name");
 		TryTest(classRegistryAddComponentFromNameTest);
 
-		ClassRegistryGetComponentNamesTest classRegistryGetComponentNamesTest = ClassRegistryGetComponentNamesTest("Class Registry");
+		ClassRegistryGetComponentNamesTest classRegistryGetComponentNamesTest = ClassRegistryGetComponentNamesTest("Class Registry Get Component Names");
 		TryTest(classRegistryGetComponentNamesTest);
 	}
+
+	//------------------------------------------------------------------ Unique Id
+	{
+		UniqueIdTest uniqueIdTest = UniqueIdTest("Unique Id");
+		TryTest(uniqueIdTest);
+	}
+
+#if defined(EDITOR)
+	//------------------------------------------------------------------ Asset Manager
+	{
+		AddComponentCommandTest addComponentCommandTest = AddComponentCommandTest("Add Component Command");
+		TryTest(addComponentCommandTest);
+	}
+#endif
 
 	Debug::Print("------ Unit Tests finished! ------", true);
 }

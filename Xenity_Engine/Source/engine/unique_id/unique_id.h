@@ -47,6 +47,7 @@ private:
 	friend class Cooker;
 	template<typename T>
 	friend class InspectorDeleteComponentCommand;
+	friend class UniqueIdTest;
 
 	static uint64_t lastFileUniqueId;
 	static uint64_t lastUniqueId;

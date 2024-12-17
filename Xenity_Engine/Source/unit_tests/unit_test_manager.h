@@ -16,10 +16,14 @@ class UnitTest
 public:
 	UnitTest() = delete;
 	UnitTest(const std::string& _name);
+
+	/**
+	* @brief Start the test and return true if the test is successful
+	*/
 	virtual bool Start(std::string& errorOut) = 0;
 
 	/**
-	* @brief Compare two values and return true if they are equal
+	* @brief Compare two values of the same type and return true if they are equal
 	*/
 	template <typename T>
 	bool Compare(const T& valueA, const T& valueB) const
@@ -27,12 +31,18 @@ public:
 		return valueA == valueB;
 	}
 
+	/**
+	* @brief Compare two values of different types and return true if they are equal example compare float and int
+	*/
 	template <typename T, typename U>
 	bool Compare(const T& valueA, const U& valueB) const
 	{
 		return valueA == valueB;
 	}
 
+	/**
+	* @brief Get the name of the test
+	*/
 	const std::string& GetName() const
 	{
 		return name;
@@ -49,95 +59,43 @@ public:
 	static void TryTest(UnitTest& RegisterEnumStringsMap);
 };
 
+#define MAKE_TEST(testName) class testName##Test : public UnitTest { public: testName##Test(const std::string& name) : UnitTest(name) { } bool Start(std::string& errorOut) override; }
+
+// Missing tests:
+// - Quaternion
+// - GameObject
+// - Component
+// - Delete commands
+// - Modify commands
+
 #pragma region Vector
 
-class VectorAddTest : public UnitTest
-{
-public:
-	VectorAddTest(const std::string& name) : UnitTest(name) { }
+// Incomplete tests!
 
-	bool Start(std::string& errorOut) override;
-};
-
-class VectorMinusTest : public UnitTest
-{
-public:
-	VectorMinusTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
-
-class VectorMultiplyTest : public UnitTest
-{
-public:
-	VectorMultiplyTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
-
-class VectorDivideTest : public UnitTest
-{
-public:
-	VectorDivideTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
-
-class VectorNormalizeTest : public UnitTest
-{
-public:
-	VectorNormalizeTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
+MAKE_TEST(VectorAdd);
+MAKE_TEST(VectorMinus);
+MAKE_TEST(VectorMultiply);
+MAKE_TEST(VectorDivide);
+MAKE_TEST(VectorNormalize);
 
 #pragma endregion
 
 #pragma region Transform
 
-class TransformSetPositionTest : public UnitTest
-{
-public:
-	TransformSetPositionTest(const std::string& name) : UnitTest(name) { }
+// Incomplete tests!
 
-	bool Start(std::string& errorOut) override;
-};
-
-class TransformSetRotationTest : public UnitTest
-{
-public:
-	TransformSetRotationTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
-
-class TransformSetScaleTest : public UnitTest
-{
-public:
-	TransformSetScaleTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
+MAKE_TEST(TransformSetPosition);
+MAKE_TEST(TransformSetRotation);
+MAKE_TEST(TransformSetScale);
 
 #pragma endregion
 
 #pragma region Color
 
-class ColorConstructorTest : public UnitTest
-{
-public:
-	ColorConstructorTest(const std::string& name) : UnitTest(name) { }
+// Need an update!
 
-	bool Start(std::string& errorOut) override;
-};
-
-class ColorSetTest : public UnitTest
-{
-public:
-	ColorSetTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
+MAKE_TEST(ColorConstructor);
+MAKE_TEST(ColorSet);
 
 #pragma endregion
 
@@ -158,35 +116,17 @@ public:
 
 #pragma region Math
 
-class MathBasicTest : public UnitTest
-{
-public:
-	MathBasicTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
-
-class MathMatrixTest : public UnitTest
-{
-public:
-	MathMatrixTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
+MAKE_TEST(MathBasic);
+MAKE_TEST(MathMatrix);
 
 #pragma endregion
 
 #pragma region Asset Manager
 
-class AssetManagerTest : public UnitTest
-{
-public:
-	AssetManagerTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
+MAKE_TEST(AssetManager);
 
 #pragma endregion
+
 
 #pragma region Class Registry
 
@@ -201,12 +141,26 @@ public:
 	void TestAddComponent(std::shared_ptr<GameObject>& newGameObject, bool& result, std::string& errorOut, const std::string& componentName);
 };
 
-class ClassRegistryGetComponentNamesTest : public UnitTest
-{
-public:
-	ClassRegistryGetComponentNamesTest(const std::string& name) : UnitTest(name) { }
-
-	bool Start(std::string& errorOut) override;
-};
+MAKE_TEST(ClassRegistryGetComponentNames);
 
 #pragma endregion
+
+#pragma region Unique Id
+
+MAKE_TEST(UniqueId);
+
+#pragma endregion
+
+// ------------------------------------------------------------------------------- EDITOR TESTS
+
+#pragma region Editor
+
+#pragma region Create Command
+
+// Incomplete tests!
+
+MAKE_TEST(AddComponentCommand);
+
+#pragma endregion
+
+#pragma endregion // Editor

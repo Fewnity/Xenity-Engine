@@ -9,6 +9,7 @@
 #include <memory>
 #include <vector>
 #include <engine/game_elements/gameobject.h>	
+#include <engine/assertions/assertions.h>
 
 class Component;
 
@@ -21,46 +22,47 @@ public:
 	GameObjectAccessor() = delete;
 	inline explicit GameObjectAccessor(const std::shared_ptr<GameObject>& gameObject)
 	{
-		this->gameObject = gameObject;
+		XASSERT(gameObject, "GameObject is null");
+		m_gameObject = gameObject;
 	}
 
 	inline std::vector<std::shared_ptr<Component>>& GetComponents()
 	{
-		return gameObject->m_components;
+		return m_gameObject->m_components;
 	}
 
 	inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
 	{
-		return gameObject->m_children;
+		return m_gameObject->m_children;
 	}
 
 	inline void RemoveComponent(const std::shared_ptr<Component>& component)
 	{
-		gameObject->RemoveComponent(component);
+		m_gameObject->RemoveComponent(component);
 	}
 
 	inline void Setup()
 	{
-		gameObject->Setup();
+		m_gameObject->Setup();
 	}
 
 	inline bool IsWaitingForDestroy()
 	{
-		return gameObject->m_waitingForDestroy;
+		return m_gameObject->m_waitingForDestroy;
 	}
 
 	inline void SetWaitingForDestroy(bool waitingForDestroy)
 	{
-		gameObject->m_waitingForDestroy = waitingForDestroy;
+		m_gameObject->m_waitingForDestroy = waitingForDestroy;
 	}
 
 	inline void SetChildrenCount(int count)
 	{
-		gameObject->m_childCount = count;
+		m_gameObject->m_childCount = count;
 	}
 
 
 private:
-	std::shared_ptr<GameObject> gameObject;
+	std::shared_ptr<GameObject> m_gameObject;
 };
 

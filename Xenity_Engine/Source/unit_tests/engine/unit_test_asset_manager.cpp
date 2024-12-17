@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#include "unit_test_manager.h"
+#include "../unit_test_manager.h"
 #include <engine/debug/debug.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/lighting/lighting.h>

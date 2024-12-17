@@ -297,18 +297,22 @@ void AssetManager::RemoveMaterial(const Material* material)
 		materials.erase(materials.begin() + materialIndex);
 		materialCount--;
 	}
+	else 
+	{
+		XASSERT(false, "[AssetManager::RemoveMaterial] material not found");
+	}
 }
 
 void AssetManager::RemoveShader(const Shader* shader)
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
-	XASSERT(shader != nullptr, "[AssetManager::RemoveMaterial] material is null");
+	XASSERT(shader != nullptr, "[AssetManager::RemoveShader] material is null");
 
 	if (!Engine::IsRunning(true))
 		return;
 
-	XASSERT(!shaders.empty(), "[AssetManager::RemoveMaterial] shaders is empty");
+	XASSERT(!shaders.empty(), "[AssetManager::RemoveShader] shaders is empty");
 
 	int shaderIndex = 0;
 	bool found = false;
@@ -326,6 +330,10 @@ void AssetManager::RemoveShader(const Shader* shader)
 	{
 		shaders.erase(shaders.begin() + shaderIndex);
 		shaderCount--;
+	}
+	else
+	{
+		XASSERT(false, "[AssetManager::RemoveShader] shader not found");
 	}
 }
 
@@ -359,6 +367,10 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 		{
 			reflections.erase(reflections.begin() + reflectionIndex);
 			reflectionCount--;
+		}
+		else
+		{
+			XASSERT(false, "[AssetManager::RemoveReflection] reflection not found");
 		}
 	}
 #endif
@@ -470,6 +482,10 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 		fileReferences.erase(fileReferences.begin() + fileReferenceIndex);
 		fileReferenceCount--;
 	}
+	else
+	{
+		XASSERT(false, "[AssetManager::RemoveFileReference] fileReference not found");
+	}
 }
 
 /// <summary>
@@ -505,6 +521,10 @@ void AssetManager::RemoveLight(Light* light)
 		lightCount--;
 		Graphics::CreateLightLists();
 		UpdateLightIndices();
+	}
+	else
+	{
+		XASSERT(false, "[AssetManager::RemoveLight] light not found");
 	}
 }
 
@@ -579,6 +599,7 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 	else
 	{
 		Debug::PrintError("[AssetManager::GetDefaultFileData] Default file not found", true);
+		XASSERT(false, "[AssetManager::GetDefaultFileData] Default file not found");
 	}
 
 	return data;

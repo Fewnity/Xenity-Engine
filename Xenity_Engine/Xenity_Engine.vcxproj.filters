@@ -123,8 +123,8 @@
     <ClCompile Include="Source\engine\tools\gameplay_utility.cpp" />
     <ClCompile Include="Source\engine\file_system\async_file_loading.cpp" />
     <ClCompile Include="Source\editor\file_handler.cpp" />
-    <ClCompile Include="Source\unit_tests\unit_test_vector.cpp" />
-    <ClCompile Include="Source\unit_tests\unit_test_transform.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_vector.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_transform.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_vu1.cpp" />
     <ClCompile Include="Source\engine\debug\crash_handler.cpp" />
     <ClCompile Include="Source\editor\ui\menus\about_menu.cpp" />
@@ -147,9 +147,9 @@
     <ClCompile Include="include\imgui\imgui_impl_sdl3.cpp" />
     <ClCompile Include="Source\engine\particle_system\particle_system.cpp" />
     <ClCompile Include="Source\editor\ui\menus\engine_asset_manager_menu.cpp" />
-    <ClCompile Include="Source\unit_tests\unit_test_color.cpp" />
-    <ClCompile Include="Source\unit_tests\unit_test_event_system.cpp" />
-    <ClCompile Include="Source\unit_tests\unit_test_math.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_color.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_event_system.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_math.cpp" />
     <ClCompile Include="Source\editor\platform_settings.cpp" />
     <ClCompile Include="Source\engine\graphics\icon.cpp" />
     <ClCompile Include="Source\engine\assertions\assertions.cpp" />
@@ -323,8 +323,8 @@
     <ClCompile Include="include\bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp" />
     <ClCompile Include="include\bullet\LinearMath\btThreads.cpp" />
     <ClCompile Include="Source\engine\debug\stack_debug_object.cpp" />
-    <ClCompile Include="Source\unit_tests\unit_test_asset_manager.cpp" />
-    <ClCompile Include="Source\unit_tests\unit_test_class_registry.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_asset_manager.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_class_registry.cpp" />
     <ClCompile Include="Source\engine\file_system\file_ps3.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_rsx.cpp" />
     <ClCompile Include="Source\engine\graphics\texture_default.cpp" />
@@ -336,6 +336,8 @@
     <ClCompile Include="Source\engine\graphics\shader_null.cpp" />
     <ClCompile Include="Source\engine\tools\endian_utils.cpp" />
     <ClCompile Include="Source\editor\ui\menus\engine_debug_menu.cpp" />
+    <ClCompile Include="Source\unit_tests\editor\unit_test_create_command.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_unique_id.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
