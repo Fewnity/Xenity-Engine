@@ -91,6 +91,7 @@ public:
 	std::vector <uint64_t> myUint64s;
 	std::vector <double> myDoubles;
 	std::vector <std::string> myStrings;
+	std::vector <Colors> myEnums;
 	std::vector <Matos> myMatoslist;
 	std::vector <Color*> myColors;
 

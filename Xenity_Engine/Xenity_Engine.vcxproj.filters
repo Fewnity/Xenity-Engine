@@ -338,6 +338,9 @@
     <ClCompile Include="Source\editor\ui\menus\engine_debug_menu.cpp" />
     <ClCompile Include="Source\unit_tests\editor\unit_test_create_command.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_unique_id.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_benchmark.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_endian.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_reflection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />

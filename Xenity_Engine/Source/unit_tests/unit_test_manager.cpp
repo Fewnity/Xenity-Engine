@@ -94,6 +94,27 @@ void UnitTestManager::StartAllTests()
 		TryTest(uniqueIdTest);
 	}
 
+	//------------------------------------------------------------------ Benchmark
+	{
+		BenchmarkTest benchmarkTest = BenchmarkTest("Benchmark");
+		TryTest(benchmarkTest);
+	}
+
+	//------------------------------------------------------------------ Endian
+	{
+		EndianCheckTest endianCheckTest = EndianCheckTest("Endian Check");
+		TryTest(endianCheckTest);
+
+		EndianSwapTest endianSwapTest = EndianSwapTest("Endian Swap");
+		TryTest(endianSwapTest);
+	}
+
+	//------------------------------------------------------------------ Reflection
+	{
+		ReflectiveToJsonToReflectiveTest reflectiveToJsonToReflectiveTest = ReflectiveToJsonToReflectiveTest("Reflective ToJson To Reflective");
+		TryTest(reflectiveToJsonToReflectiveTest);
+	}
+
 #if defined(EDITOR)
 	//------------------------------------------------------------------ Asset Manager
 	{
@@ -111,13 +132,17 @@ void UnitTestManager::TryTest(UnitTest& RegisterEnumStringsMap)
 	const bool testResult = RegisterEnumStringsMap.Start(errorOut);
 	if (testResult)
 	{
-		Debug::Print(RegisterEnumStringsMap.GetName() + " Passed", true);
+		Debug::Print(RegisterEnumStringsMap.GetName() + " Test Passed", true);
 	}
 	else
 	{
 		if (errorOut.empty())
-			Debug::PrintError(RegisterEnumStringsMap.GetName() + " Failed", true);
+		{
+			Debug::PrintError(RegisterEnumStringsMap.GetName() + " Test Failed", true);
+		}
 		else
-			Debug::PrintError(RegisterEnumStringsMap.GetName() + ": " + errorOut.substr(0, errorOut.size() -1), true);
+		{
+			Debug::PrintError(RegisterEnumStringsMap.GetName() + " Test: " + errorOut.substr(0, errorOut.size() - 1), true); // substr to remove the last \n
+		}
 	}
 }

@@ -7,6 +7,7 @@
 #if defined(EDITOR)
 
 #include "../unit_test_manager.h"
+
 #include <engine/debug/debug.h>
 #include <engine/game_elements/gameobject.h>
 #include <editor/command/commands/create.h>
@@ -14,140 +15,68 @@
 #include <engine/lighting/lighting.h>
 #include <engine/audio/audio_source.h>
 
-bool AddComponentCommandTest::Start(std::string& errorOut)
+TestResult AddComponentCommandTest::Start(std::string& errorOut)
 {
-	bool result = true;
-
-	// Test Vector2
-	/*Vector2 v2A = Vector2(1, 4.5f);
-	Vector2 v2B = Vector2(3, 1);
-	if (!Compare(v2A + v2B, Vector2(4, 5.5f)))
-	{
-		errorOut += "Bad Vector2 addition\n";
-		result = false;
-	}*/
-
+	BEGIN_TEST();
 
 	std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 
-	if (!Compare(newGameObject->GetComponentCount(), 0))
-	{
-		errorOut += "Component is not empty by default\n";
-		result = false;
-	}
+	EXPECT_EQUALS(newGameObject->GetComponentCount(), 0, "Component is not empty by default");
 
 	//----------------------------------------------------------------------------  Simple test with one component
 	{
 		InspectorAddComponentCommand addComponentCommand(*newGameObject, "Light");
 		addComponentCommand.Execute();
-		uint64_t lightId = addComponentCommand.componentId;
-		if (!newGameObject->GetComponent<Light>())
-		{
-			errorOut += "Failed to add Light component\n";
-			result = false;
-		}
+		const uint64_t lightId = addComponentCommand.componentId;
+		
+		EXPECT_NOT_NULL(newGameObject->GetComponent<Light>(), "Failed to add Light component");
 
-		if (!Compare(SceneManager::GetSceneModified(), true))
-		{
-			errorOut += "The scene is not dirty\n";
-			result = false;
-		}
+		EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
 
 		addComponentCommand.Undo();
 
-		if (!Compare(newGameObject->GetComponentCount(), 0))
-		{
-			errorOut += "Light component has not been removed\n";
-			result = false;
-		}
+		EXPECT_EQUALS(newGameObject->GetComponentCount(), 0, "Light component has not been removed");
 
 		addComponentCommand.Redo();
 
-		if (!newGameObject->GetComponent<Light>())
-		{
-			errorOut += "Failed to re add Light component\n";
-			result = false;
-		}
+		EXPECT_NOT_NULL(newGameObject->GetComponent<Light>(), "Failed to re add Light component");
 
-		if (!Compare(newGameObject->GetComponent<Light>()->GetUniqueId(), lightId))
-		{
-			errorOut += "Re added light has wrong unique id\n";
-			result = false;
-		}
+		EXPECT_EQUALS(newGameObject->GetComponent<Light>()->GetUniqueId(), lightId, "Re added light has wrong unique id");
 		
 		addComponentCommand.Undo();
 
-		if (!Compare(newGameObject->GetComponentCount(), 0))
-		{
-			errorOut += "Light component has not been removed\n";
-			result = false;
-		}
+		EXPECT_EQUALS(newGameObject->GetComponentCount(), 0, "Light component has not been removed");
 	}
 
 	//----------------------------------------------------------------------------  Advanced test with three components
 	{
 		InspectorAddComponentCommand addComponentCommandLight(*newGameObject, "Light");
 		addComponentCommandLight.Execute();
-		if (!newGameObject->GetComponent<Light>())
-		{
-			errorOut += "Failed to add Light component\n";
-			result = false;
-		}
+
+		EXPECT_NOT_NULL(newGameObject->GetComponent<Light>(), "Failed to add Light component");
 
 		InspectorAddComponentCommand addComponentCommandAudioSource(*newGameObject, "AudioSource");
 		addComponentCommandAudioSource.Execute();
 		const uint64_t audioSourceId = addComponentCommandAudioSource.componentId;
-		if (!newGameObject->GetComponent<AudioSource>())
-		{
-			errorOut += "Failed to add AudioSource component\n";
-			result = false;
-		}
+
+		EXPECT_NOT_NULL(newGameObject->GetComponent<AudioSource>(), "Failed to add AudioSource component");
 
 		InspectorAddComponentCommand addComponentCommandAudioSource2(*newGameObject, "AudioSource");
 		addComponentCommandAudioSource2.Execute();
 
-
-		if (!Compare(newGameObject->GetComponentCount(), 3))
-		{
-			errorOut += "Failed to add AudioSource component\n";
-			result = false;
-		}
-
-		if (newGameObject->GetComponents<AudioSource>()[0] == newGameObject->GetComponents<AudioSource>()[1]) 
-		{
-			errorOut += "Both AudioSource are the same\n";
-			result = false;
-		}
+		EXPECT_EQUALS(newGameObject->GetComponentCount(), 3, "Failed to add AudioSource component");
+		EXPECT_NOT_EQUALS(newGameObject->GetComponents<AudioSource>()[0], newGameObject->GetComponents<AudioSource>()[1], "Both AudioSource are the same");
 
 		addComponentCommandAudioSource.Undo();
 
-		if (!Compare(newGameObject->GetComponentCount(), 2))
-		{
-			errorOut += "AudioSource component has not been removed\n";
-			result = false;
-		}
-
-		if (newGameObject->GetComponent<AudioSource>()->GetUniqueId() == audioSourceId)
-		{
-			errorOut += "The wrong AudioSource component has removed\n";
-			result = false;
-		}
+		EXPECT_EQUALS(newGameObject->GetComponentCount(), 2, "AudioSource component has not been removed");
+		EXPECT_NOT_EQUALS(newGameObject->GetComponent<AudioSource>()->GetUniqueId(), audioSourceId, "The wrong AudioSource component has removed");
 
 		addComponentCommandAudioSource2.Undo();
-		
-		if (!Compare(newGameObject->GetComponentCount(), 1))
-		{
-			errorOut += "AudioSource component has not been removed\n";
-			result = false;
-		}
+		EXPECT_EQUALS(newGameObject->GetComponentCount(), 1, "AudioSource component has not been removed");
 
 		addComponentCommandLight.Undo();
-
-		if (!Compare(newGameObject->GetComponentCount(), 0))
-		{
-			errorOut += "Light component has not been removed\n";
-			result = false;
-		}
+		EXPECT_EQUALS(newGameObject->GetComponentCount(), 0, "Light component has not been removed");
 	}
 
 	Destroy(newGameObject);
@@ -157,7 +86,7 @@ bool AddComponentCommandTest::Start(std::string& errorOut)
 	
 	SceneManager::SetSceneModified(false);
 
-	return result;
+	END_TEST();
 }
 
 #endif

@@ -33,7 +33,7 @@ public:
 	/**
 	* @brief Get elapsed microseconds between Start and Stop calls
 	*/
-	inline long long GetMicroSeconds() const
+	inline uint64_t GetMicroSeconds() const
 	{
 		return m_time;
 	}
@@ -41,9 +41,9 @@ public:
 	/**
 	* @brief Get elapsed milliseconds between Start and Stop calls
 	*/
-	inline long long GetMilliseconds() const
+	inline uint64_t GetMilliseconds() const
 	{
-		return (long long)(m_time / 1000.0f);
+		return (uint64_t)(m_time / 1000.0f);
 	}
 
 	/**
@@ -63,8 +63,10 @@ public:
 	}
 
 private:
+	friend class BenchmarkTest;
+
 	std::chrono::time_point<std::chrono::high_resolution_clock> m_start_point, m_end_point;
-	long long m_time = 0;
+	uint64_t m_time = 0;
 
 #if defined(__PSP__)
 	uint64_t m_endTick;

@@ -5,42 +5,31 @@
 // This file is part of Xenity Engine
 
 #include "../unit_test_manager.h"
+
 #include <engine/debug/debug.h>
 #include <engine/graphics/color/color.h>
 
-bool ColorConstructorTest::Start(std::string& errorOut)
+TestResult ColorConstructorTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	Color color;
-	if (!Compare(color.GetUnsignedIntABGR(), (unsigned int)0xffffffff))
-	{
-		errorOut += "Bad Color constructor (GetUnsignedIntABGR)\n";
-		result = false;
-	}
-	
-	if (!Compare(color.GetUnsignedIntRGBA(), (unsigned int)0xffffffff))
-	{
-		errorOut += "Bad Color constructor (GetUnsignedIntRGBA)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(color.GetUnsignedIntABGR(), 0xffffffff, "Bad Color constructor (GetUnsignedIntABGR)");
+	EXPECT_EQUALS(color.GetUnsignedIntRGBA(), 0xffffffff, "Bad Color constructor (GetUnsignedIntRGBA)");
+	EXPECT_EQUALS(color.GetUnsignedIntARGB(), 0xffffffff, "Bad Color constructor (GetUnsignedIntARGB)");
 
 	const RGBA& rgbaRef = color.GetRGBA();
-	if (!Compare(rgbaRef.r, 1.0f) ||
-		!Compare(rgbaRef.g, 1.0f) ||
-		!Compare(rgbaRef.b, 1.0f) ||
-		!Compare(rgbaRef.a, 1.0f))
-	{
-		errorOut += "Bad Color RGBA constructor\n";
-		result = false;
-	}
+	EXPECT_NEAR(rgbaRef.r, 1.0f, "Bad Color RGBA constructor (red)");
+	EXPECT_NEAR(rgbaRef.g, 1.0f, "Bad Color RGBA constructor (green)");
+	EXPECT_NEAR(rgbaRef.b, 1.0f, "Bad Color RGBA constructor (blue)");
+	EXPECT_NEAR(rgbaRef.a, 1.0f, "Bad Color RGBA constructor (alpha)");
 
-	return result;
+	END_TEST();
 }
 
-bool ColorSetTest::Start(std::string& errorOut)
+TestResult ColorSetTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	const int r = 50;
 	const int g = 101;
@@ -53,60 +42,28 @@ bool ColorSetTest::Start(std::string& errorOut)
 	const float aFloat = a / 255.0f;
 
 	Color color = Color::CreateFromRGBA(r, g, b, a);
-	if (!Compare(color.GetUnsignedIntABGR(), (unsigned int)0xc8056532))
-	{
-		errorOut += "Bad CreateFromRGBA GetUnsignedIntABGR\n";
-		result = false;
-	}
+	EXPECT_EQUALS(color.GetUnsignedIntABGR(), 0xc8056532, "Bad CreateFromRGBA GetUnsignedIntABGR");
+	EXPECT_EQUALS(color.GetUnsignedIntRGBA(), 0x326505c8, "Bad CreateFromRGBA GetUnsignedIntRGBA");
+	EXPECT_EQUALS(color.GetUnsignedIntARGB(), 0xc8326505, "Bad CreateFromRGBA GetUnsignedIntARGB");
 
-	if (!Compare(color.GetUnsignedIntRGBA(), (unsigned int)0x326505c8))
-	{
-		errorOut += "Bad CreateFromRGBA GetUnsignedIntRGBA\n";
-		result = false;
-	}
+	EXPECT_NEAR(color.GetRGBA().r, rFloat, "Bad CreateFromRGBA GetRGBA (red)");
+	EXPECT_NEAR(color.GetRGBA().g, gFloat, "Bad CreateFromRGBA GetRGBA (green)");
+	EXPECT_NEAR(color.GetRGBA().b, bFloat, "Bad CreateFromRGBA GetRGBA (blue)");
+	EXPECT_NEAR(color.GetRGBA().a, aFloat, "Bad CreateFromRGBA GetRGBA (alpha)");
 
-	if (!Compare(color.GetRGBA().r, rFloat) ||
-		!Compare(color.GetRGBA().g, gFloat) ||
-		!Compare(color.GetRGBA().b, bFloat) ||
-		!Compare(color.GetRGBA().a, aFloat))
-	{
-		errorOut += "Bad CreateFromRGBA GetRGBA\n";
-		result = false;
-	}
-
-	if (!Compare(color.GetRGBA().ToVector4(), Vector4(rFloat, gFloat, bFloat, aFloat)))
-	{
-		errorOut += "Bad CreateFromRGBA GetRGBA ToVector4\n";
-		result = false;
-	}
+	EXPECT_EQUALS(color.GetRGBA().ToVector4(), Vector4(rFloat, gFloat, bFloat, aFloat), "Bad CreateFromRGBA GetRGBA ToVector4");
 
 	Color colorFloat = Color::CreateFromRGBAFloat(rFloat, gFloat, bFloat, aFloat);
-	if (!Compare(colorFloat.GetUnsignedIntABGR(), (unsigned int)0xc8056532))
-	{
-		errorOut += "Bad CreateFromRGBAFloat GetUnsignedIntABGR\n";
-		result = false;
-	}
+	EXPECT_EQUALS(colorFloat.GetUnsignedIntABGR(), 0xc8056532, "Bad CreateFromRGBAFloat GetUnsignedIntABGR");
+	EXPECT_EQUALS(colorFloat.GetUnsignedIntRGBA(), 0x326505c8, "Bad CreateFromRGBAFloat GetUnsignedIntRGBA");
+	EXPECT_EQUALS(colorFloat.GetUnsignedIntARGB(), 0xc8326505, "Bad CreateFromRGBAFloat GetUnsignedIntARGB");
 
-	if (!Compare(colorFloat.GetUnsignedIntRGBA(), (unsigned int)0x326505c8))
-	{
-		errorOut += "Bad CreateFromRGBAFloat GetUnsignedIntRGBA\n";
-		result = false;
-	}
+	EXPECT_NEAR(colorFloat.GetRGBA().r, rFloat, "Bad CreateFromRGBAFloat GetRGBA (red)");
+	EXPECT_NEAR(colorFloat.GetRGBA().g, gFloat, "Bad CreateFromRGBAFloat GetRGBA (green)");
+	EXPECT_NEAR(colorFloat.GetRGBA().b, bFloat, "Bad CreateFromRGBAFloat GetRGBA (blue)");
+	EXPECT_NEAR(colorFloat.GetRGBA().a, aFloat, "Bad CreateFromRGBAFloat GetRGBA (alpha)");
 
-	if (!Compare(colorFloat.GetRGBA().r, rFloat) ||
-		!Compare(colorFloat.GetRGBA().g, gFloat) ||
-		!Compare(colorFloat.GetRGBA().b, bFloat) ||
-		!Compare(colorFloat.GetRGBA().a, aFloat))
-	{
-		errorOut += "Bad CreateFromRGBAFloat GetRGBA\n";
-		result = false;
-	}
+	EXPECT_EQUALS(colorFloat.GetRGBA().ToVector4(), Vector4(rFloat, gFloat, bFloat, aFloat), "Bad CreateFromRGBAFloat GetRGBA ToVector4");
 
-	if (!Compare(colorFloat.GetRGBA().ToVector4(), Vector4(rFloat, gFloat, bFloat, aFloat)))
-	{
-		errorOut += "Bad CreateFromRGBAFloat GetRGBA ToVector4\n";
-		result = false;
-	}
-
-	return result;
+	END_TEST();
 }

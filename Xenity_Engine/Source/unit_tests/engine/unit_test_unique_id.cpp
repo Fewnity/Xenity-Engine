@@ -5,38 +5,24 @@
 // This file is part of Xenity Engine
 
 #include "../unit_test_manager.h"
+
 #include <engine/debug/debug.h>
-#include <engine/asset_management/asset_manager.h>
-#include <engine/lighting/lighting.h>
-#include <engine/game_elements/gameobject.h>
-#include <engine/tools/gameplay_utility.h>
-#include <engine/game_elements/gameplay_manager.h>
+#include <engine/unique_id/unique_id.h>
 
-bool UniqueIdTest::Start(std::string& errorOut)
+TestResult UniqueIdTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
-	UniqueId id = UniqueId();
-	UniqueId id2 = UniqueId();
-	if (Compare(id.GetUniqueId(), id2.GetUniqueId()))
-	{
-		errorOut += "Bad UniqueId generation\n";
-		result = false;
-	}
+	const UniqueId id = UniqueId();
+	const UniqueId id2 = UniqueId();
+	EXPECT_NOT_EQUALS(id.GetUniqueId(), id2.GetUniqueId(), "Bad UniqueId generation");
 
-	UniqueId idFile = UniqueId(true);
-	UniqueId idFile2 = UniqueId(true);
-	if (Compare(idFile.GetUniqueId(), idFile2.GetUniqueId()))
-	{
-		errorOut += "Bad UniqueId generation for file\n";
-		result = false;
-	}
+	const UniqueId idFile = UniqueId(true);
+	const UniqueId idFile2 = UniqueId(true);
+	EXPECT_NOT_EQUALS(idFile.GetUniqueId(), idFile2.GetUniqueId(), "Bad UniqueId generation for file");
 
-	if (idFile.GetUniqueId() < UniqueId::reservedFileId || idFile2.GetUniqueId() < UniqueId::reservedFileId)
-	{
-		errorOut += "Bad UniqueId generation for file, reservedFileId not respected\n";
-		result = false;
-	}
+	EXPECT_FALSE(idFile.GetUniqueId() < UniqueId::reservedFileId, "Bad UniqueId generation, reservedId not respected");
+	EXPECT_FALSE(idFile2.GetUniqueId() < UniqueId::reservedFileId, "Bad UniqueId generation, reservedId not respected");
 
-	return result;
+	END_TEST();
 }

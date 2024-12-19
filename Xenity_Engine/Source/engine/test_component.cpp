@@ -77,6 +77,7 @@ ReflectiveData TestComponent::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, myUint64s, "myUint64s", true);
 	Reflective::AddVariable(reflectedVariables, myDoubles, "myDoubles", true);
 	Reflective::AddVariable(reflectedVariables, myStrings, "myStrings", true);
+	Reflective::AddVariable(reflectedVariables, myEnums, "myEnums", true);
 	Reflective::AddVariable(reflectedVariables, myMatoslist, "myMatoslist", true);
 	Reflective::AddVariable(reflectedVariables, myColors, "myColors", true);
 

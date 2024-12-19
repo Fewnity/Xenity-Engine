@@ -482,6 +482,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 	if (gameObjectName != selectedGameObject.GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
 	{
 		// Improve this
+		// Change gameobject's name
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(selectedGameObject, platformView);
 		reflectiveDataToDraw.currentEntry = ReflectionUtils::GetReflectiveEntryByName(selectedGameObject.GetReflectiveData(), "name");
 		reflectiveDataToDraw.reflectiveDataStack.push_back(selectedGameObject.GetReflectiveData());

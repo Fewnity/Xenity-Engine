@@ -52,6 +52,17 @@ private:
 	std::string name;
 };
 
+#define EXPECT_EQUALS(a, b, errorText) if (!Compare(a, b)) { result = false; errorOut += std::string(errorText) + "\n"; }
+#define EXPECT_NOT_EQUALS(a, b, errorText) if (Compare(a, b)) { result = false; errorOut += std::string(errorText) + "\n"; }
+
+#define EXPECT_NULL(a, errorText) if (a) { result = false; errorOut += std::string(errorText) + "\n"; }
+#define EXPECT_NOT_NULL(a, errorText) if (!a) { result = false; errorOut += std::string(errorText) + "\n"; }
+
+#define EXPECT_TRUE(a, errorText) if (a != true) { result = false; errorOut += std::string(errorText) + "\n"; }
+#define EXPECT_FALSE(a, errorText) if (a != false) { result = false; errorOut += std::string(errorText) + "\n"; }
+
+#define EXPECT_NEAR(value, expectedValue, errorText) if (value > expectedValue + std::numeric_limits<float>::epsilon() || value < expectedValue - std::numeric_limits<float>::epsilon()) { result = false; errorOut += std::string(errorText) + "\n"; }
+
 class UnitTestManager
 {
 public:
@@ -59,14 +70,23 @@ public:
 	static void TryTest(UnitTest& RegisterEnumStringsMap);
 };
 
+using TestResult = bool;
+
+#define BEGIN_TEST() TestResult result = true
 #define MAKE_TEST(testName) class testName##Test : public UnitTest { public: testName##Test(const std::string& name) : UnitTest(name) { } bool Start(std::string& errorOut) override; }
+#define END_TEST() return result
 
 // Missing tests:
+// ----- Engine -----
 // - Quaternion
 // - GameObject
 // - Component
+// - Physics
+// - Reflection To Json then back to reflection object
+// ----- Editor -----
 // - Delete commands
 // - Modify commands
+// - FileReferenceFinder
 
 #pragma region Vector
 
@@ -148,6 +168,25 @@ MAKE_TEST(ClassRegistryGetComponentNames);
 #pragma region Unique Id
 
 MAKE_TEST(UniqueId);
+
+#pragma endregion
+
+#pragma region Benchmark
+
+MAKE_TEST(Benchmark);
+
+#pragma endregion
+
+#pragma region Endian
+
+MAKE_TEST(EndianCheck);
+MAKE_TEST(EndianSwap);
+
+#pragma endregion
+
+#pragma region Reflection
+
+MAKE_TEST(ReflectiveToJsonToReflective);
 
 #pragma endregion
 

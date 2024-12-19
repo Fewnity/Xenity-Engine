@@ -5,211 +5,136 @@
 // This file is part of Xenity Engine
 
 #include "../unit_test_manager.h"
+
 #include <engine/debug/debug.h>
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector2_int.h>
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector4.h>
 
-bool VectorAddTest::Start(std::string& errorOut)
+TestResult VectorAddTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	// Test Vector2
-	Vector2 v2A = Vector2(1, 4.5f);
-	Vector2 v2B = Vector2(3, 1);
-	if (!Compare(v2A + v2B, Vector2(4, 5.5f)))
-	{
-		errorOut += "Bad Vector2 addition\n";
-		result = false;
-	}
+	const Vector2 v2A = Vector2(1, 4.5f);
+	const Vector2 v2B = Vector2(3, 1);
+	EXPECT_EQUALS(v2A + v2B, Vector2(4, 5.5f), "Bad Vector2 addition");
 
 	// Test Vector2Int
-	Vector2Int v2IntA = Vector2Int(1, 4);
-	Vector2Int v2IntB = Vector2Int(3, 1);
-	if (!Compare(v2IntA + v2IntB, Vector2Int(4, 5)))
-	{
-		errorOut += "Bad Vector2Int addition\n";
-		result = false;
-	}
+	const Vector2Int v2IntA = Vector2Int(1, 4);
+	const Vector2Int v2IntB = Vector2Int(3, 1);
+	EXPECT_EQUALS(v2IntA + v2IntB, Vector2Int(4, 5), "Bad Vector2Int addition");
 
 	// Test Vector3
-	Vector3 v3A = Vector3(1, 4.5f, 6);
-	Vector3 v3B = Vector3(3, 1, -2);
-	if (!Compare(v3A + v3B, Vector3(4, 5.5f, 4)))
-	{
-		errorOut += "Bad Vector3 addition\n";
-		result = false;
-	}
+	const Vector3 v3A = Vector3(1, 4.5f, 6);
+	const Vector3 v3B = Vector3(3, 1, -2);
+	EXPECT_EQUALS(v3A + v3B, Vector3(4, 5.5f, 4), "Bad Vector3 addition");
 
 	// Test Vector4
-	Vector4 v4A = Vector4(1, 4.5f, 6, 5);
-	Vector4 v4B = Vector4(3, 1, -2, 5);
-	if (!Compare(v4A + v4B, Vector4(4, 5.5f, 4, 10)))
-	{
-		errorOut += "Bad Vector4 addition\n";
-		result = false;
-	}
+	const Vector4 v4A = Vector4(1, 4.5f, 6, 5);
+	const Vector4 v4B = Vector4(3, 1, -2, 5);
+	EXPECT_EQUALS(v4A + v4B, Vector4(4, 5.5f, 4, 10), "Bad Vector4 addition");
 
-	return result;
+	END_TEST();
 }
 
-bool VectorMinusTest::Start(std::string& errorOut)
+TestResult VectorMinusTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	// Test Vector2
-	Vector2 v2A = Vector2(1, 4.5f);
-	Vector2 v2B = Vector2(3, 1);
-	if (!Compare(v2A - v2B, Vector2(-2, 3.5f)))
-	{
-		errorOut += "Bad Vector2 subtraction\n";
-		result = false;
-	}
+	const Vector2 v2A = Vector2(1, 4.5f);
+	const Vector2 v2B = Vector2(3, 1);
+	EXPECT_EQUALS(v2A - v2B, Vector2(-2, 3.5f), "Bad Vector2 subtraction");
 
 	// Test Vector2Int
-	Vector2Int v2IntA = Vector2Int(1, 4);
-	Vector2Int v2IntB = Vector2Int(3, 1);
-	if (!Compare(v2IntA - v2IntB, Vector2Int(-2, 3)))
-	{
-		errorOut += "Bad Vector2Int subtraction\n";
-		result = false;
-	}
+	const Vector2Int v2IntA = Vector2Int(1, 4);
+	const Vector2Int v2IntB = Vector2Int(3, 1);
+	EXPECT_EQUALS(v2IntA - v2IntB, Vector2Int(-2, 3), "Bad Vector2Int subtraction");
 
 	// Test Vector3
-	Vector3 v3A = Vector3(1, 4.5f, 6);
-	Vector3 v3B = Vector3(3, 1, -2);
-	if (!Compare(v3A - v3B, Vector3(-2, 3.5f, 8)))
-	{
-		errorOut += "Bad Vector3 subtraction\n";
-		result = false;
-	}
+	const Vector3 v3A = Vector3(1, 4.5f, 6);
+	const Vector3 v3B = Vector3(3, 1, -2);
+	EXPECT_EQUALS(v3A - v3B, Vector3(-2, 3.5f, 8), "Bad Vector3 subtraction");
 
 	// Test Vector4
-	Vector4 v4A = Vector4(1, 4.5f, 6, 5);
-	Vector4 v4B = Vector4(3, 1, -2, 5);
-	if (!Compare(v4A - v4B, Vector4(-2, 3.5f, 8, 0)))
-	{
-		errorOut += "Bad Vector4 subtraction\n";
-		result = false;
-	}
+	const Vector4 v4A = Vector4(1, 4.5f, 6, 5);
+	const Vector4 v4B = Vector4(3, 1, -2, 5);
+	EXPECT_EQUALS(v4A - v4B, Vector4(-2, 3.5f, 8, 0), "Bad Vector4 subtraction");
 
-	return result;
+	END_TEST();
 }
 
-bool VectorMultiplyTest::Start(std::string& errorOut)
+TestResult VectorMultiplyTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	// Test Vector2
-	Vector2 v2A = Vector2(2, 4.5f);
-	Vector2 v2B = Vector2(3, 2);
-	if (!Compare(v2A * v2B, Vector2(6, 9)))
-	{
-		errorOut += "Bad Vector2 multiplication\n";
-		result = false;
-	}
+	const Vector2 v2A = Vector2(2, 4.5f);
+	const Vector2 v2B = Vector2(3, 2);
+	EXPECT_EQUALS(v2A * v2B, Vector2(6, 9), "Bad Vector2 multiplication");
 
 	// Test Vector2Int
-	Vector2Int v2IntA = Vector2Int(2, 4);
-	Vector2Int v2IntB = Vector2Int(3, 2);
-	if (!Compare(v2IntA * v2IntB, Vector2Int(6, 8)))
-	{
-		errorOut += "Bad Vector2Int multiplication\n";
-		result = false;
-	}
+	const Vector2Int v2IntA = Vector2Int(2, 4);
+	const Vector2Int v2IntB = Vector2Int(3, 2);
+	EXPECT_EQUALS(v2IntA * v2IntB, Vector2Int(6, 8), "Bad Vector2Int multiplication");
 
 	// Test Vector3
-	Vector3 v3A = Vector3(2, 4.5f, 6);
-	Vector3 v3B = Vector3(3, 2, -2);
-	if (!Compare(v3A * v3B, Vector3(6, 9, -12)))
-	{
-		errorOut += "Bad Vector3 multiplication\n";
-		result = false;
-	}
+	const Vector3 v3A = Vector3(2, 4.5f, 6);
+	const Vector3 v3B = Vector3(3, 2, -2);
+	EXPECT_EQUALS(v3A * v3B, Vector3(6, 9, -12), "Bad Vector3 multiplication");
 
 	// Test Vector4
-	Vector4 v4A = Vector4(2, 4.5f, 6, 5);
-	Vector4 v4B = Vector4(3, 2, -2, 5);
-	if (!Compare(v4A * v4B, Vector4(6, 9, -12, 25)))
-	{
-		errorOut += "Bad Vector4 multiplication\n";
-		result = false;
-	}
+	const Vector4 v4A = Vector4(2, 4.5f, 6, 5);
+	const Vector4 v4B = Vector4(3, 2, -2, 5);
+	EXPECT_EQUALS(v4A * v4B, Vector4(6, 9, -12, 25), "Bad Vector4 multiplication");
 
-	return result;
+	END_TEST();
 }
 
-bool VectorDivideTest::Start(std::string& errorOut)
+TestResult VectorDivideTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	// Test Vector2
-	Vector2 v2A = Vector2(6, 3);
-	Vector2 v2B = Vector2(2, 2);
-	if (!Compare(v2A / v2B, Vector2(3, 1.5f)))
-	{
-		errorOut += "Bad Vector2 division\n";
-		result = false;
-	}
+	const Vector2 v2A = Vector2(6, 3);
+	const Vector2 v2B = Vector2(2, 2);
+	EXPECT_EQUALS(v2A / v2B, Vector2(3, 1.5f), "Bad Vector2 division");
 
 	// Test Vector2Int
-	Vector2Int v2IntA = Vector2Int(6, 3);
-	Vector2Int v2IntB = Vector2Int(2, 2);
-	if (!Compare(v2IntA / v2IntB, Vector2Int(3, 1)))
-	{
-		errorOut += "Bad Vector2Int division\n";
-		result = false;
-	}
+	const Vector2Int v2IntA = Vector2Int(6, 3);
+	const Vector2Int v2IntB = Vector2Int(2, 2);
+	EXPECT_EQUALS(v2IntA / v2IntB, Vector2Int(3, 1), "Bad Vector2Int division");
 
 	// Test Vector3
-	Vector3 v3A = Vector3(6, 3, 6);
-	Vector3 v3B = Vector3(2, 2, 3);
-	if (!Compare(v3A / v3B, Vector3(3, 1.5f, 2)))
-	{
-		errorOut += "Bad Vector3 division\n";
-		result = false;
-	}
+	const Vector3 v3A = Vector3(6, 3, 6);
+	const Vector3 v3B = Vector3(2, 2, 3);
+	EXPECT_EQUALS(v3A / v3B, Vector3(3, 1.5f, 2), "Bad Vector3 division");
 
 	// Test Vector4
-	Vector4 v4A = Vector4(6, 3, 6, 0);
-	Vector4 v4B = Vector4(2, 2, 3, 5);
-	if (!Compare(v4A / v4B, Vector4(3, 1.5f, 2, 0)))
-	{
-		errorOut += "Bad Vector4 division\n";
-		result = false;
-	}
+	const Vector4 v4A = Vector4(6, 3, 6, 0);
+	const Vector4 v4B = Vector4(2, 2, 3, 5);
+	EXPECT_EQUALS(v4A / v4B, Vector4(3, 1.5f, 2, 0), "Bad Vector4 division");
 
-	return result;
+	END_TEST();
 }
 
-bool VectorNormalizeTest::Start(std::string& errorOut)
+TestResult VectorNormalizeTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	// Test Vector2
-	Vector2 v2A = Vector2(6, 3);
-	if (!Compare(v2A.Normalized(), Vector2(0.894427180f, 0.447213590f)))
-	{
-		errorOut += "Bad Vector2 normalization\n";
-		result = false;
-	}
+	const Vector2 v2A = Vector2(6, 3);
+	EXPECT_EQUALS(v2A.Normalized(), Vector2(0.894427180f, 0.447213590f), "Bad Vector2 normalization");
 
 	// Test Vector3
-	Vector3 v3A = Vector3(6, 3, 9);
-	if (!Compare(v3A.Normalized(), Vector3(0.534522474f, 0.267261237f, 0.801783741f)))
-	{
-		errorOut += "Bad Vector3 normalization\n";
-		result = false;
-	}
+	const Vector3 v3A = Vector3(6, 3, 9);
+	EXPECT_EQUALS(v3A.Normalized(), Vector3(0.534522474f, 0.267261237f, 0.801783741f), "Bad Vector3 normalization");
 
 	// Test Vector4
-	Vector4 v4A = Vector4(6, 3, 9, -1);
-	if (!Compare(v4A.Normalized(), Vector4(0.532413900f, 0.266206950f, 0.798620880f, -0.0887356550f)))
-	{
-		errorOut += "Bad Vector4 normalization\n";
-		result = false;
-	}
+	const Vector4 v4A = Vector4(6, 3, 9, -1);
+	EXPECT_EQUALS(v4A.Normalized(), Vector4(0.532413900f, 0.266206950f, 0.798620880f, -0.0887356550f), "Bad Vector4 normalization");
 
-	return result;
+	END_TEST();
 }

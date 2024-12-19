@@ -5,6 +5,7 @@
 // This file is part of Xenity Engine
 
 #include "../unit_test_manager.h"
+
 #include <engine/debug/debug.h>
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/vector2_int.h>
@@ -12,164 +13,98 @@
 #include <engine/vectors/vector4.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
-#include <engine/game_elements/gameplay_manager.h>
 #include <engine/tools/gameplay_utility.h>
 
-bool TransformSetPositionTest::Start(std::string& errorOut)
+TestResult TransformSetPositionTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	std::shared_ptr<GameObject> gameObject = CreateGameObject();
-	std::shared_ptr <Transform> transform = gameObject->GetTransform();
+	std::shared_ptr<Transform> transform = gameObject->GetTransform();
 
 	// Normal SetPosition
 	transform->SetPosition(Vector3(1, 2, 3));
-	if (!Compare(transform->GetPosition(), Vector3(1, 2, 3)))
-	{
-		errorOut += "Bad Transform SetPosition\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetPosition(), Vector3(1, 2, 3), "Bad Transform SetPosition");
 
 	// Normal SetLocalPosition
 	transform->SetLocalPosition(Vector3(-1, -2, -3));
-	if (!Compare(transform->GetPosition(), Vector3(-1, -2, -3)))
-	{
-		errorOut += "Bad Transform SetLocalPosition\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetLocalPosition(), Vector3(-1, -2, -3), "Bad Transform SetLocalPosition");
 
 	// SetPosition in a parent
 	std::shared_ptr<GameObject> parent = CreateGameObject();
 	gameObject->SetParent(parent);
 	parent->GetTransform()->SetPosition(Vector3(10, 20, 30));
 	transform->SetPosition(Vector3(4, 5, 6));
-	if (!Compare(transform->GetPosition(), Vector3(4, 5, 6)))
-	{
-		errorOut += "Bad Transform SetPosition in a parent (GetPosition)\n";
-		result = false;
-	}
-	if (!Compare(transform->GetLocalPosition(), Vector3(-6, -15, -24)))
-	{
-		errorOut += "Bad Transform SetPosition in a parent (GetLocalPosition)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetPosition(), Vector3(4, 5, 6), "Bad Transform SetPosition in a parent (GetPosition)");
+	EXPECT_EQUALS(transform->GetLocalPosition(), Vector3(-6, -15, -24), "Bad Transform SetPosition in a parent (GetLocalPosition)");
 
 	// SetLocalPosition in a parent
 	transform->SetLocalPosition(Vector3(4, 5, 6));
-	if (!Compare(transform->GetPosition(), Vector3(14, 25, 36)))
-	{
-		errorOut += "Bad Transform SetLocalPosition in a parent (GetPosition)\n";
-		result = false;
-	}
-	if (!Compare(transform->GetLocalPosition(), Vector3(4, 5, 6)))
-	{
-		errorOut += "Bad Transform SetLocalPosition in a parent (GetLocalPosition)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetPosition(), Vector3(14, 25, 36), "Bad Transform SetLocalPosition in a parent (GetPosition)");
+	EXPECT_EQUALS(transform->GetLocalPosition(), Vector3(4, 5, 6), "Bad Transform SetLocalPosition in a parent (GetLocalPosition)");
 
 	Destroy(gameObject);
 	Destroy(parent);
 
-	return result;
+	END_TEST();
 }
 
-bool TransformSetRotationTest::Start(std::string& errorOut)
+TestResult TransformSetRotationTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	std::shared_ptr<GameObject> gameObject = CreateGameObject();
 	std::shared_ptr <Transform> transform = gameObject->GetTransform();
 
 	// Normal SetRotation
 	transform->SetRotation(Vector3(90, 180, 270));
-	if (!Compare(transform->GetEulerAngles(), Vector3(90, 180, 270)))
-	{
-		errorOut += "Bad Transform SetRotation\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetEulerAngles(), Vector3(90, 180, 270), "Bad Transform SetRotation");
 
 	// Normal SetLocalRotation
 	transform->SetLocalRotation(Vector3(-90, -180, -270));
-	if (!Compare(transform->GetEulerAngles(), Vector3(-90, -180, -270)))
-	{
-		errorOut += "Bad Transform SetLocalRotation\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetLocalEulerAngles(), Vector3(-90, -180, -270), "Bad Transform SetLocalRotation");
 
 	// SetRotation in a parent
 	std::shared_ptr<GameObject> parent = CreateGameObject();
 	gameObject->SetParent(parent);
 	parent->GetTransform()->SetRotation(Vector3(10, 20, 30));
 	transform->SetRotation(Vector3(10, 20, 30));
-	if (!Compare(transform->GetEulerAngles(), Vector3(10, 20, 30)))
-	{
-		errorOut += "Bad Transform SetRotation in a parent (GetEulerAngles)\n";
-		result = false;
-	}
-	if (!Compare(transform->GetLocalEulerAngles(), Vector3(0, 0, 0)))
-	{
-		errorOut += "Bad Transform SetRotation in a parent (GetLocalEulerAngles)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetEulerAngles(), Vector3(10, 20, 30), "Bad Transform SetRotation in a parent (GetEulerAngles)");
+	EXPECT_EQUALS(transform->GetLocalEulerAngles(), Vector3(0, 0, 0), "Bad Transform SetRotation in a parent (GetLocalEulerAngles)");
 
 	// SetLocalRotation in a parent
 	transform->SetLocalRotation(Vector3(10, 20, 30));
-	if (!Compare(transform->GetEulerAngles(), Vector3(8.21814728f, 42.4855042f, 61.8378143f)))
-	{
-		errorOut += "Bad Transform SetLocalRotation in a parent (GetEulerAngles)\n";
-		result = false;
-	}
-	if (!Compare(transform->GetLocalEulerAngles(), Vector3(10, 20, 30)))
-	{
-		errorOut += "Bad Transform SetLocalRotation in a parent (GetLocalEulerAngles)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetEulerAngles(), Vector3(8.21814728f, 42.4855080f, 61.8378067f), "Bad Transform SetLocalRotation in a parent (GetEulerAngles)");
+	EXPECT_EQUALS(transform->GetLocalEulerAngles(), Vector3(10, 20, 30), "Bad Transform SetLocalRotation in a parent (GetLocalEulerAngles)");
 
 	Destroy(gameObject);
 	Destroy(parent);
 
-	return result;
+	END_TEST();
 }
 
-bool TransformSetScaleTest::Start(std::string& errorOut)
+TestResult TransformSetScaleTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	std::shared_ptr<GameObject> gameObject = CreateGameObject();
 	std::shared_ptr <Transform> transform = gameObject->GetTransform();
 
 	// Normal SetRotation
 	transform->SetLocalScale(Vector3(2, 3, 4));
-	if (!Compare(transform->GetScale(), Vector3(2, 3, 4)))
-	{
-		errorOut += "Bad Transform SetLocalScale (GetScale)\n";
-		result = false;
-	}
-
-	if (!Compare(transform->GetLocalScale(), Vector3(2, 3, 4)))
-	{
-		errorOut += "Bad Transform GetLocalScale (GetLocalScale)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetScale(), Vector3(2, 3, 4), "Bad Transform SetLocalScale (GetScale)");
+	EXPECT_EQUALS(transform->GetLocalScale(), Vector3(2, 3, 4), "Bad Transform SetLocalScale (GetLocalScale)");
 
 	// SetRotation in a parent
 	std::shared_ptr<GameObject> parent = CreateGameObject();
 	gameObject->SetParent(parent);
 	parent->GetTransform()->SetLocalScale(Vector3(2, 3, 4));
 	transform->SetLocalScale(Vector3(2, 3, 4));
-	if (!Compare(transform->GetScale(), Vector3(4, 9, 16)))
-	{
-		errorOut += "Bad Transform SetLocalScale in a parent (GetScale)\n";
-		result = false;
-	}
-	if (!Compare(transform->GetLocalScale(), Vector3(2, 3, 4)))
-	{
-		errorOut += "Bad Transform SetLocalScale in a parent (GetLocalScale)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(transform->GetScale(), Vector3(4, 9, 16), "Bad Transform SetLocalScale in a parent (GetScale)");
+	EXPECT_EQUALS(transform->GetLocalScale(), Vector3(2, 3, 4), "Bad Transform SetLocalScale in a parent (GetLocalScale)");
 
 	Destroy(gameObject);
 	Destroy(parent);
 
-	return result;
+	END_TEST();
 }

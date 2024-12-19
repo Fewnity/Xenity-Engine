@@ -5,12 +5,12 @@
 // This file is part of Xenity Engine
 
 #include "../unit_test_manager.h"
+
 #include <engine/debug/debug.h>
 #include <engine/class_registry/class_registry.h>
-#include <engine/lighting/lighting.h>
 #include <engine/tools/gameplay_utility.h>
-#include <engine/game_elements/gameplay_manager.h>
 
+#include <engine/lighting/lighting.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/particle_system/particle_system.h>
@@ -41,9 +41,9 @@ void ClassRegistryAddComponentFromNameTest::TestAddComponent(std::shared_ptr<Gam
 	}
 }
 
-bool ClassRegistryAddComponentFromNameTest::Start(std::string& errorOut)
+TestResult ClassRegistryAddComponentFromNameTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	ClassRegistry::Reset();
 	ClassRegistry::RegisterEngineComponents();
@@ -82,39 +82,25 @@ bool ClassRegistryAddComponentFromNameTest::Start(std::string& errorOut)
 	GameplayManager::RemoveDestroyedGameObjects();
 	newGameObject.reset();
 
-	return result;
+	END_TEST();
 }
 
-bool ClassRegistryGetComponentNamesTest::Start(std::string& errorOut)
+TestResult ClassRegistryGetComponentNamesTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 
 	ClassRegistry::Reset();
 
 	std::vector<std::string> names = ClassRegistry::GetComponentNames();
-	if (!names.empty())
-	{
-		errorOut += "Failed to clear component names\n";
-		result = false;
-	}
+	EXPECT_EQUALS(names.size(), static_cast<size_t>(0), "Failed to clear component names");
+
 	ClassRegistry::RegisterEngineComponents();
 	ClassRegistry::RegisterEngineFileClasses();
 
 	names = ClassRegistry::GetComponentNames();
 
-	if (names.empty())
-	{
-		errorOut += "Failed to get component names\n";
-		result = false;
-	}
-	else 
-	{
-		if (!Compare(names.size(), static_cast<size_t>(18))) // 18 and not 19 because MissingScript is not a valid component
-		{
-			errorOut += "Failed to get all component names\n";
-			result = false;
-		}
-	}
+	EXPECT_NOT_EQUALS(names.size(), static_cast<size_t>(0), "Failed to get component names (empty list)");
+	EXPECT_EQUALS(names.size(), static_cast<size_t>(18), "Failed to get all component names"); // 18 and not 19 because MissingScript is not a valid component
 
-	return result;
+	END_TEST();
 }

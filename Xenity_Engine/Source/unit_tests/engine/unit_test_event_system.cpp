@@ -5,8 +5,9 @@
 // This file is part of Xenity Engine
 
 #include "../unit_test_manager.h"
+
 #include <engine/debug/debug.h>
-#include <engine/graphics/color/color.h>
+#include <engine/event_system/event_system.h>
 
 void EventSystemTest::EventFunction(int& value) 
 {
@@ -18,112 +19,64 @@ void EventSystemTest::EventObjectFunction(int& value)
 	value *= 2;
 }
 
-bool EventSystemTest::Start(std::string& errorOut)
+TestResult EventSystemTest::Start(std::string& errorOut)
 {
-	bool result = true;
+	BEGIN_TEST();
 	int eventValue = 0;
 
 	Event<int&> myEvent;
 
 	// ----------------- Constructor test
-
-	if (!Compare(myEvent.GetBindedFunctionCount(), 0))
-	{
-		errorOut += "Bad Event Constructor (GetBindedFunctionCount)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 0, "Bad Event Constructor (GetBindedFunctionCount)");
 
 	// ----------------- Bind static function test
-
 	myEvent.Bind(&EventSystemTest::EventFunction);
-
-	if (!Compare(myEvent.GetBindedFunctionCount(), 1))
-	{
-		errorOut += "Bad Event Bind (GetBindedFunctionCount)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 1, "Bad Event Bind (GetBindedFunctionCount)");
 
 	// Try to bind twice the same function, should not bind it twice
 	myEvent.Bind(&EventSystemTest::EventFunction);
-
-	if (!Compare(myEvent.GetBindedFunctionCount(), 1))
-	{
-		errorOut += "Bad Event Bind (GetBindedFunctionCount), binded twice\n";
-		result = false;
-	}
+	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 1, "Bad Event Bind (GetBindedFunctionCount), binded twice");
 
 	myEvent.Trigger(eventValue); //1
 	myEvent.Trigger(eventValue); //2
 	myEvent.Trigger(eventValue); //3
 
-	if (!Compare(eventValue, 3))
-	{
-		errorOut += "Bad Event Trigger\n";
-		result = false;
-	}
+	EXPECT_EQUALS(eventValue, 3, "Bad Event Trigger");
 
 	myEvent.Unbind(&EventSystemTest::EventFunction);
 
-	if (!Compare(myEvent.GetBindedFunctionCount(), 0))
-	{
-		errorOut += "Bad Event UnBind (GetBindedFunctionCount)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 0, "Bad Event UnBind (GetBindedFunctionCount)");
 
 	// Try to unbind a function that is not binded, should not do anything
 	myEvent.Unbind(&EventSystemTest::EventFunction);
 
-	if (!Compare(myEvent.GetBindedFunctionCount(), 0))
-	{
-		errorOut += "Bad Event UnBind (GetBindedFunctionCount)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 0, "Bad Event UnBind (GetBindedFunctionCount), unbinded twice");
 
 	// ----------------- Bind object function test
 
 	myEvent.Bind(&EventSystemTest::EventObjectFunction, this);
 
-	if (!Compare(myEvent.GetBindedFunctionCount(), 1))
-	{
-		errorOut += "Bad Event Bind Object Function (GetBindedFunctionCount)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 1, "Bad Event Bind Object Function (GetBindedFunctionCount)");
 
 	// Try to bind twice the same function, should not bind it twice
 	myEvent.Bind(&EventSystemTest::EventObjectFunction, this);
 
-	if (!Compare(myEvent.GetBindedFunctionCount(), 1))
-	{
-		errorOut += "Bad Event Bind Object Function (GetBindedFunctionCount), binded twice\n";
-		result = false;
-	}
+	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 1, "Bad Event Bind Object Function (GetBindedFunctionCount), binded twice");
 
 	myEvent.Trigger(eventValue); // 6
 	myEvent.Trigger(eventValue); // 12
 
-	if (!Compare(eventValue, 12))
-	{
-		errorOut += "Bad Event Trigger with Object Function\n";
-		result = false;
-	}
+	EXPECT_EQUALS(eventValue, 12, "Bad Event Trigger with Object Function");
 
 	// ----------------- UnbindAll test
 
 	myEvent.UnbindAll();
 
-	if (!Compare(myEvent.GetBindedFunctionCount(), 0))
-	{
-		errorOut += "Bad Event UnbindAll (GetBindedFunctionCount)\n";
-		result = false;
-	}
+	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 0, "Bad Event UnbindAll (GetBindedFunctionCount)");
 
 	myEvent.Trigger(eventValue); // 12
 
-	if (!Compare(eventValue, 12))
-	{
-		errorOut += "Bad Event Trigger after UnbindAll\n";
-		result = false;
-	}
+	EXPECT_EQUALS(eventValue, 12, "Bad Event Trigger after UnbindAll");
 
-	return result;
+	END_TEST();
 }
