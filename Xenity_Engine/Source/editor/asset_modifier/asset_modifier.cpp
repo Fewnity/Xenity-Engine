@@ -35,7 +35,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int
 
 		// Load image with stb_image
 		int originalWidth, originalHeight, nrChannels;
-		unsigned char* buffer = stbi_load_from_memory(fileData, fileBufferSize, &originalWidth, &originalHeight,
+		unsigned char* buffer = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &originalWidth, &originalHeight,
 			&nrChannels, channelCount);
 
 		free(fileData);

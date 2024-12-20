@@ -126,8 +126,8 @@ void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* ch
 			short* leftBuf = nullptr;
 			const uint32_t frequency = stream->GetFrequency();
 			const uint64_t sampleCount = stream->GetSampleCount();
-			int leftBufferIndex = 0;
-			int rightBufferIndex = 0;
+			uint64_t leftBufferIndex = 0;
+			uint64_t rightBufferIndex = 0;
 			const short* soundBuffer = sound->m_buffer;
 
 			bool deleteAudio = false;
@@ -636,7 +636,7 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	XASSERT(audioSource != nullptr, "[AudioManager::StopAudioSource] audioSource is null");
 
 	AudioManager::s_myMutex->Lock();
-	int audioSourceIndex = 0;
+	size_t audioSourceIndex = 0;
 	bool found = false;
 
 	// Find audio source index
@@ -672,7 +672,7 @@ void AudioManager::RemoveAudioSource(AudioSource* audioSource)
 	XASSERT(audioSource != nullptr, "[AudioManager::RemoveAudioSource] audioSource is null");
 
 	AudioManager::s_myMutex->Lock();
-	int audioSourceIndex = 0;
+	size_t audioSourceIndex = 0;
 	bool found = false;
 
 	// Find audio source index

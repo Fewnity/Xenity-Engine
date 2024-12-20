@@ -194,7 +194,7 @@ void Texture::LoadTexture()
 		// Only for editor, live resizing
 #if defined(EDITOR)
 		// Load image with stb_image
-		unsigned char* data2 = stbi_load_from_memory(fileData, fileBufferSize, &m_width, &height,
+		unsigned char* data2 = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &m_width, &height,
 									   &nrChannels, 4);
 		free(fileData);
 		int newWidth = m_width;

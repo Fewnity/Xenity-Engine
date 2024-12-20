@@ -34,7 +34,7 @@ struct alignas(16) LightsIndices
 	int usedPointLightCount = 0;
 	int usedSpotLightCount = 0;
 	int usedDirectionalLightCount = 0;
-	int padding0;
+	int padding0 = 0;
 
 	ivec4 pointLightIndices[MAX_LIGHT_COUNT];
 	ivec4 spotLightIndices[MAX_LIGHT_COUNT];

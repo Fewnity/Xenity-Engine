@@ -99,7 +99,7 @@ void SpriteEditorMenu::SaveSpriteSelections()
 
 		// Create cropped texture file
 		std::shared_ptr<File> newFile = FileSystem::s_fileSystem->MakeFile(folderPath + spriteToEdit->m_file->GetFileName() + "_" + std::to_string(selectI) + ".png");
-		AssetModifier::CropTexture(spriteToEdit, newSpriteSelection->position.x, newSpriteSelection->position.y, newSpriteSelection->size.x, newSpriteSelection->size.y, newFile);
+		AssetModifier::CropTexture(spriteToEdit, static_cast<int>(newSpriteSelection->position.x), static_cast<int>(newSpriteSelection->position.y), static_cast<int>(newSpriteSelection->size.x), static_cast<int>(newSpriteSelection->size.y), newFile);
 	}
 
 	// Save sprite sheet texture meta file
@@ -217,7 +217,7 @@ void SpriteEditorMenu::DrawToolWindow()
 			const std::string selectButtonText = "Select" + EditorUI::GenerateItemId();
 			if (ImGui::Button(selectButtonText.c_str()))
 			{
-				currentSelectedSpriteIndex = selectionIndex;
+				currentSelectedSpriteIndex = static_cast<int>(selectionIndex);
 			}
 			ImGui::SameLine();
 

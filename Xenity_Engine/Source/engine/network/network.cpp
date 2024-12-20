@@ -116,7 +116,7 @@ std::shared_ptr<Socket> NetworkManager::GetClientSocket()
 	while (true) /* Boucle infinie. Exercice : améliorez ce code. */
 	{
 		int sinsize = sizeof(csin);
-		if ((newClientSocketId = accept(newSocketId, reinterpret_cast<SOCKADDR*>(&csin), &sinsize)) != INVALID_SOCKET)
+		if ((newClientSocketId = static_cast<int>(accept(newSocketId, reinterpret_cast<SOCKADDR*>(&csin), &sinsize))) != INVALID_SOCKET)
 		{
 			Debug::Print("New client connected");
 			break;

@@ -95,13 +95,13 @@ void ProfilerMenu::UpdateMemoryCounter()
 	{
 		usedMemoryHistory[i] = usedMemoryHistory[i + 1];
 	}
-	usedMemoryHistory[USED_MEMORY_HISTORY_SIZE - 1] = MemoryInfo::GetUsedMemory() / 1000;
+	usedMemoryHistory[USED_MEMORY_HISTORY_SIZE - 1] = static_cast<float>(MemoryInfo::GetUsedMemory() / 1000);
 
 	for (int i = 0; i < USED_VIDE_MEMORY_HISTORY_SIZE - 1; i++)
 	{
 		usedVideoMemoryHistory[i] = usedVideoMemoryHistory[i + 1];
 	}
-	usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE - 1] = MemoryInfo::GetUsedVideoMemory() / 1000;
+	usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE - 1] = static_cast<float>(MemoryInfo::GetUsedVideoMemory() / 1000);
 }
 
 void ProfilerMenu::DrawMemoryStats()
@@ -124,23 +124,23 @@ void ProfilerMenu::DrawMemoryStats()
 		const MemoryTracker* goMem = Performance::s_gameObjectMemoryTracker;
 
 		ImGui::Text("%s:", goMem->m_name.c_str());
-		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", goMem->m_allocatedMemory - goMem->m_deallocatedMemory, goMem->m_allocatedMemory);
+		ImGui::Text("Current allocation: %zu Bytes, Total: %zu Bytes", goMem->m_allocatedMemory - goMem->m_deallocatedMemory, goMem->m_allocatedMemory);
 		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (goMem->m_allocatedMemory - goMem->m_deallocatedMemory) / 1000000.0f, goMem->m_allocatedMemory / 1000000.0f);
-		ImGui::Text("Alloc count: %d, Delete count: %d", goMem->m_allocCount, goMem->m_deallocCount);
+		ImGui::Text("Alloc count: %zu, Delete count: %zu", goMem->m_allocCount, goMem->m_deallocCount);
 
 		const MemoryTracker* meshDataMem = Performance::s_meshDataMemoryTracker;
 		ImGui::Separator();
 		ImGui::Text("%s:", meshDataMem->m_name.c_str());
-		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", meshDataMem->m_allocatedMemory - meshDataMem->m_deallocatedMemory, meshDataMem->m_allocatedMemory);
+		ImGui::Text("Current allocation: %zu Bytes, Total: %zu Bytes", meshDataMem->m_allocatedMemory - meshDataMem->m_deallocatedMemory, meshDataMem->m_allocatedMemory);
 		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (meshDataMem->m_allocatedMemory - meshDataMem->m_deallocatedMemory) / 1000000.0f, meshDataMem->m_allocatedMemory / 1000000.0f);
-		ImGui::Text("Alloc count: %d, Delete count: %d", meshDataMem->m_allocCount, meshDataMem->m_deallocCount);
+		ImGui::Text("Alloc count: %zu, Delete count: %zu", meshDataMem->m_allocCount, meshDataMem->m_deallocCount);
 
 		const MemoryTracker* textureMem = Performance::s_textureMemoryTracker;
 		ImGui::Separator();
 		ImGui::Text("%s:", textureMem->m_name.c_str());
-		ImGui::Text("Current allocation: %d Bytes, Total: %d Bytes", textureMem->m_allocatedMemory - textureMem->m_deallocatedMemory, textureMem->m_allocatedMemory);
+		ImGui::Text("Current allocation: %zu Bytes, Total: %zu Bytes", textureMem->m_allocatedMemory - textureMem->m_deallocatedMemory, textureMem->m_allocatedMemory);
 		ImGui::Text("Current allocation: %f MegaBytes, Total: %f MegaBytes,", (textureMem->m_allocatedMemory - textureMem->m_deallocatedMemory) / 1000000.0f, textureMem->m_allocatedMemory / 1000000.0f);
-		ImGui::Text("Alloc count: %d, Delete count: %d", textureMem->m_allocCount, textureMem->m_deallocCount);
+		ImGui::Text("Alloc count: %zu, Delete count: %zu", textureMem->m_allocCount, textureMem->m_deallocCount);
 #endif
 	}
 }
@@ -318,7 +318,7 @@ void ProfilerMenu::DrawProfilerGraph()
 					const ImPlotPoint mousePoint = ImPlot::GetPlotMousePos();
 					ImVec2 mousePixelPos = ImPlot::PlotToPixels(mousePoint.x, mousePoint.y);
 
-					int hoveredItemIndex = -1;
+					size_t hoveredItemIndex = -1;
 					const size_t timelineItemsCount = timelineItems.size();
 					for (size_t i = 0; i < timelineItemsCount; i++)
 					{
@@ -405,7 +405,7 @@ void ProfilerMenu::CreateTimelineItems()
 
 		for (const auto& value : valCategory.second)
 		{
-			classicProfilerItem.totalTime += value.end - value.start;
+			classicProfilerItem.totalTime += static_cast<uint32_t>(value.end - value.start);
 			classicProfilerItem.callCountInFrame++;
 
 			TimelineItem item(Performance::s_scopProfilerNames[valCategory.first]);

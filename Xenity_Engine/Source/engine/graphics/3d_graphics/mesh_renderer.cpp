@@ -280,7 +280,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 			int spotLightCount = 0;
 
 			LightsIndices lightsIndices;
-			lightsIndices.usedDirectionalLightCount = directionalLightCount;
+			lightsIndices.usedDirectionalLightCount = static_cast<int>(directionalLightCount);
 			shader->m_currentLights = m_affectedByLights;
 			shader->m_currentDirectionalLights = Graphics::s_directionalLights;
 

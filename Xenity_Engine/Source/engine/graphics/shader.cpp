@@ -84,8 +84,8 @@ std::string Shader::GetShaderCode(const std::string& fullShaderCode, ShaderType 
 	struct TagData
 	{
 		std::string tag;
-		int start = -1;
-		int end = -1;
+		size_t start = -1;
+		size_t end = -1;
 	};
 
 	std::map<Platform, TagData> platformStartIndex;
