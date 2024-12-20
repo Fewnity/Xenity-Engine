@@ -16,6 +16,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/material.h>
+#include <engine/graphics/texture.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/tools/math.h>

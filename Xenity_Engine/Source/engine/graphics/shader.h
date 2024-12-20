@@ -48,7 +48,7 @@ struct alignas(16) LightsIndices
 /**
 * @brief [Internal] Shader file class
 */
-class Shader : public FileReference, public Reflective
+class Shader : public FileReference
 {
 public:
 	enum class ShaderType

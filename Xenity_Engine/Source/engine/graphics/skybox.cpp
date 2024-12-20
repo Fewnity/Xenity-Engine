@@ -13,6 +13,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/graphics/texture.h>
 
 using json = nlohmann::json;
 
@@ -36,12 +37,12 @@ SkyBox::SkyBox(const std::shared_ptr<Texture>& _front, const std::shared_ptr<Tex
 ReflectiveData SkyBox::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	AddVariable(reflectedVariables, front, "front", true, true);
-	AddVariable(reflectedVariables, back, "back", true, true);
-	AddVariable(reflectedVariables, up, "up", true, true);
-	AddVariable(reflectedVariables, down, "down", true, true);
-	AddVariable(reflectedVariables, left, "left", true, true);
-	AddVariable(reflectedVariables, right, "right", true, true);
+	AddVariable(reflectedVariables, front, "front", true);
+	AddVariable(reflectedVariables, back, "back", true);
+	AddVariable(reflectedVariables, up, "up", true);
+	AddVariable(reflectedVariables, down, "down", true);
+	AddVariable(reflectedVariables, left, "left", true);
+	AddVariable(reflectedVariables, right, "right", true);
 	return reflectedVariables;
 }
 

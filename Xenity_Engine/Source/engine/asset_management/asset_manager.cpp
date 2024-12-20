@@ -19,6 +19,7 @@
 #include <engine/graphics/texture.h>
 #include <engine/graphics/skybox.h>
 #include <engine/graphics/ui/font.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/game_elements/gameobject.h>
 
 #include <engine/scene_management/scene.h>
@@ -389,49 +390,14 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 		for (const ReflectiveEntry& reflectiveEntry : map)
 		{
 			const VariableReference& variableRef = reflectiveEntry.variable.value();
-			if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<MeshData>>>(&variableRef))
+			if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<FileReference>>>(&variableRef))
 			{
 				if (valuePtr->get() == fileReference)
 				{
 					valuePtr->get().reset();
 				}
 			}
-			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<AudioClip>>>(&variableRef))
-			{
-				if (valuePtr->get() == fileReference)
-				{
-					valuePtr->get().reset();
-				}
-			}
-			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Texture>>>(&variableRef))
-			{
-				if (valuePtr->get() == fileReference)
-				{
-					valuePtr->get().reset();
-				}
-			}
-			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Scene>>>(&variableRef))
-			{
-				if (valuePtr->get() == fileReference)
-				{
-					valuePtr->get().reset();
-				}
-			}
-			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<SkyBox>>>(&variableRef))
-			{
-				if (valuePtr->get() == fileReference)
-				{
-					valuePtr->get().reset();
-				}
-			}
-			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::shared_ptr<Font>>>(&variableRef))
-			{
-				if (valuePtr->get() == fileReference)
-				{
-					valuePtr->get().reset();
-				}
-			}
-			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>>(&variableRef))
+			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::vector<std::shared_ptr<FileReference>>>>(&variableRef))
 			{
 				const size_t vectorSize = valuePtr->get().size();
 				for (size_t i = 0; i < vectorSize; i++)

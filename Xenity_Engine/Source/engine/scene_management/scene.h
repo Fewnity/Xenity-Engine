@@ -12,7 +12,7 @@
 /**
 * @brief Scene file
 */
-class API Scene : public FileReference, public Reflective
+class API Scene : public FileReference
 {
 public:
 	Scene();

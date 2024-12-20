@@ -15,7 +15,7 @@
 
 class Texture;
 
-class API Font : public FileReference, public Reflective
+class API Font : public FileReference
 {
 public:
 	~Font();

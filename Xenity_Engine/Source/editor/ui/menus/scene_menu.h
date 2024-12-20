@@ -25,6 +25,7 @@ enum class Side
 
 class GameObject;
 class Camera;
+class Texture;
 
 class SceneMenu : public Menu
 {

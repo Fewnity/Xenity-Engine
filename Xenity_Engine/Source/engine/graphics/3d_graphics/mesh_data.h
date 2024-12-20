@@ -20,6 +20,7 @@
 #include <engine/vectors/vector3.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/graphics/3d_graphics/sphere.h>
+#include <engine/graphics/texture.h>
 
 enum class VertexElements : uint32_t
 {
@@ -69,7 +70,7 @@ struct VertexNormalsNoColorNoUv
 	float x, y, z;
 };
 
-class API MeshData : public FileReference, public Reflective
+class API MeshData : public FileReference
 {
 public:
 	class SubMesh

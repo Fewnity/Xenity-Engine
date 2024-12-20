@@ -23,7 +23,7 @@ class Texture;
 class Shader;
 class Camera;
 
-class Material : public FileReference, public Reflective
+class Material : public FileReference
 {
 public:
 	Material();

@@ -16,20 +16,10 @@
 class GameObject;
 class Transform;
 class Color;
-class Texture;
-class MeshData;
-class MeshRenderer;
 class Reflective;
 class Component;
 class FileReference;
-class AudioClip;
-class Scene;
-class SkyBox;
-class Font;
-class Shader;
-class Material;
 class Collider;
-class Icon;
 
 // List of all the types that can be used in the reflection system (visible in the inspector and saved to json)
 typedef std::variant <
@@ -47,18 +37,10 @@ typedef std::variant <
 	std::reference_wrapper<std::weak_ptr<Component>>,
 	std::reference_wrapper<std::weak_ptr<Collider>>,
 	std::reference_wrapper<std::weak_ptr<GameObject>>,
+	std::reference_wrapper<std::weak_ptr<Transform>>,
 
 	// Files
-	std::reference_wrapper<std::weak_ptr<Transform>>,
-	std::reference_wrapper<std::shared_ptr<Texture>>,
-	std::reference_wrapper<std::shared_ptr<MeshData>>,
-	std::reference_wrapper<std::shared_ptr<AudioClip>>,
-	std::reference_wrapper<std::shared_ptr<Scene>>,
-	std::reference_wrapper<std::shared_ptr<SkyBox>>,
-	std::reference_wrapper<std::shared_ptr<Font>>,
-	std::reference_wrapper<std::shared_ptr<Shader>>,
-	std::reference_wrapper<std::shared_ptr<Material>>,
-	std::reference_wrapper<std::shared_ptr<Icon>>,
+	std::reference_wrapper<std::shared_ptr<FileReference>>,
 
 	//List of basic types
 	std::reference_wrapper<std::vector<Reflective*>>,
@@ -69,15 +51,7 @@ typedef std::variant <
 	std::reference_wrapper<std::vector<std::string>>,
 
 	//List of files
-	std::reference_wrapper<std::vector<std::shared_ptr<Texture>>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<MeshData>>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<AudioClip>>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<Scene>>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<SkyBox>>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<Font>>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<Shader>>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<Material>>>,
-	std::reference_wrapper<std::vector<std::shared_ptr<Icon>>>,
+	std::reference_wrapper<std::vector<std::shared_ptr<FileReference>>>,
 
 	// List of components/game elements
 	std::reference_wrapper<std::vector<std::weak_ptr<GameObject>>>,
@@ -146,8 +120,34 @@ public:
 
 protected:
 
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------- BASIC TYPES
+	// ----------------------------------------------------------------------------------------
+
 	/**
-	* @brief Add a variable to the list of variables (basic Reflectives)
+	* @brief Add a variable to the list of variables (Basic types)
+	* @param vector The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param isPublic If the variable is public
+	*/
+	template<typename T>
+	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value && !std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
+		static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
+	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
+		const uint64_t type = typeid(T).hash_code();
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<T>(value), variableName, false, isPublic, type, false);
+		return newReflectiveEntry;
+	}
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------- BASIC REFLECTIVES
+	// ----------------------------------------------------------------------------------------
+
+	/**
+	* @brief Add a variable to the list of variables (Basic Reflectives)
 	* @param vector The list of variables
 	* @param value The variable value
 	* @param variableName The variable name
@@ -165,35 +165,37 @@ protected:
 	}
 
 	/**
-	* @brief Add a variable to the list of variables (basic types)
+	* @brief Add a variable to the list of variables (Basic reflectives list)
 	* @param vector The list of variables
 	* @param value The variable value
 	* @param variableName The variable name
 	* @param isPublic If the variable is public
 	*/
 	template<typename T>
-	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value && !std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
-	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
+	std::enable_if_t<std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
+		static AddVariable(ReflectiveData& vector, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<T>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, isPublic, type, false);
+		for (ReflectiveEntry& otherEntry : vector)
+		{
+			if (otherEntry.variableName == variableName)
+			{
+				otherEntry.typeSpawner = new TypeSpawnerImpl<T>();
+				break;
+			}
+		}
 		return newReflectiveEntry;
 	}
 
-	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
-	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, const bool isPublic)
-	{
-		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
-
-		const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, isPublic, type, true);
-		return newReflectiveEntry;
-	}
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------- ENUMS
+	// ----------------------------------------------------------------------------------------
 
 	/**
-	* @brief Add a variable to the list of variables (enum)
+	* @brief Add a variable to the list of variables (Enums)
 	* @param vector The list of variables
 	* @param value The variable value
 	* @param variableName The variable name
@@ -210,7 +212,28 @@ protected:
 	}
 
 	/**
-	* @brief Add a variable to the list of variables (component)
+	* @brief Add a variable to the list of variables (Enums list)
+	* @param vector The list of variables
+	* @param value The variable value
+	* @param variableName The variable name
+	* @param isPublic If the variable is public
+	*/
+	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, const bool isPublic)
+	{
+		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
+
+		const uint64_t type = typeid(T).hash_code();
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, isPublic, type, true);
+		return newReflectiveEntry;
+	}
+
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------- COMPONENTS
+	// ----------------------------------------------------------------------------------------
+
+	/**
+	* @brief Add a variable to the list of variables (Components)
 	* @param vector The list of variables
 	* @param value The variable value
 	* @param variableName The variable name
@@ -225,9 +248,9 @@ protected:
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::weak_ptr<Component>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
-	
+
 	/**
-	* @brief Add a variable to the list of variables (component list)
+	* @brief Add a variable to the list of variables (Components list)
 	* @param vector The list of variables
 	* @param value The variable value
 	* @param variableName The variable name
@@ -243,48 +266,41 @@ protected:
 		return newReflectiveEntry;
 	}
 
+	// ----------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------- FILES
+	// ----------------------------------------------------------------------------------------
+
 	/**
-	* @brief Add a variable to the list of variables (reflective list)
+	* @brief Add a variable to the list of variables (FileReference)
 	* @param vector The list of variables
 	* @param value The variable value
 	* @param variableName The variable name
 	* @param isPublic If the variable is public
 	*/
-	template<typename T>
-	std::enable_if_t<std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
-	static AddVariable(ReflectiveData& vector, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
+	template<typename T, typename = std::enable_if_t<std::is_base_of<FileReference, T>::value>>
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::shared_ptr<T>& value, const std::string& variableName, const bool isPublic)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, isPublic, type, false);
-		for (ReflectiveEntry& otherEntry : vector)
-		{
-			if (otherEntry.variableName == variableName) 
-			{
-				otherEntry.typeSpawner = new TypeSpawnerImpl<T>();
-				break;
-			}
-		}
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::shared_ptr<FileReference>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
 
 	/**
-	* @brief Add a variable to the list of variables (basic type)
-	* @param map The list of variables
+	* @brief Add a variable to the list of variables (FileReferences list)
+	* @param vector The list of variables
 	* @param value The variable value
 	* @param variableName The variable name
-	* @param visibleInFileInspector If the variable is visible in the file inspector
 	* @param isPublic If the variable is public
 	*/
-	template<typename T>
-	std::enable_if_t<!std::is_pointer<T>::value, ReflectiveEntry&>
-	static AddVariable(ReflectiveData& map, T& value, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic)
+	template<typename T, typename = std::enable_if_t<std::is_base_of<FileReference, T>::value>>
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<std::shared_ptr<T>>& value, const std::string& variableName, const bool isPublic)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(map, value, variableName, visibleInFileInspector, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::shared_ptr<FileReference>>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
 

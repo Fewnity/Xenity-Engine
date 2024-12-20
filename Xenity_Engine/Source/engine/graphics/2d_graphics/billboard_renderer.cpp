@@ -7,6 +7,8 @@
 #include "billboard_renderer.h"
 
 #include <engine/graphics/graphics.h>
+#include <engine/graphics/material.h>
+#include <engine/graphics/texture.h>
 #include <engine/graphics/camera.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>

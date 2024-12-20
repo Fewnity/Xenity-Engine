@@ -41,6 +41,9 @@ class ConsoleMenu;
 class AudioSource;
 class File;
 class ProjectDirectory;
+class MeshData;
+class Texture;
+
 class Editor
 {
 public:

@@ -89,7 +89,7 @@ public:
 /**
 * @brief Texture file class
 */
-class API Texture : public FileReference, public Reflective
+class API Texture : public FileReference
 {
 public:
 	Texture();

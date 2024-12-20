@@ -228,6 +228,21 @@ public:
 		return s_classInfos[0].name;
 	}
 
+	static const FileClassInfo* GetFileClassInfoById(uint64_t classId)
+	{
+		const size_t fileClassInfosCount = s_fileClassInfos.size();
+		for (size_t i = 0; i < fileClassInfosCount; i++)
+		{
+			const FileClassInfo& info = s_fileClassInfos[i];
+			if (classId == info.typeId)
+			{
+				return &info;
+			}
+		}
+
+		return nullptr;
+	}
+
 	static size_t GetClassInfosCount()
 	{
 		return s_classInfos.size();

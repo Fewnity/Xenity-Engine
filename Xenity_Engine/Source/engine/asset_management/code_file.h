@@ -13,7 +13,7 @@
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
 
-class CodeFile : public FileReference, public Reflective
+class CodeFile : public FileReference
 {
 public:
 	explicit CodeFile(const bool isHeader);

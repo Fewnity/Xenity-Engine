@@ -466,8 +466,7 @@ public:
 		static DrawFileReference(ReflectiveDataToDraw* reflectiveDataToDraw, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const std::string& variableName, std::shared_ptr<T>& newValue)
 	{
 		bool valueChangedTemp = false;
-		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
-
+		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfoById(reflectiveDataToDraw->currentEntry.typeId);
 		std::string inputText = "None (" + classInfo->name + ")";
 		const std::shared_ptr<T> ptr = valuePtr.get();
 		if (ptr != nullptr)
@@ -535,7 +534,7 @@ public:
 		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
-			const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfo<T>();
+			const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfoById(reflectiveDataToDraw.currentEntry.typeId);
 			const size_t vectorSize = valuePtr.get().size();
 			const std::string tempName = reflectiveDataToDraw.name;
 			reflectiveDataToDraw.name = "";

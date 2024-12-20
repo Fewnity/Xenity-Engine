@@ -9,6 +9,9 @@
 #include <engine/event_system/event_system.h>
 #include <engine/platform.h>
 #include <engine/graphics/icon.h>
+#include <engine/graphics/texture.h>
+
+class Texture;
 
 class PlatformSettings : public Reflective
 {

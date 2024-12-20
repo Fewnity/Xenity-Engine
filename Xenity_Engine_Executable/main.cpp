@@ -37,10 +37,9 @@ Fix refresh file
 Do not create a new mesh data in text renderer
 Disable update function call on many components
 Check peekinput for PSP
-Fix lighting intensity in fixed pipeline opengl
 Use buttonMap instead of keyMap in input system for Consoles
 Fix light not working when added
-Add EQUALS/NOT_EQUALS/NEAR in unit tests
+Add an option to cook assets only
 
 --- Can be done for the next release
 Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)

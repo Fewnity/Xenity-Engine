@@ -13,6 +13,14 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
+#include <engine/graphics/3d_graphics/mesh_data.h>
+#include <engine/graphics/skybox.h>
+#include <engine/graphics/texture.h>
+#include <engine/graphics/material.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/ui/font.h>
+#include <engine/audio/audio_clip.h>
+#include <engine/scene_management/scene.h>
 
 TestComponent::TestComponent()
 {
