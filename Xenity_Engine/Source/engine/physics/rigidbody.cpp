@@ -17,7 +17,7 @@
 
 #include "physics_manager.h"
 
-RigidBody::RigidBody()
+RigidBody::RigidBody() : Component(false)
 {
 	AssetManager::AddReflection(this);
 }
@@ -209,20 +209,26 @@ void RigidBody::UpdateGeneratesEvents()
 void RigidBody::UpdateRigidBodyMass()
 {
 	if (!m_bulletRigidbody)
-		return;
-
-	float tempMass = m_mass;
-	if (m_isStatic)
 	{
-		tempMass = 0;
+		return;
 	}
+
 	btVector3 inertia(0, 0, 0);
-	m_bulletCompoundShape->calculateLocalInertia(tempMass, inertia);
+	m_bulletCompoundShape->calculateLocalInertia(m_mass, inertia);
+	if (m_isStatic) 
+	{
+		m_bulletRigidbody->setCollisionFlags(m_bulletRigidbody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+	}
+	else 
+	{
+		m_bulletRigidbody->setCollisionFlags(0);
+	}
+	m_bulletRigidbody->setMassProps(m_mass, inertia);
 
-	m_bulletRigidbody->setMassProps(tempMass, inertia);
-
-	if (tempMass != 0)
+	if (!m_isStatic)
+	{
 		m_bulletRigidbody->activate();
+	}
 }
 
 void RigidBody::UpdateRigidBodyDrag()
@@ -313,7 +319,7 @@ void RigidBody::OnTransformUpdated()
 	if (m_disableEvent)
 		return;
 
-	const Transform& transform = *GetTransform();
+	const Transform& transform = *GetTransformRaw();
 	m_bulletRigidbody->setWorldTransform(btTransform(
 		btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
 		btVector3(transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z)));
@@ -345,7 +351,7 @@ void RigidBody::Tick()
 
 RigidBody::~RigidBody()
 {
-	GetTransform()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
+	GetTransformRaw()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
 
 	AssetManager::RemoveReflection(this);
 	for (Collider* c : m_colliders)
@@ -379,12 +385,12 @@ void RigidBody::Awake()
 	if (m_bulletCompoundShape)
 		return;
 
-	GetTransform()->GetOnTransformUpdated().Bind(&RigidBody::OnTransformUpdated, this);
+	GetTransformRaw()->GetOnTransformUpdated().Bind(&RigidBody::OnTransformUpdated, this);
 
 	btTransform startTransform;
 	startTransform.setIdentity();
-	const Vector3& pos = GetTransform()->GetPosition();
-	const Quaternion& rot = GetTransform()->GetRotation();
+	const Vector3& pos = GetTransformRaw()->GetPosition();
+	const Quaternion& rot = GetTransformRaw()->GetRotation();
 
 	startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
 	startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
