@@ -230,7 +230,7 @@ void GameObject::AddExistingComponent(const std::shared_ptr<Component>& componen
 	m_components.push_back(componentToAdd);
 	componentToAdd->SetGameObject(shared_from_this());
 	m_componentCount++;
-	if ((GameplayManager::GetGameState() == GameState::Playing || GameplayManager::GetGameState() == GameState::Paused) && IsLocalActive())
+	if ((GameplayManager::GetGameState() == GameState::Playing || GameplayManager::GetGameState() == GameState::Paused) && IsLocalActive() && componentToAdd->IsEnabled())
 	{
 		componentToAdd->Awake();
 		componentToAdd->m_isAwakeCalled = true;
@@ -347,7 +347,7 @@ void GameObject::UpdateActive(const GameObject& changed)
 				if (m_localActive) 
 				{
 					component->OnEnabled();
-					if (!component->m_isAwakeCalled)
+					if (!component->m_isAwakeCalled && component->IsEnabled())
 					{
 						component->m_isAwakeCalled = true;
 						component->Awake();

@@ -409,7 +409,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			for (int i = 0; i < componentsToInitCount; i++)
 			{
 				const std::shared_ptr<Component>& componentToInit = orderedComponentsToInit[i];
-				if (!componentToInit->m_isAwakeCalled && componentToInit->GetGameObject()->IsLocalActive())
+				if (!componentToInit->m_isAwakeCalled && componentToInit->GetGameObject()->IsLocalActive() && componentToInit->IsEnabled())
 				{
 					componentToInit->Awake();
 					componentToInit->m_isAwakeCalled = true;
