@@ -22,7 +22,8 @@ class Transform;
 class API Component : public UniqueId, public Reflective, public std::enable_shared_from_this<Component>
 {
 public:
-	Component() = default;
+	Component() : Component(true) {}
+	Component(bool canBeDisabled);
 	Component(const Component& other) = delete;
 	Component& operator=(const Component&) = delete;
 
@@ -189,4 +190,5 @@ private:
 	bool m_isAwakeCalled = false;
 	bool m_waitingForDestroy = false;
 	bool m_isEnabled = true;
+	bool m_canBeDisabled = true;
 };

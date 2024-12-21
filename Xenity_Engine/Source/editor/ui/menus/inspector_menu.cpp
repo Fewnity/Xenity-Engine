@@ -65,9 +65,9 @@ void InspectorMenu::Draw()
 
 		CalculateWindowValues();
 
-		if(isFocused)
+		if (isFocused)
 			areWindowsFocused = true;
-		
+
 		if (!areWindowsFocused)
 		{
 			StopAudio();
@@ -80,7 +80,7 @@ void InspectorMenu::Draw()
 		ResetWindowValues();
 		StopAudio();
 	}
-	if (!isActive) 
+	if (!isActive)
 	{
 		StopAudio();
 	}
@@ -362,8 +362,8 @@ void InspectorMenu::DrawFilePreview()
 		else
 			ImGui::Text("No preview available");
 
-			if (ImGui::IsWindowFocused())
-				areWindowsFocused = true;
+		if (ImGui::IsWindowFocused())
+			areWindowsFocused = true;
 
 		ImGui::EndChild();
 	}
@@ -720,11 +720,14 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 		// Draw component enabled checkbox
 		ImGui::SetCursorPosX(62);
 		ImGui::SetCursorPosY(cursorY);
-		const bool isEnabledChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
-		if (isEnabledChanged)
+		if (comp->m_canBeDisabled)
 		{
-			auto command = std::make_shared<InspectorItemSetActiveCommand<Component>>(*comp, isEnable);
-			CommandManager::AddCommandAndExecute(command);
+			const bool isEnabledChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
+			if (isEnabledChanged)
+			{
+				auto command = std::make_shared<InspectorItemSetActiveCommand<Component>>(*comp, isEnable);
+				CommandManager::AddCommandAndExecute(command);
+			}
 		}
 
 		//Draw component title

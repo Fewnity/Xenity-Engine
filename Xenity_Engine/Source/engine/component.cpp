@@ -20,6 +20,12 @@
 
 #pragma region Constructors / Destructor
 
+Component::Component(bool canBeDisabled)
+{
+	m_canBeDisabled = canBeDisabled;
+}
+
+
 Component::~Component()
 {
 }
@@ -85,6 +91,12 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 
 void Component::SetIsEnabled(bool isEnabled)
 {
+	if (!m_canBeDisabled)
+	{
+		m_isEnabled = true;
+		return;
+	}
+
 	if (m_isEnabled == isEnabled)
 		return;
 
