@@ -1,6 +1,11 @@
 #pragma once
 
 //
+// -------------------------------------------------- Features
+//
+#define ENABLE_EXPEREMENTAL_FEATURES
+
+//
 // -------------------------------------------------- Version
 //
 #define ENGINE_VERSION "0.1"
