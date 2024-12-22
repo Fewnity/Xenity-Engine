@@ -24,24 +24,24 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Rework the documentation
-Rename member variables to m_memberVariableName
-Check why the compiler search for main.cpp in the engine's folder
 Reload material file on game stop
-Remove indices from SpotLightVariableNames, PointLightVariableNames and DirectionalLightVariableNames? and SpotLightVariableIds, PointLightVariableIds and DirectionalLightVariableIds?
 Separate audio platform specific code
 Separate mesh platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
 Implement alpha testing on shaders
 Fix refresh file
+Add an option to cook assets only
+Fix awake: Call awake and start after the object is enabled if it was disabled, but only once
+System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
+Change ID system, use random number instead of incrementing
+Use selected gameobjects in MainBarMenu::CreateGameObjectWithComponent
+Use the ENABLE_EXPEREMENTAL_FEATURES define
+
+--- Can be done for the next release
 Do not create a new mesh data in text renderer
 Disable update function call on many components
 Check peekinput for PSP
-Use buttonMap instead of keyMap in input system for Consoles
-Fix light not working when added
-Add an option to cook assets only
-
---- Can be done for the next release
 Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)
 Fix light in fixed pipeline with 2 cameras
 Create a GetFileSize function in File class
@@ -90,7 +90,6 @@ Fix thread problem when trying to load in different threads the same file at the
 Add transparency setting on textures
 Preview part in inspector : Add mesh preview
 Add find function for child only in a gameobject
-Change ID system, find a way to have an unique ID for files
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add  input state : Begin, Hold (and End?)
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
