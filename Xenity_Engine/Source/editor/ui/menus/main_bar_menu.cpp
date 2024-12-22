@@ -36,6 +36,7 @@
 #include <engine/debug/debug.h>
 #include <engine/physics/rigidbody.h>
 #include <engine/physics/box_collider.h>
+#include <engine/physics/sphere_collider.h>
 #include <engine/particle_system/particle_system.h>
 #include "about_menu.h"
 #include <engine/graphics/2d_graphics/billboard_renderer.h>
@@ -61,8 +62,11 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 
 		std::shared_ptr<Component> newComponent = FindComponentById(command->componentId);
 
-		if (std::shared_ptr<Collider> boxCollider = std::dynamic_pointer_cast<Collider>(newComponent))
-			boxCollider->SetDefaultSize();
+		// If the component is a collider, set the default size
+		if (std::shared_ptr<Collider> collider = std::dynamic_pointer_cast<Collider>(newComponent))
+		{
+			collider->SetDefaultSize();
+		}
 	}
 }
 
@@ -186,6 +190,11 @@ void MainBarMenu::Draw()
 			{
 				Editor::SetSelectedGameObject(ShapeSpawner::SpawnDonut());
 			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Text Mesh"))
+			{
+				std::shared_ptr<TextMesh> textMesh = CreateGameObjectWithComponent<TextMesh>("Text Mesh");
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("2D"))
@@ -193,6 +202,19 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Sprite Renderer"))
 			{
 				std::shared_ptr<SpriteRenderer> spriteRenderer = CreateGameObjectWithComponent<SpriteRenderer>("Sprite");
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("UI"))
+		{
+			if (ImGui::MenuItem("Canvas"))
+			{
+				std::shared_ptr<Canvas> canvas = CreateGameObjectWithComponent<Canvas>("Canvas");
+			}
+			if (ImGui::MenuItem("Text Renderer"))
+			{
+				std::shared_ptr<TextRenderer> textRenderer = CreateGameObjectWithComponent<TextRenderer>("Text Renderer");
+				textRenderer->GetGameObject()->AddComponent<RectTransform>();
 			}
 			ImGui::EndMenu();
 		}
@@ -239,6 +261,14 @@ void MainBarMenu::Draw()
 			{
 				std::shared_ptr<Camera> camera = CreateGameObjectWithComponent<Camera>("Camera");
 				camera->SetProjectionType(ProjectionTypes::Perspective);
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Effects"))
+		{
+			if (ImGui::MenuItem("Particle System"))
+			{
+				std::shared_ptr<ParticleSystem> particleSystem = CreateGameObjectWithComponent<ParticleSystem>("Particle System");
 			}
 			ImGui::EndMenu();
 		}
@@ -300,6 +330,10 @@ void MainBarMenu::Draw()
 			{
 				AddComponentToSelectedGameObject<BoxCollider>();
 			}
+			if (ImGui::MenuItem("Sphere Collider", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<SphereCollider>();
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Tilemap"))
@@ -340,10 +374,12 @@ void MainBarMenu::Draw()
 		}
 		if (ImGui::BeginMenu("Other"))
 		{
+#if defined(DEBUG)
 			if (ImGui::MenuItem("Test Component", nullptr, nullptr, hasSelectedGameObject))
 			{
 				AddComponentToSelectedGameObject<TestComponent>();
 			}
+#endif
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("All"))
