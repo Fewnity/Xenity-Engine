@@ -215,9 +215,9 @@ void WorldPartitionner::ProcessLight(Light* light)
 
 	XASSERT(light, "The light is null");
 
+	RemoveLight(light);
 	if (light->GetType() == LightType::Point || light->GetType() == LightType::Spot)
 	{
-		RemoveLight(light);
 		if (light->IsEnabled() && light->GetGameObject()->IsLocalActive())
 		{
 			std::vector<Vector3Fast> intersectedCubes;

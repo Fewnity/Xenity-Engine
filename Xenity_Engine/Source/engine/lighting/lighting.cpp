@@ -101,11 +101,10 @@ void Light::OnReflectionUpdated()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
-	SetType(m_type);
 	SetRange(m_range);
 	SetSpotAngle(m_spotAngle);
 	SetSpotSmoothness(m_spotSmoothness);
-	WorldPartitionner::ProcessLight(this);
+	SetType(m_type);
 }
 
 #pragma endregion
@@ -114,31 +113,29 @@ void Light::OnReflectionUpdated()
 
 void Light::SetupPointLight(const Color &_color, const float _intensity, const float _range)
 {
-	m_type = LightType::Point;
-
 	this->color = _color;
 	SetIntensity(_intensity);
 	SetRange(_range);
+	SetType(LightType::Point);
 }
 
 void Light::SetupDirectionalLight(const Color &_color, const float _intensity)
 {
-	m_type = LightType::Directional;
-
 	this->color = _color;
 	SetIntensity(_intensity);
 	m_quadratic = 0;
 	m_linear = 0;
+	SetType(LightType::Directional);
 }
 
 void Light::SetupAmbientLight(const Color& _color, const float _intensity)
 {
-	m_type = LightType::Ambient;
 
 	this->color = _color;
 	SetIntensity(_intensity);
 	m_quadratic = 0;
 	m_linear = 0;
+	SetType(LightType::Ambient);
 }
 
 void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle)
@@ -148,13 +145,13 @@ void Light::SetupSpotLight(const Color &_color, const float _intensity, const fl
 
 void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle, const float _smoothness)
 {
-	m_type = LightType::Spot;
 
 	this->color = _color;
 	m_intensity = _intensity;
 	SetRange(_range);
 	SetSpotAngle(_angle);
 	SetSpotSmoothness(_smoothness);
+	SetType(LightType::Spot);
 }
 
 #pragma endregion
@@ -214,6 +211,7 @@ void Light::SetType(LightType type)
 	m_type = type;
 	Graphics::CreateLightLists();
 	AssetManager::UpdateLightIndices();
+	WorldPartitionner::ProcessLight(this);
 }
 
 void Light::SetSpotAngle(float angle)
