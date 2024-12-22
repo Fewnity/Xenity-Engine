@@ -109,15 +109,44 @@ AudioClipStream::~AudioClipStream()
 	}
 }
 
-void AudioClipStream::FillBuffer(uint64_t amount, short* buff)
+uint64_t AudioClipStream::FillBuffer(uint64_t amount, short* buff, bool loop)
 {
-	if (m_type == AudioType::Mp3)
+	uint64_t remainingFrames = amount;
+	uint64_t tempFrameReadCount = 0;
+	uint32_t loopCount = 0;
+	while (remainingFrames != 0)
 	{
-		drmp3_read_pcm_frames_s16(m_mp3Stream, amount, buff);
+		loopCount++;
+		if (m_type == AudioType::Mp3)
+		{
+			tempFrameReadCount = drmp3_read_pcm_frames_s16(m_mp3Stream, remainingFrames, buff + (amount - remainingFrames));
+		}
+		else if (m_type == AudioType::Wav)
+		{	
+			tempFrameReadCount = drwav_read_pcm_frames_s16(m_wavStream, remainingFrames, buff + (amount - remainingFrames));
+		}
+
+		// If the stream ends and not looping stop the stream
+		if (!loop)
+		{
+			break;
+		}
+
+		// If stream reaches the end, reset the seek and continue to read
+		if (tempFrameReadCount != remainingFrames)
+		{
+			ResetSeek();
+		}
+		remainingFrames -= tempFrameReadCount;
 	}
-	else if (m_type == AudioType::Wav)
-	{	
-		drwav_read_pcm_frames_s16(m_wavStream, amount, buff);
+
+	if (loopCount > 1)
+	{
+		return GetSeekPosition(); // Return the new seek position
+	}
+	else
+	{
+		return 0;
 	}
 }
 

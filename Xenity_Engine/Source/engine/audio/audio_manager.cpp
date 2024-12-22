@@ -170,8 +170,6 @@ void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* ch
 					{
 						if (sound->m_loop)
 						{
-							stream->ResetSeek();
-							sound->m_bufferSeekPosition = 0;
 							sound->m_audioSeekPosition = 0;
 						}
 						else
@@ -180,7 +178,7 @@ void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* ch
 							break;
 						}
 					}
-					else if (sound->m_bufferSeekPosition == halfBuffSize) // If the buffer seek reach the middle of the buffer, ask for a new stream read
+					if (sound->m_bufferSeekPosition == halfBuffSize) // If the buffer seek reach the middle of the buffer, ask for a new stream read
 					{
 						sound->m_needFillFirstHalfBuffer = true;
 					}
@@ -190,7 +188,7 @@ void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* ch
 						sound->m_needFillSecondHalfBuffer = true;
 					}
 				}
-				if (deleteAudio) // TODO: Why is working for short audio without this? Are we stopping the audio too early?
+				if (deleteAudio)
 				{
 					break;
 				}
@@ -341,14 +339,22 @@ int fillAudioBufferThread()
 			if (sound->m_needFillFirstHalfBuffer)
 			{
 				AudioManager::s_myMutex->Unlock();
-				stream->FillBuffer(bufferSizeToUse, sound->m_buffer);
+				const uint64_t newSeek = stream->FillBuffer(bufferSizeToUse, sound->m_buffer, sound->m_loop);
+				if (newSeek != 0)
+				{
+					sound->m_audioSeekPosition = newSeek;
+				}
 				AudioManager::s_myMutex->Lock();
 				sound->m_needFillFirstHalfBuffer = false;
 			}
 			else if (sound->m_needFillSecondHalfBuffer)
 			{
 				AudioManager::s_myMutex->Unlock();
-				stream->FillBuffer(bufferSizeToUse, sound->m_buffer + halfBuffSize);
+				const uint64_t newSeek = stream->FillBuffer(bufferSizeToUse, sound->m_buffer + halfBuffSize, sound->m_loop);
+				if (newSeek != 0)
+				{
+					sound->m_audioSeekPosition = newSeek;
+				}
 				AudioManager::s_myMutex->Lock();
 				sound->m_needFillSecondHalfBuffer = false;
 			}

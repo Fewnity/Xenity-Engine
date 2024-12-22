@@ -34,12 +34,12 @@ class PlayedSound
 public:
 	PlayedSound();
 	~PlayedSound();
+	std::weak_ptr<AudioSource> m_audioSource;
 	uint64_t m_bufferSeekPosition = 0;
 	std::unique_ptr<AudioClipStream> m_audioClipStream = nullptr;
-	std::weak_ptr<AudioSource> m_audioSource;
+	uint64_t m_audioSeekPosition = 0;
 	short* m_buffer = nullptr;
 	uint32_t m_seekNext = 0;
-	uint64_t m_audioSeekPosition = 0;
 	float m_volume = 1;
 	float m_pan = 0.5;
 	bool m_needFillFirstHalfBuffer = false;

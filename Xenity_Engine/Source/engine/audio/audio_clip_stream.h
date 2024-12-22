@@ -44,8 +44,10 @@ public:
 	* @param amount Amount to fill
 	* @param offset Offset in the buffer
 	* @param buff Buffer to fill
+	* 
+	* @return Frame read count, will be less than amount if the stream ends
 	*/
-	void FillBuffer(uint64_t amount, short* buff);
+	uint64_t FillBuffer(uint64_t amount, short* buff, bool loop);
 
 	/**
 	* @brief Get audio clip frequency in Hz
