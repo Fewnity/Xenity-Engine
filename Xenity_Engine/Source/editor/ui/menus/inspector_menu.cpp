@@ -255,12 +255,14 @@ void InspectorMenu::DrawFilePreview()
 		{
 			const size_t playedSoundCount = AudioManager::s_channel->m_playedSounds.size();
 			AudioClipStream* stream = nullptr;
+			PlayedSound* playedSound = nullptr;
 			for (size_t i = 0; i < playedSoundCount; i++)
 			{
 				if (AudioManager::s_channel->m_playedSounds[i]->m_audioSource.lock() == Editor::audioSource.lock())
 				{
 					// Get audio stream
 					stream = AudioManager::s_channel->m_playedSounds[i]->m_audioClipStream.get();
+					playedSound = AudioManager::s_channel->m_playedSounds[i];
 					break;
 				}
 			}
@@ -307,7 +309,7 @@ void InspectorMenu::DrawFilePreview()
 			if (stream)
 			{
 				// Get audio stream info
-				const float seekPos = (float)(stream->GetSeekPosition() / (double)stream->GetSampleCount());
+				const float seekPos = (float)(playedSound->m_audioSeekPosition / (double)stream->GetSampleCount());
 				const float totalTime = (float)(stream->GetSampleCount() / (double)stream->GetFrequency());
 
 				// Draw current time
