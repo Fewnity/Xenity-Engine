@@ -20,19 +20,19 @@ SceTouchData touch[SCE_TOUCH_PORT_MAX_NUM];
 
 void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
 {
-	keyMap[SCE_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
-	keyMap[SCE_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];
-	keyMap[SCE_CTRL_SQUARE] = &inputs[(int)KeyCode::SQUARE];
-	keyMap[SCE_CTRL_TRIANGLE] = &inputs[(int)KeyCode::TRIANGLE];
+	buttonMap[SCE_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
+	buttonMap[SCE_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];
+	buttonMap[SCE_CTRL_SQUARE] = &inputs[(int)KeyCode::SQUARE];
+	buttonMap[SCE_CTRL_TRIANGLE] = &inputs[(int)KeyCode::TRIANGLE];
 
-	keyMap[SCE_CTRL_START] = &inputs[(int)KeyCode::START];
-	keyMap[SCE_CTRL_SELECT] = &inputs[(int)KeyCode::SELECT];
-	keyMap[SCE_CTRL_LTRIGGER] = &inputs[(int)KeyCode::LTRIGGER1];
-	keyMap[SCE_CTRL_RTRIGGER] = &inputs[(int)KeyCode::RTRIGGER1];
-	keyMap[SCE_CTRL_RIGHT] = &inputs[(int)KeyCode::RIGHT];
-	keyMap[SCE_CTRL_LEFT] = &inputs[(int)KeyCode::DPAD_LEFT];
-	keyMap[SCE_CTRL_DOWN] = &inputs[(int)KeyCode::DPAD_DOWN];
-	keyMap[SCE_CTRL_UP] = &inputs[(int)KeyCode::DPAD_UP];
+	buttonMap[SCE_CTRL_START] = &inputs[(int)KeyCode::START];
+	buttonMap[SCE_CTRL_SELECT] = &inputs[(int)KeyCode::SELECT];
+	buttonMap[SCE_CTRL_LTRIGGER] = &inputs[(int)KeyCode::LTRIGGER1];
+	buttonMap[SCE_CTRL_RTRIGGER] = &inputs[(int)KeyCode::RTRIGGER1];
+	buttonMap[SCE_CTRL_RIGHT] = &inputs[(int)KeyCode::RIGHT];
+	buttonMap[SCE_CTRL_LEFT] = &inputs[(int)KeyCode::DPAD_LEFT];
+	buttonMap[SCE_CTRL_DOWN] = &inputs[(int)KeyCode::DPAD_DOWN];
+	buttonMap[SCE_CTRL_UP] = &inputs[(int)KeyCode::DPAD_UP];
 }
 
 void CrossInputsInit()

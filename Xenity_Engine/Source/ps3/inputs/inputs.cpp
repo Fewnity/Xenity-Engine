@@ -18,24 +18,24 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& button
 {
 	// Using bitshift on PAD_BUTTON_OFFSET_DIGITAL1 defines because PS3 inputs are weird
 
-	keyMap[PAD_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
-	keyMap[PAD_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];
-	keyMap[PAD_CTRL_SQUARE] = &inputs[(int)KeyCode::SQUARE];
-	keyMap[PAD_CTRL_TRIANGLE] = &inputs[(int)KeyCode::TRIANGLE];
+	buttonMap[PAD_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
+	buttonMap[PAD_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];
+	buttonMap[PAD_CTRL_SQUARE] = &inputs[(int)KeyCode::SQUARE];
+	buttonMap[PAD_CTRL_TRIANGLE] = &inputs[(int)KeyCode::TRIANGLE];
 
-	keyMap[PAD_CTRL_START << 8] = &inputs[(int)KeyCode::START];
-	keyMap[PAD_CTRL_SELECT << 8] = &inputs[(int)KeyCode::SELECT];
+	buttonMap[PAD_CTRL_START << 8] = &inputs[(int)KeyCode::START];
+	buttonMap[PAD_CTRL_SELECT << 8] = &inputs[(int)KeyCode::SELECT];
 
-	keyMap[PAD_CTRL_L1] = &inputs[(int)KeyCode::LTRIGGER1];
-	keyMap[PAD_CTRL_R1] = &inputs[(int)KeyCode::RTRIGGER1];
+	buttonMap[PAD_CTRL_L1] = &inputs[(int)KeyCode::LTRIGGER1];
+	buttonMap[PAD_CTRL_R1] = &inputs[(int)KeyCode::RTRIGGER1];
 
-	keyMap[PAD_CTRL_L3 << 8] = &inputs[(int)KeyCode::L_JOYSTICK_CLICK];
-	keyMap[PAD_CTRL_R3 << 8] = &inputs[(int)KeyCode::R_JOYSTICK_CLICK];
+	buttonMap[PAD_CTRL_L3 << 8] = &inputs[(int)KeyCode::L_JOYSTICK_CLICK];
+	buttonMap[PAD_CTRL_R3 << 8] = &inputs[(int)KeyCode::R_JOYSTICK_CLICK];
 
-	keyMap[PAD_CTRL_RIGHT << 8] = &inputs[(int)KeyCode::DPAD_RIGHT];
-	keyMap[PAD_CTRL_LEFT << 8] = &inputs[(int)KeyCode::DPAD_LEFT];
-	keyMap[PAD_CTRL_DOWN << 8] = &inputs[(int)KeyCode::DPAD_DOWN];
-	keyMap[PAD_CTRL_UP << 8] = &inputs[(int)KeyCode::DPAD_UP];
+	buttonMap[PAD_CTRL_RIGHT << 8] = &inputs[(int)KeyCode::DPAD_RIGHT];
+	buttonMap[PAD_CTRL_LEFT << 8] = &inputs[(int)KeyCode::DPAD_LEFT];
+	buttonMap[PAD_CTRL_DOWN << 8] = &inputs[(int)KeyCode::DPAD_DOWN];
+	buttonMap[PAD_CTRL_UP << 8] = &inputs[(int)KeyCode::DPAD_UP];
 }
 
 void CrossInputsInit()

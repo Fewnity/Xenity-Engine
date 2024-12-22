@@ -155,9 +155,9 @@ void InputSystem::UpdateControllers()
 		rightJoystick[controllerIndex].x = pad.rx;
 		rightJoystick[controllerIndex].y = pad.ry;
 
-#if defined(__PSP__) || defined(__vita__) || defined(__PS3__)
-		const auto mapE = s_keyMap[controllerIndex].end();
-		for (auto mapB = s_keyMap[controllerIndex].begin(); mapB != mapE; ++mapB)
+#if defined(__PSP__) || defined(__vita__) || defined(__PS3__) // For system that return a single int for buttons
+		const auto mapE = s_buttonMap[controllerIndex].end();
+		for (auto mapB = s_buttonMap[controllerIndex].begin(); mapB != mapE; ++mapB)
 		{
 			if (pad.buttons & mapB->first) // If the input is pressed
 			{
@@ -174,7 +174,7 @@ void InputSystem::UpdateControllers()
 				}
 			}
 		}
-#else
+#else // For system that return a map of buttons
 		// Windows
 		const auto pressedButtonsEnd = pad.pressedButtons.end();
 		for (auto pressedButtonsBeg = pad.pressedButtons.begin(); pressedButtonsBeg != pressedButtonsEnd; ++pressedButtonsBeg)

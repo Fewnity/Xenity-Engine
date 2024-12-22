@@ -16,19 +16,19 @@ SceCtrlData ctrl;
 
 void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
 {
-	keyMap[PSP_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
-	keyMap[PSP_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];
-	keyMap[PSP_CTRL_SQUARE] = &inputs[(int)KeyCode::SQUARE];
-	keyMap[PSP_CTRL_TRIANGLE] = &inputs[(int)KeyCode::TRIANGLE];
+	buttonMap[PSP_CTRL_CROSS] = &inputs[(int)KeyCode::CROSS];
+	buttonMap[PSP_CTRL_CIRCLE] = &inputs[(int)KeyCode::CIRCLE];
+	buttonMap[PSP_CTRL_SQUARE] = &inputs[(int)KeyCode::SQUARE];
+	buttonMap[PSP_CTRL_TRIANGLE] = &inputs[(int)KeyCode::TRIANGLE];
 
-	keyMap[PSP_CTRL_START] = &inputs[(int)KeyCode::START];
-	keyMap[PSP_CTRL_SELECT] = &inputs[(int)KeyCode::SELECT];
-	keyMap[PSP_CTRL_LTRIGGER] = &inputs[(int)KeyCode::LTRIGGER1];
-	keyMap[PSP_CTRL_RTRIGGER] = &inputs[(int)KeyCode::RTRIGGER1];
-	keyMap[PSP_CTRL_RIGHT] = &inputs[(int)KeyCode::DPAD_RIGHT];
-	keyMap[PSP_CTRL_LEFT] = &inputs[(int)KeyCode::DPAD_LEFT];
-	keyMap[PSP_CTRL_DOWN] = &inputs[(int)KeyCode::DPAD_DOWN];
-	keyMap[PSP_CTRL_UP] = &inputs[(int)KeyCode::DPAD_UP];
+	buttonMap[PSP_CTRL_START] = &inputs[(int)KeyCode::START];
+	buttonMap[PSP_CTRL_SELECT] = &inputs[(int)KeyCode::SELECT];
+	buttonMap[PSP_CTRL_LTRIGGER] = &inputs[(int)KeyCode::LTRIGGER1];
+	buttonMap[PSP_CTRL_RTRIGGER] = &inputs[(int)KeyCode::RTRIGGER1];
+	buttonMap[PSP_CTRL_RIGHT] = &inputs[(int)KeyCode::DPAD_RIGHT];
+	buttonMap[PSP_CTRL_LEFT] = &inputs[(int)KeyCode::DPAD_LEFT];
+	buttonMap[PSP_CTRL_DOWN] = &inputs[(int)KeyCode::DPAD_DOWN];
+	buttonMap[PSP_CTRL_UP] = &inputs[(int)KeyCode::DPAD_UP];
 }
 
 void CrossInputsInit()
