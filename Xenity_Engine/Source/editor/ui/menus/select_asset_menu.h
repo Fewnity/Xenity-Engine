@@ -31,6 +31,11 @@ public:
 	{
 	}
 
+	void OnOpen() override
+	{
+		searchBuffer = "";
+	}
+
 	void DrawItem(const std::string& itemName, int& currentCol, int colCount, float offset, const Texture& icon, float iconSize, size_t index, bool isSelected)
 	{
 		if (currentCol == 0)
@@ -68,14 +73,34 @@ public:
 
 	void SearchFiles(FileType type) 
 	{
+		foundFiles.clear();
 		const std::vector<FileInfo> projectFiles = ProjectManager::GetFilesByType(type);
 		const size_t fileCount = projectFiles.size();
+
+		// Load all files and check if they match the search buffer
 		for (size_t i = 0; i < fileCount; i++)
 		{
 			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(projectFiles[i].file->GetUniqueId());
+			if (!searchBuffer.empty())
+			{
+				if (fileRef->m_file->GetFileName().find(searchBuffer) == std::string::npos)
+				{
+					continue;
+				}
+			}
 			fileRef->LoadFileReference();
+
 			foundFiles.push_back(fileRef);
 		}
+
+		// Sort files by name
+		std::sort(foundFiles.begin(), foundFiles.end(),
+			[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b)
+			{
+				return (a->m_file->GetFileName() + a->m_file->GetFileExtension()) < (b->m_file->GetFileName() + b->m_file->GetFileExtension());
+			});
+
+		fileType = type;
 	}
 
 	void Draw() override
@@ -92,6 +117,16 @@ public:
 			if (colCount <= 0)
 				colCount = 1;
 			const float offset = ImGui::GetCursorPosX();
+
+			// Draw search bar
+			ImGui::Text("Search");
+			ImGui::SameLine();
+			const bool scearchBarChanged = ImGui::InputText("##SearchBar", &searchBuffer);
+			if (scearchBarChanged)
+			{
+				SearchFiles(fileType);
+			}
+
 			if (ImGui::BeginTable("selectfiletable", colCount, ImGuiTableFlags_None))
 			{
 				const size_t fileCount = foundFiles.size();
@@ -100,20 +135,20 @@ public:
 				{
 					FileExplorerItem item;
 					item.file = foundFiles[i];
-					bool isSelected = valuePtr->get() == std::dynamic_pointer_cast<T>(foundFiles[i]);
-					DrawItem(foundFiles[i]->m_file->GetFileName(), currentCol, colCount, offset, *FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
+					bool isSelected = valuePtr->get() == std::dynamic_pointer_cast<T>(item.file);
+					DrawItem(item.file->m_file->GetFileName(), currentCol, colCount, offset, *FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
 
 					if (ImGui::IsItemClicked())
 					{
 						if (hasReflectiveDataToDraw) 
 						{
-							std::shared_ptr<T> newValue = std::dynamic_pointer_cast<T>(foundFiles[i]);
+							std::shared_ptr<T> newValue = std::dynamic_pointer_cast<T>(item.file);
 							auto command = std::make_shared<ReflectiveChangeValueCommand<std::shared_ptr<T>>>(reflectiveDataToDraw, &valuePtr->get(), valuePtr->get(), newValue);
 							CommandManager::AddCommandAndExecute(command);
 						}
 						else 
 						{
-							valuePtr->get() = std::dynamic_pointer_cast<T>(foundFiles[i]);
+							valuePtr->get() = std::dynamic_pointer_cast<T>(item.file);
 						}
 
 						if (onValueChangedEvent) 
@@ -154,5 +189,7 @@ public:
 	bool hasReflectiveDataToDraw = false;
 private:
 	std::vector<std::shared_ptr<FileReference>> foundFiles;
+	FileType fileType = FileType::File_Other;
+	std::string searchBuffer = "";
 };
 

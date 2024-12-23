@@ -493,7 +493,6 @@ public:
 
 			std::shared_ptr<SelectAssetMenu<T>> selectMenu = Editor::AddMenu<SelectAssetMenu<T>>(true);
 			selectMenu->onValueChangedEvent = onValueChangedEvent;
-			selectMenu->SetActive(true);
 			selectMenu->valuePtr = valuePtr;
 			selectMenu->SearchFiles(classInfo->fileType);
 			if (reflectiveDataToDraw)
