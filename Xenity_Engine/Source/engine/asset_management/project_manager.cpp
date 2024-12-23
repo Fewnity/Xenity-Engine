@@ -293,10 +293,6 @@ void ProjectManager::FindAllProjectFiles()
 #else
 		fileRef = CreateFileReference(kv.second, kv.first);
 #endif
-		//fileRef->filePosition = kv.second.filePos;
-		//fileRef->fileSize = kv.second.fileSize;
-		//fileRef->metaPosition = kv.second.metaFilePos;
-		//fileRef->metaSize = kv.second.metaFileSize;
 
 		kv.second.type = fileRef->m_fileType;
 	}
@@ -459,6 +455,10 @@ void ProjectManager::Init()
 	publicEngineAssetsFolderPath = "./public_engine_assets/";
 
 	publicEngineAssetsDirectoryBase = std::make_shared<Directory>(publicEngineAssetsFolderPath);
+
+#if defined(EDITOR)
+	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
+#endif
 }
 
 bool ProjectManager::CreateProject(const std::string& name, const std::string& folderPath)
@@ -618,19 +618,17 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-#if defined(EDITOR)
-	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
-#else
-	fileDataBase.LoadFromFile(projectPathToLoad + "db.bin");
-	fileDataBase.GetBitFile().Open("data.xenb");
-#endif
-
 	Debug::Print("Loading project: " + projectPathToLoad, true);
+	
 	projectLoaded = false;
 
 	projectFolderPath = projectPathToLoad;
 	assetFolderPath = projectPathToLoad + "assets/";
 
+#if !defined(EDITOR)
+	fileDataBase.LoadFromFile(projectPathToLoad + "db.bin");
+	fileDataBase.GetBitFile().Open("data.xenb");
+#endif
 
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 
@@ -650,48 +648,10 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	LoadProjectSettings();
 	projectSettings.engineVersion = ENGINE_VERSION;
 #if defined(EDITOR)
-	SaveProjectSettings();
+	SaveProjectSettings(); // Save to update the file if the engine version has changed
 #endif
 
-	// Load dynamic library and create game
-#if !defined(__LINUX__)
-#if defined(_WIN32) || defined(_WIN64)
-	bool isDebugMode = false;
-	bool is64Bits = false;
-#if defined(_WIN64)
-	is64Bits = true;
-#endif
-#if defined(DEBUG)
-	isDebugMode = true;
-#endif
-	const bool isSameVersion = projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION;
-	const bool isSameDebugMode = projectSettings.isLibCompiledForDebug == isDebugMode;
-	const bool isSame64Bits = projectSettings.isLibCompiledFor64Bits == is64Bits;
-
-	if (isSameVersion && isSameDebugMode && isSame64Bits)
-	{
-#if defined(EDITOR)
-		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp/game_editor");
-#else
-		DynamicLibrary::LoadGameLibrary("game");
-#endif // defined(EDITOR)
-		Engine::s_game = DynamicLibrary::CreateGame();
-	}
-	else
-	{
-		// Maybe automaticaly recompile the project
-		Debug::PrintWarning("The project was compiled with another version of the engine, please recompile the game.");
-	}
-#else
-	Engine::s_game = std::make_unique<Game>();
-#endif //  defined(_WIN32) || defined(_WIN64)
-#endif // !defined(__LINUX__)
-
-	// Fill class registery
-	if (Engine::s_game)
-	{
-		Engine::s_game->Start();
-	}
+	CreateGame();
 
 #if defined(EDITOR)
 	CreateVisualStudioSettings();
@@ -742,15 +702,16 @@ void ProjectManager::UnloadProject()
 	projectSettings.startScene.reset();
 	projectDirectoryBase.reset();
 	additionalAssetDirectoryBase.reset();
-	projectDirectoryBase.reset();
 	projectDirectory.reset();
 	projectFilesIds.clear();
-	projectLoaded = false;
+
 	projectSettings.projectName.clear();
 	projectSettings.gameName.clear();
-	projectFolderPath.clear();
 
+	projectFolderPath.clear();
 	assetFolderPath.clear();
+
+	projectLoaded = false;
 
 	Engine::s_game.reset();
 	DynamicLibrary::UnloadGameLibrary();
@@ -1305,6 +1266,49 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 	else
 	{
 		Debug::PrintError("[ProjectManager::LoadMetaFile] Cannot open the meta file" + path, true);
+	}
+}
+
+void ProjectManager::CreateGame()
+{
+	// Load dynamic library and create game
+#if !defined(__LINUX__)
+#if defined(_WIN32) || defined(_WIN64)
+	bool isDebugMode = false;
+	bool is64Bits = false;
+#if defined(_WIN64)
+	is64Bits = true;
+#endif
+#if defined(DEBUG)
+	isDebugMode = true;
+#endif
+	const bool isSameVersion = projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION;
+	const bool isSameDebugMode = projectSettings.isLibCompiledForDebug == isDebugMode;
+	const bool isSame64Bits = projectSettings.isLibCompiledFor64Bits == is64Bits;
+
+	if (isSameVersion && isSameDebugMode && isSame64Bits)
+	{
+#if defined(EDITOR)
+		DynamicLibrary::LoadGameLibrary(ProjectManager::GetProjectFolderPath() + "temp/game_editor");
+#else
+		DynamicLibrary::LoadGameLibrary("game");
+#endif // defined(EDITOR)
+		Engine::s_game = DynamicLibrary::CreateGame();
+	}
+	else
+	{
+		// Maybe automaticaly recompile the project
+		Debug::PrintWarning("The project was compiled with another version of the engine, please recompile the game.");
+	}
+#else
+	Engine::s_game = std::make_unique<Game>();
+#endif //  defined(_WIN32) || defined(_WIN64)
+#endif // !defined(__LINUX__)
+
+	// Fill class registery
+	if (Engine::s_game)
+	{
+		Engine::s_game->Start();
 	}
 }
 

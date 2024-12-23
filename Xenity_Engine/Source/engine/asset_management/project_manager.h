@@ -379,6 +379,8 @@ private:
 	*/
 	static void LoadMetaFile(FileReference& fileReference);
 
+	static void CreateGame();
+
 	static std::shared_ptr<ProjectDirectory> projectDirectory;
 	static std::unordered_map<uint64_t, FileInfo> projectFilesIds;
 	static bool projectLoaded;
