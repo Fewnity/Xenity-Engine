@@ -539,7 +539,7 @@ void Editor::CreateEmpty()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), 0);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), CreateGameObjectMode::CreateEmpty);
 	CommandManager::AddCommandAndExecute(command);
 }
 
@@ -547,7 +547,7 @@ void Editor::CreateEmptyChild()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, 1);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, CreateGameObjectMode::CreateChild);
 	CommandManager::AddCommandAndExecute(command);
 }
 
@@ -555,7 +555,7 @@ void Editor::CreateEmptyParent()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, 2);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, CreateGameObjectMode::CreateParent);
 	CommandManager::AddCommandAndExecute(command);
 }
 

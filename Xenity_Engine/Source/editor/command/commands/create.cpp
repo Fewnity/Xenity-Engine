@@ -49,7 +49,7 @@ void InspectorAddComponentCommand::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& _targets, int mode)// : targets(_targets)
+InspectorCreateGameObjectCommand::InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& _targets, CreateGameObjectMode mode)// : targets(_targets)
 {
 	this->mode = mode;
 
@@ -66,7 +66,7 @@ void InspectorCreateGameObjectCommand::Execute()
 {
 	bool done = false;
 
-	if (mode == 0)
+	if (mode == CreateGameObjectMode::CreateEmpty)
 	{
 		std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 		if (!alreadyExecuted)
@@ -75,7 +75,7 @@ void InspectorCreateGameObjectCommand::Execute()
 			newGameObject->SetUniqueId(createdGameObjects[0]);
 		done = true;
 	}
-	else if (mode == 1)
+	else if (mode == CreateGameObjectMode::CreateChild)
 	{
 		const size_t targetCount = targets.size();
 		for (size_t i = 0; i < targetCount; i++)
@@ -97,7 +97,7 @@ void InspectorCreateGameObjectCommand::Execute()
 			}
 		}
 	}
-	else if (mode == 2)
+	else if (mode == CreateGameObjectMode::CreateParent)
 	{
 		const size_t targetCount = targets.size();
 		for (size_t i = 0; i < targetCount; i++)
@@ -152,7 +152,7 @@ void InspectorCreateGameObjectCommand::Undo()
 	if (createdGameObjects.size() > 0)
 	{
 		bool done = false;
-		if (mode != 2)
+		if (mode != CreateGameObjectMode::CreateParent)
 		{
 			for (uint64_t gameObjectId : createdGameObjects)
 			{

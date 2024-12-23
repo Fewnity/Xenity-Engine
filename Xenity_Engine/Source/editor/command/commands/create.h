@@ -40,18 +40,20 @@ private:
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
+ENUM(CreateGameObjectMode, CreateEmpty, CreateChild, CreateParent);
+
 class InspectorCreateGameObjectCommand : public Command
 {
 public:
 	InspectorCreateGameObjectCommand() = delete;
-	InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& targets, int mode);
+	InspectorCreateGameObjectCommand(const std::vector<std::weak_ptr<GameObject>>& targets, CreateGameObjectMode mode);
 	void Execute() override;
 	void Undo() override;
 	std::vector<uint64_t> createdGameObjects;
 private:
 	std::vector<uint64_t> targets;
 	std::vector<uint64_t> oldParents;
-	int mode; // 0 Create Empty, 1 Create Child, 2 Create parent
+	CreateGameObjectMode mode; // 0 Create Empty, 1 Create Child, 2 Create parent
 	bool alreadyExecuted = false;
 };
 

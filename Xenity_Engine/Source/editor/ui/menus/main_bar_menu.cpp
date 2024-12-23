@@ -73,7 +73,7 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 template <typename T>
 std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string& gameObjectName)
 {
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), 0);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), CreateGameObjectMode::CreateEmpty);
 	CommandManager::AddCommandAndExecute(command);
 	std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(command->createdGameObjects[0]);
 	createdGameObject->SetName(Editor::GetIncrementedGameObjectName(gameObjectName));
