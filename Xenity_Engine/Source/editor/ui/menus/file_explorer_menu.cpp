@@ -570,7 +570,7 @@ void FileExplorerMenu::Rename()
 				needTitleRefresh = true;
 			}
 		}
-		else
+		else if(renamingString + file->GetFileExtension() != file->GetFileName() + file->GetFileExtension())
 		{
 			EditorUI::OpenDialog("Error", "There is already a file with the same name in this location.", DialogType::Dialog_Type_OK);
 		}
