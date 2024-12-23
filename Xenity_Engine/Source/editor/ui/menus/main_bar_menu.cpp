@@ -25,6 +25,7 @@
 #include <engine/tools/shape_spawner.h>
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/graphics/2d_graphics/sprite_renderer.h>
+#include <engine/game_elements/gameplay_manager.h>
 #include <engine/test_component.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/2d_graphics/tile_map.h>
@@ -336,6 +337,7 @@ void MainBarMenu::Draw()
 			}
 			ImGui::EndMenu();
 		}
+#if defined(ENABLE_EXPEREMENTAL_FEATURES)
 		if (ImGui::BeginMenu("Tilemap"))
 		{
 			if (ImGui::MenuItem("Tilemap", nullptr, nullptr, hasSelectedGameObject))
@@ -344,6 +346,7 @@ void MainBarMenu::Draw()
 			}
 			ImGui::EndMenu();
 		}
+#endif // ENABLE_EXPEREMENTAL_FEATURES
 		if (ImGui::BeginMenu("UI"))
 		{
 			if (ImGui::MenuItem("Canvas", nullptr, nullptr, hasSelectedGameObject))

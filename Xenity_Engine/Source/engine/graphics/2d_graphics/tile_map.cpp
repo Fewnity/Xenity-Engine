@@ -4,6 +4,8 @@
 //
 // This file is part of Xenity Engine
 
+#if defined(ENABLE_EXPEREMENTAL_FEATURES)
+
 #include "tile_map.h"
 
 #define _USE_MATH_DEFINES
@@ -362,3 +364,5 @@ void Tilemap::RemoveTexture(Texture* texture)
 		textureSize = (int)textures.size() - 1;
 	}
 }
+
+#endif // ENABLE_EXPEREMENTAL_FEATURES

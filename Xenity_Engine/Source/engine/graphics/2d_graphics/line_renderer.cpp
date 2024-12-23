@@ -4,6 +4,8 @@
 //
 // This file is part of Xenity Engine
 
+#if defined(ENABLE_EXPEREMENTAL_FEATURES)
+
 #include "line_renderer.h"
 
 #if defined(__PSP__)
@@ -138,3 +140,5 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.renderingMode = renderCommand.material->GetRenderingMode();
 	MeshManager::DrawMesh(*GetTransformRaw(), *subMesh, *m_material, renderSettings);
 }
+
+#endif // ENABLE_EXPEREMENTAL_FEATURES
