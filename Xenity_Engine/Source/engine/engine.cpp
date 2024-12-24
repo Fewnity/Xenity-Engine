@@ -352,12 +352,16 @@ void Engine::Loop()
 
 			Editor::Update();
 
-			const std::shared_ptr<Menu> gameMenu = Editor::GetMenu<GameMenu>();
-			if (gameMenu)
-				InputSystem::s_blockGameInput = !gameMenu->IsFocused();
-			else
-				InputSystem::s_blockGameInput = true;
-
+			// Block game input if no game menu is focused
+			InputSystem::s_blockGameInput = true;
+			const std::vector<std::shared_ptr<GameMenu>> gameMenus = Editor::GetMenus<GameMenu>();
+			for (const std::shared_ptr<GameMenu>& gameMenu : gameMenus)
+			{
+				if (gameMenu->IsFocused())
+				{
+					InputSystem::s_blockGameInput = false;
+				}
+			}
 #endif
 
 			if (ProjectManager::IsProjectLoaded())
