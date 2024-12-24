@@ -25,20 +25,21 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Rework the documentation
 Reload material file on game stop
+Implement alpha testing on shaders
+Fix refresh file
+Fix awake: Call awake and start after the object is enabled if it was disabled, but only once
+System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
+Change ID system, use random number instead of incrementing
+Remove unique ID from file?
+Give type to CreateFileReference instead of reading the file extension
+
+--- Can be done for the next release
+Make a tool to list all files of a data base
+Add an option to cook assets only
 Separate audio platform specific code
 Separate mesh platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
-Implement alpha testing on shaders
-Fix refresh file
-Add an option to cook assets only
-Fix awake: Call awake and start after the object is enabled if it was disabled, but only once
-System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
-Change ID system, use random number instead of incrementing
-Use selected gameobjects in MainBarMenu::CreateGameObjectWithComponent
-Use the ENABLE_EXPEREMENTAL_FEATURES define
-
---- Can be done for the next release
 Do not create a new mesh data in text renderer
 Disable update function call on many components
 Check peekinput for PSP
@@ -95,7 +96,6 @@ Touch : Add  input state : Begin, Hold (and End?)
 Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 Check memory leak when removing an item from vector in the editorUI
 Change rightClickedElement and use selected gameobjects if clicked on selected gameobjects
-Use enum is InspectorCreateGameObjectCommand instead of int
 Create OnReflectionUpdated in transform and set isTransformationMatrixDirty = true; and call UpdateWorldValues in the function?
 */
 

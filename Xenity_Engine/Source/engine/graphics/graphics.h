@@ -180,7 +180,6 @@ private:
 	*/
 	static void DrawSkybox(const Vector3& cameraPosition);
 
-
 	/**
 	* @brief Check lods
 	*/
