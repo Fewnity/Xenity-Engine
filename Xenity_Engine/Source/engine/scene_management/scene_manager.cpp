@@ -240,6 +240,11 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 	// Automaticaly start the game if built in engine mode
 #if !defined(EDITOR)
 	GameplayManager::SetGameState(GameState::Starting, true);
+#else
+	if (GameplayManager::GetGameState() == GameState::Playing)
+	{
+		GameplayManager::SetGameState(GameState::Starting, true);
+	}
 #endif
 
 	ClearScene();
@@ -430,9 +435,12 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 	}
 
 	// Automaticaly set the game in play mode if built in engine mode
-#if !defined(EDITOR)
-	GameplayManager::SetGameState(GameState::Playing, true);
-#endif
+//#if !defined(EDITOR)
+	if (GameplayManager::GetGameState() == GameState::Starting)
+	{
+		GameplayManager::SetGameState(GameState::Playing, true);
+	}
+//#endif
 }
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)

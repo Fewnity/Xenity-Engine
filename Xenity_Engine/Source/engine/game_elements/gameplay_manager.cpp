@@ -90,6 +90,10 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 	{
 		s_gameState = GameState::Playing;
 	}
+	else 
+	{
+		s_gameState = newGameState;
+	}
 
 	if (auto menu = Editor::lastFocusedGameMenu.lock())
 	{
