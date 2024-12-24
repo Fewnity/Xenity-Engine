@@ -136,7 +136,7 @@ uint64_t ProjectManager::ReadFileId(const File& file)
 	return id;
 }
 
-void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& projectFilesDestination, Directory& directorySource, bool isEngineAssets)
+void ProjectManager::AddFilesToProjectFiles(std::vector<FileInfo>& projectFilesDestination, Directory& directorySource, bool isEngineAssets)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
@@ -144,7 +144,7 @@ void ProjectManager::AddFilesToProjectFiles(std::vector<ProjectEngineFile>& proj
 	const size_t projectAssetFilesCount = projectAssetFiles.size();
 	for (int i = 0; i < projectAssetFilesCount; i++)
 	{
-		ProjectEngineFile projectEngineFile;
+		FileInfo projectEngineFile;
 		projectEngineFile.file = projectAssetFiles[i];
 		projectEngineFile.isEngineAsset = isEngineAssets;
 		projectFilesDestination.push_back(projectEngineFile);
@@ -161,7 +161,9 @@ void ProjectManager::FindAllProjectFiles()
 	std::unordered_map<uint64_t, FileChange> oldProjectFilesIds;
 	std::string oldPath = "";
 	if (Editor::GetCurrentProjectDirectory())
+	{
 		oldPath = Editor::GetCurrentProjectDirectory()->path;
+	}
 
 	Editor::SetCurrentProjectDirectory(nullptr);
 
@@ -169,7 +171,7 @@ void ProjectManager::FindAllProjectFiles()
 	for (const auto& kv : projectFilesIds)
 	{
 		FileChange fileChange = FileChange();
-		fileChange.path = kv.second.path;
+		fileChange.path = kv.second.file->GetPath();
 		oldProjectFilesIds[kv.first] = fileChange;
 	}
 #endif
@@ -177,124 +179,21 @@ void ProjectManager::FindAllProjectFiles()
 
 	projectFilesIds.clear();
 
-	std::vector<CompatibleFile> compatibleFiles;
-	// Get all compatible files of the project
-	{
-#if defined(EDITOR)
-		std::vector<ProjectEngineFile> projectFiles;
-		AddFilesToProjectFiles(projectFiles, *publicEngineAssetsDirectoryBase, true); // This directory first
-		AddFilesToProjectFiles(projectFiles, *projectDirectoryBase, false);
-		AddFilesToProjectFiles(projectFiles, *additionalAssetDirectoryBase, false);
+	std::vector<FileInfo> compatibleFiles = GetCompatibleFiles();
 
-		// Get all files supported by the engine
-		const size_t fileCount = projectFiles.size();
-		for (size_t i = 0; i < fileCount; i++)
-		{
-			const std::shared_ptr<File> file = projectFiles[i].file;
-			const FileType fileType = GetFileType(file->GetFileExtension());
-
-			// If the file is supported, add it to the list
-			if (fileType != FileType::File_Other)
-			{
-				CompatibleFile compatibleFile;
-				compatibleFile.file.file = file;
-				compatibleFile.file.isEngineAsset = projectFiles[i].isEngineAsset;
-				compatibleFile.type = fileType;
-				compatibleFiles.push_back(compatibleFile);
-			}
-		}
-		projectFiles.clear();
-#else
-		// All files in fileDataBase.fileList are compatible
-		for (const auto& f : fileDataBase.GetFileList())
-		{
-			CompatibleFile compatibleFile;
-			compatibleFile.file.file = FileSystem::MakeFile(f->p);
-			compatibleFile.file.file->SetUniqueId(f->id);
-			compatibleFile.file.isEngineAsset = false; // Not used when not in editor
-			compatibleFile.type = f->t;
-			compatibleFile.file.filePos = f->po;
-			compatibleFile.file.fileSize = f->s;
-			compatibleFile.file.metaFilePos = f->mpo;
-			compatibleFile.file.metaFileSize = f->ms;
-
-			compatibleFiles.push_back(compatibleFile);
-		}
-#endif
-	}
-
-	{
-		// Read meta files and list all files that do not have a meta file for later use
-#if defined(EDITOR)
-		std::unordered_map<uint64_t, bool> usedIds;
-		std::vector<std::shared_ptr<File>> fileWithoutMeta;
-		int fileWithoutMetaCount = 0;
-		uint64_t biggestId = UniqueId::reservedFileId;
-		for (const auto& compatibleFile : compatibleFiles)
-		{
-			const std::shared_ptr<File>& file = compatibleFile.file.file;
-			const uint64_t fileId = ReadFileId(*file);
-			if (fileId == -1)
-			{
-				fileWithoutMeta.push_back(file);
-				fileWithoutMetaCount++;
-			}
-			else
-			{
-				if (!compatibleFile.file.isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
-					//if (usedIds[id] == true)
-				{
-					Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
-					fileWithoutMeta.push_back(file);
-					fileWithoutMetaCount++;
-					continue;
-				}
-
-				usedIds[fileId] = true;
-
-				if (fileId > biggestId)
-					biggestId = fileId;
-				file->SetUniqueId(fileId);
-			}
-		}
-		usedIds.clear();
-
-		// Set new files ids
-		UniqueId::lastFileUniqueId = biggestId;
-		for (int i = 0; i < fileWithoutMetaCount; i++)
-		{
-			const uint64_t id = UniqueId::GenerateUniqueId(true);
-			fileWithoutMeta[i]->SetUniqueId(id);
-		}
-#endif
-	}
+	CheckAndGenerateFileIds(compatibleFiles);
 
 	// Fill projectFilesIds
 	for (const auto& kv : compatibleFiles)
 	{
-		FileInfo fileAndPath = FileInfo();
-		fileAndPath.file = kv.file.file;
-		fileAndPath.path = kv.file.file->GetPath();
-		fileAndPath.type = kv.type;
-		fileAndPath.filePos = kv.file.filePos;
-		fileAndPath.fileSize = kv.file.fileSize;
-		fileAndPath.metaFilePos = kv.file.metaFilePos;
-		fileAndPath.metaFileSize = kv.file.metaFileSize;
-		projectFilesIds[kv.file.file->GetUniqueId()] = fileAndPath;
+		projectFilesIds[kv.file->GetUniqueId()] = kv;
 	}
 	compatibleFiles.clear();
 
-	// Create files references
-	for (auto& kv : projectFilesIds)
+	// Create files references (they are automaticaly registered in the AssetManager)
+	for (const auto& kv : projectFilesIds)
 	{
-		std::shared_ptr<FileReference> fileRef;
-#if defined(EDITOR)
-		fileRef = CreateFileReference(kv.second.path, kv.first);
-#else
-		fileRef = CreateFileReference(kv.second, kv.first);
-#endif
-
-		kv.second.type = fileRef->m_fileType;
+		GetFileReferenceById(kv.first);
 	}
 
 #if defined(EDITOR)
@@ -306,7 +205,7 @@ void ProjectManager::FindAllProjectFiles()
 		{
 			FileChange& fileChange = oldProjectFilesIds[kv.first];
 			fileChange.hasBeenDeleted = false;
-			if (fileChange.path != kv.second.path)
+			if (fileChange.path != kv.second.file->GetPath())
 			{
 				fileChange.hasChanged = true;
 			}
@@ -331,10 +230,16 @@ void ProjectManager::FindAllProjectFiles()
 	CreateProjectDirectories(*projectDirectoryBase, *projectDirectory);
 	const std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(*projectDirectory, oldPath);
 	if (lastOpenedDir)
+	{
 		Editor::SetCurrentProjectDirectory(lastOpenedDir);
+	}
 	else
+	{
 		Editor::SetCurrentProjectDirectory(projectDirectory);
+	}
 #endif
+
+	Debug::Print(std::to_string(AssetManager::GetFileReferenceCount()) + " files loaded");
 }
 
 void ProjectManager::CreateVisualStudioSettings()
@@ -619,7 +524,7 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	Debug::Print("Loading project: " + projectPathToLoad, true);
-	
+
 	projectLoaded = false;
 
 	projectFolderPath = projectPathToLoad;
@@ -633,7 +538,7 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
 
 #if defined(EDITOR)
-	if (!std::filesystem::exists(assetFolderPath)) 
+	if (!std::filesystem::exists(assetFolderPath))
 	{
 		return ProjectLoadingErrors::NoAssetFolder;
 	}
@@ -849,16 +754,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	{
 		if (projectFilesIds.find(id) != projectFilesIds.end())
 		{
-#if defined(EDITOR)
-			fileRef = CreateFileReference(projectFilesIds[id].path, id);
-#else
 			fileRef = CreateFileReference(projectFilesIds[id], id);
-#endif
-			if (fileRef)
-			{
-				if (fileRef->m_fileType == FileType::File_Skybox)
-					fileRef->LoadFileReference();
-			}
 		}
 	}
 
@@ -891,7 +787,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const 
 	uint64_t fileId = -1;
 	for (const auto& kv : projectFilesIds)
 	{
-		if (kv.second.path == filePathFixed)
+		if (kv.second.file->GetPath() == filePathFixed)
 		{
 			fileId = kv.first;
 			break;
@@ -1153,7 +1049,6 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInf
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
 	std::shared_ptr<FileReference> fileRef = nullptr;
-	//std::shared_ptr<File> file = FileSystem::MakeFile(fileInfo.file);
 
 	switch (fileInfo.type)
 	{
@@ -1198,10 +1093,13 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInf
 
 	if (fileRef)
 	{
-		fileRef->m_filePosition = fileInfo.filePos;
-		fileRef->m_fileSize = fileInfo.fileSize;
-		fileRef->m_metaPosition = fileInfo.metaFilePos;
-		fileRef->m_metaSize = fileInfo.metaFileSize;
+		if (fileInfo.fileSize != 0 || fileInfo.metaFileSize != 0)
+		{
+			fileRef->m_filePosition = fileInfo.filePos;
+			fileRef->m_fileSize = fileInfo.fileSize;
+			fileRef->m_metaPosition = fileInfo.metaFilePos;
+			fileRef->m_metaSize = fileInfo.metaFileSize;
+		}
 
 #if defined(EDITOR)
 		fileRef->m_fileId = id;
@@ -1310,6 +1208,103 @@ void ProjectManager::CreateGame()
 	{
 		Engine::s_game->Start();
 	}
+}
+
+std::vector<FileInfo> ProjectManager::GetCompatibleFiles()
+{
+	std::vector<FileInfo> compatibleFiles;
+
+	// Get all compatible files of the project
+#if defined(EDITOR)
+	std::vector<FileInfo> projectFiles;
+	AddFilesToProjectFiles(projectFiles, *publicEngineAssetsDirectoryBase, true); // This directory first
+	AddFilesToProjectFiles(projectFiles, *projectDirectoryBase, false);
+	AddFilesToProjectFiles(projectFiles, *additionalAssetDirectoryBase, false);
+
+	// Get all files supported by the engine
+	const size_t fileCount = projectFiles.size();
+	for (size_t i = 0; i < fileCount; i++)
+	{
+		const std::shared_ptr<File> file = projectFiles[i].file;
+		const FileType fileType = GetFileType(file->GetFileExtension());
+
+		// If the file is supported, add it to the list
+		if (fileType != FileType::File_Other)
+		{
+			FileInfo compatibleFile;
+			compatibleFile.file = file;
+			compatibleFile.isEngineAsset = projectFiles[i].isEngineAsset;
+			compatibleFile.type = fileType;
+			compatibleFiles.push_back(compatibleFile);
+		}
+	}
+	projectFiles.clear();
+#else
+	// All files in fileDataBase.fileList are compatible
+	for (const auto& f : fileDataBase.GetFileList())
+	{
+		FileInfo compatibleFile;
+		compatibleFile.file = FileSystem::MakeFile(f->p);
+		compatibleFile.file->SetUniqueId(f->id);
+		compatibleFile.isEngineAsset = false; // Not used when not in editor
+		compatibleFile.type = f->t;
+		compatibleFile.filePos = f->po;
+		compatibleFile.fileSize = f->s;
+		compatibleFile.metaFilePos = f->mpo;
+		compatibleFile.metaFileSize = f->ms;
+
+		compatibleFiles.push_back(compatibleFile);
+	}
+#endif
+
+	return compatibleFiles;
+}
+
+void ProjectManager::CheckAndGenerateFileIds(const std::vector<FileInfo>& compatibleFiles)
+{
+	// Read meta files and list all files that do not have a meta file for later use
+#if defined(EDITOR)
+	std::unordered_map<uint64_t, bool> usedIds;
+	std::vector<std::shared_ptr<File>> fileWithoutMeta;
+	int fileWithoutMetaCount = 0;
+	uint64_t biggestId = UniqueId::reservedFileId;
+	for (const auto& compatibleFile : compatibleFiles)
+	{
+		const std::shared_ptr<File>& file = compatibleFile.file;
+		const uint64_t fileId = ReadFileId(*file);
+		if (fileId == -1)
+		{
+			fileWithoutMeta.push_back(file);
+			fileWithoutMetaCount++;
+		}
+		else
+		{
+			if (!compatibleFile.isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
+				//if (usedIds[id] == true)
+			{
+				Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
+				fileWithoutMeta.push_back(file);
+				fileWithoutMetaCount++;
+				continue;
+			}
+
+			usedIds[fileId] = true;
+
+			if (fileId > biggestId)
+				biggestId = fileId;
+			file->SetUniqueId(fileId);
+		}
+	}
+	usedIds.clear();
+
+	// Set new files ids
+	UniqueId::lastFileUniqueId = biggestId;
+	for (int i = 0; i < fileWithoutMetaCount; i++)
+	{
+		const uint64_t id = UniqueId::GenerateUniqueId(true);
+		fileWithoutMeta[i]->SetUniqueId(id);
+	}
+#endif
 }
 
 ProjectDirectory::~ProjectDirectory()

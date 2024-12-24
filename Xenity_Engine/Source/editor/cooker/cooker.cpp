@@ -41,13 +41,13 @@ void Cooker::CookAssets(const CookSettings& settings)
 		if (fileInfo)
 		{
 			std::string newPath;
-			if (fileInfo->path[0] == '.')
+			if (fileInfo->file->GetPath()[0] == '.')
 			{
-				newPath = fileInfo->path.substr(2);
+				newPath = fileInfo->file->GetPath().substr(2);
 			}
 			else
 			{
-				newPath = fileInfo->path.substr(projectFolderPathLen, fileInfo->path.size() - projectFolderPathLen);
+				newPath = fileInfo->file->GetPath().substr(projectFolderPathLen, fileInfo->file->GetPath().size() - projectFolderPathLen);
 			}
 
 			// Create the destination folder for the file
@@ -69,7 +69,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	// We copy the cooked file to the export folder, and then we add the copied file to the binary file
 	if (fileInfo.type == FileType::File_Texture) // Cook texture
 	{
-		const std::string texturePath = fileInfo.path;
+		const std::string texturePath = fileInfo.file->GetPath();
 
 		int width, height, channels;
 		unsigned char* imageData = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
@@ -168,7 +168,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 				fragmentFile->Write(fragmentShaderCode);
 				fragmentFile->Close();
 
-				CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
+				CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
 			}
 			else
 			{
@@ -220,21 +220,21 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 		}
 		else 
 		{
-			CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
+			CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
 		}
 	}
 	else // If file can't be cooked, just copy it
 	{
-		CopyUtils::AddCopyEntry(false, fileInfo.path, exportPath);
+		CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
 	}
 
 	// Copy the raw meta file, maybe we should cook it too later
-	CopyUtils::AddCopyEntry(false, fileInfo.path + ".meta", exportPath + ".meta");
-	const uint64_t metaSize = fs::file_size(fileInfo.path + ".meta");
+	CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath() + ".meta", exportPath + ".meta");
+	const uint64_t metaSize = fs::file_size(fileInfo.file->GetPath() + ".meta");
 
 	CopyUtils::ExecuteCopyEntries();
 
-	uint64_t cookedFileSize = cookedFileSize = fs::file_size(exportPath.c_str());
+	uint64_t cookedFileSize = fs::file_size(exportPath.c_str());
 
 	// Do not include audio in the binary file
 	size_t dataOffset = 0;
