@@ -101,6 +101,13 @@ void Component::SetIsEnabled(bool isEnabled)
 		return;
 
 	m_isEnabled = isEnabled;
+
+	if (!m_isAwakeCalled && isEnabled)
+	{
+		m_isAwakeCalled = true;
+		Awake();
+	}
+
 	if (m_isEnabled)
 		OnEnabled();
 	else
