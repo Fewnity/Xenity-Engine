@@ -8,6 +8,7 @@
 
 #include <string>
 #include <memory>
+#include <limits>
 
 class GameObject;
 
