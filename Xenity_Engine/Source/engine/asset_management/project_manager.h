@@ -329,7 +329,7 @@ private:
 	* @param id File Id
 	* @return File reference
 	*/
-	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id);
+	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id, const FileType type);
 	static std::shared_ptr<FileReference> CreateFileReference(const FileInfo& fileInfo, const uint64_t id);
 
 	/**

@@ -382,7 +382,7 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/assets/Scenes/");
 
 	// Create default scene
-	const std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "/assets/Scenes/MainScene.xen", UniqueId::GenerateUniqueId(true)));
+	const std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "/assets/Scenes/MainScene.xen", UniqueId::GenerateUniqueId(true), FileType::File_Scene));
 	if (sceneRef->m_file->Open(FileMode::WriteCreateFile))
 	{
 		const std::string data = AssetManager::GetDefaultFileData(FileType::File_Scene);
@@ -982,12 +982,11 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	}
 }
 
-std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::string& path, const uint64_t id)
+std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::string& path, const uint64_t id, const FileType type)
 {
 	std::shared_ptr<FileReference> fileRef = nullptr;
 	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 
-	const FileType type = GetFileType(file->GetFileExtension());
 	switch (type)
 	{
 	case FileType::File_Audio:
