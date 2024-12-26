@@ -948,7 +948,9 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 	else 
 	{
-		const std::string copyCompileShadersCommand = "docker cp \"" + engineFolderLocation + "compile_shaders.sh\" XenityEngineBuild:\"/home/XenityBuild/compile_shaders.sh\"";
+		FixCompileShadersScript();
+
+		const std::string copyCompileShadersCommand = "docker cp \"" + engineFolderLocation + "compile_shaders_fixed.sh\" XenityEngineBuild:\"/home/XenityBuild/compile_shaders.sh\"";
 		[[maybe_unused]] const int copyCompileShadersCommandResult = system(copyCompileShadersCommand.c_str()); // compile shaders script file
 	}
 
@@ -1132,6 +1134,31 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 		const std::string copyShadersCommand = "docker cp \"" + params.tempPath + "cooked_assets/shaders_to_compile\" XenityEngineBuild:\"/home/XenityBuild\"";
 		[[maybe_unused]] const int copyShadersCommandResult = system(copyShadersCommand.c_str());
 	}
+}
+
+void Compiler::FixCompileShadersScript()
+{
+	// In case the script has windows line endings, remove them to avoid errors on linux
+	std::shared_ptr<File> shaderScriptFile = FileSystem::MakeFile(engineFolderLocation + "compile_shaders.sh");
+	shaderScriptFile->Open(FileMode::ReadOnly);
+	std::string scriptText = shaderScriptFile->ReadAll();
+	shaderScriptFile->Close();
+
+	size_t scriptTextSize = scriptText.size();
+	for (size_t i = 0; i < scriptTextSize; i++)
+	{
+		if (scriptText[i] == '\r')
+		{
+			scriptText.erase(i, 1);
+			scriptTextSize--;
+		}
+	}
+
+	// Write the new script
+	std::shared_ptr<File> updatedShaderScriptFile = FileSystem::MakeFile(engineFolderLocation + "compile_shaders_fixed.sh");
+	updatedShaderScriptFile->Open(FileMode::WriteCreateFile);
+	updatedShaderScriptFile->Write(scriptText);
+	updatedShaderScriptFile->Close();
 }
 
 std::string Compiler::GetStartCompilerCommand()

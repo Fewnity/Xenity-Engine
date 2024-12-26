@@ -270,6 +270,7 @@ private:
 
 	static void CopyAssetsToDocker(const CompilerParams& params);
 
+	static void FixCompileShadersScript();
 
 	static Event<CompilerParams, bool> OnCompilationEndedEvent;
 	static Event<CompilerParams> OnCompilationStartedEvent;
