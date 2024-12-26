@@ -202,7 +202,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Component>&
 	if (ptr != nullptr)
 	{
 		inputText = ptr->GetGameObject()->GetName();
-		inputText += " " + std::to_string(ptr->GetUniqueId());
+		//inputText += " " + std::to_string(ptr->GetUniqueId()); // For debugging
 	}
 	else 
 	{
@@ -236,7 +236,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Collider>& 
 	if (ptr != nullptr)
 	{
 		inputText = ptr->GetGameObject()->GetName();
-		inputText += " " + std::to_string(ptr->GetUniqueId());
+		//inputText += " " + std::to_string(ptr->GetUniqueId()); // For debugging
 	}
 
 	InputButtonState result = DrawInputButton(inputName, inputText, true);
@@ -265,7 +265,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<Transform>&
 	if (ptr != nullptr)
 	{
 		inputText = ptr->GetGameObject()->GetName();
-		inputText += " " + std::to_string(ptr->GetGameObject()->GetUniqueId());
+		//inputText += " " + std::to_string(ptr->GetGameObject()->GetUniqueId()); // For debugging
 	}
 
 	InputButtonState result = DrawInputButton(inputName, inputText, true);
@@ -294,7 +294,7 @@ bool EditorUI::DrawInput(const std::string& inputName, std::weak_ptr<GameObject>
 	if (ptr != nullptr)
 	{
 		inputText = ptr->GetName();
-		inputText += " " + std::to_string(ptr->GetUniqueId());
+		//inputText += " " + std::to_string(ptr->GetUniqueId()); // For debugging
 	}
 
 	InputButtonState result = DrawInputButton(inputName, inputText, true);
