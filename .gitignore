@@ -37,6 +37,7 @@ Xenity_Engine_Executable/plugins/*.dll
 Xenity_Engine_Executable/*.dll
 Xenity_Engine_Executable/build_settings.json
 Xenity_Engine_Executable/menu_settings.json
+Xenity_Engine_Executable/compile_shaders_fixed.sh
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
