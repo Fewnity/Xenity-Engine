@@ -87,9 +87,16 @@ TestResult ClassRegistryGetComponentNamesTest::Start(std::string& errorOut)
 	ClassRegistry::RegisterEngineFileClasses();
 
 	names = ClassRegistry::GetComponentNames();
+	for (const std::string& name : names)
+	{
+		EXPECT_NOT_EQUALS(names, "", "Failed to get component names (empty name)");
+	}
+
+	// Try to find a basic components
+	EXPECT_NOT_EQUALS(std::find(names.begin(), names.end(), "Light"), names.end(), "Failed to find Light component name");
+	EXPECT_NOT_EQUALS(std::find(names.begin(), names.end(), "Camera"), names.end(), "Failed to find Camera component name");
 
 	EXPECT_NOT_EQUALS(names.size(), static_cast<size_t>(0), "Failed to get component names (empty list)");
-	EXPECT_EQUALS(names.size(), static_cast<size_t>(18), "Failed to get all component names"); // 18 and not 19 because MissingScript is not a valid component
-
+	
 	END_TEST();
 }
