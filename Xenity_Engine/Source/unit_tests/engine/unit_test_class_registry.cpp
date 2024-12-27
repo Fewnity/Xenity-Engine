@@ -89,7 +89,7 @@ TestResult ClassRegistryGetComponentNamesTest::Start(std::string& errorOut)
 	names = ClassRegistry::GetComponentNames();
 	for (const std::string& name : names)
 	{
-		EXPECT_NOT_EQUALS(names, "", "Failed to get component names (empty name)");
+		EXPECT_NOT_EQUALS(name, "", "Failed to get component names (empty name)");
 	}
 
 	// Try to find a basic components
