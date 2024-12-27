@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstdint>
+#include <random>
 
 #include <engine/api.h>
 
@@ -49,29 +50,18 @@ private:
 	friend class InspectorDeleteComponentCommand;
 	friend class UniqueIdTest;
 
-	static uint64_t lastFileUniqueId;
-	static uint64_t lastUniqueId;
-
 	static constexpr uint64_t reservedFileId = 100000;
+
+	static std::random_device rd;  // a seed source for the random number engine
+	static std::mt19937_64 gen; // mersenne_twister_engine seeded with rd()
+	static std::uniform_int_distribution<uint64_t> distrib;
 
 	/**
 	* @brief [Internal] Generate a new id
 	* @param forFile Is an Id for a file
 	* @return new Id
 	*/
-	static inline uint64_t GenerateUniqueId(bool forFile)
-	{
-		if (forFile)
-		{
-			lastFileUniqueId++;
-			return lastFileUniqueId;
-		}
-		else
-		{
-			lastUniqueId++;
-			return lastUniqueId;
-		}
-	}
+	static uint64_t GenerateUniqueId(bool forFile);
 
 	/**
 	* @brief [Internal] Set unique Id

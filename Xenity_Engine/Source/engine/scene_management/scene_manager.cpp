@@ -317,9 +317,6 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			}
 		}
 
-		// Set the current unique id counter to the biggestId found in the scene
-		UniqueId::lastUniqueId = biggestId;
-
 		// Set gameobjects parents
 		for (auto& kv : jsonData["GameObjects"].items())
 		{
@@ -421,10 +418,6 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 				}
 			}
 		}
-	}
-	else
-	{
-		UniqueId::lastUniqueId = 0;
 	}
 
 	// Load lighting values

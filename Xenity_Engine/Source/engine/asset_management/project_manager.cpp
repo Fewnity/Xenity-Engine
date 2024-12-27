@@ -1266,7 +1266,6 @@ void ProjectManager::CheckAndGenerateFileIds(const std::vector<FileInfo>& compat
 	std::unordered_map<uint64_t, bool> usedIds;
 	std::vector<std::shared_ptr<File>> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
-	uint64_t biggestId = UniqueId::reservedFileId;
 	for (const auto& compatibleFile : compatibleFiles)
 	{
 		const std::shared_ptr<File>& file = compatibleFile.file;
@@ -1289,15 +1288,12 @@ void ProjectManager::CheckAndGenerateFileIds(const std::vector<FileInfo>& compat
 
 			usedIds[fileId] = true;
 
-			if (fileId > biggestId)
-				biggestId = fileId;
 			file->SetUniqueId(fileId);
 		}
 	}
 	usedIds.clear();
 
 	// Set new files ids
-	UniqueId::lastFileUniqueId = biggestId;
 	for (int i = 0; i < fileWithoutMetaCount; i++)
 	{
 		const uint64_t id = UniqueId::GenerateUniqueId(true);
