@@ -337,7 +337,7 @@ void MainBarMenu::Draw()
 			}
 			ImGui::EndMenu();
 		}
-#if defined(ENABLE_EXPEREMENTAL_FEATURES)
+#if defined(ENABLE_EXPERIMENTAL_FEATURES)
 		if (ImGui::BeginMenu("Tilemap"))
 		{
 			if (ImGui::MenuItem("Tilemap", nullptr, nullptr, hasSelectedGameObject))
@@ -346,7 +346,7 @@ void MainBarMenu::Draw()
 			}
 			ImGui::EndMenu();
 		}
-#endif // ENABLE_EXPEREMENTAL_FEATURES
+#endif // ENABLE_EXPERIMENTAL_FEATURES
 		if (ImGui::BeginMenu("UI"))
 		{
 			if (ImGui::MenuItem("Canvas", nullptr, nullptr, hasSelectedGameObject))

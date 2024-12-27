@@ -3,7 +3,7 @@
 //
 // -------------------------------------------------- Features
 //
-//#define ENABLE_EXPEREMENTAL_FEATURES // Enable features that are not fully tested or implemented
+//#define ENABLE_EXPERIMENTAL_FEATURES // Enable features that are not fully tested or implemented
 
 //
 // -------------------------------------------------- Version

@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#if defined(ENABLE_EXPEREMENTAL_FEATURES)
+#if defined(ENABLE_EXPERIMENTAL_FEATURES)
 
 #pragma once
 #include <engine/api.h>
@@ -99,4 +99,4 @@ public:
 	float width = 1;
 };
 
-#endif // ENABLE_EXPEREMENTAL_FEATURES
+#endif // ENABLE_EXPERIMENTAL_FEATURES

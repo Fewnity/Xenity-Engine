@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#if defined(ENABLE_EXPEREMENTAL_FEATURES)
+#if defined(ENABLE_EXPERIMENTAL_FEATURES)
 
 #include "line_renderer.h"
 
@@ -141,4 +141,4 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	MeshManager::DrawMesh(*GetTransformRaw(), *subMesh, *m_material, renderSettings);
 }
 
-#endif // ENABLE_EXPEREMENTAL_FEATURES
+#endif // ENABLE_EXPERIMENTAL_FEATURES

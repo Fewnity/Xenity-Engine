@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#if defined(ENABLE_EXPEREMENTAL_FEATURES)
+#if defined(ENABLE_EXPERIMENTAL_FEATURES)
 
 #include "tile_map.h"
 
@@ -365,4 +365,4 @@ void Tilemap::RemoveTexture(Texture* texture)
 	}
 }
 
-#endif // ENABLE_EXPEREMENTAL_FEATURES
+#endif // ENABLE_EXPERIMENTAL_FEATURES
