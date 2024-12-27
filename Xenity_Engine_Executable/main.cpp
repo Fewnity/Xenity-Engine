@@ -26,12 +26,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Rework the documentation
 Reload material file on game stop
 Implement alpha testing on shaders
-Fix refresh file
-Fix awake: Call awake and start after the object is enabled if it was disabled, but only once
 System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
-Change ID system, use random number instead of incrementing
-Remove unique ID from file?
-Give type to CreateFileReference instead of reading the file extension
+Add lighting on PS3
 
 --- Can be done for the next release
 Make a tool to list all files of a data base
