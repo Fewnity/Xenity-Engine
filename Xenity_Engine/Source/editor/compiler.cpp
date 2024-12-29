@@ -1154,6 +1154,7 @@ void Compiler::FixCompileShadersScript()
 		}
 	}
 
+	FileSystem::s_fileSystem->Delete(engineFolderLocation + "compile_shaders_fixed.sh");
 	// Write the new script
 	std::shared_ptr<File> updatedShaderScriptFile = FileSystem::MakeFile(engineFolderLocation + "compile_shaders_fixed.sh");
 	updatedShaderScriptFile->Open(FileMode::WriteCreateFile);
