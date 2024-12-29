@@ -125,7 +125,7 @@ void main
 	out float2 oTexcoord : TEXCOORD2
 )
 {
-	ePosition = mul(float4(vertexPosition, 1.0f), mul(camera, mul(model, projection)));
+	ePosition = mul(float4(vertexPosition, 1.0f), mul(model, mul(camera, projection)));
 	oPosition = float4(vertexPosition, 1.0f);
 	oNormal = vertexNormal;
 	oTexcoord = vertexTexcoord;

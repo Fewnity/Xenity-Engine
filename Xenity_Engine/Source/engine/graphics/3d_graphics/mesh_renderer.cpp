@@ -169,9 +169,14 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 		if (material->GetRenderingMode() == MaterialRenderingModes::Opaque || material->GetRenderingMode() == MaterialRenderingModes::Cutout)
 		{
+#if defined(ENABLE_OVERDRAW_OPTIMIZATION)
+			renderBatch.opaqueMeshCommands.push_back(command);
+			renderBatch.opaqueMeshCommandIndex++;
+#else
 			RenderQueue& renderQueue = renderBatch.renderQueues[material->GetFileId()];
 			renderQueue.commands.push_back(command);
 			renderQueue.commandIndex++;
+#endif
 		}
 		else
 		{

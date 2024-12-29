@@ -4,6 +4,11 @@
 // -------------------------------------------------- Features
 //
 //#define ENABLE_EXPERIMENTAL_FEATURES // Enable features that are not fully tested or implemented
+//#define ENABLE_OVERDRAW_OPTIMIZATION // Enable overdraw optimization (currently not great)
+
+#if defined(__PS3__)
+//#define ENABLE_OVERDRAW_OPTIMIZATION // Enable lighting
+#endif
 
 //
 // -------------------------------------------------- Version

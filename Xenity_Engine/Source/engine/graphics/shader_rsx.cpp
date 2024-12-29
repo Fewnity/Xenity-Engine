@@ -42,18 +42,18 @@ void ShaderRSX::Init()
 
 void ShaderRSX::Load()
 {
-	Debug::Print("ShaderRSX::Load");
+	//Debug::Print("ShaderRSX::Load");
 
 	size_t size = 0;
 	unsigned char* fullShader = ReadShaderBinary(size);
-	Debug::Print("size: " + std::to_string(size));
+	//Debug::Print("size: " + std::to_string(size));
 
 	// Read vertex shader code size
 	uint32_t vertexShaderCodeSize = 0;
 	memcpy(&vertexShaderCodeSize, fullShader, sizeof(uint32_t));
 	vertexShaderCodeSize = EndianUtils::SwapEndian(vertexShaderCodeSize);
 	fullShader += sizeof(uint32_t);
-	Debug::Print("vertexShaderCodeSize: " + std::to_string(vertexShaderCodeSize));
+	//Debug::Print("vertexShaderCodeSize: " + std::to_string(vertexShaderCodeSize));
 
 	// Read code
 	m_vertexProgram = (rsxVertexProgram*)fullShader;
@@ -72,7 +72,7 @@ void ShaderRSX::Load()
 	memcpy(&fragmentShaderCodeSize, fullShader, sizeof(uint32_t));
 	fragmentShaderCodeSize = EndianUtils::SwapEndian(fragmentShaderCodeSize);
 	fullShader += sizeof(uint32_t);
-	Debug::Print("fragmentShaderCodeSize: " + std::to_string(fragmentShaderCodeSize));
+	//Debug::Print("fragmentShaderCodeSize: " + std::to_string(fragmentShaderCodeSize));
 
 	m_fragmentProgram = (rsxFragmentProgram*)fullShader;
 
@@ -86,13 +86,13 @@ void ShaderRSX::Load()
 
 	{
 		rsxVertexProgramGetUCode(m_vertexProgram, &m_vertexProgramCode, &m_vertexProgramSize);
-		printf("vertexProgramSize: %d\n", m_vertexProgramSize);
+		//printf("vertexProgramSize: %d\n", m_vertexProgramSize);
 
 		m_projMatrix = rsxVertexProgramGetConst(m_vertexProgram, "projection");
-		m_modelMatrix = rsxVertexProgramGetConst(m_vertexProgram, "camera");
-		m_viewMatrix = rsxVertexProgramGetConst(m_vertexProgram, "model");
-		
-		if(m_projMatrix)
+		m_viewMatrix = rsxVertexProgramGetConst(m_vertexProgram, "camera");
+		m_modelMatrix = rsxVertexProgramGetConst(m_vertexProgram, "model");
+
+		/*if(m_projMatrix)
 		{
 			Debug::Print("m_projMatrix");
 		}
@@ -117,12 +117,12 @@ void ShaderRSX::Load()
 		else
 		{
 			Debug::Print("No m_viewMatrix");
-		}
+		}*/
 	}
 
 	{
 		rsxFragmentProgramGetUCode(m_fragmentProgram, &m_fragmentProgramCode, &m_fragmentProgramSize);
-		printf("fragmentProgramSize: %d\n", m_fragmentProgramSize);
+		//printf("fragmentProgramSize: %d\n", m_fragmentProgramSize);
 
 		m_fragmentProgramCodeOnGPU = (uint32_t*)rsxMemalign(64, m_fragmentProgramSize);
 		memcpy(m_fragmentProgramCodeOnGPU, m_fragmentProgramCode, m_fragmentProgramSize);
@@ -131,8 +131,68 @@ void ShaderRSX::Load()
 		m_color = rsxFragmentProgramGetConst(m_fragmentProgram, "color");
 		m_textureUnit = rsxFragmentProgramGetAttrib(m_fragmentProgram, "texture");
 		m_ambientLightLocation = rsxFragmentProgramGetConst(m_fragmentProgram, "ambientLight");
+		m_usedPointLightCount = rsxFragmentProgramGetConst(m_fragmentProgram, "usedPointLightCount");
 
-		if(m_color)
+		/*SetShaderAttribut("usedPointLightCount", 3.0f);*/
+
+		Debug::Print("----------- FRAGMENT SHADER DEBUG -----------");
+		Debug::Print("num_regs: " + std::to_string(m_fragmentProgram->num_regs));
+		Debug::Print("num_attr: " + std::to_string(m_fragmentProgram->num_attr));
+		Debug::Print("num_const: " + std::to_string(m_fragmentProgram->num_const));
+
+		rsxProgramConst* consts = rsxFragmentProgramGetConsts(m_fragmentProgram);
+		for (size_t i = 0; i < m_fragmentProgram->num_const; i++)
+		{
+			Debug::Print("Type" + std::to_string(consts[i].type));
+		}
+
+		if (rsxFragmentProgramGetConst(m_fragmentProgram, "directionalLights[0].color"))
+		{
+			Debug::Print("directionalLights[0].color");
+		}
+		else
+		{
+			Debug::Print("No directionalLights[0].color");
+		}
+
+		SetShaderAttribut("directionalLights[0].color", Vector3(1, 1, 1));
+
+		if (rsxFragmentProgramGetConst(m_fragmentProgram, "directionalLights[1].color"))
+		{
+			Debug::Print("directionalLights[1].color");
+		}
+		else
+		{
+			Debug::Print("No directionalLights[1].color");
+		}
+		if (rsxFragmentProgramGetConst(m_fragmentProgram, "directionalLights[2].color"))
+		{
+			Debug::Print("directionalLights[2].color");
+		}
+		else
+		{
+			Debug::Print("No directionalLights[2].color");
+		}
+		
+		if (rsxFragmentProgramGetConst(m_fragmentProgram, "directionalLightsIndices[0]"))
+		{
+			Debug::Print("directionalLightsIndices[0]");
+		}
+		else
+		{
+			Debug::Print("No directionalLightsIndices[0]");
+		}
+
+		if (m_usedPointLightCount)
+		{
+			Debug::Print("m_usedPointLightCount");
+		}
+		else
+		{
+			Debug::Print("No m_usedPointLightCount");
+		}
+
+		/*if(m_color)
 		{
 			Debug::Print("m_color");
 		}
@@ -157,7 +217,7 @@ void ShaderRSX::Load()
 		else
 		{
 			Debug::Print("No m_ambientLightLocation");
-		}
+		}*/
 	}
 
 	m_fileStatus = FileStatus::FileStatus_Loaded;
@@ -250,13 +310,28 @@ void ShaderRSX::SetShaderModel(const Vector3& position, const Vector3& rotation,
 {
 	//Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
 }
-
+int count2 = 0;
 void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
 {
+	if (count2 >= 5)
+	{
+		return;
+	}
+	count2++;
+
+	for(int i = 0; i < MAX_LIGHT_COUNT; i++)
+	{
+		std::string directionalIndexStr = "directionalLightsIndices[" + std::to_string(i) + "]";
+		SetShaderAttribut(directionalIndexStr, (float)lightsIndices.directionalLightIndices[i].x);
+
+		std::string pointIndexStr = "pointLightsIndices[" + std::to_string(i) + "]";
+		SetShaderAttribut(pointIndexStr, (float)lightsIndices.pointLightIndices[i].x);
+	}
 }
 
 ShaderRSX::RsxProgramConstPair* ShaderRSX::FindOrAddAttributId(const std::string& attribut)
 {
+	//Debug::Print("FindOrAddAttributId " + attribut);
 	auto it = m_uniformsIds.find(attribut);
 	if (it == m_uniformsIds.end())
 	{
@@ -360,6 +435,20 @@ void ShaderRSX::SetShaderAttribut(const std::string& attribut, float value)
 
 void ShaderRSX::SetShaderAttribut(const std::string& attribut, int value)
 {
+	/*RsxProgramConstPair* attributId = FindOrAddAttributId(attribut);
+	if (!attributId)
+	{
+		return;
+	}
+
+	if (attributId->isVertexConst)
+	{
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, attributId->programConst, (float*)&value);
+	}
+	else
+	{
+		rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, attributId->programConst, (float*)&value, m_fp_offset, GCM_LOCATION_RSX);
+	}*/
 }
 
 void ShaderRSX::Link()
@@ -373,6 +462,30 @@ void ShaderRSX::Link()
 /// <param name="index">Shader's point light index</param>
 void ShaderRSX::SetPointLightData(const Light& light, const int index)
 {
+	if (index >= MAX_LIGHT_COUNT)
+		return;
+
+	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
+	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
+	Vector3 pos = Vector3(0);
+	if (light.GetTransformRaw())
+	{
+		pos = light.GetTransformRaw()->GetPosition();
+		pos.x = -pos.x;
+	}
+	//Debug::Print("Set" + std::to_string(index));
+
+	std::string colorStr = "pointLights[" + std::to_string(index) + "].color";
+	std::string positionStr = "pointLights[" + std::to_string(index) + "].position";
+	std::string constantStr = "pointLights[" + std::to_string(index) + "].constant";
+	std::string linearStr = "pointLights[" + std::to_string(index) + "].linear";
+	std::string quadraticStr = "pointLights[" + std::to_string(index) + "].quadratic";
+
+	SetShaderAttribut(colorStr, lightColor * light.GetIntensity());
+	SetShaderAttribut(positionStr, pos);
+	SetShaderAttribut(constantStr, lightConstant);
+	SetShaderAttribut(linearStr, light.GetLinearValue());
+	SetShaderAttribut(quadraticStr, light.GetQuadraticValue());
 }
 
 /// <summary>
@@ -382,6 +495,24 @@ void ShaderRSX::SetPointLightData(const Light& light, const int index)
 /// <param name="index">Shader's directional light index</param>
 void ShaderRSX::SetDirectionalLightData(const Light& light, const int index)
 {
+	if (index >= MAX_LIGHT_COUNT)
+		return;
+
+	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
+	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
+
+	Vector3 dir = Vector3(0);
+	if (light.GetTransformRaw())
+	{
+		dir = light.GetTransformRaw()->GetForward();
+		dir.x = -dir.x;
+	}
+
+	std::string colorStr = "directionalLights[" + std::to_string(index) + "].color";
+	SetShaderAttribut(colorStr, lightColor * light.GetIntensity());
+
+	std::string directionStr = "directionalLights[" + std::to_string(index) + "].direction";
+	SetShaderAttribut(directionStr, dir);
 }
 
 void ShaderRSX::SetAmbientLightData(const Vector3& color)
@@ -398,14 +529,42 @@ void ShaderRSX::SetSpotLightData(const Light& light, const int index)
 {
 }
 
+int count = 0;
+
 /// <summary>
 /// Send lights data to the shader
 /// </summary>
 void ShaderRSX::UpdateLights()
 {
+	if (count >= 5)
+	{
+		return;
+	}
+	count++;
 	Vector4 ambientLight = Vector4(0, 0, 0, 0);
 
+	int offset = 1;
 	const int lightCount = AssetManager::GetLightCount();
+
+	int directionalUsed = 0;
+	int pointUsed = 0;
+	int spotUsed = 0;
+
+	//if (directionalLightsids.color != INVALID_SHADER_UNIFORM)
+	{
+		SetDirectionalLightData(*defaultDarkLight, 0);
+		//hasLightUniforms = true;
+	}
+	//if (pointLightIds.color != INVALID_SHADER_UNIFORM)
+	{
+		SetPointLightData(*defaultDarkLight, 0);
+		//hasLightUniforms = true;
+	}
+	//if (spotLightids.color != INVALID_SHADER_UNIFORM)
+	{
+		SetSpotLightData(*defaultDarkLight, 0);
+		//hasLightUniforms = true;
+	}
 
 	//For each lights
 	for (int lightI = 0; lightI < lightCount; lightI++)
@@ -415,18 +574,18 @@ void ShaderRSX::UpdateLights()
 		{
 			if (light.m_type == LightType::Directional)
 			{
-				// SetDirectionalLightData(light, directionalUsed + offset);
-				// directionalUsed++;
+				SetDirectionalLightData(light, directionalUsed + offset);
+				directionalUsed++;
 			}
 			else if (light.m_type == LightType::Point)
 			{
-				// SetPointLightData(light, pointUsed + offset);
-				// pointUsed++;
+				SetPointLightData(light, pointUsed + offset);
+				pointUsed++;
 			}
 			else if (light.m_type == LightType::Spot)
 			{
-				// SetSpotLightData(light, spotUsed + offset);
-				// spotUsed++;
+				SetSpotLightData(light, spotUsed + offset);
+				spotUsed++;
 			}
 			else if (light.m_type == LightType::Ambient)
 			{
@@ -439,6 +598,10 @@ void ShaderRSX::UpdateLights()
 	{
 		SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
 	}
+
+	SetShaderAttribut("usedPointLightCount", (float)pointUsed);
+	SetShaderAttribut("usedSpotLightCount", (float)spotUsed);
+	SetShaderAttribut("usedDirectionalLightCount", (float)directionalUsed);
 }
 
 void ShaderRSX::CreateShader(Shader::ShaderType type)

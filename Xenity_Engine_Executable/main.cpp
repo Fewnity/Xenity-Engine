@@ -28,6 +28,14 @@ Reload material file on game stop
 Implement alpha testing on shaders
 System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
 Add lighting on PS3
+To make lighting usable on PS3:
+- Use 0 index when light is not used to avoid potential gpu crash
+- Use vectors instead of single floats in the light structure
+- Add the light optimization in the shader to get all const ptrs
+- Add shader variant (with and without lighting)
+- Try to make directional lighting in the vertex shader
+- Try to detect light per draw to use with sphere test
+- Try to draw the skybox after all opaque objects
 
 --- Can be done for the next release
 Make a tool to list all files of a data base

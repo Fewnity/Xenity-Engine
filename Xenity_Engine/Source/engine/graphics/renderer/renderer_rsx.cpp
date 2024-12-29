@@ -364,6 +364,12 @@ int RendererRSX::Init()
 
 void RendererRSX::Setup()
 {
+	lastSettings.invertFaces = false;
+	lastSettings.renderingMode = MaterialRenderingModes::Opaque;
+	lastSettings.useDepth = true;
+	lastSettings.useLighting = false;
+	lastSettings.useTexture = true;
+	lastSettings.max_depth = false;
 }
 
 void RendererRSX::Stop()
@@ -531,12 +537,28 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		rsxSetDepthWriteEnable(context, GCM_FALSE);
 	}
 
+	if (lastSettings.max_depth != settings.max_depth)
+	{
+		if (settings.max_depth)
+		{
+			rsxSetDepthBounds(context, 0.9999f, 1);
+			rsxSetDepthWriteEnable(context, GCM_FALSE);
+			rsxSetDepthBoundsTestEnable(context, GCM_TRUE);
+		}
+		else
+		{
+			rsxSetDepthBounds(context, 0, 1);
+			rsxSetDepthBoundsTestEnable(context, GCM_FALSE);
+		}
+	}
+
 	//Keep in memory the used settings
 	lastSettings.invertFaces = settings.invertFaces;
 	lastSettings.renderingMode = settings.renderingMode;
 	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
+	lastSettings.max_depth = settings.max_depth;
 
 	const TexturePS3& ps3Texture = dynamic_cast<const TexturePS3&>(texture);
 	if (usedTexture != ps3Texture.m_ps3buffer)

@@ -39,6 +39,8 @@ public:
 	rsxProgramConst* m_viewMatrix = nullptr;
 	rsxProgramConst* m_ambientLightLocation= nullptr;
 
+	rsxProgramConst* m_usedPointLightCount = nullptr;
+
 	rsxProgramConst* m_color = nullptr;
 	rsxProgramAttrib* m_textureUnit = nullptr;
 

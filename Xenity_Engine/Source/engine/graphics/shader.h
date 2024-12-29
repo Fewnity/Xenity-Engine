@@ -23,10 +23,10 @@ class Vector4;
 
 struct ivec4
 {
-	int x;
-	int y;
-	int z;
-	int w;
+	int x = -1;
+	int y = -1;
+	int z = -1;
+	int w = -1;
 };
 
 struct alignas(16) LightsIndices 
