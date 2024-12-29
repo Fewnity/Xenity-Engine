@@ -63,7 +63,7 @@ uint32_t* color_buffer[FRAME_BUFFER_COUNT];
 f32 aspect_ratio;
 videoResolution vResolution;
 static uint32_t sResolutionIds[] = {
-	VIDEO_RESOLUTION_1080,
+	//VIDEO_RESOLUTION_1080, // Disable because it's too slow with lighting (too much fragments)
 	VIDEO_RESOLUTION_720,
 	VIDEO_RESOLUTION_480,
 	VIDEO_RESOLUTION_576
