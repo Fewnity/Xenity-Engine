@@ -226,7 +226,7 @@ void Graphics::Draw()
 
 			//DrawSkybox(camPos);
 
-			Engine::GetRenderer().SetFog(s_settings.isFogEnabled);
+			//Engine::GetRenderer().SetFog(s_settings.isFogEnabled);
 
 			{
 				SCOPED_PROFILER("Graphics::CallOnNewRender", scopeBenchmarkNewRender);
