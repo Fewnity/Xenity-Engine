@@ -59,14 +59,9 @@ struct DirectionalLight
 struct PointLight 
 {
 	vec3 position;
-
 	vec3 color;
-
-	float constant;
-	float linear;
-	float quadratic;
+	vec3 light_data; // x = constant, y = linear, z = quadratic
 };
-
 
 struct SpotLight 
 {
@@ -109,14 +104,6 @@ vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos,
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
 	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
-	//Spectacular
-	//float specularStrength = 0.5;
-	//vec3 reflectDir = reflect(-lightDir, norm);
-	//float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	//vec3 specular = specularStrength * (spec * vec3(texture(material.specular, TexCoord))) * light2.color;
-
-	//Result
-	//return diffuse + specular; //Set face result
 	return diffuse;
 }
 
@@ -127,21 +114,10 @@ vec3 CalculatePointLight(PointLight light2, vec3 norm, vec3 fragPos, vec3 viewDi
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
 	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
-	//Spectacular
-	// float specularStrength = 0.5;
-	// vec3 reflectDir = reflect(-lightDir, norm);
-	// float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	// vec3 specular = specularStrength * (spec * vec3(texture(material.specular, (TexCoord * tiling) + offset))) * light2.color;
+	float distanceSq = dot(lightVec, lightVec); // distance square
+	float attenuation = 1.0f / (light2.light_data.x + light2.light_data.y * sqrt(distanceSq) + light2.light_data.z * distanceSq);
 
-	// float distance = length(light2.position - fragPos);
-	float distanceSq = dot(lightVec, lightVec); // distance²
-	// float attenuation = 1.0 / (light2.constant + light2.linear * distance + light2.quadratic * (distance * distance));
-	// float attenuation = 1.0f / (light2.constant + light2.linear * distance);
-	float attenuation = 1.0f / (light2.constant + light2.linear * sqrt(distanceSq) + light2.quadratic * distanceSq);
-
-	//Result
-	//vec3 result = (diffuse * attenuation) + (specular * attenuation); //Set face result
-	vec3 result = (diffuse * attenuation); //Set face result
+	vec3 result = (diffuse * attenuation);
 	return result;
 }
 
@@ -252,9 +228,7 @@ struct PointLight
 
 	vec3 color;
 
-	float constant;
-	float linear;
-	float quadratic;
+	vec3 light_data; // x = constant, y = linear, z = quadratic
 };
 
 struct SpotLight 
@@ -328,12 +302,6 @@ vec3 CalculateSpotLight(SpotLight light, vec3 norm, vec3 fragPos, vec3 viewDir, 
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
 	vec3 diffuse = (diff * vec3(tex2D(material.diffuse, (texcoords * tiling) + offset))) * light.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
 
-	//Spectacular
-	// float specularStrength = 0.5;
-	// vec3 reflectDir = reflect(-lightDir, norm);
-	// float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	// vec3 specular = specularStrength * (spec * vec3(texture(material.specular, TexCoord))) * light.color;
-
 	float distance = length(light.position - fragPos);
 	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
@@ -341,10 +309,7 @@ vec3 CalculateSpotLight(SpotLight light, vec3 norm, vec3 fragPos, vec3 viewDir, 
 	float epsilon = light.cutOff - light.outerCutOff;
 	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 	diffuse *= intensity;
-	// specular *= intensity;
 
-	//Result
-	//vec3 result = (diffuse * attenuation) + (specular * attenuation); //Set face result
 	vec3 result = (diffuse * attenuation); //Set face result
 	return result;
 }
@@ -356,7 +321,7 @@ float3 CalculatePointLight(PointLight light, float3 norm, float3 fragPos, float3
 	float3 diffuse = (diff * tex2D(material.diffuse, (texcoords * tiling) + offset).xyz) * light.color * 2; //Set the light color and intensity
 
 	float distance = length(light.position - fragPos);
-	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+	float attenuation = 1.0 / (light.light_data.x + light.light_data.y * distance + light.light_data.z * (distance * distance));
 	return diffuse * attenuation;
 }
 
@@ -485,9 +450,7 @@ struct PointLight
 
 	vec3 color;
 
-	float constant;
-	float linear;
-	float quadratic;
+	vec3 light_data; // x = constant, y = linear, z = quadratic
 };
 
 struct SpotLight 
@@ -537,7 +500,7 @@ float3 CalculatePointLight(PointLight light, float3 norm, float3 fragPos, float4
 
 	// float distance = length(lightVec);
 	float distanceSq = dot(lightVec, lightVec); // distance²
-	float attenuation = 1.0f / (light.constant + light.linear * sqrt(distanceSq) + light.quadratic * distanceSq);
+	float attenuation = 1.0f / (light.light_data.x + light.light_data.y * sqrt(distanceSq) + light.light_data.z * distanceSq);
 	// float attenuation = 1.0f / (light.constant + light.linear * distance);
 	// float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 

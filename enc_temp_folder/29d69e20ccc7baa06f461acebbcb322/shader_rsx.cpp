@@ -32,19 +32,31 @@
 
 ShaderRSX::PointLightVariableIds::PointLightVariableIds(int index, rsxFragmentProgram* program)
 {
+	//indices = rsxFragmentProgramGetConst(program, s_pointlightVariableNames[index].indices);
 	color = rsxFragmentProgramGetConst(program, s_pointlightVariableNames[index].color);
 	position = rsxFragmentProgramGetConst(program, s_pointlightVariableNames[index].position);
 	light_data = rsxFragmentProgramGetConst(program, s_pointlightVariableNames[index].light_data);
+
+	// Initialize values
+	//SetShaderAttribut(color, Vector3(0, 0, 0));
+	//SetShaderAttribut(position, Vector3(0, 0, 0));
+	//SetShaderAttribut(light_data, Vector3(1.0f, 0.0f, 0.0f));
 }
 
 ShaderRSX::DirectionalLightsVariableIds::DirectionalLightsVariableIds(int index, rsxFragmentProgram* program)
 {
+	//indices = rsxFragmentProgramGetConst(program, s_directionallightVariableNames[index].indices);
 	color = rsxFragmentProgramGetConst(program, s_directionallightVariableNames[index].color);
 	direction = rsxFragmentProgramGetConst(program, s_directionallightVariableNames[index].direction);
+
+	// Initialize values
+	//SetShaderAttribut(color, Vector3(0, 0, 0));
+	//SetShaderAttribut(direction, Vector3(0, 0, 0));
 }
 
 ShaderRSX::SpotLightVariableIds::SpotLightVariableIds(int index, rsxFragmentProgram* program)
 {
+	//indices = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].indices);
 	color = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].color);
 	position = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].position);
 	direction = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].direction);
@@ -53,6 +65,16 @@ ShaderRSX::SpotLightVariableIds::SpotLightVariableIds(int index, rsxFragmentProg
 	quadratic = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].quadratic);
 	cutOff = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].cutOff);
 	outerCutOff = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].outerCutOff);
+
+	// Initialize values
+	//SetShaderAttribut(color, Vector3(0, 0, 0));
+	//SetShaderAttribut(position, Vector3(0, 0, 0));
+	//SetShaderAttribut(direction, Vector3(0, 0, 0));
+	//SetShaderAttribut(constant, 1.0f);
+	//SetShaderAttribut(linear, 0.0f);
+	//SetShaderAttribut(quadratic, 0.0f);
+	//SetShaderAttribut(cutOff, 0.0f);
+	//SetShaderAttribut(outerCutOff, 0.0f);
 }
 
 ShaderRSX::~ShaderRSX()

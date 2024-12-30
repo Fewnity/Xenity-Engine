@@ -29,9 +29,6 @@
 #include <engine/asset_management/asset_manager.h>
 #include <glm/gtc/type_ptr.hpp>
 
-std::vector<ShaderOpenGL::PointLightVariableNames> ShaderOpenGL::s_pointlightVariableNames;
-std::vector<ShaderOpenGL::DirectionalLightsVariableNames> ShaderOpenGL::s_directionallightVariableNames;
-std::vector<ShaderOpenGL::SpotLightVariableNames> ShaderOpenGL::s_spotlightVariableNames;
 unsigned int uboLightBlock;
 
 ShaderOpenGL::PointLightVariableIds::PointLightVariableIds(int index, unsigned int programId)
@@ -39,16 +36,12 @@ ShaderOpenGL::PointLightVariableIds::PointLightVariableIds(int index, unsigned i
 	indices = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].indices);
 	color = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].color);
 	position = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].position);
-	constant = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].constant);
-	linear = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].linear);
-	quadratic = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].quadratic);
+	light_data = GetShaderUniformLocation(programId, s_pointlightVariableNames[index].light_data);
 
 	// Initialize values
 	SetShaderAttribut(color, Vector3(0, 0, 0));
 	SetShaderAttribut(position, Vector3(0, 0, 0));
-	SetShaderAttribut(constant, 1.0f);
-	SetShaderAttribut(linear, 0.0f);
-	SetShaderAttribut(quadratic, 0.0f);
+	SetShaderAttribut(light_data, Vector3(1.0f, 0.0f, 0.0f));
 }
 
 ShaderOpenGL::DirectionalLightsVariableIds::DirectionalLightsVariableIds(int index, unsigned int programId)
@@ -85,114 +78,6 @@ ShaderOpenGL::SpotLightVariableIds::SpotLightVariableIds(int index, unsigned int
 	SetShaderAttribut(outerCutOff, 0.0f);
 }
 
-ShaderOpenGL::PointLightVariableNames::PointLightVariableNames(int index)
-{
-	constexpr int bufferSize = 30;
-
-	indices = new char[bufferSize];
-	color = new char[bufferSize];
-	position = new char[bufferSize];
-	constant = new char[bufferSize];
-	linear = new char[bufferSize];
-	quadratic = new char[bufferSize];
-
-#if defined(_WIN32) || defined(_WIN64)
-	sprintf_s(indices, bufferSize, "pointLightsIndices[%d]", index);
-	sprintf_s(color, bufferSize, "pointLights[%d].color", index);
-	sprintf_s(position, bufferSize, "pointLights[%d].position", index);
-	sprintf_s(constant, bufferSize, "pointLights[%d].constant", index);
-	sprintf_s(linear, bufferSize, "pointLights[%d].linear", index);
-	sprintf_s(quadratic, bufferSize, "pointLights[%d].quadratic", index);
-#else
-	sprintf(color, "pointLights[%d].color", index);
-	sprintf(position, "pointLights[%d].position", index);
-	sprintf(constant, "pointLights[%d].constant", index);
-	sprintf(linear, "pointLights[%d].linear", index);
-	sprintf(quadratic, "pointLights[%d].quadratic", index);
-#endif
-}
-
-ShaderOpenGL::PointLightVariableNames::~PointLightVariableNames()
-{
-	delete[] color;
-	delete[] position;
-	delete[] constant;
-	delete[] linear;
-	delete[] quadratic;
-}
-
-ShaderOpenGL::DirectionalLightsVariableNames::DirectionalLightsVariableNames(int index)
-{
-	constexpr int bufferSize = 35;
-
-	indices = new char[bufferSize];
-	color = new char[bufferSize];
-	direction = new char[bufferSize];
-
-#if defined(_WIN32) || defined(_WIN64)
-	sprintf_s(indices, bufferSize, "directionalLightsIndices[%d]", index);
-	sprintf_s(color, bufferSize, "directionalLights[%d].color", index);
-	sprintf_s(direction, bufferSize, "directionalLights[%d].direction", index);
-#else
-	sprintf(color, "directionalLights[%d].color", index);
-	sprintf(direction, "directionalLights[%d].direction", index);
-#endif
-}
-
-ShaderOpenGL::DirectionalLightsVariableNames::~DirectionalLightsVariableNames()
-{
-	delete[] color;
-	delete[] direction;
-}
-
-ShaderOpenGL::SpotLightVariableNames::SpotLightVariableNames(int index)
-{
-	constexpr int bufferSize = 30;
-
-	indices = new char[bufferSize];
-	color = new char[bufferSize];
-	position = new char[bufferSize];
-	direction = new char[bufferSize];
-	constant = new char[bufferSize];
-	linear = new char[bufferSize];
-	quadratic = new char[bufferSize];
-	cutOff = new char[bufferSize];
-	outerCutOff = new char[bufferSize];
-
-#if defined(_WIN32) || defined(_WIN64)
-	sprintf_s(indices, bufferSize, "spotLightsIndices[%d]", index);
-	sprintf_s(color, bufferSize, "spotLights[%d].color", index);
-	sprintf_s(position, bufferSize, "spotLights[%d].position", index);
-	sprintf_s(direction, bufferSize, "spotLights[%d].direction", index);
-	sprintf_s(constant, bufferSize, "spotLights[%d].constant", index);
-	sprintf_s(linear, bufferSize, "spotLights[%d].linear", index);
-	sprintf_s(quadratic, bufferSize, "spotLights[%d].quadratic", index);
-	sprintf_s(cutOff, bufferSize, "spotLights[%d].cutOff", index);
-	sprintf_s(outerCutOff, bufferSize, "spotLights[%d].outerCutOff", index);
-#else
-	sprintf(color, "spotLights[%d].color", index);
-	sprintf(position, "spotLights[%d].position", index);
-	sprintf(direction, "spotLights[%d].direction", index);
-	sprintf(constant, "spotLights[%d].constant", index);
-	sprintf(linear, "spotLights[%d].linear", index);
-	sprintf(quadratic, "spotLights[%d].quadratic", index);
-	sprintf(cutOff, "spotLights[%d].cutOff", index);
-	sprintf(outerCutOff, "spotLights[%d].outerCutOff", index);
-#endif
-}
-
-ShaderOpenGL::SpotLightVariableNames::~SpotLightVariableNames()
-{
-	delete[] color;
-	delete[] position;
-	delete[] direction;
-	delete[] constant;
-	delete[] linear;
-	delete[] quadratic;
-	delete[] cutOff;
-	delete[] outerCutOff;
-}
-
 ShaderOpenGL::~ShaderOpenGL()
 {
 	if (m_fileStatus == FileStatus::FileStatus_Loaded)
@@ -219,15 +104,6 @@ ShaderOpenGL::~ShaderOpenGL()
 
 void ShaderOpenGL::Init()
 {
-	s_pointlightVariableNames.reserve(MAX_LIGHT_COUNT);
-	s_directionallightVariableNames.reserve(MAX_LIGHT_COUNT);
-	s_spotlightVariableNames.reserve(MAX_LIGHT_COUNT);
-	for (int i = 0; i < MAX_LIGHT_COUNT; i++)
-	{
-		s_pointlightVariableNames.emplace_back(i);
-		s_directionallightVariableNames.emplace_back(i);
-		s_spotlightVariableNames.emplace_back(i);
-	}
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
 	glGenBuffers(1, &uboLightBlock);
@@ -457,6 +333,12 @@ void ShaderOpenGL::SetShaderModel(const Vector3& position, const Vector3& rotati
 	SetShaderAttribut(m_modelLocation, transformationMatrix);
 }
 
+void ShaderOpenGL::SetShaderOffsetAndTiling(const Vector2 offset, const Vector2 tiling)
+{
+	SetShaderAttribut(m_offsetLocation, offset);
+	SetShaderAttribut(m_tilingLocation, tiling);
+}
+
 void ShaderOpenGL::SetLightIndices(const LightsIndices& lightsIndices)
 {
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
@@ -575,6 +457,8 @@ void ShaderOpenGL::Link()
 	m_projectionLocation = GetShaderUniformLocation("projection");
 	m_cameraLocation = GetShaderUniformLocation("camera");
 	m_ambientLightLocation = GetShaderUniformLocation("ambientLight");
+	m_tilingLocation = GetShaderUniformLocation("tiling");
+	m_offsetLocation = GetShaderUniformLocation("offset");
 
 	m_usedPointLightCountLocation = GetShaderUniformLocation("usedPointLightCount");
 	m_usedSpotLightCountLocation = GetShaderUniformLocation("usedSpotLightCount");
@@ -627,9 +511,7 @@ void ShaderOpenGL::SetPointLightData(const Light& light, const int index)
 	// Check uniforms
 	XASSERT(ids.color != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light color uniform");
 	XASSERT(ids.position != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light position uniform");
-	XASSERT(ids.constant != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light constant uniform");
-	XASSERT(ids.linear != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light linear uniform");
-	XASSERT(ids.quadratic != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light quadratic uniform");
+	XASSERT(ids.light_data != INVALID_SHADER_UNIFORM, "[Shader::SetPointLightData] The shader does not have a point light light_data uniform");
 
 	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
@@ -642,9 +524,7 @@ void ShaderOpenGL::SetPointLightData(const Light& light, const int index)
 
 	SetShaderAttribut(ids.color, lightColor * light.GetIntensity());
 	SetShaderAttribut(ids.position, pos);
-	SetShaderAttribut(ids.constant, lightConstant);
-	SetShaderAttribut(ids.linear, light.GetLinearValue());
-	SetShaderAttribut(ids.quadratic, light.GetQuadraticValue());
+	SetShaderAttribut(ids.light_data, Vector3(lightConstant, light.GetLinearValue(), light.GetQuadraticValue()));
 }
 
 /// <summary>

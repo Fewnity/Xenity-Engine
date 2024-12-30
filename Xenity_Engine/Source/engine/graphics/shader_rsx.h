@@ -38,6 +38,8 @@ public:
 	rsxProgramConst* m_modelMatrix = nullptr;
 	rsxProgramConst* m_viewMatrix = nullptr;
 	rsxProgramConst* m_ambientLightLocation= nullptr;
+	rsxProgramConst* m_tilingLocation = nullptr;
+	rsxProgramConst* m_offsetLocation = nullptr;
 
 	rsxProgramConst* m_usedPointLightCount = nullptr;
 
@@ -49,6 +51,47 @@ public:
 	*/
 	bool Use() override;
 protected:
+	class PointLightVariableIds
+	{
+	public:
+		PointLightVariableIds() = delete;
+		explicit PointLightVariableIds(int index, rsxFragmentProgram* program);
+
+		//rsxProgramConst* indices = 0;
+		rsxProgramConst* color = 0;
+		rsxProgramConst* position = 0;
+		rsxProgramConst* light_data = 0;
+	};
+
+	class DirectionalLightsVariableIds
+	{
+	public:
+		DirectionalLightsVariableIds() = delete;
+		explicit DirectionalLightsVariableIds(int index, rsxFragmentProgram* program);
+
+		//unsigned int indices = 0;
+		rsxProgramConst* color = 0;
+		rsxProgramConst* direction = 0;
+	};
+
+
+	class SpotLightVariableIds
+	{
+	public:
+		SpotLightVariableIds() = delete;
+		explicit SpotLightVariableIds(int index, rsxFragmentProgram* program);
+
+		/*unsigned int indices = 0;*/
+		rsxProgramConst* color = 0;
+		rsxProgramConst* position = 0;
+		rsxProgramConst* direction = 0;
+		rsxProgramConst* constant = 0;
+		rsxProgramConst* linear = 0;
+		rsxProgramConst* quadratic = 0;
+		rsxProgramConst* cutOff = 0;
+		rsxProgramConst* outerCutOff = 0;
+	};
+
 	void Load() override;
 	void CreateShader(Shader::ShaderType type) override;
 
@@ -86,6 +129,8 @@ protected:
 	* @param scale The scale of the object
 	*/
 	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale) override;
+
+	void SetShaderOffsetAndTiling(const Vector2 offset, const Vector2 tiling) override;
 
 	void SetLightIndices(const LightsIndices& lightsIndices) override;
 
@@ -145,6 +190,9 @@ protected:
 
 	RsxProgramConstPair* FindOrAddAttributId(const std::string& attribut);
 
+	std::vector<PointLightVariableIds> m_pointlightVariableIds;
+	std::vector<DirectionalLightsVariableIds> m_directionallightVariableIds;
+	std::vector<SpotLightVariableIds> m_spotlightVariableIds;
 	std::unordered_map<std::string, RsxProgramConstPair> m_uniformsIds;
 };
 

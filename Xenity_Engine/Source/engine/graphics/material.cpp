@@ -163,51 +163,45 @@ void Material::Use()
 /// </summary>
 void Material::Update()
 {
-	//materialUpdateBenchmark->Start();
-	if (m_shader != nullptr && m_shader->GetFileStatus() == FileStatus::FileStatus_Loaded)
+	Performance::AddMaterialUpdate();
+
+	//Send all uniforms
+	if (!m_updated)
 	{
-		Performance::AddMaterialUpdate();
+		m_shader->SetShaderOffsetAndTiling(t_offset, t_tiling);
 
-		//Send all uniforms
-		if (!m_updated)
+		//int textureIndex = 0;
+		/*for (const auto& kv : uniformsTextures)
 		{
-			m_shader->SetShaderAttribut("tiling", t_tiling);
-			m_shader->SetShaderAttribut("offset", t_offset);
-
-			//int textureIndex = 0;
-			/*for (const auto& kv : uniformsTextures)
-			{
-				//Enable each textures units
-				Engine::renderer->EnableTextureUnit(textureIndex);
-				Engine::renderer->BindTexture(kv.second);
-				shader->SetShaderAttribut(kv.first, textureIndex);
-				textureIndex++;
-			}*/
-			for (const auto& kv : m_uniformsVector2)
-			{
-				m_shader->SetShaderAttribut(kv.first, kv.second);
-			}
-			for (const auto& kv : m_uniformsVector3)
-			{
-				m_shader->SetShaderAttribut(kv.first, kv.second);
-			}
-			for (auto& kv : m_uniformsVector4)
-			{
-				m_shader->SetShaderAttribut(kv.first, kv.second);
-			}
-			for (const auto& kv : m_uniformsInt)
-			{
-				m_shader->SetShaderAttribut(kv.first, kv.second);
-			}
-			for (const auto& kv : m_uniformsFloat)
-			{
-				m_shader->SetShaderAttribut(kv.first, kv.second);
-			}
-
-			m_updated = true;
+			//Enable each textures units
+			Engine::renderer->EnableTextureUnit(textureIndex);
+			Engine::renderer->BindTexture(kv.second);
+			shader->SetShaderAttribut(kv.first, textureIndex);
+			textureIndex++;
+		}*/
+		for (const auto& kv : m_uniformsVector2)
+		{
+			m_shader->SetShaderAttribut(kv.first, kv.second);
 		}
+		for (const auto& kv : m_uniformsVector3)
+		{
+			m_shader->SetShaderAttribut(kv.first, kv.second);
+		}
+		for (auto& kv : m_uniformsVector4)
+		{
+			m_shader->SetShaderAttribut(kv.first, kv.second);
+		}
+		for (const auto& kv : m_uniformsInt)
+		{
+			m_shader->SetShaderAttribut(kv.first, kv.second);
+		}
+		for (const auto& kv : m_uniformsFloat)
+		{
+			m_shader->SetShaderAttribut(kv.first, kv.second);
+		}
+
+		m_updated = true;
 	}
-	//materialUpdateBenchmark->Stop();
 }
 
 ReflectiveData Material::GetReflectiveData()

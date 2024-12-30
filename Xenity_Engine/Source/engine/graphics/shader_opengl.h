@@ -63,6 +63,8 @@ protected:
 	*/
 	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale) override;
 
+	void SetShaderOffsetAndTiling(const Vector2 offset, const Vector2 tiling) override;
+
 	void SetLightIndices(const LightsIndices& lightsIndices) override;
 	unsigned int GetShaderUniformLocation(const char* name);
 	static unsigned int GetShaderUniformLocation(unsigned int programId, const char* name);
@@ -127,52 +129,6 @@ protected:
 
 	unsigned int FindOrAddAttributId(const std::string& attribut);
 
-	class PointLightVariableNames
-	{
-	public:
-		PointLightVariableNames() = delete;
-		explicit PointLightVariableNames(int index);
-		~PointLightVariableNames();
-
-		char* indices = nullptr;
-		char* color = nullptr;
-		char* position = nullptr;
-		char* constant = nullptr;
-		char* linear = nullptr;
-		char* quadratic = nullptr;
-	};
-
-	class DirectionalLightsVariableNames
-	{
-	public:
-		DirectionalLightsVariableNames() = delete;
-		explicit DirectionalLightsVariableNames(int index);
-		~DirectionalLightsVariableNames();
-
-		char* indices = nullptr;
-		char* color = nullptr;
-		char* direction = nullptr;
-	};
-
-
-	class SpotLightVariableNames
-	{
-	public:
-		SpotLightVariableNames() = delete;
-		explicit SpotLightVariableNames(int index);
-		~SpotLightVariableNames();
-
-		char* indices = nullptr;
-		char* color = nullptr;
-		char* position = nullptr;
-		char* direction = nullptr;
-		char* constant = nullptr;
-		char* linear = nullptr;
-		char* quadratic = nullptr;
-		char* cutOff = nullptr;
-		char* outerCutOff = nullptr;
-	};
-
 	class PointLightVariableIds
 	{
 	public:
@@ -182,9 +138,7 @@ protected:
 		unsigned int indices = 0;
 		unsigned int color = 0;
 		unsigned int position = 0;
-		unsigned int constant = 0;
-		unsigned int linear = 0;
-		unsigned int quadratic = 0;
+		unsigned int light_data = 0;
 	};
 
 	class DirectionalLightsVariableIds
@@ -216,10 +170,6 @@ protected:
 		unsigned int outerCutOff = 0;
 	};
 
-	static std::vector<PointLightVariableNames> s_pointlightVariableNames;
-	static std::vector<DirectionalLightsVariableNames> s_directionallightVariableNames;
-	static std::vector<SpotLightVariableNames> s_spotlightVariableNames;
-
 	std::vector<PointLightVariableIds> m_pointlightVariableIds;
 	std::vector<DirectionalLightsVariableIds> m_directionallightVariableIds;
 	std::vector<SpotLightVariableIds> m_spotlightVariableIds;
@@ -234,6 +184,8 @@ protected:
 	unsigned int m_projectionLocation = 0;
 	unsigned int m_cameraLocation = 0;
 	unsigned int m_ambientLightLocation = 0;
+	unsigned int m_tilingLocation = 0;
+	unsigned int m_offsetLocation = 0;
 
 	unsigned int m_usedPointLightCountLocation = 0;
 	unsigned int m_usedSpotLightCountLocation = 0;
