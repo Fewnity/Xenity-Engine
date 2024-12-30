@@ -532,7 +532,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		}
 	}
 
-	if (settings.renderingMode == MaterialRenderingModes::Transparent)
+	if (settings.renderingMode == MaterialRenderingModes::Transparent || settings.max_depth)
 	{
 		rsxSetDepthWriteEnable(context, GCM_FALSE);
 	}
@@ -542,7 +542,6 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		if (settings.max_depth)
 		{
 			rsxSetDepthBounds(context, 0.9999f, 1);
-			rsxSetDepthWriteEnable(context, GCM_FALSE);
 			rsxSetDepthBoundsTestEnable(context, GCM_TRUE);
 		}
 		else

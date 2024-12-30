@@ -342,7 +342,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		glEnable(GL_TEXTURE_2D);
 	}
 
-	if (settings.renderingMode == MaterialRenderingModes::Transparent)
+	if (settings.renderingMode == MaterialRenderingModes::Transparent || settings.max_depth)
 	{
 		glDepthMask(GL_FALSE);
 	}
@@ -352,7 +352,6 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		if (settings.max_depth)
 		{
 			glDepthRange(0.9999f, 1);
-			glDepthMask(GL_FALSE);
 		}
 		else
 		{
