@@ -157,13 +157,10 @@ void main()
 
 	//Result
 	vec3 result = ambient; //Set face result
-	for (int i = 0; i < lightIndices.usedPointLightCount; i++)
-	{
-		result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[i].x], norm, FragPos, viewDir);
-	}	
+	
 	for (int i = 0; i < lightIndices.usedSpotLightCount; i++)
 	{
-		result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[i].x], norm, FragPos, viewDir);
+		//result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[i].x], norm, FragPos, viewDir);
 	}
 	for (int i = 0; i < lightIndices.usedDirectionalLightCount; i++)
 	{
@@ -544,7 +541,7 @@ void main
 	float3 N = normalize(normal);
 
 	result += CalculateDirectionalLight(directionalLights[1], N, textureFrag);
-	result += CalculatePointLight(pointLights[1], N, FragPos, textureFrag);
+	//result += CalculatePointLight(pointLights[1], N, FragPos, textureFrag);
 	//result += CalculatePointLight(pointLights[2], N, FragPos, textureFrag);
 
 	//result += CalculateDirectionalLight(directionalLights[1], N, textureFrag);

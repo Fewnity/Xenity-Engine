@@ -94,9 +94,9 @@ void Time::UpdateTime()
 	const float tempDeltaTime = (currentTick - lastTick) / (float)kBUSCLK;
 	lastTick = currentTick;
 #else
+	start_point = std::chrono::high_resolution_clock::now();
 	const float tempDeltaTime = std::chrono::duration<float>(start_point - end_point).count();
 	end_point = start_point;
-	start_point = std::chrono::high_resolution_clock::now();
 #endif
 	s_deltaTime = tempDeltaTime * s_timeScale;
 	s_unscaledDeltaTime = tempDeltaTime;

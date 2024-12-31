@@ -16,6 +16,7 @@
 
 #include <engine/file_system/file_type.h>
 #include <engine/asset_management/project_manager.h>
+#include <engine/constants.h>
 
 class Texture;
 class Light;
@@ -231,21 +232,13 @@ public:
 
 	static std::shared_ptr <Texture> defaultTexture;
 	static std::shared_ptr<Shader> standardShader;
-	static std::shared_ptr<Shader> standardOneLightEachShader;
-	static std::shared_ptr<Shader> standardOnePointLightShader;
-	static std::shared_ptr<Shader> standardOneSpotLightShader;
-	static std::shared_ptr<Shader> standardOneDirectionalLightShader;
-	static std::shared_ptr<Shader> standardVertexLightShader;
+#if defined(ENABLE_SHADER_VARIANT_OPTIMIZATION)
+	static std::shared_ptr<Shader> standardShaderNoPointLight;
+#endif
 	static std::shared_ptr<Shader> unlitShader;
-	static std::shared_ptr<Shader> lineShader;
+
 	static std::shared_ptr<Material> standardMaterial;
-	static std::shared_ptr<Material> standardOneLightEachMaterial;
-	static std::shared_ptr<Material> standardOnePointLightMaterial;
-	static std::shared_ptr<Material> standardOneSpotLightMaterial;
-	static std::shared_ptr<Material> standardOneDirectionalLightMaterial;
-	static std::shared_ptr<Material> standardVertexLightMaterial;
 	static std::shared_ptr<Material> unlitMaterial;
-	static std::shared_ptr<Material> lineMaterial;
 
 	template <typename T>
 	static std::shared_ptr<T> LoadEngineAsset(const std::string& filePath)

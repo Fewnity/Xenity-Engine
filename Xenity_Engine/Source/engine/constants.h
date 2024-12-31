@@ -5,9 +5,11 @@
 //
 //#define ENABLE_EXPERIMENTAL_FEATURES // Enable features that are not fully tested or implemented
 //#define ENABLE_OVERDRAW_OPTIMIZATION // Enable overdraw optimization (currently not great)
+#define ENABLE_SHADER_VARIANT_OPTIMIZATION // Enable shader variant optimization (currently effective only on PS3, WIP)
 
 #if defined(__PS3__)
-//#define ENABLE_OVERDRAW_OPTIMIZATION // Enable lighting
+//#define ENABLE_OVERDRAW_OPTIMIZATION
+#define ENABLE_SHADER_VARIANT_OPTIMIZATION
 #endif
 
 //

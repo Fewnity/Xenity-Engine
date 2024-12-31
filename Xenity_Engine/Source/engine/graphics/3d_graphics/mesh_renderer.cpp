@@ -244,9 +244,26 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 	{
 		const size_t lightCount = m_affectedByLights.size();
 
-		const std::shared_ptr<Shader>& shader = renderCommand.material->GetShader();
 		const size_t directionalLightCount = Graphics::s_directionalLights.size();
-
+#if defined(ENABLE_SHADER_VARIANT_OPTIMIZATION)
+		if (lightCount == 0)
+		{
+			if (renderCommand.material->GetShader() != AssetManager::standardShaderNoPointLight)
+			{
+				renderCommand.material->SetShader(AssetManager::standardShaderNoPointLight);
+				Graphics::s_currentMaterial = nullptr;
+			}
+		}
+		else 
+		{
+			if (renderCommand.material->GetShader() != AssetManager::standardShader)
+			{
+				renderCommand.material->SetShader(AssetManager::standardShader);
+				Graphics::s_currentMaterial = nullptr;
+			}
+		}
+#endif
+		const std::shared_ptr<Shader>& shader = renderCommand.material->GetShader();
 		// Check if the lights have changed
 		bool needLightUpdate = Graphics::s_isLightUpdateNeeded;
 		if (!needLightUpdate)
