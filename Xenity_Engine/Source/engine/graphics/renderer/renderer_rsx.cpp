@@ -309,8 +309,6 @@ void RendererRSX::init_screen(void* host_addr, uint32_t size)
 
 	depth_buffer = (uint32_t*)rsxMemalign(64, resolution.y * depth_pitch);
 	rsxAddressToOffset(depth_buffer, &depth_offset);
-
-	//debugFontRenderer = new RSXDebugFontRenderer(context);
 }
 
 void RendererRSX::waitflip()
@@ -602,15 +600,15 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	// While rsxSetUpdateFragmentProgramParameter is missing, we have to set the fragment shader to apply rsxSetFragmentProgramParameter calls
 	rsxShader.Use();
 
-	rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE,
-		GCM_USER_CLIP_PLANE_DISABLE,
-		GCM_USER_CLIP_PLANE_DISABLE,
-		GCM_USER_CLIP_PLANE_DISABLE,
-		GCM_USER_CLIP_PLANE_DISABLE,
-		GCM_USER_CLIP_PLANE_DISABLE);
+	//rsxSetUserClipPlaneControl(context, GCM_USER_CLIP_PLANE_DISABLE,
+	//	GCM_USER_CLIP_PLANE_DISABLE,
+	//	GCM_USER_CLIP_PLANE_DISABLE,
+	//	GCM_USER_CLIP_PLANE_DISABLE,
+	//	GCM_USER_CLIP_PLANE_DISABLE,
+	//	GCM_USER_CLIP_PLANE_DISABLE);
 
 	rsxAddressToOffset(&subMesh.indices[0], &offset);
-	rsxInvalidateVertexCache(context);
+	//rsxInvalidateVertexCache(context);
 	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, offset, subMesh.index_count, GCM_INDEX_TYPE_16B, GCM_LOCATION_RSX);
 	rsxSetDepthWriteEnable(context, GCM_TRUE);
 }
