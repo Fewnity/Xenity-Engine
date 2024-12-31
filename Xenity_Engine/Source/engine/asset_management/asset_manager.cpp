@@ -549,7 +549,7 @@ std::string AssetManager::GetDefaultFileData(FileType fileType)
 		newFile = FileSystem::MakeFile("engine_assets/empty_default/material.mat");
 		break;
 	case FileType::File_Shader:
-		newFile = FileSystem::MakeFile("engine_assets/empty_default/standardShader.standardShader");
+		newFile = FileSystem::MakeFile("engine_assets/empty_default/shader.shader");
 		break;
 	default:
 		XASSERT(false, "[AssetManager::GetDefaultFileData] Invalid file type");
