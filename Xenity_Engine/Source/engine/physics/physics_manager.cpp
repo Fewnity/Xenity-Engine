@@ -288,7 +288,14 @@ void PhysicsManager::Update()
 	{
 		SCOPED_PROFILER("PhysicsManager::Update|StepSimulation", scopeBenchmark2);
 		//s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime(), 2, Time::GetDeltaTime() / 2); // Increase physics accuracy but trigger won't work properly
-		s_physDynamicsWorld->stepSimulation(Time::GetDeltaTime(), 0);
+
+		// Slow down the physics simulation if the frame rate is too low
+		float timeStep = Time::GetDeltaTime();
+		if (timeStep > 0.05f)
+		{
+			timeStep = 0.05f;
+		}
+		s_physDynamicsWorld->stepSimulation(timeStep, 0);
 	}
 
 	{
