@@ -106,15 +106,15 @@ protected:
 	friend class EngineDebugMenu;
 
 	std::shared_ptr<File> m_file = nullptr;
-	FileType m_fileType = FileType::File_Other;
 	uint64_t m_filePosition = 0;
 	uint64_t m_fileSize = 0;
 	uint64_t m_metaPosition = 0;
 	uint64_t m_metaSize = 0;
 
 	uint64_t m_fileId = -1;
+	FileType m_fileType = FileType::File_Other;
+	FileStatus m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 
 	bool m_isMetaDirty = false;
-	FileStatus m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 };
 
