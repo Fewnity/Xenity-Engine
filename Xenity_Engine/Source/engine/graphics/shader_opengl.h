@@ -63,7 +63,7 @@ protected:
 	*/
 	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale) override;
 
-	void SetShaderOffsetAndTiling(const Vector2 offset, const Vector2 tiling) override;
+	void SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling) override;
 
 	void SetLightIndices(const LightsIndices& lightsIndices) override;
 	unsigned int GetShaderUniformLocation(const char* name);

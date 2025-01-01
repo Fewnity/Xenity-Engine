@@ -333,7 +333,7 @@ void ShaderOpenGL::SetShaderModel(const Vector3& position, const Vector3& rotati
 	SetShaderAttribut(m_modelLocation, transformationMatrix);
 }
 
-void ShaderOpenGL::SetShaderOffsetAndTiling(const Vector2 offset, const Vector2 tiling)
+void ShaderOpenGL::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling)
 {
 	SetShaderAttribut(m_offsetLocation, offset);
 	SetShaderAttribut(m_tilingLocation, tiling);

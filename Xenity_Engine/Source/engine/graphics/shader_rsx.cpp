@@ -270,7 +270,7 @@ void ShaderRSX::SetShaderModel(const Vector3& position, const Vector3& rotation,
 	//Engine::GetRenderer().SetShaderAttribut(m_programId, it->second, value);
 }
 
-void ShaderRSX::SetShaderOffsetAndTiling(const Vector2 offset, const Vector2 tiling)
+void ShaderRSX::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling)
 {
 	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_tilingLocation, (float*)&tiling.x, m_fp_offset, GCM_LOCATION_RSX);
 	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_offsetLocation, (float*)&offset.x, m_fp_offset, GCM_LOCATION_RSX);

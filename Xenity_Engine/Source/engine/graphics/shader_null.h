@@ -49,4 +49,6 @@ public:
 	void SetDirectionalLightData(const Light& light, const int index) override {}
 	void SetAmbientLightData(const Vector3& color) override {}
 	void SetSpotLightData(const Light& light, const int index) override {}
+
+	void SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling) override {}
 };

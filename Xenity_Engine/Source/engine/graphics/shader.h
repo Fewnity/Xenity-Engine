@@ -182,7 +182,7 @@ protected:
 	*/
 	virtual void SetShaderModel(const glm::mat4& trans) = 0;
 
-	virtual void SetShaderOffsetAndTiling(const Vector2 offset, const Vector2 tiling) = 0;
+	virtual void SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling) = 0;
 
 	/**
 	* @brief Set the shader uniform of the object model
