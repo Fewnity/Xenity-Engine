@@ -51,8 +51,12 @@ void Debug::PrintError(const std::string& text, bool hideInEditorConsole)
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithoutColor = "[ERROR] " + finalText;
-	const std::string textWithColor = "\033[31m" + textWithoutColor;
+	const std::string textWithColor = "\033[31m" + textWithoutColor + "\033[37m";
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	PrintInConsole(textWithColor);
+#else
+	PrintInConsole(textWithoutColor); // Do not print in color on game consoles
+#endif
 	PrintInFile(textWithoutColor);
 	if (!hideInEditorConsole)
 		s_debugText += textWithoutColor;
@@ -74,11 +78,41 @@ void Debug::PrintWarning(const std::string& text, bool hideInEditorConsole)
 	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithoutColor = "[WARNING] " + finalText;
-	const std::string textWithColor = "\033[33m" + textWithoutColor;
+	const std::string textWithColor = "\033[33m" + textWithoutColor + "\033[37m";
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	PrintInConsole(textWithColor);
+#else
+	PrintInConsole(textWithoutColor); // Do not print in color on game consoles
+#endif
 	PrintInFile(textWithoutColor);
 	if (!hideInEditorConsole)
 		s_debugText += textWithoutColor;
+	debugMutex->Unlock();
+	s_onDebugLogEvent.Trigger();
+}
+
+/**
+ * @brief Print text in the console and the debug file
+ */
+void Debug::Print(const std::string& text, bool hideInEditorConsole)
+{
+	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
+		return;
+
+	debugMutex->Lock();
+	if (!hideInEditorConsole)
+		AddMessageInHistory(text, DebugType::Log);
+	PrintInOnlineConsole(text);
+	const std::string finalText = text + '\n';
+	const std::string textWithColor = "\033[37m" + finalText;
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	PrintInConsole(textWithColor);
+#else
+	PrintInConsole(finalText); // Do not print in color on game consoles
+#endif
+	PrintInFile(finalText);
+	if (!hideInEditorConsole)
+		s_debugText += finalText; // Disable because cause crashes, why? Maybe thread?
 	debugMutex->Unlock();
 	s_onDebugLogEvent.Trigger();
 }
@@ -144,28 +178,6 @@ void Debug::PrintInFile(const std::string& text)
 		s_file->Write(text);
 #endif
 	}
-}
-
-/**
- * @brief Print text in the console and the debug file
- */
-void Debug::Print(const std::string& text, bool hideInEditorConsole)
-{
-	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
-		return;
-
-	debugMutex->Lock();
-	if (!hideInEditorConsole)
-		AddMessageInHistory(text, DebugType::Log);
-	PrintInOnlineConsole(text);
-	const std::string finalText = text + '\n';
-	const std::string newString = "\033[37m" + finalText;
-	PrintInConsole(newString);
-	PrintInFile(finalText);
-	if (!hideInEditorConsole)
-		s_debugText += finalText; // Disable because cause crashes, why? Maybe thread?
-	debugMutex->Unlock();
-	s_onDebugLogEvent.Trigger();
 }
 
 void Debug::ClearDebugLogs()
