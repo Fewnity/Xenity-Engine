@@ -310,9 +310,21 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	}
 
 	// glDepthMask needs GL_FALSE here, pspsdk is doing this wrong, may change in a sdk update
-	if (settings.renderingMode == MaterialRenderingModes::Transparent)
+	if (settings.renderingMode == MaterialRenderingModes::Transparent || settings.max_depth)
 	{
 		sceGuDepthMask(GU_TRUE);
+	}
+
+	if (lastSettings.max_depth != settings.max_depth)
+	{
+		if (settings.max_depth)
+		{
+			sceGuDepthRange(65534, 65535);
+		}
+		else
+		{
+			sceGuDepthRange(100, 65535);
+		}
 	}
 
 	// Keep in memory the used settings
@@ -321,6 +333,7 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
+	lastSettings.max_depth = settings.max_depth;
 
 	if (lastUsedColor != material.GetColor().GetUnsignedIntABGR() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntABGR())
 	{
