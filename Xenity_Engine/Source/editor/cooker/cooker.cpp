@@ -66,6 +66,11 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 {
 	const std::string exportPath = exportFolderPath + "/" + fileInfo.file->GetFileName() + fileInfo.file->GetFileExtension();
 
+	if (fileInfo.type != FileType::File_Shader && settings.exportShadersOnly)
+	{
+		return;
+	}
+
 	// We copy the cooked file to the export folder, and then we add the copied file to the binary file
 	if (fileInfo.type == FileType::File_Texture) // Cook texture
 	{
