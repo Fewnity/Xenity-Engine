@@ -44,6 +44,7 @@ public:
 	inline void SetShader(const std::shared_ptr<Shader>& _shader)
 	{
 		m_shader = _shader;
+		m_updated = false;
 	}
 
 	inline void SetTexture(const std::shared_ptr<Texture>& _texture)
