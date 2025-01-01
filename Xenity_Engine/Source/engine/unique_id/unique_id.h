@@ -49,6 +49,8 @@ private:
 	template<typename T>
 	friend class InspectorDeleteComponentCommand;
 	friend class UniqueIdTest;
+	template <class T>
+	friend class SelectAssetMenu;
 
 	static constexpr uint64_t reservedFileId = 100000;
 

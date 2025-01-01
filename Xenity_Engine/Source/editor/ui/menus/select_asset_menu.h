@@ -81,12 +81,23 @@ public:
 		for (size_t i = 0; i < fileCount; i++)
 		{
 			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(projectFiles[i].file->GetUniqueId());
+			// Filter files by user search
 			if (!searchBuffer.empty())
 			{
 				if (fileRef->m_file->GetFileName().find(searchBuffer) == std::string::npos)
 				{
 					continue;
 				}
+			}
+			// Do not show user assets if showEngineAssetOnly is true
+			if (showEngineAssetOnly && fileRef->GetFileId() > UniqueId::reservedFileId)
+			{
+				continue;
+			}
+			// Do not show hidden files
+			if (fileRef->GetFileId() == -1)
+			{
+				continue;
 			}
 			fileRef->LoadFileReference();
 
@@ -111,6 +122,8 @@ public:
 		if (visible)
 		{
 			OnStartDrawing();
+			const ImVec2 startCusorPos = ImGui::GetCursorPos();
+			ImGui::SetCursorPosY(startCusorPos.y * 2);
 
 			const float width = ImGui::GetContentRegionAvail().x;
 			int colCount = (int)(width / (100 * 1)); // Replace 1 by EditorUI::GetUIScale()
@@ -118,15 +131,7 @@ public:
 				colCount = 1;
 			const float offset = ImGui::GetCursorPosX();
 
-			// Draw search bar
-			ImGui::Text("Search");
-			ImGui::SameLine();
-			const bool scearchBarChanged = ImGui::InputText("##SearchBar", &searchBuffer);
-			if (scearchBarChanged)
-			{
-				SearchFiles(fileType);
-			}
-
+			ImGui::BeginChild("SelectAssetContent");
 			if (ImGui::BeginTable("selectfiletable", colCount, ImGuiTableFlags_None))
 			{
 				const size_t fileCount = foundFiles.size();
@@ -169,6 +174,26 @@ public:
 				}
 			}
 			ImGui::EndTable();
+			ImGui::EndChild();
+
+			ImGui::SetCursorPos(startCusorPos);
+			ImGui::BeginChild("SelectAssetTopBar", ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+			// Draw search bar
+			ImGui::Text("Search");
+			ImGui::SameLine();
+			const bool scearchBarChanged = ImGui::InputText("##SearchBar", &searchBuffer);
+			if (scearchBarChanged)
+			{
+				SearchFiles(fileType);
+			}
+			ImGui::SameLine();
+			const bool showEngineAssetOnlyChanged = ImGui::Checkbox("showEngineAssetOnly", &showEngineAssetOnly);
+			if (showEngineAssetOnlyChanged)
+			{
+				SearchFiles(fileType);
+			}
+			ImGui::EndChild();
+
 			CalculateWindowValues();
 		}
 		else
@@ -187,6 +212,7 @@ public:
 	Event<>* onValueChangedEvent = nullptr;
 	ReflectiveDataToDraw reflectiveDataToDraw;
 	bool hasReflectiveDataToDraw = false;
+	bool showEngineAssetOnly = false;
 private:
 	std::vector<std::shared_ptr<FileReference>> foundFiles;
 	FileType fileType = FileType::File_Other;
