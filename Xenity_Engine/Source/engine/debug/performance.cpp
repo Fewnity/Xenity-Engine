@@ -153,7 +153,7 @@ uint32_t Performance::GetProfilerFrameDuration(const std::unordered_map<uint64_t
 	uint64_t offsetTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults[engineLoopKey][0].start;
 	uint64_t endTime = Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults[engineLoopKey][0].end;
 
-	return endTime - offsetTime;
+	return static_cast<uint32_t>(endTime - offsetTime);
 }
 
 template<typename T>
@@ -274,8 +274,8 @@ void Performance::LoadFromBinary(const std::string& path)
 			std::vector<ScopTimerResult> scopTimerResultList;
 			for (size_t j = 0; j < profilerRecordCount; j++)
 			{
-				uint32_t startValue = ReadData<uint64_t>(data);
-				uint32_t endValue = ReadData<uint64_t>(data);
+				uint64_t startValue = ReadData<uint64_t>(data);
+				uint64_t endValue = ReadData<uint64_t>(data);
 				uint32_t levelValue = ReadData<uint32_t>(data);
 
 				ScopTimerResult result;
