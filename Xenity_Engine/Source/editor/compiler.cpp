@@ -74,8 +74,8 @@ CompileResult Compiler::Compile(CompilerParams params)
 	// Print parameters
 	Debug::Print(
 		"[Compiler::Compile] Preparing:"
-		"\n- Platform: " + (EnumHelper::GetEnumStringsLists()[typeid(Platform).hash_code()])[(int)params.buildPlatform.platform].name.substr(2)
-		+ "\n- Build Type: " + (EnumHelper::GetEnumStringsLists()[typeid(BuildType).hash_code()])[(int)params.buildType].name
+		"\n- Platform: " + EnumHelper::EnumAsString(params.buildPlatform.platform).substr(2)
+		+ "\n- Build Type: " + EnumHelper::EnumAsString(params.buildType)
 		+ "\n- Temporary Path: " + params.tempPath
 		+ "\n- Source Path: " + params.sourcePath
 		+ "\n- Export Path: " + params.exportPath

@@ -126,7 +126,7 @@ void DataBaseCheckerMenu::Draw()
 						ImGui::TableSetColumnIndex(0);
 						ImGui::Text("%s", entry->p.c_str());
 						ImGui::TableSetColumnIndex(1);
-						const std::string enumName = EnumHelper::GetEnumStringsLists()[typeid(FileType).hash_code()][(int)entry->t].name;
+						const std::string enumName = EnumHelper::EnumAsString(entry->t);
 						ImGui::Text("%s", enumName.c_str());
 						ImGui::TableSetColumnIndex(2);
 						ImGui::Text("%lld", entry->id);

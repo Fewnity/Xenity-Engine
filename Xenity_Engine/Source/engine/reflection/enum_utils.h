@@ -27,6 +27,22 @@ struct EnumValueName
 class API EnumHelper
 {
 public:
+	template<typename T>
+	static std::string EnumAsString(T enumValue) 
+	{
+		const std::map<uint64_t, std::vector<EnumValueName>>& enumStringsLists = GetEnumStringsLists();
+		const std::vector<EnumValueName>& enumStrings = enumStringsLists.at(static_cast<uint64_t>(typeid(T).hash_code()));
+		for (auto& enumString : enumStrings)
+		{
+			if (enumString.value == static_cast<int>(enumValue))
+			{
+				return enumString.name;
+			}
+		}
+
+		return "";
+	}
+
 	static std::map<uint64_t, std::vector<EnumValueName>>& GetEnumStringsLists()
 	{
 		static std::map<uint64_t, std::vector<EnumValueName>> enumStringsLists;
