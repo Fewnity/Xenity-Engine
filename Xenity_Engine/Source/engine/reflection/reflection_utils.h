@@ -192,7 +192,7 @@ public:
 	* @param valuePtr Variable to fill
 	*/
 	template <typename T>
-	static void FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>> valuePtr);
+	static void FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>> valuePtr, const uint64_t fileType);
 
 	/**
 	* @brief Find, load and fill a vector of file reference
@@ -200,7 +200,7 @@ public:
 	* @param valuePtr Variable to fill
 	*/
 	template <typename T>
-	static void FillVectorFileReference(const nlohmann::ordered_json& kvValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr);
+	static void FillVectorFileReference(const nlohmann::ordered_json& kvValue, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> valuePtr, const uint64_t classId);
 
 #pragma region Fill variables
 

@@ -26,7 +26,7 @@
 #include <engine/physics/collider.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/debug/stack_debug_object.h>
-
+#include <engine/class_registry/class_registry.h>
 #pragma region Fill variables
 
 // Template for basic types (int, float, strings...)
@@ -133,7 +133,7 @@ inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, 
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
-	ReflectionUtils::FillFileReference<T>(jsonValue, valuePtr);
+	ReflectionUtils::FillFileReference<T>(jsonValue, valuePtr, entry.typeId);
 }
 
 template<typename T>
@@ -189,7 +189,7 @@ inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, 
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
-	ReflectionUtils::FillVectorFileReference(jsonValue, valuePtr);
+	ReflectionUtils::FillVectorFileReference(jsonValue, valuePtr, entry.typeId);
 }
 
 inline void ReflectionUtils::JsonToReflectiveData(const nlohmann::ordered_json& json, const ReflectiveData& dataList)
@@ -479,18 +479,36 @@ inline nlohmann::ordered_json ReflectionUtils::ReflectiveEntryToJson(const Refle
 }
 
 template <typename T>
-inline void ReflectionUtils::FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>> variablePtr)
+inline void ReflectionUtils::FillFileReference(const uint64_t fileId, const std::reference_wrapper<std::shared_ptr<T>> variablePtr, const uint64_t classId)
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
 	if (fileId == 0)
 	{
 		variablePtr.get() = nullptr;
+		return;
 	}
 
 	std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(fileId); // Try to find the file reference
 	if (file)
 	{
+		// Check if the found file is of the correct type
+		const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfoById(classId);
+		if (classInfo)
+		{
+			const FileType realFileType = classInfo->fileType;
+			if (file->GetFileType() != realFileType)
+			{
+				Debug::PrintError("[ReflectionUtils::FillFileReference] File type mismatch", true);
+				variablePtr.get() = nullptr;
+				return;
+			}
+		}
+		else 
+		{
+			Debug::PrintError("[ReflectionUtils::FillFileReference] Cannot find FileClassInfo", true);
+		}
+
 		// Load file data
 		file->LoadFileReference();
 		//Put the file in the variable reference
@@ -499,7 +517,7 @@ inline void ReflectionUtils::FillFileReference(const uint64_t fileId, const std:
 }
 
 template <typename T>
-inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_json& jsonVectorData, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> vectorRefPtr)
+inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_json& jsonVectorData, const std::reference_wrapper<std::vector<std::shared_ptr<T>>> vectorRefPtr, const uint64_t classId)
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
@@ -512,9 +530,28 @@ inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_jso
 		if (!jsonVectorData.at(i).is_null())
 		{
 			const uint64_t fileId = jsonVectorData.at(i);
-			file = ProjectManager::GetFileReferenceById(fileId);
-			if (file)
-				file->LoadFileReference();
+			if (fileId != 0)
+			{
+				file = ProjectManager::GetFileReferenceById(fileId);
+				if (file)
+				{
+					// Check if the found file is of the correct type
+					const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfoById(classId);
+					if (classInfo)
+					{
+						const FileType realFileType = classInfo->fileType;
+						if (file->GetFileType() != realFileType)
+						{
+							Debug::PrintError("[ReflectionUtils::FillFileReference] File type mismatch", true);
+							file = nullptr;
+						}
+					}
+					if (file)
+					{
+						file->LoadFileReference();
+					}
+				}
+			}
 		}
 
 		// Add the file to the vector
