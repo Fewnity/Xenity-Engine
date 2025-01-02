@@ -17,6 +17,8 @@
 #include <editor/ui/menus/lighting_menu.h>
 #include <editor/ui/menus/docker_config_menu.h>
 #include <editor/ui/menus/build_settings_menu.h>
+#include <editor/ui/menus/engine_asset_manager_menu.h>
+#include <editor/ui/menus/database_checker_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
@@ -43,7 +45,6 @@
 #include <engine/graphics/2d_graphics/billboard_renderer.h>
 #include <engine/graphics/3d_graphics/lod.h>
 #include <engine/game_elements/rect_transform.h>
-#include "engine_asset_manager_menu.h"
 
 void MainBarMenu::Init()
 {
@@ -506,6 +507,15 @@ void MainBarMenu::Draw()
 		{
 			Editor::GetMenu<EngineAssetManagerMenu>()->SetActive(true);
 			Editor::GetMenu<EngineAssetManagerMenu>()->Focus();
+		}
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Engine Debug")) // ----------------------------------- Draw Other menu
+	{
+		if (ImGui::MenuItem("Database Checker"))
+		{
+			Editor::GetMenu<DataBaseCheckerMenu>()->SetActive(true);
+			Editor::GetMenu<DataBaseCheckerMenu>()->Focus();
 		}
 		ImGui::EndMenu();
 	}

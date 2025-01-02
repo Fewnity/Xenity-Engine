@@ -14,6 +14,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <set>
 
 #include <engine/reflection/reflection.h>
 #include <engine/event_system/event_system.h>
@@ -276,7 +277,7 @@ public:
 	/**
 	* @brief Get all used files by the game
 	*/
-	static std::vector<uint64_t> GetAllUsedFileByTheGame();
+	static std::set<uint64_t> GetAllUsedFileByTheGame();
 
 	/**
 	* @brief Get project directory

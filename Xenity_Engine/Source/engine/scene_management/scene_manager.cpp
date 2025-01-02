@@ -45,7 +45,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	std::unordered_map<uint64_t, bool> usedIds;
-	std::vector<uint64_t> usedFilesIds;
+	std::set<uint64_t> usedFilesIds;
 
 	// Use ordered json to keep gameobject's order
 	ordered_json j;
@@ -114,7 +114,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	// Add skybox file to the usedFile list
 	if (Graphics::s_settings.skybox != nullptr)
 	{
-		usedFilesIds.push_back(Graphics::s_settings.skybox->m_fileId);
+		usedFilesIds.insert(Graphics::s_settings.skybox->m_fileId);
 	}
 
 	// Save the usedFilesIds list

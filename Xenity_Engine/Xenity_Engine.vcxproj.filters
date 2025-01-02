@@ -341,6 +341,7 @@
     <ClCompile Include="Source\unit_tests\engine\unit_test_benchmark.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_endian.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_reflection.cpp" />
+    <ClCompile Include="Source\editor\ui\menus\database_checker_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -789,6 +790,8 @@
     <ClInclude Include="Source\engine\graphics\shader_null.h" />
     <ClInclude Include="Source\engine\tools\endian_utils.h" />
     <ClInclude Include="Source\editor\ui\menus\engine_debug_menu.h" />
+    <ClInclude Include="Source\editor\ui\menus\database_checker_menu.h" />
+    <ClInclude Include="Source\engine\file_system\data_base\integrity_state.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

@@ -548,7 +548,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	SCOPED_PROFILER("Graphics::DrawSubMesh", scopeBenchmark);
+	//SCOPED_PROFILER("Graphics::DrawSubMesh", scopeBenchmark);
 
 	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr");
 

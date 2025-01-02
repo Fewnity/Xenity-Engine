@@ -4,6 +4,7 @@
 
 #include <engine/reflection/reflection.h>
 #include <engine/file_system/file_type.h>
+#include <engine/file_system/data_base/integrity_state.h>
 #include "bit_file.h"
 
 /*
@@ -70,6 +71,8 @@ public:
 	{
 		return m_bitFile;
 	}
+
+	IntegrityState CheckIntegrity();
 
 private:
 	// Pointer list because the reflection system do not support basic objects in lists

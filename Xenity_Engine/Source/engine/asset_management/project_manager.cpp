@@ -627,26 +627,28 @@ void ProjectManager::UnloadProject()
 #endif
 }
 
-std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
+std::set<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	std::vector<uint64_t> ids;
+	std::set<uint64_t> ids;
 #if defined(EDITOR)
-	int idCount = 0;
 	const std::vector<FileInfo> sceneFiles = GetFilesByType(FileType::File_Scene);
 	const size_t sceneCount = sceneFiles.size();
 
+	// Add all engine files
 	for (auto& fileIds : projectFilesIds)
 	{
 		if (fileIds.first <= UniqueId::reservedFileId)
-			ids.push_back(fileIds.first);
+		{
+			ids.insert(fileIds.first);
+		}
 	}
 
-	//projectFilesIds
+	// Add all used files in scenes
 	for (size_t i = 0; i < sceneCount; i++)
 	{
-		ids.push_back(sceneFiles[i].file->GetUniqueId());
+		ids.insert(sceneFiles[i].file->GetUniqueId());
 		const std::shared_ptr<File> jsonFile = sceneFiles[i].file;
 		const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
 		if (isOpen)
@@ -658,32 +660,21 @@ std::vector<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 			{
 				json data;
 				if (!jsonString.empty())
+				{
 					data = json::parse(jsonString);
+				}
 
 				for (const auto& idKv : data["UsedFiles"]["Values"].items())
 				{
-					bool idAlreadyInList = false;
-					for (int idIndex = 0; idIndex < idCount; idIndex++)
+					const std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
+					if (fileRef)
 					{
-						if (ids[idIndex] == idKv.value())
-						{
-							idAlreadyInList = true;
-							break;
-						}
+						FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
+						ids.insert(static_cast<uint64_t>(idKv.value()));
 					}
-					if (!idAlreadyInList)
+					else
 					{
-						ids.push_back(idKv.value());
-						const std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
-						if (fileRef)
-						{
-							FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
-						}
-						else
-						{
-							Debug::PrintError("[ProjectManager::GetAllUsedFileByTheGame] File reference not found, please try re-save the scene: " + sceneFiles[i].file->GetFileName(), true);
-						}
-						idCount++;
+						Debug::PrintError("[ProjectManager::GetAllUsedFileByTheGame] File reference not found, please try re-save the scene: " + sceneFiles[i].file->GetFileName(), true);
 					}
 				}
 			}

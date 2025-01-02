@@ -7,6 +7,7 @@
 #pragma once
 
 #include <vector>
+#include <set>
 
 #include <engine/reflection/reflection.h>
 
@@ -23,14 +24,14 @@ public:
 	*/
 	template<typename T>
 	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
-	static GetFileRefId(const std::reference_wrapper<std::shared_ptr<T>>* valuePtr, std::vector<uint64_t>& ids);
+	static GetFileRefId(const std::reference_wrapper<std::shared_ptr<T>>* valuePtr, std::set<uint64_t>& ids);
 
 	/**
 	* @brief Get all files ids from a reflective data, get all files id stored in variables
 	* @param usedFilesIds Vector to store the file ids
 	* @param reflectiveData Reflective data to get the files ids
 	*/
-	static void GetUsedFilesInReflectiveData(std::vector<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData);
+	static void GetUsedFilesInReflectiveData(std::set<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData);
 
 private:
 
@@ -38,7 +39,7 @@ private:
 	* @brief Function for non file reference types, return false
 	*/
 	template<typename T>
-	static bool GetFileRefId(const T& var, std::vector <uint64_t>& ids);
+	static bool GetFileRefId(const T& var, std::set<uint64_t>& ids);
 
 	/**
 	* @brief Get all files ids from a vector of file references
@@ -47,6 +48,6 @@ private:
 	*/
 	template<typename T>
 	std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
-	static GetFileRefId(const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, std::vector <uint64_t>& ids);
+	static GetFileRefId(const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, std::set<uint64_t>& ids);
 };
 

@@ -32,7 +32,7 @@ void Cooker::CookAssets(const CookSettings& settings)
 
 	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath();
 	const size_t projectFolderPathLen = projectAssetFolder.size();
-	const std::vector<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
+	const std::set<uint64_t> ids = ProjectManager::GetAllUsedFileByTheGame();
 
 	// Find file from id and cook it
 	for (uint64_t id : ids)
@@ -58,7 +58,11 @@ void Cooker::CookAssets(const CookSettings& settings)
 			CookAsset(settings, *fileInfo, folderToCreate, newPath);
 		}
 	}
-
+	IntegrityState integrityState = fileDataBase.CheckIntegrity();
+	if (integrityState != IntegrityState::Integrity_Ok)
+	{
+		Debug::PrintError("[Cooker::CookAssets] Data base integrity check failed");
+	}
 	fileDataBase.SaveToFile(settings.exportPath + "db.bin");
 }
 

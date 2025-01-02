@@ -21,11 +21,11 @@
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
-FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::shared_ptr<T>>* valuePtr, std::vector<uint64_t>& ids)
+FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::shared_ptr<T>>* valuePtr, std::set<uint64_t>& ids)
 {
 	if (valuePtr && valuePtr->get())
 	{
-		ids.push_back(valuePtr->get()->GetFileId());
+		ids.insert(valuePtr->get()->GetFileId());
 		return true;
 	}
 	else
@@ -36,7 +36,7 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::shared_ptr<T
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
-FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, std::vector <uint64_t>& ids)
+FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::shared_ptr<T>>>* valuePtr, std::set<uint64_t>& ids)
 {
 	if (valuePtr)
 	{
@@ -46,7 +46,7 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::
 		{
 			if (getVal.at(vIndex))
 			{
-				ids.push_back(getVal.at(vIndex)->GetFileId());
+				ids.insert(getVal.at(vIndex)->GetFileId());
 			}
 		}
 		return true;
@@ -58,20 +58,18 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::
 }
 
 template<typename T>
-bool FileReferenceFinder::GetFileRefId(const T& var, std::vector <uint64_t>& ids)
+bool FileReferenceFinder::GetFileRefId(const T& var, std::set<uint64_t>& ids)
 {
 	return false;
 }
 
-void FileReferenceFinder::GetUsedFilesInReflectiveData(std::vector<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData)
+void FileReferenceFinder::GetUsedFilesInReflectiveData(std::set<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData)
 {
-	size_t usedFilesIdsCount = usedFilesIds.size();
-
 	for (const ReflectiveEntry& reflectiveEntry : reflectiveData)
 	{
 		const VariableReference& variableRef = reflectiveEntry.variable.value();
 		bool isFileFound = false;
-		std::vector<uint64_t> foundFileIds;
+		std::set<uint64_t> foundFileIds;
 		std::visit([&foundFileIds, &isFileFound](const auto& value)
 			{
 				isFileFound = GetFileRefId(&value, foundFileIds);
@@ -79,23 +77,9 @@ void FileReferenceFinder::GetUsedFilesInReflectiveData(std::vector<uint64_t>& us
 
 		if (isFileFound)
 		{
-			const size_t foundFileIdsCount = foundFileIds.size();
-			for (size_t foundFileIndex = 0; foundFileIndex < foundFileIdsCount; foundFileIndex++)
+			for (uint64_t id : foundFileIds)
 			{
-				bool alreadyListed = false;
-				for (size_t fileIndex = 0; fileIndex < usedFilesIdsCount; fileIndex++)
-				{
-					if (usedFilesIds[fileIndex] == foundFileIds[foundFileIndex])
-					{
-						alreadyListed = true;
-						break;
-					}
-				}
-				if (!alreadyListed)
-				{
-					usedFilesIds.push_back(foundFileIds[foundFileIndex]);
-					usedFilesIdsCount++;
-				}
+				usedFilesIds.insert(id);
 			}
 		}
 	}
