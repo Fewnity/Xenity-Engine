@@ -6,12 +6,13 @@
 
 #pragma once
 
+#include <engine/reflection/enum_utils.h>
+
 /**
  * [Internal]
  */
 
-enum class FileType
-{
+ENUM(FileType,
 	File_Other,
 	File_Audio,
 	File_Mesh,
@@ -24,4 +25,4 @@ enum class FileType
 	File_Material,
 	File_Shader,
 	File_Icon,
-};
+	);
