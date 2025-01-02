@@ -190,13 +190,13 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 				const std::shared_ptr<File> vertexCodeFile = FileSystem::MakeFile(vertexShaderCodePath);
 				const std::shared_ptr<File> fragmentCodeFile = FileSystem::MakeFile(fragmentShaderCodePath);
 
-				bool vOpenResult = vertexCodeFile->Open(FileMode::ReadOnly);
+				const bool vOpenResult = vertexCodeFile->Open(FileMode::ReadOnly);
 				if (!vOpenResult) 
 				{
 					Debug::PrintError("[Cooker::CookAsset] Failed to load shader code: " + vertexShaderCodePath);
 					return;
 				}
-				bool fOpenResult = fragmentCodeFile->Open(FileMode::ReadOnly);
+				const bool fOpenResult = fragmentCodeFile->Open(FileMode::ReadOnly);
 				if (!fOpenResult)
 				{
 					Debug::PrintError("[Cooker::CookAsset] Failed to load shader code: " + fragmentShaderCodePath);
@@ -212,8 +212,8 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 				unsigned char* fragmentCodeBinary = fragmentCodeFile->ReadAllBinary(fragmentBinaryCodeSize);
 				fragmentCodeFile->Close();
 
-				uint32_t vertexBinaryCodeSizeFixed = vertexBinaryCodeSize;
-				uint32_t fragmentBinaryCodeSizeFixed = fragmentBinaryCodeSize;
+				const uint32_t vertexBinaryCodeSizeFixed = vertexBinaryCodeSize;
+				const uint32_t fragmentBinaryCodeSizeFixed = fragmentBinaryCodeSize;
 
 				// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE
 				std::ofstream shaderFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
@@ -243,7 +243,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 
 	CopyUtils::ExecuteCopyEntries();
 
-	uint64_t cookedFileSize = fs::file_size(exportPath.c_str());
+	const uint64_t cookedFileSize = fs::file_size(exportPath.c_str());
 
 	// Do not include audio in the binary file
 	size_t dataOffset = 0;
@@ -274,6 +274,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	else
 	{
 		Debug::PrintError("[Cooker::CookAsset] Failed to open meta file: " + exportPath + ".meta");
+		return;
 	}
 	FileSystem::s_fileSystem->Delete(exportPath + ".meta");
 
