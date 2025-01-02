@@ -212,8 +212,8 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 				unsigned char* fragmentCodeBinary = fragmentCodeFile->ReadAllBinary(fragmentBinaryCodeSize);
 				fragmentCodeFile->Close();
 
-				const uint32_t vertexBinaryCodeSizeFixed = vertexBinaryCodeSize;
-				const uint32_t fragmentBinaryCodeSizeFixed = fragmentBinaryCodeSize;
+				const uint32_t vertexBinaryCodeSizeFixed = static_cast<uint32_t>(vertexBinaryCodeSize);
+				const uint32_t fragmentBinaryCodeSizeFixed = static_cast<uint32_t>(fragmentBinaryCodeSize);
 
 				// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE
 				std::ofstream shaderFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);

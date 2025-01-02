@@ -14,13 +14,13 @@
 class FileDataBaseEntry : public Reflective
 {
 public:
-	std::string p; // Path
-	uint64_t id; // Unique id
-	uint64_t po; // Position in the binary file in byte
-	uint64_t s; // Size in byte
-	uint64_t mpo; // Meta position in the binary file in byte
-	uint64_t ms; // Meta Size in byte
-	FileType t; // Type
+	std::string p = ""; // Path
+	uint64_t id = 0; // Unique id
+	uint64_t po = 0; // Position in the binary file in byte
+	uint64_t s = 0; // Size in byte
+	uint64_t mpo = 0; // Meta position in the binary file in byte
+	uint64_t ms = 0; // Meta Size in byte
+	FileType t = FileType::File_Other; // Type
 
 private:
 	ReflectiveData GetReflectiveData() override;

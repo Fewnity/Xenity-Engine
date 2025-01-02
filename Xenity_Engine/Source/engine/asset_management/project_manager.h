@@ -65,7 +65,7 @@ struct FileInfo
 	uint64_t metaFilePos = 0;
 	uint64_t metaFileSize = 0;
 
-	FileType type;
+	FileType type = FileType::File_Other;
 	bool isEngineAsset = false;
 };
 
