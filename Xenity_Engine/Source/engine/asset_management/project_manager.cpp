@@ -347,7 +347,14 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 	std::sort(projFileVector.begin(), projFileVector.end(),
 		[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b)
 		{
-			return (a->m_file->GetFileName() + a->m_file->GetFileExtension()) < (b->m_file->GetFileName() + b->m_file->GetFileExtension());
+			std::string fileA = a->m_file->GetFileName() + a->m_file->GetFileExtension();
+			std::string fileB = b->m_file->GetFileName() + b->m_file->GetFileExtension();
+
+			// Convert both strings to lowercase for case-insensitive comparison
+			std::transform(fileA.begin(), fileA.end(), fileA.begin(), [](unsigned char c) { return std::tolower(c); });
+			std::transform(fileB.begin(), fileB.end(), fileB.begin(), [](unsigned char c) { return std::tolower(c); });
+
+			return fileA < fileB;
 		});
 #endif
 }
