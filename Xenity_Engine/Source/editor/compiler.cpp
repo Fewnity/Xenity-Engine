@@ -138,6 +138,8 @@ CompileResult Compiler::Compile(CompilerParams params)
 		cookSettings.exportShadersOnly = false;
 	}
 	Cooker::CookAssets(cookSettings);
+	
+	CleanDestinationFolder(params.exportPath);
 
 	// Compile depending on platform
 	CompileResult result = CompileResult::ERROR_UNKNOWN;
@@ -427,6 +429,22 @@ void Compiler::DeleteTempFiles(const CompilerParams& params)
 	try
 	{
 		fs::remove_all(params.tempPath);
+	}
+	catch (const std::exception&) {}
+}
+
+void Compiler::CleanDestinationFolder(const std::string& exportPath)
+{
+	try
+	{
+		fs::remove(exportPath + "freetype.dll");
+		fs::remove(exportPath + "game.dll");
+		fs::remove(exportPath + "SDL3.dll");
+		fs::remove(exportPath + "Xenity_Engine.dll");
+
+		fs::remove(exportPath + "data.xenb");
+		fs::remove(exportPath + "db.xenb");
+		fs::remove(exportPath + "project_settings.json");
 	}
 	catch (const std::exception&) {}
 }

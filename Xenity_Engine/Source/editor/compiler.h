@@ -176,6 +176,7 @@ public:
 private:
 
 	static void DeleteTempFiles(const CompilerParams& params);
+	static void CleanDestinationFolder(const std::string& exportPath);
 
 	/**
 	* @brief Export all game's files into the build folder
