@@ -250,7 +250,6 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 	ClearScene();
 
 	std::vector<std::shared_ptr<Component>> allComponents;
-	uint64_t biggestId = 0;
 
 	if (jsonData.contains("GameObjects"))
 	{
@@ -261,10 +260,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 			// Set gameobject id
 			const uint64_t id = std::stoull(gameObjectKV.key());
 			newGameObject->SetUniqueId(id);
-			if (id > biggestId)
-			{
-				biggestId = id;
-			}
+
 			// Fill gameobjet's values from json
 			ReflectionUtils::JsonToReflective(gameObjectKV.value(), *newGameObject.get());
 
@@ -278,10 +274,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 
 					// Get and set component id
 					const uint64_t compId = std::stoull(componentKV.key());
-					if (compId > biggestId)
-					{
-						biggestId = compId;
-					}
+
 					if (comp)
 					{
 						// Enable or disable component
