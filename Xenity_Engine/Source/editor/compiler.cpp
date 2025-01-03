@@ -332,8 +332,8 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 	const std::string projectCookedAssetsFolder = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/" + ASSETS_FOLDER;
 	CopyUtils::AddCopyEntry(true, projectCookedAssetsFolder, exportPath + ASSETS_FOLDER);
 
-	const std::string fileDataBasePath = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/db.bin";
-	CopyUtils::AddCopyEntry(false, fileDataBasePath, exportPath + "db.bin");
+	const std::string fileDataBasePath = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/db.xenb";
+	CopyUtils::AddCopyEntry(false, fileDataBasePath, exportPath + "db.xenb");
 
 	const std::string binaryFilePath = ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/data.xenb";
 	CopyUtils::AddCopyEntry(false, binaryFilePath, exportPath + "data.xenb");
@@ -1099,7 +1099,7 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 		const std::string copyProjectSettingsCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + ".build/" + PROJECT_SETTINGS_FILE_NAME + "\" XenityEngineBuild:\"/home/XenityBuild/" + PROJECT_SETTINGS_FILE_NAME + "\"";
 		[[maybe_unused]] const int copyProjectSettingsResult = system(copyProjectSettingsCommand.c_str());
 
-		const std::string copydbFileCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/db.bin" + "\" XenityEngineBuild:\"/home/XenityBuild/" + "db.bin" + "\"";
+		const std::string copydbFileCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/db.xenb" + "\" XenityEngineBuild:\"/home/XenityBuild/" + "db.xenb" + "\"";
 		[[maybe_unused]] const int copydbFileResult = system(copydbFileCommand.c_str());
 
 		const std::string copyxenbFileCommand = "docker cp \"" + ProjectManager::GetProjectFolderPath() + ".build/cooked_assets/data.xenb" + "\" XenityEngineBuild:\"/home/XenityBuild/" + "data.xenb" + "\"";

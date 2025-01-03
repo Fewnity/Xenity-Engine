@@ -538,7 +538,7 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	assetFolderPath = projectPathToLoad + "assets/";
 
 #if !defined(EDITOR)
-	fileDataBase.LoadFromFile(projectPathToLoad + "db.bin");
+	fileDataBase.LoadFromFile(projectPathToLoad + "db.xenb");
 	fileDataBase.GetBitFile().Open("data.xenb");
 #endif
 

@@ -63,7 +63,7 @@ void Cooker::CookAssets(const CookSettings& settings)
 	{
 		Debug::PrintError("[Cooker::CookAssets] Data base integrity check failed");
 	}
-	fileDataBase.SaveToFile(settings.exportPath + "db.bin");
+	fileDataBase.SaveToFile(settings.exportPath + "db.xenb");
 }
 
 void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
