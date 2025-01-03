@@ -209,6 +209,10 @@ void Graphics::Draw()
 			// Update camera and bind frame buffer
 			usedCamera->UpdateProjection();
 			usedCamera->UpdateFrustum();
+			if constexpr (!s_UseOpenGLFixedFunctions)
+			{
+				usedCamera->UpdateViewMatrix();
+			}
 			usedCamera->BindFrameBuffer();
 			const Vector3& camPos = usedCamera->GetTransformRaw()->GetPosition();
 

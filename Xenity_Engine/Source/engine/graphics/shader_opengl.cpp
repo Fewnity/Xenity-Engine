@@ -265,20 +265,7 @@ void ShaderOpenGL::SetShaderCameraPosition()
 	//Camera position
 	if (Graphics::usedCamera != nullptr)
 	{
-		const Transform* transform = Graphics::usedCamera->GetTransformRaw();
-
-		const Vector3& position = transform->GetPosition();
-
-		const Quaternion& baseQ = transform->GetRotation();
-		static const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
-		const Quaternion newQ = baseQ * offsetQ;
-
-		glm::mat4 RotationMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
-
-		if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
-			RotationMatrix = glm::translate(RotationMatrix, glm::vec3(position.x, -position.y, -position.z));
-
-		glUniformMatrix4fv(m_cameraLocation, 1, false, glm::value_ptr(RotationMatrix)); // Y position and rotation inverted
+		glUniformMatrix4fv(m_cameraLocation, 1, false, glm::value_ptr(Graphics::usedCamera->viewMatrix)); // Y position and rotation inverted
 	}
 }
 

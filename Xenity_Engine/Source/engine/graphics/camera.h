@@ -274,6 +274,8 @@ protected:
 
 	void UpdateFrustum();
 
+	void UpdateViewMatrix();
+
 	/**
 	* @brief [Internal] Get projection matrix without Clipping Planes values
 	*/
@@ -332,7 +334,7 @@ protected:
 	bool m_lastMultisamplingValue = m_useMultisampling;
 	// [Internal]
 	bool m_isEditor = false;
-
+	glm::mat4 viewMatrix;
 	/**
 	* [Internal] Get if the camera is for the editor
 	*/

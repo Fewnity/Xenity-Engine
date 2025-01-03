@@ -102,7 +102,7 @@ void ShaderRSX::Load()
 	// Check magic numbers and if the file is corrupted, the fragment shader size may be greater than the full shader size
 	if(((char*)m_fragmentProgram)[0] != 'F' || ((char*)m_fragmentProgram)[1] != 'P' || fragmentShaderCodeSize >= size)
 	{
-		Debug::PrintError("Cannot load fragment program!");
+		Debug::PrintError("Fragment program corrupted!");
 		m_fileStatus = FileStatus::FileStatus_Failed;
 		return;
 	}
@@ -114,33 +114,6 @@ void ShaderRSX::Load()
 		m_projMatrix = rsxVertexProgramGetConst(m_vertexProgram, "projection");
 		m_viewMatrix = rsxVertexProgramGetConst(m_vertexProgram, "camera");
 		m_modelMatrix = rsxVertexProgramGetConst(m_vertexProgram, "model");
-
-		/*if(m_projMatrix)
-		{
-			Debug::Print("m_projMatrix");
-		}
-		else
-		{
-			Debug::Print("No m_projMatrix");
-		}
-
-		if(m_modelMatrix)
-		{
-			Debug::Print("m_modelMatrix");
-		}
-		else
-		{
-			Debug::Print("No m_modelMatrix");
-		}
-
-		if(m_viewMatrix)
-		{
-			Debug::Print("m_viewMatrix");
-		}
-		else
-		{
-			Debug::Print("No m_viewMatrix");
-		}*/
 	}
 
 	{
@@ -210,20 +183,7 @@ void ShaderRSX::SetShaderCameraPosition()
 {
 	if(m_viewMatrix)
 	{
-		const Transform* transform = Graphics::usedCamera->GetTransformRaw();
-
-		const Vector3& position = transform->GetPosition();
-
-		const Quaternion& baseQ = transform->GetRotation();
-		static const Quaternion offsetQ = Quaternion::Euler(0, 180, 0);
-		const Quaternion newQ = baseQ * offsetQ;
-
-		glm::mat4 RotationMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
-
-		if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
-			RotationMatrix = glm::translate(RotationMatrix, glm::vec3(position.x, -position.y, -position.z));
-
-		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_viewMatrix, (float*)&RotationMatrix);
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_viewMatrix, (float*)&Graphics::usedCamera->viewMatrix);
 	}
 }
 
@@ -276,20 +236,9 @@ void ShaderRSX::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& t
 	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_offsetLocation, (float*)&offset.x, m_fp_offset, GCM_LOCATION_RSX);
 }
 
-int count2 = 0;
 void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
 {
-	//if (count2 >= 5)
-	//{
-	//	return;
-	//}
-	//count2++;
 	size_t offset = 1;
-
-	/*for (size_t i = 0; i < lightsIndices.usedPointLightCount; i++)
-	{
-		SetPointLightData(*m_currentLights[lightsIndices.pointLightIndices[i]], i + offset);
-	}*/
 
 	int directionalUsed = 0;
 	int pointUsed = 0;
@@ -315,20 +264,10 @@ void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
 		SetDirectionalLightData(light, directionalUsed + offset);
 		directionalUsed++;
 	}
-
-	/*for(int i = 0; i < MAX_LIGHT_COUNT; i++)
-	{
-		std::string directionalIndexStr = "directionalLightsIndices[" + std::to_string(i) + "]";
-		SetShaderAttribut(directionalIndexStr, (float)lightsIndices.directionalLightIndices[i].x);
-
-		std::string pointIndexStr = "pointLightsIndices[" + std::to_string(i) + "]";
-		SetShaderAttribut(pointIndexStr, (float)lightsIndices.pointLightIndices[i].x);
-	}*/
 }
 
 ShaderRSX::RsxProgramConstPair* ShaderRSX::FindOrAddAttributId(const std::string& attribut)
 {
-	//Debug::Print("FindOrAddAttributId " + attribut);
 	auto it = m_uniformsIds.find(attribut);
 	if (it == m_uniformsIds.end())
 	{
