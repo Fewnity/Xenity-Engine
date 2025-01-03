@@ -160,7 +160,7 @@ void Debug::PrintInConsole(const std::string& text)
 #elif defined(_EE)
 	printf(text.c_str());
 #elif defined(__PS3__)
-	printf(text.c_str());
+	std::cout << text;
 #else
 	std::cout << text;
 #endif
