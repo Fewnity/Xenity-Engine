@@ -351,6 +351,12 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 
 CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
+	if (exportPath == ProjectManager::GetProjectFolderPath())
+	{
+		Debug::PrintError("[Compiler::CompileGame] Export path is the same as the project path");
+		return CompileResult::ERROR_UNKNOWN;
+	}
+
 	UpdatePaths();
 
 	XASSERT(!exportPath.empty(), "[Compiler::CompileGame] exportPath is empty");
