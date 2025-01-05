@@ -603,12 +603,14 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	DrawSubMesh(subMesh, material, *material.GetTexture(), settings);
 }
 
+uint32_t lastOffset = 0;
+
 void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
 	ShaderRSX& rsxShader = dynamic_cast<ShaderRSX&>(*Graphics::s_currentShader);
+	uint32_t offset = 0;
 
-	uint32_t offset= 0;
-
+	//return;
 	if (lastSettings.useDepth != settings.useDepth)
 	{
 		if (settings.useDepth)
@@ -678,26 +680,23 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	}
 
 	// Set vertex array attributes
+	if(lastOffset != subMesh.positionOffset)
 	{
 		if((int)subMesh.meshData->GetVertexDescriptor() & (int)VertexElements::NORMAL_32_BITS)
 		{
-			rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].normX, &offset);
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_NORMAL, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_NORMAL, 0, subMesh.normalOffset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 
-			rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].u, &offset);
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, offset, sizeof(VertexNormalsNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, subMesh.uvOffset, sizeof(VertexNormalsNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 
-			rsxAddressToOffset(&((VertexNormalsNoColor*)subMesh.data)[0].x, &offset);
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, subMesh.positionOffset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		}
 		else
 		{
-			rsxAddressToOffset(&((VertexNoColor*)subMesh.data)[0].u, &offset);
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, offset, sizeof(VertexNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, subMesh.uvOffset, sizeof(VertexNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 
-			rsxAddressToOffset(&((VertexNoColor*)subMesh.data)[0].x, &offset);
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, offset, sizeof(VertexNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, subMesh.positionOffset, sizeof(VertexNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		}
+		lastOffset = subMesh.positionOffset;
 	}
 
 	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!Graphics::s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
@@ -720,9 +719,9 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	//	GCM_USER_CLIP_PLANE_DISABLE,
 	//	GCM_USER_CLIP_PLANE_DISABLE);
 
-	rsxAddressToOffset(&subMesh.indices[0], &offset);
 	//rsxInvalidateVertexCache(context);
-	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, offset, subMesh.index_count, GCM_INDEX_TYPE_16B, GCM_LOCATION_RSX);
+	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, subMesh.indicesOffset, subMesh.index_count, GCM_INDEX_TYPE_16B, GCM_LOCATION_RSX);
+	//rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, offset, subMesh.index_count, GCM_INDEX_TYPE_16B, GCM_LOCATION_RSX);
 	rsxSetDepthWriteEnable(context, GCM_TRUE);
 }
 

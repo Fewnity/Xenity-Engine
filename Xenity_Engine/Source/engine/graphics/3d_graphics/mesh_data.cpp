@@ -589,6 +589,24 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	newSubMesh->index_count = index_count;
 	newSubMesh->vertice_count = vcount;
 
+#if defined(__PS3__)
+	rsxAddressToOffset(&newSubMesh->indices[0], &newSubMesh->indicesOffset);
+	if ((int)newSubMesh->meshData->GetVertexDescriptor() & (int)VertexElements::NORMAL_32_BITS)
+	{
+		rsxAddressToOffset(&((VertexNormalsNoColor*)newSubMesh->data)[0].normX, &newSubMesh->normalOffset);
+
+		rsxAddressToOffset(&((VertexNormalsNoColor*)newSubMesh->data)[0].u, &newSubMesh->uvOffset);
+
+		rsxAddressToOffset(&((VertexNormalsNoColor*)newSubMesh->data)[0].x, &newSubMesh->positionOffset);
+	}
+	else
+	{
+		rsxAddressToOffset(&((VertexNoColor*)newSubMesh->data)[0].u, &newSubMesh->uvOffset);
+
+		rsxAddressToOffset(&((VertexNoColor*)newSubMesh->data)[0].x, &newSubMesh->positionOffset);
+	}
+#endif
+
 	m_subMeshes.push_back(std::move(newSubMesh));
 	m_subMeshCount++;
 }

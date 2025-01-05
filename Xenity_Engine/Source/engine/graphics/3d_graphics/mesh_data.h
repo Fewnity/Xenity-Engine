@@ -103,7 +103,12 @@ public:
 		unsigned int EBO = 0;
 		unsigned int VAO = 0;
 #endif
-
+#if defined(__PS3__)
+		uint32_t normalOffset = 0;
+		uint32_t uvOffset = 0;
+		uint32_t positionOffset = 0;
+		uint32_t indicesOffset = 0;
+#endif
 #if defined(__PSP__)
 		bool isOnVram = true;
 #endif
