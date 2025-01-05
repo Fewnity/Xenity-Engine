@@ -28,17 +28,16 @@ Reload material file on game stop
 Implement alpha testing on shaders
 System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
 Add lighting on PS3
+
+Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
+
 To make lighting usable on PS3:
-- Use 0 index when light is not used to avoid potential gpu crash
 - Use vectors instead of single floats in the light structure
-- Add the light optimization in the shader to get all const ptrs
-- Add shader variant (with and without lighting)
 - Try to make directional lighting in the vertex shader
 - Try to detect light per draw to use with sphere test
-- Try to draw the skybox after all opaque objects
+- Try to sort by material and distance
 
 --- Can be done for the next release
-Make a tool to list all files of a data base
 Add an option to cook assets only
 Separate audio platform specific code
 Separate mesh platform specific code
@@ -53,7 +52,6 @@ Create a GetFileSize function in File class
 New Input system
 Implement AudioManager::Stop for PSP and PsVita
 Pre-open audio file for faster loading
-Replace CompatibleFile by FileInfo?
 Compress scene json files in builds
 Add assert if project settings file is not found
 Add a debug option to show what assets are loaded in vram for psp
