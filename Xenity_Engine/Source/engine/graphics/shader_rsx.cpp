@@ -24,6 +24,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/lighting/lighting.h>
+#include <engine/debug/performance.h>
 
 #include <rsx/rsx.h>
 
@@ -126,6 +127,7 @@ void ShaderRSX::Load()
 
 		m_color = rsxFragmentProgramGetConst(m_fragmentProgram, "color");
 		m_textureUnit = rsxFragmentProgramGetAttrib(m_fragmentProgram, "texture");
+		m_lightingDataTextureUnit = rsxFragmentProgramGetAttrib(m_fragmentProgram, "lightingDataTexture");
 		m_ambientLightLocation = rsxFragmentProgramGetConst(m_fragmentProgram, "ambientLight");
 		m_usedPointLightCount = rsxFragmentProgramGetConst(m_fragmentProgram, "usedPointLightCount");
 		m_tilingLocation = rsxFragmentProgramGetConst(m_fragmentProgram, "tiling");
@@ -157,10 +159,10 @@ void ShaderRSX::Load()
 
 bool ShaderRSX::Use()
 {
-	// if (Graphics::s_currentShader != this)
+	rsxLoadFragmentProgramLocation(RendererRSX::context, m_fragmentProgram, m_fp_offset, GCM_LOCATION_RSX);
+	if (Graphics::s_currentShader != this)
 	{
 		rsxLoadVertexProgram(RendererRSX::context, m_vertexProgram, m_vertexProgramCode);
-		rsxLoadFragmentProgramLocation(RendererRSX::context, m_fragmentProgram, m_fp_offset, GCM_LOCATION_RSX);
 		Graphics::s_currentShader = this;
 		return true;
 	}
@@ -238,6 +240,17 @@ void ShaderRSX::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& t
 
 void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
 {
+	//for (int i = 0; i < MAX_LIGHT_COUNT; i++)
+	//{
+	//	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_directionalLightIndicesLocations[], (float*)&offset.x, m_fp_offset, GCM_LOCATION_RSX);
+
+	//	/*std::string directionalIndexStr = "directionalLightsIndices[" + std::to_string(i) + "]";
+	//	SetShaderAttribut(directionalIndexStr, (float)lightsIndices.directionalLightIndices[i].x);
+
+	//	std::string pointIndexStr = "pointLightsIndices[" + std::to_string(i) + "]";
+	//	SetShaderAttribut(pointIndexStr, (float)lightsIndices.pointLightIndices[i].x);*/
+	//}
+	return;
 	size_t offset = 1;
 
 	int directionalUsed = 0;

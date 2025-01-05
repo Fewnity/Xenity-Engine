@@ -357,6 +357,25 @@ int RendererRSX::Init()
 	setDrawEnv();
 	setRenderTarget(curr_fb);
 
+	unsigned char* textureData = new unsigned char[4 * 8 * 32];
+	std::shared_ptr<Texture> newTexture = Texture::MakeTexture();
+	m_lighintDataTexture = std::dynamic_pointer_cast<TexturePS3>(newTexture);
+	m_lighintDataTexture->SetSize(8, 32);
+	m_lighintDataTexture->SetChannelCount(4);
+	m_lighintDataTexture->isFloatFormat = true;
+	m_lighintDataTexture->SetData(textureData);
+	m_lighintDataTexture->SetFilter(Filter::Point);
+	m_lighintDataTexture->SetWrapMode(WrapMode::ClampToEdge);
+
+	// Clear the texture
+	for (size_t i = 0; i < 8 * 32; i += 4)
+	{
+		(((float*)m_lighintDataTexture->m_ps3buffer)[i]) = 0.0f;
+		(((float*)m_lighintDataTexture->m_ps3buffer)[i + 1]) = 0.0f;
+		(((float*)m_lighintDataTexture->m_ps3buffer)[i + 2]) = 0.0f;
+		(((float*)m_lighintDataTexture->m_ps3buffer)[i + 3]) = 0.0f;
+	}
+
 	return result;
 }
 
@@ -375,6 +394,14 @@ void RendererRSX::Stop()
 	//sceGuTerm();
 }
 
+void WriteVector4ToFloatBuffer(const Vector4& vector, float* buffer)
+{
+	buffer[0] = vector.x;
+	buffer[1] = vector.y;
+	buffer[2] = vector.z;
+	buffer[3] = vector.w;
+}
+
 void RendererRSX::NewFrame()
 {
 	sysUtilCheckCallback();
@@ -388,6 +415,92 @@ void RendererRSX::NewFrame()
 	// }
 	lastUsedColor = 0x00000000;
 	lastUsedColor2 = 0xFFFFFFFF;
+
+	return;
+	// Update the lights
+	int offset = 1;
+	const int lightCount = AssetManager::GetLightCount();
+
+	int directionalUsed = 0;
+	int pointUsed = 0;
+	int spotUsed = 0;
+
+	//For each lights
+	float* buffer = (float*)m_lighintDataTexture->m_ps3buffer;
+	for (int lightI = 0; lightI < lightCount; lightI++)
+	{
+		const Light& light = *AssetManager::GetLight(lightI);
+		if (light.IsEnabled() && light.GetGameObjectRaw()->IsLocalActive())
+		{
+			if (light.GetType() == LightType::Directional)
+			{
+				if (directionalUsed >= 9)
+				{
+					continue;
+				}
+				const uint32_t row = directionalUsed + offset;
+				const Vector4 lightColor = light.color.GetRGBA().ToVector4() * light.GetIntensity() * 2;
+				Vector3 dir = Vector3(0);
+				dir = light.GetTransformRaw()->GetForward();
+				dir.x = -dir.x;
+
+				WriteVector4ToFloatBuffer(Vector4(dir.x, dir.y, dir.z, 0), buffer + (row * (8*4) + 0));
+				WriteVector4ToFloatBuffer(lightColor,                      buffer + (row * (8*4) + 4));
+
+				directionalUsed++;
+			}
+			else if (light.GetType() == LightType::Point)
+			{
+				if (pointUsed >= 9)
+				{
+					continue;
+				}
+
+				const uint32_t row = 10 + pointUsed + offset;
+				const Vector4 lightColor = light.color.GetRGBA().ToVector4() * light.GetIntensity() * 2;
+				Vector3 pos = Vector3(0);
+				pos = light.GetTransformRaw()->GetPosition();
+				pos.x = -pos.x;
+				Vector4 lightData = Vector4(lightConstant, light.GetLinearValue(), light.GetQuadraticValue(), 0);
+
+				WriteVector4ToFloatBuffer(Vector4(pos.x, pos.y, pos.z, 0), buffer + (row * (8 * 4) + 0));
+				WriteVector4ToFloatBuffer(lightColor,                      buffer + (row * (8 * 4) + 4));
+				WriteVector4ToFloatBuffer(lightData,                       buffer + (row * (8 * 4) + 8));
+
+				pointUsed++;
+			}
+			else if (light.GetType() == LightType::Spot)
+			{
+				if (spotUsed >= 9)
+				{
+					continue;
+				}
+
+				const uint32_t row = 20 + spotUsed + offset;
+				const Vector4 lightColor = light.color.GetRGBA().ToVector4() * light.GetIntensity();
+				Vector3 pos = Vector3(0);
+				pos = light.GetTransformRaw()->GetPosition();
+				pos.x = -pos.x;
+				Vector3 dir = Vector3(0);
+				dir = light.GetTransformRaw()->GetForward();
+				dir.x = -dir.x;
+				Vector4 lightData = Vector4(lightConstant, light.GetLinearValue(), light.GetQuadraticValue(), 0);
+				Vector4 lightData2 = Vector4(glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness()))), glm::cos(glm::radians(light.GetSpotAngle())), 0, 0);
+
+				WriteVector4ToFloatBuffer(Vector4(pos.x, pos.y, pos.z, 0), buffer + (row * (8 * 4) + 0));
+				WriteVector4ToFloatBuffer(Vector4(dir.x, dir.y, dir.z, 0), buffer + (row * (8 * 4) + 4));
+				WriteVector4ToFloatBuffer(lightColor,                      buffer + (row * (8 * 4) + 8));
+				WriteVector4ToFloatBuffer(lightData,                       buffer + (row * (8 * 4) + 12));
+				WriteVector4ToFloatBuffer(lightData2,                      buffer + (row * (8 * 4) + 16));
+
+				spotUsed++;
+			}
+			/*else if (light.m_type == LightType::Ambient)
+			{
+				ambientLight += light.color.GetRGBA().ToVector4() * light.m_intensity;
+			}*/
+		}
+	}
 }
 
 void RendererRSX::EndFrame()
@@ -495,7 +608,6 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	ShaderRSX& rsxShader = dynamic_cast<ShaderRSX&>(*Graphics::s_currentShader);
 
 	uint32_t offset= 0;
-	f32 globalAmbientColor[3] = { 0.8f, 0.7f, 0.7f };
 
 	if (lastSettings.useDepth != settings.useDepth)
 	{
@@ -562,6 +674,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	{
 		usedTexture = ps3Texture.m_ps3buffer;
 		texture.Bind();
+		//m_lighintDataTexture->Bind();
 	}
 
 	// Set vertex array attributes

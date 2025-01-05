@@ -18,6 +18,7 @@
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/texture.h>
+#include <engine/graphics/texture_ps3.h>
 #include <engine/vectors/vector2_int.h>
 #include <rsx/rsx.h>
 
@@ -93,6 +94,7 @@ private:
 	void setDrawEnv();
 	void drawFrame();
 	Color clearColor;
+	std::shared_ptr<TexturePS3> m_lighintDataTexture;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(AnisotropicLevel level);
 

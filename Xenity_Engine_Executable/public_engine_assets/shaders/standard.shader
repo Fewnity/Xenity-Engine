@@ -515,6 +515,7 @@ void main
 	float3 FragPos : TEXCOORD3,
 
 	uniform sampler2D texture,
+	uniform sampler2D lightingDataTexture,
 
 	uniform float3 ambientLight,
 	uniform vec4 color,
@@ -540,6 +541,7 @@ void main
 
 	float3 result = float3(0,0,0);
 	result += textureFrag.xyz * ambientLight;
+	//result += tex2D(lightingDataTexture, float2(1, 1)).xyz;
 	float alpha = textureFrag.w * color.w;
 	float3 N = normalize(normal);
 

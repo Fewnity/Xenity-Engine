@@ -45,11 +45,14 @@ public:
 
 	rsxProgramConst* m_color = nullptr;
 	rsxProgramAttrib* m_textureUnit = nullptr;
+	rsxProgramAttrib* m_lightingDataTextureUnit = nullptr;
 
 	/**
 	* @brief Use the shader program
 	*/
 	bool Use() override;
+	bool needBind = true;
+
 protected:
 	class PointLightVariableIds
 	{
@@ -57,10 +60,10 @@ protected:
 		PointLightVariableIds() = delete;
 		explicit PointLightVariableIds(int index, rsxFragmentProgram* program);
 
-		//rsxProgramConst* indices = 0;
-		rsxProgramConst* color = 0;
-		rsxProgramConst* position = 0;
-		rsxProgramConst* light_data = 0;
+		//rsxProgramConst* index = nullptr;
+		rsxProgramConst* color = nullptr;
+		rsxProgramConst* position = nullptr;
+		rsxProgramConst* light_data = nullptr;
 	};
 
 	class DirectionalLightsVariableIds
@@ -69,9 +72,9 @@ protected:
 		DirectionalLightsVariableIds() = delete;
 		explicit DirectionalLightsVariableIds(int index, rsxFragmentProgram* program);
 
-		//unsigned int indices = 0;
-		rsxProgramConst* color = 0;
-		rsxProgramConst* direction = 0;
+		//rsxProgramConst* index = nullptr;
+		rsxProgramConst* color = nullptr;
+		rsxProgramConst* direction = nullptr;
 	};
 
 
@@ -81,15 +84,15 @@ protected:
 		SpotLightVariableIds() = delete;
 		explicit SpotLightVariableIds(int index, rsxFragmentProgram* program);
 
-		/*unsigned int indices = 0;*/
-		rsxProgramConst* color = 0;
-		rsxProgramConst* position = 0;
-		rsxProgramConst* direction = 0;
-		rsxProgramConst* constant = 0;
-		rsxProgramConst* linear = 0;
-		rsxProgramConst* quadratic = 0;
-		rsxProgramConst* cutOff = 0;
-		rsxProgramConst* outerCutOff = 0;
+		//rsxProgramConst* index = nullptr;
+		rsxProgramConst* color = nullptr;
+		rsxProgramConst* position = nullptr;
+		rsxProgramConst* direction = nullptr;
+		rsxProgramConst* constant = nullptr;
+		rsxProgramConst* linear = nullptr;
+		rsxProgramConst* quadratic = nullptr;
+		rsxProgramConst* cutOff = nullptr;
+		rsxProgramConst* outerCutOff = nullptr;
 	};
 
 	void Load() override;
@@ -194,6 +197,9 @@ protected:
 	std::vector<DirectionalLightsVariableIds> m_directionallightVariableIds;
 	std::vector<SpotLightVariableIds> m_spotlightVariableIds;
 	std::unordered_map<std::string, RsxProgramConstPair> m_uniformsIds;
+	std::vector<rsxProgramConst*> m_directionalLightIndicesLocations;
+	std::vector<rsxProgramConst*> m_pointLightIndicesLocations;
+	std::vector<rsxProgramConst*> m_spotLightIndicesLocations;
 };
 
 #endif

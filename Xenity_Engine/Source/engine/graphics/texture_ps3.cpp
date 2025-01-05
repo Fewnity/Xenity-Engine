@@ -54,20 +54,27 @@ void TexturePS3::OnLoadFileReferenceFinished()
 void TexturePS3::SetData(const unsigned char* texData)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
 	XASSERT(texData != nullptr, "[TexturePS3::SetTextureLevel] texData is nullptr");
 
-	m_ps3buffer = (unsigned char*)rsxMemalign(128, (GetWidth() * GetHeight() * 4));
+	if (!isFloatFormat)
+	{
+		m_ps3buffer = (unsigned char*)rsxMemalign(128, (GetWidth() * GetHeight() * 4));
+	}
+	else if (isFloatFormat)
+	{
+		m_ps3buffer = (unsigned char*)rsxMemalign(128, (GetWidth() * GetHeight() * 4 * sizeof(float)));
+	}
+
 	if (!m_ps3buffer)
 		return;
 
 	unsigned char* upBuffer = m_ps3buffer;
 	for (int i = 0; i < GetWidth() * GetHeight() * 4; i += 4)
 	{
-		upBuffer[i + 0] = m_buffer[(i + 3)];
-		upBuffer[i + 1] = m_buffer[(i + 0)];
-		upBuffer[i + 2] = m_buffer[(i + 1)];
-		upBuffer[i + 3] = m_buffer[(i + 2)];
+		upBuffer[i + 0] = texData[(i + 3)];
+		upBuffer[i + 1] = texData[(i + 0)];
+		upBuffer[i + 2] = texData[(i + 1)];
+		upBuffer[i + 3] = texData[(i + 2)];
 	}
 
 	isValid = true;
@@ -85,10 +92,21 @@ void TexturePS3::Bind() const
 	gcmContextData* context = RendererRSX::context;
 	rsxInvalidateTextureCache(context, GCM_INVALIDATE_TEXTURE);
 
-	uint32_t pitch = (GetWidth() * 4);
-	gcmTexture gcmTexture;
+	uint32_t resolutionMultiplier = 1;
+	if (isFloatFormat)
+	{
+		resolutionMultiplier = 4;
+	}
 
-	gcmTexture.format = (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
+	gcmTexture gcmTexture;
+	if (!isFloatFormat)
+	{
+		gcmTexture.format = (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
+	}
+	else
+	{
+		gcmTexture.format = (GCM_TEXTURE_FORMAT_W32_Z32_Y32_X32_FLOAT | GCM_TEXTURE_FORMAT_LIN | GCM_TEXTURE_FORMAT_UNRM);
+	}
 	gcmTexture.mipmap = 1;
 	gcmTexture.dimension = GCM_TEXTURE_DIMS_2D;
 	gcmTexture.cubemap = GCM_FALSE;
@@ -100,17 +118,30 @@ void TexturePS3::Bind() const
 		(GCM_TEXTURE_REMAP_COLOR_G << GCM_TEXTURE_REMAP_COLOR_G_SHIFT) |
 		(GCM_TEXTURE_REMAP_COLOR_R << GCM_TEXTURE_REMAP_COLOR_R_SHIFT) |
 		(GCM_TEXTURE_REMAP_COLOR_A << GCM_TEXTURE_REMAP_COLOR_A_SHIFT));
-	gcmTexture.width = GetWidth();
-	gcmTexture.height = GetHeight();
+	gcmTexture.width = GetWidth() * resolutionMultiplier;
+	gcmTexture.height = GetHeight() * resolutionMultiplier;
 	gcmTexture.depth = 1;
 	gcmTexture.location = GCM_LOCATION_RSX;
-	gcmTexture.pitch = pitch;
+	gcmTexture.pitch = GetWidth() * 4 * resolutionMultiplier;
 	gcmTexture.offset = offset;
 
 	const ShaderRSX& rsxShader = dynamic_cast<const ShaderRSX&>(*Graphics::s_currentShader);
 
-	rsxLoadTexture(context, rsxShader.m_textureUnit->index, &gcmTexture);
-	rsxTextureControl(context, rsxShader.m_textureUnit->index, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
+	uint8_t textureUnitIndex = rsxShader.m_textureUnit->index;
+	if(isFloatFormat)
+	{
+		if (rsxShader.m_lightingDataTextureUnit)
+		{
+			textureUnitIndex = rsxShader.m_lightingDataTextureUnit->index;
+		}
+		else 
+		{
+			return;
+		}
+	}
+
+	rsxLoadTexture(context, textureUnitIndex, &gcmTexture);
+	rsxTextureControl(context, textureUnitIndex, GCM_TRUE, 0 << 8, 12 << 8, GCM_TEXTURE_MAX_ANISO_1);
 	int minFilterValue = GCM_TEXTURE_LINEAR;
 	int magfilterValue = GCM_TEXTURE_LINEAR;
 	if (GetFilter() == Filter::Point)
@@ -118,10 +149,10 @@ void TexturePS3::Bind() const
 		minFilterValue = GCM_TEXTURE_NEAREST;
 		magfilterValue = GCM_TEXTURE_NEAREST;
 	}
-	rsxTextureFilter(context, rsxShader.m_textureUnit->index, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
+	rsxTextureFilter(context, textureUnitIndex, 0, minFilterValue, magfilterValue, GCM_TEXTURE_CONVOLUTION_QUINCUNX);
 	const int wrap = GetWrapModeEnum(GetWrapMode());
 
-	rsxTextureWrapMode(context, rsxShader.m_textureUnit->index, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
+	rsxTextureWrapMode(context, textureUnitIndex, wrap, wrap, wrap, 0, GCM_TEXTURE_ZFUNC_LESS, 0);
 }
 
 int TexturePS3::GetWrapModeEnum(WrapMode wrapMode) const

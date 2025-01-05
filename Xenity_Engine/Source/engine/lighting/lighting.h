@@ -170,6 +170,7 @@ protected:
 	friend class RendererGU;
 	friend class RendererGsKit;
 	friend class RendererVU1;
+	friend class RendererRSX;
 
 	std::vector<Vector3> m_worldChunkPositions;
 	int m_indexInLightList = -1;

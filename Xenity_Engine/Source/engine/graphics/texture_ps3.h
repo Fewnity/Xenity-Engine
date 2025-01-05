@@ -28,13 +28,13 @@ public:
 	~TexturePS3();
 
 	unsigned char* m_ps3buffer = nullptr;
-	
-protected:
-	void OnLoadFileReferenceFinished() override;
-
+	bool isFloatFormat = false;
 	void SetData(const unsigned char* data) override;
 
 	void Bind() const override;
+protected:
+	void OnLoadFileReferenceFinished() override;
+
 	int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
 
