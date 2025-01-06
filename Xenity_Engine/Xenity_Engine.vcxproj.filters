@@ -342,6 +342,7 @@
     <ClCompile Include="Source\unit_tests\engine\unit_test_endian.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_reflection.cpp" />
     <ClCompile Include="Source\editor\ui\menus\database_checker_menu.cpp" />
+    <ClCompile Include="Source\editor\update_checker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -792,6 +793,7 @@
     <ClInclude Include="Source\editor\ui\menus\engine_debug_menu.h" />
     <ClInclude Include="Source\editor\ui\menus\database_checker_menu.h" />
     <ClInclude Include="Source\engine\file_system\data_base\integrity_state.h" />
+    <ClInclude Include="Source\editor\update_checker.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />
