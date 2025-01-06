@@ -124,7 +124,7 @@ public:
 	* @return Menu of type T or nullptr if not found
 	*/
 	template <typename T>
-	static std::shared_ptr<T> GetMenu()
+	static std::shared_ptr<T> GetMenu(bool createIfNotFound = true)
 	{
 		for (int i = 0; i < menuCount; i++)
 		{
@@ -132,6 +132,10 @@ public:
 			{
 				return menu;
 			}
+		}
+		if (createIfNotFound)
+		{
+			return AddMenu<T>(true);
 		}
 		return nullptr;
 	}
