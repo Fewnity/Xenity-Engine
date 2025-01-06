@@ -110,8 +110,8 @@ void DataBaseCheckerMenu::Draw()
 				if (ImGui::BeginTable("meta_file_table", 7, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_Resizable))
 				{
 					ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch);
-					ImGui::TableSetupColumn("Id", ImGuiTableColumnFlags_WidthStretch);
 					ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthStretch);
+					ImGui::TableSetupColumn("Id", ImGuiTableColumnFlags_WidthStretch);
 					ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthStretch);
 					ImGui::TableSetupColumn("Position", ImGuiTableColumnFlags_WidthStretch);
 					ImGui::TableSetupColumn("Meta Size", ImGuiTableColumnFlags_WidthStretch);
