@@ -9,6 +9,9 @@
 #if defined(__PS3__)
 
 #include <vector>
+
+#include <rsx/rsx.h>
+
 #include <engine/api.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
@@ -37,7 +40,8 @@ protected:
 
 	int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
-
+	gcmTexture m_gcmTexture;
+	uint32_t m_textureOffset = 0;
 };
 
 #endif
