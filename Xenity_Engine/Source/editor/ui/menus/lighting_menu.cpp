@@ -27,32 +27,17 @@ void LightingMenu::Draw()
 		bool changed = false;
 		ImGui::Text("Lighting");
 		ImGui::Separator();
-		EditorUI::DrawInput("Skybox", Graphics::s_settings.skybox);
 
-		//std::shared_ptr<int> t;
-		//std::reference_wrapper<std::shared_ptr<int>> ref = std::ref(t);
-		//EditorUI::DrawFileReference(&ref, "r", t);
-
-		if (EditorUI::DrawInput("Color", Graphics::s_settings.skyColor) != ValueInputState::NO_CHANGE)
-			changed = true;
-
-		/*ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Text("Fog");
-		ImGui::Separator();
-
-		if (EditorUI::DrawInputTemplate("Enabled", Graphics::settings.isFogEnabled) != ValueInputState::NO_CHANGE)
-			changed = true;
-		if (EditorUI::DrawInputTemplate("Start", Graphics::settings.fogStart) != ValueInputState::NO_CHANGE)
-			changed = true;
-		if (EditorUI::DrawInputTemplate("End", Graphics::settings.fogEnd) != ValueInputState::NO_CHANGE)
-			changed = true;
-		if (EditorUI::DrawInput("Color", Graphics::settings.fogColor) != ValueInputState::NO_CHANGE)
-			changed = true;*/
-
-		if (changed)
+		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(AssetPlatform::AP_Standalone);
+		EditorUI::DrawReflectiveData(reflectiveDataToDraw, Graphics::s_settings.GetReflectiveData(), nullptr);
+		if (reflectiveDataToDraw.command)
 		{
+			CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
 			Graphics::OnLightingSettingsReflectionUpdate();
+		}
+		if (ImGui::Button("Save"))
+		{
+			ProjectManager::SaveProjectSettings();
 		}
 
 		CalculateWindowValues();
