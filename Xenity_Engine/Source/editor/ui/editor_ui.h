@@ -476,9 +476,9 @@ public:
 			else
 				inputText = "Filled but invalid file reference (" + classInfo->name + ")";
 
-			inputText += " " + std::to_string(ptr->m_fileId) + " ";
+			/*inputText += " " + std::to_string(ptr->m_fileId) + " ";
 			if (ptr->m_file)
-				inputText += " " + std::to_string(ptr->m_file->GetUniqueId()) + " ";
+				inputText += " " + std::to_string(ptr->m_file->GetUniqueId()) + " ";*/
 		}
 		const InputButtonState returnValue = DrawInputButton(variableName, inputText, true);
 		if (returnValue == InputButtonState::ResetValue)
