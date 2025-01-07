@@ -300,12 +300,15 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 		{
 			fileExplorerRightClickMenu.AddItem("Create material for this", [&fileExplorerItem]()
 				{
-					std::shared_ptr<File> file = Editor::CreateNewFile(fileExplorerItem.directory->path + "\\newMaterial", FileType::File_Material, true);
+					const std::string path = fileExplorerItem.directory->path + "\\" + fileExplorerItem.file->m_file->GetFileName();
+					std::shared_ptr<File> file = Editor::CreateNewFile(path, FileType::File_Material, true);
 					if (file) 
 					{
 						std::shared_ptr<FileReference> newMaterialFileRef = ProjectManager::GetFileReferenceByFile(*file);
 						std::shared_ptr<Material> newMaterial = std::dynamic_pointer_cast<Material>(newMaterialFileRef);
 						newMaterial->SetTexture(std::dynamic_pointer_cast<Texture>(fileExplorerItem.file));
+						newMaterial->SetShader(AssetManager::standardShader);
+						newMaterial->SetUseLighting(true);
 						newMaterialFileRef->OnReflectionUpdated();
 					}
 				});
