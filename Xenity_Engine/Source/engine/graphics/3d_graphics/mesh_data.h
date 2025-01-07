@@ -79,7 +79,7 @@ public:
 		SubMesh() = default;
 		void FreeData();
 		~SubMesh();
-		unsigned short *indices = nullptr;
+		void *indices = nullptr;
 		MeshData* meshData = nullptr;
 		void *data = nullptr;
 		uint32_t vertexMemSize = 0;
@@ -112,6 +112,7 @@ public:
 #if defined(__PSP__)
 		bool isOnVram = true;
 #endif
+		bool isShortIndices = true;
 	};
 
 	MeshData();

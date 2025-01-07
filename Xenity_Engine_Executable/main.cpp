@@ -28,6 +28,7 @@ Reload material file on game stop
 Implement alpha testing on shaders
 System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
 Add lighting on PS3
+Add unsigned int indices support on PSP
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 

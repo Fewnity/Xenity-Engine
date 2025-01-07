@@ -168,12 +168,13 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 	mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 5 + indice, 0);
 
 	std::unique_ptr<MeshData::SubMesh>& subMesh = mesh->m_subMeshes[0];
-	subMesh->indices[0 + indiceIndex] = 0 + indice;
-	subMesh->indices[1 + indiceIndex] = 2 + indice;
-	subMesh->indices[2 + indiceIndex] = 1 + indice;
-	subMesh->indices[3 + indiceIndex] = 3 + indice;
-	subMesh->indices[4 + indiceIndex] = 4 + indice;
-	subMesh->indices[5 + indiceIndex] = 5 + indice;
+	subMesh->isShortIndices = true;
+	((unsigned short*)subMesh->indices)[0 + indiceIndex] = 0 + indice;
+	((unsigned short*)subMesh->indices)[1 + indiceIndex] = 2 + indice;
+	((unsigned short*)subMesh->indices)[2 + indiceIndex] = 1 + indice;
+	((unsigned short*)subMesh->indices)[3 + indiceIndex] = 3 + indice;
+	((unsigned short*)subMesh->indices)[4 + indiceIndex] = 4 + indice;
+	((unsigned short*)subMesh->indices)[5 + indiceIndex] = 5 + indice;
 }
 
 TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, std::shared_ptr<Font> font, float scale)

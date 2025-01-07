@@ -306,9 +306,10 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 
 			for (int subMeshIndex = 0; subMeshIndex < currentSubMesh + 1; subMeshIndex++)
 			{
-				const SubMesh* submesh = submeshes[subMeshIndex];
+				SubMesh* submesh = submeshes[subMeshIndex];
 				// Push vertices in the right order
 				const int vertexIndicesSize = (int)submesh->vertexIndices.size();
+				
 				for (int i = 0; i < vertexIndicesSize; i++)
 				{
 					const unsigned int vertexIndex = submesh->vertexIndices[i] - 1;
@@ -370,7 +371,16 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 						}
 					}
 					if (mesh.m_hasIndices)
-						mesh.m_subMeshes[subMeshIndex]->indices[i] = i;
+					{
+						if (mesh.m_subMeshes[subMeshIndex]->isShortIndices)
+						{
+							((unsigned short*)mesh.m_subMeshes[subMeshIndex]->indices)[i] = i;
+						}
+						else
+						{
+							((unsigned int*)mesh.m_subMeshes[subMeshIndex]->indices)[i] = i;
+						}
+					}
 				}
 				if (stop)
 				{

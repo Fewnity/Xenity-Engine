@@ -720,8 +720,8 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	//	GCM_USER_CLIP_PLANE_DISABLE);
 
 	//rsxInvalidateVertexCache(context);
-	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, subMesh.indicesOffset, subMesh.index_count, GCM_INDEX_TYPE_16B, GCM_LOCATION_RSX);
-	//rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, offset, subMesh.index_count, GCM_INDEX_TYPE_16B, GCM_LOCATION_RSX);
+	const int indiceMode = subMesh.isShortIndices ? GCM_INDEX_TYPE_16B : GCM_INDEX_TYPE_32B;
+	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, subMesh.indicesOffset, subMesh.index_count, indiceMode, GCM_LOCATION_RSX);
 	rsxSetDepthWriteEnable(context, GCM_TRUE);
 }
 

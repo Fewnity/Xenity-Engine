@@ -423,7 +423,8 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	}
 	else
 	{
-		glDrawElements(GL_TRIANGLES, subMesh.index_count, GL_UNSIGNED_SHORT, 0);
+		const int indiceMode = subMesh.isShortIndices ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+		glDrawElements(GL_TRIANGLES, subMesh.index_count, indiceMode, 0);
 	}
 	glBindVertexArray(0);
 
@@ -764,7 +765,8 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 		if (newSubMesh->EBO == 0)
 			newSubMesh->EBO = CreateBuffer();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newSubMesh->EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
+		size_t vertexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexSize * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
 
 		int stride;
 

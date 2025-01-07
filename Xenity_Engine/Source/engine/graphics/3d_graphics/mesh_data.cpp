@@ -466,15 +466,25 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 
 	std::unique_ptr<MeshData::SubMesh> newSubMesh = std::make_unique<MeshData::SubMesh>();
 	newSubMesh->meshData = this;
+	if (index_count >= std::numeric_limits<unsigned short>::max())
+	{
+		newSubMesh->isShortIndices = false;
+	}
+	else
+	{
+		newSubMesh->isShortIndices = true;
+	}
+
 	if (index_count != 0 && m_hasIndices)
 	{
-		newSubMesh->indexMemSize = sizeof(unsigned short) * index_count;
+		const size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
+		newSubMesh->indexMemSize = indexSize * index_count;
 #if defined(__PSP__)
-		newSubMesh->indices = (unsigned short*)memalign(16, newSubMesh->indexMemSize);
+		newSubMesh->indices = memalign(16, newSubMesh->indexMemSize);
 #elif defined(__PS3__)
-		newSubMesh->indices = (unsigned short*)rsxMemalign(128, newSubMesh->indexMemSize);
+		newSubMesh->indices = rsxMemalign(128, newSubMesh->indexMemSize);
 #else
-		newSubMesh->indices = (unsigned short*)malloc(newSubMesh->indexMemSize);
+		newSubMesh->indices = malloc(newSubMesh->indexMemSize);
 #endif
 
 #if defined (DEBUG)
@@ -590,7 +600,14 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 	newSubMesh->vertice_count = vcount;
 
 #if defined(__PS3__)
-	rsxAddressToOffset(&newSubMesh->indices[0], &newSubMesh->indicesOffset);
+	if (newSubMesh->isShortIndices)
+	{
+		rsxAddressToOffset(&((unsigned short*)newSubMesh->indices)[0], &newSubMesh->indicesOffset);
+	}
+	else 
+	{
+		rsxAddressToOffset(&((unsigned int*)newSubMesh->indices)[0], &newSubMesh->indicesOffset);
+	}
 	if ((int)newSubMesh->meshData->GetVertexDescriptor() & (int)VertexElements::NORMAL_32_BITS)
 	{
 		rsxAddressToOffset(&((VertexNormalsNoColor*)newSubMesh->data)[0].normX, &newSubMesh->normalOffset);

@@ -42,13 +42,13 @@ void SpriteManager::Init()
 	s_spriteMeshData->m_hasIndices = true;
 
 	std::unique_ptr<MeshData::SubMesh>& subMesh = s_spriteMeshData->m_subMeshes[0];
-	subMesh->indices[0] = 0;
-	subMesh->indices[1] = 2;
-	subMesh->indices[2] = 1;
-	subMesh->indices[3] = 2;
-	subMesh->indices[4] = 0;
-	subMesh->indices[5] = 3;
-
+	subMesh->isShortIndices = true;
+	((unsigned short*)subMesh->indices)[0] = 0;
+	((unsigned short*)subMesh->indices)[1] = 2;
+	((unsigned short*)subMesh->indices)[2] = 1;
+	((unsigned short*)subMesh->indices)[3] = 2;
+	((unsigned short*)subMesh->indices)[4] = 0;
+	((unsigned short*)subMesh->indices)[5] = 3;
 	s_spriteMeshData->OnLoadFileReferenceFinished();
 
 #if defined(__PSP__)
