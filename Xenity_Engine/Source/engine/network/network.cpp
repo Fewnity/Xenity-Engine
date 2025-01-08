@@ -19,6 +19,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #elif defined(_WIN32) || defined(_WIN64)
+#define _WINSOCK_DEPRECATED_NO_WARNINGS 1
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
@@ -273,7 +274,9 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port);
+	auto phost = gethostbyname(address.c_str());
 
+	//serv_addr.sin_addr = *(in_addr*)(phost->h_addr);
 	if (inet_pton(AF_INET, address.c_str(), &serv_addr.sin_addr) <= 0)
 	{
 		Debug::PrintError("[NetworkManager::CreateSocket] inet_pton error occured");

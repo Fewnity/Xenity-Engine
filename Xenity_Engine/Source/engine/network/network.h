@@ -76,6 +76,7 @@ public:
 private:
 	friend class Engine;
 	friend class Graphics;
+	friend class UpdateChecker;
 
 	/**
 	* @brief [Internal] Init network manager
