@@ -2,20 +2,58 @@
 
 #include <engine/network/network.h>  
 #include <engine/debug/debug.h>
+#include <curl/curl.h>
+
+#include <json.hpp>
+
+using json = nlohmann::json;
+
+static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp)
+{
+	((std::string*)userp)->append((char*)contents, size * nmemb);
+	return size * nmemb;
+}
 
 bool UpdateChecker::CheckForUpdate()
 {
-	std::shared_ptr<Socket> socket = NetworkManager::CreateSocket("www.api.github.com", 443);
-	socket->SendData("GET / HTTP/1.1\r\n");
-	socket->SendData("Host: www.api.github.com\r\nAccept: text/html\r\n\r\n");
-	std::string data;
-	while (data.empty())
+	CURL* curl = curl_easy_init();
+	if (curl)
 	{
-	NetworkManager::Update();
-	data = socket->GetIncommingData();
+		CURLcode res;
+		std::string readBuffer;
 
+		//curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/Fewnity/Xenity-Engine-SDK/releases");
+		curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/skiff/PS3-Toolbox/releases");
+		curl_easy_setopt(curl, CURLOPT_USERAGENT, "Xenity");
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+		res = curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+		if (res == CURLE_OK)
+		{
+			try
+			{
+				const json j = json::parse(readBuffer);
+				for (auto& release : j)
+				{
+					std::string tagName = release["tag_name"];
+					Debug::Print("Tag name: " + tagName);
+					/*if (tagName == "v1.0.0")
+					{
+						return true;
+					}*/
+				}
+			}
+			catch (const std::exception&)
+			{
+
+			}
+		}
+		else 
+		{
+			return false;
+		}
 	}
-	Debug::Print(data);
 
-    return false;
+	return false;
 }
