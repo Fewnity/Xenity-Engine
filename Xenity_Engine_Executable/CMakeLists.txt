@@ -173,7 +173,7 @@ vita_create_vpk(${GAME_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
   FILE assets assets
   FILE public_engine_assets public_engine_assets
   FILE data.xenb data.xenb
-  FILE db.bin db.bin
+  FILE db.xenb db.xenb
 )
 elseif(MODE STREQUAL "LINUX") #--------------------------------------------- LINUX
 message(STATUS "BUILD LINUX")
