@@ -115,6 +115,8 @@ void ShaderRSX::Load()
 		m_projMatrix = rsxVertexProgramGetConst(m_vertexProgram, "projection");
 		m_viewMatrix = rsxVertexProgramGetConst(m_vertexProgram, "camera");
 		m_modelMatrix = rsxVertexProgramGetConst(m_vertexProgram, "model");
+		m_MVPMatrix = rsxVertexProgramGetConst(m_vertexProgram, "MVP");
+		m_normalMatrix = rsxVertexProgramGetConst(m_vertexProgram, "normalMatrix");
 	}
 
 	{
@@ -183,10 +185,6 @@ bool ShaderRSX::Compile(const std::string& shaderData, ShaderType type)
 /// </summary>
 void ShaderRSX::SetShaderCameraPosition()
 {
-	if(m_viewMatrix)
-	{
-		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_viewMatrix, (float*)&Graphics::usedCamera->viewMatrix);
-	}
 }
 
 /// <summary>
@@ -201,10 +199,6 @@ void ShaderRSX::SetShaderCameraPositionCanvas()
 /// </summary>
 void ShaderRSX::SetShaderProjection()
 {
-	if(m_projMatrix)
-	{
-		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_projMatrix, (float*)&Graphics::usedCamera->GetProjection());
-	}
 }
 
 void ShaderRSX::SetShaderProjectionCanvas()
@@ -220,6 +214,16 @@ void ShaderRSX::SetShaderModel(const glm::mat4& trans)
 	if(m_modelMatrix)
 	{
 		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_modelMatrix, (float*)&trans);
+	}
+	if (m_MVPMatrix)
+	{
+		const glm::mat4 MVP = Graphics::usedCamera->GetProjection() * Graphics::usedCamera->viewMatrix * trans;
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_MVPMatrix, (float*)&MVP);
+	}
+	if (m_normalMatrix)
+	{
+		const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(trans)));
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_normalMatrix, (float*)&normalMatrix);
 	}
 }
 

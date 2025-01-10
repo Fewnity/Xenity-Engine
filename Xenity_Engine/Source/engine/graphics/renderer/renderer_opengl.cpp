@@ -45,9 +45,11 @@ int RendererOpengl::Init()
 
 	int result = 1;
 #if defined(__vita__)
-	//result = vglInit(0x100000);
-	result = vglInit(0);
-	//result = vglInitExtended(0, 960, 544, 0x1000000, SCE_GXM_MULTISAMPLE_NONE);
+#if defined(VITA_USE_MSAA)
+	result = vglInitExtended(0, 960, 544, 0x1000000, SCE_GXM_MULTISAMPLE_4X);
+#else
+	result = vglInitExtended(0, 960, 544, 0x1000000, SCE_GXM_MULTISAMPLE_NONE);
+#endif
 
 	// Enabling V-Sync
 	//vglWaitVblankStart(GL_FALSE);
@@ -55,7 +57,9 @@ int RendererOpengl::Init()
 	//vglSetupRuntimeShaderCompiler(SHARK_OPT_UNSAFE, SHARK_ENABLE, SHARK_ENABLE, SHARK_ENABLE);
 
 	if (result == 0)
+	{
 		result = 1;
+	}
 
 	Window::SetResolution(960, 544);
 #elif defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)

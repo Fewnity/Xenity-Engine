@@ -297,6 +297,11 @@ void ShaderOpenGL::SetShaderProjectionCanvas()
 void ShaderOpenGL::SetShaderModel(const glm::mat4& trans)
 {
 	SetShaderAttribut(m_modelLocation, trans);
+	const glm::mat4 MVP = Graphics::usedCamera->GetProjection() * Graphics::usedCamera->viewMatrix * trans;
+	const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(trans)));
+
+	SetShaderAttribut(m_MVPLocation, MVP);
+	SetShaderAttribut(m_normalMatrixLocation, normalMatrix);
 }
 
 /// <summary>
@@ -317,7 +322,7 @@ void ShaderOpenGL::SetShaderModel(const Vector3& position, const Vector3& rotati
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
 
-	SetShaderAttribut(m_modelLocation, transformationMatrix);
+	SetShaderModel(transformationMatrix);
 }
 
 void ShaderOpenGL::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling)
@@ -441,6 +446,8 @@ void ShaderOpenGL::Link()
 	Engine::GetRenderer().UseShaderProgram(m_programId);
 
 	m_modelLocation = GetShaderUniformLocation("model");
+	m_MVPLocation = GetShaderUniformLocation("MVP");
+	m_normalMatrixLocation = GetShaderUniformLocation("normalMatrix");
 	m_projectionLocation = GetShaderUniformLocation("projection");
 	m_cameraLocation = GetShaderUniformLocation("camera");
 	m_ambientLightLocation = GetShaderUniformLocation("ambientLight");

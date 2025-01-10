@@ -181,6 +181,8 @@ protected:
 	unsigned int m_tessellationEvaluationShaderId = 0;
 	unsigned int m_programId = 0;
 	unsigned int m_modelLocation = 0;
+	unsigned int m_MVPLocation = 0;
+	unsigned int m_normalMatrixLocation = 0;
 	unsigned int m_projectionLocation = 0;
 	unsigned int m_cameraLocation = 0;
 	unsigned int m_ambientLightLocation = 0;

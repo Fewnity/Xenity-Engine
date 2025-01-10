@@ -70,9 +70,6 @@ static uint32_t sResolutionIds[] = {
 };
 static size_t RESOLUTION_ID_COUNT = sizeof(sResolutionIds) / sizeof(uint32_t);
 
-// fragment shader
-rsxProgramAttrib* RendererRSX::textureUnit = nullptr;
-
 
 extern "C"
 {
@@ -357,6 +354,8 @@ int RendererRSX::Init()
 	setDrawEnv();
 	setRenderTarget(curr_fb);
 
+	gcmSetFlipMode(GCM_FLIP_HSYNC); // Disable VSYNC
+
 	unsigned char* textureData = new unsigned char[4 * 8 * 32];
 	std::shared_ptr<Texture> newTexture = Texture::MakeTexture();
 	m_lighintDataTexture = std::dynamic_pointer_cast<TexturePS3>(newTexture);
@@ -528,11 +527,6 @@ void RendererRSX::SetClearColor(const Color& color)
 
 void RendererRSX::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)
 {
-	// sceGumMatrixMode(GU_PROJECTION);
-	// sceGumLoadIdentity();
-	// const float halfRatio = Graphics::usedCamera->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
-	// const float halfOne = 0.5f * 10 * (projectionSize / 5.0f);
-	// sceGumOrtho(-halfRatio, halfRatio, -halfOne, halfOne, nearClippingPlane, farClippingPlane);
 }
 
 void RendererRSX::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
@@ -541,9 +535,6 @@ void RendererRSX::SetProjection3D(float fov, float nearClippingPlane, float farC
 
 void RendererRSX::ResetView()
 {
-	// sceGumMatrixMode(GU_VIEW);
-	// sceGumLoadIdentity();
-	// sceGumRotateY(3.14159f);
 }
 
 void RendererRSX::SetCameraPosition(const Camera& camera)
@@ -552,38 +543,14 @@ void RendererRSX::SetCameraPosition(const Camera& camera)
 
 void RendererRSX::SetCameraPosition(const Vector3& position, const Vector3& rotation)
 {
-	// sceGumMatrixMode(GU_VIEW);
-	// sceGumLoadIdentity();
-
-	// sceGumRotateZ((-rotation.z) / 180.0f * 3.14159f);
-	// sceGumRotateX(rotation.x / 180.0f * 3.14159f);
-	// sceGumRotateY((rotation.y + 180) / 180.0f * 3.14159f);
-
-	// ScePspFVector3 v = { position.x, -position.y, -position.z };
-	// sceGumTranslate(&v);
 }
 
 void RendererRSX::ResetTransform()
 {
-	// sceGumMatrixMode(GU_MODEL);
-	// sceGumLoadIdentity();
 }
 
 void RendererRSX::SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform)
 {
-	// sceGumMatrixMode(GU_MODEL);
-	// if (resetTransform)
-	// 	sceGumLoadIdentity();
-
-	// ScePspFVector3 vt = { -position.x, position.y, position.z };
-	// sceGumTranslate(&vt);
-
-	// sceGumRotateY(-rotation.y * 3.14159265359 / 180.0f);
-	// sceGumRotateX(rotation.x * 3.14159265359 / 180.0f);
-	// sceGumRotateZ(-rotation.z * 3.14159265359 / 180.0f);
-
-	// ScePspFVector3 vs = { scale.x, scale.y, scale.z };
-	// sceGumScale(&vs);
 }
 
 void RendererRSX::SetTransform(const glm::mat4& mat)
@@ -610,7 +577,6 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	ShaderRSX& rsxShader = dynamic_cast<ShaderRSX&>(*Graphics::s_currentShader);
 	uint32_t offset = 0;
 
-	//return;
 	if (lastSettings.useDepth != settings.useDepth)
 	{
 		if (settings.useDepth)
@@ -744,78 +710,10 @@ void RendererRSX::SetTextureData(const Texture& texture, unsigned int textureTyp
 
 void RendererRSX::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)
 {
-	// if (lightIndex >= maxLightCount)
-	// 	return;
-
-	// float intensity = light.m_intensity;
-	// const Color& color = light.color;
-	// const LightType& type = light.m_type;
-	// const RGBA& rgba = color.GetRGBA();
-
-	// sceGuEnable(GU_LIGHT0 + lightIndex);
-
-	// if (lastUpdatedLights[lightIndex] == &light)
-	// 	return;
-
-	// lastUpdatedLights[lightIndex] = &light;
-
-	// if (intensity > 1)
-	// 	intensity = 1;
-
-	// float typeIntensity = 1;
-	// if (type == LightType::Directional)
-	// 	typeIntensity = 2;
-
-	// const Color fixedColor = Color::CreateFromRGBAFloat(rgba.r * intensity * typeIntensity, rgba.g * intensity * typeIntensity, rgba.b * intensity * typeIntensity, 1);
-	// //color.SetFromRGBAfloat(rgba.r * intensity, rgba.g * intensity, rgba.b * intensity, 1);
-	// ScePspFVector3 pos = { -lightPosition.x, lightPosition.y, lightPosition.z };
-	// ScePspFVector3 rot = { lightDirection.x, lightDirection.y, lightDirection.z };
-	// if (type == LightType::Directional)
-	// {
-	// 	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
-	// 	sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
-	// 	sceGuLightColor(lightIndex, GU_DIFFUSE, fixedColor.GetUnsignedIntABGR());
-	// }
-	// else if (type == LightType::Ambient)
-	// {
-	// 	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
-	// 	sceGuLightColor(lightIndex, GU_AMBIENT, fixedColor.GetUnsignedIntABGR());
-	// 	sceGuLightColor(lightIndex, GU_DIFFUSE, 0x00000000);
-	// }
-	// else if (type == LightType::Spot)
-	// {
-	// 	sceGuLight(lightIndex, GU_SPOTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
-	// 	sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
-	// 	sceGuLightColor(lightIndex, GU_DIFFUSE, fixedColor.GetUnsignedIntABGR());
-
-	// 	sceGuLightSpot(lightIndex, &rot, light.GetSpotSmoothness() * 5, 1 - (light.GetSpotAngle() * light.GetSpotAngle()) / 8100);
-	// }
-	// else
-	// {
-	// 	sceGuLight(lightIndex, GU_POINTLIGHT, GU_AMBIENT_AND_DIFFUSE, &pos);
-	// 	sceGuLightColor(lightIndex, GU_DIFFUSE, fixedColor.GetUnsignedIntABGR());
-	// 	sceGuLightColor(lightIndex, GU_AMBIENT, 0x00000000);
-	// }
-	// sceGuLightColor(lightIndex, GU_SPECULAR, 0x00000000);
-
-	// float quadraticAttenuation = light.GetQuadraticValue();
-	// float linearAttenuation = light.GetLinearValue();
-	// float constAttenuation = 1;
-	// if (type == LightType::Directional || type == LightType::Ambient)
-	// {
-	// 	quadraticAttenuation = 0;
-	// 	linearAttenuation = 0;
-	// 	constAttenuation = 0;
-	// }
-	// sceGuLightAtt(lightIndex, constAttenuation, linearAttenuation, quadraticAttenuation);
 }
 
 void RendererRSX::DisableAllLight()
 {
-	// for (int lightIndex = 0; lightIndex < maxLightCount; lightIndex++)
-	// {
-	// 	sceGuDisable(GU_LIGHT0 + lightIndex);
-	// }
 }
 
 void RendererRSX::Setlights(const LightsIndices& lightsIndices)
@@ -878,26 +776,14 @@ void RendererRSX::Setlights(const LightsIndices& lightsIndices)
 
 void RendererRSX::Clear()
 {
-	// sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT /*| GU_STENCIL_BUFFER_BIT*/);
 }
 
 void RendererRSX::SetFog(bool m_active)
 {
-	// if (m_active)
-	// 	sceGuEnable(GU_FOG);
-	// else
-	// 	sceGuDisable(GU_FOG);
-
-	// if (m_active)
-	// 	sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 }
 
 void RendererRSX::SetFogValues(float start, float end, const Color& color)
 {
-	// fogStart = start;
-	// fogEnd = end;
-	// fogColor = color;
-	// sceGuFog(fogStart, fogEnd, fogColor.GetUnsignedIntABGR());
 }
 
 void RendererRSX::DeleteSubMeshData(MeshData::SubMesh& subMesh)

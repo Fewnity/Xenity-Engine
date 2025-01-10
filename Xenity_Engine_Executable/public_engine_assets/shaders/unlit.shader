@@ -5,20 +5,16 @@
 
 layout (location = 0) in vec3 position;
 layout(location = 1) in vec2 uv;
-layout(location = 2) in vec3 normal;
 
 out vec2 TexCoord;
-out vec3 Normal;
 out vec3 FragPos;
 
-uniform mat4 camera;
-uniform mat4 projection;
-
 uniform mat4 model; //Model matrice position, rotation and scale
+uniform mat4 MVP;
 
 void main()
 {
-	gl_Position = projection * camera * model * vec4(position, 1);
+	gl_Position = MVP * vec4(position, 1);
 	TexCoord = uv;
 }
 
@@ -28,7 +24,6 @@ void main()
 
 out vec4 FragColor;
 uniform vec4 color;
-uniform vec3 cameraPos;
 
 in vec2 TexCoord;
 
@@ -60,21 +55,16 @@ void main()
 
 attribute vec3 position;
 attribute vec2 uv;
-attribute vec3 normal;
 
 varying vec2 TexCoord;
-varying vec3 Normal;
 varying vec3 FragPos;
 
-uniform mat4 camera;
-uniform mat4 projection;
-
 uniform mat4 model; //Model matrice position, rotation and scale
+uniform mat4 MVP;
 
 void main()
 {
-	//gl_Position = projection * camera * model * vec4(position, 1);
-	gl_Position = mul(float4(position, 1.0f), mul(model, mul(camera, projection)));
+	gl_Position = mul(float4(position, 1.0f), MVP);
 	TexCoord = uv;
 }
 
@@ -112,22 +102,17 @@ void main()
 void main
 (
 	float3 vertexPosition : POSITION,
-	float3 vertexNormal : NORMAL,
 	float2 vertexTexcoord : TEXCOORD0,
 	
-	uniform float4x4 projection,
-	uniform float4x4 camera,
-	uniform float4x4 model,
+	uniform float4x4 MVP,
 
 	out float4 ePosition : POSITION,
 	out float4 oPosition : TEXCOORD0,
-	out float3 oNormal : TEXCOORD1,
 	out float2 oTexcoord : TEXCOORD2
 )
 {
-	ePosition = mul(float4(vertexPosition, 1.0f), mul(model, mul(camera, projection)));
+	ePosition = mul(float4(vertexPosition, 1.0f), MVP);
 	oPosition = float4(vertexPosition, 1.0f);
-	oNormal = vertexNormal;
 	oTexcoord = vertexTexcoord;
 }
 
@@ -136,7 +121,6 @@ void main
 void main
 (
 	float4 position : TEXCOORD0,
-	float3 normal : TEXCOORD1,
 	float2 texcoord : TEXCOORD2,
 	
 	uniform sampler2D texture,

@@ -37,6 +37,8 @@ public:
 	rsxProgramConst* m_projMatrix = nullptr;
 	rsxProgramConst* m_modelMatrix = nullptr;
 	rsxProgramConst* m_viewMatrix = nullptr;
+	rsxProgramConst* m_MVPMatrix = nullptr;
+	rsxProgramConst* m_normalMatrix = nullptr;
 	rsxProgramConst* m_ambientLightLocation= nullptr;
 	rsxProgramConst* m_tilingLocation = nullptr;
 	rsxProgramConst* m_offsetLocation = nullptr;
