@@ -16,7 +16,7 @@
 // -------------------------------------------------- Version
 //
 // Increase those numbers when you make a new release
-#define ENGINE_VERSION "0.1"
+#define ENGINE_VERSION "0.1.0"
 #define ENGINE_DLL_VERSION "2" // Increase by one this number to invalidate compiled Dlls of games projects
 
 //
