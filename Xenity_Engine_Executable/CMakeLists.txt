@@ -123,11 +123,13 @@ set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d PARENTAL_LEVEL=1")
 include_directories(${VITASDK}/arm-vita-eabi/include)
 
 # Library to link to (drop the -l prefix). This will mostly be stubs.
+# If the file name is libvitaGL.a, use vitaGL
 target_link_libraries(${PROJECT_NAME}
 freetype
 png
   z
-  vitaGL 
+  #vitaGL
+  vitaGL_release
   vita2d 
   SceLibKernel_stub 
   ScePower_stub
