@@ -336,7 +336,7 @@ ValueInputState EditorUI::DrawInput(const std::string& inputName, Color& newValu
 		state = ValueInputState::CHANGED;
 	}
 
-	newValue.SetFromRGBAfloat(color.x, color.y, color.z, color.w);
+	newValue.SetFromRGBAFloat(color.x, color.y, color.z, color.w);
 
 
 	/*bool valueChanged = false;

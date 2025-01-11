@@ -90,7 +90,7 @@ public:
 	* @param b Blue level [0;1]
 	* @param a Alpha level [0;1]
 	*/
-	void SetFromRGBAfloat(float r, float g, float b, float a);
+	void SetFromRGBAFloat(float r, float g, float b, float a);
 
 	/**
 	* @brief Get RGBA

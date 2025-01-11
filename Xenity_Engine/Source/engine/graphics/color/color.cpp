@@ -53,7 +53,7 @@ Color Color::CreateFromRGB(int r, int g, int b)
 Color Color::CreateFromRGBFloat(float r, float g, float b)
 {
 	Color color = Color();
-	color.SetFromRGBAfloat(r, g, b, 1.0f);
+	color.SetFromRGBAFloat(r, g, b, 1.0f);
 	return color;
 }
 
@@ -67,7 +67,7 @@ Color Color::CreateFromRGBA(int r, int g, int b, int a)
 Color Color::CreateFromRGBAFloat(float r, float g, float b, float a)
 {
 	Color color = Color();
-	color.SetFromRGBAfloat(r, g, b, a);
+	color.SetFromRGBAFloat(r, g, b, a);
 	return color;
 }
 
@@ -80,7 +80,7 @@ void Color::SetFromRGBA(int r, int g, int b, int a)
 	UpdateUnsignedInts();
 }
 
-void Color::SetFromRGBAfloat(float r, float g, float b, float a)
+void Color::SetFromRGBAFloat(float r, float g, float b, float a)
 {
 	m_rgba.r = Math::Clamp(r, 0, 1);
 	m_rgba.g = Math::Clamp(g, 0, 1);
@@ -124,7 +124,7 @@ Color& operator*=(Color& color, const Color& colorRight)
 {
 	const Vector4 colorMix = color.GetRGBA().ToVector4() * colorRight.GetRGBA().ToVector4();
 
-	color.SetFromRGBAfloat(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
+	color.SetFromRGBAFloat(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
 
 	return color;
 }
