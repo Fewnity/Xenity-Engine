@@ -126,19 +126,22 @@ CompileResult Compiler::Compile(CompilerParams params)
 		ProjectManager::projectSettings = projectSettingsCopy;
 	}
 
-	CookSettings cookSettings;
-	cookSettings.exportPath = params.tempPath + "cooked_assets/";
-	cookSettings.platform = Application::PlatformToAssetPlatform(params.buildPlatform.platform);
-	if (params.buildType == BuildType::BuildShaders)
+	if (params.buildType != BuildType::EditorHotReloading)
 	{
-		cookSettings.exportShadersOnly = true;
+		CookSettings cookSettings;
+		cookSettings.exportPath = params.tempPath + "cooked_assets/";
+		cookSettings.platform = Application::PlatformToAssetPlatform(params.buildPlatform.platform);
+		if (params.buildType == BuildType::BuildShaders)
+		{
+			cookSettings.exportShadersOnly = true;
+		}
+		else
+		{
+			cookSettings.exportShadersOnly = false;
+		}
+		Cooker::CookAssets(cookSettings);
 	}
-	else
-	{
-		cookSettings.exportShadersOnly = false;
-	}
-	Cooker::CookAssets(cookSettings);
-	
+
 	CleanDestinationFolder(params.exportPath);
 
 	// Compile depending on platform
