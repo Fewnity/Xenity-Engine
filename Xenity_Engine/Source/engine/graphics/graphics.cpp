@@ -559,7 +559,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 
 	XASSERT(usedCamera != nullptr, "[Graphics::DrawSubMesh] usedCamera is nullptr");
 
-	if (texture == nullptr)
+	if (texture == nullptr || texture->GetFileStatus() != FileStatus::FileStatus_Loaded)
 	{
 		texture = AssetManager::defaultTexture.get();
 	}
