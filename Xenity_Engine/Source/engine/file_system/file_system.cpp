@@ -33,13 +33,14 @@
 #endif
 
 #include <engine/debug/debug.h>
+#include <engine/constants.h>
+
 #include "directory.h"
 #include "file.h"
 #include "file_psp.h"
 #include "file_ps2.h"
 #include "file_ps3.h"
 #include "file_default.h"
-#include <engine/constants.h>
 
 FileSystem* FileSystem::s_fileSystem = nullptr;
 
