@@ -58,12 +58,12 @@ ShaderRSX::SpotLightVariableIds::SpotLightVariableIds(int index, rsxFragmentProg
 
 ShaderRSX::~ShaderRSX()
 {
-	
+
 }
 
 void ShaderRSX::Init()
 {
-	
+
 }
 
 void ShaderRSX::Load()
@@ -83,7 +83,7 @@ void ShaderRSX::Load()
 	m_vertexProgram = (rsxVertexProgram*)fullShader;
 
 	// Check magic numbers and if the file is corrupted, the vertex shader size may be greater than the full shader size
-	if(((char*)m_vertexProgram)[0] != 'V' || ((char*)m_vertexProgram)[1] != 'P' || vertexShaderCodeSize >= size)
+	if (((char*)m_vertexProgram)[0] != 'V' || ((char*)m_vertexProgram)[1] != 'P' || vertexShaderCodeSize >= size)
 	{
 		Debug::PrintError("Vertex program corrupted!");
 		m_fileStatus = FileStatus::FileStatus_Failed;
@@ -101,7 +101,7 @@ void ShaderRSX::Load()
 	m_fragmentProgram = (rsxFragmentProgram*)fullShader;
 
 	// Check magic numbers and if the file is corrupted, the fragment shader size may be greater than the full shader size
-	if(((char*)m_fragmentProgram)[0] != 'F' || ((char*)m_fragmentProgram)[1] != 'P' || fragmentShaderCodeSize >= size)
+	if (((char*)m_fragmentProgram)[0] != 'F' || ((char*)m_fragmentProgram)[1] != 'P' || fragmentShaderCodeSize >= size)
 	{
 		Debug::PrintError("Fragment program corrupted!");
 		m_fileStatus = FileStatus::FileStatus_Failed;
@@ -211,7 +211,7 @@ void ShaderRSX::SetShaderProjectionCanvas()
 /// <param name="trans"></param>
 void ShaderRSX::SetShaderModel(const glm::mat4& trans, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix)
 {
-	if(m_modelMatrix)
+	if (m_modelMatrix)
 	{
 		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_modelMatrix, (float*)&trans);
 	}
@@ -256,10 +256,12 @@ void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
 	//return;
 	size_t offset = 1;
 
+	Vector4 ambientLight = Vector4(0, 0, 0, 0);
 	int directionalUsed = 0;
 	int pointUsed = 0;
 	int spotUsed = 0;
-	for (size_t i = 0; i < lightsIndices.usedPointLightCount + lightsIndices.usedSpotLightCount; i++)
+	size_t lightCount = m_currentLights.size();
+	for (size_t i = 0; i < lightCount; i++)
 	{
 		Light& light = *m_currentLights[i];
 		if (light.m_type == LightType::Point)
@@ -274,11 +276,55 @@ void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
 		}
 	}
 
+	const int totalLightCount = AssetManager::GetLightCount();
+
+	//For each lights
+	for (int lightI = 0; lightI < totalLightCount; lightI++)
+	{
+		const Light& light = *AssetManager::GetLight(lightI);
+		if (light.IsEnabled() && light.GetGameObjectRaw()->IsLocalActive())
+		{
+			if (light.m_type == LightType::Ambient)
+			{
+				ambientLight += light.color.GetRGBA().ToVector4() * light.m_intensity;
+			}
+		}
+	}
+
+	if (m_ambientLightLocation)
+	{
+		SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
+	}
+
 	for (size_t i = 0; i < lightsIndices.usedDirectionalLightCount; i++)
 	{
 		Light& light = *m_currentDirectionalLights[i];
 		SetDirectionalLightData(light, directionalUsed + offset);
 		directionalUsed++;
+	}
+
+	for (size_t i = 0; i < 2; i++)
+	{
+		if (i >= pointUsed)
+		{
+			SetPointLightData(*defaultDarkLight, static_cast<int>(i + offset));
+		}
+	}
+
+	for (size_t i = 0; i < 2; i++)
+	{
+		if (i >= spotUsed)
+		{
+			SetSpotLightData(*defaultDarkLight, static_cast<int>(i + offset));
+		}
+	}
+
+	for (size_t i = 0; i < 2; i++)
+	{
+		if (i >= directionalUsed)
+		{
+			SetDirectionalLightData(*defaultDarkLight, static_cast<int>(i + offset));
+		}
 	}
 }
 
@@ -543,7 +589,7 @@ void ShaderRSX::UpdateLights()
 		}
 	}
 
-	if(m_ambientLightLocation)
+	if (m_ambientLightLocation)
 	{
 		SetAmbientLightData(Vector3(ambientLight.x, ambientLight.y, ambientLight.z));
 	}
