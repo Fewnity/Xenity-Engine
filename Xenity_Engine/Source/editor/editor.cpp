@@ -105,7 +105,10 @@ void Editor::Init()
 	toolArrowsTexture = Texture::MakeTexture();
 	toolArrowsTexture->m_file = FileSystem::MakeFile("engine_assets/tool_arrows_colors.png");
 	toolArrowsTexture->SetFilter(Filter::Point);
-	toolArrowsTexture->LoadFileReference();
+	FileReference::LoadOptions loadOptions;
+	loadOptions.platform = Application::GetPlatform();
+	loadOptions.threaded = false;
+	toolArrowsTexture->LoadFileReference(loadOptions);
 
 	Engine::GetOnWindowFocusEvent()->Bind(&OnWindowFocused);
 
@@ -681,9 +684,12 @@ void Editor::SetCurrentProjectDirectory(const std::shared_ptr <ProjectDirectory>
 	{
 		ProjectManager::FillProjectDirectory(*currentProjectDirectory);
 		const size_t itemCount = currentProjectDirectory->files.size();
+		FileReference::LoadOptions loadOptions;
+		loadOptions.platform = Application::GetPlatform();
+		loadOptions.threaded = false;
 		for (size_t i = 0; i < itemCount; i++)
 		{
-			currentProjectDirectory->files[i]->LoadFileReference();
+			currentProjectDirectory->files[i]->LoadFileReference(loadOptions);
 		}
 	}
 }

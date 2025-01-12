@@ -11,7 +11,8 @@ struct FileInfo;
 
 struct CookSettings 
 {
-	AssetPlatform platform;
+	Platform platform;
+	AssetPlatform assetPlatform;
 	std::string exportPath;
 	bool exportShadersOnly = false;
 };

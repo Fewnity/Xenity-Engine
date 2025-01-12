@@ -28,7 +28,10 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileRefe
 			std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(movedFile->m_fileId);
 			if (file)
 			{
-				file->LoadFileReference();
+				FileReference::LoadOptions loadOptions;
+				loadOptions.platform = Application::GetPlatform();
+				loadOptions.threaded = false;
+				file->LoadFileReference(loadOptions);
 				ref = file;
 				return true;
 			}

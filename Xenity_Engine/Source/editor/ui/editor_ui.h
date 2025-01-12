@@ -213,7 +213,11 @@ public:
 		bool changed = false;
 		std::reference_wrapper<std::shared_ptr<T>> ref = std::ref(value);
 		std::shared_ptr<T> newValue;
-		changed = DrawFileReference(nullptr, ref, inputName, newValue);
+		ReflectiveDataToDraw reflectiveDataToDraw;
+		reflectiveDataToDraw.currentEntry;
+		reflectiveDataToDraw.currentEntry.typeId = typeid(T).hash_code();
+
+		changed = DrawFileReference(&reflectiveDataToDraw, ref, inputName, newValue);
 
 		if (changed)
 		{

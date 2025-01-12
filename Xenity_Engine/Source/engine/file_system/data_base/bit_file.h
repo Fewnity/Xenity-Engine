@@ -6,6 +6,7 @@
 #include <memory>
 
 class File;
+class FileReference;
 
 // Class that hold game's binary data
 class BitFile
@@ -39,6 +40,11 @@ public:
 	* Read binary data
 	*/
 	unsigned char* ReadBinary(size_t offset, size_t size);
+
+	/**
+	* Read binary data
+	*/
+	unsigned char* ReadBinary(const FileReference& fileReference);
 
 private:
 	std::shared_ptr<File> m_file;

@@ -45,7 +45,7 @@ using json = nlohmann::json;
 
 glm::mat4 Shader::m_canvasCameraTransformationMatrix;
 
-std::shared_ptr<Light> Shader::defaultDarkLight = std::make_shared<Light>();
+std::shared_ptr<Light> Shader::defaultDarkLight;
 std::vector<Shader::PointLightVariableNames> Shader::s_pointlightVariableNames;
 std::vector<Shader::DirectionalLightsVariableNames> Shader::s_directionallightVariableNames;
 std::vector<Shader::SpotLightVariableNames> Shader::s_spotlightVariableNames;
@@ -53,7 +53,7 @@ std::vector<Shader::SpotLightVariableNames> Shader::s_spotlightVariableNames;
 void Shader::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
+	defaultDarkLight = std::make_shared<Light>();
 	s_pointlightVariableNames.reserve(MAX_LIGHT_COUNT);
 	s_directionallightVariableNames.reserve(MAX_LIGHT_COUNT);
 	s_spotlightVariableNames.reserve(MAX_LIGHT_COUNT);
@@ -216,7 +216,7 @@ ReflectiveData Shader::GetMetaReflectiveData(AssetPlatform platform)
 	return reflectedVariables;
 }
 
-void Shader::LoadFileReference()
+void Shader::LoadFileReference(const LoadOptions& loadOptions)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	

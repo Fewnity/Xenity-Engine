@@ -66,7 +66,7 @@ void SpriteManager::Init()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(const Transform& transform, const Color& color, Material& material, Texture* texture)
+void SpriteManager::DrawSprite(Transform& transform, const Color& color, Material& material, Texture* texture)
 {
 	s_spriteMeshData->unifiedColor = color;
 
@@ -89,7 +89,7 @@ void SpriteManager::DrawSprite(const Transform& transform, const Color& color, M
 
 	const glm::mat4 matCopy = glm::scale(transform.GetTransformationMatrix(), glm::vec3(w, h, 1));
 
-	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matCopy, false);
+	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matCopy, transform.GetInverseNormalMatrix(), transform.GetMVPMatrix(Graphics::s_currentFrame), false);
 }
 
 void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const Color& color, Material& material, Texture* texture)
@@ -113,8 +113,9 @@ void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotati
 	const float h = texture->GetHeight() * scaleCoef;
 
 	const glm::mat4 matrix = glm::scale(Math::CreateModelMatrix(position, rotation, scale), glm::vec3(w, h, 1));
+	const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * matrix;
 
-	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matrix, false);
+	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matrix, matrix, MVP, false);
 }
 
 void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)

@@ -259,6 +259,9 @@ protected:
 	friend class SceneManager;
 	friend class Window;
 	friend class SpriteManager;
+	friend class Transform;
+	friend class TextManager;
+	friend class ParticleSystem;
 
 	void RemoveReferences() override;
 
@@ -275,6 +278,7 @@ protected:
 	void UpdateFrustum();
 
 	void UpdateViewMatrix();
+	void UpdateViewProjectionMatrix();
 
 	/**
 	* @brief [Internal] Get projection matrix without Clipping Planes values
@@ -335,6 +339,7 @@ protected:
 	// [Internal]
 	bool m_isEditor = false;
 	glm::mat4 viewMatrix;
+	glm::mat4 m_viewProjectionMatrix;
 	/**
 	* [Internal] Get if the camera is for the editor
 	*/

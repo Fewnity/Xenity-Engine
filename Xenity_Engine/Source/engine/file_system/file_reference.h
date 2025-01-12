@@ -37,10 +37,16 @@ public:
 	FileReference(const FileReference& other) = delete;
 	FileReference& operator=(const FileReference&) = delete;
 
+	struct LoadOptions
+	{
+		bool threaded = false;
+		Platform platform = Platform::P_COUNT;
+	};
+
 	/**
 	* @brief Load the file
 	*/
-	virtual void LoadFileReference() { }
+	virtual void LoadFileReference(const LoadOptions& loadOptions) { }
 
 	/**
 	* @brief Unload the file
@@ -104,6 +110,7 @@ protected:
 	friend class Window;
 	friend class SceneManager;
 	friend class EngineDebugMenu;
+	friend class BitFile;
 
 	std::shared_ptr<File> m_file = nullptr;
 	uint64_t m_filePosition = 0;

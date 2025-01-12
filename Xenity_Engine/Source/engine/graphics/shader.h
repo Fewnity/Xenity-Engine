@@ -135,7 +135,7 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 
-	void LoadFileReference() override;
+	void LoadFileReference(const LoadOptions& loadOptions) override;
 	virtual void Load() = 0;
 
 	static std::shared_ptr<Shader> MakeShader();
@@ -180,7 +180,7 @@ protected:
 	* @brief Set the shader uniform of the object model
 	* @param trans The transformation matrix
 	*/
-	virtual void SetShaderModel(const glm::mat4& trans) = 0;
+	virtual void SetShaderModel(const glm::mat4& trans, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix) = 0;
 
 	virtual void SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling) = 0;
 

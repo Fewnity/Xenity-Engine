@@ -18,7 +18,10 @@
 #include <engine/graphics/color/color.h>
 #include <engine/debug/debug.h>
 #include <engine/engine.h>
+#if defined(EDITOR)
 #include <engine/file_system/mesh_loader/wavefront_loader.h>
+#include <editor/mesh_loaders/assimp_mesh_loader.h>
+#endif
 #include <engine/file_system/mesh_loader/binary_mesh_loader.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/graphics/renderer/renderer.h>
@@ -358,7 +361,7 @@ MeshData::~MeshData()
 	Unload();
 }
 
-void MeshData::LoadFileReference()
+void MeshData::LoadFileReference(const LoadOptions& loadOptions)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -368,7 +371,15 @@ void MeshData::LoadFileReference()
 		m_isValid = false;
 		bool result;
 #if defined(EDITOR)
-		result = WavefrontLoader::LoadFromRawData(*this);
+		if(loadOptions.platform == Platform::P_PSP)
+		{
+			result = AssimpMeshLoader::LoadMesh(*this, true);
+		}
+		else 
+		{
+			result = AssimpMeshLoader::LoadMesh(*this);
+		}
+		//result = WavefrontLoader::LoadFromRawData(*this);
 #else
 		result = BinaryMeshLoader::LoadMesh(*this);
 #endif

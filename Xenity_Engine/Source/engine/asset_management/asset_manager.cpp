@@ -72,36 +72,40 @@ void AssetManager::OnProjectLoaded()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	FileReference::LoadOptions loadOptions;
+	loadOptions.platform = Application::GetPlatform();
+	loadOptions.threaded = false;
+
 	defaultTexture = AssetManager::LoadEngineAsset<Texture>("public_engine_assets/textures/default_texture.png");
 	XASSERT(defaultTexture != nullptr, "[AssetManager::OnProjectLoaded] Default Texture is null");
-	defaultTexture->LoadFileReference();
+	defaultTexture->LoadFileReference(loadOptions);
 
-	if constexpr (!Graphics::s_UseOpenGLFixedFunctions)
+	if constexpr (!s_UseOpenGLFixedFunctions)
 	{
 		// Load shaders
 		standardShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard.shader");
 		XASSERT(standardShader != nullptr, "[AssetManager::OnProjectLoaded] Standard Shader is null");
-		standardShader->LoadFileReference();
+		standardShader->LoadFileReference(loadOptions);
 
 #if defined(ENABLE_SHADER_VARIANT_OPTIMIZATION)
 		standardShaderNoPointLight = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/standard_no_point_light.shader");
 		XASSERT(standardShaderNoPointLight != nullptr, "[AssetManager::OnProjectLoaded] Standard No Point Light Shader is null");
-		standardShaderNoPointLight->LoadFileReference();
+		standardShaderNoPointLight->LoadFileReference(loadOptions);
 #endif
 
 		unlitShader = AssetManager::LoadEngineAsset<Shader>("public_engine_assets/shaders/unlit.shader");
 		XASSERT(unlitShader != nullptr, "[AssetManager::OnProjectLoaded] Unlit Shader is null");
-		unlitShader->LoadFileReference();
+		unlitShader->LoadFileReference(loadOptions);
 	}
 
 	// Load materials
 	standardMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/standardMaterial.mat");
 	XASSERT(standardMaterial != nullptr, "[AssetManager::OnProjectLoaded] Standard Material is null");
-	standardMaterial->LoadFileReference();
+	standardMaterial->LoadFileReference(loadOptions);
 
 	unlitMaterial = AssetManager::LoadEngineAsset<Material>("public_engine_assets/materials/unlitMaterial.mat");
 	XASSERT(unlitMaterial != nullptr, "[AssetManager::OnProjectLoaded] Unlit Material is null");
-	unlitMaterial->LoadFileReference();
+	unlitMaterial->LoadFileReference(loadOptions);
 
 	Debug::Print("-------- Engine assets loaded --------", true);
 }

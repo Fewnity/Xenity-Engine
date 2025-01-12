@@ -508,9 +508,11 @@ inline void ReflectionUtils::FillFileReference(const uint64_t fileId, const std:
 		{
 			Debug::PrintError("[ReflectionUtils::FillFileReference] Cannot find FileClassInfo", true);
 		}
-
+		FileReference::LoadOptions loadOptions;
+		loadOptions.platform = Application::GetPlatform();
+		loadOptions.threaded = false;
 		// Load file data
-		file->LoadFileReference();
+		file->LoadFileReference(loadOptions);
 		//Put the file in the variable reference
 		variablePtr.get() = std::dynamic_pointer_cast<T>(file);
 	}
@@ -548,7 +550,10 @@ inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_jso
 					}
 					if (file)
 					{
-						file->LoadFileReference();
+						FileReference::LoadOptions loadOptions;
+						loadOptions.platform = Application::GetPlatform();
+						loadOptions.threaded = false;
+						file->LoadFileReference(loadOptions);
 					}
 				}
 			}

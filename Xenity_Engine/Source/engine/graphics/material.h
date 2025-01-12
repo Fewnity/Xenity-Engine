@@ -137,7 +137,7 @@ protected:
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	void OnReflectionUpdated() override;
 
-	void LoadFileReference() override;
+	void LoadFileReference(const LoadOptions& loadOptions) override;
 	static std::shared_ptr<Material> MakeMaterial();
 
 	/**

@@ -82,7 +82,7 @@ ShaderOpenGL::~ShaderOpenGL()
 {
 	if (m_fileStatus == FileStatus::FileStatus_Loaded)
 	{
-		if constexpr (!Graphics::s_UseOpenGLFixedFunctions)
+		if constexpr (!s_UseOpenGLFixedFunctions)
 		{
 			if (Engine::IsRunning(true))
 			{
@@ -93,9 +93,7 @@ ShaderOpenGL::~ShaderOpenGL()
 					glDeleteShader(m_tessellationEvaluationShaderId);
 					glDeleteShader(m_fragmentShaderId);
 				}
-				// This cause the psvita to crash, bug in older version of vitaGL, fixed in the latest version but the latest version is running very slow
-				//glDeleteProgram(m_programId);
-				//Engine::GetRenderer().DeleteShaderProgram(m_programId);
+				glDeleteProgram(m_programId);
 			}
 		}
 		m_fileStatus = FileStatus::FileStatus_Not_Loaded;
@@ -114,7 +112,7 @@ void ShaderOpenGL::Init()
 
 void ShaderOpenGL::Load()
 {
-	if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+	if constexpr (s_UseOpenGLFixedFunctions)
 	{
 		m_fileStatus = FileStatus::FileStatus_Loaded;
 		return;
@@ -282,26 +280,30 @@ void ShaderOpenGL::SetShaderCameraPositionCanvas()
 /// </summary>
 void ShaderOpenGL::SetShaderProjection()
 {
-	glUniformMatrix4fv(m_projectionLocation, 1, false, glm::value_ptr(Graphics::usedCamera->GetProjection()));
+	//glUniformMatrix4fv(m_projectionLocation, 1, false, glm::value_ptr(Graphics::usedCamera->GetProjection()));
 }
 
 void ShaderOpenGL::SetShaderProjectionCanvas()
 {
-	glUniformMatrix4fv(m_projectionLocation, 1, false, glm::value_ptr(Graphics::usedCamera->GetCanvasProjection()));
+	//glUniformMatrix4fv(m_projectionLocation, 1, false, glm::value_ptr(Graphics::usedCamera->GetCanvasProjection()));
 }
 
 /// <summary>
 /// Send to the shader transform's model
 /// </summary>
 /// <param name="trans"></param>
-void ShaderOpenGL::SetShaderModel(const glm::mat4& trans)
+void ShaderOpenGL::SetShaderModel(const glm::mat4& trans, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix)
 {
 	SetShaderAttribut(m_modelLocation, trans);
-	const glm::mat4 MVP = Graphics::usedCamera->GetProjection() * Graphics::usedCamera->viewMatrix * trans;
-	const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(trans)));
-
-	SetShaderAttribut(m_MVPLocation, MVP);
-	SetShaderAttribut(m_normalMatrixLocation, normalMatrix);
+	if (m_MVPLocation != GL_INVALID_INDEX)
+	{
+		//const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * trans;
+		SetShaderAttribut(m_MVPLocation, mvpMatrix);
+	}
+	if (m_normalMatrixLocation != GL_INVALID_INDEX)
+	{
+		SetShaderAttribut(m_normalMatrixLocation, normalMatrix);
+	}
 }
 
 /// <summary>
@@ -321,8 +323,11 @@ void ShaderOpenGL::SetShaderModel(const Vector3& position, const Vector3& rotati
 
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
+	
+	const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transformationMatrix)));
+	const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * transformationMatrix;
 
-	SetShaderModel(transformationMatrix);
+	SetShaderModel(transformationMatrix, normalMatrix, MVP);
 }
 
 void ShaderOpenGL::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling)

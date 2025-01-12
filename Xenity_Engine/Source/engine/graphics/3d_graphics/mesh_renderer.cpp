@@ -232,7 +232,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 		return;
 	}
 
-	if constexpr (!Graphics::s_UseOpenGLFixedFunctions)
+	if constexpr (!s_UseOpenGLFixedFunctions)
 	{
 		if (renderCommand.material->GetShader()->GetFileStatus() != FileStatus::FileStatus_Loaded)
 		{
@@ -311,7 +311,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 				const Light* light = m_affectedByLights[i];
 				if (light->GetType() == LightType::Point)
 				{
-					if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+					if constexpr (s_UseOpenGLFixedFunctions)
 						lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInLightList + 1;
 					else
 						lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInShaderList + 1;
@@ -320,7 +320,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 				}
 				else if (light->GetType() == LightType::Spot)
 				{
-					if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+					if constexpr (s_UseOpenGLFixedFunctions)
 						lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInLightList + 1;
 					else
 						lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInShaderList + 1;
@@ -331,7 +331,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 
 			for (size_t i = 0; i < directionalLightCount; i++)
 			{
-				if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+				if constexpr (s_UseOpenGLFixedFunctions)
 					lightsIndices.directionalLightIndices[i].x = Graphics::s_directionalLights[i]->m_indexInLightList + 1;
 				else
 					lightsIndices.directionalLightIndices[i].x = Graphics::s_directionalLights[i]->m_indexInShaderList + 1;
@@ -339,7 +339,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 
 			lightsIndices.usedPointLightCount = pointLightCount;
 			lightsIndices.usedSpotLightCount = spotLightCount;
-			if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+			if constexpr (s_UseOpenGLFixedFunctions)
 			{
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 				Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);

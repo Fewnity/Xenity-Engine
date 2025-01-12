@@ -121,7 +121,7 @@ public:
 	* @param matrix The matrix to apply
 	* @param forUI If the mesh is for UI
 	*/
-	static void DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	static void DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings, const glm::mat4& matrix, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix, bool forUI);
 	
 	/**
 	* @brief Draw a submesh
@@ -132,7 +132,7 @@ public:
 	* @param matrix The matrix to apply
 	* @param forUI If the mesh is for UI
 	*/
-	static void DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, Texture* texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI);
+	static void DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, Texture* texture, RenderingSettings& renderSettings, const glm::mat4& matrix, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix, bool forUI);
 
 
 	static void DrawSubMesh(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings);
@@ -141,12 +141,6 @@ public:
 	* @brief Set draw order list as dirty
 	*/
 	static void SetDrawOrderListAsDirty();
-
-#if defined(__PSP__) || defined(_EE)
-	static constexpr bool s_UseOpenGLFixedFunctions = true;
-#else
-	static constexpr bool s_UseOpenGLFixedFunctions = false;
-#endif
 
 	static std::vector<std::weak_ptr<Camera>> cameras;
 	API static std::shared_ptr<Camera> usedCamera;
@@ -161,6 +155,7 @@ public:
 	static IDrawableTypes s_currentMode;
 	static bool s_isRenderingBatchDirty;
 	static GraphicsSettings s_settings;
+	static size_t s_currentFrame;
 
 	static std::vector <Light*> s_directionalLights;
 	static void CreateLightLists();

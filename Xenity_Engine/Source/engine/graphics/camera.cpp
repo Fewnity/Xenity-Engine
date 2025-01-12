@@ -201,7 +201,7 @@ void Camera::UpdateProjection()
 {
 	XASSERT(m_aspect > 0, "m_aspect is incorrect!");
 
-	if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+	if constexpr (s_UseOpenGLFixedFunctions)
 	{
 		if (m_projectionType == ProjectionTypes::Perspective)
 		{
@@ -287,6 +287,11 @@ void Camera::UpdateViewMatrix()
 	{
 		viewMatrix = glm::translate(viewMatrix, glm::vec3(position.x, -position.y, -position.z));
 	}
+}
+
+void Camera::UpdateViewProjectionMatrix()
+{
+	m_viewProjectionMatrix = Graphics::usedCamera->GetProjection()* Graphics::usedCamera->viewMatrix;
 }
 
 void Camera::SetProjectionType(const ProjectionTypes type)

@@ -67,7 +67,10 @@ std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(const std::string& gameObject
 	std::shared_ptr<MeshRenderer> mesh = gameObject->AddComponent<MeshRenderer>();
 
 	std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFilePath(meshFilePath);
-	fileRef->LoadFileReference();
+	FileReference::LoadOptions loadOptions;
+	loadOptions.platform = Application::GetPlatform();
+	loadOptions.threaded = false;
+	fileRef->LoadFileReference(loadOptions);
 
 	mesh->SetMeshData(std::dynamic_pointer_cast<MeshData>(fileRef));
 	mesh->SetMaterial(AssetManager::standardMaterial, 0);

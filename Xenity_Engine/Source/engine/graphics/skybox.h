@@ -48,7 +48,7 @@ protected:
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	static std::shared_ptr<SkyBox> MakeSkyBox();
 	void OnReflectionUpdated() override;
-	void LoadFileReference() override;
+	void LoadFileReference(const LoadOptions& loadOptions) override;
 	void UnloadFileReference() override;
 
 	static constexpr int s_version = 1;

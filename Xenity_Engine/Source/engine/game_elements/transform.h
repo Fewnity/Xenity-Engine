@@ -12,6 +12,7 @@
 #include <engine/event_system/event_system.h>
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/quaternion.h>
+#include <engine/constants.h>
 
 class GameObject;
 
@@ -185,6 +186,21 @@ public:
 		return transformationMatrix;
 	}
 
+	inline const glm::mat3& GetInverseNormalMatrix()
+	{
+		if constexpr (!s_UseOpenGLFixedFunctions)
+		{
+			if (m_isNormalMatrixDirty)
+			{
+				normalMatrix = glm::transpose(glm::inverse(glm::mat3(transformationMatrix)));
+				m_isNormalMatrixDirty = false;
+			}
+		}
+		return normalMatrix;
+	}
+
+	const glm::mat4& GetMVPMatrix(size_t currentFrame);
+
 	/**
 	* @brief Get GameObject
 	*/
@@ -212,7 +228,6 @@ public:
 
 private:
 	glm::mat4 transformationMatrix;
-	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
 	friend class RigidBody;
 
 	Quaternion m_rotationQuaternion = Quaternion::Identity();
@@ -274,6 +289,9 @@ private:
 	Vector3 m_localScale = Vector3(1);
 
 	std::weak_ptr<GameObject> m_gameObject;
+	glm::mat4 mvpMatrix;
+	float rotationMatrix[9] = { 0,0,0,0,0,0,0,0,0 };
+	glm::mat3 normalMatrix;
 
 	/**
 	* @brief Get localPosition from matrices
@@ -290,7 +308,8 @@ private:
 	* @return The local rotation
 	*/
 	Vector3 GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation) const;
-
+	size_t lastMVPFrame = 0;
+	bool m_isNormalMatrixDirty = true;
 public:
 	// [Internal]
 	bool m_isTransformationMatrixDirty = true;

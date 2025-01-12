@@ -55,7 +55,7 @@ std::shared_ptr<AudioClip> AudioClip::MakeAudioClip()
 	return newFileRef;
 }
 
-void AudioClip::LoadFileReference()
+void AudioClip::LoadFileReference(const LoadOptions& loadOptions)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -98,6 +98,9 @@ void AudioClip::OnReflectionUpdated()
 	if (GameplayManager::GetGameState() == GameState::Stopped)
 	{
 		UnloadFileReference();
-		LoadFileReference();
+		FileReference::LoadOptions loadOptions;
+		loadOptions.platform = Application::GetPlatform();
+		loadOptions.threaded = false;
+		LoadFileReference(loadOptions);
 	}
 }

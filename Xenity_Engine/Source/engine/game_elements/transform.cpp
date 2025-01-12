@@ -14,6 +14,8 @@
 
 #include <engine/tools/math.h>
 #include "gameobject.h"
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/camera.h>
 
 #pragma region Constructors
 
@@ -221,6 +223,19 @@ void Transform::SetLocalScale(const Vector3& value)
 	m_onTransformScaled.Trigger();
 }
 
+const glm::mat4& Transform::GetMVPMatrix(size_t currentFrame)
+{
+	if constexpr (!s_UseOpenGLFixedFunctions)
+	{
+		if (currentFrame != lastMVPFrame)
+		{
+			lastMVPFrame = currentFrame;
+			mvpMatrix = Graphics::usedCamera->m_viewProjectionMatrix * transformationMatrix;
+		}
+	}
+	return mvpMatrix;
+}
+
 #pragma endregion
 
 void Transform::OnParentChanged()
@@ -324,6 +339,7 @@ void Transform::UpdateTransformationMatrix()
 		return;
 
 	m_isTransformationMatrixDirty = false;
+	m_isNormalMatrixDirty = true;
 
 	transformationMatrix = glm::mat4(1.0f);
 

@@ -17,6 +17,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/tools/math.h>
 #include <engine/graphics/texture.h>
+#include <engine/graphics/camera.h>
 #include "font.h"
 
 /**
@@ -136,9 +137,10 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		Vector3 scl = transform.GetScale();
 		scl.x = -scl.x;
 		const Quaternion& rot = transform.GetRotation();
-		const glm::mat4 matrix = Math::CreateModelMatrix(pos, rot, scl);
+		const glm::mat4 transformationMatrix = Math::CreateModelMatrix(pos, rot, scl);
+		const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * transformationMatrix;
 
-		Graphics::DrawSubMesh(*mesh.m_subMeshes[0], material, font.GetFontAtlas().get(), renderSettings, matrix, canvas);
+		Graphics::DrawSubMesh(*mesh.m_subMeshes[0], material, font.GetFontAtlas().get(), renderSettings, transformationMatrix, transformationMatrix, MVP, canvas);
 	}
 }
 

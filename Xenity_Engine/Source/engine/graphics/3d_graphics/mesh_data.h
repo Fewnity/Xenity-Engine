@@ -113,6 +113,7 @@ public:
 		bool isOnVram = true;
 #endif
 		bool isShortIndices = true;
+		bool m_isQuad = false;
 	};
 
 	MeshData();
@@ -235,6 +236,7 @@ protected:
 	friend class MeshManager;
 	friend class Cooker;
 	friend class BinaryMeshLoader;
+	friend class AssimpMeshLoader;
 
 	Vector3 m_minBoundingBox;
 	Vector3 m_maxBoundingBox;
@@ -248,7 +250,7 @@ protected:
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
-	void LoadFileReference() override;
+	void LoadFileReference(const LoadOptions& loadOptions) override;
 	void OnLoadFileReferenceFinished() override;
 	void UnloadFileReference() override;
 
@@ -269,7 +271,6 @@ protected:
 	bool m_hasNormal = false;
 	bool m_hasColor = true;
 	bool m_hasIndices = true;
-	bool m_isQuad = false;
 	bool m_isValid = true;
 
 	Sphere m_boundingSphere;

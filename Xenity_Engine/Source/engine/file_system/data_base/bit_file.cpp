@@ -4,6 +4,7 @@
 #include <engine/file_system/file.h>
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/file_system/file_reference.h>
 
 void BitFile::Create(const std::string& path)
 {
@@ -61,6 +62,15 @@ size_t BitFile::AddData(const unsigned char* data, size_t size)
 
 	return dataOffset;
 }
+
+unsigned char* BitFile::ReadBinary(const FileReference& fileReference)
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	unsigned char* data = m_file->ReadBinary(fileReference.m_filePosition, fileReference.m_fileSize);
+	return data;
+}
+
 
 unsigned char* BitFile::ReadBinary(size_t offset, size_t size)
 {

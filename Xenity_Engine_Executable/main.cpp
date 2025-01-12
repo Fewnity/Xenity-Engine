@@ -28,12 +28,17 @@ Reload material file on game stop
 Implement alpha testing on shaders
 System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
 Add lighting on PS3
-Add unsigned int indices support on PSP
+Check SetBlendOptimization
+Implement PS3 delete file function
+Some files are not properly closed before the cooking
+Fix crash when profiler is disabled in editor
+Check if force inline for GLM is better or not
+Fix lighting if there is not point light ps3
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
 To make lighting usable on PS3:
-- Use vectors instead of single floats in the light structure
+- Use vectors instead of single floats in the light structure (spot light missing)
 - Try to make directional lighting in the vertex shader
 - Try to detect light per draw to use with sphere test
 - Try to sort by material and distance

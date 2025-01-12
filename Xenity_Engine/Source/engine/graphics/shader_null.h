@@ -27,7 +27,7 @@ public:
 
 	void SetShaderProjectionCanvas() override {}
 
-	void SetShaderModel(const glm::mat4& trans) override {}
+	void SetShaderModel(const glm::mat4& trans, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix) override {}
 
 	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale) override {}
 

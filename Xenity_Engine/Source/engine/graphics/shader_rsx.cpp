@@ -209,7 +209,7 @@ void ShaderRSX::SetShaderProjectionCanvas()
 /// Send to the shader transform's model
 /// </summary>
 /// <param name="trans"></param>
-void ShaderRSX::SetShaderModel(const glm::mat4& trans)
+void ShaderRSX::SetShaderModel(const glm::mat4& trans, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix)
 {
 	if(m_modelMatrix)
 	{
@@ -217,12 +217,11 @@ void ShaderRSX::SetShaderModel(const glm::mat4& trans)
 	}
 	if (m_MVPMatrix)
 	{
-		const glm::mat4 MVP = Graphics::usedCamera->GetProjection() * Graphics::usedCamera->viewMatrix * trans;
-		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_MVPMatrix, (float*)&MVP);
+		//const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * trans;
+		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_MVPMatrix, (float*)&mvpMatrix);
 	}
 	if (m_normalMatrix)
 	{
-		const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(trans)));
 		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_normalMatrix, (float*)&normalMatrix);
 	}
 }
@@ -254,7 +253,7 @@ void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
 	//	std::string pointIndexStr = "pointLightsIndices[" + std::to_string(i) + "]";
 	//	SetShaderAttribut(pointIndexStr, (float)lightsIndices.pointLightIndices[i].x);*/
 	//}
-	return;
+	//return;
 	size_t offset = 1;
 
 	int directionalUsed = 0;
@@ -486,10 +485,10 @@ int count = 0;
 /// </summary>
 void ShaderRSX::UpdateLights()
 {
-	if (count >= 5)
+	/*if (count >= 5)
 	{
 		return;
-	}
+	}*/
 	count++;
 	Vector4 ambientLight = Vector4(0, 0, 0, 0);
 
@@ -515,7 +514,7 @@ void ShaderRSX::UpdateLights()
 		SetSpotLightData(*defaultDarkLight, 0);
 		//hasLightUniforms = true;
 	}
-
+	return;
 	//For each lights
 	for (int lightI = 0; lightI < lightCount; lightI++)
 	{

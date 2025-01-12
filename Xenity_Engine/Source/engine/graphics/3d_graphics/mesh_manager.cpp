@@ -30,7 +30,11 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
 	mesh->m_file = FileSystem::MakeFile(path);
 	mesh->m_fileType = FileType::File_Mesh;
-	mesh->LoadFileReference();
+
+	FileReference::LoadOptions loadOptions;
+	loadOptions.platform = Application::GetPlatform();
+	loadOptions.threaded = false;
+	mesh->LoadFileReference(loadOptions);
 	return mesh;
 }
 
@@ -40,7 +44,7 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 //	Graphics::DrawSubMesh(subMesh, material, renderSettings, matrix, false);
 //}
 
-void MeshManager::DrawMesh(const Transform& transform, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings)
+void MeshManager::DrawMesh(Transform& transform, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings)
 {
 	const Vector3& scale = transform.GetScale();
 
@@ -49,5 +53,5 @@ void MeshManager::DrawMesh(const Transform& transform, const MeshData::SubMesh& 
 		renderSettings.invertFaces = !renderSettings.invertFaces;
 	}
 
-	Graphics::DrawSubMesh(subMesh, material, renderSettings, transform.GetTransformationMatrix(), false);
+	Graphics::DrawSubMesh(subMesh, material, renderSettings, transform.GetTransformationMatrix(), transform.GetInverseNormalMatrix(), transform.GetMVPMatrix(Graphics::s_currentFrame), false);
 }

@@ -89,7 +89,11 @@ void Texture::OnReflectionUpdated()
 	{
 		previousResolution = GetCookResolution();
 		UnloadFileReference();
-		LoadFileReference();
+
+		FileReference::LoadOptions loadOptions;
+		loadOptions.platform = Application::GetPlatform();
+		loadOptions.threaded = false;
+		LoadFileReference(loadOptions);
 	}
 #endif
 }
@@ -109,7 +113,7 @@ std::shared_ptr<Texture> Texture::MakeTexture()
 	return newTexture;
 }
 
-void Texture::LoadFileReference()
+void Texture::LoadFileReference(const LoadOptions& loadOptions)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 

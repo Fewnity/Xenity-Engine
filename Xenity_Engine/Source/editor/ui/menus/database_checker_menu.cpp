@@ -131,7 +131,7 @@ void DataBaseCheckerMenu::Draw()
 						ImGui::TableSetColumnIndex(2);
 						ImGui::Text("%lld", entry->id);
 						ImGui::TableSetColumnIndex(3);
-						ImGui::Text("%lld", entry->s);
+						ImGui::Text("%lld (%fmb)", entry->s, entry->s / (float)1000000);
 						ImGui::TableSetColumnIndex(4);
 						ImGui::Text("%lld", entry->po);
 						ImGui::TableSetColumnIndex(5);

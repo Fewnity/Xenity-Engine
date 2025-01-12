@@ -226,7 +226,10 @@ void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
 	fileIcon->m_file = FileSystem::MakeFile(path);
 	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
-	fileIcon->LoadFileReference();
+	FileReference::LoadOptions loadOptions;
+	loadOptions.platform = Application::GetPlatform();
+	loadOptions.threaded = false;
+	fileIcon->LoadFileReference(loadOptions);
 	icons[(int)iconName] = std::move(fileIcon);
 }
 
@@ -237,7 +240,10 @@ void EditorUI::LoadComponentIcon(std::string iconName, const std::string& path)
 	std::shared_ptr<Texture> fileIcon = Texture::MakeTexture();
 	fileIcon->m_file = FileSystem::MakeFile(path);
 	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
-	fileIcon->LoadFileReference();
+	FileReference::LoadOptions loadOptions;
+	loadOptions.platform = Application::GetPlatform();
+	loadOptions.threaded = false;
+	fileIcon->LoadFileReference(loadOptions);
 	componentsIcons[iconName] = std::move(fileIcon);
 }
 

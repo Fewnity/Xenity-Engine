@@ -51,6 +51,7 @@ std::shared_ptr<Camera> Graphics::usedCamera;
 bool Graphics::needUpdateCamera = true;
 int Graphics::s_iDrawablesCount = 0;
 int Graphics::s_lodsCount = 0;
+size_t Graphics::s_currentFrame = 0;
 
 std::vector<IDrawable*> Graphics::s_orderedIDrawable;
 
@@ -190,6 +191,7 @@ void Graphics::Draw()
 		if (usedCamera->IsEnabled() && usedCamera->GetGameObjectRaw()->IsLocalActive())
 		{
 			Engine::GetRenderer().NewFrame();
+			s_currentFrame++;
 
 			SortTransparentDrawables();
 			CheckLods();
@@ -212,6 +214,7 @@ void Graphics::Draw()
 			if constexpr (!s_UseOpenGLFixedFunctions)
 			{
 				usedCamera->UpdateViewMatrix();
+				usedCamera->UpdateViewProjectionMatrix();
 			}
 			usedCamera->BindFrameBuffer();
 			const Vector3& camPos = usedCamera->GetTransformRaw()->GetPosition();
@@ -543,12 +546,12 @@ void Graphics::RemoveCamera(const std::weak_ptr<Camera>& cameraToRemove)
 	}
 }
 
-void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings, const glm::mat4& matrix, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix, bool forUI)
 {
-	DrawSubMesh(subMesh, material, material.m_texture.get(), renderSettings, matrix, forUI);
+	DrawSubMesh(subMesh, material, material.m_texture.get(), renderSettings, matrix, normalMatrix, mvpMatrix, forUI);
 }
 
-void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, Texture* texture, RenderingSettings& renderSettings, const glm::mat4& matrix, bool forUI)
+void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material, Texture* texture, RenderingSettings& renderSettings, const glm::mat4& matrix, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix, bool forUI)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -570,7 +573,7 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 			return;
 		}
 
-		s_currentShader->SetShaderModel(matrix);
+		s_currentShader->SetShaderModel(matrix, normalMatrix, mvpMatrix);
 	}
 	else
 	{
@@ -622,7 +625,10 @@ void Graphics::OnProjectLoaded()
 
 	skyPlane = AssetManager::LoadEngineAsset<MeshData>("public_engine_assets/models/PlaneTriangulate.obj");
 	XASSERT(skyPlane != nullptr, "[Graphics::OnProjectLoaded] skyPlane is null");
-	skyPlane->LoadFileReference();
+	FileReference::LoadOptions loadOptions;
+	loadOptions.platform = Application::GetPlatform();
+	loadOptions.threaded = false;
+	skyPlane->LoadFileReference(loadOptions);
 }
 
 void Graphics::DrawSkybox(const Vector3& cameraPosition)
@@ -720,8 +726,11 @@ void Graphics::DrawSubMesh(const Vector3& position, const Quaternion& rotation, 
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	const glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
-	Graphics::DrawSubMesh(subMesh, material, renderSettings, matrix, false);
+	const glm::mat4 transformationMatrix = Math::CreateModelMatrix(position, rotation, scale);
+	const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transformationMatrix)));
+	const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * transformationMatrix;
+
+	Graphics::DrawSubMesh(subMesh, material, renderSettings, transformationMatrix, normalMatrix, MVP, false);
 }
 
 #if defined(EDITOR)

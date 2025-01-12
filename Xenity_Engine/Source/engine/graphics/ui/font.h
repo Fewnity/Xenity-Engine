@@ -31,7 +31,7 @@ protected:
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 
 	void OnReflectionUpdated() override;
-	void LoadFileReference() override;
+	void LoadFileReference(const LoadOptions& loadOptions) override;
 
 	Character* Characters[256] = {};
 	float maxCharHeight = 0;

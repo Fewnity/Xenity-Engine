@@ -55,7 +55,7 @@ protected:
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	static std::shared_ptr<AudioClip> MakeAudioClip();
 
-	void LoadFileReference() override;
+	void LoadFileReference(const LoadOptions& loadOptions) override;
 	void UnloadFileReference() override;
 	void OnReflectionUpdated() override;
 

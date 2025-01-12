@@ -130,7 +130,8 @@ CompileResult Compiler::Compile(CompilerParams params)
 	{
 		CookSettings cookSettings;
 		cookSettings.exportPath = params.tempPath + "cooked_assets/";
-		cookSettings.platform = Application::PlatformToAssetPlatform(params.buildPlatform.platform);
+		cookSettings.assetPlatform = Application::PlatformToAssetPlatform(params.buildPlatform.platform);
+		cookSettings.platform = params.buildPlatform.platform;
 		if (params.buildType == BuildType::BuildShaders)
 		{
 			cookSettings.exportShadersOnly = true;

@@ -90,7 +90,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 
 		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
 		const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
-		TextureResolutions textureResolution = texture->m_settings[settings.platform]->resolution;
+		TextureResolutions textureResolution = texture->m_settings[settings.assetPlatform]->resolution;
 
 		int newWidth = width;
 		int newHeight = height;
@@ -122,18 +122,24 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	else if (fileInfo.type == FileType::File_Mesh) // Cook mesh
 	{
 		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
-		const std::shared_ptr<MeshData> meshData = std::dynamic_pointer_cast<MeshData>(fileRef);
-		meshData->LoadFileReference();
+		/*const std::shared_ptr<MeshData> meshData = std::dynamic_pointer_cast<MeshData>(fileRef);
+		meshData->LoadFileReference();*/
 
+		MeshData meshData = MeshData();
+		meshData.m_file = fileInfo.file;
+		FileReference::LoadOptions loadOptions;
+		loadOptions.platform = settings.platform;
+		loadOptions.threaded = false;
+		meshData.LoadFileReference(loadOptions);
 		// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE
 		std::ofstream meshFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
 		// Write mesh data
-		meshFile.write((char*)&meshData->m_vertexDescriptor, sizeof(VertexElements));
-		meshFile.write((char*)&meshData->m_subMeshCount, sizeof(uint32_t));
+		meshFile.write((char*)&meshData.m_vertexDescriptor, sizeof(VertexElements));
+		meshFile.write((char*)&meshData.m_subMeshCount, sizeof(uint32_t));
 
 		// Write submeshes data
-		for (std::unique_ptr<MeshData::SubMesh>& subMesh : meshData->m_subMeshes)
+		for (std::unique_ptr<MeshData::SubMesh>& subMesh : meshData.m_subMeshes)
 		{
 			meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
 			meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));
@@ -146,7 +152,7 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	}
 	else if (fileInfo.type == FileType::File_Shader) // Cook shader
 	{
-		if (settings.platform == AssetPlatform::AP_PS3)
+		if (settings.assetPlatform == AssetPlatform::AP_PS3)
 		{
 			if (settings.exportShadersOnly)
 			{

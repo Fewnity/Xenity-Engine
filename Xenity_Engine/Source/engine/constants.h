@@ -9,7 +9,7 @@
 
 #if defined(__PS3__)
 //#define ENABLE_OVERDRAW_OPTIMIZATION
-#define ENABLE_SHADER_VARIANT_OPTIMIZATION
+//#define ENABLE_SHADER_VARIANT_OPTIMIZATION
 #endif
 
 //
@@ -69,6 +69,13 @@
 //
 // -------------------------------------------------- Graphics
 //
+
+#if defined(__PSP__) || defined(_EE)
+constexpr bool s_UseOpenGLFixedFunctions = true;
+#else
+constexpr bool s_UseOpenGLFixedFunctions = false;
+#endif
+
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #define MAX_LIGHT_COUNT 10
 #else
@@ -84,7 +91,6 @@
 //
 // -------------------------------------------------- Profiling
 //
-
 #if defined(EDITOR)
 #define USE_PROFILER
 #endif

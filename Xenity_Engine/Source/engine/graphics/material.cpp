@@ -250,7 +250,7 @@ void Material::OnReflectionUpdated()
 #endif
 }
 
-void Material::LoadFileReference()
+void Material::LoadFileReference(const LoadOptions& loadOptions)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 

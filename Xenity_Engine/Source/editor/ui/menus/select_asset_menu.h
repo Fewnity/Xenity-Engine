@@ -99,7 +99,10 @@ public:
 			{
 				continue;
 			}
-			fileRef->LoadFileReference();
+			FileReference::LoadOptions loadOptions;
+			loadOptions.platform = Application::GetPlatform();
+			loadOptions.threaded = false;
+			fileRef->LoadFileReference(loadOptions);
 
 			foundFiles.push_back(fileRef);
 		}

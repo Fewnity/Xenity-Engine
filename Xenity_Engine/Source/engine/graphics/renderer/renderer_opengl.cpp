@@ -379,12 +379,12 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
 
 	// Maybe check if useLighting was changed to recalculate the color in fixed pipeline?
-	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!Graphics::s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
+	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
 		lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
 		lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntRGBA();
 		const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
-		if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+		if constexpr (s_UseOpenGLFixedFunctions)
 		{
 			if (settings.useLighting) 
 			{
@@ -412,7 +412,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		texture.Bind();
 	}
 
-	if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+	if constexpr (s_UseOpenGLFixedFunctions)
 	{
 		glMatrixMode(GL_TEXTURE);
 		glLoadIdentity();
@@ -421,14 +421,15 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	}
 
 	// Draw
+	int primitiveType = subMesh.m_isQuad ? GL_QUADS : GL_TRIANGLES;
 	if (!subMesh.meshData->m_hasIndices)
 	{
-		glDrawArrays(GL_TRIANGLES, 0, subMesh.vertice_count);
+		glDrawArrays(primitiveType, 0, subMesh.vertice_count);
 	}
 	else
 	{
 		const int indiceMode = subMesh.isShortIndices ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
-		glDrawElements(GL_TRIANGLES, subMesh.index_count, indiceMode, 0);
+		glDrawElements(primitiveType, subMesh.index_count, indiceMode, 0);
 	}
 	glBindVertexArray(0);
 
@@ -779,7 +780,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 			if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
 			{
 				stride = sizeof(VertexNormalsNoColor);
-				if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+				if constexpr (s_UseOpenGLFixedFunctions)
 				{
 					glEnableClientState(GL_VERTEX_ARRAY);
 					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, x));
@@ -817,7 +818,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, x));
 				}else*/
 				stride = sizeof(VertexNoColor);
-				if constexpr (Graphics::s_UseOpenGLFixedFunctions)
+				if constexpr (s_UseOpenGLFixedFunctions)
 				{
 					glEnableClientState(GL_VERTEX_ARRAY);
 					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));

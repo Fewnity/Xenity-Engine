@@ -245,8 +245,9 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 		}
 
 		renderCommand.subMesh->meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
+		const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * newMat;
 
-		Graphics::DrawSubMesh(*renderCommand.subMesh, *m_material, m_texture.get(), renderSettings, newMat, false);
+		Graphics::DrawSubMesh(*renderCommand.subMesh, *m_material, m_texture.get(), renderSettings, newMat, newMat, MVP, false);
 
 		particle.position += particle.direction * Time::GetDeltaTime() / static_cast<float>(camCount) * particle.currentSpeed;
 

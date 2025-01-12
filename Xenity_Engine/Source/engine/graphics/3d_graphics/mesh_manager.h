@@ -38,7 +38,7 @@ public:
 	* @param material Material to use
 	* @param renderSettings Rendering settings
 	*/
-	static void DrawMesh(const Transform& transform, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings);
+	static void DrawMesh(Transform& transform, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings);
 	
 	/**
 	* @brief Draw a submesh

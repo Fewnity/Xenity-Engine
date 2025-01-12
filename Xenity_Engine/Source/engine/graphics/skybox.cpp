@@ -69,7 +69,7 @@ void SkyBox::OnReflectionUpdated()
 #endif
 }
 
-void SkyBox::LoadFileReference()
+void SkyBox::LoadFileReference(const LoadOptions& loadOptions)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 

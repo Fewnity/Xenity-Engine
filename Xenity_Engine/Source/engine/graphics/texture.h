@@ -257,7 +257,7 @@ protected:
 
 	static std::shared_ptr<Texture> MakeTexture();
 
-	void LoadFileReference() override;
+	void LoadFileReference(const LoadOptions& loadOptions) override;
 	void UnloadFileReference() override;
 
 	/**
