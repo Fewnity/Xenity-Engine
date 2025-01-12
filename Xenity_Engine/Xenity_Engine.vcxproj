@@ -398,7 +398,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib;libcurl_a.lib;Advapi32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib;libcurl_a.lib;Advapi32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;assimp-vc143-mtd.lib;zlibstatic.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
@@ -410,7 +410,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>EDITOR;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EDITOR;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source;$(ProjectDir)include/bullet;$(ProjectDir)include/curl</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
@@ -430,7 +430,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;ole32.lib;Dwmapi.lib;freetype.lib;winmm.lib;Dbghelp.lib;Psapi.lib;Dxgi.lib;libcurl_a.lib;Advapi32.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;assimp-vc143-mt.lib;zlibstatic.lib</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <EnableUAC>false</EnableUAC>
