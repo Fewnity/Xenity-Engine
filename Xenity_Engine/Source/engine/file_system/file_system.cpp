@@ -27,6 +27,7 @@
 #include <filesystem>
 #include <psp2/io/stat.h>
 #elif defined(__PS3__)
+#include <lv2/sysfs.h>
 #else
 #include <filesystem>
 #endif
@@ -38,6 +39,7 @@
 #include "file_ps2.h"
 #include "file_ps3.h"
 #include "file_default.h"
+#include <engine/constants.h>
 
 FileSystem* FileSystem::s_fileSystem = nullptr;
 
@@ -340,6 +342,8 @@ void FileSystem::Delete(const std::string& path)
 #if defined(__PSP__)
 	sceIoRemove(path.c_str());
 #elif defined(__PS3__)
+	sysFsRmdir((std::string(PS3_DATA_FOLDER) + path).c_str()); // Remove if dir
+	sysFsUnlink((std::string(PS3_DATA_FOLDER) + path).c_str()); // Remove if file
 #else
 	try
 	{
