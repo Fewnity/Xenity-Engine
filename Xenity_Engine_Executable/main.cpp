@@ -29,11 +29,8 @@ Implement alpha testing on shaders
 System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
 Add lighting on PS3
 Check SetBlendOptimization
-Implement PS3 delete file function
-Some files are not properly closed before the cooking
-Fix crash when profiler is disabled in editor
+Some files are not properly closed before the cooking (remove close call in cooker now)
 Check if force inline for GLM is better or not
-Fix lighting if there is not point light ps3
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
