@@ -262,6 +262,7 @@ protected:
 	friend class Transform;
 	friend class TextManager;
 	friend class ParticleSystem;
+	friend class Material;
 
 	void RemoveReferences() override;
 

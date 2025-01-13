@@ -15,9 +15,10 @@
 #include <engine/debug/performance.h>
 #include <engine/reflection/reflection_utils.h>
 #include <engine/tools/scope_benchmark.h>
+#include <engine/debug/stack_debug_object.h>
+#include <engine/graphics/camera.h>
 #include "graphics.h"
 #include "renderer/renderer.h"
-#include <engine/debug/stack_debug_object.h>
 
 using json = nlohmann::json;
 
@@ -163,7 +164,10 @@ void Material::Use()
 /// </summary>
 void Material::Update()
 {
-	Performance::AddMaterialUpdate();
+	if (Graphics::usedCamera->IsEditor())
+	{
+		Performance::AddMaterialUpdate();
+	}
 
 	//Send all uniforms
 	if (!m_updated)
