@@ -19,6 +19,7 @@
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/time/time.h>
+#include <engine/asset_management/asset_manager.h>
 
 int GameplayManager::gameObjectCount = 0;
 bool GameplayManager::componentsListDirty = true;
@@ -80,6 +81,8 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 		s_gameState = newGameState;
 		if (restoreScene)
 			SceneManager::RestoreScene();
+
+		AssetManager::ReloadAllMaterials();
 	}
 	else if ((newGameState == GameState::Paused && s_gameState == GameState::Playing) ||
 		(newGameState == GameState::Playing && s_gameState == GameState::Paused)) // Pause / UnPause

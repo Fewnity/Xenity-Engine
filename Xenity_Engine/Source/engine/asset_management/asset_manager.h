@@ -46,6 +46,8 @@ public:
 	*/
 	static void OnProjectUnloaded();
 
+	static void ReloadAllMaterials();
+
 	/**
 	* @brief Adds a material
 	* @param material The material to add

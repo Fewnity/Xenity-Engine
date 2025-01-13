@@ -126,6 +126,20 @@ void AssetManager::OnProjectUnloaded()
 	unlitMaterial.reset();
 }
 
+void AssetManager::ReloadAllMaterials()
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+	for (int i = 0; i < materialCount; i++)
+	{
+		Material* material = materials[i];
+		material->UnloadFileReference();
+		FileReference::LoadOptions loadOption;
+		loadOption.platform = Application::GetPlatform();
+		loadOption.threaded = false;
+		material->LoadFileReference(loadOption);
+	}
+}
+
 #pragma region Add assets
 
 void AssetManager::AddMaterial(Material* material)
