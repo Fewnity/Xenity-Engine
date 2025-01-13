@@ -51,7 +51,10 @@ public:
 	/**
 	* @brief Unload the file
 	*/
-	virtual void UnloadFileReference() { }
+	virtual void UnloadFileReference() 
+	{ 
+		m_fileStatus = FileStatus::FileStatus_Not_Loaded;
+	}
 
 	/**
 	* @brief event function called when a file has finshed to load
