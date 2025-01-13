@@ -245,6 +245,7 @@ void Performance::LoadFromBinary(const std::string& path)
 		size_t size = 0;
 		unsigned char* data = file->ReadAllBinary(size);
 		unsigned char* originalDataPtr = data;
+		file->Close();
 
 		ResetProfiler();
 		s_scopProfilerNames.clear();

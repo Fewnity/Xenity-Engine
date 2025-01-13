@@ -45,6 +45,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 	{
 		size_t size = 0;
 		unsigned char * data = file->ReadAllBinary(size);
+		file->Close();
 
 		Assimp::Importer importer;
 		//const aiScene* scene = importer.ReadFileFromMemory(data, size, aiProcess_RemoveComponent | aiProcess_PreTransformVertices | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices); // | aiProcess_Triangulate for PSP
