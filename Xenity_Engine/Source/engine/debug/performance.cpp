@@ -126,9 +126,9 @@ void Performance::Update()
 			s_averageCoolDown = 0;
 			s_tickCount = 0;
 		}
-		ResetCounters();
 	}
 #endif
+	ResetCounters();
 }
 
 size_t Performance::RegisterScopProfiler(const std::string& name, size_t hash)
@@ -303,7 +303,10 @@ void Performance::ResetProfiler()
 	s_currentFrame++;
 	if (!s_isPaused)
 	{
-		Performance::s_scopProfilerList[s_currentProfilerFrame].frameDuration = GetProfilerFrameDuration(Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults);
+		if (!Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults.empty())
+		{
+			Performance::s_scopProfilerList[s_currentProfilerFrame].frameDuration = GetProfilerFrameDuration(Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults);
+		}
 		s_currentProfilerFrame++;
 		if (s_currentProfilerFrame == s_maxProfilerFrameCount)
 		{

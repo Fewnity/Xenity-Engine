@@ -209,7 +209,7 @@ void ProfilerMenu::DrawProfilerGraph()
 		}
 
 
-		if (Performance::s_scopProfilerList.empty())
+		if (Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults.empty())
 		{
 			ImGui::Text("No profiler data available");
 		}
@@ -291,7 +291,7 @@ void ProfilerMenu::DrawProfilerGraph()
 		if (ImGui::CollapsingHeader("Profiler Graph", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
 			// If the profiler is not running, display a message
-			if (Performance::s_scopProfilerList.empty())
+			if (Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults.empty())
 			{
 				ImGui::Text("No profiler data available");
 			}
