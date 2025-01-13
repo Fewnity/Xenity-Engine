@@ -36,7 +36,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	std::shared_ptr<File>& file = mesh.m_file;
-	file->Close();
+
 	bool opened = true;
 #if defined(EDITOR)
 	opened = file->Open(FileMode::ReadOnly);
