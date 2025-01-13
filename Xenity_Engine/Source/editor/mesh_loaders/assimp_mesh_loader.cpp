@@ -44,20 +44,31 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 	if (opened)
 	{
 		size_t size = 0;
-		unsigned char * data = file->ReadAllBinary(size);
+		unsigned char* data = file->ReadAllBinary(size);
 		file->Close();
 
+		// Load the mesh with assimp
 		Assimp::Importer importer;
-
+		// aiProcess_Triangulate because we want to have only triangles, some submeshes mix triangles and quads and I don't know how to handle that
 		unsigned int flags = aiProcess_RemoveComponent | aiProcess_PreTransformVertices | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate;
 		const aiScene* scene = importer.ReadFileFromMemory(data, size, flags);
+		
+		if (!scene)
+		{
+			Debug::PrintError("[AssimpMeshLoader::LoadMesh] Failed to load the mesh: " + file->GetPath(), true);
+			free(data);
+			return false;
+		}
+
+		// Put assimp submesh data in the engine mesh
 		for (size_t subMeshIndex = 0; subMeshIndex < scene->mNumMeshes; subMeshIndex++)
 		{
-			aiMesh* assimpMesh = scene->mMeshes[subMeshIndex];
-			Debug::Print("Pim:" + std::to_string(assimpMesh->mPrimitiveTypes));
-			bool hasNormals = assimpMesh->HasNormals();
-			bool hasUVs = assimpMesh->HasTextureCoords(0);
-			bool hasFaces = assimpMesh->HasFaces();
+			const aiMesh* assimpMesh = scene->mMeshes[subMeshIndex];
+
+			const bool hasNormals = assimpMesh->HasNormals();
+			const bool hasUVs = assimpMesh->HasTextureCoords(0);
+			const bool hasFaces = assimpMesh->HasFaces();
+
 			size_t verticesPerFace = 0;
 			if (hasFaces)
 			{
@@ -73,70 +84,75 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 			{
 				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
 			}
+			mesh.SetVertexDescriptor(vertexDescriptor);
 
+			// PSP for example prefer triangles only for performance
 			if (forceNoIndices)
 			{
 				mesh.m_hasIndices = false;
 			}
-			else 
+			else
 			{
 				mesh.m_hasIndices = hasFaces;
 			}
 
-			mesh.SetVertexDescriptor(vertexDescriptor);
+			// Allocate memory
 			if (mesh.m_hasIndices)
 			{
 				mesh.AllocSubMesh(assimpMesh->mNumVertices, assimpMesh->mNumFaces * verticesPerFace);
 			}
-			else 
+			else
 			{
-				mesh.AllocSubMesh(assimpMesh->mNumFaces * verticesPerFace, assimpMesh->mNumFaces * verticesPerFace);
+				mesh.AllocSubMesh(assimpMesh->mNumFaces * verticesPerFace, 0);
 
 			}
+
+			// Check if the mesh is	using triangles or quads
 			if (verticesPerFace == 4)
 			{
 				mesh.m_subMeshes[subMeshIndex]->m_isQuad = true;
 			}
-			else 
+			else
 			{
 				mesh.m_subMeshes[subMeshIndex]->m_isQuad = false;
 			}
 
 			if (mesh.m_hasIndices)
 			{
+				// Fill the mesh with the vertex data
 				for (size_t vertexIndex = 0; vertexIndex < assimpMesh->mNumVertices; vertexIndex++)
 				{
 					AddVertex(mesh, assimpMesh, vertexIndex, subMeshIndex, vertexIndex);
 				}
 
+				// Fill the mesh with the indices data
 				for (size_t faceIndex = 0; faceIndex < assimpMesh->mNumFaces; faceIndex++)
 				{
-					aiFace& face = assimpMesh->mFaces[faceIndex];
-					for (size_t index = 0; index < face.mNumIndices; index++)
+					const aiFace& face = assimpMesh->mFaces[faceIndex];
+					for (size_t index = 0; index < verticesPerFace; index++)
 					{
-						if (mesh.m_subMeshes[subMeshIndex]->isShortIndices)
+						if (mesh.m_subMeshes[subMeshIndex]->isShortIndices) // 16 bits indices
 						{
 							((unsigned short*)mesh.m_subMeshes[subMeshIndex]->indices)[faceIndex * verticesPerFace + index] = face.mIndices[index];
 						}
-						else
+						else // 32 bits indices
 						{
 							((unsigned int*)mesh.m_subMeshes[subMeshIndex]->indices)[faceIndex * verticesPerFace + index] = face.mIndices[index];
 						}
 					}
 				}
 			}
-			else 
+			else
 			{
-				size_t vertexIndex2 = 0;
+				size_t meshVertexIndex = 0;
 				for (size_t faceIndex = 0; faceIndex < assimpMesh->mNumFaces; faceIndex++)
 				{
 					for (size_t faceVertexIndex = 0; faceVertexIndex < verticesPerFace; faceVertexIndex++)
 					{
-						size_t vertexIndex = assimpMesh->mFaces[faceIndex].mIndices[faceVertexIndex];
-						AddVertex(mesh, assimpMesh, vertexIndex, subMeshIndex, vertexIndex2);
-						vertexIndex2++;
+						const size_t assimpVertexIndex = assimpMesh->mFaces[faceIndex].mIndices[faceVertexIndex];
+						AddVertex(mesh, assimpMesh, assimpVertexIndex, subMeshIndex, meshVertexIndex);
+						meshVertexIndex++;
 					}
-					//vertexIndex2 += verticesPerFace;
 				}
 			}
 		}
@@ -146,9 +162,9 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 	return true;
 }
 
-void AssimpMeshLoader::AddVertex(MeshData& mesh, const aiMesh* assimpMesh, unsigned int vertexIndex, unsigned int subMeshIndex, unsigned int vertexIndex2)
+void AssimpMeshLoader::AddVertex(MeshData& mesh, const aiMesh* assimpMesh, unsigned int assimpVertexIndex, unsigned int subMeshIndex, unsigned int meshVertexIndex)
 {
-	const aiVector3D& vertex = assimpMesh->mVertices[vertexIndex];
+	const aiVector3D& vertex = assimpMesh->mVertices[assimpVertexIndex];
 	const bool hasNormals = assimpMesh->HasNormals();
 	const bool hasUVs = assimpMesh->HasTextureCoords(0);
 
@@ -157,32 +173,32 @@ void AssimpMeshLoader::AddVertex(MeshData& mesh, const aiMesh* assimpMesh, unsig
 		if (!hasUVs)
 		{
 			mesh.AddVertex(
-				vertex.x, vertex.y, vertex.z, vertexIndex2, subMeshIndex);
+				vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
 		}
 		else
 		{
-			const aiVector3D& uv = assimpMesh->mTextureCoords[0][vertexIndex];
+			const aiVector3D& uv = assimpMesh->mTextureCoords[0][assimpVertexIndex];
 			mesh.AddVertex(
 				uv.x, uv.y,
-				vertex.x, vertex.y, vertex.z, vertexIndex2, subMeshIndex);
+				vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
 		}
 	}
 	else
 	{
-		const aiVector3D& normals = assimpMesh->mNormals[vertexIndex];
+		const aiVector3D& normals = assimpMesh->mNormals[assimpVertexIndex];
 		if (!hasUVs)
 		{
 			mesh.AddVertex(
 				normals.x, normals.y, normals.z,
-				vertex.x, vertex.y, vertex.z, vertexIndex2, subMeshIndex);
+				vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
 		}
 		else
 		{
-			const aiVector3D& uv = assimpMesh->mTextureCoords[0][vertexIndex];
+			const aiVector3D& uv = assimpMesh->mTextureCoords[0][assimpVertexIndex];
 			mesh.AddVertex(
 				uv.x, uv.y,
 				normals.x, normals.y, normals.z,
-				vertex.x, vertex.y, vertex.z, vertexIndex2, subMeshIndex);
+				vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
 
 		}
 	}
