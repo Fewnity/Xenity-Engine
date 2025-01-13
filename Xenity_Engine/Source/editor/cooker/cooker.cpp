@@ -122,8 +122,6 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	else if (fileInfo.type == FileType::File_Mesh) // Cook mesh
 	{
 		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
-		/*const std::shared_ptr<MeshData> meshData = std::dynamic_pointer_cast<MeshData>(fileRef);
-		meshData->LoadFileReference();*/
 
 		MeshData meshData = MeshData();
 		meshData.m_file = fileInfo.file;

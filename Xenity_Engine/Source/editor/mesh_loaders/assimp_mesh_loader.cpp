@@ -48,16 +48,9 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 		file->Close();
 
 		Assimp::Importer importer;
-		//const aiScene* scene = importer.ReadFileFromMemory(data, size, aiProcess_RemoveComponent | aiProcess_PreTransformVertices | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices); // | aiProcess_Triangulate for PSP
-		
-		unsigned int flags = aiProcess_RemoveComponent | aiProcess_PreTransformVertices | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices  | aiProcess_Triangulate;
-		//if (!forceNoIndices)
-		//{
-		//	flags |=  aiProcess_JoinIdenticalVertices;
-		//}
-		//flags |= aiProcess_JoinIdenticalVertices;
-		const aiScene* scene = importer.ReadFileFromMemory(data, size, flags); // | aiProcess_Triangulate for PSP
-		//const aiScene* scene = importer.ReadFileFromMemory(data, size, aiProcess_RemoveComponent | aiProcess_PreTransformVertices | aiProcess_FlipUVs | aiProcess_Triangulate); // | aiProcess_Triangulate for PSP
+
+		unsigned int flags = aiProcess_RemoveComponent | aiProcess_PreTransformVertices | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate;
+		const aiScene* scene = importer.ReadFileFromMemory(data, size, flags);
 		for (size_t subMeshIndex = 0; subMeshIndex < scene->mNumMeshes; subMeshIndex++)
 		{
 			aiMesh* assimpMesh = scene->mMeshes[subMeshIndex];
@@ -80,6 +73,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 			{
 				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
 			}
+
 			if (forceNoIndices)
 			{
 				mesh.m_hasIndices = false;
@@ -88,7 +82,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 			{
 				mesh.m_hasIndices = hasFaces;
 			}
-			//mesh.m_hasIndices = false;
+
 			mesh.SetVertexDescriptor(vertexDescriptor);
 			if (mesh.m_hasIndices)
 			{
