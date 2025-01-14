@@ -436,7 +436,14 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 #if defined(EDITOR)
 	if (Graphics::usedCamera->IsEditor())
 	{
-		Performance::AddDrawTriangles(subMesh.vertice_count / 3);
+		if (!subMesh.meshData->m_hasIndices)
+		{
+			Performance::AddDrawTriangles(subMesh.vertice_count / 3);
+		}
+		else 
+		{
+			Performance::AddDrawTriangles(subMesh.index_count / 3);
+		}
 		Performance::AddDrawCall();
 	}
 #endif
