@@ -1,10 +1,11 @@
 #include "update_checker.h"
 
+#include <curl/curl.h>
+#include <json.hpp>
+
 #include <engine/network/network.h>  
 #include <engine/debug/debug.h>
-#include <curl/curl.h>
-
-#include <json.hpp>
+#include <engine/constants.h>
 
 using json = nlohmann::json;
 
@@ -34,14 +35,48 @@ bool UpdateChecker::CheckForUpdate()
 			try
 			{
 				const json j = json::parse(readBuffer);
+
 				for (auto& release : j)
 				{
-					std::string tagName = release["tag_name"];
+					const std::string tagName = release["tag_name"];
+					int major = 0;
+					int minor = 0;
+					int patch = 0;
+#if defined(_WIN32) || defined(_WIN64)
+					sscanf_s(tagName.c_str(), "v%d.%d.%d\n", &major, &minor, &patch);
+#elif defined(__LINUX__)
+					sscanf(tagName.c_str(), "v%d.%d.%d\n", &major, &minor, &patch);
+#endif
 					Debug::Print("Tag name: " + tagName);
-					/*if (tagName == "v1.0.0")
+					if (major > ENGINE_MAJOR_VERSION)
 					{
+						Debug::Print("New Update available!");
 						return true;
-					}*/
+					}
+					else if (major < ENGINE_MAJOR_VERSION)
+					{
+						continue;
+					}
+
+					if (minor > ENGINE_MINOR_VERSION)
+					{
+						Debug::Print("New Update available!");
+						return true;
+					}
+					else if (minor < ENGINE_MINOR_VERSION)
+					{
+						continue;
+					}
+
+					if (patch > ENGINE_PATCH_VERSION)
+					{
+						Debug::Print("New Update available!");
+						return true;
+					}
+					else if (patch < ENGINE_PATCH_VERSION)
+					{
+						continue;
+					}
 				}
 			}
 			catch (const std::exception&)
