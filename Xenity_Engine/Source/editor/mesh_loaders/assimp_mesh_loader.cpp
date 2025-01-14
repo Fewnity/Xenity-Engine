@@ -104,7 +104,6 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 			else
 			{
 				mesh.AllocSubMesh(assimpMesh->mNumFaces * verticesPerFace, 0);
-
 			}
 
 			// Check if the mesh is	using triangles or quads
