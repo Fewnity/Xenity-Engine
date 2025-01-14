@@ -173,7 +173,7 @@ void Window::UpdateWindowTitle()
 	{
 
 	}
-	newTitle += std::string(ENGINE_NAME) + " 0.1";
+	newTitle += std::string(ENGINE_NAME) + " " + ENGINE_VERSION;
 	SDL_SetWindowTitle(s_window, newTitle.c_str());
 #endif
 }
