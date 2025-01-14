@@ -51,6 +51,103 @@ void TexturePS3::OnLoadFileReferenceFinished()
 	isValid = true;
 }
 
+static void copy_texture_data(void* dest, const void* src, int width, int height, const int destType, const int srcType)
+{
+	/*for (unsigned int y = 0; y < height; y++)
+	{
+		for (unsigned int x = 0; x < width; x++)
+		{
+			((unsigned int*)dest)[x + y * width] = ((unsigned int*)src)[x + y * width];
+		}
+	}*/
+	if (destType == srcType)
+	{
+		if (srcType == GCM_TEXTURE_FORMAT_A4R4G4B4 || srcType == GCM_TEXTURE_FORMAT_R5G6B5 || srcType == GCM_TEXTURE_FORMAT_A1R5G5B5)
+		{
+			height /= 2;
+		}
+		for (unsigned int y = 0; y < height; y++)
+		{
+			for (unsigned int x = 0; x < width; x++)
+			{
+				uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+				uint8_t r = (srcPixel >> 24) & 0xFF;
+				uint8_t g = (srcPixel >> 16) & 0xFF;
+				uint8_t b = (srcPixel >> 8) & 0xFF;
+				uint8_t a = srcPixel & 0xFF;
+
+				//uint32_t destPixel = (r) << 12 | (g) << 8 | (b) << 4 | (a);
+				uint32_t destPixel = (a) << 24 | (r) << 16 | (g) << 8 | (b);
+				((uint32_t*)dest)[x + y * width] = destPixel;
+				//((unsigned int*)dest)[x + y * width] = ((unsigned int*)src)[x + y * width];
+			}
+		}
+	}
+	else
+	{
+		if (srcType == GCM_TEXTURE_FORMAT_A8R8G8B8 && destType == GCM_TEXTURE_FORMAT_A4R4G4B4)
+		{
+			for (unsigned int y = 0; y < height; y++)
+			{
+				for (unsigned int x = 0; x < width; x++)
+				{
+					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+
+					uint16_t r = (srcPixel >> 24) & 0xFF;
+					uint16_t g = (srcPixel >> 16) & 0xFF;
+					uint16_t b = (srcPixel >> 8) & 0xFF;
+					uint16_t a = srcPixel & 0xFF;
+
+					uint16_t destPixel = (r >> 4) << 12 | (g >> 4) << 8 | (b >> 4) << 4 | (a >> 4);
+
+					((uint16_t*)dest)[x + y * width] = destPixel;
+				}
+			}
+		}
+		else if (srcType == GCM_TEXTURE_FORMAT_A8R8G8B8 && destType == GCM_TEXTURE_FORMAT_R5G6B5)
+		{
+			for (unsigned int y = 0; y < height; y++)
+			{
+				for (unsigned int x = 0; x < width; x++)
+				{
+					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+
+					uint8_t r = (srcPixel >> 24) & 0xFF; // Rouge (8 bits)
+					uint8_t g = (srcPixel >> 16) & 0xFF; // Vert (8 bits)
+					uint8_t b = (srcPixel >> 8) & 0xFF;  // Bleu (8 bits)
+
+					uint16_t r5 = (r >> 3) & 0x1F;
+					uint16_t g6 = (g >> 2) & 0x3F;
+					uint16_t b5 = (b >> 3) & 0x1F;
+
+					uint16_t destPixel = (r5 << 11) | (g6 << 5) | b5;
+
+					((uint16_t*)dest)[x + y * width] = destPixel;
+				}
+			}
+		}
+		else if (srcType == GCM_TEXTURE_FORMAT_A8R8G8B8 && destType == GCM_TEXTURE_FORMAT_A1R5G5B5)
+		{
+			for (unsigned int y = 0; y < height; y++)
+			{
+				for (unsigned int x = 0; x < width; x++)
+				{
+					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
+
+					uint16_t a = (srcPixel >> 24) ? 0x8000 : 0;
+					uint16_t b = (srcPixel >> 19) & 0x1F;
+					uint16_t g = (srcPixel >> 11) & 0x1F;
+					uint16_t r = (srcPixel >> 3) & 0x1F;
+
+					uint16_t destPixel = a | r | (g << 5) | (b << 10);
+
+					((uint16_t*)dest)[x + y * width] = destPixel;
+				}
+			}
+		}
+	}
+}
+
 void TexturePS3::SetData(const unsigned char* texData)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
@@ -68,6 +165,7 @@ void TexturePS3::SetData(const unsigned char* texData)
 	if (!m_ps3buffer)
 		return;
 
+	//copy_texture_data(m_ps3buffer, texData, GetWidth(), GetHeight(), GCM_TEXTURE_FORMAT_R5G6B5, GCM_TEXTURE_FORMAT_A8R8G8B8);
 	unsigned char* upBuffer = m_ps3buffer;
 	for (int i = 0; i < GetWidth() * GetHeight() * 4; i += 4)
 	{
@@ -88,6 +186,7 @@ void TexturePS3::SetData(const unsigned char* texData)
 	if (!isFloatFormat)
 	{
 		m_gcmTexture.format = (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
+		//m_gcmTexture.format = (GCM_TEXTURE_FORMAT_R5G6B5 | GCM_TEXTURE_FORMAT_LIN);
 	}
 	else
 	{
@@ -109,6 +208,7 @@ void TexturePS3::SetData(const unsigned char* texData)
 	m_gcmTexture.depth = 1;
 	m_gcmTexture.location = GCM_LOCATION_RSX;
 	m_gcmTexture.pitch = GetWidth() * 4 * resolutionMultiplier;
+	//m_gcmTexture.pitch = GetWidth() * 2 * resolutionMultiplier;
 	m_gcmTexture.offset = m_textureOffset;
 	isValid = true;
 }
