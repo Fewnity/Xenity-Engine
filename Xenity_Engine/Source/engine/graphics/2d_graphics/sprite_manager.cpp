@@ -26,6 +26,7 @@
 #include <engine/tools/math.h>
 
 std::shared_ptr <MeshData> SpriteManager::s_spriteMeshData = nullptr;
+std::shared_ptr <MeshData> SpriteManager::s_spriteMeshDataWithNormals = nullptr;
 
 /**
  * @brief Init the Sprite Manager
@@ -50,6 +51,23 @@ void SpriteManager::Init()
 	((unsigned short*)subMesh->indices)[4] = 0;
 	((unsigned short*)subMesh->indices)[5] = 3;
 	s_spriteMeshData->OnLoadFileReferenceFinished();
+
+	s_spriteMeshDataWithNormals = MeshData::MakeMeshData(4, 6, false, true, true);
+	s_spriteMeshDataWithNormals->AddVertex(1.0f, 1.0f, 0, 0, -1, -0.5f, -0.5f, 0.0f, 0, 0);
+	s_spriteMeshDataWithNormals->AddVertex(0.0f, 1.0f, 0, 0, -1, 0.5f, -0.5f, 0.0f, 1, 0);
+	s_spriteMeshDataWithNormals->AddVertex(0.0f, 0.0f, 0, 0, -1, 0.5f, 0.5f, 0.0f, 2, 0);
+	s_spriteMeshDataWithNormals->AddVertex(1.0f, 0.0f, 0, 0, -1, -0.5f, 0.5f, 0.0f, 3, 0);
+	s_spriteMeshDataWithNormals->m_hasIndices = true;
+
+	std::unique_ptr<MeshData::SubMesh>& subMeshWithNormals = s_spriteMeshDataWithNormals->m_subMeshes[0];
+	subMeshWithNormals->isShortIndices = true;
+	((unsigned short*)subMeshWithNormals->indices)[0] = 0;
+	((unsigned short*)subMeshWithNormals->indices)[1] = 2;
+	((unsigned short*)subMeshWithNormals->indices)[2] = 1;
+	((unsigned short*)subMeshWithNormals->indices)[3] = 2;
+	((unsigned short*)subMeshWithNormals->indices)[4] = 0;
+	((unsigned short*)subMeshWithNormals->indices)[5] = 3;
+	s_spriteMeshDataWithNormals->OnLoadFileReferenceFinished();
 
 #if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important

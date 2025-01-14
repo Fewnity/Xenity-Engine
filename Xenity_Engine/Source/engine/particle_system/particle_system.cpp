@@ -322,7 +322,7 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 	command.material = m_material.get();
 	command.drawable = this;
 	if (!m_mesh)
-		command.subMesh = SpriteManager::GetBasicSpriteMeshData()->m_subMeshes[0].get();
+		command.subMesh = SpriteManager::GetBasicSpriteMeshDataWithNormals()->m_subMeshes[0].get();
 	else
 		command.subMesh = m_mesh->m_subMeshes[0].get();
 	command.transform = GetTransform().get();

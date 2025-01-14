@@ -62,6 +62,12 @@ public:
 		return s_spriteMeshData;
 	}
 
+	static const std::shared_ptr <MeshData>& GetBasicSpriteMeshDataWithNormals()
+	{
+		return s_spriteMeshDataWithNormals;
+	}
+
 private:
 	static std::shared_ptr <MeshData> s_spriteMeshData;
+	static std::shared_ptr <MeshData> s_spriteMeshDataWithNormals;
 };
