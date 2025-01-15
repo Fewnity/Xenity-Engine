@@ -51,7 +51,7 @@ void TexturePS3::OnLoadFileReferenceFinished()
 	isValid = true;
 }
 
-static void copy_texture_data(void* dest, const void* src, int width, int height, const int destType, const int srcType)
+static void copy_texture_data(void* dest, const void* src, int width, int height, const PS3TextureType destType, const PS3TextureType srcType)
 {
 	/*for (unsigned int y = 0; y < height; y++)
 	{
@@ -62,7 +62,7 @@ static void copy_texture_data(void* dest, const void* src, int width, int height
 	}*/
 	if (destType == srcType)
 	{
-		if (srcType == GCM_TEXTURE_FORMAT_A4R4G4B4 || srcType == GCM_TEXTURE_FORMAT_R5G6B5 || srcType == GCM_TEXTURE_FORMAT_A1R5G5B5)
+		if (srcType == PS3TextureType::ARGB_4444 || srcType == PS3TextureType::ARGB_0565 || srcType == PS3TextureType::ARGB_1555)
 		{
 			height /= 2;
 		}
@@ -85,7 +85,7 @@ static void copy_texture_data(void* dest, const void* src, int width, int height
 	}
 	else
 	{
-		if (srcType == GCM_TEXTURE_FORMAT_A8R8G8B8 && destType == GCM_TEXTURE_FORMAT_A4R4G4B4)
+		if (srcType == PS3TextureType::ARGB_8888 && destType == PS3TextureType::ARGB_4444)
 		{
 			for (unsigned int y = 0; y < height; y++)
 			{
@@ -104,7 +104,7 @@ static void copy_texture_data(void* dest, const void* src, int width, int height
 				}
 			}
 		}
-		else if (srcType == GCM_TEXTURE_FORMAT_A8R8G8B8 && destType == GCM_TEXTURE_FORMAT_R5G6B5)
+		else if (srcType == PS3TextureType::ARGB_8888 && destType == PS3TextureType::ARGB_0565)
 		{
 			for (unsigned int y = 0; y < height; y++)
 			{
@@ -126,7 +126,7 @@ static void copy_texture_data(void* dest, const void* src, int width, int height
 				}
 			}
 		}
-		else if (srcType == GCM_TEXTURE_FORMAT_A8R8G8B8 && destType == GCM_TEXTURE_FORMAT_A1R5G5B5)
+		else if (srcType == PS3TextureType::ARGB_8888 && destType == PS3TextureType::ARGB_1555)
 		{
 			for (unsigned int y = 0; y < height; y++)
 			{
@@ -165,7 +165,7 @@ void TexturePS3::SetData(const unsigned char* texData)
 	if (!m_ps3buffer)
 		return;
 
-	//copy_texture_data(m_ps3buffer, texData, GetWidth(), GetHeight(), GCM_TEXTURE_FORMAT_R5G6B5, GCM_TEXTURE_FORMAT_A8R8G8B8);
+	//copy_texture_data(m_ps3buffer, texData, GetWidth(), GetHeight(), PS3TextureType::ARGB_0565, PS3TextureType::ARGB_8888);
 	unsigned char* upBuffer = m_ps3buffer;
 	for (int i = 0; i < GetWidth() * GetHeight() * 4; i += 4)
 	{

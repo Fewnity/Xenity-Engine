@@ -26,6 +26,7 @@ ENUM(AnisotropicLevel, X0, X2, X4, X8, X16);
 ENUM(TextureResolutions, R_64x64 = 64, R_128x128 = 128, R_256x256 = 256, R_512x512 = 512, R_1024x1024 = 1024, R_2048x2048 = 2048);
 ENUM(WrapMode, ClampToEdge, ClampToBorder, MirroredRepeat, Repeat, MirrorClampToEdge);
 ENUM(PSPTextureType, RGBA_8888, RGBA_5551, RGBA_5650, RGBA_4444);
+ENUM(PS3TextureType, ARGB_8888, ARGB_1555, ARGB_0565, ARGB_4444);
 
 class TextureSettings : public Reflective
 {
@@ -84,6 +85,14 @@ public:
 class TextureSettingsPS3 : public TextureSettings
 {
 public:
+	PS3TextureType type = PS3TextureType::ARGB_0565;
+
+	ReflectiveData GetReflectiveData() override
+	{
+		ReflectiveData reflectedVariables;
+		Reflective::AddVariable(reflectedVariables, type, "type", true);
+		return reflectedVariables;
+	}
 };
 
 /**
