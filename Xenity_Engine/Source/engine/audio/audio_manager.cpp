@@ -228,6 +228,10 @@ void audio_thread(void *arg)
 		{
 			buf[i2] = (wave_buf[i2]) / 35535.0f;
 		}
+		if (!Engine::IsRunning(false))
+		{
+			break;
+		}
 		usleep(2);
 	}
 	
@@ -246,6 +250,10 @@ int audio_thread(SceSize args, void* argp)
 			AudioManager::FillChannelBuffer((short*)wave_buf, AUDIO_BUFFER_SIZE, AudioManager::s_channel);
 			sceAudioOutput(0, PSP_AUDIO_VOLUME_MAX, wave_buf);
 		}
+		if (!Engine::IsRunning(false))
+		{
+			break;
+		}
 		sceKernelDelayThread(2);
 	}
 }
@@ -261,6 +269,10 @@ int audio_thread(SceSize args, void* argp)
 			int16_t wave_buf[AUDIO_BUFFER_SIZE * 2] = { 0 };
 			AudioManager::FillChannelBuffer((short*)wave_buf, AUDIO_BUFFER_SIZE, AudioManager::s_channel);
 			sceAudioOutOutput(AudioManager::s_channel->m_port, wave_buf);
+		}
+		if (!Engine::IsRunning(false))
+		{
+			break;
 		}
 	}
 }
@@ -311,7 +323,7 @@ int fillAudioBufferThread()
 {
 	while (true)
 	{
-		if (!Engine::IsRunning(true))
+		if (!Engine::IsRunning(false))
 		{
 		#if defined(__PS3__)
 			return;
@@ -389,6 +401,10 @@ int fillAudioBufferThread()
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 #endif
 	}
+
+#if defined(__PS3__)
+	sysThreadExit(0);
+#endif
 }
 
 
