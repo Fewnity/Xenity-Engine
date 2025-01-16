@@ -262,6 +262,10 @@ void Engine::CheckEvents()
 			if (event.window.windowID == SDL_GetWindowID(Window::s_window))
 			{
 				Quit();
+				if (!s_isRunning)
+				{
+					return;
+				}
 			}
 			break;
 
@@ -300,7 +304,7 @@ void Engine::CheckEvents()
 		}
 	}
 
-	if (focusCount == 1)
+	if (focusCount == 1 && IsRunning(true))
 	{
 #if defined(EDITOR)
 		if (!EditorUI::IsEditingElement())

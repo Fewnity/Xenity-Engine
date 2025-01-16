@@ -234,7 +234,7 @@ void Editor::OnWindowFocused()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	if (ProjectManager::IsProjectLoaded())
+	if (ProjectManager::IsProjectLoaded() && Engine::IsRunning(true))
 	{
 		FileHandler::HasFileChangedOrAddedThreaded(ProjectManager::GetAssetFolderPath(), OnFileModified);
 		FileHandler::HasCodeChangedThreaded(ProjectManager::GetAssetFolderPath(), OnCodeModified);
