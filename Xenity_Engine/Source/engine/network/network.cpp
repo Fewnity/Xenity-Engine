@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (c) 2022-2024 Gregory Machefer (Fewnity)
+// Copyright (c) 2022-2025 Gregory Machefer (Fewnity)
 //
 // This file is part of Xenity Engine
 
@@ -113,7 +113,7 @@ std::shared_ptr<Socket> NetworkManager::GetClientSocket()
 	sin.sin_port = htons(6004);
 	bind(newSocketId, reinterpret_cast<SOCKADDR*>(& sin), sizeof(sin));
 	listen(newSocketId, 0);
-	while (true) /* Boucle infinie. Exercice : améliorez ce code. */
+	while (true)
 	{
 		int sinsize = sizeof(csin);
 		if ((newClientSocketId = static_cast<int>(accept(newSocketId, reinterpret_cast<SOCKADDR*>(&csin), &sinsize))) != INVALID_SOCKET)

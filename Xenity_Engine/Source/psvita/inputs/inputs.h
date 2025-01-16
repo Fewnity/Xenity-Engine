@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (c) 2022-2024 Grégory Machefer (Fewnity)
+// Copyright (c) 2022-2025 Grï¿½gory Machefer (Fewnity)
 //
 // This file is part of Xenity Engine
 
