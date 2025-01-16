@@ -45,6 +45,7 @@
 #include <engine/graphics/2d_graphics/billboard_renderer.h>
 #include <engine/graphics/3d_graphics/lod.h>
 #include <engine/game_elements/rect_transform.h>
+#include "update_available_menu.h"
 
 void MainBarMenu::Init()
 {
@@ -537,6 +538,13 @@ void MainBarMenu::Draw()
 		}
 		ImGui::EndMenu();
 	}
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+	if (Editor::IsUpdateAvailable() && ImGui::MenuItem("Update available!"))
+	{
+		Editor::GetMenu<UpdateAvailableMenu>()->SetActive(true);
+		Editor::GetMenu<UpdateAvailableMenu>()->Focus();
+	}
+	ImGui::PopStyleColor();
 	height = ImGui::GetWindowHeight();
 	ImGui::EndMainMenuBar();
 

@@ -44,6 +44,9 @@ class ProjectDirectory;
 class MeshData;
 class Texture;
 
+template<typename... Args>
+class Event;
+
 class Editor
 {
 public:
@@ -428,6 +431,11 @@ public:
 	*/
 	static bool SeparateFileFromPath(const std::string& fullPath, std::string& folderPath, std::string& fileName);
 
+	static bool IsUpdateAvailable() 
+	{
+		return updateAvailable;
+	}
+
 	static std::shared_ptr <MeshData> rightArrow;
 	static std::shared_ptr <MeshData> upArrow;
 	static std::shared_ptr <MeshData> forwardArrow;
@@ -500,6 +508,9 @@ private:
 	*/
 	static void GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number);
 
+	static void OnUpdateChecked(bool newVersionAvailable);
+
+	static bool updateAvailable;
 	static int menuCount;
 	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
 	static std::vector<std::weak_ptr<GameObject>> selectedGameObjects;
@@ -508,5 +519,6 @@ private:
 	static std::shared_ptr<MainBarMenu> mainBar;
 	static std::shared_ptr <BottomBarMenu> bottomBar;
 	static std::vector<std::string> dragdropEntries;
+	static Event<bool>* onUpdateCheckedEvent;
 };
 

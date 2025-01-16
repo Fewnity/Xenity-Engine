@@ -15,8 +15,9 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* use
 	return size * nmemb;
 }
 
-bool UpdateChecker::CheckForUpdate()
+void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 {
+	bool updateFound = false;
 	CURL* curl = curl_easy_init();
 	if (curl)
 	{
@@ -24,8 +25,10 @@ bool UpdateChecker::CheckForUpdate()
 		std::string readBuffer;
 
 		//curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/Fewnity/Xenity-Engine-SDK/releases");
-		curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/skiff/PS3-Toolbox/releases");
+		/*curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/skiff/PS3-Toolbox/releases");*/
+		curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/ocornut/imgui/releases");
 		curl_easy_setopt(curl, CURLOPT_USERAGENT, "Xenity");
+		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "application/vnd.github+json");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 		res = curl_easy_perform(curl);
@@ -50,8 +53,8 @@ bool UpdateChecker::CheckForUpdate()
 					Debug::Print("Tag name: " + tagName);
 					if (major > ENGINE_MAJOR_VERSION)
 					{
-						Debug::Print("New Update available!");
-						return true;
+						updateFound = true;
+						break;
 					}
 					else if (major < ENGINE_MAJOR_VERSION)
 					{
@@ -61,7 +64,8 @@ bool UpdateChecker::CheckForUpdate()
 					if (minor > ENGINE_MINOR_VERSION)
 					{
 						Debug::Print("New Update available!");
-						return true;
+						updateFound = true;
+						break;
 					}
 					else if (minor < ENGINE_MINOR_VERSION)
 					{
@@ -71,7 +75,8 @@ bool UpdateChecker::CheckForUpdate()
 					if (patch > ENGINE_PATCH_VERSION)
 					{
 						Debug::Print("New Update available!");
-						return true;
+						updateFound = true;
+						break;
 					}
 					else if (patch < ENGINE_PATCH_VERSION)
 					{
@@ -84,11 +89,6 @@ bool UpdateChecker::CheckForUpdate()
 
 			}
 		}
-		else 
-		{
-			return false;
-		}
 	}
-
-	return false;
+	onUpdateCheckedEvent->Trigger(updateFound);
 }

@@ -29,6 +29,7 @@
 #include <editor/ui/menus/engine_asset_manager_menu.h>
 #include <editor/ui/menus/engine_debug_menu.h>
 #include <editor/ui/menus/database_checker_menu.h>
+#include <editor/ui/menus/update_available_menu.h>
 
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> ClassRegistry::s_nameToMenu;
 std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
@@ -188,6 +189,7 @@ void ClassRegistry::RegisterMenus()
 	REGISTER_MENU(EngineAssetManagerMenu);
 	REGISTER_MENU(EngineDebugMenu);
 	REGISTER_MENU(DataBaseCheckerMenu);
+	REGISTER_MENU(UpdateAvailableMenu);
 
 	REGISTER_MENU(FileExplorerMenu);
 	REGISTER_MENU(HierarchyMenu);

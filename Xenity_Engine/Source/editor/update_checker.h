@@ -1,5 +1,8 @@
 #pragma once
 
+template<typename... Args>
+class Event;
+
 class UpdateChecker
 {
 public:
@@ -7,6 +10,6 @@ public:
 	* @brief Check for an update
 	* @return True if an update is available
 	*/
-	static bool CheckForUpdate();
+	static void CheckForUpdate(Event<bool>* onUpdateCheckedEvent);
 };
 

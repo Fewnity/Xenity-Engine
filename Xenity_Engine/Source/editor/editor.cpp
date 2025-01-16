@@ -9,6 +9,7 @@
 #include "editor.h"
 
 #include <filesystem>
+#include <thread>
 
 #include <imgui/imgui_internal.h>
 
@@ -44,6 +45,7 @@
 #include <engine/debug/debug.h>
 #include <engine/event_system/event_system.h>
 #include <engine/debug/stack_debug_object.h>
+#include "ui/menus/update_available_menu.h"
 using json = nlohmann::json;
 
 std::weak_ptr<AudioSource> Editor::audioSource;
@@ -74,19 +76,20 @@ Editor::MenuSettings Editor::menuSettings;
 
 int Editor::menuCount = 0;
 bool Editor::isToolLocalMode;
+Event<bool>* Editor::onUpdateCheckedEvent = new Event<bool>();
+bool Editor::updateAvailable = false;
 
 void Editor::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-	const bool updateFound = UpdateChecker::CheckForUpdate();
-	if (updateFound)
-	{
-		Debug::PrintWarning("An update is available, please download the latest version of the engine");
-	}
 	ClassRegistry::RegisterMenus();
 	LoadMenuSettings();
 	SaveMenuSettings();
 	CreateMenus();
+
+	onUpdateCheckedEvent->Bind(&OnUpdateChecked);
+	std::thread thread(&UpdateChecker::CheckForUpdate, onUpdateCheckedEvent);
+	thread.detach();
 
 	// Create audio source for audio clip preview
 	std::shared_ptr<GameObject> audioSourceGO = CreateGameObjectEditor("AudioSource");
@@ -200,6 +203,7 @@ void Editor::CreateNewMenuSettings()
 	AddMenuSetting(menuSettingList, "EngineAssetManagerMenu", false, true);
 	AddMenuSetting(menuSettingList, "EngineDebugMenu", false, true);
 	AddMenuSetting(menuSettingList, "DataBaseCheckerMenu", false, true);
+	AddMenuSetting(menuSettingList, "UpdateAvailableMenu", false, true);
 
 	AddMenuSetting(menuSettingList, "FileExplorerMenu", true, false);
 	AddMenuSetting(menuSettingList, "HierarchyMenu", true, false);
@@ -861,6 +865,16 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 	{
 		baseName = name;
 		number = 1;
+	}
+}
+
+void Editor::OnUpdateChecked(bool newVersionAvailable)
+{
+	updateAvailable = newVersionAvailable;
+	if (newVersionAvailable)
+	{
+		GetMenu<UpdateAvailableMenu>()->SetActive(true);
+		GetMenu<UpdateAvailableMenu>()->Focus();
 	}
 }
 
