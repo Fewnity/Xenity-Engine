@@ -32,6 +32,11 @@ void BitFile::Open(const std::string& path)
 	XASSERT(openResult, "[BitFile::Open] Failed to open bit file" + path);
 }
 
+void BitFile::Close()
+{
+	m_file->Close();
+}
+
 size_t BitFile::AddData(const std::vector<uint8_t>& data)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);

@@ -17,34 +17,42 @@ public:
 	BitFile& operator=(const BitFile&) = delete;
 
 	/**
-	* Create the file at the given path
+	* @brief Create the file at the given path
 	*/
 	void Create(const std::string& path);
 
 	/**
-	* Open the file at the given path
+	* @brief Open the file at the given path
 	*/
 	void Open(const std::string& path);
 
 	/**
-	* Add binary data at the end of the file
+	* @brief Close the file
+	*/
+	void Close();
+
+	/**
+	* @brief Add binary data at the end of the file
+	* 
 	*/
 	size_t AddData(const std::vector<uint8_t>& data);
 
 	/**
-	* Add binary data at the end of the file
+	* @brief Add binary data at the end of the file
 	*/
 	size_t AddData(const unsigned char* data, size_t size);
 
 	/**
-	* Read binary data
+	* @brief Read binary data
 	*/
 	unsigned char* ReadBinary(size_t offset, size_t size);
 
 	/**
-	* Read binary data
+	* @brief Read binary data
 	*/
 	unsigned char* ReadBinary(const FileReference& fileReference);
+
+	std::shared_ptr<File> GetFile() const { return m_file; }
 
 private:
 	std::shared_ptr<File> m_file;
