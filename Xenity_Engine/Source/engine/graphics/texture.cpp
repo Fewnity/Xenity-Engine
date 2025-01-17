@@ -220,9 +220,17 @@ void Texture::LoadTexture()
 			newHeight = cookResolution;
 		}
 
-		m_buffer = static_cast<unsigned char*>(malloc(newWidth * newHeight * 4));
-		stbir_resize_uint8(data2, m_width, height, 0, m_buffer, newWidth, newHeight, 0, 4);
-		free(data2);
+		if (newWidth == m_width && newHeight == height)
+		{
+			m_buffer = data2;
+		}
+		else
+		{
+			// Resize image
+			m_buffer = static_cast<unsigned char*>(malloc(newWidth * newHeight * 4));
+			stbir_resize_uint8(data2, m_width, height, 0, m_buffer, newWidth, newHeight, 0, 4);
+			free(data2);
+		}
 		m_width = newWidth;
 		height = newHeight;
 #else
