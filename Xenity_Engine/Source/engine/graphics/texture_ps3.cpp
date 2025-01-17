@@ -51,15 +51,40 @@ void TexturePS3::OnLoadFileReferenceFinished()
 	isValid = true;
 }
 
-static void copy_texture_data(void* dest, const void* src, int width, int height, const PS3TextureType destType, const PS3TextureType srcType)
+unsigned int TexturePS3::GetColorByteCount(PS3TextureType type)
 {
-	/*for (unsigned int y = 0; y < height; y++)
+	switch (type)
 	{
-		for (unsigned int x = 0; x < width; x++)
-		{
-			((unsigned int*)dest)[x + y * width] = ((unsigned int*)src)[x + y * width];
-		}
-	}*/
+	case PS3TextureType::ARGB_0565:
+	case PS3TextureType::ARGB_1555:
+	case PS3TextureType::ARGB_4444:
+		return 2;
+
+	case PS3TextureType::ARGB_8888:
+		return 4;
+
+	default:
+		return 0;
+	}
+}
+
+unsigned int TexturePS3::TextureTypeToGCMType(PS3TextureType type)
+{
+	switch (type)
+	{
+	case PS3TextureType::ARGB_0565:
+		return GCM_TEXTURE_FORMAT_R5G6B5;
+	case PS3TextureType::ARGB_1555:
+		return GCM_TEXTURE_FORMAT_A1R5G5B5;
+	case PS3TextureType::ARGB_4444:
+		return GCM_TEXTURE_FORMAT_A4R4G4B4;
+	case PS3TextureType::ARGB_8888:
+		return GCM_TEXTURE_FORMAT_A8R8G8B8;
+	}
+}
+
+static void ConvertTextureDataType(void* dest, const void* src, unsigned int width, unsigned int height, const PS3TextureType destType, const PS3TextureType srcType)
+{
 	if (destType == srcType)
 	{
 		if (srcType == PS3TextureType::ARGB_4444 || srcType == PS3TextureType::ARGB_0565 || srcType == PS3TextureType::ARGB_1555)
@@ -76,10 +101,8 @@ static void copy_texture_data(void* dest, const void* src, int width, int height
 				uint8_t b = (srcPixel >> 8) & 0xFF;
 				uint8_t a = srcPixel & 0xFF;
 
-				//uint32_t destPixel = (r) << 12 | (g) << 8 | (b) << 4 | (a);
 				uint32_t destPixel = (a) << 24 | (r) << 16 | (g) << 8 | (b);
 				((uint32_t*)dest)[x + y * width] = destPixel;
-				//((unsigned int*)dest)[x + y * width] = ((unsigned int*)src)[x + y * width];
 			}
 		}
 	}
@@ -98,7 +121,7 @@ static void copy_texture_data(void* dest, const void* src, int width, int height
 					uint16_t b = (srcPixel >> 8) & 0xFF;
 					uint16_t a = srcPixel & 0xFF;
 
-					uint16_t destPixel = (r >> 4) << 12 | (g >> 4) << 8 | (b >> 4) << 4 | (a >> 4);
+					uint16_t destPixel = (a >> 4) << 12 | (r >> 4) << 8 | (g >> 4) << 4 | (b >> 4);
 
 					((uint16_t*)dest)[x + y * width] = destPixel;
 				}
@@ -112,9 +135,9 @@ static void copy_texture_data(void* dest, const void* src, int width, int height
 				{
 					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
 
-					uint8_t r = (srcPixel >> 24) & 0xFF; // Rouge (8 bits)
-					uint8_t g = (srcPixel >> 16) & 0xFF; // Vert (8 bits)
-					uint8_t b = (srcPixel >> 8) & 0xFF;  // Bleu (8 bits)
+					uint8_t r = (srcPixel >> 24) & 0xFF;
+					uint8_t g = (srcPixel >> 16) & 0xFF;
+					uint8_t b = (srcPixel >> 8) & 0xFF;
 
 					uint16_t r5 = (r >> 3) & 0x1F;
 					uint16_t g6 = (g >> 2) & 0x3F;
@@ -134,12 +157,17 @@ static void copy_texture_data(void* dest, const void* src, int width, int height
 				{
 					uint32_t srcPixel = ((uint32_t*)src)[x + y * width];
 
-					uint16_t a = (srcPixel >> 24) ? 0x8000 : 0;
-					uint16_t b = (srcPixel >> 19) & 0x1F;
-					uint16_t g = (srcPixel >> 11) & 0x1F;
-					uint16_t r = (srcPixel >> 3) & 0x1F;
+					uint16_t r = (srcPixel >> 24) & 0xFF;
+					uint16_t g = (srcPixel >> 16) & 0xFF;
+					uint16_t b = (srcPixel >> 8) & 0xFF;
+					uint16_t a = srcPixel & 0xFF;
 
-					uint16_t destPixel = a | r | (g << 5) | (b << 10);
+					uint16_t alpha = (a > 0) ? 1 : 0;
+					uint16_t r5 = (r >> 3) & 0x1F;
+					uint16_t g5 = (g >> 3) & 0x1F;
+					uint16_t b5 = (b >> 3) & 0x1F;
+
+					uint16_t destPixel = (alpha << 15) | (r5 << 10) | (g5 << 5) | b5;
 
 					((uint16_t*)dest)[x + y * width] = destPixel;
 				}
@@ -165,15 +193,9 @@ void TexturePS3::SetData(const unsigned char* texData)
 	if (!m_ps3buffer)
 		return;
 
-	//copy_texture_data(m_ps3buffer, texData, GetWidth(), GetHeight(), PS3TextureType::ARGB_0565, PS3TextureType::ARGB_8888);
-	unsigned char* upBuffer = m_ps3buffer;
-	for (int i = 0; i < GetWidth() * GetHeight() * 4; i += 4)
-	{
-		upBuffer[i + 0] = texData[(i + 3)];
-		upBuffer[i + 1] = texData[(i + 0)];
-		upBuffer[i + 2] = texData[(i + 1)];
-		upBuffer[i + 3] = texData[(i + 2)];
-	}
+	PS3TextureType type = reinterpret_cast<TextureSettingsPS3*>(m_settings[Application::GetAssetPlatform()].get())->type;
+	unsigned int colorByteCount = GetColorByteCount(type);
+	ConvertTextureDataType(m_ps3buffer, texData, GetWidth(), GetHeight(), type, PS3TextureType::ARGB_8888);
 
 	rsxAddressToOffset(m_ps3buffer, &m_textureOffset);
 
@@ -181,12 +203,12 @@ void TexturePS3::SetData(const unsigned char* texData)
 	if (isFloatFormat)
 	{
 		resolutionMultiplier = 4;
+		colorByteCount = 4;
 	}
 
 	if (!isFloatFormat)
 	{
-		m_gcmTexture.format = (GCM_TEXTURE_FORMAT_A8R8G8B8 | GCM_TEXTURE_FORMAT_LIN);
-		//m_gcmTexture.format = (GCM_TEXTURE_FORMAT_R5G6B5 | GCM_TEXTURE_FORMAT_LIN);
+		m_gcmTexture.format = (TextureTypeToGCMType(type) | GCM_TEXTURE_FORMAT_LIN);
 	}
 	else
 	{
@@ -207,8 +229,7 @@ void TexturePS3::SetData(const unsigned char* texData)
 	m_gcmTexture.height = GetHeight() * resolutionMultiplier;
 	m_gcmTexture.depth = 1;
 	m_gcmTexture.location = GCM_LOCATION_RSX;
-	m_gcmTexture.pitch = GetWidth() * 4 * resolutionMultiplier;
-	//m_gcmTexture.pitch = GetWidth() * 2 * resolutionMultiplier;
+	m_gcmTexture.pitch = GetWidth() * colorByteCount * resolutionMultiplier;
 	m_gcmTexture.offset = m_textureOffset;
 	isValid = true;
 }

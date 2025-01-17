@@ -37,7 +37,8 @@ public:
 	void Bind() const override;
 protected:
 	void OnLoadFileReferenceFinished() override;
-
+	unsigned int GetColorByteCount(PS3TextureType type);
+	unsigned int TextureTypeToGCMType(PS3TextureType type);
 	int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
 	gcmTexture m_gcmTexture;
