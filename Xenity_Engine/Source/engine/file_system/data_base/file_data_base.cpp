@@ -1,9 +1,13 @@
 #include "file_data_base.h"
 
+#include <set>
+#if defined(EDITOR)
+#include <filesystem>
+#endif
+
 #include <engine/file_system/file_system.h>
 #include <engine/reflection/reflection_utils.h>
 #include <engine/debug/stack_debug_object.h>
-#include <set>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -105,8 +109,13 @@ IntegrityState FileDataBase::CheckIntegrity()
 	int state = static_cast<int>(IntegrityState::Integrity_Ok);
 	size_t currentPos = 0;
 	std::set<uint64_t> idSet;
+	size_t totalSize = 0;
 	for (auto entry : m_fileList)
 	{
+		// Get the total size of the files
+		totalSize += entry->s;
+		totalSize += entry->ms;
+
 		if (entry->p == "")
 		{
 			state |= static_cast<int>(IntegrityState::Integrity_Has_Empty_Path);
@@ -151,6 +160,16 @@ IntegrityState FileDataBase::CheckIntegrity()
 		}
 		currentPos += entry->ms;
 	}
+
+#if defined(EDITOR)
+	std::shared_ptr<File> bitFile = m_bitFile.GetFile();
+	size_t bitFileSize = std::filesystem::file_size(bitFile->GetPath());
+
+	if (bitFileSize != totalSize)
+	{
+		state |= static_cast<int>(IntegrityState::Integrity_Wrong_Bit_File_Size);
+	}
+#endif
 
 	return static_cast<IntegrityState>(state);
 }

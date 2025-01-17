@@ -40,16 +40,19 @@ void DataBaseCheckerMenu::Draw()
 
 		if (ImGui::Button("Load"))
 		{
-			std::string path = EditorUI::OpenFileDialog("Load db.bin", "");
+			const std::string path = EditorUI::OpenFileDialog("Load db.xenb", "");
 			if (!path.empty())
 			{
+				const std::string binaryFilePath = EditorUI::OpenFileDialog("Load data.xenb", "");
 				wrongDbLoaded = false;
 				loaded = false;
 				db = std::make_unique<FileDataBase>();
 				try
 				{
 					db->LoadFromFile(path);
+					db->GetBitFile().Open(binaryFilePath);
 					integrityState = db->CheckIntegrity();
+					db->GetBitFile().Close();
 					loaded = true;
 				}
 				catch (const std::exception&)
@@ -101,6 +104,10 @@ void DataBaseCheckerMenu::Draw()
 				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_Meta_File_Size))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Meta file with wrong position found");
+				}
+				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_Bit_File_Size))
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "The bit file size does not match");
 				}
 			}
 
