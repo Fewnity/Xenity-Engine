@@ -90,6 +90,12 @@ public:
 	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
+		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
+		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
+		Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
+		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
+		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
+		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
 		Reflective::AddVariable(reflectedVariables, type, "type", true);
 		return reflectedVariables;
 	}
