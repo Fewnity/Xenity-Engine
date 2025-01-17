@@ -36,6 +36,8 @@ public:
 	*/
 	static void Init();
 
+	static void Clear();
+
 	/**
 	* @brief Event called when a project is loaded
 	*/

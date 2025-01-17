@@ -79,6 +79,7 @@
 
 // Graphics
 #include <engine/graphics/graphics.h>
+#include <engine/graphics/2d_graphics/sprite_manager.h>
 
 // Time
 #include <engine/time/time.h>
@@ -452,10 +453,10 @@ void Engine::Stop()
 	s_isInitialized = false;
 
 	SceneManager::ClearScene();
-	AssetManager::RemoveUnusedFiles();
 	s_game.reset();
 	ProjectManager::UnloadProject();
 
+	SpriteManager::Close();
 	PhysicsManager::Stop();
 	Graphics::Stop();
 	if (s_renderer)
@@ -470,6 +471,7 @@ void Engine::Stop()
 	sceKernelExitProcess(0);
 #endif
 
+	AssetManager::Clear();
 	s_isRunning = false;
 	AudioManager::Stop();
 }

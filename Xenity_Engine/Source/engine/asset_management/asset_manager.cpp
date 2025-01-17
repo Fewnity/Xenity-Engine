@@ -68,6 +68,26 @@ void AssetManager::Init()
 	Debug::Print("-------- Asset Manager initiated --------", true);
 }
 
+void AssetManager::Clear()
+{
+	defaultTexture.reset();
+
+	standardShader.reset();
+#if defined(ENABLE_SHADER_VARIANT_OPTIMIZATION)
+	standardShaderNoPointLight.reset();
+#endif
+	unlitShader.reset();
+
+	standardMaterial.reset();
+	unlitMaterial.reset();
+
+	fileReferences.clear();
+	materials.clear();
+	shaders.clear();
+	reflections.clear();
+	lights.clear();
+}
+
 void AssetManager::OnProjectLoaded()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
@@ -114,16 +134,7 @@ void AssetManager::OnProjectUnloaded()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	defaultTexture.reset();
-
-	standardShader.reset();
-#if defined(ENABLE_SHADER_VARIANT_OPTIMIZATION)
-	standardShaderNoPointLight.reset();
-#endif
-	unlitShader.reset();
-
-	standardMaterial.reset();
-	unlitMaterial.reset();
+	Clear();
 }
 
 void AssetManager::ReloadAllMaterials()

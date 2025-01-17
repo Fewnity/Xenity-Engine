@@ -31,6 +31,8 @@ public:
 	*/
 	static void Init();
 
+	static void Close();
+
 	/**
 	* @brief Draw a sprite
 	* @param position Sprite's position

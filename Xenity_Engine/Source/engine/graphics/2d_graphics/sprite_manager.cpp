@@ -76,6 +76,12 @@ void SpriteManager::Init()
 	Debug::Print("-------- Sprite Manager initiated --------", true);
 }
 
+void SpriteManager::Close()
+{
+	s_spriteMeshData.reset();
+	s_spriteMeshDataWithNormals.reset();
+}
+
 /**
  * @brief Draw a sprite
  *
