@@ -445,7 +445,7 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	{
 		fileType = FileType::File_Audio;
 	}
-	else if (extension == ".obj") // If the file is a 3D object
+	else if (extension == ".obj" || extension == ".fbx") // If the file is a 3D object
 	{
 		fileType = FileType::File_Mesh;
 	}

@@ -51,11 +51,12 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 		Assimp::Importer importer;
 		// aiProcess_Triangulate because we want to have only triangles, some submeshes mix triangles and quads and I don't know how to handle that
 		unsigned int flags = aiProcess_RemoveComponent | aiProcess_PreTransformVertices | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate;
-		const aiScene* scene = importer.ReadFileFromMemory(data, size, flags);
-		
+		const std::string fileExtension = file->GetFileExtension();
+		const aiScene* scene = importer.ReadFileFromMemory(data, size, flags, fileExtension.substr(1).c_str());
 		if (!scene)
 		{
-			Debug::PrintError("[AssimpMeshLoader::LoadMesh] Failed to load the mesh: " + file->GetPath(), true);
+			const std::string assimpError = importer.GetErrorString();
+			Debug::PrintError("[AssimpMeshLoader::LoadMesh] Failed to load the mesh: " + file->GetPath() + " (" + assimpError + ")", true);
 			free(data);
 			return false;
 		}
