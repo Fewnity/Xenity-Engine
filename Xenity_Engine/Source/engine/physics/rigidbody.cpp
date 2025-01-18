@@ -335,13 +335,14 @@ void RigidBody::Tick()
 	{
 		m_disableEvent = true;
 		m_bulletTriggerRigidbody->setWorldTransform(m_bulletRigidbody->getWorldTransform());
-
-		const btVector3& p = m_bulletRigidbody->getCenterOfMassPosition();
-		const btQuaternion q = m_bulletRigidbody->getOrientation();
+		
+		// Use the same matrix but with the x inverted
+		glm::mat4 mat;
+		m_bulletRigidbody->getCenterOfMassTransform().getOpenGLMatrix((float*)&mat);
+		mat[3].x = -mat[3].x;
 
 		Transform& transform = *GetTransformRaw();
-		transform.SetPosition(Vector3(p.x(), p.y(), p.z()));
-		transform.SetRotation(Quaternion(q.x(), q.y(), q.z(), q.w()));
+		transform.SetTransformationMatrix(mat);
 
 		const btVector3& vel = m_bulletRigidbody->getLinearVelocity();
 		m_velocity = Vector3(vel.x(), vel.y(), vel.z());

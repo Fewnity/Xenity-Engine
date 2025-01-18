@@ -20,7 +20,7 @@
 #include <engine/debug/stack_debug_object.h>
 #include <engine/constants.h>
 
-std::map<int, WorldPartitionner::XNode> WorldPartitionner::Tree::children;
+std::unordered_map<int, WorldPartitionner::XNode> WorldPartitionner::Tree::children;
 
 struct Vector3Fast
 {
@@ -39,24 +39,34 @@ bool cubeIntersectsSphere(const Vector3Fast& cubeMin, int cubeSize, const Vector
 	// STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
 	float dmin = 0.0f;
+	const float sphereRadiusSquared = sphereRadius * sphereRadius;
 
 	// Calcul de la distance minimale au cube
 	for (int i = 0; i < 3; ++i)
 	{
-		float cubeMaxCoord = (&cubeMin.x)[i] + cubeSize;
-		float sphereCoord = (&sphereCenter.x)[i];
-		if (sphereCoord < (&cubeMin.x)[i])
+		const float cubeMinCoord = (&cubeMin.x)[i];
+		const float cubeMaxCoord = cubeMinCoord + cubeSize;
+		const float sphereCoord = (&sphereCenter.x)[i];
+
+		if (sphereCoord < cubeMinCoord)
 		{
-			dmin += static_cast<float>(std::pow(sphereCoord - (&cubeMin.x)[i], 2));
+			float diff = sphereCoord - cubeMinCoord;
+			dmin += diff * diff;
 		}
 		else if (sphereCoord > cubeMaxCoord)
 		{
-			dmin += static_cast<float>(std::pow(sphereCoord - cubeMaxCoord, 2));
+			float diff = sphereCoord - cubeMaxCoord;
+			dmin += diff * diff;
+		}
+
+		if (dmin > sphereRadiusSquared)
+		{
+			return false;
 		}
 	}
 
 	// Si la distance est inf�rieure au rayon de la sph�re, il y a intersection
-	return dmin <= sphereRadius * sphereRadius;
+	return dmin <= sphereRadiusSquared;
 }
 
 // Fonction pour obtenir la liste des cubes travers�s par la sph�re
@@ -107,7 +117,7 @@ void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 
 	XASSERT(meshRenderer, "The meshRenderer is null");
 
-	for (auto& position : meshRenderer->m_worldChunkPositions)
+	for (const auto& position : meshRenderer->m_worldChunkPositions)
 	{
 		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
 		const int y = static_cast<int>(position.y / WORLD_CHUNK_SIZE);
@@ -193,7 +203,7 @@ void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 		Chunk& chunk = zNode.chunk;
 		chunk.meshes.push_back(meshRenderer);
 
-		meshRenderer->m_worldChunkPositions.push_back(Vector3(cube.x, cube.y, cube.z));
+		meshRenderer->m_worldChunkPositions.emplace_back(cube.x, cube.y, cube.z);
 
 		// Add light to mesh
 		for (Light* light : chunk.lights)

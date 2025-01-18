@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <memory>
-#include <map>
+#include <unordered_map>
 
 class Light;
 class MeshRenderer;
@@ -31,19 +31,19 @@ public:
 	class YNode
 	{
 	public:
-		std::map<int, ZNode> children;
+		std::unordered_map<int, ZNode> children;
 	};
 
 	class XNode
 	{
 	public:
-		std::map<int, YNode> children;
+		std::unordered_map<int, YNode> children;
 	};
 
 	class Tree
 	{
 	public:
-		static std::map<int, XNode> children;
+		static std::unordered_map<int, XNode> children;
 	};
 
 	static void ProcessMeshRenderer(MeshRenderer* meshRenderer);
