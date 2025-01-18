@@ -385,6 +385,7 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
+copy  "$(SolutionDir)Xenity_Engine\libs\x64\assimp-vc143-mt.dll"  "$(ProjectDir)assimp-vc143-mt.dll"
 
 copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
 copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib" "$(ProjectDir)Xenity_Editor.lib"</Command>
@@ -414,6 +415,7 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib
     <PreBuildEvent>
       <Command>copy  "$(SolutionDir)Xenity_Engine\libs\x64\SDL3.dll"  "$(ProjectDir)SDL3.dll"
 copy  "$(SolutionDir)Xenity_Engine\libs\x64\freetype.dll"  "$(ProjectDir)freetype.dll"
+copy  "$(SolutionDir)Xenity_Engine\libs\x64\assimp-vc143-mt.dll"  "$(ProjectDir)assimp-vc143-mt.dll"
 
 copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
 copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib" "$(ProjectDir)Xenity_Editor.lib"</Command>
