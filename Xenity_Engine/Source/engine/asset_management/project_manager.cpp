@@ -676,6 +676,11 @@ std::set<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 					const std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
 					if (fileRef)
 					{
+						FileReference::LoadOptions options;
+						options.threaded = false;
+						options.platform = Application::GetPlatform();
+
+						fileRef->LoadFileReference(options);
 						FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
 						ids.insert(static_cast<uint64_t>(idKv.value()));
 					}
