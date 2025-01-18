@@ -190,12 +190,6 @@ void ProjectManager::FindAllProjectFiles()
 	}
 	compatibleFiles.clear();
 
-	// Create files references (they are automaticaly registered in the AssetManager)
-	for (const auto& kv : projectFilesIds)
-	{
-		GetFileReferenceById(kv.first);
-	}
-
 #if defined(EDITOR)
 	// Check if a file has changed or has been deleted
 	for (const auto& kv : projectFilesIds)
