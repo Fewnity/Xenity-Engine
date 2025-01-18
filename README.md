@@ -104,7 +104,11 @@ GLM (slightly modified for PS2): https://github.com/g-truc/glm
 
 Bullet 2.82 (slightly modified to fix compilation): https://code.google.com/archive/p/bullet/downloads
 
-### Windows specific: 
+### Windows specific:
+Assimp (79d451b): https://github.com/assimp/assimp/
+<br>`cmake CMakeLists.txt -DASSIMP_BUILD_ZLIB=ON -DASSIMP_NO_EXPORT=ON -DASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT=OFF -DASSIMP_BUILD_TESTS=OFF -DASSIMP_BUILD_ASSIMP_VIEW=OFF -DASSIMP_INJECT_DEBUG_POSTFIX=OFF -DASSIMP_INSTALL=OFF -DASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT=OFF -DASSIMP_BUILD_OBJ_IMPORTER=ON -DASSIMP_BUILD_FBX_IMPORTER=ON -DCMAKE_BUILD_TYPE=Release`
+`cmake --build . --config Release`
+
 FreeType (v2.13.2): https://github.com/ubawurinna/freetype-windows-binaries/
 
 ImGui (1.91.0 WIP): https://github.com/ocornut/imgui
