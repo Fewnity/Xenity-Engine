@@ -225,6 +225,7 @@ public:
 		return m_onTransformScaled;
 	}
 
+	void SetTransformationMatrix(const glm::mat4& matrix);
 
 private:
 	glm::mat4 transformationMatrix;

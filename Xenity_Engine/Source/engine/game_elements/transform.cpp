@@ -37,6 +37,43 @@ ReflectiveData Transform::GetReflectiveData()
 
 #pragma region Accessors
 
+void Transform::SetTransformationMatrix(const glm::mat4& matrix)
+{
+	m_isTransformationMatrixDirty = false;
+	transformationMatrix = matrix;
+
+	const glm::vec3 pos = glm::vec3(matrix[3]);
+	m_position = Vector3(-pos.x, pos.y, pos.z);
+
+	const glm::quat rot = glm::quat_cast(matrix);
+	m_rotationQuaternion = Quaternion(rot.x, rot.y, rot.z, rot.w);
+
+	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(m_scale.x, m_scale.y, m_scale.z));
+
+	const std::shared_ptr<GameObject> gm = m_gameObject.lock();
+	if (gm->GetParent().expired())
+	{
+		// If the transform has not parent, local values are the same as world values
+		m_localPosition = m_position;
+		m_localRotation = m_rotationQuaternion.ToEuler();
+		m_localRotationQuaternion = m_rotationQuaternion;
+
+		SetChildrenWorldPositions();
+	}
+	else
+	{
+		SetChildrenWorldPositions();
+		const std::shared_ptr<Transform> parentTransform = gm->GetParent().lock()->GetTransform();
+		m_localPosition = GetLocalPositionFromMatrices(transformationMatrix, parentTransform->transformationMatrix);
+		if (m_localPosition.HasInvalidValues())
+			m_localPosition = Vector3(0);
+
+		m_localRotation = GetLocalRotationFromWorldRotations(GetEulerAngles(), parentTransform->GetEulerAngles());
+		m_localRotationQuaternion = Quaternion::Euler(m_localRotation.x, m_localRotation.y, m_localRotation.z);
+	}
+	m_onTransformUpdated.Trigger();
+}
+
 void Transform::SetPosition(const Vector3& value)
 {
 	XASSERT(!value.HasInvalidValues(), "[Transform::SetPosition] value is invalid");
@@ -65,9 +102,9 @@ void Transform::SetPosition(const Vector3& value)
 	{
 		SetChildrenWorldPositions();
 		m_localPosition = GetLocalPositionFromMatrices(transformationMatrix, gm->GetParent().lock()->GetTransform()->transformationMatrix);
+		if (m_localPosition.HasInvalidValues())
+			m_localPosition = Vector3(0);
 	}
-	if (m_localPosition.HasInvalidValues())
-		m_localPosition = Vector3(0);
 }
 
 void Transform::SetLocalPosition(const Vector3& value)
@@ -83,8 +120,6 @@ void Transform::SetLocalPosition(const Vector3& value)
 		SetPosition(value);
 		return;
 	}
-
-	//m_isTransformationMatrixDirty = true;
 
 	if (value != m_localPosition)
 		m_isTransformationMatrixDirty = true;
@@ -146,8 +181,6 @@ void Transform::SetLocalRotation(const Vector3& value)
 		m_isTransformationMatrixDirty = true;
 	else
 		return;
-
-	//m_isTransformationMatrixDirty = true;
 
 	m_localRotation = value;
 	m_localRotationQuaternion = Quaternion::Euler(value.x, value.y, value.z);
