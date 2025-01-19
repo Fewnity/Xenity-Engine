@@ -27,12 +27,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Rework the documentation
 Implement alpha testing on shaders
-System to detect an new version of the engine see: https://docs.github.com/en/rest/releases/releases
 Add lighting on PS3
-Check SetBlendOptimization
 Check if force inline for GLM is better or not
-PS3 texture compression
-See why the PS3 is crashing on exit (maybe audio thread)
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
