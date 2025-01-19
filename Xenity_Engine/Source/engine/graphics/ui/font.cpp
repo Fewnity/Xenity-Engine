@@ -200,7 +200,7 @@ bool Font::CreateFont(Font& font)
 	newAtlas->SetData(atlas);
 	newAtlas->SetFilter(Filter::Bilinear);
 	newAtlas->SetWrapMode(WrapMode::ClampToEdge);
-
+	newAtlas->m_fileStatus = FileStatus::FileStatus_Loaded;
 	font.fontAtlas = newAtlas;
 
 	free(atlas);
