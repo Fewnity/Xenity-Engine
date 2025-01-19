@@ -377,6 +377,13 @@ void Engine::Loop()
 					PhysicsManager::Update();
 				}
 
+#if defined(__PS3__) // Temp solution to quit the game with a PS4 controller
+				if (InputSystem::GetKeyDown(KeyCode::CIRCLE))
+				{
+					Quit();
+				}
+#endif
+
 				// Update all components
 #if defined(EDITOR)
 				// Catch game's code error to prevent the editor to crash
