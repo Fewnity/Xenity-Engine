@@ -3,14 +3,15 @@
 
 #version 330
 
-layout (location = 0) in vec3 position;
-layout(location = 1) in vec2 uv;
-layout(location = 2) in vec3 normal;
-layout(location = 3) in vec3 color;
+layout(location = 0) in vec2 uv;
+layout(location = 1) in vec3 normal;
+layout (location = 2) in vec3 position;
+layout(location = 3) in vec4 color2;
 
 out vec2 TexCoord;
 out vec3 Normal;
 out vec3 FragPos;
+out vec4 VertexColor;
 
 uniform mat4 model; //Model matrice position, rotation and scale
 uniform mat4 MVP;
@@ -21,8 +22,8 @@ void main()
 	gl_Position = MVP * vec4(position, 1);
 	TexCoord = uv;
 	FragPos = vec3(model * vec4(position, 1));
-
 	Normal = normalMatrix * normal; //TODO Check an object with a bigger scale and with a 	offsetPosition, fix : add to offset * rotation this : * offsetPosition * scale
+	VertexColor = color2;
 }
 
 //-------------- {fragment}
@@ -169,13 +170,15 @@ void main()
 //-------------- {psvita}
 //-------------- {vertex}
 
-attribute vec3 position;
 attribute vec2 uv;
 attribute vec3 normal;
+attribute vec3 position;
+attribute vec4 color2;
 
 varying vec2 TexCoord;
 varying vec3 Normals;
 varying vec3 FragPos;
+varying vec4 VertexColor;
 
 uniform mat4 model; //Model matrice position, rotation and scale
 uniform mat4 MVP;
@@ -187,6 +190,7 @@ void main()
 	FragPos = float3(mul(float4(position, 1.0f), model));	
 	Normals = mul(normal, normalMatrix);
 	TexCoord = uv;
+	VertexColor = color2;
 }
 
 //-------------- {fragment}
@@ -234,6 +238,7 @@ uniform vec4 color;
 varying vec2 TexCoord;
 varying vec3 Normals;
 varying vec3 FragPos;
+varying vec4 VertexColor;
 
 struct Material 
 {

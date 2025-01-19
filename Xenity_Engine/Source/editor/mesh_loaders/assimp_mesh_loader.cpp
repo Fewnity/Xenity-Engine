@@ -69,6 +69,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 			const bool hasNormals = assimpMesh->HasNormals();
 			const bool hasUVs = assimpMesh->HasTextureCoords(0);
 			const bool hasFaces = assimpMesh->HasFaces();
+			const bool hasColors = assimpMesh->HasVertexColors(0);
 
 			size_t verticesPerFace = 0;
 			if (hasFaces)
@@ -76,15 +77,24 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 				verticesPerFace = assimpMesh->mFaces[0].mNumIndices;
 			}
 
+			VertexDescriptorList vertexDescriptorList;
 			VertexElements vertexDescriptor = VertexElements::POSITION_32_BITS;
 			if (hasUVs)
 			{
 				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::UV_32_BITS);
+				vertexDescriptorList.AddVertexDescriptor(VertexElements::UV_32_BITS);
+			}
+			if (hasColors)
+			{
+				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::COLOR);
+				vertexDescriptorList.AddVertexDescriptor(VertexElements::COLOR);
 			}
 			if (hasNormals)
 			{
 				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
+				vertexDescriptorList.AddVertexDescriptor(VertexElements::NORMAL_32_BITS);
 			}
+			vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
 			mesh.SetVertexDescriptor(vertexDescriptor);
 
 			// PSP for example prefer triangles only for performance
@@ -100,11 +110,11 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 			// Allocate memory
 			if (mesh.m_hasIndices)
 			{
-				mesh.AllocSubMesh(assimpMesh->mNumVertices, assimpMesh->mNumFaces * verticesPerFace);
+				mesh.AllocSubMesh(assimpMesh->mNumVertices, assimpMesh->mNumFaces * verticesPerFace, vertexDescriptorList);
 			}
 			else
 			{
-				mesh.AllocSubMesh(assimpMesh->mNumFaces * verticesPerFace, 0);
+				mesh.AllocSubMesh(assimpMesh->mNumFaces * verticesPerFace, 0, vertexDescriptorList);
 			}
 
 			// Check if the mesh is	using triangles or quads
@@ -167,39 +177,22 @@ void AssimpMeshLoader::AddVertex(MeshData& mesh, const aiMesh* assimpMesh, unsig
 	const aiVector3D& vertex = assimpMesh->mVertices[assimpVertexIndex];
 	const bool hasNormals = assimpMesh->HasNormals();
 	const bool hasUVs = assimpMesh->HasTextureCoords(0);
+	const bool hasColors = assimpMesh->HasVertexColors(0);
 
-	if (!hasNormals)
-	{
-		if (!hasUVs)
-		{
-			mesh.AddVertex(
-				vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
-		}
-		else
-		{
-			const aiVector3D& uv = assimpMesh->mTextureCoords[0][assimpVertexIndex];
-			mesh.AddVertex(
-				uv.x, uv.y,
-				vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
-		}
-	}
-	else
+	if (hasNormals)
 	{
 		const aiVector3D& normals = assimpMesh->mNormals[assimpVertexIndex];
-		if (!hasUVs)
-		{
-			mesh.AddVertex(
-				normals.x, normals.y, normals.z,
-				vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
-		}
-		else
-		{
-			const aiVector3D& uv = assimpMesh->mTextureCoords[0][assimpVertexIndex];
-			mesh.AddVertex(
-				uv.x, uv.y,
-				normals.x, normals.y, normals.z,
-				vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
-
-		}
+		mesh.AddNormal(normals.x, normals.y, normals.z, meshVertexIndex, subMeshIndex);
 	}
+	if (hasUVs)
+	{
+		const aiVector3D& uv = assimpMesh->mTextureCoords[0][assimpVertexIndex];
+		mesh.AddUV(uv.x, uv.y, meshVertexIndex, subMeshIndex);
+	}
+	if (hasColors)
+	{
+		const aiColor4D& color = assimpMesh->mColors[0][assimpVertexIndex];
+		mesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex, subMeshIndex);
+	}
+	mesh.AddPosition(vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
 }

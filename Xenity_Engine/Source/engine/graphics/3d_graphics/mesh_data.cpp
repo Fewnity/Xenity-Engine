@@ -37,37 +37,6 @@ MeshData::MeshData()
 {
 }
 
-/**
- * @brief Constructor
- *
- * @param vcount
- * @param index_count
- */
-MeshData::MeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV)
-{
-	XASSERT(vcount != 0 || index_count != 0, "[MeshData::MeshData] Wrong vertice/index count");
-
-	m_hasUv = useUV;
-	m_hasNormal = useNormals;
-	m_hasColor = useVertexColor;
-
-	m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::POSITION_32_BITS));
-	if (useUV)
-	{
-		m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::UV_32_BITS));
-	}
-	if (useNormals)
-	{
-		m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::NORMAL_32_BITS));
-	}
-	if (useVertexColor)
-	{
-		m_vertexDescriptor = static_cast<VertexElements>(static_cast<uint32_t>(m_vertexDescriptor) | static_cast<uint32_t>(VertexElements::COLOR));
-	}
-
-	AllocSubMesh(vcount, index_count);
-}
-
 std::shared_ptr<MeshData> MeshData::MakeMeshData()
 {
 	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>();
@@ -75,14 +44,14 @@ std::shared_ptr<MeshData> MeshData::MakeMeshData()
 	return newFileRef;
 }
 
-std::shared_ptr<MeshData> MeshData::MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV)
-{
-	XASSERT(vcount != 0 || index_count != 0, "[MeshData::MeshData] Wrong vertice/index count");
-
-	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>(vcount, index_count, useVertexColor, useNormals, useUV);
-	AssetManager::AddFileReference(newFileRef);
-	return newFileRef;
-}
+//std::shared_ptr<MeshData> MeshData::MakeMeshData(unsigned int vcount, unsigned int index_count, bool useVertexColor, bool useNormals, bool useUV)
+//{
+//	XASSERT(vcount != 0 || index_count != 0, "[MeshData::MeshData] Wrong vertice/index count");
+//
+//	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>(vcount, index_count, useVertexColor, useNormals, useUV);
+//	AssetManager::AddFileReference(newFileRef);
+//	return newFileRef;
+//}
 
 ReflectiveData MeshData::GetReflectiveData()
 {
@@ -245,6 +214,48 @@ void MeshData::AddVertex(float nx, float ny, float nz, float x, float y, float z
 #else
 	reinterpret_cast<VertexNormalsNoColorNoUv*>(m_subMeshes[subMeshIndex]->data)[index] = vert;
 #endif
+}
+
+void MeshData::AddPosition(float x, float y, float z, unsigned int index, unsigned int subMeshIndex)
+{
+	SubMesh* subMesh = m_subMeshes[subMeshIndex].get();
+	const VertexDescriptorList& vertexDescriptor = subMesh->m_vertexDescriptor;
+	char* data = ((char*)subMesh->data) + (index * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexDescriptors[vertexDescriptor.m_positionIndex].offset;
+	reinterpret_cast<float*>(data)[0] = x;
+	reinterpret_cast<float*>(data)[1] = y;
+	reinterpret_cast<float*>(data)[2] = z;
+}
+
+void MeshData::AddNormal(float nx, float ny, float nz, unsigned int index, unsigned int subMeshIndex)
+{
+	SubMesh* subMesh = m_subMeshes[subMeshIndex].get();
+	const VertexDescriptorList& vertexDescriptor = subMesh->m_vertexDescriptor;
+	char* data = ((char*)subMesh->data) + (index * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexDescriptors[vertexDescriptor.m_normalIndex].offset;
+	reinterpret_cast<float*>(data)[0] = nx;
+	reinterpret_cast<float*>(data)[1] = ny;
+	reinterpret_cast<float*>(data)[2] = nz;
+}
+
+void MeshData::AddUV(float u, float v, unsigned int index, unsigned int subMeshIndex)
+{
+	SubMesh* subMesh = m_subMeshes[subMeshIndex].get();
+	const VertexDescriptorList& vertexDescriptor = subMesh->m_vertexDescriptor;
+	char* data = ((char*)subMesh->data) + (index * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexDescriptors[vertexDescriptor.m_uvIndex].offset;
+	reinterpret_cast<float*>(data)[0] = u;
+	reinterpret_cast<float*>(data)[1] = v;
+}
+
+void MeshData::AddColor(const Color& color, unsigned int index, unsigned int subMeshIndex)
+{
+	Vector4 colorVector = color.GetRGBA().ToVector4();
+
+	SubMesh* subMesh = m_subMeshes[subMeshIndex].get();
+	const VertexDescriptorList& vertexDescriptor = subMesh->m_vertexDescriptor;
+	char* data = ((char*)subMesh->data) + (index * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexDescriptors[vertexDescriptor.m_colorIndex].offset;
+	reinterpret_cast<float*>(data)[0] = colorVector.x;
+	reinterpret_cast<float*>(data)[1] = colorVector.y;
+	reinterpret_cast<float*>(data)[2] = colorVector.z;
+	reinterpret_cast<float*>(data)[3] = colorVector.w;
 }
 
 void MeshData::SendDataToGpu()
@@ -471,11 +482,12 @@ void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 #endif
 }
 
-void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
+void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptorList& vertexDescriptorList)
 {
 	XASSERT(vcount != 0 || index_count != 0, "[MeshData::AllocSubMesh] vcount and index_count are 0");
 
 	std::unique_ptr<MeshData::SubMesh> newSubMesh = std::make_unique<MeshData::SubMesh>();
+	newSubMesh->m_vertexDescriptor = vertexDescriptorList;
 	newSubMesh->meshData = this;
 	if (index_count >= std::numeric_limits<unsigned short>::max())
 	{
@@ -546,7 +558,11 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count)
 
 	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::COLOR)
 	{
+#if defined(__PSP__)
+		newSubMesh->vertexMemSize += sizeof(uint32_t);
+#else
 		newSubMesh->vertexMemSize += sizeof(float[4]);
+#endif
 	}
 
 	newSubMesh->vertexMemSize *= vcount;

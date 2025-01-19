@@ -443,10 +443,12 @@ void ShaderOpenGL::Link()
 	glAttachShader(m_programId, m_fragmentShaderId);
 
 #if defined(__vita__)
-	glBindAttribLocation(m_programId, 0, "position");
-	glBindAttribLocation(m_programId, 1, "uv");
-	glBindAttribLocation(m_programId, 2, "normal");
+	glBindAttribLocation(m_programId, 0, "uv");
+	glBindAttribLocation(m_programId, 1, "normal");
+	glBindAttribLocation(m_programId, 2, "position");
+	glBindAttribLocation(m_programId, 3, "color2");
 #endif
+	//glVertexAttrib4f(3, 1.0f, 0.0f, 1.0f, 1.0f); // Valeur par défaut
 	glLinkProgram(m_programId);
 	Engine::GetRenderer().UseShaderProgram(m_programId);
 

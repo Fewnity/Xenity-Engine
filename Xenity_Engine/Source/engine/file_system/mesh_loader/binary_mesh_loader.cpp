@@ -52,7 +52,6 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #else // !defined(__PSP__)
 	mesh.m_hasIndices = true;
 #endif // !defined(__PSP__)
-	mesh.m_hasColor = false;
 
 	mesh.SetVertexDescriptor(vertexDescriptor);
 
@@ -81,7 +80,17 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		indexMemSize = EndianUtils::SwapEndian(indexMemSize);
 #endif // defined(__PS3__)
 
-		mesh.AllocSubMesh(vertice_count, index_count);
+		VertexDescriptorList vertexDescriptorList;
+		if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+			vertexDescriptorList.AddVertexDescriptor(VertexElements::UV_32_BITS);
+		if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::COLOR)
+			vertexDescriptorList.AddVertexDescriptor(VertexElements::COLOR);
+		if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+			vertexDescriptorList.AddVertexDescriptor(VertexElements::NORMAL_32_BITS);
+
+		vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
+
+		mesh.AllocSubMesh(vertice_count, index_count, vertexDescriptorList);
 		std::unique_ptr<MeshData::SubMesh>& subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
 
 		// Copy vertices data

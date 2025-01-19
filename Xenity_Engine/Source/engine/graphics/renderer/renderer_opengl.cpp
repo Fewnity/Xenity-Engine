@@ -90,6 +90,9 @@ void RendererOpengl::Setup()
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
 #if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 	glEnable(GL_MULTISAMPLE);
 #endif
@@ -272,17 +275,6 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
-	//float material_ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-	//float material_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
-	//float material_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* NOT default value */
-	//float material_emission[] = { 0.0f, 0.0f, 0.0f, 1.0f }; /* default value */
-	// glMaterial(GL_DIFFUSE, 0xFFFFFFFF);
-	//  glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
-	//  glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
-	//  glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
-	//  glMaterialfv(GL_FRONT, GL_EMISSION, material_emission);
-	//  glMaterialf(GL_FRONT, GL_SHININESS, 10.0);               /* NOT default value   */
-
 	// Apply rendering settings
 	if (lastSettings.invertFaces != settings.invertFaces)
 	{
@@ -371,13 +363,6 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	lastSettings.useTexture = settings.useTexture;
 	lastSettings.max_depth = settings.max_depth;
 
-	/*glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-
-	glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-	glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
-	glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 2);*/
-
 	// Maybe check if useLighting was changed to recalculate the color in fixed pipeline?
 	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
@@ -386,14 +371,14 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
 		if constexpr (s_UseOpenGLFixedFunctions)
 		{
-			if (settings.useLighting) 
+			if (settings.useLighting)
 			{
 				GLfloat materialDiffuse[] = { colorMix.x, colorMix.y, colorMix.z, colorMix.w };
-				glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
+				//glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
 			}
-			else 
+			else
 			{
-				glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
+				//glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
 			}
 		}
 		else
@@ -440,7 +425,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		{
 			Performance::AddDrawTriangles(subMesh.vertice_count / 3);
 		}
-		else 
+		else
 		{
 			Performance::AddDrawTriangles(subMesh.index_count / 3);
 		}
@@ -454,6 +439,8 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 // TODO : Improve this function, it's not optimized and using shaders
 void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
 {
+	return;
+
 	if (settings.useDepth)
 		glEnable(GL_DEPTH_TEST);
 	else
@@ -588,7 +575,7 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 		glLightfv(GL_LIGHT0 + lightIndex, GL_AMBIENT, zeroLight);
 		glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, lightColor);
 	}
-	if (type == LightType::Spot) 
+	if (type == LightType::Spot)
 	{
 		float cutOff[1] = { light.GetSpotAngle() };
 		// Fixed pipeline does not support more than 90 degrees
@@ -600,7 +587,7 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 
 		glLightfv(GL_LIGHT0 + lightIndex, GL_SPOT_DIRECTION, direction);
 	}
-	else 
+	else
 	{
 		static const float zero[1] = { 0 };
 		static const float defaultCutOff[1] = { 180 };
@@ -658,7 +645,7 @@ void RendererOpengl::Setlights(const LightsIndices& lightsIndices)
 	{
 		for (size_t i = 0; i < lightsIndices.usedPointLightCount; i++)
 		{
-			const Light* light = AssetManager::GetLight(lightsIndices.pointLightIndices[i].x -1);
+			const Light* light = AssetManager::GetLight(lightsIndices.pointLightIndices[i].x - 1);
 			SetLight(usedLightCount, *light, light->GetTransformRaw()->GetPosition(), zero);
 			usedLightCount++;
 			if (usedLightCount == maxLightCount)
@@ -777,75 +764,146 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 		if (newSubMesh->EBO == 0)
 			newSubMesh->EBO = CreateBuffer();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newSubMesh->EBO);
-		size_t vertexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexSize * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
+		size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
 
-		int stride;
-
-		if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+		const VertexDescriptorList& vertexDescriptorList = newSubMesh->m_vertexDescriptor;
+		int stride = vertexDescriptorList.m_vertexSize;
+		if constexpr (s_UseOpenGLFixedFunctions)
 		{
-			if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glVertexPointer(3, GL_FLOAT, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_positionIndex].offset);
+
+			if (vertexDescriptorList.m_uvIndex != -1)
 			{
-				stride = sizeof(VertexNormalsNoColor);
-				if constexpr (s_UseOpenGLFixedFunctions)
-				{
-					glEnableClientState(GL_VERTEX_ARRAY);
-					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, x));
-					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, u));
-					glEnableClientState(GL_NORMAL_ARRAY);
-					glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, normX));
-				}
-				else
-				{
-					glEnableVertexAttribArray(0);
-					glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, x));
-					glEnableVertexAttribArray(1);
-					glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, u));
-					glEnableVertexAttribArray(2);
-					glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, normX));
-				}
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glTexCoordPointer(2, GL_FLOAT, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_uvIndex].offset);
+			}
+			else 
+			{
+				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			}
+
+			if (vertexDescriptorList.m_normalIndex != -1)
+			{
+				glEnableClientState(GL_NORMAL_ARRAY);
+				glNormalPointer(GL_FLOAT, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_normalIndex].offset);
 			}
 			else
 			{
-				stride = sizeof(VertexNormalsNoColorNoUv);
-				glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, normX));
-				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, x));
+				glDisableClientState(GL_NORMAL_ARRAY);
 			}
-		}
-		else
-		{
-			if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+
+			if (vertexDescriptorList.m_colorIndex != -1)
 			{
-				/*if (meshData.m_hasColor)
-				{
-					stride = sizeof(Vertex);
-					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(Vertex, u));
-					glColorPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, r));
-					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, x));
-				}else*/
-				stride = sizeof(VertexNoColor);
-				if constexpr (s_UseOpenGLFixedFunctions)
-				{
-					glEnableClientState(GL_VERTEX_ARRAY);
-					glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
-					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-					glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, u));
-				}
-				else
-				{
-					glEnableVertexAttribArray(0);
-					glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, x));
-					glEnableVertexAttribArray(1);
-					glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, u));
-				}
+				glEnableClientState(GL_COLOR_ARRAY);
+				glColorPointer(4, GL_FLOAT, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_colorIndex].offset);
 			}
 			else
 			{
-				stride = sizeof(VertexNoColorNoUv);
-				glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
+				glDisableClientState(GL_COLOR_ARRAY);
 			}
 		}
+		else 
+		{
+			glEnableVertexAttribArray(2);
+			glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_positionIndex].offset);
+
+			if (vertexDescriptorList.m_uvIndex != -1)
+			{
+				glEnableVertexAttribArray(0);
+				glVertexAttribPointer(0, 2, GL_FLOAT, false, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_uvIndex].offset);
+			}
+			else
+			{
+				glDisableVertexAttribArray(0);
+			}
+
+			if (vertexDescriptorList.m_normalIndex != -1)
+			{
+				glEnableVertexAttribArray(1);
+				glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_normalIndex].offset);
+			}
+			else
+			{
+				glDisableVertexAttribArray(1);
+			}
+
+			if (vertexDescriptorList.m_colorIndex != -1)
+			{
+				glEnableVertexAttribArray(3);
+				glVertexAttribPointer(3, 4, GL_FLOAT, false, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_colorIndex].offset);
+			}
+			else
+			{
+				glDisableVertexAttribArray(3);
+			}
+		}
+
+		//if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+		//{
+		//	if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+		//	{
+		//		//stride = sizeof(VertexNormalsNoColor);
+		//		if constexpr (s_UseOpenGLFixedFunctions)
+		//		{
+		//			glEnableClientState(GL_VERTEX_ARRAY);
+		//			glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, x));
+		//			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		//			glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, u));
+		//			glEnableClientState(GL_NORMAL_ARRAY);
+		//			glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, normX));
+		//		}
+		//		else
+		//		{
+		//			glEnableVertexAttribArray(0);
+		//			glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, x));
+		//			glEnableVertexAttribArray(1);
+		//			glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, u));
+		//			glEnableVertexAttribArray(2);
+		//			glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, normX));
+		//		}
+		//	}
+		//	else
+		//	{
+		//		//stride = sizeof(VertexNormalsNoColorNoUv);
+		//		glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, normX));
+		//		glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, x));
+		//	}
+		//}
+		//else
+		//{
+		//	if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+		//	{
+		//		/*if (meshData.m_hasColor)
+		//		{
+		//			stride = sizeof(Vertex);
+		//			glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(Vertex, u));
+		//			glColorPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, r));
+		//			glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, x));
+		//		}else*/
+		//		//stride = sizeof(VertexNoColor);
+		//		if constexpr (s_UseOpenGLFixedFunctions)
+		//		{
+		//			glEnableClientState(GL_VERTEX_ARRAY);
+		//			glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
+		//			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		//			glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, u));
+		//		}
+		//		else
+		//		{
+		//			glEnableVertexAttribArray(0);
+		//			glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, x));
+		//			glEnableVertexAttribArray(1);
+		//			glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, u));
+		//		}
+		//	}
+		//	else
+		//	{
+		//		//stride = sizeof(VertexNoColorNoUv);
+		//		glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
+		//	}
+		//}
 
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
