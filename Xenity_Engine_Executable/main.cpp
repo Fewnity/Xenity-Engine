@@ -14,6 +14,8 @@ PSP_HEAP_THRESHOLD_SIZE_KB(1024); // Reduce heap size to give the memory to thre
 PSP_MODULE_INFO("XENITY ENGINE", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 #elif defined(__PS3__)
+#include <sys/thread.h>
+#include <unistd.h>
 // #include <sys/process.h>
 // SYS_PROCESS_PARAM(1001, 0x100000); // Crash on real PS3, why?
 #endif
@@ -120,6 +122,11 @@ int main(int argc, char* argv[])
 	Engine::Loop();
 	Debug::Print("-------- Game loop ended --------", true);
 	Engine::Stop();
+
+	// Weird fix for PS3 to avoid crash on exit
+#if defined(__PS3__)
+	sleep(3);
+#endif
 
 	return 0;
 }
