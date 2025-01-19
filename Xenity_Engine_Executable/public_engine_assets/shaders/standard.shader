@@ -34,7 +34,7 @@ uniform vec3 ambiantLightColor;
 uniform vec4 color;
 in vec3 Normal;
 in vec3 FragPos;
-
+in vec4 VertexColor;
 in vec2 TexCoord;
 uniform sampler2D ourTexture;
 uniform vec2 tiling;
@@ -164,7 +164,7 @@ void main()
 
 	float alpha = texture(material.diffuse, (TexCoord * tiling) + offset).a* color.w;
 
-	gl_FragColor = vec4(result * color.xyz, alpha); //Add texture color
+	gl_FragColor = vec4(result * color.xyz, alpha) * VertexColor; //Add texture color
 }
 
 //-------------- {psvita}

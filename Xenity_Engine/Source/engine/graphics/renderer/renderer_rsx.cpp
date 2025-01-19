@@ -645,23 +645,26 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		//m_lighintDataTexture->Bind();
 	}
 
+	const VertexDescriptorList& vertexDescriptorList = subMesh.m_vertexDescriptor;
 	// Set vertex array attributes
 	if(lastOffset != subMesh.positionOffset)
 	{
-		if((int)subMesh.meshData->GetVertexDescriptor() & (int)VertexElements::NORMAL_32_BITS)
+		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, subMesh.positionOffset, vertexDescriptorList.m_vertexSize, 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+		if (vertexDescriptorList.m_uvIndex != -1)
 		{
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_NORMAL, 0, subMesh.normalOffset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
-
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, subMesh.uvOffset, sizeof(VertexNormalsNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
-
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, subMesh.positionOffset, sizeof(VertexNormalsNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, subMesh.uvOffset, vertexDescriptorList.m_vertexSize, 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		}
-		else
+
+		if (vertexDescriptorList.m_normalIndex != -1)
 		{
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, subMesh.uvOffset, sizeof(VertexNoColor), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
-
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, subMesh.positionOffset, sizeof(VertexNoColor), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_NORMAL, 0, subMesh.normalOffset, vertexDescriptorList.m_vertexSize, 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		}
+
+		if (vertexDescriptorList.m_colorIndex != -1)
+		{
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_COLOR0, 0, subMesh.colorOffset, vertexDescriptorList.m_vertexSize, 4, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+		}
+
 		lastOffset = subMesh.positionOffset;
 	}
 

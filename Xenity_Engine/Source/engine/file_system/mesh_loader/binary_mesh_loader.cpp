@@ -100,56 +100,36 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #if defined(__PS3__)
 		for (int vertexIndex = 0; vertexIndex < vertice_count; vertexIndex++)
 		{
-			if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
+			for (auto& element : vertexDescriptorList.m_vertexDescriptors)
 			{
-				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				float* vertex = (float*)((char*)subMesh->data + element.offset + vertexIndex * vertexDescriptorList.m_vertexSize);
+				if (element.vertexElement == VertexElements::POSITION_32_BITS)
 				{
-					VertexNormalsNoColor& vertex = ((VertexNormalsNoColor*)subMesh->data)[vertexIndex];
-					vertex.x = EndianUtils::SwapEndian(vertex.x);
-					vertex.y = EndianUtils::SwapEndian(vertex.y);
-					vertex.z = EndianUtils::SwapEndian(vertex.z);
-
-					vertex.u = EndianUtils::SwapEndian(vertex.u);
-					vertex.v = EndianUtils::SwapEndian(vertex.v);
-
-					vertex.normX = EndianUtils::SwapEndian(vertex.normX);
-					vertex.normY = EndianUtils::SwapEndian(vertex.normY);
-					vertex.normZ = EndianUtils::SwapEndian(vertex.normZ);
+					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
+					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
+					vertex[2] = EndianUtils::SwapEndian(vertex[2]);
 				}
-				else 
+				else if (element.vertexElement == VertexElements::NORMAL_32_BITS)
 				{
-					VertexNormalsNoColorNoUv& vertex = ((VertexNormalsNoColorNoUv*)subMesh->data)[vertexIndex];
-					vertex.x = EndianUtils::SwapEndian(vertex.x);
-					vertex.y = EndianUtils::SwapEndian(vertex.y);
-					vertex.z = EndianUtils::SwapEndian(vertex.z);
-
-					vertex.normX = EndianUtils::SwapEndian(vertex.normX);
-					vertex.normY = EndianUtils::SwapEndian(vertex.normY);
-					vertex.normZ = EndianUtils::SwapEndian(vertex.normZ);
+					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
+					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
+					vertex[2] = EndianUtils::SwapEndian(vertex[2]);
 				}
-			}
-			else 
-			{
-				if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
+				else if (element.vertexElement == VertexElements::UV_32_BITS)
 				{
-					VertexNoColor& vertex = ((VertexNoColor*)subMesh->data)[vertexIndex];
-					vertex.x = EndianUtils::SwapEndian(vertex.x);
-					vertex.y = EndianUtils::SwapEndian(vertex.y);
-					vertex.z = EndianUtils::SwapEndian(vertex.z);
-
-					vertex.y = EndianUtils::SwapEndian(vertex.y);
-					vertex.v = EndianUtils::SwapEndian(vertex.v);
+					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
+					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
 				}
-				else
+				else if (element.vertexElement == VertexElements::COLOR)
 				{
-					VertexNoColorNoUv& vertex = ((VertexNoColorNoUv*)subMesh->data)[vertexIndex];
-					vertex.x = EndianUtils::SwapEndian(vertex.x);
-					vertex.y = EndianUtils::SwapEndian(vertex.y);
-					vertex.z = EndianUtils::SwapEndian(vertex.z);
+					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
+					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
+					vertex[2] = EndianUtils::SwapEndian(vertex[2]);
+					vertex[3] = EndianUtils::SwapEndian(vertex[3]);
 				}
 			}
 		}
-#endif // defined(__PS3__)
+#endif
 
 		// Copy indices data
 		if(mesh.m_hasIndices)

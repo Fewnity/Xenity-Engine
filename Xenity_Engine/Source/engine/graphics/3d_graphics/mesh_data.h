@@ -235,6 +235,7 @@ public:
 		uint32_t normalOffset = 0;
 		uint32_t uvOffset = 0;
 		uint32_t positionOffset = 0;
+		uint32_t colorOffset = 0;
 		uint32_t indicesOffset = 0;
 #endif
 

@@ -439,8 +439,6 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 // TODO : Improve this function, it's not optimized and using shaders
 void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
 {
-	return;
-
 	if (settings.useDepth)
 		glEnable(GL_DEPTH_TEST);
 	else

@@ -275,32 +275,10 @@ void MeshData::ComputeBoundingBox()
 		for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
 		{
 			Vector3 vert;
-			if (static_cast<uint32_t>(m_vertexDescriptor) & static_cast<uint32_t>(VertexElements::NORMAL_32_BITS))
-			{
-				if (static_cast<uint32_t>(m_vertexDescriptor) & static_cast<uint32_t>(VertexElements::UV_32_BITS))
-				{
-					const VertexNormalsNoColor& vertex = (reinterpret_cast<VertexNormalsNoColor*>(subMesh->data))[vertexIndex];
-					vert = Vector3(vertex.x, vertex.y, vertex.z);
-				}
-				else
-				{
-					const VertexNormalsNoColorNoUv& vertex = (reinterpret_cast<VertexNormalsNoColorNoUv*>(subMesh->data))[vertexIndex];
-					vert = Vector3(vertex.x, vertex.y, vertex.z);
-				}
-			}
-			else
-			{
-				if (static_cast<uint32_t>(m_vertexDescriptor) & static_cast<uint32_t>(VertexElements::UV_32_BITS))
-				{
-					const VertexNoColor& vertex = (reinterpret_cast<VertexNoColor*>(subMesh->data))[vertexIndex];
-					vert = Vector3(vertex.x, vertex.y, vertex.z);
-				}
-				else
-				{
-					const VertexNoColorNoUv& vertex = (reinterpret_cast<VertexNoColorNoUv*>(subMesh->data))[vertexIndex];
-					vert = Vector3(vertex.x, vertex.y, vertex.z);
-				}
-			}
+			float* vertexPtr = (float*)((char*)subMesh->data + subMesh->m_vertexDescriptor.m_vertexDescriptors[subMesh->m_vertexDescriptor.m_positionIndex].offset + vertexIndex * subMesh->m_vertexDescriptor.m_vertexSize);
+			vert.x = vertexPtr[0];
+			vert.y = vertexPtr[1];
+			vert.z = vertexPtr[2];
 
 			if (firstValue)
 			{
@@ -423,7 +401,7 @@ void MeshData::OnLoadFileReferenceFinished()
 		pspDrawParam |= GU_INDEX_16BIT;
 	}
 	pspDrawParam |= GU_TEXTURE_32BITF;
-	if (m_hasColor)
+	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::COLOR)
 	{
 		pspDrawParam |= GU_COLOR_8888;
 	}
@@ -635,20 +613,23 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count, const
 	{
 		rsxAddressToOffset(&((unsigned int*)newSubMesh->indices)[0], &newSubMesh->indicesOffset);
 	}
-	if ((int)newSubMesh->meshData->GetVertexDescriptor() & (int)VertexElements::NORMAL_32_BITS)
+
+	rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_positionIndex].offset), &newSubMesh->positionOffset);
+	if (vertexDescriptorList.m_uvIndex != -1)
 	{
-		rsxAddressToOffset(&((VertexNormalsNoColor*)newSubMesh->data)[0].normX, &newSubMesh->normalOffset);
-
-		rsxAddressToOffset(&((VertexNormalsNoColor*)newSubMesh->data)[0].u, &newSubMesh->uvOffset);
-
-		rsxAddressToOffset(&((VertexNormalsNoColor*)newSubMesh->data)[0].x, &newSubMesh->positionOffset);
+		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_uvIndex].offset), &newSubMesh->uvOffset);
 	}
-	else
+
+	if (vertexDescriptorList.m_normalIndex != -1)
 	{
-		rsxAddressToOffset(&((VertexNoColor*)newSubMesh->data)[0].u, &newSubMesh->uvOffset);
-
-		rsxAddressToOffset(&((VertexNoColor*)newSubMesh->data)[0].x, &newSubMesh->positionOffset);
+		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_normalIndex].offset), &newSubMesh->normalOffset);
 	}
+
+	if (vertexDescriptorList.m_colorIndex != -1)
+	{
+		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_colorIndex].offset), &newSubMesh->colorOffset);
+	}
+
 #endif
 
 	m_subMeshes.push_back(std::move(newSubMesh));
