@@ -21,178 +21,7 @@
 #include <engine/file_system/file_reference.h>
 #include <engine/graphics/3d_graphics/sphere.h>
 #include <engine/graphics/texture.h>
-
-enum class VertexElements : uint32_t
-{
-	NONE = 0,
-	POSITION_32_BITS = 1 << 0,
-	POSITION_16_BITS = 1 << 1, // Used for PSP
-	NORMAL_32_BITS = 1 << 2,
-	NORMAL_16_BITS = 1 << 3, // Used for PSP
-	NORMAL_8_BITS = 1 << 4, // Used for PSP
-	UV_32_BITS = 1 << 5,
-	UV_16_BITS = 1 << 6, // Used for PSP
-	COLOR = 1 << 7,
-};
-
-constexpr VertexElements operator|(VertexElements lhs, VertexElements rhs)
-{
-	using UnderlyingType = std::underlying_type_t<VertexElements>;
-	return static_cast<VertexElements>(
-		static_cast<UnderlyingType>(lhs) | static_cast<UnderlyingType>(rhs)
-		);
-}
-
-// Définition de l'opérateur |=
-constexpr VertexElements& operator|=(VertexElements& lhs, VertexElements rhs)
-{
-	lhs = lhs | rhs;
-	return lhs;
-}
-
-constexpr VertexElements operator&(VertexElements lhs, VertexElements rhs)
-{
-	using UnderlyingType = std::underlying_type_t<VertexElements>;
-	return static_cast<VertexElements>(
-		static_cast<UnderlyingType>(lhs) & static_cast<UnderlyingType>(rhs)
-		);
-}
-
-// Définition de l'opérateur &=
-constexpr VertexElements& operator&=(VertexElements& lhs, VertexElements rhs)
-{
-	lhs = lhs & rhs;
-	return lhs;
-}
-
-struct VertexDescriptor
-{
-	VertexElements vertexElement = VertexElements::NONE;
-	uint32_t size = 0;
-	uint32_t offset = 0;
-};
-
-struct VertexDescriptorList
-{
-	static uint16_t GetVertexElementSize(VertexElements vertexElement)
-	{
-		uint16_t vertexSize = 0;
-		if ((vertexElement & VertexElements::POSITION_32_BITS) == VertexElements::POSITION_32_BITS)
-		{
-			vertexSize += sizeof(float[3]);
-		}
-		else if ((vertexElement & VertexElements::POSITION_16_BITS) == VertexElements::POSITION_16_BITS)
-		{
-			vertexSize += sizeof(uint16_t[3]);
-		}
-
-		if ((vertexElement & VertexElements::NORMAL_32_BITS) == VertexElements::NORMAL_32_BITS)
-		{
-			vertexSize += sizeof(float[3]);
-		}
-		else if ((vertexElement & VertexElements::NORMAL_16_BITS) == VertexElements::NORMAL_16_BITS)
-		{
-			vertexSize += sizeof(uint16_t[3]);
-		}
-		else if ((vertexElement & VertexElements::NORMAL_8_BITS) == VertexElements::NORMAL_8_BITS)
-		{
-			vertexSize += sizeof(char[3]);
-		}
-
-		if ((vertexElement & VertexElements::UV_32_BITS) == VertexElements::UV_32_BITS)
-		{
-			vertexSize += sizeof(float[2]);
-		}
-		else if ((vertexElement & VertexElements::UV_16_BITS) == VertexElements::UV_16_BITS)
-		{
-			vertexSize += sizeof(uint16_t[2]);
-		}
-
-		if ((vertexElement & VertexElements::COLOR) == VertexElements::COLOR)
-		{
-#if defined(__PSP__)
-			vertexSize += sizeof(uint32_t);
-#else
-			vertexSize += sizeof(float[4]);
-#endif
-		}
-
-		return vertexSize;
-	}
-
-	void AddVertexDescriptor(VertexElements vertexElement)
-	{
-		VertexDescriptor vertexDescriptor;
-		vertexDescriptor.vertexElement = vertexElement;
-		vertexDescriptor.size = GetVertexElementSize(vertexElement);
-		vertexDescriptor.offset = m_vertexSize;
-		m_vertexSize += vertexDescriptor.size;
-		if (m_vertexSize == 64)
-		{
-			m_vertexSize = 0;
-		}
-		m_vertexDescriptors.push_back(vertexDescriptor);
-
-		if ((vertexElement & VertexElements::POSITION_32_BITS) == VertexElements::POSITION_32_BITS || (vertexElement & VertexElements::POSITION_16_BITS) == VertexElements::POSITION_16_BITS)
-		{
-			m_positionIndex = static_cast<int>(m_vertexDescriptors.size() - 1);
-		}
-		else if ((vertexElement & VertexElements::NORMAL_32_BITS) == VertexElements::NORMAL_32_BITS || (vertexElement & VertexElements::NORMAL_16_BITS) == VertexElements::NORMAL_16_BITS || (vertexElement & VertexElements::NORMAL_8_BITS) == VertexElements::NORMAL_8_BITS)
-		{
-			m_normalIndex = static_cast<int>(m_vertexDescriptors.size() - 1);
-		}
-		else if ((vertexElement & VertexElements::UV_32_BITS) == VertexElements::UV_32_BITS || (vertexElement & VertexElements::UV_16_BITS) == VertexElements::UV_16_BITS)
-		{
-			m_uvIndex = static_cast<int>(m_vertexDescriptors.size() - 1);
-		}
-		else if ((vertexElement & VertexElements::COLOR) == VertexElements::COLOR)
-		{
-			m_colorIndex = static_cast<int>(m_vertexDescriptors.size() - 1);
-		}
-	}
-
-	std::vector<VertexDescriptor> m_vertexDescriptors;
-	int m_positionIndex = -1;
-	int m_normalIndex = -1;
-	int m_uvIndex = -1;
-	int m_colorIndex = -1;
-	uint16_t m_vertexSize = 0;
-};
-
-struct Vertex
-{
-	float u, v;
-#if defined(__PSP__)
-	uint32_t color;
-#else
-	float r, g, b, a;
-#endif
-	float x, y, z;
-};
-
-struct VertexNoColor
-{
-	float u, v;
-	float x, y, z;
-};
-
-struct VertexNoColorNoUv
-{
-	float x, y, z;
-};
-
-struct VertexNormalsNoColor
-{
-	float u, v;
-	float normX, normY, normZ;
-	float x, y, z;
-};
-
-struct VertexNormalsNoColorNoUv
-{
-	float normX, normY, normZ;
-	float x, y, z;
-};
+#include "vertex_descriptor.h"
 
 class API MeshData : public FileReference
 {
@@ -264,7 +93,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float u, float v, const Color &color, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
+	void AddVertex(float u, float v, const Color &color, float x, float y, float z, unsigned int vertexIndex, unsigned int subMeshIndex);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -274,7 +103,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
+	void AddVertex(float x, float y, float z, unsigned int vertexIndex, unsigned int subMeshIndex);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -286,7 +115,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float u, float v, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
+	void AddVertex(float u, float v, float x, float y, float z, unsigned int vertexIndex, unsigned int subMeshIndex);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -301,7 +130,7 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
+	void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, unsigned int vertexIndex, unsigned int subMeshIndex);
 
 	/**
 	 * @brief Add a vertex to a submesh
@@ -314,12 +143,12 @@ public:
 	 * @param index Vertex index
 	 * @param subMeshIndex Submesh index
 	 */
-	void AddVertex(float nx, float ny, float nz, float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
+	void AddVertex(float nx, float ny, float nz, float x, float y, float z, unsigned int vertexIndex, unsigned int subMeshIndex);
 
-	void AddPosition(float x, float y, float z, unsigned int index, unsigned int subMeshIndex);
-	void AddNormal(float nx, float ny, float nz, unsigned int index, unsigned int subMeshIndex);
-	void AddUV(float u, float v, unsigned int index, unsigned int subMeshIndex);
-	void AddColor(const Color& color, unsigned int index, unsigned int subMeshIndex);
+	void AddPosition(float x, float y, float z, unsigned int vertexIndex, unsigned int subMeshIndex);
+	void AddNormal(float nx, float ny, float nz, unsigned int vertexIndex, unsigned int subMeshIndex);
+	void AddUV(float u, float v, unsigned int vertexIndex, unsigned int subMeshIndex);
+	void AddColor(const Color& color, unsigned int vertexIndex, unsigned int subMeshIndex);
 
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 
@@ -345,11 +174,6 @@ public:
 	const Sphere& GetBoundingSphere() const
 	{
 		return m_boundingSphere;
-	}
-
-	VertexElements GetVertexDescriptor() const
-	{
-		return m_vertexDescriptor;
 	}
 
 protected:
@@ -412,7 +236,7 @@ protected:
 	int pspDrawParam = 0;
 #endif
 
-	VertexElements m_vertexDescriptor = VertexElements::NONE;
+	//VertexElements m_vertexDescriptor = VertexElements::NONE;
 	//uint16_t m_vertexSize = 0;
 
 	/**
@@ -420,7 +244,7 @@ protected:
 	*/
 	void SetVertexDescriptor(VertexElements vertexDescriptor) 
 	{
-		m_vertexDescriptor = vertexDescriptor;
+		//m_vertexDescriptor = vertexDescriptor;
 
 		/*if ((m_vertexDescriptor & VertexElements::POSITION_32_BITS) == VertexElements::POSITION_32_BITS)
 		{

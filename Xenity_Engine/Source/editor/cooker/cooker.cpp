@@ -124,22 +124,31 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	{
 		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
 
+		// Load mesh data
 		MeshData meshData = MeshData();
 		meshData.m_file = fileInfo.file;
 		FileReference::LoadOptions loadOptions;
 		loadOptions.platform = settings.platform;
 		loadOptions.threaded = false;
 		meshData.LoadFileReference(loadOptions);
+
 		// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE
 		std::ofstream meshFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
 		// Write mesh data
-		meshFile.write((char*)&meshData.m_vertexDescriptor, sizeof(VertexElements));
 		meshFile.write((char*)&meshData.m_subMeshCount, sizeof(uint32_t));
 
 		// Write submeshes data
 		for (std::unique_ptr<MeshData::SubMesh>& subMesh : meshData.m_subMeshes)
 		{
+			// Write vertex descriptor
+			uint32_t vertexDescriptorSize = static_cast<uint32_t>(subMesh->m_vertexDescriptor.m_vertexDescriptors.size());
+			meshFile.write((char*)&vertexDescriptorSize, sizeof(uint32_t));
+			for (const VertexDescriptor& vertexDescriptor : subMesh->m_vertexDescriptor.m_vertexDescriptors)
+			{
+				meshFile.write((char*)&vertexDescriptor.vertexElement, sizeof(VertexElements));
+			}
+
 			meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
 			meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));
 			meshFile.write((char*)&subMesh->vertexMemSize, sizeof(uint32_t));

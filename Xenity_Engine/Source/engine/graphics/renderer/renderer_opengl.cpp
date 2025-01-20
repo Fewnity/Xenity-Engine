@@ -466,7 +466,12 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	lastSettings.useTexture = false;
 	usedTexture = 0;
 
-	VertexNoColorNoUv ver[2];
+	struct Vertex
+	{
+		float x, y, z;
+	};
+
+	Vertex ver[2];
 	ver[0].x = a.x;
 	ver[0].y = a.y;
 	ver[0].z = a.z;
@@ -474,7 +479,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	ver[1].x = b.x;
 	ver[1].y = b.y;
 	ver[1].z = b.z;
-	static const int stride = sizeof(VertexNoColorNoUv);
+	static const int stride = sizeof(Vertex);
 	glVertexPointer(3, GL_FLOAT, stride, &ver[0].x);
 
 	const RGBA& vec4Color = color.GetRGBA();
@@ -770,12 +775,12 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 		if constexpr (s_UseOpenGLFixedFunctions)
 		{
 			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, GL_FLOAT, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_positionIndex].offset);
+			glVertexPointer(3, GL_FLOAT, stride, (void*)vertexDescriptorList.GetPositionOffset());
 
 			if (vertexDescriptorList.m_uvIndex != -1)
 			{
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-				glTexCoordPointer(2, GL_FLOAT, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_uvIndex].offset);
+				glTexCoordPointer(2, GL_FLOAT, stride, (void*)vertexDescriptorList.GetUvOffset());
 			}
 			else 
 			{
@@ -785,7 +790,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 			if (vertexDescriptorList.m_normalIndex != -1)
 			{
 				glEnableClientState(GL_NORMAL_ARRAY);
-				glNormalPointer(GL_FLOAT, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_normalIndex].offset);
+				glNormalPointer(GL_FLOAT, stride, (void*)vertexDescriptorList.GetNormalOffset());
 			}
 			else
 			{
@@ -795,7 +800,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 			if (vertexDescriptorList.m_colorIndex != -1)
 			{
 				glEnableClientState(GL_COLOR_ARRAY);
-				glColorPointer(4, GL_FLOAT, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_colorIndex].offset);
+				glColorPointer(4, GL_FLOAT, stride, (void*)vertexDescriptorList.GetColorOffset());
 			}
 			else
 			{
@@ -805,12 +810,12 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 		else 
 		{
 			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_positionIndex].offset);
+			glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetPositionOffset());
 
 			if (vertexDescriptorList.m_uvIndex != -1)
 			{
 				glEnableVertexAttribArray(0);
-				glVertexAttribPointer(0, 2, GL_FLOAT, false, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_uvIndex].offset);
+				glVertexAttribPointer(0, 2, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetUvOffset());
 			}
 			else
 			{
@@ -820,7 +825,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 			if (vertexDescriptorList.m_normalIndex != -1)
 			{
 				glEnableVertexAttribArray(1);
-				glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_normalIndex].offset);
+				glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetNormalOffset());
 			}
 			else
 			{
@@ -830,78 +835,13 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 			if (vertexDescriptorList.m_colorIndex != -1)
 			{
 				glEnableVertexAttribArray(3);
-				glVertexAttribPointer(3, 4, GL_FLOAT, false, stride, (void*)vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_colorIndex].offset);
+				glVertexAttribPointer(3, 4, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetColorOffset());
 			}
 			else
 			{
 				glDisableVertexAttribArray(3);
 			}
 		}
-
-		//if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
-		//{
-		//	if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
-		//	{
-		//		//stride = sizeof(VertexNormalsNoColor);
-		//		if constexpr (s_UseOpenGLFixedFunctions)
-		//		{
-		//			glEnableClientState(GL_VERTEX_ARRAY);
-		//			glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, x));
-		//			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		//			glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, u));
-		//			glEnableClientState(GL_NORMAL_ARRAY);
-		//			glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColor, normX));
-		//		}
-		//		else
-		//		{
-		//			glEnableVertexAttribArray(0);
-		//			glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, x));
-		//			glEnableVertexAttribArray(1);
-		//			glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, u));
-		//			glEnableVertexAttribArray(2);
-		//			glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNormalsNoColor, normX));
-		//		}
-		//	}
-		//	else
-		//	{
-		//		//stride = sizeof(VertexNormalsNoColorNoUv);
-		//		glNormalPointer(GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, normX));
-		//		glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNormalsNoColorNoUv, x));
-		//	}
-		//}
-		//else
-		//{
-		//	if ((uint32_t)meshData.m_vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
-		//	{
-		//		/*if (meshData.m_hasColor)
-		//		{
-		//			stride = sizeof(Vertex);
-		//			glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(Vertex, u));
-		//			glColorPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, r));
-		//			glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(Vertex, x));
-		//		}else*/
-		//		//stride = sizeof(VertexNoColor);
-		//		if constexpr (s_UseOpenGLFixedFunctions)
-		//		{
-		//			glEnableClientState(GL_VERTEX_ARRAY);
-		//			glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, x));
-		//			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		//			glTexCoordPointer(2, GL_FLOAT, stride, (void*)offsetof(VertexNoColor, u));
-		//		}
-		//		else
-		//		{
-		//			glEnableVertexAttribArray(0);
-		//			glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, x));
-		//			glEnableVertexAttribArray(1);
-		//			glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offsetof(VertexNoColor, u));
-		//		}
-		//	}
-		//	else
-		//	{
-		//		//stride = sizeof(VertexNoColorNoUv);
-		//		glVertexPointer(3, GL_FLOAT, stride, (void*)offsetof(VertexNoColorNoUv, x));
-		//	}
-		//}
 
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

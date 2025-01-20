@@ -29,6 +29,10 @@ Rework the documentation
 Implement alpha testing on shaders
 Add lighting on PS3
 Check if force inline for GLM is better or not
+Clean shaders
+Add asserts
+Add unit tests
+Clean cooker
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 

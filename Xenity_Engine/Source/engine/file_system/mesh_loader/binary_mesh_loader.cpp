@@ -35,13 +35,9 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 
-	VertexElements vertexDescriptor = *reinterpret_cast<VertexElements*>(fileData);
-	fileData += sizeof(VertexElements);
-
 	uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);
 
 #if defined(__PS3__)
-	vertexDescriptor = EndianUtils::SwapEndian(vertexDescriptor);
 	subMeshCount = EndianUtils::SwapEndian(subMeshCount);
 #endif // defined(__PS3__)
 
@@ -53,11 +49,34 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	mesh.m_hasIndices = true;
 #endif // !defined(__PSP__)
 
-	mesh.SetVertexDescriptor(vertexDescriptor);
-
 	// Read all sub meshes
 	for (uint32_t i = 0; i < subMeshCount; i++)
 	{
+		// Read vertex descriptor
+		uint32_t vertexDescriptorListSize = 0;
+
+		memcpy(&vertexDescriptorListSize, fileData, sizeof(uint32_t));
+		fileData += sizeof(uint32_t);
+
+#if defined(__PS3__)
+		vertexDescriptorListSize = EndianUtils::SwapEndian(vertexDescriptorListSize);
+#endif
+
+		VertexDescriptorList vertexDescriptorList;
+
+		for (size_t vertexDescIndex = 0; vertexDescIndex < vertexDescriptorListSize; vertexDescIndex++)
+		{
+			VertexElements vertexElement;
+			memcpy(&vertexElement, fileData, sizeof(VertexElements));
+			fileData += sizeof(VertexElements);
+
+#if defined(__PS3__)
+			vertexElement = EndianUtils::SwapEndian(vertexElement);
+#endif
+
+			vertexDescriptorList.AddVertexDescriptor(vertexElement);
+		}
+
 		uint32_t vertice_count = 0;
 		uint32_t index_count = 0;
 		uint32_t vertexMemSize = 0;
@@ -79,16 +98,6 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		vertexMemSize = EndianUtils::SwapEndian(vertexMemSize);
 		indexMemSize = EndianUtils::SwapEndian(indexMemSize);
 #endif // defined(__PS3__)
-
-		VertexDescriptorList vertexDescriptorList;
-		if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::UV_32_BITS)
-			vertexDescriptorList.AddVertexDescriptor(VertexElements::UV_32_BITS);
-		if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::COLOR)
-			vertexDescriptorList.AddVertexDescriptor(VertexElements::COLOR);
-		if ((uint32_t)vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
-			vertexDescriptorList.AddVertexDescriptor(VertexElements::NORMAL_32_BITS);
-
-		vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
 
 		mesh.AllocSubMesh(vertice_count, index_count, vertexDescriptorList);
 		std::unique_ptr<MeshData::SubMesh>& subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];

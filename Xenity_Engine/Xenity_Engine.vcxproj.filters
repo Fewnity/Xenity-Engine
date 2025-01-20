@@ -345,6 +345,7 @@
     <ClCompile Include="Source\editor\update_checker.cpp" />
     <ClCompile Include="Source\editor\mesh_loaders\assimp_mesh_loader.cpp" />
     <ClCompile Include="Source\editor\ui\menus\update_available_menu.cpp" />
+    <ClCompile Include="Source\engine\graphics\3d_graphics\vertex_descriptor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -798,6 +799,7 @@
     <ClInclude Include="Source\editor\update_checker.h" />
     <ClInclude Include="Source\editor\mesh_loaders\assimp_mesh_loader.h" />
     <ClInclude Include="Source\editor\ui\menus\update_available_menu.h" />
+    <ClInclude Include="Source\engine\graphics\3d_graphics\vertex_descriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />
