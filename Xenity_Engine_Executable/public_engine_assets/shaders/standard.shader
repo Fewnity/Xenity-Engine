@@ -357,7 +357,7 @@ void main()
 	result += textureColor.xyz * ambientLight;
 
 	float alpha = textureColor.w * color.w;
-	gl_FragColor = vec4(result * color.xyz, alpha); //Add texture color
+	gl_FragColor = vec4(result * color.xyz, alpha) * VertexColor; //Add texture color
 }
 
 //-------------- {ps3}
