@@ -20,9 +20,14 @@ struct CookSettings
 class Cooker
 {
 public:
-	static FileDataBase fileDataBase;
-
 	static void CookAssets(const CookSettings& settings);
+
+private:
+	static FileDataBase fileDataBase;
 	static void CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath);
+
+	static void CookMesh(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath);
+	static void CookShader(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath);
+	static void CookTexture(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath);
 };
 

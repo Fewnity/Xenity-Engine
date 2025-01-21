@@ -119,8 +119,8 @@ void MeshData::AddPosition(float x, float y, float z, unsigned int vertexIndex, 
 	XASSERT(subMeshIndex < m_subMeshCount, "[MeshData::AddPosition] subMeshIndex out of bound");
 
 	SubMesh* subMesh = m_subMeshes[subMeshIndex].get();
-	const VertexDescriptorList& vertexDescriptor = subMesh->m_vertexDescriptor;
-	char* data = ((char*)subMesh->data) + (vertexIndex * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexDescriptors[vertexDescriptor.m_positionIndex].offset;
+	const VertexDescriptor& vertexDescriptor = subMesh->m_vertexDescriptor;
+	char* data = ((char*)subMesh->data) + (vertexIndex * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexElementInfos[vertexDescriptor.m_positionIndex].offset;
 	reinterpret_cast<float*>(data)[0] = x;
 	reinterpret_cast<float*>(data)[1] = y;
 	reinterpret_cast<float*>(data)[2] = z;
@@ -129,11 +129,11 @@ void MeshData::AddPosition(float x, float y, float z, unsigned int vertexIndex, 
 void MeshData::AddNormal(float nx, float ny, float nz, unsigned int vertexIndex, unsigned int subMeshIndex)
 {
 	XASSERT(vertexIndex < m_subMeshes[subMeshIndex]->vertice_count, "[MeshData::AddNormal] vertexIndex out of bound");
-	XASSERT(subMeshIndex < m_subMeshCount , "[MeshData::AddNormal] subMeshIndex out of bound");
+	XASSERT(subMeshIndex < m_subMeshCount, "[MeshData::AddNormal] subMeshIndex out of bound");
 
 	SubMesh* subMesh = m_subMeshes[subMeshIndex].get();
-	const VertexDescriptorList& vertexDescriptor = subMesh->m_vertexDescriptor;
-	char* data = ((char*)subMesh->data) + (vertexIndex * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexDescriptors[vertexDescriptor.m_normalIndex].offset;
+	const VertexDescriptor& vertexDescriptor = subMesh->m_vertexDescriptor;
+	char* data = ((char*)subMesh->data) + (vertexIndex * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexElementInfos[vertexDescriptor.m_normalIndex].offset;
 	reinterpret_cast<float*>(data)[0] = nx;
 	reinterpret_cast<float*>(data)[1] = ny;
 	reinterpret_cast<float*>(data)[2] = nz;
@@ -145,8 +145,8 @@ void MeshData::AddUV(float u, float v, unsigned int vertexIndex, unsigned int su
 	XASSERT(subMeshIndex < m_subMeshCount, "[MeshData::AddUV] subMeshIndex out of bound");
 
 	SubMesh* subMesh = m_subMeshes[subMeshIndex].get();
-	const VertexDescriptorList& vertexDescriptor = subMesh->m_vertexDescriptor;
-	char* data = ((char*)subMesh->data) + (vertexIndex * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexDescriptors[vertexDescriptor.m_uvIndex].offset;
+	const VertexDescriptor& vertexDescriptor = subMesh->m_vertexDescriptor;
+	char* data = ((char*)subMesh->data) + (vertexIndex * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexElementInfos[vertexDescriptor.m_uvIndex].offset;
 	reinterpret_cast<float*>(data)[0] = u;
 	reinterpret_cast<float*>(data)[1] = v;
 }
@@ -159,8 +159,8 @@ void MeshData::AddColor(const Color& color, unsigned int vertexIndex, unsigned i
 	Vector4 colorVector = color.GetRGBA().ToVector4();
 
 	SubMesh* subMesh = m_subMeshes[subMeshIndex].get();
-	const VertexDescriptorList& vertexDescriptor = subMesh->m_vertexDescriptor;
-	char* data = ((char*)subMesh->data) + (vertexIndex * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexDescriptors[vertexDescriptor.m_colorIndex].offset;
+	const VertexDescriptor& vertexDescriptor = subMesh->m_vertexDescriptor;
+	char* data = ((char*)subMesh->data) + (vertexIndex * vertexDescriptor.m_vertexSize) + vertexDescriptor.m_vertexElementInfos[vertexDescriptor.m_colorIndex].offset;
 	reinterpret_cast<float*>(data)[0] = colorVector.x;
 	reinterpret_cast<float*>(data)[1] = colorVector.y;
 	reinterpret_cast<float*>(data)[2] = colorVector.z;
@@ -184,7 +184,7 @@ void MeshData::ComputeBoundingBox()
 		for (uint32_t vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
 		{
 			Vector3 vert;
-			float* vertexPtr = (float*)((char*)subMesh->data + subMesh->m_vertexDescriptor.m_vertexDescriptors[subMesh->m_vertexDescriptor.m_positionIndex].offset + vertexIndex * subMesh->m_vertexDescriptor.m_vertexSize);
+			float* vertexPtr = (float*)((char*)subMesh->data + subMesh->m_vertexDescriptor.m_vertexElementInfos[subMesh->m_vertexDescriptor.m_positionIndex].offset + vertexIndex * subMesh->m_vertexDescriptor.m_vertexSize);
 			vert.x = vertexPtr[0];
 			vert.y = vertexPtr[1];
 			vert.z = vertexPtr[2];
@@ -269,13 +269,20 @@ void MeshData::LoadFileReference(const LoadOptions& loadOptions)
 		m_isValid = false;
 		bool result;
 #if defined(EDITOR)
-		if(loadOptions.platform == Platform::P_PSP)
+		AssimpMeshLoader::LoadingOptions options;
+		if (loadOptions.platform == Platform::P_PSP)
 		{
-			result = AssimpMeshLoader::LoadMesh(*this, true);
+			options.forceNoIndices = true;
+			result = AssimpMeshLoader::LoadMesh(*this, options);
 		}
-		else 
+		else
 		{
-			result = AssimpMeshLoader::LoadMesh(*this);
+			options.forceNoIndices = false;
+			if (loadOptions.platform == Platform::P_PsVita)
+			{
+				options.forceColors = true;
+			}
+			result = AssimpMeshLoader::LoadMesh(*this, options);
 		}
 #else
 		result = BinaryMeshLoader::LoadMesh(*this);
@@ -303,24 +310,6 @@ void MeshData::LoadFileReference(const LoadOptions& loadOptions)
 
 void MeshData::OnLoadFileReferenceFinished()
 {
-#if defined(__PSP__)
-	if (m_hasIndices)
-	{
-		pspDrawParam |= GU_INDEX_16BIT;
-	}
-	pspDrawParam |= GU_TEXTURE_32BITF;
-	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::COLOR)
-	{
-		pspDrawParam |= GU_COLOR_8888;
-	}
-	if ((uint32_t)m_vertexDescriptor & (uint32_t)VertexElements::NORMAL_32_BITS)
-	{
-		pspDrawParam |= GU_NORMAL_32BITF;
-	}
-	pspDrawParam |= GU_VERTEX_32BITF;
-	pspDrawParam |= GU_TRANSFORM_3D;
-#endif
-
 #if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	SendDataToGpu();
 #endif
@@ -368,9 +357,12 @@ void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 #endif
 }
 
-void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptorList& vertexDescriptorList)
+void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptor& vertexDescriptorList)
 {
-	XASSERT(vcount != 0 || index_count != 0, "[MeshData::AllocSubMesh] vcount and index_count are 0");
+	XASSERT(vcount != 0 || index_count != 0, "[MeshData::CreateSubMesh] vcount and index_count are 0");
+	XASSERT(vertexDescriptorList.m_vertexSize != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList vertex size");
+	XASSERT(vertexDescriptorList.m_vertexElementInfos.size() != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList size");
+	XASSERT((m_hasIndices && index_count != 0) || (!m_hasIndices && index_count == 0), "[MeshData::CreateSubMesh] Wrong index count and hasIndice param");
 
 	std::unique_ptr<MeshData::SubMesh> newSubMesh = std::make_unique<MeshData::SubMesh>();
 	newSubMesh->m_vertexDescriptor = vertexDescriptorList;
@@ -403,10 +395,10 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count, const
 
 		if (newSubMesh->indices == nullptr)
 		{
-			Debug::PrintError("[MeshData::AllocSubMesh] No memory for Indices", true);
+			Debug::PrintError("[MeshData::CreateSubMesh] No memory for Indices", true);
 			return;
 		}
-}
+	}
 
 	newSubMesh->vertexMemSize = vertexDescriptorList.m_vertexSize * vcount;
 
@@ -420,6 +412,75 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count, const
 		newSubMesh->isOnVram = false;
 		newSubMesh->data = (void*)memalign(16, newSubMesh->vertexMemSize);
 	}
+
+	// Prepare the draw parameters
+	newSubMesh->pspDrawParam |= GU_TRANSFORM_3D;
+
+	if (m_hasIndices)
+	{
+		newSubMesh->pspDrawParam |= GU_INDEX_16BIT;
+	}
+
+	if (vertexDescriptorList.m_uvIndex != -1)
+	{
+		VertexElements uvElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_uvIndex);
+		if (uvElement == VertexElements::UV_32_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_TEXTURE_32BITF;
+		}
+		else if (uvElement == VertexElements::UV_16_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_TEXTURE_16BIT;
+		}
+		else if (uvElement == VertexElements::UV_8_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_TEXTURE_8BIT;
+		}
+	}
+
+	if (vertexDescriptorList.m_normalIndex != -1)
+	{
+		VertexElements normalElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_normalIndex);
+		if (normalElement == VertexElements::NORMAL_32_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_NORMAL_32BITF;
+		}
+		else if (normalElement == VertexElements::NORMAL_16_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_NORMAL_16BIT;
+		}
+		else if (normalElement == VertexElements::NORMAL_8_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_NORMAL_8BIT;
+		}
+	}
+
+	if (vertexDescriptorList.m_positionIndex != -1)
+	{
+		VertexElements positionElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_positionIndex);
+		if (positionElement == VertexElements::POSITION_32_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_VERTEX_32BITF;
+		}
+		else if (positionElement == VertexElements::POSITION_16_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_VERTEX_16BIT;
+		}
+		else if (positionElement == VertexElements::POSITION_8_BITS)
+		{
+			newSubMesh->pspDrawParam |= GU_VERTEX_8BIT;
+		}
+	}
+
+	if (vertexDescriptorList.m_colorIndex != -1)
+	{
+		VertexElements colorElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_colorIndex);
+		if (colorElement == VertexElements::COLOR) // Actually wrong
+		{
+			newSubMesh->pspDrawParam |= GU_COLOR_8888;
+		}
+	}
+
 #elif defined(_EE)
 	newSubMesh->c_verts = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
 	newSubMesh->c_colours = (VECTOR*)memalign(128, sizeof(VECTOR) * vcount);
@@ -450,13 +511,13 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count, const
 #if !defined(_EE)
 	if (newSubMesh->data == nullptr)
 	{
-		Debug::PrintWarning("[MeshData::AllocSubMesh] No memory for Vertex", true);
+		Debug::PrintWarning("[MeshData::CreateSubMesh] No memory for Vertex", true);
 		return;
 	}
 #else
 	if (newSubMesh->c_verts == nullptr || newSubMesh->c_colours == nullptr || newSubMesh->c_st == nullptr)
 	{
-		Debug::PrintWarning("[MeshData::AllocSubMesh] No ps2 memory for Vertex", true);
+		Debug::PrintWarning("[MeshData::CreateSubMesh] No ps2 memory for Vertex", true);
 		return;
 	}
 #endif
@@ -474,25 +535,25 @@ void MeshData::AllocSubMesh(unsigned int vcount, unsigned int index_count, const
 	{
 		rsxAddressToOffset(&((unsigned short*)newSubMesh->indices)[0], &newSubMesh->indicesOffset);
 	}
-	else 
+	else
 	{
 		rsxAddressToOffset(&((unsigned int*)newSubMesh->indices)[0], &newSubMesh->indicesOffset);
 	}
 
-	rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_positionIndex].offset), &newSubMesh->positionOffset);
+	rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexElementInfos[vertexDescriptorList.m_positionIndex].offset), &newSubMesh->positionOffset);
 	if (vertexDescriptorList.m_uvIndex != -1)
 	{
-		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_uvIndex].offset), &newSubMesh->uvOffset);
+		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexElementInfos[vertexDescriptorList.m_uvIndex].offset), &newSubMesh->uvOffset);
 	}
 
 	if (vertexDescriptorList.m_normalIndex != -1)
 	{
-		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_normalIndex].offset), &newSubMesh->normalOffset);
+		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexElementInfos[vertexDescriptorList.m_normalIndex].offset), &newSubMesh->normalOffset);
 	}
 
 	if (vertexDescriptorList.m_colorIndex != -1)
 	{
-		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexDescriptors[vertexDescriptorList.m_colorIndex].offset), &newSubMesh->colorOffset);
+		rsxAddressToOffset((void*)((char*)newSubMesh->data + vertexDescriptorList.m_vertexElementInfos[vertexDescriptorList.m_colorIndex].offset), &newSubMesh->colorOffset);
 	}
 
 #endif
@@ -519,7 +580,7 @@ void MeshData::SubMesh::FreeData()
 		free(data);
 #endif
 		data = nullptr;
-}
+	}
 
 	if (indices)
 	{

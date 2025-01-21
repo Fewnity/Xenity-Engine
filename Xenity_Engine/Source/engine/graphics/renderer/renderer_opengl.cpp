@@ -770,7 +770,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 		size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
 
-		const VertexDescriptorList& vertexDescriptorList = newSubMesh->m_vertexDescriptor;
+		const VertexDescriptor& vertexDescriptorList = newSubMesh->m_vertexDescriptor;
 		int stride = vertexDescriptorList.m_vertexSize;
 		if constexpr (s_UseOpenGLFixedFunctions)
 		{

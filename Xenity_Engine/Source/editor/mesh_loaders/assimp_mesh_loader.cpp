@@ -31,7 +31,7 @@
 * ------
 */
 
-bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
+bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -69,7 +69,11 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 			const bool hasNormals = assimpMesh->HasNormals();
 			const bool hasUVs = assimpMesh->HasTextureCoords(0);
 			const bool hasFaces = assimpMesh->HasFaces();
-			const bool hasColors = assimpMesh->HasVertexColors(0);
+			bool hasColors = assimpMesh->HasVertexColors(0);
+			if (options.forceColors)
+			{
+				hasColors = true;
+			}
 
 			size_t verticesPerFace = 0;
 			if (hasFaces)
@@ -77,7 +81,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 				verticesPerFace = assimpMesh->mFaces[0].mNumIndices;
 			}
 
-			VertexDescriptorList vertexDescriptorList;
+			VertexDescriptor vertexDescriptorList;
 			VertexElements vertexDescriptor = VertexElements::POSITION_32_BITS;
 			if (hasUVs)
 			{
@@ -95,10 +99,9 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 				vertexDescriptorList.AddVertexDescriptor(VertexElements::NORMAL_32_BITS);
 			}
 			vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
-			mesh.SetVertexDescriptor(vertexDescriptor);
 
 			// PSP for example prefer triangles only for performance
-			if (forceNoIndices)
+			if (options.forceNoIndices)
 			{
 				mesh.m_hasIndices = false;
 			}
@@ -110,11 +113,11 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 			// Allocate memory
 			if (mesh.m_hasIndices)
 			{
-				mesh.AllocSubMesh(assimpMesh->mNumVertices, assimpMesh->mNumFaces * verticesPerFace, vertexDescriptorList);
+				mesh.CreateSubMesh(assimpMesh->mNumVertices, assimpMesh->mNumFaces * verticesPerFace, vertexDescriptorList);
 			}
 			else
 			{
-				mesh.AllocSubMesh(assimpMesh->mNumFaces * verticesPerFace, 0, vertexDescriptorList);
+				mesh.CreateSubMesh(assimpMesh->mNumFaces * verticesPerFace, 0, vertexDescriptorList);
 			}
 
 			// Check if the mesh is	using triangles or quads
@@ -132,7 +135,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 				// Fill the mesh with the vertex data
 				for (size_t vertexIndex = 0; vertexIndex < assimpMesh->mNumVertices; vertexIndex++)
 				{
-					AddVertex(mesh, assimpMesh, vertexIndex, subMeshIndex, vertexIndex);
+					AddVertex(mesh, options, assimpMesh, vertexIndex, subMeshIndex, vertexIndex);
 				}
 
 				// Fill the mesh with the indices data
@@ -160,7 +163,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 					for (size_t faceVertexIndex = 0; faceVertexIndex < verticesPerFace; faceVertexIndex++)
 					{
 						const size_t assimpVertexIndex = assimpMesh->mFaces[faceIndex].mIndices[faceVertexIndex];
-						AddVertex(mesh, assimpMesh, assimpVertexIndex, subMeshIndex, meshVertexIndex);
+						AddVertex(mesh, options, assimpMesh, assimpVertexIndex, subMeshIndex, meshVertexIndex);
 						meshVertexIndex++;
 					}
 				}
@@ -172,7 +175,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, bool forceNoIndices)
 	return true;
 }
 
-void AssimpMeshLoader::AddVertex(MeshData& mesh, const aiMesh* assimpMesh, unsigned int assimpVertexIndex, unsigned int subMeshIndex, unsigned int meshVertexIndex)
+void AssimpMeshLoader::AddVertex(MeshData& mesh, const LoadingOptions& options, const aiMesh* assimpMesh, unsigned int assimpVertexIndex, unsigned int subMeshIndex, unsigned int meshVertexIndex)
 {
 	const aiVector3D& vertex = assimpMesh->mVertices[assimpVertexIndex];
 	const bool hasNormals = assimpMesh->HasNormals();
@@ -194,5 +197,11 @@ void AssimpMeshLoader::AddVertex(MeshData& mesh, const aiMesh* assimpMesh, unsig
 		const aiColor4D& color = assimpMesh->mColors[0][assimpVertexIndex];
 		mesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex, subMeshIndex);
 	}
+	else if (options.forceColors)
+	{
+		const aiColor4D color = aiColor4D(1, 1, 1, 1);
+		mesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex, subMeshIndex);
+	}
+
 	mesh.AddPosition(vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
 }

@@ -645,7 +645,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		//m_lighintDataTexture->Bind();
 	}
 
-	const VertexDescriptorList& vertexDescriptorList = subMesh.m_vertexDescriptor;
+	const VertexDescriptor& vertexDescriptorList = subMesh.m_vertexDescriptor;
 	// Set vertex array attributes
 	if(lastOffset != subMesh.positionOffset)
 	{

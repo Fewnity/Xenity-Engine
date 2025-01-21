@@ -32,7 +32,6 @@ Check if force inline for GLM is better or not
 Clean shaders
 Add asserts
 Add unit tests
-Clean cooker
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
@@ -93,7 +92,6 @@ Add network profiler
 Add map reflection support
 Add more unit tests
 Add support for mesh material loading
-RGBA or RGB in vertex color?
 Fix thread problem when trying to load in different threads the same file at the same time
 Add transparency setting on textures
 Preview part in inspector : Add mesh preview

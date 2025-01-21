@@ -71,13 +71,12 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	// Create empty mesh
 	const int charCountToDraw = textLenght - (textInfo->lineCount - 1);
 
-	VertexDescriptorList vertexDescriptorList;
+	VertexDescriptor vertexDescriptorList;
 	vertexDescriptorList.AddVertexDescriptor(VertexElements::UV_32_BITS);
 	vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
 
 	std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData();
-	mesh->SetVertexDescriptor(VertexElements::POSITION_32_BITS | VertexElements::UV_32_BITS);
-	mesh->AllocSubMesh(6 * charCountToDraw, 6 * charCountToDraw, vertexDescriptorList);
+	mesh->CreateSubMesh(6 * charCountToDraw, 6 * charCountToDraw, vertexDescriptorList);
 	mesh->unifiedColor = color;
 	mesh->m_hasIndices = true;
 

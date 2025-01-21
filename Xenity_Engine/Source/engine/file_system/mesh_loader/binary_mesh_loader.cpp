@@ -62,7 +62,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		vertexDescriptorListSize = EndianUtils::SwapEndian(vertexDescriptorListSize);
 #endif
 
-		VertexDescriptorList vertexDescriptorList;
+		VertexDescriptor vertexDescriptorList;
 
 		for (size_t vertexDescIndex = 0; vertexDescIndex < vertexDescriptorListSize; vertexDescIndex++)
 		{
@@ -99,7 +99,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		indexMemSize = EndianUtils::SwapEndian(indexMemSize);
 #endif // defined(__PS3__)
 
-		mesh.AllocSubMesh(vertice_count, index_count, vertexDescriptorList);
+		mesh.CreateSubMesh(vertice_count, index_count, vertexDescriptorList);
 		std::unique_ptr<MeshData::SubMesh>& subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
 
 		// Copy vertices data
@@ -109,7 +109,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #if defined(__PS3__)
 		for (int vertexIndex = 0; vertexIndex < vertice_count; vertexIndex++)
 		{
-			for (auto& element : vertexDescriptorList.m_vertexDescriptors)
+			for (auto& element : vertexDescriptorList.m_vertexElementInfos)
 			{
 				float* vertex = (float*)((char*)subMesh->data + element.offset + vertexIndex * vertexDescriptorList.m_vertexSize);
 				if (element.vertexElement == VertexElements::POSITION_32_BITS)

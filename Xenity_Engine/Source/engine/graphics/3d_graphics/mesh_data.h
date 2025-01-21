@@ -35,9 +35,11 @@ public:
 		~SubMesh();
 		void *indices = nullptr;
 		MeshData* meshData = nullptr;
+		// On PSP, we have to respect a specific order for the data
+		// UV Color (uint32_t ARGB) Normal  Position
 		void *data = nullptr;
 
-		VertexDescriptorList m_vertexDescriptor;
+		VertexDescriptor m_vertexDescriptor;
 
 		uint32_t vertexMemSize = 0;
 		uint32_t indexMemSize = 0;
@@ -67,9 +69,9 @@ public:
 		uint32_t colorOffset = 0;
 		uint32_t indicesOffset = 0;
 #endif
-
-		uint16_t m_vertexSize = 0;
-
+#if defined(__PSP__)
+		int pspDrawParam = 0;
+#endif
 #if defined(__PSP__)
 		bool isOnVram = true;
 #endif
@@ -223,7 +225,7 @@ protected:
 	/**
 	 * @brief Alloc memory for a new submesh
 	 */
-	void AllocSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptorList& vertexDescriptorList);
+	void CreateSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptor& vertexDescriptorList);
 
 	int m_subMeshCount = 0;
 
@@ -231,61 +233,6 @@ protected:
 	bool m_isValid = true;
 
 	Sphere m_boundingSphere;
-
-#if defined(__PSP__)
-	int pspDrawParam = 0;
-#endif
-
-	//VertexElements m_vertexDescriptor = VertexElements::NONE;
-	//uint16_t m_vertexSize = 0;
-
-	/**
-	* Set mesh vertex descriptor
-	*/
-	void SetVertexDescriptor(VertexElements vertexDescriptor) 
-	{
-		//m_vertexDescriptor = vertexDescriptor;
-
-		/*if ((m_vertexDescriptor & VertexElements::POSITION_32_BITS) == VertexElements::POSITION_32_BITS)
-		{
-			m_vertexSize += sizeof(float[3]);
-		}
-		else if ((m_vertexDescriptor & VertexElements::POSITION_16_BITS) == VertexElements::POSITION_16_BITS)
-		{
-			m_vertexSize += sizeof(uint16_t[3]);
-		}
-
-		if ((m_vertexDescriptor & VertexElements::NORMAL_32_BITS) == VertexElements::NORMAL_32_BITS)
-		{
-			m_vertexSize += sizeof(float[3]);
-		}
-		else if ((m_vertexDescriptor & VertexElements::NORMAL_16_BITS) == VertexElements::NORMAL_16_BITS)
-		{
-			m_vertexSize += sizeof(uint16_t[3]);
-		}
-		else if ((m_vertexDescriptor & VertexElements::NORMAL_8_BITS) == VertexElements::NORMAL_8_BITS)
-		{
-			m_vertexSize += sizeof(char[3]);
-		}
-
-		if ((m_vertexDescriptor & VertexElements::UV_32_BITS) == VertexElements::UV_32_BITS)
-		{
-			m_vertexSize += sizeof(float[2]);
-		}
-		else if ((m_vertexDescriptor & VertexElements::UV_16_BITS) == VertexElements::UV_16_BITS)
-		{
-			m_vertexSize += sizeof(uint16_t[2]);
-		}
-
-		if ((m_vertexDescriptor & VertexElements::COLOR) == VertexElements::COLOR)
-		{
-#if defined(__PSP__)
-			m_vertexSize += sizeof(uint32_t);
-#else
-			m_vertexSize += sizeof(float[4]);
-#endif
-		}*/
-	}
 
 	/**
 	* @brief Compute the bounding box of the mesh

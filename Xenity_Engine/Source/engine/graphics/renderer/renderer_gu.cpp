@@ -355,11 +355,11 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	// Draw
 	if (!subMesh.meshData->m_hasIndices)
 	{
-		sceGumDrawArray(GU_TRIANGLES, subMesh.meshData->pspDrawParam, subMesh.vertice_count, 0, subMesh.data);
+		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.vertice_count, 0, subMesh.data);
 	}
 	else
 	{
-		sceGumDrawArray(GU_TRIANGLES, subMesh.meshData->pspDrawParam, subMesh.index_count, subMesh.indices, subMesh.data);
+		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.index_count, subMesh.indices, subMesh.data);
 	}
 	//Performance::AddDrawCall();
 

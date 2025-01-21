@@ -299,7 +299,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 //			for (int i = 0; i < currentSubMesh + 1; i++)
 //			{
 //				const SubMesh* sub = submeshes[i];
-//				mesh.AllocSubMesh(sub->indicesCount, sub->indicesCount);
+//				mesh.CreateSubMesh(sub->indicesCount, sub->indicesCount);
 //			}
 //
 //			/*if(!mtlFile.empty())

@@ -36,11 +36,10 @@ void SpriteManager::Init()
 {
 	// Create sprite mesh
 	s_spriteMeshData = MeshData::MakeMeshData();
-	VertexDescriptorList spriteDescriptor;
+	VertexDescriptor spriteDescriptor;
 	spriteDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
 	spriteDescriptor.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
-	s_spriteMeshData->SetVertexDescriptor(VertexElements::POSITION_32_BITS | VertexElements::UV_32_BITS);
-	s_spriteMeshData->AllocSubMesh(4, 6, spriteDescriptor);
+	s_spriteMeshData->CreateSubMesh(4, 6, spriteDescriptor);
 	s_spriteMeshData->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0, 0);
 	s_spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1, 0);
 	s_spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2, 0);
@@ -58,12 +57,11 @@ void SpriteManager::Init()
 	s_spriteMeshData->OnLoadFileReferenceFinished();
 
 	s_spriteMeshDataWithNormals = MeshData::MakeMeshData();
-	VertexDescriptorList withNormalsDescriptor;
+	VertexDescriptor withNormalsDescriptor;
 	withNormalsDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
 	withNormalsDescriptor.AddVertexDescriptor(VertexElements::NORMAL_32_BITS);
 	withNormalsDescriptor.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
-	s_spriteMeshDataWithNormals->SetVertexDescriptor(VertexElements::POSITION_32_BITS | VertexElements::NORMAL_32_BITS | VertexElements::UV_32_BITS);
-	s_spriteMeshDataWithNormals->AllocSubMesh(4, 6, withNormalsDescriptor);
+	s_spriteMeshDataWithNormals->CreateSubMesh(4, 6, withNormalsDescriptor);
 	s_spriteMeshDataWithNormals->AddVertex(1.0f, 1.0f, 0, 0, -1, -0.5f, -0.5f, 0.0f, 0, 0);
 	s_spriteMeshDataWithNormals->AddVertex(0.0f, 1.0f, 0, 0, -1, 0.5f, -0.5f, 0.0f, 1, 0);
 	s_spriteMeshDataWithNormals->AddVertex(0.0f, 0.0f, 0, 0, -1, 0.5f, 0.5f, 0.0f, 2, 0);
