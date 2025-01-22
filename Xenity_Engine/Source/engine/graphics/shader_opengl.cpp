@@ -294,7 +294,10 @@ void ShaderOpenGL::SetShaderProjectionCanvas()
 /// <param name="trans"></param>
 void ShaderOpenGL::SetShaderModel(const glm::mat4& trans, const glm::mat3& normalMatrix, const glm::mat4& mvpMatrix)
 {
-	SetShaderAttribut(m_modelLocation, trans);
+	if (m_modelLocation != GL_INVALID_INDEX)
+	{
+		SetShaderAttribut(m_modelLocation, trans);
+	}
 	if (m_MVPLocation != GL_INVALID_INDEX)
 	{
 		//const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * trans;
@@ -448,7 +451,7 @@ void ShaderOpenGL::Link()
 	glBindAttribLocation(m_programId, 2, "position");
 	glBindAttribLocation(m_programId, 3, "color2");
 #endif
-	//glVertexAttrib4f(3, 1.0f, 0.0f, 1.0f, 1.0f); // Valeur par défaut
+	glVertexAttrib4f(3, 1.0f, 1.0f, 1.0f, 1.0f); // Valeur par défaut
 	glLinkProgram(m_programId);
 	Engine::GetRenderer().UseShaderProgram(m_programId);
 
