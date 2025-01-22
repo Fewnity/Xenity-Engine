@@ -3,51 +3,44 @@
 
 #version 330 core
 
-layout (location = 2) in vec3 position;
-layout(location = 0) in vec2 uv;
+layout (location = 2) in vec3 a_Position;
+layout(location = 0) in vec2 a_TexCoord;
 
-out vec2 TexCoord;
-out vec3 FragPos;
+out vec2 v_TexCoord;
 
-uniform mat4 model; //Model matrice position, rotation and scale
-uniform mat4 MVP;
+uniform mat4 MVP; // Model View Projection
 
 void main()
 {
-	gl_Position = MVP * vec4(position, 1);
-	TexCoord = uv;
+	gl_Position = MVP * vec4(a_Position, 1);
+	v_TexCoord = a_TexCoord;
 }
 
 //-------------- {fragment}
 
 #version 330 core
 
-out vec4 FragColor;
-uniform vec4 color;
+in vec2 v_TexCoord;
 
-in vec2 TexCoord;
+uniform vec4 color;
 
 uniform vec2 tiling;
 uniform vec2 offset;
 
 struct Material {
 	sampler2D diffuse;
-	vec3 ambient;
 };
 
 uniform Material material;
 
 void main()
 {
-	// Ambient
+	vec4 textureFrag = texture(material.diffuse, (v_TexCoord * tiling) + offset);
+	vec3 result = color.xyz * textureFrag.xyz; // Multiply color material and texture fragment
 
-	vec3 ambient = color.xyz * vec3(texture(material.diffuse, (TexCoord * tiling) + offset)); //Get ambient intensity and color
+	float alpha = textureFrag.w * color.w;
 
-	//Result
-	vec3 result = ambient; //Set face result
-
-	float alpha = texture(material.diffuse, (TexCoord * tiling) + offset).a * color.w;
-	FragColor = vec4(result, alpha); //Add texture color
+	gl_FragColor = vec4(result, alpha); //Add texture color
 }
 
 //-------------- {psvita}
@@ -57,9 +50,7 @@ attribute vec3 position;
 attribute vec2 uv;
 
 varying vec2 TexCoord;
-varying vec3 FragPos;
 
-uniform mat4 model; //Model matrice position, rotation and scale
 uniform mat4 MVP;
 
 void main()
