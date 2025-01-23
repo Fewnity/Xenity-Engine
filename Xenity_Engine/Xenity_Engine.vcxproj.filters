@@ -164,7 +164,6 @@
     <ClCompile Include="Source\editor\utils\copy_utils.cpp" />
     <ClCompile Include="Source\engine\file_system\data_base\file_data_base.cpp" />
     <ClCompile Include="include\implot\implot.cpp" />
-    <ClCompile Include="include\implot\implot_demo.cpp" />
     <ClCompile Include="include\implot\implot_items.cpp" />
     <ClCompile Include="Source\engine\file_system\data_base\bit_file.cpp" />
     <ClCompile Include="Source\engine\tools\scope_benchmark.cpp" />
