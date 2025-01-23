@@ -1,6 +1,6 @@
 # Xenity Engine
 
-Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita and Windows.
+Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows.
 
 [Xenity Documentation](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/Doc/README.md)
 
@@ -20,7 +20,7 @@ New features, refactor, bug fixes, optimizations or documentations everything is
 ✔️ | Windows
 ✔️ | PlayStation Portable
 ✔️ | PlayStation Vita
-🚧 | PlayStation 3 (Missing network and lighting)
+🚧 | PlayStation 3 (Missing network)
 🚧 | Linux (Missing audio and build system)
 ❌ | PlayStation 2
 
@@ -41,7 +41,6 @@ Features:
 > The engine is not finished. So you may encounter problems during game development like:
 > - Deleting Meta files will have repercussions on your project. Variables that reference the files will be emptied.
 > - Duplicating a meta file will cause problems, each meta file has a unique file id in it.
-> - Gamepad hot plug is not supported yet
 
 > [!NOTE]
 > If you want to compile a game in the editor, you have to change set `Compiler path` in the `Engine Settings` menu (Window->Engine Settings). You can set the `PPSSPP location` for Build And Run for PSP builds.
@@ -55,20 +54,20 @@ Features:
 - Open the Build Settings menu in "File->Build Settings"
 - Select the platform
 - Click on build
-(For PSP and PsVita, you will need Docker Desktop installed and configured).
+(For PSP, PS3 and PsVita, you will need Docker Desktop installed and configured).
 
 ## Docker Setup
 Docker Desktop is needed to compile PSP, PS3 and PsVita games.<br>
 Download Docker Desktop: https://www.docker.com/products/docker-desktop/
 
-Then install the Docker Image in "Window->Docker Configuration", the process can take several minutes especially if you have a slow computer or a slow internet connection.
+Then finish the docker install in Xenity. Go in "Window->Docker Configuration", the process can take several minutes especially if you have a slow computer or a slow internet connection.
 
 ## Compatible files
 Images: `.png .jpg .bmp`
 
 Audio: `.wav .mp3` (Please use 44100Hz audio except on PS3, you have to use 48000Hz audio)
 
-Mesh: `.obj (Triangulated only!)`
+Mesh: `.obj .fbx`
 
 Font: `.ttf`
 
@@ -96,9 +95,9 @@ The code of this repository is under the MIT license.
 ## Used libraries
 Stb (used: stb_image 2.23 (later versions do not work on PSP), stb_image_resize 0.97, stb_image_write 1.16): https://github.com/nothings/stb
 
-drmp3 & drwav: https://github.com/mackron/dr_libs
+drmp3 v0.6.40 & drwav v0.13.17: https://github.com/mackron/dr_libs
 
-JSON for Modern C++: https://github.com/nlohmann/json
+JSON for Modern C++ v3.11.3: https://github.com/nlohmann/json
 
 GLM (slightly modified for PS2): https://github.com/g-truc/glm
 
@@ -111,13 +110,11 @@ Assimp (79d451b): https://github.com/assimp/assimp/
 
 FreeType (v2.13.2): https://github.com/ubawurinna/freetype-windows-binaries/
 
-ImGui (1.91.0 WIP): https://github.com/ocornut/imgui
+ImGui Docking branch (1.91.8 WIP): https://github.com/ocornut/imgui
 
-SDL (3.1.2): https://github.com/libsdl-org/SDL
+SDL (3.2): https://github.com/libsdl-org/SDL
 
-Glad (4.6): https://glad.dav1d.de/ (filled: https://glad.dav1d.de/#profile=core&language=c&specification=gl&loader=on&api=gl%3D4.6)
-
-GLFW (3.4) https://github.com/glfw/glfw
+Glad v2.0.8 (gl 4.6 compatibilty mode): https://gen.glad.sh/
 
 ### PsVita specific: 
-VitaGL: (Compiled with HAVE_GLSL_SUPPORT=1 flag enabled) https://github.com/Rinnegatamante/vitaGL
+VitaGL (029ddbe): (Compiled with HAVE_GLSL_SUPPORT=1 flag enabled, NO_DEBUG=1 for release and HAVE_SHARK_LOG=1 LOG_ERRORS=2 for debug) https://github.com/Rinnegatamante/vitaGL
