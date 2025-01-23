@@ -227,7 +227,7 @@ protected:
 	 */
 	void CreateSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptor& vertexDescriptorList);
 
-	int m_subMeshCount = 0;
+	uint32_t m_subMeshCount = 0;
 
 	bool m_hasIndices = true;
 	bool m_isValid = true;

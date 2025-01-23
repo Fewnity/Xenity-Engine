@@ -176,7 +176,7 @@ void MeshData::SendDataToGpu()
 void MeshData::ComputeBoundingBox()
 {
 	bool firstValue = true;
-	for (int i = 0; i < m_subMeshCount; i++)
+	for (uint32_t i = 0; i < m_subMeshCount; i++)
 	{
 		std::unique_ptr<SubMesh>& subMesh = m_subMeshes[i];
 
@@ -239,7 +239,7 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 	}
 	else // Only free data, do not delete sub meshes
 	{
-		for (int i = 0; i < m_subMeshCount; i++)
+		for (uint32_t i = 0; i < m_subMeshCount; i++)
 		{
 			const std::unique_ptr<SubMesh>& subMesh = m_subMeshes[i];
 			if (subMesh)
