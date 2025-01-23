@@ -275,6 +275,7 @@ int audio_thread(SceSize args, void* argp)
 			break;
 		}
 	}
+	return 0;
 }
 #endif
 
