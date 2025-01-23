@@ -32,6 +32,7 @@
 #include <engine/application.h>
 #include <engine/graphics/texture.h>
 #include <engine/constants.h>
+#include <engine/graphics/frame_limiter/frame_limiter.h>
 
 namespace fs = std::filesystem;
 
@@ -61,6 +62,9 @@ std::string MakePathAbsolute(const std::string& path, const std::string& root)
 
 CompileResult Compiler::Compile(CompilerParams params)
 {
+	FrameLimiter::SetIsEnabled(true);
+	FrameLimiter::SetWaitTiming(1000);
+
 	DeleteTempFiles(params);
 
 	isCompilationCancelled = false;
@@ -162,7 +166,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 		Debug::PrintError("[Compiler::Compile] No compile method for this platform!", true);
 		break;
 	}
-
+	FrameLimiter::SetIsEnabled(false);
 	// Send compile result
 	OnCompileEnd(result, params);
 	return result;
@@ -1238,11 +1242,6 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	{
 		command += " /DEDITOR";
 	}
-	else
-	{
-
-	}
-
 
 	// Add include directories
 	command += " -I \"" + engineProjectLocation + "include\"";

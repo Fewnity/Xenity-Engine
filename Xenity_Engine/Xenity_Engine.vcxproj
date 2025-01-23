@@ -528,6 +528,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Source\engine\graphics\frame_limiter\frame_limiter.cpp" />
     <ClCompile Include="Source\engine\tools\endian_utils.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp" />
@@ -1148,6 +1149,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\engine\file_system\data_base\integrity_state.h" />
+    <ClInclude Include="Source\engine\graphics\frame_limiter\frame_limiter.h" />
     <ClInclude Include="Source\engine\tools\endian_utils.h" />
     <ClInclude Include="include\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.h" />
     <ClInclude Include="include\bullet\BulletCollision\NarrowPhaseCollision\btComputeGjkEpaPenetration.h" />

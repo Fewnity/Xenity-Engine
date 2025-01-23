@@ -93,7 +93,8 @@
 #include <engine/tools/math.h>
 #include <engine/vectors/quaternion.h>
 #include <engine/vectors/vector3.h>
-#include "debug/stack_debug_object.h"
+#include <engine/debug/stack_debug_object.h>
+#include <engine/graphics/frame_limiter/frame_limiter.h>
 
 std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
 bool Engine::s_canUpdateAudio = false;
@@ -425,6 +426,7 @@ void Engine::Loop()
 #endif
 			}
 			InputSystem::s_blockGameInput = false;
+			FrameLimiter::Wait();
 		}
 
 		if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
