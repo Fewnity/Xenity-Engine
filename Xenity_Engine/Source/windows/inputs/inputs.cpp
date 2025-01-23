@@ -126,7 +126,7 @@ API void CrossOnControllerRemoved(const int controllerId)
 	size_t controllerCount = controllers.size();
 	for (size_t i = 0; i < controllerCount; i++)
 	{
-		if (SDL_GetGamepadInstanceID(controllers[i]) == controllerId)
+		if (SDL_GetGamepadID(controllers[i]) == controllerId)
 		{
 			SDL_CloseGamepad(controllers[i]);
 			controllers[i] = nullptr;

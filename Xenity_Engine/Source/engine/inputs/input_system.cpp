@@ -36,6 +36,7 @@
 #include "input_touch_raw.h"
 #include <engine/debug/stack_debug_object.h>
 #include <engine/debug/performance.h>
+#include <engine/ui/window.h>
 
 
 Vector2 InputSystem::mousePosition = Vector2(); // TODO : use a Vector2Int
@@ -80,7 +81,7 @@ void InputSystem::HideMouse()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	SDL_SetWindowRelativeMouseMode(Window::s_window, true);
 #endif
 	s_hidedMouse = true;
 }
@@ -89,7 +90,7 @@ void InputSystem::ShowMouse()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	SDL_SetRelativeMouseMode(SDL_FALSE);
+	SDL_SetWindowRelativeMouseMode(Window::s_window, false);
 #endif
 	s_hidedMouse = false;
 }

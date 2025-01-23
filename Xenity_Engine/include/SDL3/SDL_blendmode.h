@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -24,7 +24,7 @@
  *
  * Blend modes decide how two colors will mix together. There are both
  * standard modes for basic needs and a means to create custom modes,
- * dictating what sort of math to do what on what color components.
+ * dictating what sort of math to do on what color components.
  */
 
 #ifndef SDL_blendmode_h_
@@ -41,44 +41,38 @@ extern "C" {
 /**
  * A set of blend modes used in drawing operations.
  *
- * Note that additional values may be obtained from
- * SDL_ComposeCustomBlendMode.
+ * These predefined blend modes are supported everywhere.
  *
- * \since This datatype is available since SDL 3.0.0.
+ * Additional values may be obtained from SDL_ComposeCustomBlendMode.
+ *
+ * \since This datatype is available since SDL 3.2.0.
  *
  * \sa SDL_ComposeCustomBlendMode
  */
 typedef Uint32 SDL_BlendMode;
 
-#define SDL_BLENDMODE_NONE      0x00000000u /**< no blending
-                                                 dstRGBA = srcRGBA */
-#define SDL_BLENDMODE_BLEND     0x00000001u /**< alpha blending
-                                                 dstRGB = (srcRGB * srcA) + (dstRGB * (1-srcA))
-                                                 dstA = srcA + (dstA * (1-srcA)) */
-#define SDL_BLENDMODE_ADD       0x00000002u /**< additive blending
-                                                 dstRGB = (srcRGB * srcA) + dstRGB
-                                                 dstA = dstA */
-#define SDL_BLENDMODE_MOD       0x00000004u /**< color modulate
-                                                 dstRGB = srcRGB * dstRGB
-                                                 dstA = dstA */
-#define SDL_BLENDMODE_MUL       0x00000008u /**< color multiply
-                                                 dstRGB = (srcRGB * dstRGB) + (dstRGB * (1-srcA))
-                                                 dstA = dstA */
-#define SDL_BLENDMODE_INVALID   0x7FFFFFFFu
+#define SDL_BLENDMODE_NONE                  0x00000000u /**< no blending: dstRGBA = srcRGBA */
+#define SDL_BLENDMODE_BLEND                 0x00000001u /**< alpha blending: dstRGB = (srcRGB * srcA) + (dstRGB * (1-srcA)), dstA = srcA + (dstA * (1-srcA)) */
+#define SDL_BLENDMODE_BLEND_PREMULTIPLIED   0x00000010u /**< pre-multiplied alpha blending: dstRGBA = srcRGBA + (dstRGBA * (1-srcA)) */
+#define SDL_BLENDMODE_ADD                   0x00000002u /**< additive blending: dstRGB = (srcRGB * srcA) + dstRGB, dstA = dstA */
+#define SDL_BLENDMODE_ADD_PREMULTIPLIED     0x00000020u /**< pre-multiplied additive blending: dstRGB = srcRGB + dstRGB, dstA = dstA */
+#define SDL_BLENDMODE_MOD                   0x00000004u /**< color modulate: dstRGB = srcRGB * dstRGB, dstA = dstA */
+#define SDL_BLENDMODE_MUL                   0x00000008u /**< color multiply: dstRGB = (srcRGB * dstRGB) + (dstRGB * (1-srcA)), dstA = dstA */
+#define SDL_BLENDMODE_INVALID               0x7FFFFFFFu
 
 /**
  * The blend operation used when combining source and destination pixel
  * components.
  *
- * \since This enum is available since SDL 3.0.0.
+ * \since This enum is available since SDL 3.2.0.
  */
 typedef enum SDL_BlendOperation
 {
     SDL_BLENDOPERATION_ADD              = 0x1,  /**< dst + src: supported by all renderers */
-    SDL_BLENDOPERATION_SUBTRACT         = 0x2,  /**< src - dst : supported by D3D9, D3D11, OpenGL, OpenGLES */
-    SDL_BLENDOPERATION_REV_SUBTRACT     = 0x3,  /**< dst - src : supported by D3D9, D3D11, OpenGL, OpenGLES */
-    SDL_BLENDOPERATION_MINIMUM          = 0x4,  /**< min(dst, src) : supported by D3D9, D3D11 */
-    SDL_BLENDOPERATION_MAXIMUM          = 0x5   /**< max(dst, src) : supported by D3D9, D3D11 */
+    SDL_BLENDOPERATION_SUBTRACT         = 0x2,  /**< src - dst : supported by D3D, OpenGL, OpenGLES, and Vulkan */
+    SDL_BLENDOPERATION_REV_SUBTRACT     = 0x3,  /**< dst - src : supported by D3D, OpenGL, OpenGLES, and Vulkan */
+    SDL_BLENDOPERATION_MINIMUM          = 0x4,  /**< min(dst, src) : supported by D3D, OpenGL, OpenGLES, and Vulkan */
+    SDL_BLENDOPERATION_MAXIMUM          = 0x5   /**< max(dst, src) : supported by D3D, OpenGL, OpenGLES, and Vulkan */
 } SDL_BlendOperation;
 
 /**
@@ -89,7 +83,7 @@ typedef enum SDL_BlendOperation
  * operation. The comma-separated factors listed above are always applied in
  * the component order red, green, blue, and alpha.
  *
- * \since This enum is available since SDL 3.0.0.
+ * \since This enum is available since SDL 3.2.0.
  */
 typedef enum SDL_BlendFactor
 {
@@ -183,7 +177,9 @@ typedef enum SDL_BlendFactor
  * \returns an SDL_BlendMode that represents the chosen factors and
  *          operations.
  *
- * \since This function is available since SDL 3.0.0.
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL 3.2.0.
  *
  * \sa SDL_SetRenderDrawBlendMode
  * \sa SDL_GetRenderDrawBlendMode

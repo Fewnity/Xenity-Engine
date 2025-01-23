@@ -96,9 +96,11 @@ int Window::Init()
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	//  Init SDL
-	const int sdlInitResult = SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS);
-	if (sdlInitResult != 0)
+	const bool sdlInitResult = SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_VIDEO | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS);
+	if (!sdlInitResult)
 	{
+		std::string sdlError = SDL_GetError();
+		Debug::PrintError("[Window::Init] SDL_Init Error: " + sdlError);
 		return static_cast<int>(WindowError::WND_ERROR_SDL_INIT);
 	}
 
@@ -106,6 +108,8 @@ int Window::Init()
 	s_window = SDL_CreateWindow(ENGINE_NAME, s_width, s_height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 	if (s_window == nullptr)
 	{
+		std::string sdlError = SDL_GetError();
+		Debug::PrintError("[Window::Init] SDL_Init Error: " + sdlError);
 		return static_cast<int>(WindowError::WND_ERROR_SDL_CREATE_WINDOW);
 	}
 
@@ -113,6 +117,8 @@ int Window::Init()
 	SDL_GLContext context = SDL_GL_CreateContext(s_window);
 	if (context == nullptr)
 	{
+		std::string sdlError = SDL_GetError();
+		Debug::PrintError("[Window::Init] SDL_Init Error: " + sdlError);
 		return static_cast<int>(WindowError::WND_ERROR_SDL_GL_CONTEXT);
 	}
 

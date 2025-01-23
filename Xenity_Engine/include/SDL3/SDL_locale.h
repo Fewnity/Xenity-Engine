@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -23,6 +23,12 @@
  * # CategoryLocale
  *
  * SDL locale services.
+ *
+ * This provides a way to get a list of preferred locales (language plus
+ * country) for the user. There is exactly one function:
+ * SDL_GetPreferredLocales(), which handles all the heavy lifting, and offers
+ * documentation on all the strange ways humans might have configured their
+ * language settings.
  */
 
 #ifndef SDL_locale_h
@@ -47,7 +53,7 @@ extern "C" {
  * would be "en"), and the country, if not NULL, will be an ISO-3166 country
  * code (so Canada would be "CA").
  *
- * \since This function is available since SDL 3.0.0.
+ * \since This function is available since SDL 3.2.0.
  *
  * \sa SDL_GetPreferredLocales
  */
@@ -59,11 +65,6 @@ typedef struct SDL_Locale
 
 /**
  * Report the user's preferred locale.
- *
- * This returns an array of SDL_Locale structs, the final item zeroed out.
- * When the caller is done with this array, it should call SDL_free() on the
- * returned value; all the memory involved is allocated in a single block, so
- * a single SDL_free() will suffice.
  *
  * Returned language strings are in the format xx, where 'xx' is an ISO-639
  * language specifier (such as "en" for English, "de" for German, etc).
@@ -94,13 +95,16 @@ typedef struct SDL_Locale
  * if possible, and you can call this function again to get an updated copy of
  * preferred locales.
  *
- * \returns array of locales, terminated with a locale with a NULL language
- *          field. Will return NULL on error; call SDL_GetError() for more
- *          information.
+ * \param count a pointer filled in with the number of locales returned, may
+ *              be NULL.
+ * \returns a NULL terminated array of locale pointers, or NULL on failure;
+ *          call SDL_GetError() for more information. This is a single
+ *          allocation that should be freed with SDL_free() when it is no
+ *          longer needed.
  *
- * \since This function is available since SDL 3.0.0.
+ * \since This function is available since SDL 3.2.0.
  */
-extern SDL_DECLSPEC SDL_Locale * SDLCALL SDL_GetPreferredLocales(void);
+extern SDL_DECLSPEC SDL_Locale ** SDLCALL SDL_GetPreferredLocales(int *count);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
