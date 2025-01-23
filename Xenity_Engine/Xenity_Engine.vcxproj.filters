@@ -32,7 +32,6 @@
     <ClCompile Include="Source\engine\pathfinding\dijkstras.cpp" />
     <ClCompile Include="Source\engine\pathfinding\astar.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
-    <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />

@@ -195,7 +195,11 @@ void BuildSettingsMenu::Draw()
 					}
 				}
 				ImGui::EndGroup();
-				ImGui::SetCursorPosY(startcursorPos.y + 50 + 16);
+
+				if (i != platformCount - 1)
+				{
+					ImGui::SetCursorPosY(startcursorPos.y + 50 + 16);
+				}
 			}
 
 			ImGui::EndChild();

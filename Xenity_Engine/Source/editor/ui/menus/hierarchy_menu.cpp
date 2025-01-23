@@ -27,7 +27,7 @@ void HierarchyMenu::Draw()
 	{
 		OnStartDrawing();
 
-		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), ImGuiChildFlags_Border);
+		ImGui::BeginChild("Hierarchy list", ImVec2(0, 0), ImGuiChildFlags_Borders);
 
 		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 		bool disableDrag = false;

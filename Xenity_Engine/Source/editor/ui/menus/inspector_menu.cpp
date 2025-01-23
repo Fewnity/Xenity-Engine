@@ -218,7 +218,7 @@ void InspectorMenu::DrawFilePreview()
 		}
 
 		ImGui::Text("Preview:");
-		ImGui::BeginChild("Preview", ImVec2(0, sizeY), ImGuiChildFlags_Border, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		ImGui::BeginChild("Preview", ImVec2(0, sizeY), ImGuiChildFlags_Borders, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 		if (!previewText.empty()) // Draw text preview
 		{

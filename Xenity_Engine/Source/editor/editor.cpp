@@ -518,10 +518,10 @@ void Editor::ApplyEditorStyle()
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorLevel0);
 
 	ImGui::PushStyleColor(ImGuiCol_Tab, colorLevel2);
-	ImGui::PushStyleColor(ImGuiCol_TabActive, colorLevel1);
+	ImGui::PushStyleColor(ImGuiCol_TabSelected, colorLevel1);
 	ImGui::PushStyleColor(ImGuiCol_TabHovered, colorLevel0);
-	ImGui::PushStyleColor(ImGuiCol_TabUnfocused, colorLevel3);
-	ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, colorLevel2);
+	ImGui::PushStyleColor(ImGuiCol_TabDimmed, colorLevel3);
+	ImGui::PushStyleColor(ImGuiCol_TabDimmedSelected, colorLevel2);
 
 	ImGui::PushStyleColor(ImGuiCol_Header, colorLevel1);
 	ImGui::PushStyleColor(ImGuiCol_HeaderActive, colorLevel05);
