@@ -7,7 +7,7 @@
 #include "window.h"
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#include <glad/glad.h>
+#include <glad/gl.h>
 #endif
 
 #if defined(EDITOR)
@@ -116,7 +116,7 @@ int Window::Init()
 		return static_cast<int>(WindowError::WND_ERROR_SDL_GL_CONTEXT);
 	}
 
-	gladLoadGLLoader(reinterpret_cast<GLADloadproc>(SDL_GL_GetProcAddress));
+	gladLoadGL(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress));
 	SDL_GL_SetSwapInterval(1);
 	OnResize();
 

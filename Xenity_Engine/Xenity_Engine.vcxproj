@@ -1089,7 +1089,7 @@
     <ClCompile Include="Source\engine\inputs\input_system.cpp" />
     <ClCompile Include="Source\engine\graphics\camera.cpp" />
     <ClCompile Include="Source\engine\graphics\graphics.cpp" />
-    <ClCompile Include="Source\glad.c" />
+    <ClCompile Include="Source\gl.c" />
     <ClCompile Include="Source\engine\tools\math.cpp" />
     <ClCompile Include="Source\engine\vectors\vector2.cpp" />
     <ClCompile Include="Source\engine\vectors\vector2_int.cpp" />

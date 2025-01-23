@@ -21,7 +21,7 @@
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <thread>
-#include <glad/glad.h>
+#include <glad/gl.h>
 #endif
 
 #include <engine/engine.h>

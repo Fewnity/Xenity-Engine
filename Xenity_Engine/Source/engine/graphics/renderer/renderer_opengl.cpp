@@ -12,7 +12,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#include <glad/glad.h>
+#include <glad/gl.h>
 #elif defined(__vita__)
 #include <vitaGL.h>
 #endif

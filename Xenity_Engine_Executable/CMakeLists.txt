@@ -37,7 +37,7 @@ set(INCLUDES_DIR "include/bullet")
 file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c" "${INCLUDES_DIR}/*.cpp")
 
 list(FILTER SOURCES EXCLUDE REGEX "Source/editor/.*")
-list(FILTER SOURCES EXCLUDE REGEX "Source/glad.c")
+list(FILTER SOURCES EXCLUDE REGEX "Source/gl.c")
 
 if(DEBUG)
 	add_definitions(-DDEBUG)

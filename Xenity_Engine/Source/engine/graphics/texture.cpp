@@ -22,7 +22,7 @@
 #include <vram.h>
 #elif defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <thread>
-#include <glad/glad.h>
+#include <glad/gl.h>
 #elif defined(_EE)
 // #include "renderer/renderer_gskit.h"
 #include <graph.h>

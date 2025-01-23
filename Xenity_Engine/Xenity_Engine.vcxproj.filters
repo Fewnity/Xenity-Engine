@@ -7,7 +7,6 @@
     <ClCompile Include="Source\engine\inputs\input_system.cpp" />
     <ClCompile Include="Source\engine\graphics\camera.cpp" />
     <ClCompile Include="Source\engine\graphics\graphics.cpp" />
-    <ClCompile Include="Source\glad.c" />
     <ClCompile Include="Source\engine\vectors\vector2.cpp" />
     <ClCompile Include="Source\engine\vectors\vector3.cpp" />
     <ClCompile Include="Source\engine\vectors\vector4.cpp" />
@@ -346,6 +345,7 @@
     <ClCompile Include="Source\editor\mesh_loaders\assimp_mesh_loader.cpp" />
     <ClCompile Include="Source\editor\ui\menus\update_available_menu.cpp" />
     <ClCompile Include="Source\engine\graphics\3d_graphics\vertex_descriptor.cpp" />
+    <ClCompile Include="Source\gl.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />

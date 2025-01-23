@@ -7,7 +7,7 @@
 #include "camera.h"
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#include <glad/glad.h>
+#include <glad/gl.h>
 #endif
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>

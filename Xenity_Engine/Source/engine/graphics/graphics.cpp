@@ -8,7 +8,7 @@
 
 #include <algorithm>
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-#include <glad/glad.h>
+#include <glad/gl.h>
 #endif
 
 #if defined(EDITOR)

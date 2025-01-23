@@ -20,7 +20,7 @@
 // Editor
 #if defined(EDITOR)
 #include <imgui/imgui_impl_sdl3.h>
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include <editor/ui/menus/game_menu.h>
 #include <editor/plugin/plugin_manager.h>
