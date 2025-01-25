@@ -32,6 +32,8 @@ Check if force inline for GLM is better or not
 Clean shaders
 Add asserts
 Add unit tests
+Add wireframe for selected mesh
+Improve mesh selection on click
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
