@@ -475,7 +475,7 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 	if (vertexDescriptorList.m_colorIndex != -1)
 	{
 		VertexElements colorElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_colorIndex);
-		if (colorElement == VertexElements::COLOR) // Actually wrong
+		if (colorElement == VertexElements::COLOR_32_BITS_UINT) // Actually wrong
 		{
 			newSubMesh->pspDrawParam |= GU_COLOR_8888;
 		}

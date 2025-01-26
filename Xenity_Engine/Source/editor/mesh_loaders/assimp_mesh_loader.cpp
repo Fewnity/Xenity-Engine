@@ -90,8 +90,8 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 			}
 			if (hasColors)
 			{
-				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::COLOR);
-				vertexDescriptorList.AddVertexDescriptor(VertexElements::COLOR);
+				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::COLOR_4_FLOATS);
+				vertexDescriptorList.AddVertexDescriptor(VertexElements::COLOR_4_FLOATS);
 			}
 			if (hasNormals)
 			{

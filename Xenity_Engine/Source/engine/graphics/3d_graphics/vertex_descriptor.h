@@ -18,7 +18,8 @@ enum class VertexElements : uint32_t // Do not change the uint32_t type
 	UV_32_BITS = 1 << 6,
 	UV_16_BITS = 1 << 7, // Used for PSP
 	UV_8_BITS = 1 << 8, // Used for PSP
-	COLOR = 1 << 9,
+	COLOR_4_FLOATS = 1 << 9, // Used for PSP
+	COLOR_32_BITS_UINT = 1 << 10,
 };
 
 constexpr VertexElements operator|(VertexElements lhs, VertexElements rhs)
@@ -94,13 +95,14 @@ struct VertexDescriptor
 			vertexSize += sizeof(uint16_t[2]);
 		}
 
-		if ((vertexElement & VertexElements::COLOR) == VertexElements::COLOR)
+		if ((vertexElement & VertexElements::COLOR_4_FLOATS) == VertexElements::COLOR_4_FLOATS)
 		{
-#if defined(__PSP__)
-			vertexSize += sizeof(uint32_t);
-#else
 			vertexSize += sizeof(float[4]);
-#endif
+		}
+
+		if ((vertexElement & VertexElements::COLOR_32_BITS_UINT) == VertexElements::COLOR_32_BITS_UINT)
+		{
+			vertexSize += sizeof(uint32_t);
 		}
 
 		return vertexSize;
@@ -130,7 +132,7 @@ struct VertexDescriptor
 		{
 			m_uvIndex = static_cast<int>(m_vertexElementInfos.size() - 1);
 		}
-		else if ((vertexElement & VertexElements::COLOR) == VertexElements::COLOR)
+		else if ((vertexElement & VertexElements::COLOR_4_FLOATS) == VertexElements::COLOR_4_FLOATS || (vertexElement & VertexElements::COLOR_32_BITS_UINT) == VertexElements::COLOR_32_BITS_UINT)
 		{
 			m_colorIndex = static_cast<int>(m_vertexElementInfos.size() - 1);
 		}

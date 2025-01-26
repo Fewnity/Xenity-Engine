@@ -167,28 +167,66 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 	// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE
 	std::ofstream meshFile = std::ofstream(exportPath, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
-	// Write mesh data
+	// -------------- Write mesh data
+
+	// Write submesh count
 	meshFile.write((char*)&meshData.m_subMeshCount, sizeof(uint32_t));
 
 	// Write submeshes data
 	// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE
 	for (std::unique_ptr<MeshData::SubMesh>& subMesh : meshData.m_subMeshes)
 	{
+		// Adapt the vertex descriptor for other platforms
+		VertexDescriptor vertexDescriptorToWrite;
+		if (settings.assetPlatform == AssetPlatform::AP_PSP)
+		{
+			for (const VertexElementInfo& vertexDescriptor : subMesh->m_vertexDescriptor.m_vertexElementInfos)
+			{
+				// PSP does not support 4 floats color, convert it to a single 32 bits uint color
+				if ((vertexDescriptor.vertexElement & VertexElements::COLOR_4_FLOATS) == VertexElements::COLOR_4_FLOATS)
+				{
+					vertexDescriptorToWrite.AddVertexDescriptor(VertexElements::COLOR_32_BITS_UINT);
+				}
+				else
+				{
+					vertexDescriptorToWrite.AddVertexDescriptor(vertexDescriptor.vertexElement);
+				}
+			}
+		}
+		else 
+		{
+			vertexDescriptorToWrite = subMesh->m_vertexDescriptor;
+		}
+
 		// Write vertex descriptor
-		uint32_t vertexDescriptorSize = static_cast<uint32_t>(subMesh->m_vertexDescriptor.m_vertexElementInfos.size());
+		uint32_t vertexDescriptorSize = static_cast<uint32_t>(vertexDescriptorToWrite.m_vertexElementInfos.size());
 		meshFile.write((char*)&vertexDescriptorSize, sizeof(uint32_t));
-		for (const VertexElementInfo& vertexDescriptor : subMesh->m_vertexDescriptor.m_vertexElementInfos)
+		for (const VertexElementInfo& vertexDescriptor : vertexDescriptorToWrite.m_vertexElementInfos)
 		{
 			meshFile.write((char*)&vertexDescriptor.vertexElement, sizeof(VertexElements));
 		}
 
+		const uint32_t newVertexMemSize = vertexDescriptorToWrite.m_vertexSize * subMesh->vertice_count;
 		meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
 		meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));
-		meshFile.write((char*)&subMesh->vertexMemSize, sizeof(uint32_t));
+		meshFile.write((char*)&newVertexMemSize, sizeof(uint32_t));
 		meshFile.write((char*)&subMesh->indexMemSize, sizeof(uint32_t));
 
-		// Write raw data
-		meshFile.write((char*)subMesh->data, subMesh->vertexMemSize);
+		// Adapt the vertex data for other platforms
+		if (settings.assetPlatform == AssetPlatform::AP_PSP)
+		{
+			char* newMeshData = new char[newVertexMemSize];
+
+			// Write raw data
+			meshFile.write((char*)newMeshData, newVertexMemSize);
+
+			delete[] newMeshData;
+		}
+		else 
+		{
+			// Write raw data
+			meshFile.write((char*)subMesh->data, newVertexMemSize);
+		}
 		meshFile.write((char*)subMesh->indices, subMesh->indexMemSize);
 	}
 	meshFile.close();
