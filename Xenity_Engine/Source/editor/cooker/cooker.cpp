@@ -178,6 +178,7 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 	{
 		// Adapt the vertex descriptor for other platforms
 		VertexDescriptor vertexDescriptorToWrite;
+		bool needConvertVertexData = false;
 		if (settings.assetPlatform == AssetPlatform::AP_PSP)
 		{
 			for (const VertexElementInfo& vertexDescriptor : subMesh->m_vertexDescriptor.m_vertexElementInfos)
@@ -186,6 +187,7 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 				if ((vertexDescriptor.vertexElement & VertexElements::COLOR_4_FLOATS) == VertexElements::COLOR_4_FLOATS)
 				{
 					vertexDescriptorToWrite.AddVertexDescriptor(VertexElements::COLOR_32_BITS_UINT);
+					needConvertVertexData = true;
 				}
 				else
 				{
@@ -193,7 +195,7 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 				}
 			}
 		}
-		else 
+		else
 		{
 			vertexDescriptorToWrite = subMesh->m_vertexDescriptor;
 		}
@@ -212,17 +214,59 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 		meshFile.write((char*)&newVertexMemSize, sizeof(uint32_t));
 		meshFile.write((char*)&subMesh->indexMemSize, sizeof(uint32_t));
 
+		const VertexDescriptor& sourceVertexDescriptor = subMesh->m_vertexDescriptor;
+
 		// Adapt the vertex data for other platforms
-		if (settings.assetPlatform == AssetPlatform::AP_PSP)
+		if (needConvertVertexData)
 		{
 			char* newMeshData = new char[newVertexMemSize];
+
+			// Simply copy the data to the new buffer or convert it
+			for (int i = 0; i < subMesh->vertice_count; i++)
+			{
+				if (subMesh->m_vertexDescriptor.m_uvIndex != -1)
+				{
+					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetUvOffset(),
+						(char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetUvOffset(),
+						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_uvIndex)));
+				}
+				if (subMesh->m_vertexDescriptor.m_colorIndex != -1)
+				{
+					if (vertexDescriptorToWrite.GetElementFromIndex(vertexDescriptorToWrite.m_colorIndex) == VertexElements::COLOR_32_BITS_UINT)
+					{
+						const float* colorPtr = (float*)((char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetColorOffset());
+
+						const Color color = Color::CreateFromRGBAFloat(colorPtr[0], colorPtr[1], colorPtr[2], colorPtr[3]);
+
+						*(unsigned int*)(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetColorOffset()) = color.GetUnsignedIntABGR();
+					}
+					else
+					{
+						memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetColorOffset(),
+							(char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetColorOffset(),
+							VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_colorIndex)));
+					}
+				}
+				if (subMesh->m_vertexDescriptor.m_normalIndex != -1)
+				{
+					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetNormalOffset(),
+						(char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetNormalOffset(),
+						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_normalIndex)));
+				}
+				if (subMesh->m_vertexDescriptor.m_positionIndex != -1)
+				{
+					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetPositionOffset(),
+						(char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetPositionOffset(),
+						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_positionIndex)));
+				}
+			}
 
 			// Write raw data
 			meshFile.write((char*)newMeshData, newVertexMemSize);
 
 			delete[] newMeshData;
 		}
-		else 
+		else // No need to convert the vertex data
 		{
 			// Write raw data
 			meshFile.write((char*)subMesh->data, newVertexMemSize);
