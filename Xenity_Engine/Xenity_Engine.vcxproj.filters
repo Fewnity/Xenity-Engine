@@ -78,7 +78,7 @@
     <ClCompile Include="Source\editor\ui\menus\game_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\project_settings_menu.cpp" />
     <ClCompile Include="Source\editor\ui\menus\compiling_menu.cpp" />
-    <ClCompile Include="Source\editor\compiler.cpp" />
+    <ClCompile Include="Source\editor\compilation\compiler.cpp" />
     <ClCompile Include="Source\editor\ui\menus\scene_menu.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_manager.cpp" />
     <ClCompile Include="Source\game_test\free_move.cpp" />
@@ -345,6 +345,7 @@
     <ClCompile Include="Source\engine\graphics\3d_graphics\vertex_descriptor.cpp" />
     <ClCompile Include="Source\gl.c" />
     <ClCompile Include="Source\engine\graphics\frame_limiter\frame_limiter.cpp" />
+    <ClCompile Include="Source\editor\compilation\compiler_cache.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -438,7 +439,7 @@
     <ClInclude Include="Source\engine\reflection\reflection_utils.h" />
     <ClInclude Include="Source\engine\platform.h" />
     <ClInclude Include="Source\editor\ui\menus\compiling_menu.h" />
-    <ClInclude Include="Source\editor\compiler.h" />
+    <ClInclude Include="Source\editor\compilation\compiler.h" />
     <ClInclude Include="Source\editor\ui\menus\scene_menu.h" />
     <ClInclude Include="Source\editor\tool_mode.h" />
     <ClInclude Include="Source\unit_tests\unit_test_manager.h" />
@@ -800,6 +801,7 @@
     <ClInclude Include="Source\editor\ui\menus\update_available_menu.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\vertex_descriptor.h" />
     <ClInclude Include="Source\engine\graphics\frame_limiter\frame_limiter.h" />
+    <ClInclude Include="Source\editor\compilation\compiler_cache.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

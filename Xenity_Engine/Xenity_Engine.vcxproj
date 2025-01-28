@@ -512,6 +512,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\editor\compilation\compiler_cache.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\editor\mesh_loaders\assimp_mesh_loader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
@@ -934,7 +938,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\engine\asset_management\code_file.cpp" />
-    <ClCompile Include="Source\editor\compiler.cpp">
+    <ClCompile Include="Source\editor\compilation\compiler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
@@ -1132,6 +1136,10 @@
     <None Include="Source\engine\reflection\reflection_utils.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\compilation\compiler_cache.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\editor\mesh_loaders\assimp_mesh_loader.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
@@ -1636,7 +1644,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\engine\asset_management\code_file.h" />
-    <ClInclude Include="Source\editor\compiler.h">
+    <ClInclude Include="Source\editor\compilation\compiler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>

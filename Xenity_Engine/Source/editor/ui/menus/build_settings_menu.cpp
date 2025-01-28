@@ -9,7 +9,7 @@
 #include <imgui/imgui.h>
 
 #include <editor/ui/editor_ui.h>
-#include <editor/compiler.h>
+#include <editor/compilation/compiler.h>
 #include <editor/command/command_manager.h>
 
 #include <engine/engine_settings.h>

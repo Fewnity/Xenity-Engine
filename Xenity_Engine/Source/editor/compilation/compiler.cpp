@@ -11,10 +11,11 @@
 
 // Editor
 #include <editor/editor.h>
-#include "ui/menus/docker_config_menu.h"
-#include "ui/menus/build_settings_menu.h"
-#include "cooker/cooker.h"
+#include <editor/ui/menus/docker_config_menu.h>
+#include <editor/ui/menus/build_settings_menu.h>
+#include <editor/cooker/cooker.h>
 #include <editor/utils/copy_utils.h>
+#include <editor/compilation/compiler_cache.h>
 
 // Engine
 #include <engine/engine_settings.h>
@@ -989,6 +990,12 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 			[[maybe_unused]] const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 		}
 
+		if (params.buildPlatform.settings->useCompilationCache)
+		{
+			const std::string copyCacheCommand = "docker cp \"" + CompilerCache::GetCachePath(params.buildPlatform.platform) + "build/\" XenityEngineBuild:\"/home/XenityBuild/\"";
+			[[maybe_unused]] const int copyCacheResult = system(copyCacheCommand.c_str());
+		}
+
 		// Copy source code in the build folder
 		try
 		{
@@ -1059,6 +1066,14 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 	else
 	{
+		// Copy cache files
+		const std::string cacheFolder = params.tempPath + "docker_cache/";
+		fs::create_directories(cacheFolder);
+		const std::string copyCacheCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/\" \"" + cacheFolder + "\"";
+		[[maybe_unused]] const int copyCacheCommandResult = system(copyCacheCommand.c_str());
+
+		CompilerCache::UpdateCache(cacheFolder, params.buildPlatform.platform);
+
 		// Copy final file
 		std::string copyGameFileCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName + "\" \"" + params.exportPath + fileName + "\"";
 		if (params.buildPlatform.platform == Platform::P_PS3)

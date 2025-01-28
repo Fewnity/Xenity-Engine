@@ -25,7 +25,7 @@
 #include <editor/ui/menus/game_menu.h>
 #include <editor/plugin/plugin_manager.h>
 #include <editor/file_handler.h>
-#include <editor/compiler.h>
+#include <editor/compilation/compiler.h>
 #include <editor/gizmo.h>
 #include <editor/editor.h>
 #include <editor/ui/editor_ui.h>

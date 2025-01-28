@@ -129,7 +129,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
 					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
 				}
-				else if (element.vertexElement == VertexElements::COLOR)
+				else if (element.vertexElement == VertexElements::COLOR_4_FLOATS)
 				{
 					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
 					vertex[1] = EndianUtils::SwapEndian(vertex[1]);

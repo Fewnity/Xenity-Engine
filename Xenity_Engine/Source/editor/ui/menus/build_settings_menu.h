@@ -8,7 +8,7 @@
 
 #include "menu.h"
 
-#include <editor/compiler.h>
+#include <editor/compilation/compiler.h>
 #include <editor/platform_settings.h>
 
 #include <engine/platform.h>

@@ -39,7 +39,7 @@ public:
 	bool isDebugMode = false;
 	bool enableOnlineProfiler = false;
 	bool enableProfiler = false;
-
+	bool useCompilationCache = false; // Should be removed when the engine will be compiled as a static library
 protected:
 	Event<>* onChangeEvent = nullptr;
 };
@@ -59,6 +59,7 @@ public:
 		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage", true);
 		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage", true);
 		Reflective::AddVariable(reflectedVariables, previewImage, "previewImage", true);
+		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache", true);
 		return reflectedVariables;
 	}
 
@@ -86,6 +87,7 @@ public:
 		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage", true);
 		Reflective::AddVariable(reflectedVariables, startupImage, "startupImage", true);
 		Reflective::AddVariable(reflectedVariables, gameId, "gameId", true);
+		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache", true);
 		return reflectedVariables;
 	}
 
@@ -110,6 +112,7 @@ public:
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
 		//Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
+		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache", true);
 		return reflectedVariables;
 	}
 
