@@ -18,7 +18,7 @@
 #include <editor/ui/menus/main_bar_menu.h>
 #include <editor/ui/menus/scene_menu.h>
 #include <editor/ui/menus/bottom_bar_menu.h>
-#include <editor/compiler.h>
+#include <editor/compilation/compiler.h>
 #include <editor/command/command_manager.h>
 #include <editor/ui/editor_ui.h>
 #include <editor/update_checker.h>

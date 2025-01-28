@@ -9,7 +9,7 @@
 
 #include <Windows.h>
 
-#include <editor/compiler.h>
+#include <editor/compilation/compiler.h>
 
 #include <engine/debug/debug.h>
 #include <engine/file_system/directory.h>

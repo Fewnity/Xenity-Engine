@@ -8,7 +8,7 @@
 
 #include <imgui/imgui.h>
 
-#include <editor/compiler.h>
+#include <editor/compilation/compiler.h>
 
 CompilingMenu::~CompilingMenu()
 {
