@@ -34,6 +34,7 @@
 #include <engine/graphics/texture.h>
 #include <engine/constants.h>
 #include <engine/graphics/frame_limiter/frame_limiter.h>
+#include <engine/tools/benchmark.h>
 
 namespace fs = std::filesystem;
 
@@ -49,7 +50,7 @@ std::string  Compiler::compilerExecFileName = "";
 
 CompilationMethod Compiler::compilationMethod = CompilationMethod::MSVC;
 bool Compiler::isCompilationCancelled = false;
-
+CompilationTimings Compiler::timings;
 
 std::string MakePathAbsolute(const std::string& path, const std::string& root)
 {
@@ -131,8 +132,11 @@ CompileResult Compiler::Compile(CompilerParams params)
 		ProjectManager::projectSettings = projectSettingsCopy;
 	}
 
+	// Cook assets
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
+		Benchmark cookBenchmark;
+		cookBenchmark.Start();
 		CookSettings cookSettings;
 		cookSettings.exportPath = params.tempPath + "cooked_assets/";
 		cookSettings.assetPlatform = Application::PlatformToAssetPlatform(params.buildPlatform.platform);
@@ -146,6 +150,8 @@ CompileResult Compiler::Compile(CompilerParams params)
 			cookSettings.exportShadersOnly = false;
 		}
 		Cooker::CookAssets(cookSettings);
+		cookBenchmark.Stop();
+		timings.cookTime = cookBenchmark.GetMicroSeconds();
 	}
 
 	CleanDestinationFolder(params.exportPath);
@@ -360,6 +366,9 @@ bool Compiler::ExportProjectFiles(const std::string& exportPath)
 
 CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
+	Benchmark totalCompilationBenchmark;
+	totalCompilationBenchmark.Start();
+
 	if (exportPath == ProjectManager::GetProjectFolderPath())
 	{
 		Debug::PrintError("[Compiler::CompileGame] Export path is the same as the project path");
@@ -435,6 +444,11 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 		t.detach();
 	}
 
+	totalCompilationBenchmark.Stop();
+	timings.totalCompileTime = totalCompilationBenchmark.GetMicroSeconds();
+
+	PrintTimings();
+
 	return result;
 }
 
@@ -462,6 +476,16 @@ void Compiler::CleanDestinationFolder(const std::string& exportPath)
 		fs::remove(exportPath + "project_settings.json");
 	}
 	catch (const std::exception&) {}
+}
+
+void Compiler::PrintTimings()
+{
+	Debug::Print("Compilation timings:");
+	Debug::Print("Cooking time: " + std::to_string(timings.cookTime) + " us (" + std::to_string(timings.cookTime / 1000000.0f) + " s)");
+	Debug::Print("Docker preparation time: " + std::to_string(timings.prepareDockerTime) + " us" + " us (" + std::to_string(timings.prepareDockerTime / 1000000.0f) + " s)");
+	Debug::Print("Docker code compile time: " + std::to_string(timings.dockerCompileTime) + " us" + " us (" + std::to_string(timings.dockerCompileTime / 1000000.0f) + " s)");
+	Debug::Print("Docker shader compile time: " + std::to_string(timings.shaderCompileTime) + " us" + " us (" + std::to_string(timings.shaderCompileTime / 1000000.0f) + " s)");
+	Debug::Print("Total compile time: " + std::to_string(timings.totalCompileTime) + " us" + " us (" + std::to_string(timings.totalCompileTime / 1000000.0f) + " s)");
 }
 
 void Compiler::CompileGameThreaded(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
@@ -883,7 +907,8 @@ void Compiler::CancelCompilation()
 CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 {
 	compilationMethod = CompilationMethod::DOCKER;
-
+	Benchmark dockerPreparationBenchmark;
+	dockerPreparationBenchmark.Start();
 	DockerState state = CheckDockerState(nullptr);
 	if (state == DockerState::NOT_INSTALLED)
 	{
@@ -1035,9 +1060,17 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	{
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
 	}
+	dockerPreparationBenchmark.Stop();
+	timings.prepareDockerTime = dockerPreparationBenchmark.GetMicroSeconds();
 
+	Benchmark dockerCompilationBenchmark;
+	dockerCompilationBenchmark.Start();
+	// Start compilation
 	const std::string startCommand = "docker start -a XenityEngineBuild";
 	[[maybe_unused]] const int startResult = system(startCommand.c_str());
+	
+	dockerCompilationBenchmark.Stop();
+	timings.dockerCompileTime = dockerCompilationBenchmark.GetMicroSeconds();
 
 	if (isCompilationCancelled)
 	{
@@ -1057,7 +1090,6 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	{
 		fileName = "XenityBuild.self";
 	}
-
 
 	if (params.buildType == BuildType::BuildShaders)
 	{

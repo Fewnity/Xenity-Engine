@@ -62,6 +62,15 @@ ENUM(CompilationMethod,
 	DOCKER,
 	WSL);
 
+struct CompilationTimings 
+{
+	uint32_t totalCompileTime = 0;
+	uint32_t prepareDockerTime = 0;
+	uint32_t dockerCompileTime = 0;
+	uint32_t shaderCompileTime = 0;
+	uint32_t cookTime = 0;
+};
+
 struct CompilerParams
 {
 	// Build type
@@ -174,9 +183,11 @@ public:
 	}
 
 private:
+	static CompilationTimings timings;
 
 	static void DeleteTempFiles(const CompilerParams& params);
 	static void CleanDestinationFolder(const std::string& exportPath);
+	static void PrintTimings();
 
 	/**
 	* @brief Export all game's files into the build folder
