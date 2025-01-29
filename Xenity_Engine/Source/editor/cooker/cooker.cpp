@@ -400,11 +400,20 @@ void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo,
 		newHeight = textureResolutionInt;
 	}
 
-	//TODO do not resize if the texture is already at the correct size
-	unsigned char* resizedImageData = (unsigned char*)malloc(newWidth * newHeight * 4);
-	stbir_resize_uint8(imageData, width, height, 0, resizedImageData, newWidth, newHeight, 0, 4);
-	stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, resizedImageData, 0);
+	if (width != newWidth || height != newHeight)
+	{
+		//TODO do not resize if the texture is already at the correct size
+		unsigned char* resizedImageData = (unsigned char*)malloc(newWidth * newHeight * 4);
+		stbir_resize_uint8(imageData, width, height, 0, resizedImageData, newWidth, newHeight, 0, 4);
+		stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, resizedImageData, 0);
+		free(resizedImageData);
+		Debug::Print("Cook " + exportPath);
+	}
+	else 
+	{
+		std::filesystem::copy(texturePath, exportPath, std::filesystem::copy_options::overwrite_existing);
+		Debug::Print("Copy " + exportPath);
+	}
 
 	free(imageData);
-	free(resizedImageData);
 }
