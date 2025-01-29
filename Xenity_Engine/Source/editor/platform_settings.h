@@ -39,7 +39,7 @@ public:
 	bool isDebugMode = false;
 	bool enableOnlineProfiler = false;
 	bool enableProfiler = false;
-	bool useCompilationCache = false; // Should be removed when the engine will be compiled as a static library
+	bool useCompilationCache = true; // Should be removed when the engine will be compiled as a static library
 protected:
 	Event<>* onChangeEvent = nullptr;
 };
