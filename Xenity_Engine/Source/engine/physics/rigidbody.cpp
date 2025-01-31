@@ -16,6 +16,7 @@
 #include <engine/debug/stack_debug_object.h>
 
 #include "physics_manager.h"
+#include <glm/gtx/quaternion.hpp>
 
 RigidBody::RigidBody() : Component(false)
 {
@@ -339,7 +340,15 @@ void RigidBody::Tick()
 		// Use the same matrix but with the x inverted
 		glm::mat4 mat;
 		m_bulletRigidbody->getCenterOfMassTransform().getOpenGLMatrix((float*)&mat);
+
+		// Fix position
 		mat[3].x = -mat[3].x;
+
+		// Fix rotation
+		mat[0].y = -mat[0].y;
+		mat[0].z = -mat[0].z;
+		mat[1].x = -mat[1].x;
+		mat[2].x = -mat[2].x;
 
 		Transform& transform = *GetTransformRaw();
 		transform.SetTransformationMatrix(mat);

@@ -46,7 +46,9 @@ void Transform::SetTransformationMatrix(const glm::mat4& matrix)
 	m_position = Vector3(-pos.x, pos.y, pos.z);
 
 	const glm::quat rot = glm::quat_cast(matrix);
-	m_rotationQuaternion = Quaternion(rot.x, rot.y, rot.z, rot.w);
+	m_rotationQuaternion = Quaternion(rot.x, -rot.y, -rot.z, rot.w);
+	m_rotation = m_rotationQuaternion.ToEuler();
+	//m_rotationQuaternion = Quaternion(rot.x, -rot.y, -rot.z, rot.w);
 
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(m_scale.x, m_scale.y, m_scale.z));
 
