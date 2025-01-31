@@ -42,6 +42,10 @@ Add CI support
 Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
 Make the cooker multi-threaded
 Stop game build if shader compilation fails
+Add a way to create a hash from a file (and cross platform)
+Set functions as private in SceneManager
+Check async file system
+Remove duplicated code in file loading (create function in filereference?)
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
