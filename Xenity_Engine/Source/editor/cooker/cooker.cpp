@@ -39,6 +39,16 @@ void Cooker::CookAssets(const CookSettings& settings)
 	const size_t projectFolderPathLen = projectAssetFolder.size();
 	const std::set<uint64_t> fileToCookIds = ProjectManager::GetAllUsedFileByTheGame();
 
+	// Create all file references to avoid making them in the threads
+	for (uint64_t id : fileToCookIds)
+	{
+		const FileInfo* fileInfo = ProjectManager::GetFileById(id);
+		if (fileInfo)
+		{
+			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo->fileAndId.file);
+		}
+	}
+
 	// Cook all files
 	std::vector<std::thread> threads;
 
