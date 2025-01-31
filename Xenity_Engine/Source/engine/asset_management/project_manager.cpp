@@ -145,7 +145,7 @@ void ProjectManager::AddFilesToProjectFiles(std::vector<FileInfo>& projectFilesD
 	for (int i = 0; i < projectAssetFilesCount; i++)
 	{
 		FileInfo projectEngineFile;
-		projectEngineFile.file = projectAssetFiles[i];
+		projectEngineFile.fileAndId.file = projectAssetFiles[i];
 		projectEngineFile.isEngineAsset = isEngineAssets;
 		projectFilesDestination.push_back(projectEngineFile);
 	}
@@ -171,7 +171,7 @@ void ProjectManager::FindAllProjectFiles()
 	for (const auto& kv : projectFilesIds)
 	{
 		FileChange fileChange = FileChange();
-		fileChange.path = kv.second.file->GetPath();
+		fileChange.path = kv.second.fileAndId.file->GetPath();
 		oldProjectFilesIds[kv.first] = fileChange;
 	}
 #endif
@@ -186,7 +186,7 @@ void ProjectManager::FindAllProjectFiles()
 	// Fill projectFilesIds
 	for (const auto& kv : compatibleFiles)
 	{
-		projectFilesIds[kv.file->GetUniqueId()] = kv;
+		projectFilesIds[kv.fileAndId.id] = kv;
 	}
 	compatibleFiles.clear();
 
@@ -199,7 +199,7 @@ void ProjectManager::FindAllProjectFiles()
 		{
 			FileChange& fileChange = oldProjectFilesIds[kv.first];
 			fileChange.hasBeenDeleted = false;
-			if (fileChange.path != kv.second.file->GetPath())
+			if (fileChange.path != kv.second.fileAndId.file->GetPath())
 			{
 				fileChange.hasChanged = true;
 			}
@@ -211,7 +211,7 @@ void ProjectManager::FindAllProjectFiles()
 	{
 		if (kv.second.hasChanged)
 		{
-			GetFileReferenceById(kv.first)->m_file = projectFilesIds[kv.first].file;
+			GetFileReferenceById(kv.first)->m_file = projectFilesIds[kv.first].fileAndId.file;
 		}
 		else if (kv.second.hasBeenDeleted)
 		{
@@ -330,7 +330,7 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 	for (const auto& kv : ProjectManager::projectFilesIds)
 	{
 		// Check if this file is in this folder
-		if (_projectDirectory.path == kv.second.file->GetFolderPath())
+		if (_projectDirectory.path == kv.second.fileAndId.file->GetFolderPath())
 		{
 			projFileVector.push_back(ProjectManager::GetFileReferenceById(kv.first));
 		}
@@ -649,8 +649,8 @@ std::set<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	// Add all used files in scenes
 	for (size_t i = 0; i < sceneCount; i++)
 	{
-		ids.insert(sceneFiles[i].file->GetUniqueId());
-		const std::shared_ptr<File> jsonFile = sceneFiles[i].file;
+		ids.insert(sceneFiles[i].fileAndId.id);
+		const std::shared_ptr<File> jsonFile = sceneFiles[i].fileAndId.file;
 		const bool isOpen = jsonFile->Open(FileMode::ReadOnly);
 		if (isOpen)
 		{
@@ -734,7 +734,7 @@ std::set<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 					}
 					else
 					{
-						Debug::PrintError("[ProjectManager::GetAllUsedFileByTheGame] File reference not found, please try re-save the scene: " + sceneFiles[i].file->GetFileName(), true);
+						Debug::PrintError("[ProjectManager::GetAllUsedFileByTheGame] File reference not found, please try re-save the scene: " + sceneFiles[i].fileAndId.file->GetFileName(), true);
 					}
 				}
 			}
@@ -792,10 +792,10 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	const int fileRefCount = AssetManager::GetFileReferenceCount();
 	for (int i = 0; i < fileRefCount; i++)
 	{
-		std::shared_ptr<FileReference> tempFileRef = AssetManager::GetFileReference(i);
+		const std::shared_ptr<FileReference>& tempFileRef = AssetManager::GetFileReference(i);
 		if (tempFileRef->m_fileId == id)
 		{
-			fileRef = std::move(tempFileRef);
+			fileRef = tempFileRef;
 			break;
 		}
 	}
@@ -812,7 +812,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	return fileRef;
 }
 
-std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(File& file)
+std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFile(const File& file)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
@@ -838,7 +838,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const 
 	uint64_t fileId = -1;
 	for (const auto& kv : projectFilesIds)
 	{
-		if (kv.second.file->GetPath() == filePathFixed)
+		if (kv.second.fileAndId.file->GetPath() == filePathFixed)
 		{
 			fileId = kv.first;
 			break;
@@ -1154,7 +1154,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInf
 #if defined(EDITOR)
 		fileRef->m_fileId = id;
 #endif
-		fileRef->m_file = fileInfo.file;
+		fileRef->m_file = fileInfo.fileAndId.file;
 		fileRef->m_fileType = fileInfo.type;
 		LoadMetaFile(*fileRef);
 #if defined(EDITOR)
@@ -1208,7 +1208,7 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 			}
 		}
 
-		fileReference.m_file->SetUniqueId(metaData["id"]);
+		//fileReference.m_file->SetUniqueId(metaData["id"]);
 		fileReference.m_fileId = metaData["id"];
 	}
 	else
@@ -1275,14 +1275,14 @@ std::vector<FileInfo> ProjectManager::GetCompatibleFiles()
 	const size_t fileCount = projectFiles.size();
 	for (size_t i = 0; i < fileCount; i++)
 	{
-		const std::shared_ptr<File> file = projectFiles[i].file;
-		const FileType fileType = GetFileType(file->GetFileExtension());
+		const FileInfo& file = projectFiles[i];
+		const FileType fileType = GetFileType(file.fileAndId.file->GetFileExtension());
 
 		// If the file is supported, add it to the list
 		if (fileType != FileType::File_Other)
 		{
 			FileInfo compatibleFile;
-			compatibleFile.file = file;
+			compatibleFile.fileAndId = file.fileAndId;
 			compatibleFile.isEngineAsset = projectFiles[i].isEngineAsset;
 			compatibleFile.type = fileType;
 			compatibleFiles.push_back(compatibleFile);
@@ -1294,8 +1294,8 @@ std::vector<FileInfo> ProjectManager::GetCompatibleFiles()
 	for (const auto& f : fileDataBase.GetFileList())
 	{
 		FileInfo compatibleFile;
-		compatibleFile.file = FileSystem::MakeFile(f->p);
-		compatibleFile.file->SetUniqueId(f->id);
+		compatibleFile.fileAndId.file = FileSystem::MakeFile(f->p);
+		compatibleFile.fileAndId.id = f->id;
 		compatibleFile.isEngineAsset = false; // Not used when not in editor
 		compatibleFile.type = f->t;
 		compatibleFile.filePos = f->po;
@@ -1310,20 +1310,20 @@ std::vector<FileInfo> ProjectManager::GetCompatibleFiles()
 	return compatibleFiles;
 }
 
-void ProjectManager::CheckAndGenerateFileIds(const std::vector<FileInfo>& compatibleFiles)
+void ProjectManager::CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFiles)
 {
 	// Read meta files and list all files that do not have a meta file for later use
 #if defined(EDITOR)
 	std::unordered_map<uint64_t, bool> usedIds;
-	std::vector<std::shared_ptr<File>> fileWithoutMeta;
+	std::vector<FileInfo*> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
-	for (const auto& compatibleFile : compatibleFiles)
+	for (auto& compatibleFile : compatibleFiles)
 	{
-		const std::shared_ptr<File>& file = compatibleFile.file;
+		const std::shared_ptr<File>& file = compatibleFile.fileAndId.file;
 		const uint64_t fileId = ReadFileId(*file);
 		if (fileId == -1)
 		{
-			fileWithoutMeta.push_back(file);
+			fileWithoutMeta.push_back(&compatibleFile);
 			fileWithoutMetaCount++;
 		}
 		else
@@ -1332,14 +1332,15 @@ void ProjectManager::CheckAndGenerateFileIds(const std::vector<FileInfo>& compat
 				//if (usedIds[id] == true)
 			{
 				Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
-				fileWithoutMeta.push_back(file);
+				fileWithoutMeta.push_back(&compatibleFile);
 				fileWithoutMetaCount++;
 				continue;
 			}
 
 			usedIds[fileId] = true;
 
-			file->SetUniqueId(fileId);
+			//file->SetUniqueId(fileId);
+			compatibleFile.fileAndId.id = fileId;
 		}
 	}
 	usedIds.clear();
@@ -1348,7 +1349,8 @@ void ProjectManager::CheckAndGenerateFileIds(const std::vector<FileInfo>& compat
 	for (int i = 0; i < fileWithoutMetaCount; i++)
 	{
 		const uint64_t id = UniqueId::GenerateUniqueId(true);
-		fileWithoutMeta[i]->SetUniqueId(id);
+		fileWithoutMeta[i]->fileAndId.id = id;
+		//fileWithoutMeta[i]->SetUniqueId(id);
 	}
 #endif
 }

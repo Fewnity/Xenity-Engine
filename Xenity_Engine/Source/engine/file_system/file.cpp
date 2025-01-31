@@ -9,7 +9,7 @@
 #include <engine/assertions/assertions.h>
 #include "file_system.h"
 
-File::File(const std::string& _path) : UniqueId(true)
+File::File(const std::string& _path)
 {
 
 	XASSERT(!_path.empty(), "[File::File] _path is nullptr");

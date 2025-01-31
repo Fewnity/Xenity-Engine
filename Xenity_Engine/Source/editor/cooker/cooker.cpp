@@ -48,21 +48,21 @@ void Cooker::CookAssets(const CookSettings& settings)
 		if (fileInfo)
 		{
 			std::string newPath;
-			if (fileInfo->file->GetPath()[0] == '.')
+			if (fileInfo->fileAndId.file->GetPath()[0] == '.')
 			{
-				newPath = fileInfo->file->GetPath().substr(2);
+				newPath = fileInfo->fileAndId.file->GetPath().substr(2);
 			}
 			else
 			{
-				newPath = fileInfo->file->GetPath().substr(projectFolderPathLen, fileInfo->file->GetPath().size() - projectFolderPathLen);
+				newPath = fileInfo->fileAndId.file->GetPath().substr(projectFolderPathLen, fileInfo->fileAndId.file->GetPath().size() - projectFolderPathLen);
 			}
 
 			// Create the destination folder for the file
 			std::string folderToCreate = (settings.exportPath + newPath);
 			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of('/'));
 			fs::create_directories(folderToCreate);
+
 			threads.emplace_back(&Cooker::CookAsset, settings, *fileInfo, folderToCreate, newPath);
-			//CookAsset(settings, *fileInfo, folderToCreate, newPath);
 		}
 	}
 
@@ -87,7 +87,7 @@ void Cooker::CookAssets(const CookSettings& settings)
 //void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
 void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, const std::string exportFolderPath, const std::string partialFilePath)
 {
-	const std::string exportPath = exportFolderPath + "/" + fileInfo.file->GetFileName() + fileInfo.file->GetFileExtension();
+	const std::string exportPath = exportFolderPath + "/" + fileInfo.fileAndId.file->GetFileName() + fileInfo.fileAndId.file->GetFileExtension();
 
 	if (fileInfo.type != FileType::File_Shader && settings.exportShadersOnly)
 	{
@@ -110,17 +110,17 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 	else // If file can't be cooked, just copy it
 	{
 		copyMutex.lock();
-		CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
+		CopyUtils::AddCopyEntry(false, fileInfo.fileAndId.file->GetPath(), exportPath);
 		copyMutex.unlock();
 	}
 
 	copyMutex.lock();
 	// Copy the raw meta file, maybe we should cook it too later
-	CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath() + ".meta", exportPath + ".meta");
+	CopyUtils::AddCopyEntry(false, fileInfo.fileAndId.file->GetPath() + ".meta", exportPath + ".meta");
 	CopyUtils::ExecuteCopyEntries();
 	copyMutex.unlock();
 
-	const uint64_t metaSize = fs::file_size(fileInfo.file->GetPath() + ".meta");
+	const uint64_t metaSize = fs::file_size(fileInfo.fileAndId.file->GetPath() + ".meta");
 	uint64_t cookedFileSize = 0;
 
 	// Do not include audio in the binary file
@@ -173,7 +173,7 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 
 	FileDataBaseEntry* fileDataBaseEntry = new FileDataBaseEntry();
 	fileDataBaseEntry->p = partialFilePath; // Path
-	fileDataBaseEntry->id = fileInfo.file->GetUniqueId(); // Unique id
+	fileDataBaseEntry->id = fileInfo.fileAndId.id; // Unique id
 	fileDataBaseEntry->po = dataOffset; // Position in the binary file in byte
 	fileDataBaseEntry->s = cookedFileSize; // Size in byte
 	fileDataBaseEntry->mpo = metaDataOffset; // Meta position in the binary file in byte
@@ -187,11 +187,11 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 
 void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath)
 {
-	const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+	const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.fileAndId.file);
 
 	// Load mesh data
 	MeshData meshData = MeshData();
-	meshData.m_file = fileInfo.file;
+	meshData.m_file = fileInfo.fileAndId.file;
 	FileReference::LoadOptions loadOptions;
 	loadOptions.platform = settings.platform;
 	loadOptions.threaded = false;
@@ -255,7 +255,7 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 			char* newMeshData = new char[newVertexMemSize];
 
 			// Simply copy the data to the new buffer or convert it
-			for (int i = 0; i < subMesh->vertice_count; i++)
+			for (uint32_t i = 0; i < subMesh->vertice_count; i++)
 			{
 				if (subMesh->m_vertexDescriptor.m_uvIndex != -1)
 				{
@@ -320,7 +320,7 @@ void Cooker::CookShader(const CookSettings& settings, const FileInfo& fileInfo, 
 				std::filesystem::create_directories(settings.exportPath + "shaders_to_compile/");
 			}
 
-			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.fileAndId.file);
 			const std::shared_ptr<Shader> shader = std::dynamic_pointer_cast<Shader>(fileRef);
 
 			const std::string vertexShaderCode = shader->GetShaderCode(Shader::ShaderType::Vertex_Shader, Platform::P_PS3);
@@ -328,7 +328,7 @@ void Cooker::CookShader(const CookSettings& settings, const FileInfo& fileInfo, 
 
 			if (vertexShaderCode.empty() || fragmentShaderCode.empty())
 			{
-				Debug::PrintError("[Cooker::CookAsset] Failed to get shader code for shader: " + fileInfo.file->GetPath());
+				Debug::PrintError("[Cooker::CookAsset] Failed to get shader code for shader: " + fileInfo.fileAndId.file->GetPath());
 				return;
 			}
 
@@ -342,12 +342,12 @@ void Cooker::CookShader(const CookSettings& settings, const FileInfo& fileInfo, 
 			fragmentFile->Write(fragmentShaderCode);
 			fragmentFile->Close();
 			copyMutex.lock();
-			CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
+			CopyUtils::AddCopyEntry(false, fileInfo.fileAndId.file->GetPath(), exportPath);
 			copyMutex.unlock();
 		}
 		else
 		{
-			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.fileAndId.file);
 
 			std::string projetPath = ProjectManager::GetProjectFolderPath();
 			std::string vertexShaderCodePath = projetPath + ".shaders_build/cooked_assets/shaders_to_compile/" + std::to_string(fileRef->GetFileId()) + ".vco";
@@ -396,16 +396,16 @@ void Cooker::CookShader(const CookSettings& settings, const FileInfo& fileInfo, 
 	else
 	{
 		copyMutex.lock();
-		CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
+		CopyUtils::AddCopyEntry(false, fileInfo.fileAndId.file->GetPath(), exportPath);
 		copyMutex.unlock();
 	}
 }
 
 void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath)
 {
-	const std::string texturePath = fileInfo.file->GetPath();
+	const std::string texturePath = fileInfo.fileAndId.file->GetPath();
 
-	const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
+	const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.fileAndId.file);
 	const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
 	if (texture->GetFileStatus() != FileStatus::FileStatus_Loaded)
 	{
@@ -449,13 +449,12 @@ void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo,
 			return;
 		}
 
-		//TODO do not resize if the texture is already at the correct size
 		unsigned char* resizedImageData = (unsigned char*)malloc(newWidth * newHeight * 4);
 		stbir_resize_uint8(imageData, width, height, 0, resizedImageData, newWidth, newHeight, 0, 4);
+		free(imageData);
+
 		stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, resizedImageData, 0);
 		free(resizedImageData);
-
-		free(imageData);
 	}
 	else
 	{

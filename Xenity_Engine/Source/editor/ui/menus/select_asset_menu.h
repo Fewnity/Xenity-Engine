@@ -80,7 +80,7 @@ public:
 		// Load all files and check if they match the search buffer
 		for (size_t i = 0; i < fileCount; i++)
 		{
-			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(projectFiles[i].file->GetUniqueId());
+			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(projectFiles[i].fileAndId.id);
 			// Filter files by user search
 			if (!searchBuffer.empty())
 			{

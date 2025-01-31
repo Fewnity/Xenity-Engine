@@ -25,7 +25,7 @@ enum class FileMode
 /**
 * Class to manage a file (Create, open, read, write)
 */
-class API File : public UniqueId, public std::enable_shared_from_this<File>
+class API File : public std::enable_shared_from_this<File>
 {
 public:
 	File() = delete;

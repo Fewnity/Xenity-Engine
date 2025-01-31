@@ -55,9 +55,15 @@ public:
 	uint64_t uniqueId = 0;
 };
 
-struct FileInfo
+struct FileAndId
 {
 	std::shared_ptr<File> file;
+	uint64_t id = 0;
+};
+
+struct FileInfo
+{
+	FileAndId fileAndId;
 
 	// File position/size in the binary file
 	uint64_t filePos = 0;
@@ -133,7 +139,7 @@ public:
 	* @param file File
 	* @return File reference (nullptr if not found)
 	*/
-	static std::shared_ptr<FileReference> GetFileReferenceByFile(File& file);
+	static std::shared_ptr<FileReference> GetFileReferenceByFile(const File& file);
 
 	/**
 	* @brief Get file reference by file path (does not load the file reference)
@@ -371,7 +377,7 @@ private:
 
 	static std::vector<FileInfo> GetCompatibleFiles();
 
-	static void CheckAndGenerateFileIds(const std::vector<FileInfo>& compatibleFiles);
+	static void CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFiles);
 
 	static std::shared_ptr<ProjectDirectory> projectDirectory;
 	static std::unordered_map<uint64_t, FileInfo> projectFilesIds;
