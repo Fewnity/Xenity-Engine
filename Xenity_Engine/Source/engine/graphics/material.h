@@ -139,6 +139,7 @@ protected:
 
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 	static std::shared_ptr<Material> MakeMaterial();
+	std::vector<uint64_t> GetUsedFilesIds();
 
 	/**
 	* @brief Update the material

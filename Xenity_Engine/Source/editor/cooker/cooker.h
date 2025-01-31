@@ -24,7 +24,8 @@ public:
 
 private:
 	static FileDataBase fileDataBase;
-	static void CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath);
+	
+	static void CookAsset(const CookSettings settings, const FileInfo fileInfo, const std::string exportFolderPath, const std::string partialFilePath);
 
 	static void CookMesh(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath);
 	static void CookShader(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath);

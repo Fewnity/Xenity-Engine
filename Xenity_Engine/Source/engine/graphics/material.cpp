@@ -118,6 +118,48 @@ std::shared_ptr<Material> Material::MakeMaterial()
 	return newFileRef;
 }
 
+std::vector<uint64_t> Material::GetUsedFilesIds()
+{
+	std::vector<uint64_t> usedFilesIds;
+	bool loadResult = true;
+#if defined(EDITOR)
+	loadResult = m_file->Open(FileMode::ReadOnly);
+#endif
+	if (loadResult)
+	{
+		std::string jsonString;
+#if defined(EDITOR)
+		jsonString = m_file->ReadAll();
+		m_file->Close();
+#else
+		unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
+		jsonString = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
+		free(binData);
+#endif
+
+		json j;
+		try
+		{
+			j = json::parse(jsonString);
+			if (j.contains("Values"))
+			{
+				if (j["Values"].contains("texture"))
+				{
+					usedFilesIds.push_back(j["Values"]["texture"]);
+				}
+				if (j["Values"].contains("shader"))
+				{
+					usedFilesIds.push_back(j["Values"]["shader"]);
+				}
+			}
+		}
+		catch (const std::exception&)
+		{				
+		}
+	}
+	return usedFilesIds;
+}
+
 #pragma endregion
 
 /// <summary>

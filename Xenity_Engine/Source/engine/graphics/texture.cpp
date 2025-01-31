@@ -85,7 +85,7 @@ void Texture::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 #if defined(EDITOR)
-	if(previousResolution != GetCookResolution() && m_fileStatus == FileStatus::FileStatus_Loaded && isValid)
+	if (previousResolution != GetCookResolution() && m_fileStatus == FileStatus::FileStatus_Loaded && isValid)
 	{
 		previousResolution = GetCookResolution();
 		UnloadFileReference();
@@ -122,10 +122,17 @@ void Texture::LoadFileReference(const LoadOptions& loadOptions)
 		m_fileStatus = FileStatus::FileStatus_Loading;
 
 #if defined(EDITOR)
-		AsyncFileLoading::AddFile(shared_from_this());
-
-		std::thread threadLoading = std::thread(&Texture::CreateTexture, this, GetFilter(), GetUseMipmap());
-		threadLoading.detach();
+		if (!loadOptions.threaded)
+		{
+			CreateTexture(GetFilter(), GetUseMipmap());
+			OnLoadFileReferenceFinished();
+		}
+		else
+		{
+			AsyncFileLoading::AddFile(shared_from_this());
+			std::thread threadLoading = std::thread(&Texture::CreateTexture, this, GetFilter(), GetUseMipmap());
+			threadLoading.detach();
+		}
 #else
 		CreateTexture(GetFilter(), GetUseMipmap());
 		OnLoadFileReferenceFinished();
@@ -179,7 +186,7 @@ void Texture::CreateTexture(const Filter filter, const bool useMipMap)
 void Texture::LoadTexture()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-	
+
 	bool openResult = true;
 #if defined(EDITOR)
 	openResult = m_file->Open(FileMode::ReadOnly);
@@ -199,17 +206,21 @@ void Texture::LoadTexture()
 #if defined(EDITOR)
 		// Load image with stb_image
 		unsigned char* data2 = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &m_width, &height,
-									   &nrChannels, 4);
+			&nrChannels, 4);
 		free(fileData);
+
+		m_originalWidth = m_width;
+		m_originalHeight = height;
+
 		int newWidth = m_width;
 		int newHeight = height;
 		const int cookResolution = static_cast<int>(GetCookResolution());
-		if((newWidth > height) && newWidth > cookResolution)
+		if ((newWidth > height) && newWidth > cookResolution)
 		{
 			newHeight = static_cast<int>(height * (static_cast<float>(GetCookResolution()) / static_cast<float>(m_width)));
 			newWidth = cookResolution;
 		}
-		else if((newHeight > m_width) && newHeight > cookResolution)
+		else if ((newHeight > m_width) && newHeight > cookResolution)
 		{
 			newWidth = static_cast<int>(m_width * (static_cast<float>(GetCookResolution()) / static_cast<float>(height)));
 			newHeight = cookResolution;

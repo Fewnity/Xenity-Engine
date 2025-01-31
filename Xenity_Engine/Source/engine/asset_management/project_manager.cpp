@@ -657,12 +657,42 @@ std::set<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 			const std::string jsonString = jsonFile->ReadAll();
 			jsonFile->Close();
 
+			size_t jsonStringSize = jsonString.size();
 			try
 			{
 				json data;
 				if (!jsonString.empty())
 				{
-					data = json::parse(jsonString);
+					const size_t sceneDataPosition = SceneManager::FindSceneDataPosition(jsonString);
+					//size_t sceneDataPosition = jsonString.find(std::string("\"Version\""));
+					bool foundSceneDataPosition = false;
+					size_t bracketCount = 0;
+					size_t charI = 0;
+					while (!foundSceneDataPosition)
+					{
+						if (charI == jsonStringSize)
+						{
+							break;
+						}
+						if (jsonString[charI] == '{')
+						{
+							bracketCount++;
+						}
+						else if (jsonString[charI] == '}')
+						{
+							bracketCount--;
+							if (bracketCount == 0)
+							{
+								foundSceneDataPosition = true;
+								charI += 2;
+								break;
+							}
+						}
+						charI++;
+					}
+					std::string usedFilesStr = jsonString.substr(0, charI);
+					data = json::parse(usedFilesStr);
+					//data = json::parse(jsonString);
 				}
 
 				for (const auto& idKv : data["UsedFiles"]["Values"].items())
@@ -670,12 +700,36 @@ std::set<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 					const std::shared_ptr<FileReference> fileRef = GetFileReferenceById(idKv.value());
 					if (fileRef)
 					{
-						FileReference::LoadOptions options;
-						options.threaded = false;
-						options.platform = Application::GetPlatform();
+						// List all files used by the found file
+						// (except types that we are sure that they are not using other files)
+						if (fileRef->GetFileType() != FileType::File_Texture &&
+							fileRef->GetFileType() != FileType::File_Mesh &&
+							fileRef->GetFileType() != FileType::File_Code &&
+							fileRef->GetFileType() != FileType::File_Header &&
+							fileRef->GetFileType() != FileType::File_Font &&
+							fileRef->GetFileType() != FileType::File_Shader &&
+							fileRef->GetFileType() != FileType::File_Icon &&
+							fileRef->GetFileType() != FileType::File_Audio)
+						{
+							if (fileRef->GetFileType() == FileType::File_Material)
+							{
+								std::shared_ptr<Material> material = std::dynamic_pointer_cast<Material>(fileRef);
+								std::vector<uint64_t> materialsIds = material->GetUsedFilesIds();
+								for (const uint64_t id : materialsIds)
+								{
+									ids.insert(id);
+								}
+							}
+							else
+							{
+								FileReference::LoadOptions options;
+								options.threaded = false;
+								options.platform = Application::GetPlatform();
 
-						fileRef->LoadFileReference(options);
-						FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
+								fileRef->LoadFileReference(options);
+								FileReferenceFinder::GetUsedFilesInReflectiveData(ids, fileRef->GetReflectiveData());
+							}
+						}
 						ids.insert(static_cast<uint64_t>(idKv.value()));
 					}
 					else

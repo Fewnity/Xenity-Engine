@@ -49,6 +49,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 	// Use ordered json to keep gameobject's order
 	ordered_json j;
+	ordered_json usedFilesJson;
 
 	j["Version"] = s_sceneVersion;
 
@@ -118,7 +119,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	}
 
 	// Save the usedFilesIds list
-	j["UsedFiles"]["Values"] = usedFilesIds;
+	usedFilesJson["UsedFiles"]["Values"] = usedFilesIds;
 
 	if (saveType == SaveSceneType::SaveSceneForPlayState) // Save Scene in a temporary json to restore it after quitting play mode
 	{
@@ -149,7 +150,10 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 			const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			if (file->Open(FileMode::WriteCreateFile))
 			{
+				const std::string usedFilesJsonData = usedFilesJson.dump(2);
 				const std::string jsonData = j.dump(2);
+				file->Write(usedFilesJsonData);
+				file->Write("\n");
 				file->Write(jsonData);
 				file->Close();
 				ProjectManager::RefreshProjectDirectory();
@@ -164,6 +168,37 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 }
 
 #endif
+
+size_t SceneManager::FindSceneDataPosition(const std::string& jsonString)
+{
+	size_t bracketCount = 0;
+	size_t charI = 0;
+	size_t jsonStringSize = jsonString.size();
+	while (true)
+	{
+		if (charI == jsonStringSize)
+		{
+			charI = -1;
+			break;
+		}
+		if (jsonString[charI] == '{')
+		{
+			bracketCount++;
+		}
+		else if (jsonString[charI] == '}')
+		{
+			bracketCount--;
+			if (bracketCount == 0)
+			{
+				charI += 2;
+				break;
+			}
+		}
+		charI++;
+	}
+
+	return charI;
+}
 
 void SceneManager::ReloadScene()
 {
@@ -300,7 +335,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 						allComponents.push_back(comp);
 						comp->SetUniqueId(compId);
 					}
-					else 
+					else
 					{
 #if defined(EDITOR)
 						XASSERT(false, "[SceneManager::LoadScene] Missing script not created!");
@@ -426,7 +461,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 	{
 		GameplayManager::SetGameState(GameState::Playing, true);
 	}
-//#endif
+	//#endif
 }
 
 void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
@@ -464,7 +499,12 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 			ordered_json data;
 			if (!jsonString.empty())
 			{
-				data = ordered_json::parse(jsonString);
+				const size_t sceneDataPosition = FindSceneDataPosition(jsonString);
+				if (sceneDataPosition != -1)
+				{
+					const std::string sceneStr = jsonString.substr(sceneDataPosition);
+					data = ordered_json::parse(sceneStr);
+				}
 			}
 			LoadScene(data);
 			s_openedScene = scene;

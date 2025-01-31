@@ -40,7 +40,9 @@ public:
 	* @param saveType If SaveSceneToFile, save scene as a file; If SaveSceneForPlayState/SaveSceneForHotReloading, save scene as a backup to reload it later
 	*/
 	static void SaveScene(SaveSceneType saveType);
+
 #endif
+	static size_t FindSceneDataPosition(const std::string& jsonString);
 
 	static void ReloadScene();
 

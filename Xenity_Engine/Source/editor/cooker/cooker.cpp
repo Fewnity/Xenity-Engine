@@ -17,6 +17,7 @@
 #include <engine/graphics/shader.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/debug/debug.h>
+#include <mutex>
 
 namespace fs = std::filesystem;
 
@@ -24,6 +25,9 @@ namespace fs = std::filesystem;
 
 FileDataBase Cooker::fileDataBase;
 using ordered_json = nlohmann::ordered_json;
+
+std::mutex dataBaseMutex;
+std::mutex copyMutex;
 
 void Cooker::CookAssets(const CookSettings& settings)
 {
@@ -36,6 +40,8 @@ void Cooker::CookAssets(const CookSettings& settings)
 	const std::set<uint64_t> fileToCookIds = ProjectManager::GetAllUsedFileByTheGame();
 
 	// Cook all files
+	std::vector<std::thread> threads;
+
 	for (uint64_t id : fileToCookIds)
 	{
 		const FileInfo* fileInfo = ProjectManager::GetFileById(id);
@@ -55,9 +61,15 @@ void Cooker::CookAssets(const CookSettings& settings)
 			std::string folderToCreate = (settings.exportPath + newPath);
 			folderToCreate = folderToCreate.substr(0, folderToCreate.find_last_of('/'));
 			fs::create_directories(folderToCreate);
-
-			CookAsset(settings, *fileInfo, folderToCreate, newPath);
+			threads.emplace_back(&Cooker::CookAsset, settings, *fileInfo, folderToCreate, newPath);
+			//CookAsset(settings, *fileInfo, folderToCreate, newPath);
 		}
+	}
+
+	// Wait for all threads to finish
+	for (std::thread& thread : threads)
+	{
+		thread.join();
 	}
 
 	// Check the integrity of the data base
@@ -72,7 +84,8 @@ void Cooker::CookAssets(const CookSettings& settings)
 	fileDataBase.GetBitFile().Close();
 }
 
-void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
+//void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
+void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, const std::string exportFolderPath, const std::string partialFilePath)
 {
 	const std::string exportPath = exportFolderPath + "/" + fileInfo.file->GetFileName() + fileInfo.file->GetFileExtension();
 
@@ -96,28 +109,33 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	}
 	else // If file can't be cooked, just copy it
 	{
+		copyMutex.lock();
 		CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
+		copyMutex.unlock();
 	}
 
+	copyMutex.lock();
 	// Copy the raw meta file, maybe we should cook it too later
 	CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath() + ".meta", exportPath + ".meta");
-	const uint64_t metaSize = fs::file_size(fileInfo.file->GetPath() + ".meta");
-
 	CopyUtils::ExecuteCopyEntries();
+	copyMutex.unlock();
 
-	const uint64_t cookedFileSize = fs::file_size(exportPath.c_str());
+	const uint64_t metaSize = fs::file_size(fileInfo.file->GetPath() + ".meta");
+	uint64_t cookedFileSize = 0;
 
 	// Do not include audio in the binary file
 	size_t dataOffset = 0;
+	unsigned char* fileData = nullptr;
+	unsigned char* metaFileData = nullptr;
 	if (fileInfo.type != FileType::File_Audio)
 	{
+		cookedFileSize = fs::file_size(exportPath.c_str());
+
 		const std::shared_ptr<File> cookedFile = FileSystem::MakeFile(exportPath);
 		size_t cookedFileSizeOut;
 		cookedFile->Open(FileMode::ReadOnly);
-		unsigned char* fileData = cookedFile->ReadAllBinary(cookedFileSizeOut);
+		fileData = cookedFile->ReadAllBinary(cookedFileSizeOut);
 		cookedFile->Close();
-		dataOffset = fileDataBase.GetBitFile().AddData(fileData, cookedFileSize);
-		delete[] fileData;
 		FileSystem::s_fileSystem->Delete(exportPath);
 	}
 
@@ -128,17 +146,30 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	bool cookedMetaOpen = cookedMetaFile->Open(FileMode::ReadOnly);
 	if (cookedMetaOpen)
 	{
-		unsigned char* metaFileData = cookedMetaFile->ReadAllBinary(cookedMetaFileSizeOut);
+		metaFileData = cookedMetaFile->ReadAllBinary(cookedMetaFileSizeOut);
 		cookedMetaFile->Close();
-		metaDataOffset = fileDataBase.GetBitFile().AddData(metaFileData, cookedMetaFileSizeOut);
-		delete[] metaFileData;
 	}
 	else
 	{
 		Debug::PrintError("[Cooker::CookAsset] Failed to open meta file: " + exportPath + ".meta");
+
+		delete[] fileData;
 		return;
 	}
 	FileSystem::s_fileSystem->Delete(exportPath + ".meta");
+
+	dataBaseMutex.lock();
+
+	if (fileData)
+	{
+		dataOffset = fileDataBase.GetBitFile().AddData(fileData, cookedFileSize);
+		delete[] fileData;
+	}
+	if (metaFileData)
+	{
+		metaDataOffset = fileDataBase.GetBitFile().AddData(metaFileData, cookedMetaFileSizeOut);
+		delete[] metaFileData;
+	}
 
 	FileDataBaseEntry* fileDataBaseEntry = new FileDataBaseEntry();
 	fileDataBaseEntry->p = partialFilePath; // Path
@@ -150,6 +181,8 @@ void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, c
 	fileDataBaseEntry->t = fileInfo.type; // Type
 
 	fileDataBase.AddFile(fileDataBaseEntry);
+	dataBaseMutex.unlock();
+
 }
 
 void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath)
@@ -308,8 +341,9 @@ void Cooker::CookShader(const CookSettings& settings, const FileInfo& fileInfo, 
 			fragmentFile->Open(FileMode::WriteCreateFile);
 			fragmentFile->Write(fragmentShaderCode);
 			fragmentFile->Close();
-
+			copyMutex.lock();
 			CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
+			copyMutex.unlock();
 		}
 		else
 		{
@@ -361,7 +395,9 @@ void Cooker::CookShader(const CookSettings& settings, const FileInfo& fileInfo, 
 	}
 	else
 	{
+		copyMutex.lock();
 		CopyUtils::AddCopyEntry(false, fileInfo.file->GetPath(), exportPath);
+		copyMutex.unlock();
 	}
 }
 
@@ -369,29 +405,31 @@ void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo,
 {
 	const std::string texturePath = fileInfo.file->GetPath();
 
-	int width, height, channels;
-	unsigned char* imageData = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
-	if (!imageData)
-	{
-		Debug::PrintError("[Cooker::CookAsset] Failed to load texture: " + texturePath);
-		return;
-	}
-
 	const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.file);
 	const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
-	TextureResolutions textureResolution = texture->m_settings[settings.assetPlatform]->resolution;
+	if (texture->GetFileStatus() != FileStatus::FileStatus_Loaded)
+	{
+		FileReference::LoadOptions loadOptions;
+		loadOptions.platform = settings.platform;
+		loadOptions.threaded = false;
+		texture->LoadFileReference(loadOptions);
+	}
 
-	int newWidth = width;
-	int newHeight = height;
+	TextureResolutions textureResolution = texture->m_settings[settings.assetPlatform]->resolution;
+	int originalWidth = texture->m_originalWidth;
+	int originalHeight = texture->m_originalHeight;
+
+	int newWidth = originalWidth;
+	int newHeight = originalHeight;
 	const int textureResolutionInt = static_cast<int>(textureResolution);
-	if ((newWidth > height) && newWidth > textureResolutionInt)
+	if ((newWidth > originalHeight) && newWidth > textureResolutionInt)
 	{
 		newWidth = textureResolutionInt;
-		newHeight = static_cast<int>(height * (static_cast<float>(textureResolution) / static_cast<float>(width)));
+		newHeight = static_cast<int>(originalHeight * (static_cast<float>(textureResolution) / static_cast<float>(originalWidth)));
 	}
-	else if ((newHeight > width) && newHeight > textureResolutionInt)
+	else if ((newHeight > originalWidth) && newHeight > textureResolutionInt)
 	{
-		newWidth = static_cast<int>(width * (static_cast<float>(textureResolution) / static_cast<float>(height)));
+		newWidth = static_cast<int>(originalWidth * (static_cast<float>(textureResolution) / static_cast<float>(originalHeight)));
 		newHeight = textureResolutionInt;
 	}
 	else if ((newWidth == newHeight) && newWidth > textureResolutionInt)
@@ -400,18 +438,27 @@ void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo,
 		newHeight = textureResolutionInt;
 	}
 
-	if (width != newWidth || height != newHeight)
+	if (originalWidth != newWidth || originalHeight != newHeight)
 	{
+		int width, height, channels;
+		unsigned char* imageData = nullptr;
+		imageData = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
+		if (!imageData)
+		{
+			Debug::PrintError("[Cooker::CookAsset] Failed to load texture: " + texturePath);
+			return;
+		}
+
 		//TODO do not resize if the texture is already at the correct size
 		unsigned char* resizedImageData = (unsigned char*)malloc(newWidth * newHeight * 4);
 		stbir_resize_uint8(imageData, width, height, 0, resizedImageData, newWidth, newHeight, 0, 4);
 		stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, resizedImageData, 0);
 		free(resizedImageData);
+
+		free(imageData);
 	}
-	else 
+	else
 	{
 		std::filesystem::copy(texturePath, exportPath, std::filesystem::copy_options::overwrite_existing);
 	}
-
-	free(imageData);
 }
