@@ -228,7 +228,7 @@ void EditorUI::LoadEditorIcon(IconName iconName, const std::string& path)
 	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
 	FileReference::LoadOptions loadOptions;
 	loadOptions.platform = Application::GetPlatform();
-	loadOptions.threaded = false;
+	loadOptions.threaded = true;
 	fileIcon->LoadFileReference(loadOptions);
 	icons[(int)iconName] = std::move(fileIcon);
 }
@@ -242,7 +242,7 @@ void EditorUI::LoadComponentIcon(std::string iconName, const std::string& path)
 	fileIcon->SetWrapMode(WrapMode::ClampToEdge);
 	FileReference::LoadOptions loadOptions;
 	loadOptions.platform = Application::GetPlatform();
-	loadOptions.threaded = false;
+	loadOptions.threaded = true;
 	fileIcon->LoadFileReference(loadOptions);
 	componentsIcons[iconName] = std::move(fileIcon);
 }

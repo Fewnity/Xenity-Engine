@@ -110,7 +110,7 @@ void Editor::Init()
 	toolArrowsTexture->SetFilter(Filter::Point);
 	FileReference::LoadOptions loadOptions;
 	loadOptions.platform = Application::GetPlatform();
-	loadOptions.threaded = false;
+	loadOptions.threaded = true;
 	toolArrowsTexture->LoadFileReference(loadOptions);
 
 	Engine::GetOnWindowFocusEvent()->Bind(&OnWindowFocused);
@@ -690,7 +690,7 @@ void Editor::SetCurrentProjectDirectory(const std::shared_ptr <ProjectDirectory>
 		const size_t itemCount = currentProjectDirectory->files.size();
 		FileReference::LoadOptions loadOptions;
 		loadOptions.platform = Application::GetPlatform();
-		loadOptions.threaded = false;
+		loadOptions.threaded = true;
 		for (size_t i = 0; i < itemCount; i++)
 		{
 			currentProjectDirectory->files[i]->LoadFileReference(loadOptions);

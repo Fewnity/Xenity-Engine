@@ -94,7 +94,7 @@ void AssetManager::OnProjectLoaded()
 
 	FileReference::LoadOptions loadOptions;
 	loadOptions.platform = Application::GetPlatform();
-	loadOptions.threaded = false;
+	loadOptions.threaded = true;
 
 	defaultTexture = AssetManager::LoadEngineAsset<Texture>("public_engine_assets/textures/default_texture.png");
 	XASSERT(defaultTexture != nullptr, "[AssetManager::OnProjectLoaded] Default Texture is null");
