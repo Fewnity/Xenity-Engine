@@ -4,6 +4,8 @@ folder="./shaders_to_compile"
 
 echo "Compile Shaders..."
 
+success=true
+
 for file in "$folder"/*; do
     # Check if it's a file
     if [ -f "$file" ]; then
@@ -28,5 +30,19 @@ for file in "$folder"/*; do
                 echo "Cannot compile this file : $file"
                 ;;
         esac
+
+        # Check if compilation was successful
+        if [ $? -ne 0 ]; then
+            echo "Compilation failed for: $file"
+            success=false
+        fi
     fi
 done
+
+# Exit with error if any shader failed to compile
+if [ "$success" = false ]; then
+    exit 1
+else
+    echo "All shaders compiled successfully."
+    exit 0
+fi

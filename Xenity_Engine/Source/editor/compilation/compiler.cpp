@@ -396,8 +396,14 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 		params.buildType = BuildType::BuildShaders;
 		params.tempPath = ProjectManager::GetProjectFolderPath() + ".shaders_build/";
 
-		// Compile
+		// Compile shaders
 		const CompileResult shaderResult = Compile(params);
+
+		if (shaderResult != CompileResult::SUCCESS)
+		{
+			DeleteTempFiles(params);
+			return shaderResult;
+		}
 	}
 
 	if (buildType == BuildType::BuildShadersAndGame)
@@ -406,7 +412,8 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 		params.tempPath = ProjectManager::GetProjectFolderPath() + ".build/";
 	}
 
-	// Compile
+
+	// Compile engine and game
 	const CompileResult result = Compile(params);
 
 	if (result != CompileResult::SUCCESS)
@@ -587,6 +594,9 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 	case CompileResult::ERROR_DOCKER_COMPILATION:
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on Docker (probably a C++ error)");
 		break;
+	case CompileResult::ERROR_DOCKER_SHADERS_COMPILATION:
+		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile shaders on Docker (error in shader code)");
+		break;
 	case CompileResult::ERROR_DOCKER_NOT_FOUND:
 		Debug::PrintError("[Compiler::OnCompileEnd] Unable to find Docker");
 		break;
@@ -609,7 +619,7 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 		break;
 	}
 
-	if (params.buildType != BuildType::BuildShaders)
+	if (params.buildType != BuildType::BuildShaders || result != CompileResult::SUCCESS)
 	{
 		OnCompilationEndedEvent.Trigger(params, result == CompileResult::SUCCESS);
 	}
@@ -1068,7 +1078,6 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	// Start compilation
 	const std::string startCommand = "docker start -a XenityEngineBuild";
 	[[maybe_unused]] const int startResult = system(startCommand.c_str());
-	
 	dockerCompilationBenchmark.Stop();
 	timings.dockerCompileTime = dockerCompilationBenchmark.GetMicroSeconds();
 
@@ -1093,6 +1102,11 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 
 	if (params.buildType == BuildType::BuildShaders)
 	{
+		if (startResult != 0)
+		{
+			return CompileResult::ERROR_DOCKER_SHADERS_COMPILATION;
+		}
+
 		const std::string copyCompiledShadersCommand = "docker cp XenityEngineBuild:\"/home/XenityBuild/shaders_to_compile/\" \"" + params.tempPath + "cooked_assets/" + "\"";
 		[[maybe_unused]] const int copyCompiledShadersCommandResult = system(copyCompiledShadersCommand.c_str());
 	}
@@ -1127,7 +1141,6 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 			return CompileResult::ERROR_DOCKER_COMPILATION;
 		}
 	}
-
 
 	return CompileResult::SUCCESS;
 }
