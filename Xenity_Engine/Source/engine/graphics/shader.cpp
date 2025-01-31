@@ -163,45 +163,15 @@ std::string Shader::ReadShader() const
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	std::string shaderText = "";
-
-#if defined(EDITOR)
-	const bool openResult = m_file->Open(FileMode::ReadOnly);
-	if (openResult)
-	{
-		shaderText = m_file->ReadAll();
-		m_file->Close();
-	}
-#else
-	unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
-	shaderText = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
-	free(binData);
-#endif
-
-	return shaderText;
+	return ReadString();
 }
 
 unsigned char* Shader::ReadShaderBinary(size_t& size) const
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-#if defined(EDITOR)
-	const bool openResult = m_file->Open(FileMode::ReadOnly);
-	if (openResult)
-	{
-		unsigned char* binData = m_file->ReadAllBinary(size);
-		m_file->Close();
-
-		return binData;
-	}
-#else
-	unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
-	size = m_fileSize;
+	unsigned char* binData = ReadBinary(size);
 	return binData;
-#endif
-
-	size = 0;
-	return nullptr;
 }
 
 ReflectiveData Shader::GetReflectiveData()

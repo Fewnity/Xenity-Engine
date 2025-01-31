@@ -187,88 +187,76 @@ void Texture::LoadTexture()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	bool openResult = true;
-#if defined(EDITOR)
-	openResult = m_file->Open(FileMode::ReadOnly);
-#endif
-	if (openResult)
-	{
-		size_t fileBufferSize = m_fileSize;
-		unsigned char* fileData = nullptr;
-#if defined(EDITOR)
-		fileData = m_file->ReadAllBinary(fileBufferSize);
-		m_file->Close();
-#else
-		fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, fileBufferSize);
-#endif
-
-		// Only for editor, live resizing
-#if defined(EDITOR)
-		// Load image with stb_image
-		unsigned char* data2 = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &m_width, &height,
-			&nrChannels, 4);
-		free(fileData);
-
-		m_originalWidth = m_width;
-		m_originalHeight = height;
-
-		int newWidth = m_width;
-		int newHeight = height;
-		const int cookResolution = static_cast<int>(GetCookResolution());
-		if ((newWidth > height) && newWidth > cookResolution)
-		{
-			newHeight = static_cast<int>(height * (static_cast<float>(GetCookResolution()) / static_cast<float>(m_width)));
-			newWidth = cookResolution;
-		}
-		else if ((newHeight > m_width) && newHeight > cookResolution)
-		{
-			newWidth = static_cast<int>(m_width * (static_cast<float>(GetCookResolution()) / static_cast<float>(height)));
-			newHeight = cookResolution;
-		}
-		else if ((newWidth == newHeight) && newWidth > cookResolution)
-		{
-			newWidth = cookResolution;
-			newHeight = cookResolution;
-		}
-
-		if (newWidth == m_width && newHeight == height)
-		{
-			m_buffer = data2;
-		}
-		else
-		{
-			// Resize image
-			m_buffer = static_cast<unsigned char*>(malloc(newWidth * newHeight * 4));
-			stbir_resize_uint8(data2, m_width, height, 0, m_buffer, newWidth, newHeight, 0, 4);
-			free(data2);
-		}
-		m_width = newWidth;
-		height = newHeight;
-#else
-		// Load image with stb_image
-		m_buffer = stbi_load_from_memory(fileData, fileBufferSize, &m_width, &height,
-			&nrChannels, 4);
-
-		free(fileData);
-#endif
-
-		if (!m_buffer)
-		{
-			Debug::PrintError("[Texture::LoadTexture] Failed to load texture", true);
-			m_fileStatus = FileStatus::FileStatus_Failed;
-			return;
-		}
-
-#if defined (DEBUG)
-		Performance::s_textureMemoryTracker->Allocate(m_width * height * 4);
-#endif
-	}
-	else
+	size_t fileBufferSize = 0;
+	unsigned char* fileData = ReadBinary(fileBufferSize);
+	if (!fileData)
 	{
 		Debug::PrintError("[Texture::LoadTexture] Failed to open texture file", true);
 		m_fileStatus = FileStatus::FileStatus_Failed;
 		return;
 	}
+
+	// Only for editor, live resizing
+#if defined(EDITOR)
+		// Load image with stb_image
+	unsigned char* data2 = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &m_width, &height,
+		&nrChannels, 4);
+	free(fileData);
+
+	m_originalWidth = m_width;
+	m_originalHeight = height;
+
+	int newWidth = m_width;
+	int newHeight = height;
+	const int cookResolution = static_cast<int>(GetCookResolution());
+	if ((newWidth > height) && newWidth > cookResolution)
+	{
+		newHeight = static_cast<int>(height * (static_cast<float>(GetCookResolution()) / static_cast<float>(m_width)));
+		newWidth = cookResolution;
+	}
+	else if ((newHeight > m_width) && newHeight > cookResolution)
+	{
+		newWidth = static_cast<int>(m_width * (static_cast<float>(GetCookResolution()) / static_cast<float>(height)));
+		newHeight = cookResolution;
+	}
+	else if ((newWidth == newHeight) && newWidth > cookResolution)
+	{
+		newWidth = cookResolution;
+		newHeight = cookResolution;
+	}
+
+	if (newWidth == m_width && newHeight == height)
+	{
+		m_buffer = data2;
+	}
+	else
+	{
+		// Resize image
+		m_buffer = static_cast<unsigned char*>(malloc(newWidth * newHeight * 4));
+		stbir_resize_uint8(data2, m_width, height, 0, m_buffer, newWidth, newHeight, 0, 4);
+		free(data2);
+	}
+	m_width = newWidth;
+	height = newHeight;
+#else
+		// Load image with stb_image
+	m_buffer = stbi_load_from_memory(fileData, fileBufferSize, &m_width, &height,
+		&nrChannels, 4);
+
+	free(fileData);
+#endif
+
+	if (!m_buffer)
+	{
+		Debug::PrintError("[Texture::LoadTexture] Failed to load texture", true);
+		m_fileStatus = FileStatus::FileStatus_Failed;
+		return;
+	}
+
+#if defined (DEBUG)
+	Performance::s_textureMemoryTracker->Allocate(m_width * height * 4);
+#endif
+
 	m_fileStatus = FileStatus::FileStatus_Loaded;
 }
 

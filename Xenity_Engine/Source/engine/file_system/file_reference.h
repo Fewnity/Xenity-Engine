@@ -126,5 +126,7 @@ protected:
 	FileStatus m_fileStatus = FileStatus::FileStatus_Not_Loaded;
 
 	bool m_isMetaDirty = false;
-};
 
+	std::string ReadString() const;
+	unsigned char* ReadBinary(size_t& size) const;
+};

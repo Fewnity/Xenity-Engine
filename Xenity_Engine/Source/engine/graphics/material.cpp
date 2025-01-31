@@ -121,42 +121,29 @@ std::shared_ptr<Material> Material::MakeMaterial()
 std::vector<uint64_t> Material::GetUsedFilesIds()
 {
 	std::vector<uint64_t> usedFilesIds;
-	bool loadResult = true;
-#if defined(EDITOR)
-	loadResult = m_file->Open(FileMode::ReadOnly);
-#endif
-	if (loadResult)
-	{
-		std::string jsonString;
-#if defined(EDITOR)
-		jsonString = m_file->ReadAll();
-		m_file->Close();
-#else
-		unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
-		jsonString = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
-		free(binData);
-#endif
 
-		json j;
-		try
+	std::string jsonString = ReadString();
+
+	json j;
+	try
+	{
+		j = json::parse(jsonString);
+		if (j.contains("Values"))
 		{
-			j = json::parse(jsonString);
-			if (j.contains("Values"))
+			if (j["Values"].contains("texture"))
 			{
-				if (j["Values"].contains("texture"))
-				{
-					usedFilesIds.push_back(j["Values"]["texture"]);
-				}
-				if (j["Values"].contains("shader"))
-				{
-					usedFilesIds.push_back(j["Values"]["shader"]);
-				}
+				usedFilesIds.push_back(j["Values"]["texture"]);
+			}
+			if (j["Values"].contains("shader"))
+			{
+				usedFilesIds.push_back(j["Values"]["shader"]);
 			}
 		}
-		catch (const std::exception&)
-		{				
-		}
 	}
+	catch (const std::exception&)
+	{
+	}
+
 	return usedFilesIds;
 }
 
@@ -304,22 +291,9 @@ void Material::LoadFileReference(const LoadOptions& loadOptions)
 	{
 		m_fileStatus = FileStatus::FileStatus_Loading;
 
-		bool loadResult = true;
-#if defined(EDITOR)
-		loadResult = m_file->Open(FileMode::ReadOnly);
-#endif
-		if (loadResult)
+		const std::string jsonString = ReadString();
+		if (!jsonString.empty())
 		{
-			std::string jsonString;
-#if defined(EDITOR)
-			jsonString = m_file->ReadAll();
-			m_file->Close();
-#else
-			unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
-			jsonString = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
-			free(binData);
-#endif
-
 			json j;
 			try
 			{
@@ -339,7 +313,6 @@ void Material::LoadFileReference(const LoadOptions& loadOptions)
 			XASSERT(false, "[Material::LoadFileReference] Failed to load the material file: " + m_file->GetPath());
 			Debug::PrintError("[Material::LoadFileReference] Failed to load the material file: " + m_file->GetPath(), true);
 			m_fileStatus = FileStatus::FileStatus_Failed;
-			return;
 		}
 	}
 }

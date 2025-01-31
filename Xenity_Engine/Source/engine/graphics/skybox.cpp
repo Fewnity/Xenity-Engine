@@ -75,22 +75,9 @@ void SkyBox::LoadFileReference(const LoadOptions& loadOptions)
 
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		bool openResult = true;
-#if defined(EDITOR)
-		openResult = m_file->Open(FileMode::ReadOnly);
-#endif
-		if (openResult)
+		const std::string jsonString = ReadString();
+		if (!jsonString.empty())
 		{
-			std::string jsonString;
-#if defined(EDITOR)
-			jsonString = m_file->ReadAll();
-			m_file->Close();
-#else
-			unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
-			jsonString = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
-			free(binData);
-#endif
-
 			json j;
 			try
 			{
@@ -106,11 +93,10 @@ void SkyBox::LoadFileReference(const LoadOptions& loadOptions)
 
 			m_fileStatus = FileStatus::FileStatus_Loaded;
 		}
-		else 
+		else
 		{
 			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + m_file->GetPath(), true);
 			m_fileStatus = FileStatus::FileStatus_Failed;
-			return;
 		}
 	}
 }

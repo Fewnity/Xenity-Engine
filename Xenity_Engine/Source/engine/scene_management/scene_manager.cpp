@@ -476,49 +476,35 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 
 	Debug::Print("Loading scene...", true);
 
-	// Get scene file and read all data
-	bool openResult = true;
-#if defined(EDITOR)
-	openResult = scene->m_file->Open(FileMode::ReadOnly);
-#endif
-	if (openResult)
-	{
-		std::string jsonString;
-#if defined(EDITOR)
-		jsonString = scene->m_file->ReadAll();
-		scene->m_file->Close();
-#else
-		unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(scene->m_filePosition, scene->m_fileSize);
-		jsonString = std::string(reinterpret_cast<const char*>(binData), scene->m_fileSize);
-		free(binData);
-#endif
-		XASSERT(!jsonString.empty(), "[SceneManager::LoadScene] jsonString is empty");
+	// Read scene data
+	const std::string jsonString = scene->ReadString();
 
-		try
+	XASSERT(!jsonString.empty(), "[SceneManager::LoadScene] jsonString is empty");
+
+	try
+	{
+		ordered_json data;
+		if (!jsonString.empty())
 		{
-			ordered_json data;
-			if (!jsonString.empty())
+			const size_t sceneDataPosition = FindSceneDataPosition(jsonString);
+			if (sceneDataPosition != -1)
 			{
-				const size_t sceneDataPosition = FindSceneDataPosition(jsonString);
-				if (sceneDataPosition != -1)
-				{
-					const std::string sceneStr = jsonString.substr(sceneDataPosition);
-					data = ordered_json::parse(sceneStr);
-				}
+				const std::string sceneStr = jsonString.substr(sceneDataPosition);
+				data = ordered_json::parse(sceneStr);
 			}
-			LoadScene(data);
-			s_openedScene = scene;
-			SetSceneModified(false);
 		}
-		catch (const std::exception& e)
-		{
-			CreateEmptyScene();
+		LoadScene(data);
+		s_openedScene = scene;
+		SetSceneModified(false);
+	}
+	catch (const std::exception& e)
+	{
+		CreateEmptyScene();
 #if defined(EDITOR)
-			EditorUI::OpenDialog("Error", "Error while loading the scene. The file is probably corrupted.", DialogType::Dialog_Type_OK);
+		EditorUI::OpenDialog("Error", "Error while loading the scene. The file is probably corrupted.", DialogType::Dialog_Type_OK);
 #endif
-			Debug::PrintError("[SceneManager::LoadScene] Scene file error: " + std::string(e.what()), true);
-			return;
-		}
+		Debug::PrintError("[SceneManager::LoadScene] Scene file error: " + std::string(e.what()), true);
+		return;
 	}
 }
 
