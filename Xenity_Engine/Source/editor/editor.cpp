@@ -452,7 +452,7 @@ bool Editor::CheckIntegrity()
 	// Check files
 #if defined(_WIN32) || defined(_WIN64)
 	CheckItemIntegrity("freetype.dll", success);
-	CheckItemIntegrity("glfw3.dll", success);
+	CheckItemIntegrity("assimp-vc143-mt.dll", success);
 	CheckItemIntegrity("SDL3.dll", success);
 
 	CheckItemIntegrity("Xenity_Editor.dll", success);
@@ -461,11 +461,14 @@ bool Editor::CheckIntegrity()
 	CheckItemIntegrity("Xenity_Engine.lib", success);
 
 	CheckItemIntegrity("res.rc", success);
+	CheckItemIntegrity("logo.ico", success);
+	CheckItemIntegrity("resource.h", success);
 #endif
 
 	CheckItemIntegrity("Roboto Regular.ttf", success);
 	CheckItemIntegrity("CMakeLists.txt", success);
 	CheckItemIntegrity("Dockerfile", success);
+	CheckItemIntegrity("compile_shaders.sh", success);
 	CheckItemIntegrity("main.cpp", success);
 
 	if (!success)
