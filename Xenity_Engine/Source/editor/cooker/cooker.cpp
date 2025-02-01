@@ -31,6 +31,10 @@ std::mutex copyMutex;
 
 void Cooker::CookAssets(const CookSettings& settings)
 {
+	XASSERT(settings.assetPlatform != AssetPlatform::AP_COUNT, "[Cooker::CookAssets] Asset platform is not set");
+	XASSERT(!settings.exportPath.empty(), "[Cooker::CookAssets] Export path is not set");
+	XASSERT(settings.platform != Platform::P_COUNT, "[Cooker::CookAssets] Platform is not set");
+
 	// Create a new data base and binary file
 	fileDataBase.Clear();
 	fileDataBase.GetBitFile().Create(settings.exportPath + "data.xenb");
@@ -97,6 +101,9 @@ void Cooker::CookAssets(const CookSettings& settings)
 //void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
 void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, const std::string exportFolderPath, const std::string partialFilePath)
 {
+	XASSERT(!partialFilePath.empty(), "[Cooker::CookAssets] partialFilePath is not set");
+	XASSERT(!exportFolderPath.empty(), "[Cooker::CookAssets] exportFolderPath is not set");
+
 	const std::string exportPath = exportFolderPath + "/" + fileInfo.fileAndId.file->GetFileName() + fileInfo.fileAndId.file->GetFileExtension();
 
 	if (fileInfo.type != FileType::File_Shader && settings.exportShadersOnly)
@@ -130,7 +137,7 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 	CopyUtils::ExecuteCopyEntries();
 	copyMutex.unlock();
 
-	const uint64_t metaSize = fs::file_size(fileInfo.fileAndId.file->GetPath() + ".meta");
+	const uint64_t metaSize = fs::file_size(exportPath + ".meta");
 	uint64_t cookedFileSize = 0;
 
 	// Do not include audio in the binary file
@@ -139,12 +146,9 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 	unsigned char* metaFileData = nullptr;
 	if (fileInfo.type != FileType::File_Audio)
 	{
-		cookedFileSize = fs::file_size(exportPath.c_str());
-
 		const std::shared_ptr<File> cookedFile = FileSystem::MakeFile(exportPath);
-		size_t cookedFileSizeOut;
 		cookedFile->Open(FileMode::ReadOnly);
-		fileData = cookedFile->ReadAllBinary(cookedFileSizeOut);
+		fileData = cookedFile->ReadAllBinary(cookedFileSize);
 		cookedFile->Close();
 		FileSystem::s_fileSystem->Delete(exportPath);
 	}
@@ -167,6 +171,10 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 		return;
 	}
 	FileSystem::s_fileSystem->Delete(exportPath + ".meta");
+
+	XASSERT(metaSize != 0, "[Cooker::CookAssets] Wrong original meta file size");
+	XASSERT(cookedMetaFileSizeOut != 0, "[Cooker::CookAssets] Wrong cooked meta file size");
+	XASSERT(cookedFileSize != 0, "[Cooker::CookAssets] Wrong original meta file size");
 
 	dataBaseMutex.lock();
 
@@ -192,7 +200,6 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 
 	fileDataBase.AddFile(fileDataBaseEntry);
 	dataBaseMutex.unlock();
-
 }
 
 void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportPath)

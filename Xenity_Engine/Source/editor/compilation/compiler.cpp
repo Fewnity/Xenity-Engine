@@ -64,8 +64,14 @@ std::string MakePathAbsolute(const std::string& path, const std::string& root)
 
 CompileResult Compiler::Compile(CompilerParams params)
 {
+	XASSERT(params.buildPlatform.platform != Platform::P_COUNT, "[Compiler::Compile] Platform is not set");
+	XASSERT(!params.tempPath.empty(), "[Compiler::Compile] Temporary path is not set");
+	XASSERT(!params.sourcePath.empty(), "[Compiler::Compile] Source path is not set");
+	XASSERT(!params.exportPath.empty(), "[Compiler::Compile] Export path is not set");
+	XASSERT(!params.libraryName.empty(), "[Compiler::Compile] Library name is not set");
+
 	FrameLimiter::SetIsEnabled(true);
-	FrameLimiter::SetWaitTiming(1000);
+	FrameLimiter::SetWaitTiming(500);
 
 	DeleteTempFiles(params);
 
@@ -185,7 +191,7 @@ void Compiler::Init()
 
 	CompilerParams params;
 	params.buildPlatform = BuildSettingsMenu::GetBuildPlatform(Platform::P_Windows);
-	CompilerAvailability availability = CheckCompilerAvailability(params);
+	const CompilerAvailability availability = CheckCompilerAvailability(params);
 	if (availability == CompilerAvailability::MISSING_COMPILER_SOFTWARE)
 	{
 		Debug::PrintWarning("[Compiler::Init] The compiler is not correctly setup. Please check compiler settings at [Window->Engine Settings]", false);

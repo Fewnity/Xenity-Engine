@@ -35,6 +35,13 @@ void FileDataBase::AddFile(FileDataBaseEntry* file)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	XASSERT(file, "[FileDataBase::AddFile] File is null");
+	XASSERT(file->ms != 0, "[FileDataBase::AddFile] Wrong meta file size");
+	XASSERT((file->s != 0 && file->t != FileType::File_Audio) || (file->s == 0 && file->t == FileType::File_Audio), "[FileDataBase::AddFile] Wrong meta file size");
+	XASSERT(file->t != FileType::File_Code, "[FileDataBase::AddFile] Code should not be included");
+	XASSERT(file->t != FileType::File_Header, "[FileDataBase::AddFile] Code should not be included");
+	XASSERT(file->t != FileType::File_Other, "[FileDataBase::AddFile] Wrong file type");
+
 	m_fileList.push_back(file);
 }
 
@@ -58,7 +65,7 @@ void FileDataBase::SaveToFile(const std::string& path)
 
 	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool openResult = file->Open(FileMode::WriteCreateFile);
-	XASSERT(openResult, "Failed to create data base file" + path);
+	XASSERT(openResult, "[FileDataBase::SaveToFile] Failed to create data base file" + path);
 	if (openResult)
 	{
 		ordered_json j;
@@ -66,6 +73,8 @@ void FileDataBase::SaveToFile(const std::string& path)
 
 		std::vector<uint8_t> binaryFileDataBase;
 		ordered_json::to_msgpack(j, binaryFileDataBase);
+
+		XASSERT(!m_fileList.empty(), "[FileDataBase::SaveToFile] Saving an empty data base" + path);
 
 		file->Write(binaryFileDataBase.data(), binaryFileDataBase.size());
 		file->Close();
@@ -81,7 +90,7 @@ void FileDataBase::LoadFromFile(const std::string& path)
 	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool openResult = file->Open(FileMode::ReadOnly);
 
-	XASSERT(openResult, "Data base file not found");
+	XASSERT(openResult, "[FileDataBase::LoadFromFile] Data base file not found");
 
 	if (openResult)
 	{
@@ -90,9 +99,9 @@ void FileDataBase::LoadFromFile(const std::string& path)
 		unsigned char* data = file->ReadAllBinary(dataSize);
 		file->Close();
 
-		XASSERT(dataSize != 0, "Failed to read data base file");
+		XASSERT(dataSize != 0, "[FileDataBase::LoadFromFile] Failed to read data base file");
 
-		// Json library wants a vector of uint8_t
+		// Json library wants a vector of uint8_t, so copy the file data to a vector
 		std::vector<uint8_t> binaryFileDataBase;
 		binaryFileDataBase.resize(dataSize);
 		memcpy(binaryFileDataBase.data(), data, dataSize);

@@ -35,6 +35,9 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	XASSERT(mesh.m_file, "[AssimpMeshLoader::LoadMesh] File is null");
+	XASSERT(!mesh.m_file->GetPath().empty(), "[AssimpMeshLoader::LoadMesh] File path is empty");
+
 	std::shared_ptr<File>& file = mesh.m_file;
 
 	bool opened = true;
