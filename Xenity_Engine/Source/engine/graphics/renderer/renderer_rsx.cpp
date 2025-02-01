@@ -664,6 +664,12 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		{
 			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_COLOR0, 0, subMesh.colorOffset, vertexDescriptorList.m_vertexSize, 4, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		}
+		else 
+		{
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_COLOR0, 0, 0, 0, 0, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			static float defaultColor[4] = { 1, 1, 1, 1};
+			rsxDrawVertex4f(context, GCM_VERTEX_ATTRIB_COLOR0, defaultColor);
+		}
 
 		lastOffset = subMesh.positionOffset;
 	}

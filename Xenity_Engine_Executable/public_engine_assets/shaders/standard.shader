@@ -3,51 +3,42 @@
 
 #version 330
 
-layout(location = 0) in vec2 uv;
-layout(location = 1) in vec3 normal;
-layout (location = 2) in vec3 position;
-layout(location = 3) in vec4 color2;
+layout(location = 0) in vec2 a_TexCoord;
+layout(location = 1) in vec3 a_Normal;
+layout(location = 2) in vec3 a_Position;
+layout(location = 3) in vec4 a_Color;
 
-out vec2 TexCoord;
-out vec3 Normal;
-out vec3 FragPos;
-out vec4 VertexColor;
+out vec2 v_TexCoord;
+out vec3 v_Normal;
+out vec3 v_FragPos;
+out vec4 v_Color;
 
 uniform mat4 model; //Model matrice position, rotation and scale
-uniform mat4 MVP;
+uniform mat4 MVP; // Model View Projection
 uniform mat3 normalMatrix;
 
 void main()
 {
-	gl_Position = MVP * vec4(position, 1);
-	TexCoord = uv;
-	FragPos = vec3(model * vec4(position, 1));
-	Normal = normalMatrix * normal; //TODO Check an object with a bigger scale and with a 	offsetPosition, fix : add to offset * rotation this : * offsetPosition * scale
-	VertexColor = color2;
+	gl_Position = MVP * vec4(a_Position, 1);
+	v_FragPos = vec3(model * vec4(a_Position, 1));
+	v_TexCoord = a_TexCoord;
+	v_Normal = normalMatrix * a_Normal; //TODO Check an object with a bigger scale and with a 	offsetPosition, fix : add to offset * rotation this : * offsetPosition * scale
+	v_Color = a_Color;
 }
 
 //-------------- {fragment}
 
 #version 330
 
-uniform vec3 ambiantLightColor;
+in vec3 v_Normal;
+in vec3 v_FragPos;
+in vec4 v_Color;
+in vec2 v_TexCoord;
+
 uniform vec4 color;
-in vec3 Normal;
-in vec3 FragPos;
-in vec4 VertexColor;
-in vec2 TexCoord;
-uniform sampler2D ourTexture;
 uniform vec2 tiling;
 uniform vec2 offset;
 uniform vec3 ambientLight;
-
-struct Material 
-{
-	sampler2D diffuse;
-	sampler2D specular;
-	vec3 ambient;
-	float shininess;
-};
 
 struct DirectionalLight 
 {
@@ -76,7 +67,7 @@ struct SpotLight
 	float outerCutOff;
 };
 
-uniform Material material;
+uniform sampler2D diffuse;
 
 #define NR_POINT_LIGHTS 10 
 uniform PointLight pointLights[NR_POINT_LIGHTS];
@@ -101,7 +92,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light2, vec3 norm, vec3 fragPos)
 {
 	vec3 lightDir = normalize(-light2.direction); // Directional light
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * vec3(texture(diffuse, (v_TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity
 
 	return diffuse;
 }
@@ -111,7 +102,7 @@ vec3 CalculatePointLight(PointLight light2, vec3 norm, vec3 fragPos)
 	vec3 lightVec = light2.position - fragPos;
 	vec3 lightDir = normalize(light2.position - fragPos); //Direction of the point light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * vec3(texture(diffuse, (v_TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity
 
 	float distanceSq = dot(lightVec, lightVec); // distance square
 	float attenuation = 1.0f / (light2.light_data.x + light2.light_data.y * sqrt(distanceSq) + light2.light_data.z * distanceSq);
@@ -124,7 +115,7 @@ vec3 CalculateSpotLight(SpotLight light2, vec3 norm, vec3 fragPos)
 {
 	vec3 lightDir = normalize(light2.position - fragPos); //Direction of the point light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * vec3(texture(material.diffuse, (TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * vec3(texture(diffuse, (v_TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity
 
 	float distance = length(light2.position - fragPos);
 	float attenuation = 1.0 / (light2.constant + light2.linear * distance + light2.quadratic * (distance * distance));
@@ -133,7 +124,6 @@ vec3 CalculateSpotLight(SpotLight light2, vec3 norm, vec3 fragPos)
 	float epsilon = light2.cutOff - light2.outerCutOff;
 	float intensity = clamp((theta - light2.outerCutOff) / epsilon, 0.0, 1.0);
 	diffuse *= intensity;
-	// specular *= intensity;
 
 	//Result
 	vec3 result = (diffuse * attenuation); //Set face result
@@ -142,43 +132,43 @@ vec3 CalculateSpotLight(SpotLight light2, vec3 norm, vec3 fragPos)
 
 void main()
 {
-	vec3 ambient = vec3(0,0,0);
-	// Diffuse
-	vec3 norm = normalize(Normal); //Direction of normals
+	vec4 textureFrag = texture(diffuse, (v_TexCoord * tiling) + offset);
+
+	vec3 norm = normalize(v_Normal); //Direction of normals
 
 	//Result
-	vec3 result = ambient; //Set face result
+	vec3 result = vec3(0,0,0); //Set face result
 	for (int i = 0; i < lightIndices.usedPointLightCount; i++)
 	{
-		result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[i].x], norm, FragPos);
+		result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[i].x], norm, v_FragPos);
 	}	
 	for (int i = 0; i < lightIndices.usedSpotLightCount; i++)
 	{
-		result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[i].x], norm, FragPos);
+		result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[i].x], norm, v_FragPos);
 	}
 	for (int i = 0; i < lightIndices.usedDirectionalLightCount; i++)
 	{
-		result += CalculateDirectionalLight(directionalLights[lightIndices.directionalLightsIndices[i].x], norm, FragPos);
+		result += CalculateDirectionalLight(directionalLights[lightIndices.directionalLightsIndices[i].x], norm, v_FragPos);
 	}
-	result += vec3(texture(material.diffuse, (TexCoord * tiling) + offset)) * ambientLight;
+	result += textureFrag.xyz * ambientLight;
 
-	float alpha = texture(material.diffuse, (TexCoord * tiling) + offset).a* color.w;
+	float alpha = textureFrag.w * color.w;
 
-	gl_FragColor = vec4(result * color.xyz, alpha) * VertexColor; //Add texture color
+	gl_FragColor = vec4(result * color.xyz, alpha) * v_Color; //Add texture color
 }
 
 //-------------- {psvita}
 //-------------- {vertex}
 
-attribute vec2 uv;
-attribute vec3 normal;
-attribute vec3 position;
-attribute vec4 color2;
+attribute vec2 a_TexCoord;
+attribute vec3 a_Normal;
+attribute vec3 a_Position;
+attribute vec4 a_Color;
 
-varying vec2 TexCoord;
-varying vec3 Normals;
-varying vec3 FragPos;
-varying vec4 VertexColor;
+varying vec2 v_TexCoord;
+varying vec3 v_Normals;
+varying vec3 v_FragPos;
+varying vec4 v_Color;
 
 uniform mat4 model; //Model matrice position, rotation and scale
 uniform mat4 MVP;
@@ -186,11 +176,11 @@ uniform mat3 normalMatrix;
 
 void main()
 {
-	gl_Position = mul(float4(position, 1.0f), MVP);
-	FragPos = float3(mul(float4(position, 1.0f), model));	
-	Normals = mul(normal, normalMatrix);
-	TexCoord = uv;
-	VertexColor = color2;
+	gl_Position = mul(float4(a_Position, 1.0f), MVP);
+	v_FragPos = float3(mul(float4(a_Position, 1.0f), model));	
+	v_Normals = mul(a_Normal, normalMatrix);
+	v_TexCoord = a_TexCoord;
+	v_Color = a_Color;
 }
 
 //-------------- {fragment}
@@ -235,18 +225,12 @@ uniform DirectionalLight directionalLights[NR_DIRECTIONAL_LIGHTS];
 
 uniform vec4 color;
 
-varying vec2 TexCoord;
-varying vec3 Normals;
-varying vec3 FragPos;
-varying vec4 VertexColor;
+varying vec2 v_TexCoord;
+varying vec3 v_Normals;
+varying vec3 v_FragPos;
+varying vec4 v_Color;
 
-struct Material 
-{
-	sampler2D diffuse;
-	vec3 ambient;
-};
-
-uniform Material material;
+uniform sampler2D diffuse;
 uniform vec2 tiling;
 uniform vec2 offset;
 uniform vec3 ambientLight;
@@ -267,7 +251,7 @@ float3 CalculateDirectionalLight(DirectionalLight light, vec3 norm, vec3 texture
 {
 	float3 lightDir = normalize(-light.direction); // Directional light
 	float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
-	float3 tx = (diff * textureColor) * light.color; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	float3 tx = (diff * textureColor) * light.color; //Set the light color and intensity
 	return tx;
 }
 
@@ -275,7 +259,7 @@ vec3 CalculateSpotLight(SpotLight light, vec3 norm, vec3 fragPos, vec3 textureCo
 {
 	vec3 lightDir = normalize(light.position - fragPos); //Direction of the point light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
-	vec3 diffuse = (diff * textureColor) * light.color * 2; //Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	vec3 diffuse = (diff * textureColor) * light.color * 2; //Set the light color and intensity
 
 	float distance = length(light.position - fragPos);
 	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
@@ -307,23 +291,23 @@ float3 CalculatePointLight(PointLight light, float3 norm, float3 fragPos, float3
 void main()
 {
 	vec3 result = float3(0.0f, 0.0f, 0.0f);
-	vec3 norm = normalize(Normals); //Direction of normals
-	vec4 textureColor = tex2D(material.diffuse, (TexCoord * tiling) + offset);
+	vec3 norm = normalize(v_Normals); //Direction of normals
+	vec4 textureColor = tex2D(diffuse, (v_TexCoord * tiling) + offset);
 
 	// Apply lights
 	// Unrool for loop for better performances
 	int currentPointLight = 0;
 	if(lightIndices.usedPointLightCount > currentPointLight)
 	{
-	 	result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentPointLight].x], norm, FragPos, textureColor);
+	 	result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentPointLight].x], norm, v_FragPos, textureColor);
 	 	currentPointLight += 1;
 		if(lightIndices.usedPointLightCount > currentPointLight)
 		{
-	 		result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentPointLight].x], norm, FragPos, textureColor);
+	 		result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentPointLight].x], norm, v_FragPos, textureColor);
 	 		currentPointLight += 1;
 			if(lightIndices.usedPointLightCount > currentPointLight)
 			{
-	 			result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentPointLight].x], norm, FragPos, textureColor);
+	 			result += CalculatePointLight(pointLights[lightIndices.pointLightsIndices[currentPointLight].x], norm, v_FragPos, textureColor);
 	 			currentPointLight += 1;
 			}
 		}
@@ -332,11 +316,11 @@ void main()
 	int currentSpotLight = 0;
 	if(lightIndices.usedSpotLightCount > currentSpotLight)
 	{
-		result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[currentSpotLight].x], norm, FragPos, textureColor);
+		result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[currentSpotLight].x], norm, v_FragPos, textureColor);
 		currentSpotLight++;
 		if(lightIndices.usedSpotLightCount > currentSpotLight)
 		{
-			result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[currentSpotLight].x], norm, FragPos, textureColor);
+			result += CalculateSpotLight(spotLights[lightIndices.spotLightsIndices[currentSpotLight].x], norm, v_FragPos, textureColor);
 			currentSpotLight++;
 		}
 	}
@@ -357,7 +341,7 @@ void main()
 	result += textureColor.xyz * ambientLight;
 
 	float alpha = textureColor.w * color.w;
-	gl_FragColor = vec4(result * color.xyz, alpha) * VertexColor; //Add texture color
+	gl_FragColor = vec4(result * color.xyz, alpha) * v_Color; //Add texture color
 }
 
 //-------------- {ps3}
@@ -365,24 +349,27 @@ void main()
 
 void main
 (
-	float3 vertexPosition : POSITION,
-	float3 vertexNormal : NORMAL,
-	float2 vertexTexcoord : TEXCOORD0,
-	
+	float3 a_Position : POSITION,
+	float3 a_Normal : NORMAL,
+	float2 a_Texcoord : TEXCOORD0,
+	float4 a_Color : COLOR0,
+
 	uniform float4x4 model,
 	uniform float4x4 MVP,
 	uniform float3x3 normalMatrix,
 
 	out float4 ePosition : POSITION,
-	out float3 oNormal : TEXCOORD0,
-	out float2 oTexcoord : TEXCOORD1,
-	out float3 oFragPos : TEXCOORD2
+	out float3 v_Normal : TEXCOORD0,
+	out float2 v_Texcoord : TEXCOORD1,
+	out float3 v_FragPos : TEXCOORD2,
+	out float4 v_Color : COLOR0
 )
 {
-	ePosition = mul(float4(vertexPosition, 1.0f), MVP);
-	oFragPos = float3(mul(float4(vertexPosition, 1.0f), model));	
-	oNormal = mul(vertexNormal, normalMatrix);
-	oTexcoord = vertexTexcoord;
+	ePosition = mul(float4(a_Position, 1.0f), MVP);
+	v_FragPos = float3(mul(float4(a_Position, 1.0f), model));	
+	v_Normal = mul(a_Normal, normalMatrix);
+	v_Texcoord = a_Texcoord;
+	v_Color = a_Color;
 }
 
 //-------------- {fragment}
@@ -424,7 +411,7 @@ float3 CalculateDirectionalLight(DirectionalLight light, float3 norm, float4 tex
 {
 	//float3 lightDir = normalize(-light.direction); // Directional light
 	float diff = max(dot(norm, -light.direction), 0.0f); //If the light is behind the face, diff is 0
-	float3 tx = (diff * textureFrag.xyz) * light.color; // Set the light color and intensity TODO : Change the ambiantLightColor by the light color
+	float3 tx = (diff * textureFrag.xyz) * light.color; // Set the light color and intensity
 	return tx;
 }
 
@@ -458,9 +445,10 @@ float3 CalculatePointLight(PointLight light, float3 norm, float3 fragPos, float4
 
 void main
 (
-	float3 normal : TEXCOORD0,
-	float2 texcoord : TEXCOORD1,
-	float3 FragPos : TEXCOORD2,
+	float3 v_Normal : TEXCOORD0,
+	float2 v_Texcoord : TEXCOORD1,
+	float3 v_FragPos : TEXCOORD2,
+	float4 v_Color : COLOR0,
 
 	uniform sampler2D texture,
 	// uniform sampler2D lightingDataTexture,
@@ -474,31 +462,23 @@ void main
 	uniform SpotLight spotLights[NR_SPOT_LIGHTS],
 	uniform DirectionalLight directionalLights[NR_DIRECTIONAL_LIGHTS],
 
-	// uniform float usedPointLightCount,
-	// uniform float usedSpotLightCount,
-	// uniform float usedDirectionalLightCount,
-
-	// uniform float pointLightsIndices[NR_POINT_LIGHTS],
-	// uniform float spotLightsIndices[NR_SPOT_LIGHTS],
-	// uniform float directionalLightsIndices[NR_DIRECTIONAL_LIGHTS],
-
 	out float4 oColor
 )
 {
-	float4 textureFrag = tex2D(texture, (texcoord * tiling) + offset);
+	float4 textureFrag = tex2D(texture, (v_Texcoord * tiling) + offset);
 
 	float3 result = float3(0,0,0);
 	result += textureFrag.xyz * ambientLight;
 	//result += tex2D(lightingDataTexture, float2(1, 1)).xyz;
 	float alpha = textureFrag.w * color.w;
-	float3 N = normalize(normal);
+	float3 N = normalize(v_Normal);
 
 	result += CalculateDirectionalLight(directionalLights[1], N, textureFrag);
 
-	result += CalculatePointLight(pointLights[1], N, FragPos, textureFrag);
+	result += CalculatePointLight(pointLights[1], N, v_FragPos, textureFrag);
 	//result += CalculatePointLight(pointLights[2], N, FragPos, textureFrag);
 
 	result *= color.xyz;
 
-	oColor = float4(result, alpha);
+	oColor = float4(result, alpha) * v_Color;
 }
