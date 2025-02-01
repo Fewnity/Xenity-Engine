@@ -160,6 +160,7 @@ void Window::UpdateWindowTitle()
 	std::string newTitle = "";
 	if (ProjectManager::IsProjectLoaded())
 	{
+#if defined(EDITOR)
 		newTitle += ProjectManager::GetProjectName() + " - ";
 		if (SceneManager::GetOpenedScene())
 		{
@@ -174,6 +175,9 @@ void Window::UpdateWindowTitle()
 			newTitle += "Empty Scene *";
 		}
 		newTitle += std::string(" - ");
+#else
+		newTitle += ProjectManager::GetProjectName();
+#endif
 	}
 	else 
 	{

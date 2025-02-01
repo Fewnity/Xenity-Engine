@@ -40,6 +40,17 @@ bool SceneManager::s_sceneModified = false;
 
 #if defined(EDITOR)
 
+void SceneManager::SetSceneModified(bool value)
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	if (GameplayManager::GetGameState() == GameState::Stopped)
+	{
+		s_sceneModified = value;
+		Window::UpdateWindowTitle();
+	}
+}
+
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
@@ -219,17 +230,6 @@ void SceneManager::RestoreSceneHotReloading()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	LoadScene(savedSceneDataHotReloading);
-}
-
-void SceneManager::SetSceneModified(bool value)
-{
-	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
-	if (GameplayManager::GetGameState() == GameState::Stopped)
-	{
-		s_sceneModified = value;
-		Window::UpdateWindowTitle();
-	}
 }
 
 bool SceneManager::OnQuit()
@@ -495,7 +495,9 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		}
 		LoadScene(data);
 		s_openedScene = scene;
+#if defined(EDITOR)
 		SetSceneModified(false);
+#endif
 	}
 	catch (const std::exception& e)
 	{
