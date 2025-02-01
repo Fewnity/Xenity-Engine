@@ -110,6 +110,12 @@ IntegrityState FileDataBase::CheckIntegrity()
 	size_t currentPos = 0;
 	std::set<uint64_t> idSet;
 	size_t totalSize = 0;
+
+	if (m_fileList.empty())
+	{
+		state |= static_cast<int>(IntegrityState::Integrity_Empty);
+	}
+
 	for (auto entry : m_fileList)
 	{
 		// Get the total size of the files

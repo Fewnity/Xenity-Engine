@@ -11,5 +11,6 @@ ENUM(IntegrityState,
 	Integrity_Wrong_File_Size = 1 << 4,
 	Integrity_Wrong_Meta_File_Position = 1 << 5,
 	Integrity_Wrong_Meta_File_Size = 1 << 6,
-	Integrity_Wrong_Bit_File_Size = 1 << 7
+	Integrity_Wrong_Bit_File_Size = 1 << 7,
+	Integrity_Empty = 1 << 8,
 );

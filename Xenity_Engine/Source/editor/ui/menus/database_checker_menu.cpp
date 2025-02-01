@@ -109,6 +109,10 @@ void DataBaseCheckerMenu::Draw()
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "The bit file size does not match");
 				}
+				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Empty))
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "The bit file is empty");
+				}
 			}
 
 			ImGui::Text("Entry list");
