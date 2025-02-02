@@ -115,7 +115,23 @@ void SceneMenu::MoveCamera()
 		{
 			if (!mode2D)
 			{
-				fwd -= InputSystem::mouseWheel / 15.0f;
+				if (InputSystem::GetKey(KeyCode::LEFT_SHIFT))
+				{
+					Editor::cameraSpeed += InputSystem::mouseWheel;
+					if (Editor::cameraSpeed < 1.0f)
+					{
+						Editor::cameraSpeed = 1.0f;
+					}
+
+					if (Editor::cameraSpeed > 100)
+					{
+						Editor::cameraSpeed = 100;
+					}
+				}
+				else 
+				{
+					fwd -= InputSystem::mouseWheel / 15.0f;
+				}
 			}
 			else
 			{
@@ -127,10 +143,10 @@ void SceneMenu::MoveCamera()
 		}
 
 		// Apply values
-		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * 30;
-		pos -= cameraTransform->GetLeft() * (side / 7.0f) * 30;
-		pos -= cameraTransform->GetUp() * (up / 7.0f) * 30;
-		pos.y -= (upWorld / 7.0f) * 30;
+		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * Editor::cameraSpeed;
+		pos -= cameraTransform->GetLeft() * (side / 7.0f) * Editor::cameraSpeed;
+		pos -= cameraTransform->GetUp() * (up / 7.0f) * Editor::cameraSpeed;
+		pos.y -= (upWorld / 7.0f) * Editor::cameraSpeed;
 
 		cameraTransform->SetPosition(pos);
 
@@ -850,12 +866,13 @@ bool SceneMenu::DrawImageButton(bool enabled, const Texture& texture, const std:
 bool SceneMenu::DrawToolWindow()
 {
 	bool buttonHovered = false;
-	if (ImGui::CollapsingHeader("Tool modes", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
+	std::string toolModeText = "Tool mode (Camera speed: " + std::to_string(static_cast<int>(Editor::cameraSpeed)) + ")";
+	if (ImGui::CollapsingHeader(toolModeText.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_MoveCamera);
-		const bool moveCameraClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Camera_Move], "##SceneMoveCameraButton", buttonHovered);
+		const bool moveCameraClicked = DrawImageButton(true, *EditorUI::icons[static_cast<int>(IconName::Icon_Camera_Move)], "##SceneMoveCameraButton", buttonHovered);
 		EditorUI::EndButtonColor();
-		//if(ImGui::)
+
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Move);
 		const bool moveClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Move], "##SceneMoveButton", buttonHovered);
 		EditorUI::EndButtonColor();

@@ -78,6 +78,7 @@ int Editor::menuCount = 0;
 bool Editor::isToolLocalMode;
 Event<bool>* Editor::onUpdateCheckedEvent = new Event<bool>();
 bool Editor::updateAvailable = false;
+float Editor::cameraSpeed = 30;
 
 void Editor::Init()
 {

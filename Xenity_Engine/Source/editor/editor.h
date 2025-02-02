@@ -447,6 +447,7 @@ public:
 	static std::vector<std::shared_ptr<Menu>> menus;
 	static std::weak_ptr <Menu> lastFocusedGameMenu;
 	static bool isToolLocalMode;
+	static float cameraSpeed;
 
 private:
 	class MenuSetting : public Reflective
