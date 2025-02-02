@@ -1113,6 +1113,7 @@
     <ClCompile Include="Source\unit_tests\engine\unit_test_color.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_endian.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_event_system.cpp" />
+    <ClCompile Include="Source\unit_tests\engine\unit_test_mesh_descriptor.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_reflection.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_unique_id.cpp" />
     <ClCompile Include="Source\unit_tests\unit_test_manager.cpp" />

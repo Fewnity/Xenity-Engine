@@ -148,7 +148,6 @@ MAKE_TEST(AssetManager);
 
 #pragma endregion
 
-
 #pragma region Class Registry
 
 class ClassRegistryAddComponentFromNameTest : public UnitTest
@@ -188,6 +187,16 @@ MAKE_TEST(EndianSwap);
 #pragma region Reflection
 
 MAKE_TEST(ReflectiveToJsonToReflective);
+
+#pragma endregion
+
+#pragma region Vertex Descriptor
+
+MAKE_TEST(VertexDescriptorFloat);
+MAKE_TEST(VertexDescriptor16Bits);
+MAKE_TEST(VertexDescriptor8Bits);
+MAKE_TEST(VertexDescriptorWrong);
+MAKE_TEST(VertexDescriptorGetVertexElementSize);
 
 #pragma endregion
 

@@ -115,6 +115,24 @@ void UnitTestManager::StartAllTests()
 		TryTest(reflectiveToJsonToReflectiveTest);
 	}
 
+	//------------------------------------------------------------------ Vertex Descriptor
+	{
+		VertexDescriptorFloatTest vertexDescriptorFloatTest = VertexDescriptorFloatTest("Vertex Descriptor float Check");
+		TryTest(vertexDescriptorFloatTest);
+
+		VertexDescriptor16BitsTest vertexDescriptor16BitsTest = VertexDescriptor16BitsTest("Vertex Descriptor 16 bits Check");
+		TryTest(vertexDescriptor16BitsTest);
+
+		VertexDescriptor8BitsTest vertexDescriptor8BitsTest = VertexDescriptor8BitsTest("Vertex Descriptor 8 bits Check");
+		TryTest(vertexDescriptor8BitsTest);
+
+		VertexDescriptorWrongTest vertexDescriptorWrongTest = VertexDescriptorWrongTest("Vertex Descriptor wrong usage");
+		TryTest(vertexDescriptorWrongTest);
+
+		VertexDescriptorGetVertexElementSizeTest vertexDescriptorGetVertexElementSizeTest = VertexDescriptorGetVertexElementSizeTest("Vertex Descriptor GetVertexElementSizeTest");
+		TryTest(vertexDescriptorGetVertexElementSizeTest);
+	}
+
 #if defined(EDITOR)
 	//------------------------------------------------------------------ Asset Manager
 	{
