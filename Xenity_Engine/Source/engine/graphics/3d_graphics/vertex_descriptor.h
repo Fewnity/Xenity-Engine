@@ -70,7 +70,11 @@ struct VertexDescriptor
 		}
 		else if ((vertexElement & VertexElements::POSITION_16_BITS) == VertexElements::POSITION_16_BITS)
 		{
-			vertexSize += sizeof(uint16_t[3]);
+			vertexSize += sizeof(int16_t[3]);
+		}
+		else if ((vertexElement & VertexElements::POSITION_8_BITS) == VertexElements::POSITION_8_BITS)
+		{
+			vertexSize += sizeof(int8_t[3]);
 		}
 
 		if ((vertexElement & VertexElements::NORMAL_32_BITS) == VertexElements::NORMAL_32_BITS)
@@ -79,11 +83,11 @@ struct VertexDescriptor
 		}
 		else if ((vertexElement & VertexElements::NORMAL_16_BITS) == VertexElements::NORMAL_16_BITS)
 		{
-			vertexSize += sizeof(uint16_t[3]);
+			vertexSize += sizeof(int16_t[3]);
 		}
 		else if ((vertexElement & VertexElements::NORMAL_8_BITS) == VertexElements::NORMAL_8_BITS)
 		{
-			vertexSize += sizeof(char[3]);
+			vertexSize += sizeof(int8_t[3]);
 		}
 
 		if ((vertexElement & VertexElements::UV_32_BITS) == VertexElements::UV_32_BITS)
@@ -92,7 +96,11 @@ struct VertexDescriptor
 		}
 		else if ((vertexElement & VertexElements::UV_16_BITS) == VertexElements::UV_16_BITS)
 		{
-			vertexSize += sizeof(uint16_t[2]);
+			vertexSize += sizeof(int16_t[2]);
+		}
+		else if ((vertexElement & VertexElements::UV_8_BITS) == VertexElements::UV_8_BITS)
+		{
+			vertexSize += sizeof(int8_t[2]);
 		}
 
 		if ((vertexElement & VertexElements::COLOR_4_FLOATS) == VertexElements::COLOR_4_FLOATS)
@@ -110,7 +118,46 @@ struct VertexDescriptor
 
 	void AddVertexDescriptor(VertexElements vertexElement)
 	{
-		XASSERT(vertexElement != VertexElements::NONE, "[VertexDescriptor::AddVertexDescriptor] Wrong vertexElement");
+		if (vertexElement == VertexElements::NONE)
+			return;
+
+		if ((vertexElement & VertexElements::POSITION_32_BITS) == VertexElements::POSITION_32_BITS || (vertexElement & VertexElements::POSITION_16_BITS) == VertexElements::POSITION_16_BITS || (vertexElement & VertexElements::POSITION_8_BITS) == VertexElements::POSITION_8_BITS)
+		{
+			if (m_positionIndex != -1)
+			{
+				return;
+			}
+			m_positionIndex = static_cast<int>(m_vertexElementInfos.size());
+		}
+		else if ((vertexElement & VertexElements::NORMAL_32_BITS) == VertexElements::NORMAL_32_BITS || (vertexElement & VertexElements::NORMAL_16_BITS) == VertexElements::NORMAL_16_BITS || (vertexElement & VertexElements::NORMAL_8_BITS) == VertexElements::NORMAL_8_BITS)
+		{
+			if (m_normalIndex != -1)
+			{
+				return;
+			}
+			m_normalIndex = static_cast<int>(m_vertexElementInfos.size());
+		}
+		else if ((vertexElement & VertexElements::UV_32_BITS) == VertexElements::UV_32_BITS || (vertexElement & VertexElements::UV_16_BITS) == VertexElements::UV_16_BITS || (vertexElement & VertexElements::UV_8_BITS) == VertexElements::UV_8_BITS)
+		{
+			if (m_uvIndex != -1)
+			{
+				return;
+			}
+			m_uvIndex = static_cast<int>(m_vertexElementInfos.size());
+		}
+		else if ((vertexElement & VertexElements::COLOR_4_FLOATS) == VertexElements::COLOR_4_FLOATS || (vertexElement & VertexElements::COLOR_32_BITS_UINT) == VertexElements::COLOR_32_BITS_UINT)
+		{
+			if (m_colorIndex != -1)
+			{
+				return;
+			}
+			m_colorIndex = static_cast<int>(m_vertexElementInfos.size());
+		}
+		else 
+		{
+			XASSERT(false, "[VertexDescriptor::AddVertexDescriptor] Wrong vertexElement");
+			return;
+		}
 
 		VertexElementInfo vertexElementInfo;
 		vertexElementInfo.vertexElement = vertexElement;
@@ -119,23 +166,6 @@ struct VertexDescriptor
 		m_vertexElementInfos.push_back(vertexElementInfo);
 
 		m_vertexSize += vertexElementInfo.size;
-
-		if ((vertexElement & VertexElements::POSITION_32_BITS) == VertexElements::POSITION_32_BITS || (vertexElement & VertexElements::POSITION_16_BITS) == VertexElements::POSITION_16_BITS)
-		{
-			m_positionIndex = static_cast<int>(m_vertexElementInfos.size() - 1);
-		}
-		else if ((vertexElement & VertexElements::NORMAL_32_BITS) == VertexElements::NORMAL_32_BITS || (vertexElement & VertexElements::NORMAL_16_BITS) == VertexElements::NORMAL_16_BITS || (vertexElement & VertexElements::NORMAL_8_BITS) == VertexElements::NORMAL_8_BITS)
-		{
-			m_normalIndex = static_cast<int>(m_vertexElementInfos.size() - 1);
-		}
-		else if ((vertexElement & VertexElements::UV_32_BITS) == VertexElements::UV_32_BITS || (vertexElement & VertexElements::UV_16_BITS) == VertexElements::UV_16_BITS)
-		{
-			m_uvIndex = static_cast<int>(m_vertexElementInfos.size() - 1);
-		}
-		else if ((vertexElement & VertexElements::COLOR_4_FLOATS) == VertexElements::COLOR_4_FLOATS || (vertexElement & VertexElements::COLOR_32_BITS_UINT) == VertexElements::COLOR_32_BITS_UINT)
-		{
-			m_colorIndex = static_cast<int>(m_vertexElementInfos.size() - 1);
-		}
 	}
 
 	VertexElements GetElementFromIndex(int32_t index) const
