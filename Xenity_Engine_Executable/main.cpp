@@ -27,33 +27,27 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Rework the documentation
 Implement alpha testing on shaders
-Add lighting on PS3
 Check if force inline for GLM is better or not
-Clean shaders
 Add asserts
-Add unit tests
-Add wireframe for selected mesh
+Add unit tests for commands
 Improve mesh selection on click
-Add vertex color on PS3
-Add vertex color to unlit shader
-Reorder if needed the vertex descriptor for platforms like PSP in the cooker
 Copy cache data from docker to improve compilation time (delete executable file)
-Add CI support
 Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
-Stop game build if shader compilation fails
-Add a way to create a hash from a file (and cross platform)
-Set functions as private in SceneManager
-Check async file system
+Update git ignore
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
 To make lighting usable on PS3:
 - Use vectors instead of single floats in the light structure (spot light missing)
 - Try to make directional lighting in the vertex shader
-- Try to detect light per draw to use with sphere test
+- Try to detect light per draw to use with sphere test (filter light first by camera frustum)
 - Try to sort by material and distance
 
 --- Can be done for the next release
+Add an error if game.cpp and game.h are not found
+Disable the ability to move and delete game.cpp and game.h
+Add CI support
+Add a way to create a hash from a file (and cross platform)
 Add an option to cook assets only
 Separate audio platform specific code
 Separate mesh platform specific code
@@ -62,6 +56,7 @@ Separate time platform specific code?
 Do not create a new mesh data in text renderer
 Disable update function call on many components
 Check peekinput for PSP
+Reorder if needed the vertex descriptor for platforms like PSP in the cooker
 Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)
 Fix light in fixed pipeline with 2 cameras
 Create a GetFileSize function in File class
