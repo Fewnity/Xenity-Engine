@@ -54,6 +54,24 @@ MeshRenderer::MeshRenderer()
 
 void MeshRenderer::OnDrawGizmosSelected()
 {
+	const std::shared_ptr<Texture> lastUnlitTexture = AssetManager::unlitMaterial->GetTexture();
+	AssetManager::unlitMaterial->SetTexture(AssetManager::defaultTexture);
+	AssetManager::unlitMaterial->SetColor(Color::CreateFromRGBA(93, 126, 179, 255));
+
+	RenderingSettings renderSettings = RenderingSettings();
+	renderSettings.invertFaces = false;
+	renderSettings.useDepth = true;
+	renderSettings.useTexture = true;
+	renderSettings.useLighting = false;
+	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
+	renderSettings.wireframe = true;
+	for (auto& subMesh : m_meshData->m_subMeshes)
+	{
+		MeshManager::DrawMesh(*GetTransformRaw(), *subMesh, *AssetManager::unlitMaterial, renderSettings);
+	}
+
+	AssetManager::unlitMaterial->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
+	AssetManager::unlitMaterial->SetTexture(lastUnlitTexture);
 	return;
 
 #if defined(EDITOR)
