@@ -37,6 +37,7 @@ struct RenderingSettings
 	bool useTexture = true;
 	bool useLighting = true;
 	bool max_depth = false; // Use the maximum depth value for the depth test to not render on top of other objects
+	bool wireframe = false;
 };
 
 enum class PolygoneFillMode

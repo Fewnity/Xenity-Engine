@@ -355,6 +355,18 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		}
 	}
 
+	if (lastSettings.wireframe != settings.wireframe)
+	{
+		if (settings.wireframe)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
+
 	// Keep in memory the used settings
 	lastSettings.invertFaces = settings.invertFaces;
 	lastSettings.renderingMode = settings.renderingMode;
@@ -362,9 +374,12 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	lastSettings.useLighting = settings.useLighting;
 	lastSettings.useTexture = settings.useTexture;
 	lastSettings.max_depth = settings.max_depth;
+	lastSettings.wireframe = settings.wireframe;
 
 	// Maybe check if useLighting was changed to recalculate the color in fixed pipeline?
-	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
+	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() ||
+		lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() ||
+		(!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
 		lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
 		lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntRGBA();
@@ -782,7 +797,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 				glTexCoordPointer(2, GL_FLOAT, stride, (void*)vertexDescriptorList.GetUvOffset());
 			}
-			else 
+			else
 			{
 				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 			}
@@ -807,7 +822,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 				glDisableClientState(GL_COLOR_ARRAY);
 			}
 		}
-		else 
+		else
 		{
 			glEnableVertexAttribArray(2);
 			glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetPositionOffset());

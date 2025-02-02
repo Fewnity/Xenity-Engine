@@ -379,7 +379,9 @@ void Graphics::Draw()
 								component->OnDrawGizmos();
 
 								if (component->GetGameObjectRaw()->m_isSelected)
+								{
 									component->OnDrawGizmosSelected();
+								}
 							}
 						}
 					}
