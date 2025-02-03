@@ -17,6 +17,8 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* use
 
 void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 {
+	XASSERT(onUpdateCheckedEvent, "onUpdateCheckedEvent is nullptr");
+
 	bool updateFound = false;
 	CURL* curl = curl_easy_init();
 	if (curl)
@@ -63,7 +65,6 @@ void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 
 					if (minor > ENGINE_MINOR_VERSION)
 					{
-						Debug::Print("New Update available!");
 						updateFound = true;
 						break;
 					}
@@ -74,7 +75,6 @@ void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 
 					if (patch > ENGINE_PATCH_VERSION)
 					{
-						Debug::Print("New Update available!");
 						updateFound = true;
 						break;
 					}
@@ -86,8 +86,12 @@ void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 			}
 			catch (const std::exception&)
 			{
-
+				Debug::PrintError("[UpdateChecker::CheckForUpdate] failed to parse json", true);
 			}
+		}
+		else 
+		{
+			Debug::PrintError("[UpdateChecker::CheckForUpdate] failed to check update", true);
 		}
 	}
 	onUpdateCheckedEvent->Trigger(updateFound);

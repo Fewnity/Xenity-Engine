@@ -8,6 +8,8 @@
 
 ReflectiveEntry& Reflective::CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum)
 {
+	XASSERT(!variableName.empty(), "[Reflective::CreateReflectionEntry] variableName is empty");
+
 	ReflectiveEntry& entry = vector.emplace_back();
 	entry.variable = variable;
 	entry.visibleInFileInspector = visibleInFileInspector;

@@ -17,6 +17,11 @@
 
 void Application::OpenURL(const std::string& url)
 {
+	if (url.empty())
+	{
+		return;
+	}
+
 #if defined(_WIN32) || defined(_WIN64)
 	const std::wstring wLink = std::wstring(url.begin(), url.end());
 	ShellExecute(nullptr, nullptr, wLink.c_str(), nullptr, nullptr, SW_SHOW);
@@ -58,8 +63,9 @@ bool Application::IsInEditor()
 {
 #if defined(EDITOR)
 	return true;
-#endif
+#else
 	return false;
+#endif
 }
 
 AssetPlatform Application::PlatformToAssetPlatform(Platform platform)

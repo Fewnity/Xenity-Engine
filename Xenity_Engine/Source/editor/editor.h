@@ -490,8 +490,8 @@ private:
 	static void SaveMenuSettings();
 	static void LoadMenuSettings();
 	static void CreateNewMenuSettings();
-	static MenuSetting* AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id);
-	static MenuSetting* UpdateOrAddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id);
+	static MenuSetting* AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, const std::string& name, bool isActive, bool isUnique, int id);
+	static MenuSetting* UpdateOrAddMenuSetting(std::vector<MenuSetting*>& menuSettingList, const std::string& name, bool isActive, bool isUnique, int id);
 
 	static void OnFileModified();
 	static void OnCodeModified();

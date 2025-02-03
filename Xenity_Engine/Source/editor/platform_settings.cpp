@@ -10,12 +10,12 @@
 
 int PlatformSettingsWindows::IsValid()
 {
-	return 0; // Valid
+	return static_cast<int>(PlatformSettingsErrorWindows::None); // Valid
 }
 
 int PlatformSettingsPS3::IsValid()
 {
-	return 0; // Valid
+	return static_cast<int>(PlatformSettingsErrorPS3::None); // Valid
 }
 
 int PlatformSettingsPsVita::IsValid()
@@ -24,28 +24,28 @@ int PlatformSettingsPsVita::IsValid()
 	{
 		if (backgroundImage->GetWidth() != 840 || backgroundImage->GetHeight() != 500)
 		{
-			return 1;
+			return static_cast<int>(PlatformSettingsErrorPsVita::WrongBackgroundSize);
 		}
 	}
 	if (iconImage)
 	{
 		if (iconImage->GetWidth() != 128 || iconImage->GetHeight() != 128)
 		{
-			return 2;
+			return static_cast<int>(PlatformSettingsErrorPsVita::WrongIconSize);
 		}
 	}
 	if (startupImage)
 	{
 		if (startupImage->GetWidth() != 280 || startupImage->GetHeight() != 158)
 		{
-			return 3;
+			return static_cast<int>(PlatformSettingsErrorPsVita::WrongStartupImageSize);
 		}
 	}
 
 	const int gameIdLen = 9;
 	if (gameId.size() != gameIdLen)
 	{
-		return 4;
+		return static_cast<int>(PlatformSettingsErrorPsVita::WrongGameIdSize);
 	}
 	else 
 	{
@@ -57,12 +57,12 @@ int PlatformSettingsPsVita::IsValid()
 			}
 			else
 			{
-				return 5;
+				return static_cast<int>(PlatformSettingsErrorPsVita::WrongGameId);
 			}
 		}
 	}
 
-	return 0; // Valid
+	return static_cast<int>(PlatformSettingsErrorPsVita::None); // Valid
 }
 
 int PlatformSettingsPSP::IsValid()
@@ -71,23 +71,23 @@ int PlatformSettingsPSP::IsValid()
 	{
 		if (backgroundImage->GetWidth() != 480 || backgroundImage->GetHeight() != 272)
 		{
-			return 1;
+			return static_cast<int>(PlatformSettingsErrorPSP::WrongBackgroundSize);
 		}
 	}
 	if (iconImage)
 	{
 		if (iconImage->GetWidth() != 144 || iconImage->GetHeight() != 80)
 		{
-			return 2;
+			return static_cast<int>(PlatformSettingsErrorPSP::WrongIconSize);
 		}
 	}
 	if (previewImage)
 	{
 		if (previewImage->GetWidth() != 310 || previewImage->GetHeight() != 180)
 		{
-			return 3;
+			return static_cast<int>(PlatformSettingsErrorPSP::WrongPreviewSize);
 		}
 	}
 
-	return 0; // Valid
+	return static_cast<int>(PlatformSettingsErrorPSP::None); // Valid
 }

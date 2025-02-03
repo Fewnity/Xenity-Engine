@@ -14,6 +14,8 @@
 
 DialogResult EditorUI::OpenDialog(const std::string& title, const std::string& message, DialogType type)
 {
+	XASSERT(!title.empty(), "[EditorUI::OpenDialog] title is empty");
+
 	DialogResult dialogResult = DialogResult::Dialog_CANCEL;
 #if defined(_WIN32) || defined(_WIN64)
 	int windowsType = MB_OK;
@@ -43,15 +45,15 @@ DialogResult EditorUI::OpenDialog(const std::string& title, const std::string& m
 
 	const int result = MessageBoxA(NULL, message.c_str(), title.c_str(), windowsType | MB_ICONEXCLAMATION); // 6 7 2 (cross is 2)
 
-	if (result == 6) 
+	if (result == IDYES)
 	{
 		dialogResult = DialogResult::Dialog_YES;
 	}
-	else if (result == 7) 
+	else if (result == IDNO)
 	{
 		dialogResult = DialogResult::Dialog_NO;
 	}
-	else if (result == 2) 
+	else if (result == IDCANCEL)
 	{
 		dialogResult = DialogResult::Dialog_CANCEL;
 	}

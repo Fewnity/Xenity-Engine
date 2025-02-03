@@ -38,7 +38,7 @@ void DockerConfigMenu::Draw()
 	{
 		OnStartDrawing();
 
-		if (ImGui::Button("Check Docker")) 
+		if (ImGui::Button("Check Docker state")) 
 		{
 			Refresh();
 		}

@@ -146,7 +146,7 @@ void Editor::LoadMenuSettings()
 	}
 }
 
-Editor::MenuSetting* Editor::AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id = 0)
+Editor::MenuSetting* Editor::AddMenuSetting(std::vector<MenuSetting*>& menuSettingList, const std::string& name, bool isActive, bool isUnique, int id = 0)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -159,7 +159,7 @@ Editor::MenuSetting* Editor::AddMenuSetting(std::vector<MenuSetting*>& menuSetti
 	return newMenuSetting;
 }
 
-Editor::MenuSetting* Editor::UpdateOrAddMenuSetting(std::vector<MenuSetting*>& menuSettingList, std::string name, bool isActive, bool isUnique, int id)
+Editor::MenuSetting* Editor::UpdateOrAddMenuSetting(std::vector<MenuSetting*>& menuSettingList, const std::string& name, bool isActive, bool isUnique, int id)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -428,7 +428,7 @@ void Editor::Draw()
 
 void Editor::CheckItemIntegrity(const std::string& itemPath, bool& success)
 {
-	if (!std::filesystem::exists(itemPath)) 
+	if (!std::filesystem::exists(itemPath))
 	{
 		Debug::PrintError("File/Folder does not exist: " + itemPath);
 		success = false;
@@ -740,13 +740,16 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	}
 
 	std::shared_ptr<File> newFile = FileSystem::MakeFile(fileName + fileExt);
-	int id = 0;
+	
+	// Find an available name
+	int index = 0;
 	while (newFile->CheckIfExist())
 	{
-		id++;
-		newFile = FileSystem::MakeFile(fileName + " (" + std::to_string(id) + ")" + fileExt);
+		index++;
+		newFile = FileSystem::MakeFile(fileName + " (" + std::to_string(index) + ")" + fileExt);
 	}
 
+	// Create file and write default data
 	if (newFile->Open(FileMode::WriteCreateFile))
 	{
 		if (fillWithDefaultData)
@@ -1109,13 +1112,13 @@ int Editor::ExecuteSystemCommand(const std::string& command, std::string& output
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 #if defined(__LINUX__)
-	FILE *f = popen(command.c_str(), "r");
+	FILE* f = popen(command.c_str(), "r");
 #else
 	FILE* f = _popen(command.c_str(), "r");
 #endif
 	constexpr size_t bufferSize = 2048;
 	char output[bufferSize];
-	fgets(output, bufferSize, f); 
+	fgets(output, bufferSize, f);
 #if defined(__LINUX__)
 	int ret = pclose(f);
 #else

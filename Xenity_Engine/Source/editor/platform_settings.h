@@ -13,12 +13,42 @@
 
 class Texture;
 
+enum class PlatformSettingsErrorPSP
+{
+	None = 0,
+	WrongBackgroundSize = 1,
+	WrongIconSize = 2,
+	WrongPreviewSize = 3,
+};
+
+enum class PlatformSettingsErrorPsVita
+{
+	None = 0,
+	WrongBackgroundSize = 1,
+	WrongIconSize = 2,
+	WrongStartupImageSize = 3,
+	WrongGameIdSize = 4,
+	WrongGameId = 5,
+};
+
+enum class PlatformSettingsErrorPS3
+{
+	None = 0,
+};
+
+enum class PlatformSettingsErrorWindows
+{
+	None = 0,
+};
+
 class PlatformSettings : public Reflective
 {
 public:
 	PlatformSettings() = delete;
 	PlatformSettings(Event<>* onChangeEvent)
 	{
+		XASSERT(onChangeEvent, "onChangeEvent is nullptr");
+
 		this->onChangeEvent = onChangeEvent;
 	}
 
@@ -31,7 +61,9 @@ public:
 	void OnReflectionUpdated() override
 	{
 		if (onChangeEvent)
+		{
 			onChangeEvent->Trigger();
+		}
 	}
 
 	virtual int IsValid() = 0;
@@ -40,6 +72,7 @@ public:
 	bool enableOnlineProfiler = false;
 	bool enableProfiler = false;
 	bool useCompilationCache = true; // Should be removed when the engine will be compiled as a static library
+
 protected:
 	Event<>* onChangeEvent = nullptr;
 };
@@ -49,6 +82,7 @@ class PlatformSettingsPSP : public PlatformSettings
 public:
 	PlatformSettingsPSP() = delete;
 	PlatformSettingsPSP(Event<>* onChangeEvent) : PlatformSettings(onChangeEvent) {}
+
 
 	ReflectiveData GetReflectiveData() override
 	{

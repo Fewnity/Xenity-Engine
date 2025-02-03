@@ -35,6 +35,7 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 	loadOptions.platform = Application::GetPlatform();
 	loadOptions.threaded = false;
 	mesh->LoadFileReference(loadOptions);
+	XASSERT(mesh->GetFileStatus() == FileStatus::FileStatus_Loaded, "[MeshManager::LoadMesh] Mesh file not loaded");
 	return mesh;
 }
 

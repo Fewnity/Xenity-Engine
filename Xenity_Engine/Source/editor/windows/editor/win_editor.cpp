@@ -12,6 +12,8 @@
 
 void Editor::OpenLinkInWebBrowser(const std::string& link)
 {
+	XASSERT(!link.empty(), "[Editor::OpenLinkInWebBrowser] link is empty");
+
 	#if defined(_WIN32) || defined(_WIN64)
 	const std::wstring wLink = std::wstring(link.begin(), link.end());
 	ShellExecute(0, 0, wLink.c_str(), 0, 0, SW_SHOW);

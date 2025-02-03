@@ -229,15 +229,15 @@ void BuildSettingsMenu::Draw()
 				ImGui::Text("Background image: PNG 480x272");
 				ImGui::Text("Icon image: PNG 144x80");
 				ImGui::Text("Preview image: PNG 310x180");
-				if (lastSettingError == 1)
+				if (lastSettingError == static_cast<int>(PlatformSettingsErrorPSP::WrongBackgroundSize))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong background image size");
 				}
-				else if (lastSettingError == 2)
+				else if (lastSettingError == static_cast<int>(PlatformSettingsErrorPSP::WrongIconSize))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong icon image size");
 				}
-				else if (lastSettingError == 3)
+				else if (lastSettingError == static_cast<int>(PlatformSettingsErrorPSP::WrongPreviewSize))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong preview image size");
 				}
@@ -250,21 +250,25 @@ void BuildSettingsMenu::Draw()
 				ImGui::Text("Startup image: 8bits PNG 280x158");
 				ImGui::Text("Game Id: Must be exactly 9 characters and unique");
 				ImGui::TextWrapped("Recommended: XXXXYYYYY where X = string of developer in uppercase and Y = a number for this app");
-				if (lastSettingError == 1)
+				if (lastSettingError == static_cast<int>(PlatformSettingsErrorPsVita::WrongBackgroundSize))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong background image size");
 				}
-				else if (lastSettingError == 2)
+				else if (lastSettingError == static_cast<int>(PlatformSettingsErrorPsVita::WrongIconSize))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong icon image size");
 				}
-				else if (lastSettingError == 3)
+				else if (lastSettingError == static_cast<int>(PlatformSettingsErrorPsVita::WrongStartupImageSize))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Wrong startup image size");
 				}
-				else if (lastSettingError == 4)
+				else if (lastSettingError == static_cast<int>(PlatformSettingsErrorPsVita::WrongGameIdSize))
 				{
-					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Incorrect game id");
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Incorrect game id length");
+				}
+				else if (lastSettingError == static_cast<int>(PlatformSettingsErrorPsVita::WrongGameId))
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error: Incorrect character found in game id");
 				}
 			}
 
