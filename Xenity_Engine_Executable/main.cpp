@@ -33,7 +33,6 @@ Add unit tests for commands
 Improve mesh selection on click
 Copy cache data from docker to improve compilation time (delete executable file)
 Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
-Update git ignore
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
