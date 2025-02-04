@@ -160,7 +160,7 @@ void UnitTestManager::TryTest(UnitTest& RegisterEnumStringsMap)
 		}
 		else
 		{
-			Debug::PrintError(RegisterEnumStringsMap.GetName() + " Test: " + errorOut.substr(0, errorOut.size() - 1), true); // substr to remove the last \n
+			Debug::PrintError(RegisterEnumStringsMap.GetName() + " Test:\n" + errorOut.substr(0, errorOut.size() - 1), true); // substr to remove the last \n
 		}
 	}
 }

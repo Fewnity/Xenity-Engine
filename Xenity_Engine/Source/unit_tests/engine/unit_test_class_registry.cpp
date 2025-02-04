@@ -52,18 +52,18 @@ TestResult ClassRegistryAddComponentFromNameTest::Start(std::string& errorOut)
 	std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 
 	{
-		TestAddComponent<Light>(newGameObject, result, errorOut, "Light");
-		TestAddComponent<Camera>(newGameObject, result, errorOut, "Camera");
-		TestAddComponent<TextRenderer>(newGameObject, result, errorOut, "TextRenderer");
-		TestAddComponent<Canvas>(newGameObject, result, errorOut, "Canvas");
-		TestAddComponent<RectTransform>(newGameObject, result, errorOut, "RectTransform");
-		TestAddComponent<TextMesh>(newGameObject, result, errorOut, "TextMesh");
-		TestAddComponent<MeshRenderer>(newGameObject, result, errorOut, "MeshRenderer");
+		TestAddComponent<Light>(newGameObject, testResult, errorOut, "Light");
+		TestAddComponent<Camera>(newGameObject, testResult, errorOut, "Camera");
+		TestAddComponent<TextRenderer>(newGameObject, testResult, errorOut, "TextRenderer");
+		TestAddComponent<Canvas>(newGameObject, testResult, errorOut, "Canvas");
+		TestAddComponent<RectTransform>(newGameObject, testResult, errorOut, "RectTransform");
+		TestAddComponent<TextMesh>(newGameObject, testResult, errorOut, "TextMesh");
+		TestAddComponent<MeshRenderer>(newGameObject, testResult, errorOut, "MeshRenderer");
 
 		if (!Compare(newGameObject->GetComponentCount(), 7)) 
 		{
 			errorOut += "Failed to add all components\n";
-			result = false;
+			testResult = false;
 		}
 	}
 
