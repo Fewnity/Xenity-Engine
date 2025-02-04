@@ -1107,6 +1107,7 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
     <ClCompile Include="Source\psp\video_hardware_dxtn.cpp" />
     <ClCompile Include="Source\unit_tests\editor\unit_test_create_command.cpp" />
+    <ClCompile Include="Source\unit_tests\editor\unit_test_delete_command.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_asset_manager.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_benchmark.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_class_registry.cpp" />

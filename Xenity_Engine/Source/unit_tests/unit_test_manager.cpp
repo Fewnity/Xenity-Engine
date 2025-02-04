@@ -134,10 +134,19 @@ void UnitTestManager::StartAllTests()
 	}
 
 #if defined(EDITOR)
-	//------------------------------------------------------------------ Asset Manager
+	//------------------------------------------------------------------ Editor Commands
 	{
 		AddComponentCommandTest addComponentCommandTest = AddComponentCommandTest("Add Component Command");
 		TryTest(addComponentCommandTest);
+
+		CreateEmptyGameObjectCommandTest createEmptyGameObjectCommandTest = CreateEmptyGameObjectCommandTest("Create Empty GameObject Command");
+		TryTest(createEmptyGameObjectCommandTest);
+
+		CreateChildGameObjectCommandTest createChildGameObjectCommandTest = CreateChildGameObjectCommandTest("Create Child GameObject Command");
+		TryTest(createChildGameObjectCommandTest);
+
+		CreateParentGameObjectCommandTest createParentGameObjectCommandTest = CreateParentGameObjectCommandTest("Create Parent GameObject Command");
+		TryTest(createParentGameObjectCommandTest);
 	}
 #endif
 

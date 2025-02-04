@@ -347,6 +347,7 @@
     <ClCompile Include="Source\engine\graphics\frame_limiter\frame_limiter.cpp" />
     <ClCompile Include="Source\editor\compilation\compiler_cache.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_mesh_descriptor.cpp" />
+    <ClCompile Include="Source\unit_tests\editor\unit_test_delete_command.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />

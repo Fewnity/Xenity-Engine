@@ -28,7 +28,7 @@ TestResult AddComponentCommandTest::Start(std::string& errorOut)
 		InspectorAddComponentCommand addComponentCommand(*newGameObject, "Light");
 		addComponentCommand.Execute();
 		const uint64_t lightId = addComponentCommand.componentId;
-		
+
 		EXPECT_NOT_NULL(newGameObject->GetComponent<Light>(), "Failed to add Light component");
 
 		EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
@@ -42,7 +42,7 @@ TestResult AddComponentCommandTest::Start(std::string& errorOut)
 		EXPECT_NOT_NULL(newGameObject->GetComponent<Light>(), "Failed to re add Light component");
 
 		EXPECT_EQUALS(newGameObject->GetComponent<Light>()->GetUniqueId(), lightId, "Re added light has wrong unique id");
-		
+
 		addComponentCommand.Undo();
 
 		EXPECT_EQUALS(newGameObject->GetComponentCount(), 0, "Light component has not been removed");
@@ -83,9 +83,120 @@ TestResult AddComponentCommandTest::Start(std::string& errorOut)
 	GameplayManager::RemoveDestroyedGameObjects();
 	GameplayManager::RemoveDestroyedComponents();
 	newGameObject.reset();
-	
+
 	SceneManager::SetSceneModified(false);
 
+	END_TEST();
+}
+
+TestResult CreateEmptyGameObjectCommandTest::Start(std::string& errorOut)
+{
+	BEGIN_TEST();
+
+	std::vector<std::weak_ptr<GameObject>> targets;
+	InspectorCreateGameObjectCommand command = InspectorCreateGameObjectCommand(targets, CreateGameObjectMode::CreateEmpty);
+
+	EXPECT_EQUALS(command.createdGameObjects.size(), 0, "InspectorCreateGameObjectCommand not correctly initialized");
+
+	command.Execute();
+
+	EXPECT_EQUALS(command.createdGameObjects.size(), 1, "Failed to create a GameObject");
+
+	const uint64_t createdGameObjectId = command.createdGameObjects[0];
+	{
+		std::shared_ptr<GameObject> gameObject = FindGameObjectById(createdGameObjectId);
+		EXPECT_NOT_NULL(gameObject, "Failed to find the GameObject after the creation");
+	}
+	command.Undo();
+
+	GameplayManager::RemoveDestroyedGameObjects();
+
+	{
+		std::shared_ptr<GameObject> gameObject = FindGameObjectById(createdGameObjectId);
+		EXPECT_NULL(gameObject, "Failed to undo the command");
+	}
+
+	command.Redo();
+
+	{
+		std::shared_ptr<GameObject> gameObject = FindGameObjectById(createdGameObjectId);
+		EXPECT_NOT_NULL(gameObject, "Failed to find the GameObject after the re-creation");
+	}
+
+	command.Undo();
+
+	GameplayManager::RemoveDestroyedGameObjects();
+
+	{
+		std::shared_ptr<GameObject> gameObject = FindGameObjectById(createdGameObjectId);
+		EXPECT_NULL(gameObject, "Failed to undo the command 2");
+	}
+
+	command.Redo();
+
+	{
+		std::shared_ptr<GameObject> gameObject = FindGameObjectById(createdGameObjectId);
+		EXPECT_NOT_NULL(gameObject, "Failed to find the GameObject after the re-creation 2");
+	}
+
+	command.Undo();
+
+	SceneManager::SetSceneModified(false);
+
+	END_TEST();
+}
+
+TestResult CreateChildGameObjectCommandTest::Start(std::string& errorOut)
+{
+	BEGIN_TEST();
+
+	std::vector<std::weak_ptr<GameObject>> targets;
+	std::shared_ptr<GameObject> parent = CreateGameObject();
+	std::shared_ptr<GameObject> parent2 = CreateGameObject();
+	targets.push_back(parent);
+	targets.push_back(parent2);
+
+	InspectorCreateGameObjectCommand command = InspectorCreateGameObjectCommand(targets, CreateGameObjectMode::CreateChild);
+
+	EXPECT_EQUALS(command.createdGameObjects.size(), 0, "InspectorCreateGameObjectCommand not correctly initialized");
+
+	command.Execute();
+
+	EXPECT_EQUALS(command.createdGameObjects.size(), 2, "Failed to create a GameObject");
+
+	const uint64_t createdGameObjectId0 = command.createdGameObjects[0];
+	const uint64_t createdGameObjectId1 = command.createdGameObjects[1];
+
+	{
+		std::shared_ptr<GameObject> gameObject0 = FindGameObjectById(createdGameObjectId0);
+		EXPECT_NOT_NULL(gameObject0, "Failed to find the GameObject after the creation");
+
+		std::shared_ptr<GameObject> gameObject1 = FindGameObjectById(createdGameObjectId1);
+		EXPECT_NOT_NULL(gameObject1, "Failed to find the GameObject after the creation");
+	}
+
+	command.Undo();
+	GameplayManager::RemoveDestroyedGameObjects();
+
+	{
+		std::shared_ptr<GameObject> gameObject0 = FindGameObjectById(createdGameObjectId0);
+		EXPECT_NULL(gameObject0, "Failed to undo the command");
+
+		std::shared_ptr<GameObject> gameObject1 = FindGameObjectById(createdGameObjectId1);
+		EXPECT_NULL(gameObject1, "Failed to undo the command");
+	}
+
+	Destroy(parent);
+	Destroy(parent2);
+	GameplayManager::RemoveDestroyedGameObjects();
+	SceneManager::SetSceneModified(false);
+
+	END_TEST();
+}
+
+TestResult CreateParentGameObjectCommandTest::Start(std::string& errorOut)
+{
+	BEGIN_TEST();
 	END_TEST();
 }
 

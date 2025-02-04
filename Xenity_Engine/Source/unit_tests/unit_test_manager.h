@@ -209,6 +209,9 @@ MAKE_TEST(VertexDescriptorGetVertexElementSize);
 // Incomplete tests!
 
 MAKE_TEST(AddComponentCommand);
+MAKE_TEST(CreateEmptyGameObjectCommand);
+MAKE_TEST(CreateChildGameObjectCommand);
+MAKE_TEST(CreateParentGameObjectCommand);
 
 #pragma endregion
 
