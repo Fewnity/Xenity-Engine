@@ -28,11 +28,11 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 Rework the documentation
 Implement alpha testing on shaders
 Check if force inline for GLM is better or not
-Add asserts
 Add unit tests for commands
 Improve mesh selection on click
-Copy cache data from docker to improve compilation time (delete executable file)
 Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
+Try to make a new component list system
+Fix texture when loaded in the cooker (caused by opengl not supporting multiple threads)
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
@@ -43,6 +43,7 @@ To make lighting usable on PS3:
 - Try to sort by material and distance
 
 --- Can be done for the next release
+Reduce cache size by deleting executable file
 Add an error if game.cpp and game.h are not found
 Disable the ability to move and delete game.cpp and game.h
 Add CI support
