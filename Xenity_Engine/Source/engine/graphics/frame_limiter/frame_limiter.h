@@ -26,6 +26,10 @@ public:
 	static void SetWaitTiming(uint32_t waitTiming)
 	{
 		m_waitTiming = waitTiming;
+		if (m_waitTiming < 0)
+		{
+			m_waitTiming = 0;
+		}
 	}
 
 	/**
