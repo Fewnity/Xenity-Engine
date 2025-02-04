@@ -15,11 +15,11 @@
 /**
 * @brief Function to call when an assert fails to print a message in the logs
 */
-API void OnAssertionFailed(const std::string& message);
+API void OnAssertionFailed(const std::string& condition, const std::string& message, const std::string fileName, size_t line);
 
 // XASSERT is a macro to assert a condition and print a message in the logs in debug mode
 #if defined(DEBUG)
-#define XASSERT(condition, message) if (!(condition)) { OnAssertionFailed(message); assert(false); } 0
+#define XASSERT(condition, message) if (!(condition)) { OnAssertionFailed(#condition, message, __FILE__, __LINE__); assert(false); } 0
 #else
 #define XASSERT(condition, message) 0
 #endif

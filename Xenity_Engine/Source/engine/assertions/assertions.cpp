@@ -8,7 +8,7 @@
 
 #include <engine/debug/debug.h>
 
-void OnAssertionFailed(const std::string& message)
+void OnAssertionFailed(const std::string& condition, const std::string& message, const std::string fileName, size_t line)
 {
-	Debug::PrintError("Assertion failed: " + message);
+	Debug::PrintError("Assertion failed!\nCondition: " + condition + "\nMessage: " + message + "\nFile: " + fileName + "\nLine: " + std::to_string(line));
 }
