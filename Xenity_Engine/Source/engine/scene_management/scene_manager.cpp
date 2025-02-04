@@ -373,7 +373,6 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 				// Update transform
 				const std::shared_ptr<Transform> transform = go->GetTransform();
 				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
-				//transform->SetRotation(Quaternion::Euler(transform->GetLocalEulerAngles().x, transform->GetLocalEulerAngles().y, transform->GetLocalEulerAngles().z));
 				transform->m_isTransformationMatrixDirty = true;
 				transform->UpdateLocalRotation();
 				transform->UpdateWorldValues();
