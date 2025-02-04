@@ -17,6 +17,8 @@ public:
 	*/
 	static void UpdateCache(const std::string& source, Platform platform);
 
+	static bool CheckIfCacheExists(Platform platform);
+
 	static std::string GetCachePath(Platform platform);
 };
 

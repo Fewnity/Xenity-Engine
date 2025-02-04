@@ -1013,6 +1013,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 
 	if (params.buildType != BuildType::BuildShaders)
 	{
+		// Copy source code and libraries
 		const std::string copyEngineSourceCommand = "docker cp \"" + engineProjectLocation + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
 		[[maybe_unused]] const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
 		const std::string copyEngineLibrariesCommand = "docker cp \"" + engineProjectLocation + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
@@ -1020,6 +1021,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		const std::string copyMainCommand = "docker cp \"" + engineFolderLocation + "main.cpp\" XenityEngineBuild:\"/home/XenityBuild/Source/\"";
 		[[maybe_unused]] const int copyMainResult = system(copyMainCommand.c_str()); // main.cpp file
 
+		// Copy make file or CMakeLists.txt
 		if (params.buildPlatform.platform == Platform::P_PS3)
 		{
 			const std::string copyMakeFileCommand = "docker cp \"" + engineFolderLocation + "Makefile.PS3\" XenityEngineBuild:\"/home/XenityBuild/Makefile\"";
@@ -1031,10 +1033,14 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 			[[maybe_unused]] const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 		}
 
+		// Copy cache for faster compilation
 		if (params.buildPlatform.settings->useCompilationCache)
 		{
-			const std::string copyCacheCommand = "docker cp \"" + CompilerCache::GetCachePath(params.buildPlatform.platform) + "build/\" XenityEngineBuild:\"/home/XenityBuild/\"";
-			[[maybe_unused]] const int copyCacheResult = system(copyCacheCommand.c_str());
+			if (CompilerCache::CheckIfCacheExists(params.buildPlatform.platform))
+			{
+				const std::string copyCacheCommand = "docker cp \"" + CompilerCache::GetCachePath(params.buildPlatform.platform) + "build/\" XenityEngineBuild:\"/home/XenityBuild/\"";
+				[[maybe_unused]] const int copyCacheResult = system(copyCacheCommand.c_str());
+			}
 		}
 
 		// Copy source code in the build folder
