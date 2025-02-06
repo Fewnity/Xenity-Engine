@@ -39,12 +39,18 @@ public:
 	std::weak_ptr<Camera> weakCamera;
 	int gridAxis = 0;
 
+	struct HitGameObjectInfo
+	{
+		std::weak_ptr<GameObject> gameObject;
+		float distance;
+	};
 private:
+
 	bool DrawToolWindow();
 	bool DrawImageButton(bool enabled, const Texture& texture, const std::string& buttonId, bool& isHovered);
 	void MoveCamera();
 	void ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselection);
-	std::shared_ptr<GameObject> CheckBoundingBoxesOnClick(Camera& camera);
+	std::vector<HitGameObjectInfo> CheckBoundingBoxesOnClick(Camera& camera);
 
 	Vector3 GetNearestPoint(const Vector3& linePos1, const Vector3& lineDir1, const Vector3& linePos2, const Vector3& lineDir2);
 	void GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, Camera& camera);
@@ -80,5 +86,7 @@ private:
 	Vector3 oldTransformScale;
 	std::shared_ptr<GameObject> draggedMeshGameObject;
 	float lastScaleDot = 0;
+	int selectedGameObjectIndex = 0;
+	std::vector<HitGameObjectInfo> lastHitGameObjects;
 };
 

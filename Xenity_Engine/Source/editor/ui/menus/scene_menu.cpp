@@ -194,7 +194,12 @@ bool getHitDistance(const Vector3& corner1, const Vector3& corner2, const Vector
 	return false;
 }
 
-std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(Camera& camera)
+bool HitGameObjectComparator(const SceneMenu::HitGameObjectInfo& c1, const SceneMenu::HitGameObjectInfo& c2)
+{
+	return c2.distance > c1.distance;
+}
+
+std::vector<SceneMenu::HitGameObjectInfo> SceneMenu::CheckBoundingBoxesOnClick(Camera& camera)
 {
 	const Vector3 dir = camera.GetMouseRay();
 
@@ -209,6 +214,7 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(Camera& camera)
 	float minDis = dis;
 	std::shared_ptr<GameObject> newGameObject = nullptr;
 	const int gameObjectCount = GameplayManager::gameObjectCount;
+	std::vector<HitGameObjectInfo> selectedGOs;
 	for (int i = 0; i < gameObjectCount; i++)
 	{
 		const std::shared_ptr<GameObject>& selectedGO = GameplayManager::GetGameObjects()[i];
@@ -228,6 +234,17 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(Camera& camera)
 
 			if (hit)
 			{
+				HitGameObjectInfo hitInfo;
+				hitInfo.gameObject = selectedGO;
+
+				// If the camera is inside the object, we invert the distance and make the object in the end of the list
+				if (dis < 0)
+				{
+					dis = -dis * 10000;
+				}
+
+				hitInfo.distance = dis;
+				selectedGOs.push_back(hitInfo);
 				if (dis < minDis)
 				{
 					minDis = dis;
@@ -236,8 +253,8 @@ std::shared_ptr<GameObject> SceneMenu::CheckBoundingBoxesOnClick(Camera& camera)
 			}
 		}
 	}
-
-	return newGameObject;
+	std::sort(selectedGOs.begin(), selectedGOs.end(), HitGameObjectComparator);
+	return selectedGOs;
 }
 
 void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormalized, Vector3& worldCoords, Camera& camera)
@@ -387,7 +404,38 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 	std::shared_ptr<GameObject> newGameObjectSelected = nullptr;
 	if (InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT))
 	{
-		newGameObjectSelected = CheckBoundingBoxesOnClick(*camera);
+		const std::vector<HitGameObjectInfo> selectedGOs = CheckBoundingBoxesOnClick(*camera);
+
+		bool hasListChanged = false;
+		const size_t selectedGoSize = selectedGOs.size();
+		if (selectedGoSize != lastHitGameObjects.size())
+		{
+			hasListChanged = true;
+		}
+		else
+		{
+			for (size_t i = 0; i < selectedGoSize; i++)
+			{
+				if (lastHitGameObjects.size() <= i || (selectedGOs[i].gameObject.lock() != lastHitGameObjects[i].gameObject.lock()))
+				{
+					hasListChanged = true;
+					break;
+				}
+			}
+		}
+
+		if (hasListChanged || selectedGameObjectIndex >= selectedGoSize)
+		{
+			selectedGameObjectIndex = 0;
+		}
+
+		if (selectedGoSize > 0)
+		{
+			newGameObjectSelected = selectedGOs[selectedGameObjectIndex].gameObject.lock();
+			selectedGameObjectIndex++;
+		}
+
+		lastHitGameObjects = selectedGOs;
 	}
 
 	// Move the camera if the mouse left button is held
