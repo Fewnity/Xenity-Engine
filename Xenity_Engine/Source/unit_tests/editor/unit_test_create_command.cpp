@@ -103,6 +103,9 @@ TestResult CreateEmptyGameObjectCommandTest::Start(std::string& errorOut)
 	EXPECT_EQUALS(command.createdGameObjects.size(), 1, "Failed to create a GameObject");
 
 	const uint64_t createdGameObjectId = command.createdGameObjects[0];
+
+	EXPECT_NOT_EQUALS(createdGameObjectId, 0, "Wrong gameobject Id");
+
 	{
 		std::shared_ptr<GameObject> gameObject = FindGameObjectById(createdGameObjectId);
 		EXPECT_NOT_NULL(gameObject, "Failed to find the GameObject after the creation");
@@ -167,12 +170,21 @@ TestResult CreateChildGameObjectCommandTest::Start(std::string& errorOut)
 	const uint64_t createdGameObjectId0 = command.createdGameObjects[0];
 	const uint64_t createdGameObjectId1 = command.createdGameObjects[1];
 
+	EXPECT_NOT_EQUALS(createdGameObjectId0, 0, "Wrong gameobject0 Id");
+	EXPECT_NOT_EQUALS(createdGameObjectId1, 0, "Wrong gameobject1 Id");
+
 	{
 		std::shared_ptr<GameObject> gameObject0 = FindGameObjectById(createdGameObjectId0);
 		EXPECT_NOT_NULL(gameObject0, "Failed to find the GameObject after the creation");
 
 		std::shared_ptr<GameObject> gameObject1 = FindGameObjectById(createdGameObjectId1);
 		EXPECT_NOT_NULL(gameObject1, "Failed to find the GameObject after the creation");
+
+		EXPECT_EQUALS(parent->GetChildrenCount(), 1, "parent has no child");
+		EXPECT_EQUALS(parent2->GetChildrenCount(), 1, "parent2 has no child");
+
+		EXPECT_EQUALS(gameObject0->GetParent().lock(), parent, "Wrong parent for gameObject0");
+		EXPECT_EQUALS(gameObject1->GetParent().lock(), parent2, "Wrong parent for gameObject1");
 	}
 
 	command.Undo();
@@ -184,6 +196,42 @@ TestResult CreateChildGameObjectCommandTest::Start(std::string& errorOut)
 
 		std::shared_ptr<GameObject> gameObject1 = FindGameObjectById(createdGameObjectId1);
 		EXPECT_NULL(gameObject1, "Failed to undo the command");
+
+		EXPECT_EQUALS(parent->GetChildrenCount(), 0, "parent has a child");
+		EXPECT_EQUALS(parent2->GetChildrenCount(), 0, "parent2 has a child");
+	}
+
+	// Execute again
+	command.Redo();
+
+	EXPECT_EQUALS(command.createdGameObjects.size(), 2, "Failed to re-create a GameObject");
+
+	{
+		std::shared_ptr<GameObject> gameObject0 = FindGameObjectById(createdGameObjectId0);
+		EXPECT_NOT_NULL(gameObject0, "Failed to find the GameObject after the re-creation");
+
+		std::shared_ptr<GameObject> gameObject1 = FindGameObjectById(createdGameObjectId1);
+		EXPECT_NOT_NULL(gameObject1, "Failed to find the GameObject after the re-creation");
+
+		EXPECT_EQUALS(parent->GetChildrenCount(), 1, "parent has no child");
+		EXPECT_EQUALS(parent2->GetChildrenCount(), 1, "parent2 has no child");
+
+		EXPECT_EQUALS(gameObject0->GetParent().lock(), parent, "Wrong parent for gameObject0");
+		EXPECT_EQUALS(gameObject1->GetParent().lock(), parent2, "Wrong parent for gameObject1");
+	}
+
+	command.Undo();
+	GameplayManager::RemoveDestroyedGameObjects();
+
+	{
+		std::shared_ptr<GameObject> gameObject0 = FindGameObjectById(createdGameObjectId0);
+		EXPECT_NULL(gameObject0, "Failed to undo the command");
+
+		std::shared_ptr<GameObject> gameObject1 = FindGameObjectById(createdGameObjectId1);
+		EXPECT_NULL(gameObject1, "Failed to undo the command");
+
+		EXPECT_EQUALS(parent->GetChildrenCount(), 0, "parent has a child");
+		EXPECT_EQUALS(parent2->GetChildrenCount(), 0, "parent2 has a child");
 	}
 
 	Destroy(parent);
@@ -197,6 +245,86 @@ TestResult CreateChildGameObjectCommandTest::Start(std::string& errorOut)
 TestResult CreateParentGameObjectCommandTest::Start(std::string& errorOut)
 {
 	BEGIN_TEST();
+
+	std::vector<std::weak_ptr<GameObject>> targets;
+	std::shared_ptr<GameObject> gameObject0 = CreateGameObject();
+	std::shared_ptr<GameObject> gameObject1 = CreateGameObject();
+	targets.push_back(gameObject0);
+	targets.push_back(gameObject1);
+
+	InspectorCreateGameObjectCommand command = InspectorCreateGameObjectCommand(targets, CreateGameObjectMode::CreateParent);
+
+	EXPECT_EQUALS(command.createdGameObjects.size(), 0, "InspectorCreateGameObjectCommand not correctly initialized");
+
+	command.Execute();
+
+	EXPECT_EQUALS(command.createdGameObjects.size(), 2, "Failed to create a GameObject");
+
+	const uint64_t createdGameObjectId0 = command.createdGameObjects[0];
+	const uint64_t createdGameObjectId1 = command.createdGameObjects[1];
+
+	EXPECT_NOT_EQUALS(createdGameObjectId0, 0, "Wrong gameobject0 Id");
+	EXPECT_NOT_EQUALS(createdGameObjectId1, 0, "Wrong gameobject1 Id");
+
+	{
+		std::shared_ptr<GameObject> parent0 = FindGameObjectById(createdGameObjectId0);
+		EXPECT_NOT_NULL(gameObject0, "Failed to find the GameObject after the creation");
+
+		std::shared_ptr<GameObject> parent1 = FindGameObjectById(createdGameObjectId1);
+		EXPECT_NOT_NULL(gameObject1, "Failed to find the GameObject after the creation");
+
+		EXPECT_EQUALS(parent0->GetChildrenCount(), 1, "gameObject0 has no child");
+		EXPECT_EQUALS(parent1->GetChildrenCount(), 1, "gameObject1 has no child");
+
+		EXPECT_EQUALS(gameObject0->GetParent().lock(), parent0, "Wrong parent for gameObject0");
+		EXPECT_EQUALS(gameObject1->GetParent().lock(), parent1, "Wrong parent for gameObject1");
+	}
+
+	command.Undo();
+	GameplayManager::RemoveDestroyedGameObjects();
+
+	{
+		std::shared_ptr<GameObject> parent0 = FindGameObjectById(createdGameObjectId0);
+		EXPECT_NULL(parent0, "Failed to undo the command");
+
+		std::shared_ptr<GameObject> parent1 = FindGameObjectById(createdGameObjectId1);
+		EXPECT_NULL(parent1, "Failed to undo the command");
+
+		EXPECT_NULL(gameObject0->GetParent().lock(), "Wrong parent for gameObject0");
+		EXPECT_NULL(gameObject1->GetParent().lock(), "Wrong parent for gameObject1");
+	}
+
+	// Execute again
+	command.Redo();
+
+	{
+		std::shared_ptr<GameObject> parent0 = FindGameObjectById(createdGameObjectId0);
+		EXPECT_NOT_NULL(gameObject0, "Failed to find the GameObject after the creation");
+
+		std::shared_ptr<GameObject> parent1 = FindGameObjectById(createdGameObjectId1);
+		EXPECT_NOT_NULL(gameObject1, "Failed to find the GameObject after the creation");
+
+		EXPECT_EQUALS(parent0->GetChildrenCount(), 1, "gameObject0 has no child");
+		EXPECT_EQUALS(parent1->GetChildrenCount(), 1, "gameObject1 has no child");
+
+		EXPECT_EQUALS(gameObject0->GetParent().lock(), parent0, "Wrong parent for gameObject0");
+		EXPECT_EQUALS(gameObject1->GetParent().lock(), parent1, "Wrong parent for gameObject1");
+	}
+
+	command.Undo();
+	GameplayManager::RemoveDestroyedGameObjects();
+
+	{
+		std::shared_ptr<GameObject> parent0 = FindGameObjectById(createdGameObjectId0);
+		EXPECT_NULL(parent0, "Failed to undo the command");
+
+		std::shared_ptr<GameObject> parent1 = FindGameObjectById(createdGameObjectId1);
+		EXPECT_NULL(parent1, "Failed to undo the command");
+
+		EXPECT_NULL(gameObject0->GetParent().lock(), "Wrong parent for gameObject0");
+		EXPECT_NULL(gameObject1->GetParent().lock(), "Wrong parent for gameObject1");
+	}
+
 	END_TEST();
 }
 
