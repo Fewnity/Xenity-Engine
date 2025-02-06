@@ -424,29 +424,39 @@ void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo,
 
 	const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.fileAndId.file);
 	const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
-	if (texture->GetFileStatus() != FileStatus::FileStatus_Loaded)
-	{
-		FileReference::LoadOptions loadOptions;
-		loadOptions.platform = settings.platform;
-		loadOptions.threaded = false;
-		texture->LoadFileReference(loadOptions);
-	}
 
 	TextureResolutions textureResolution = texture->m_settings[settings.assetPlatform]->resolution;
-	int originalWidth = texture->m_originalWidth;
-	int originalHeight = texture->m_originalHeight;
+	int width, height, channels;
+	unsigned char* imageData = nullptr;
 
-	int newWidth = originalWidth;
-	int newHeight = originalHeight;
+	// If the texture is already loaded, we can get the width and height
+	if (texture->GetFileStatus() == FileStatus::FileStatus_Loaded)
+	{
+		width = texture->m_originalWidth;
+		height = texture->m_originalHeight;
+	}
+	else // Load the texture to get the width and height and the data
+	{
+		imageData = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
+		if (!imageData)
+		{
+			Debug::PrintError("[Cooker::CookAsset] Failed to load texture: " + texturePath);
+			return;
+		}
+	}
+
+	// Get the new width and height of the texture
+	int newWidth = width;
+	int newHeight = height;
 	const int textureResolutionInt = static_cast<int>(textureResolution);
-	if ((newWidth > originalHeight) && newWidth > textureResolutionInt)
+	if ((newWidth > height) && newWidth > textureResolutionInt)
 	{
 		newWidth = textureResolutionInt;
-		newHeight = static_cast<int>(originalHeight * (static_cast<float>(textureResolution) / static_cast<float>(originalWidth)));
+		newHeight = static_cast<int>(height * (static_cast<float>(textureResolution) / static_cast<float>(width)));
 	}
-	else if ((newHeight > originalWidth) && newHeight > textureResolutionInt)
+	else if ((newHeight > width) && newHeight > textureResolutionInt)
 	{
-		newWidth = static_cast<int>(originalWidth * (static_cast<float>(textureResolution) / static_cast<float>(originalHeight)));
+		newWidth = static_cast<int>(width * (static_cast<float>(textureResolution) / static_cast<float>(height)));
 		newHeight = textureResolutionInt;
 	}
 	else if ((newWidth == newHeight) && newWidth > textureResolutionInt)
@@ -455,26 +465,32 @@ void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo,
 		newHeight = textureResolutionInt;
 	}
 
-	if (originalWidth != newWidth || originalHeight != newHeight)
+	// Resize the texture if needed
+	if (width != newWidth || height != newHeight)
 	{
-		int width, height, channels;
-		unsigned char* imageData = nullptr;
-		imageData = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
+		// If the data is not loaded, load it
 		if (!imageData)
 		{
-			Debug::PrintError("[Cooker::CookAsset] Failed to load texture: " + texturePath);
-			return;
+			imageData = stbi_load(texturePath.c_str(), &width, &height, &channels, 4);
+			if (!imageData)
+			{
+				Debug::PrintError("[Cooker::CookAsset] Failed to load texture: " + texturePath);
+				return;
+			}
 		}
-
 		unsigned char* resizedImageData = (unsigned char*)malloc(newWidth * newHeight * 4);
 		stbir_resize_uint8(imageData, width, height, 0, resizedImageData, newWidth, newHeight, 0, 4);
-		free(imageData);
 
 		stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, resizedImageData, 0);
 		free(resizedImageData);
 	}
-	else
+	else // Just copy the texture file
 	{
 		std::filesystem::copy(texturePath, exportPath, std::filesystem::copy_options::overwrite_existing);
+	}
+
+	if (imageData)
+	{
+		free(imageData);
 	}
 }
