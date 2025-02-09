@@ -348,6 +348,7 @@
     <ClCompile Include="Source\editor\compilation\compiler_cache.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_mesh_descriptor.cpp" />
     <ClCompile Include="Source\unit_tests\editor\unit_test_delete_command.cpp" />
+    <ClCompile Include="Source\engine\graphics\screen_capture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -804,6 +805,7 @@
     <ClInclude Include="Source\engine\graphics\3d_graphics\vertex_descriptor.h" />
     <ClInclude Include="Source\engine\graphics\frame_limiter\frame_limiter.h" />
     <ClInclude Include="Source\editor\compilation\compiler_cache.h" />
+    <ClInclude Include="Source\engine\graphics\screen_capture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

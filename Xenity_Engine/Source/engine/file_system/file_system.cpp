@@ -364,6 +364,7 @@ int FileSystem::InitFileSystem()
 {
 #if defined(__vita__)
 	sceIoMkdir("ux0:/data/xenity_engine", 0777);
+	sceIoMkdir("ux0:/data/xenity_engine/screenshots", 0777);
 #endif
 #if defined(_EE)
 	// 	SifInitRpc(0);
