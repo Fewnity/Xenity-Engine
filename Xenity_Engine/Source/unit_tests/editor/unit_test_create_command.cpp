@@ -325,6 +325,11 @@ TestResult CreateParentGameObjectCommandTest::Start(std::string& errorOut)
 		EXPECT_NULL(gameObject1->GetParent().lock(), "Wrong parent for gameObject1");
 	}
 
+	Destroy(gameObject0);
+	Destroy(gameObject1);
+	GameplayManager::RemoveDestroyedGameObjects();
+	SceneManager::SetSceneModified(false);
+
 	END_TEST();
 }
 
