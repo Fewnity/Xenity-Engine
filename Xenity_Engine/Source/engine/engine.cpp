@@ -31,7 +31,6 @@
 #include <editor/ui/editor_ui.h>
 
 #endif
-#include <engine/scene_management/scene_manager.h>
 
 #include <engine/cpu.h>
 
@@ -53,6 +52,7 @@
 
 // Gameplay
 #include <engine/game_elements/gameplay_manager.h>
+#include <engine/scene_management/scene_manager.h>
 
 // Game core
 #include "game_interface.h"
@@ -64,12 +64,16 @@
 #include <engine/file_system/file_system.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/asset_management/project_manager.h>
+#include <engine/file_system/async_file_loading.h>
 
 // Debug, Tests & Profiling
 #include <engine/debug/debug.h>
 #include <engine/debug/performance.h>
 #include <unit_tests/unit_test_manager.h>
 #include <engine/tools/profiler_benchmark.h>
+#include <engine/tools/scope_benchmark.h>
+#include <engine/debug/stack_debug_object.h>
+#include <engine/debug/crash_handler.h>
 
 // Window
 #include <engine/ui/window.h>
@@ -80,6 +84,7 @@
 // Graphics
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/2d_graphics/sprite_manager.h>
+#include <engine/graphics/frame_limiter/frame_limiter.h>
 
 // Time
 #include <engine/time/time.h>
@@ -87,14 +92,6 @@
 // Physics
 #include <engine/physics/physics_manager.h>
 
-#include <engine/file_system/async_file_loading.h>
-#include <engine/debug/crash_handler.h>
-#include <engine/tools/scope_benchmark.h>
-#include <engine/tools/math.h>
-#include <engine/vectors/quaternion.h>
-#include <engine/vectors/vector3.h>
-#include <engine/debug/stack_debug_object.h>
-#include <engine/graphics/frame_limiter/frame_limiter.h>
 
 #include <engine/graphics/camera.h>
 #if !defined(EDITOR)
