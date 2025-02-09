@@ -96,6 +96,12 @@
 #include <engine/debug/stack_debug_object.h>
 #include <engine/graphics/frame_limiter/frame_limiter.h>
 
+#include <engine/graphics/camera.h>
+#if !defined(EDITOR)
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#endif
+#include <stb_image_write.h>
+
 std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
 bool Engine::s_canUpdateAudio = false;
 bool Engine::s_isRunning = true;
@@ -417,6 +423,27 @@ void Engine::Loop()
 
 				// Draw
 				Graphics::Draw();
+
+				if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
+				{
+					if (Graphics::usedCamera)
+					{						
+						std::unique_ptr<uint8_t[]> frameBufferData = Graphics::usedCamera->GetRawFrameBuffer();
+
+						//std::string path = std::string(PSVITA_DEBUG_LOG_FOLDER) + "img" + std::to_string((int)frameBufferData) + ".png"; //PsVita
+						std::string path = std::string(PS3_DATA_FOLDER) + "img" + std::to_string((int)frameBufferData.get()) + ".png"; // PS3
+						//std::string path = "C:\\Users\\elect\\Desktop\\Game Builds\\img" + std::to_string((int)frameBufferData.get()) + ".png"; // PC
+						//std::string path = "img" + std::to_string((int)frameBufferData.get()) + ".png"; // PSP
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
+						stbi_flip_vertically_on_write(true); // Windows / PsVita
+#else // PSP, PS3
+						stbi_flip_vertically_on_write(false); // PSP PS3
+#endif
+
+						stbi_write_png(path.c_str(), Graphics::usedCamera->GetWidth(), Graphics::usedCamera->GetHeight(), 3, frameBufferData.get(), 0);
+					}
+				}
 			}
 			else
 			{
