@@ -45,9 +45,8 @@ int RendererGU::Init()
 	int result = 0;
 
 	int displayBufferByteCount = 2;
-	bool highQualityColor = false;
 	int displayColorMode = GU_PSM_5650;
-	if (highQualityColor)
+	if (useHighQualityColor)
 	{
 		displayBufferByteCount = 4;
 		displayColorMode = GU_PSM_8888;
@@ -57,6 +56,7 @@ int RendererGU::Init()
 	void* fbp1 = vramalloc(PSP_BUF_WIDTH * PSP_SCR_HEIGHT * displayBufferByteCount);
 	void* zbp = vramalloc(PSP_BUF_WIDTH * PSP_SCR_HEIGHT * 2);
 
+	m_frameBuffer = fbp0;
 	sceGuInit();
 	gumInit();
 
@@ -522,6 +522,16 @@ void RendererGU::Setlights(const LightsIndices& lightsIndices)
 				break;
 		}
 	}
+}
+
+const uint8_t* RendererGU::GetFrameBuffer() const
+{
+	return static_cast<const uint8_t*>(m_frameBuffer);
+}
+
+bool RendererGU::UseHighQualityColor() const
+{
+	return useHighQualityColor;
 }
 
 void RendererGU::Clear()

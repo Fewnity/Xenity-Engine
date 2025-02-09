@@ -244,6 +244,8 @@ public:
 
 	void UpdateCameraTransformMatrix();
 
+	std::unique_ptr<uint8_t[]> GetRawFrameBuffer();
+
 protected:
 	friend class SceneMenu;
 	friend class GameMenu;

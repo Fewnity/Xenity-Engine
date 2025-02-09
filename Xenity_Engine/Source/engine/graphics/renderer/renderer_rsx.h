@@ -62,6 +62,7 @@ public:
 
 	void Setlights(const LightsIndices& lightsIndices) override;
 
+	const uint8_t* GetFrameBuffer() const;
 
 	static gcmContextData* context;
 	static rsxProgramAttrib* textureUnit; // Move this to shader

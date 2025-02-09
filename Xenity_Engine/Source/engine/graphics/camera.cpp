@@ -8,6 +8,8 @@
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/gl.h>
+#elif defined(__vita__)
+#include <vitaGL.h>
 #endif
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -30,6 +32,9 @@
 #include <engine/debug/debug.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/constants.h>
+#include <engine/graphics/renderer/renderer_gu.h>
+#include <engine/graphics/renderer/renderer_rsx.h>
+#include <engine/graphics/renderer/renderer_opengl.h>
 #include "graphics.h"
 
 #pragma region Constructors / Destructor
@@ -63,6 +68,79 @@ void Camera::UpdateCameraTransformMatrix()
 
 	if (position.x != 0.0f || position.y != 0.0f || position.z != 0.0f)
 		m_cameraTransformMatrix = glm::translate(m_cameraTransformMatrix, glm::vec3(position.x, -position.y, -position.z));
+}
+
+std::unique_ptr<uint8_t[]> Camera::GetRawFrameBuffer()
+{
+	const size_t frameBufferWidth = Window::GetWidth();
+	const size_t frameBufferHeight = Window::GetHeight();
+
+	std::unique_ptr<uint8_t[]> frameBufferData = std::make_unique<uint8_t[]>(frameBufferWidth * frameBufferHeight * 3); // Other platforms
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	// Read from texture
+	glBindTexture(GL_TEXTURE_2D, m_secondFramebufferTexture);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, frameBufferData.get());
+#elif defined(__vita__)
+	// Read from framebuffer
+	glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, (uint8_t*)framebuffer); // PsVita
+#elif defined(__PS3__)
+	const RendererRSX& ps3Renderer = dynamic_cast<const RendererRSX&>(Engine::GetRenderer());
+	const uint8_t* ps3FrameBuffer = ps3Renderer.GetFrameBuffer();
+
+	// Copy data and swap colors
+	for (size_t i = 0; i < Graphics::usedCamera->GetWidth() * Graphics::usedCamera->GetHeight(); i++)
+	{
+		// PS3 Buffer is ARGB so convert ARGB to RGB
+		frameBufferData[i * 3 + 0] = ps3FrameBuffer[i * 4 + 1]; // Red
+		frameBufferData[i * 3 + 1] = ps3FrameBuffer[i * 4 + 2]; // Green
+		frameBufferData[i * 3 + 2] = ps3FrameBuffer[i * 4 + 3]; // Bleu
+	}
+#elif defined(__PSP__)
+	const RendererGU& pspRenderer = dynamic_cast<const RendererGU&>(Engine::GetRenderer());
+	const uint8_t* pspFrameBuffer = pspRenderer.GetFrameBuffer();
+
+	// Copy data and resize framebuffer (PSP uses a larger framebuffer than the screen)
+	if (pspRenderer.UseHighQualityColor())
+	{
+		for (size_t x = 0; x < Graphics::usedCamera->GetWidth(); x++)
+		{
+			// Convert RGBA_8888 to RGB_888
+			for (size_t y = 0; y < Graphics::usedCamera->GetHeight(); y++)
+			{
+				const int currentPixel = x + y * Graphics::usedCamera->GetWidth();
+				const int currentPSPPixel = x + y * 512;
+				frameBufferData[(currentPixel * 3) + 0] = pspFrameBuffer[(currentPSPPixel) * 4 + 0]; // Red
+				frameBufferData[(currentPixel * 3) + 1] = pspFrameBuffer[(currentPSPPixel) * 4 + 1]; // Green
+				frameBufferData[(currentPixel * 3) + 2] = pspFrameBuffer[(currentPSPPixel) * 4 + 2]; // Bleu
+			}
+		}
+	}
+	else
+	{
+		for (size_t x = 0; x < Graphics::usedCamera->GetWidth(); x++)
+		{
+			// Convert RGBA_5650 to RGB_888
+			for (size_t y = 0; y < Graphics::usedCamera->GetHeight(); y++)
+			{
+				const int currentPixel = x + y * Graphics::usedCamera->GetWidth();
+				const int currentPSPPixel = x + y * 512;
+				const uint16_t srcPixel = ((uint16_t*)pspFrameBuffer)[currentPSPPixel];
+
+				const uint8_t r = (srcPixel & 0x1F) * 255 / 31;
+				const uint8_t g = ((srcPixel >> 5) & 0x3F) * 255 / 63;
+				const uint8_t b = ((srcPixel >> 11) & 0x1F) * 255 / 31;
+
+				frameBufferData[(currentPixel * 3) + 0] = r; // Red
+				frameBufferData[(currentPixel * 3) + 1] = g; // Green
+				frameBufferData[(currentPixel * 3) + 2] = b; // Bleu
+			}
+		}
+	}
+#endif
+
+	return frameBufferData;
 }
 
 void Camera::RemoveReferences()

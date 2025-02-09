@@ -57,6 +57,9 @@ public:
 
 	void Setlights(const LightsIndices& lightsIndices) override;
 
+	const uint8_t* GetFrameBuffer() const;
+	bool UseHighQualityColor() const;
+
 private:
 	void ApplyTextureFilters(const Texture& texture);
 	std::array<const Light*, MAX_LIGHT_COUNT> lastUpdatedLights;
@@ -70,8 +73,10 @@ private:
 	//std::shared_ptr<Texture> usedTexture = nullptr;
 	void* usedTexture = nullptr;
 	RenderingSettings lastSettings;
+	void* m_frameBuffer = nullptr;
 	unsigned int lastUsedColor = 0x00000000;
 	unsigned int lastUsedColor2 = 0xFFFFFFFF;
+	bool useHighQualityColor = true;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(AnisotropicLevel level);
 
