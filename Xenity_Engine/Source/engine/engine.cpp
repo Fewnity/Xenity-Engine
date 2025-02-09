@@ -513,6 +513,8 @@ void Engine::Quit()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	Debug::Print("-------- Quitting the game --------", true);
+
 #if defined(EDITOR)
 	if (s_isRunning)
 	{

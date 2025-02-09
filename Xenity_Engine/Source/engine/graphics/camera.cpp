@@ -75,6 +75,11 @@ std::unique_ptr<uint8_t[]> Camera::GetRawFrameBuffer()
 	const size_t frameBufferWidth = Window::GetWidth();
 	const size_t frameBufferHeight = Window::GetHeight();
 
+	if (frameBufferWidth == 0 || frameBufferHeight == 0)
+	{
+		return nullptr;
+	}
+
 	std::unique_ptr<uint8_t[]> frameBufferData = std::make_unique<uint8_t[]>(frameBufferWidth * frameBufferHeight * 3); // Other platforms
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
