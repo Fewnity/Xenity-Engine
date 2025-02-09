@@ -369,7 +369,7 @@ void Camera::UpdateViewMatrix()
 
 void Camera::UpdateViewProjectionMatrix()
 {
-	m_viewProjectionMatrix = Graphics::usedCamera->GetProjection()* Graphics::usedCamera->viewMatrix;
+	m_viewProjectionMatrix = Graphics::usedCamera->GetProjection() * Graphics::usedCamera->viewMatrix;
 }
 
 void Camera::SetProjectionType(const ProjectionTypes type)
@@ -523,7 +523,7 @@ Vector3 Camera::GetMouseRay()
 	const glm::mat4 cameraModelMatrix = glm::toMat4(glm::quat(newQ.w, -newQ.x, newQ.y, newQ.z));
 
 	// Get screen mouse position (inverted)
-	const glm::vec3 mousePositionGLM = glm::vec3(m_width -InputSystem::mousePosition.x, InputSystem::mousePosition.y, 0.0f); // Invert Y for OpenGL coordinates
+	const glm::vec3 mousePositionGLM = glm::vec3(m_width - InputSystem::mousePosition.x, InputSystem::mousePosition.y, 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
 	const glm::vec3 vec3worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, m_projection, glm::vec4(0, 0, m_width, m_height));
@@ -545,7 +545,7 @@ void Camera::OnDrawGizmosSelected()
 	glm::mat4 cameraModelMatrix = glm::mat4(1.0f);
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(-cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y+180), glm::vec3(0.0f, 1.0f, 0.0f));
+	cameraModelMatrix = glm::rotate(cameraModelMatrix, glm::radians(cameraRotation.y + 180), glm::vec3(0.0f, 1.0f, 0.0f));
 	cameraModelMatrix = glm::translate(cameraModelMatrix, glm::vec3(cameraPosition.x, -cameraPosition.y, -cameraPosition.z));
 
 	const glm::vec4 screenSizeNorm = glm::vec4(0, 0, 1, 1);
@@ -560,32 +560,32 @@ void Camera::OnDrawGizmosSelected()
 	const glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 	const glm::vec3 topRightFar = glm::unProject(glm::vec3(1, 0, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
-	Gizmo::DrawLine(Vector3(-topRightNear.x, topRightNear.y, topRightNear.z) , Vector3(-topRightFar.x, topRightFar.y, topRightFar.z) );
+	Gizmo::DrawLine(Vector3(-topRightNear.x, topRightNear.y, topRightNear.z), Vector3(-topRightFar.x, topRightFar.y, topRightFar.z));
 
 	//Bottom left
 	const glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 	const glm::vec3 bottomLeftFar = glm::unProject(glm::vec3(0, 1, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
-	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) , Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z) );
+	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z), Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z));
 
 	//Bottom right
 	const glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 	const glm::vec3 bottomRightFar = glm::unProject(glm::vec3(1, 1, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
-	Gizmo::DrawLine(Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) , Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) );
+	Gizmo::DrawLine(Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z), Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z));
 
 
-	Gizmo::DrawLine(Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z) , Vector3(-topRightFar.x, topRightFar.y, topRightFar.z) );
-	Gizmo::DrawLine(Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z) , Vector3(-topRightNear.x, topRightNear.y, topRightNear.z) );
+	Gizmo::DrawLine(Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z), Vector3(-topRightFar.x, topRightFar.y, topRightFar.z));
+	Gizmo::DrawLine(Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z), Vector3(-topRightNear.x, topRightNear.y, topRightNear.z));
 
-	Gizmo::DrawLine(Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z), Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) );
-	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) , Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) );
+	Gizmo::DrawLine(Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z), Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z));
+	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z), Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z));
 
-	Gizmo::DrawLine(Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z), Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z) );
-	Gizmo::DrawLine(Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z) , Vector3(-topRightFar.x, topRightFar.y, topRightFar.z) );
+	Gizmo::DrawLine(Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z), Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z));
+	Gizmo::DrawLine(Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z), Vector3(-topRightFar.x, topRightFar.y, topRightFar.z));
 
-	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z) , Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z) );
-	Gizmo::DrawLine(Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z) , Vector3(-topRightNear.x, topRightNear.y, topRightNear.z) );
+	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z), Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z));
+	Gizmo::DrawLine(Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z), Vector3(-topRightNear.x, topRightNear.y, topRightNear.z));
 #endif
 }
 
