@@ -31,6 +31,7 @@ Check if force inline for GLM is better or not
 Add unit tests for commands
 Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
 Lighting bug when there is only one mesh
+Fix error detection on docker
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
