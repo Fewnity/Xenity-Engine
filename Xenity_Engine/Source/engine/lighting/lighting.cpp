@@ -13,7 +13,7 @@
 #include <cmath>
 
 #if defined(EDITOR)
-#include <editor/gizmo.h>
+#include <editor/rendering/gizmo.h>
 #include <editor/ui/editor_ui.h>
 #endif
 

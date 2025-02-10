@@ -11,9 +11,9 @@
 #if defined(EDITOR)
 #include <filesystem>
 #include <editor/editor.h>
-#include <editor/file_handler.h>
+#include <editor/file_handler/file_handler.h>
 #include <editor/compilation/compiler.h>
-#include <editor/file_reference_finder.h>
+#include <editor/utils/file_reference_finder.h>
 #endif
 
 #include "code_file.h"
@@ -34,10 +34,10 @@
 
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/skybox.h>
-#include <engine/graphics/shader.h>
+#include <engine/graphics/shader/shader.h>
 #include <engine/graphics/material.h>
 #include <engine/graphics/ui/font.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/ui/window.h>
 
@@ -50,7 +50,7 @@
 #endif
 #include <engine/engine_settings.h>
 #include <engine/tools/string_tag_finder.h>
-#include <engine/graphics/icon.h>
+#include <engine/graphics/ui/icon.h>
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/constants.h>

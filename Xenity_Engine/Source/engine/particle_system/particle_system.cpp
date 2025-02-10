@@ -10,13 +10,13 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #if defined(EDITOR)
-#include <editor/gizmo.h>
+#include <editor/rendering/gizmo.h>
 #endif
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/material.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/tools/math.h>

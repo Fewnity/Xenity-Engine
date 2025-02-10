@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include <editor/platform_settings.h>
+#include <editor/compilation/platform_settings.h>
 
 #include <engine/platform.h>
 #include <engine/event_system/event_system.h>

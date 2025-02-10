@@ -17,7 +17,7 @@
 
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 
 enum class BufferType
 {

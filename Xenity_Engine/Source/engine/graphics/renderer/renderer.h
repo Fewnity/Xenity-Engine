@@ -15,7 +15,7 @@
 #include <vector>
 
 #include <engine/api.h>
-#include <engine/graphics/shader.h>
+#include <engine/graphics/shader/shader.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/material_rendering_modes.h>

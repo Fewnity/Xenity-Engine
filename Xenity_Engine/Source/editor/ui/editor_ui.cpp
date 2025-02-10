@@ -15,12 +15,12 @@
 
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/ui/window.h>
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
 #include <engine/debug/stack_debug_object.h>
-#include <engine/graphics/texture_default.h>
+#include <engine/graphics/texture/texture_default.h>
 
 using json = nlohmann::json;
 

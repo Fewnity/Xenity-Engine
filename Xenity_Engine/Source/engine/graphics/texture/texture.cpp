@@ -44,8 +44,8 @@
 #include <engine/asset_management/project_manager.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/graphics/renderer/renderer.h>
 
-#include "renderer/renderer.h"
 #include "texture_default.h"
 #include "texture_psp.h"
 #include "texture_ps3.h"

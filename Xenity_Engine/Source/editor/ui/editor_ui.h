@@ -29,7 +29,7 @@
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector4.h>
 #include <engine/graphics/color/color.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 
 #include "menus/select_asset_menu.h"
 

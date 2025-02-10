@@ -19,7 +19,7 @@
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/file_system/file.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/event_system/event_system.h>
 
 template <class T>

@@ -16,7 +16,7 @@
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/game_elements/transform.h>
 #include <engine/tools/math.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/graphics/camera.h>
 #include "font.h"
 

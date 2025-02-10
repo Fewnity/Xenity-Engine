@@ -31,7 +31,7 @@
 #include <engine/assertions/assertions.h>
 #include <engine/file_system/file_system.h>
 #include <engine/application.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/constants.h>
 #include <engine/graphics/frame_limiter/frame_limiter.h>
 #include <engine/tools/benchmark.h>

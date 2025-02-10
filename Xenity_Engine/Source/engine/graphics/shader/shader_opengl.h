@@ -10,7 +10,7 @@
 
 #include <unordered_map>
 
-#include <engine/graphics/shader.h>
+#include <engine/graphics/shader/shader.h>
 /**
 * @brief [Internal] Shader file class
 */

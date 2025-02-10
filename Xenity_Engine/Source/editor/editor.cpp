@@ -21,10 +21,10 @@
 #include <editor/compilation/compiler.h>
 #include <editor/command/command_manager.h>
 #include <editor/ui/editor_ui.h>
-#include <editor/update_checker.h>
+#include <editor/update_checker/update_checker.h>
 #include "command/commands/delete.h"
 #include "command/commands/create.h"
-#include "file_handler.h"
+#include "file_handler/file_handler.h"
 
 #include <engine/engine.h>
 #include <engine/audio/audio_source.h>

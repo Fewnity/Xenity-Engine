@@ -13,7 +13,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
 #include <engine/debug/stack_debug_object.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 
 using json = nlohmann::json;
 

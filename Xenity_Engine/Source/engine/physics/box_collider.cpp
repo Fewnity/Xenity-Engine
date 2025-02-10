@@ -11,7 +11,7 @@
 #include <bullet/btBulletDynamicsCommon.h>
 
 #if defined(EDITOR)
-#include <editor/gizmo.h>
+#include <editor/rendering/gizmo.h>
 #endif
 
 #include <engine/engine.h>

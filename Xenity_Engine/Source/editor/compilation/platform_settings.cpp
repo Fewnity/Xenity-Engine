@@ -6,7 +6,7 @@
 
 #include "platform_settings.h"
 
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 
 int PlatformSettingsWindows::IsValid()
 {

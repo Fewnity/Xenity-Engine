@@ -8,8 +8,8 @@
 #include <engine/reflection/reflection.h>
 #include <engine/event_system/event_system.h>
 #include <engine/platform.h>
-#include <engine/graphics/icon.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/ui/icon.h>
+#include <engine/graphics/texture/texture.h>
 
 class Texture;
 

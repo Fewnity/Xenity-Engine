@@ -7,7 +7,7 @@
 #include "canvas.h"
 
 #if defined(EDITOR)
-#include <editor/gizmo.h>
+#include <editor/rendering/gizmo.h>
 #include <editor/ui/menus/game_menu.h>
 #include <editor/editor.h>
 #endif

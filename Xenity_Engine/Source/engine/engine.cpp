@@ -24,9 +24,8 @@
 
 #include <editor/ui/menus/game_menu.h>
 #include <editor/plugin/plugin_manager.h>
-#include <editor/file_handler.h>
+#include <editor/file_handler/file_handler.h>
 #include <editor/compilation/compiler.h>
-#include <editor/gizmo.h>
 #include <editor/editor.h>
 #include <editor/ui/editor_ui.h>
 
@@ -93,6 +92,7 @@
 #include <engine/physics/physics_manager.h>
 
 #include <engine/graphics/screen_capture.h>
+#include <editor/rendering/gizmo.h>
 
 std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
 bool Engine::s_canUpdateAudio = false;

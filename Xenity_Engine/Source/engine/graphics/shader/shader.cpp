@@ -24,16 +24,16 @@
 #include <engine/tools/string_tag_finder.h>
 #include <engine/file_system/file.h>
 #include <engine/game_elements/transform.h>
-#include "graphics.h"
-#include "renderer/renderer.h"
-#include "camera.h"
+#include <engine/graphics/graphics.h>
+#include <engine/graphics/renderer/renderer.h>
+#include <engine/graphics/camera.h>
 #include <engine/application.h>
 #include <engine/accessors/acc_gameobject.h>
 #include <engine/debug/stack_debug_object.h>
 
-#include <engine/graphics/shader_opengl.h>
-#include <engine/graphics/shader_rsx.h>
-#include <engine/graphics/shader_null.h>
+#include <engine/graphics/shader/shader_opengl.h>
+#include <engine/graphics/shader/shader_rsx.h>
+#include <engine/graphics/shader/shader_null.h>
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 #include <glad/gl.h>

@@ -20,7 +20,7 @@
 #include <engine/vectors/vector3.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/graphics/3d_graphics/sphere.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include "vertex_descriptor.h"
 
 class API MeshData : public FileReference

@@ -8,7 +8,7 @@
 
 #if defined(EDITOR)
 #include <editor/ui/editor_ui.h>
-#include <editor/file_reference_finder.h>
+#include <editor/utils/file_reference_finder.h>
 #endif
 
 #include <engine/file_system/file_system.h>

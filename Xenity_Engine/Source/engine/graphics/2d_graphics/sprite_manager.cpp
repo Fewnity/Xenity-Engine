@@ -15,7 +15,7 @@
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/material.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/engine.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/transform.h>

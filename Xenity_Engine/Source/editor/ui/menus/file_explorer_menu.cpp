@@ -23,11 +23,11 @@
 #include <engine/inputs/input_system.h>
 #include <engine/ui/window.h>
 #include <editor/ui/utils/menu_builder.h>
-#include <editor/file_handler.h>
+#include <editor/file_handler/file_handler.h>
 #include <engine/engine.h>
 
 #include "create_class_menu.h"
-#include <engine/graphics/texture_default.h>
+#include <engine/graphics/texture/texture_default.h>
 
 void FileExplorerMenu::Init()
 {

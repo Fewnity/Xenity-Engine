@@ -29,10 +29,10 @@
 
 #include <engine/debug/debug.h>
 #include <engine/debug/performance.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 
 #include <engine/tools/math.h>
-#include <engine/graphics/texture_default.h>
+#include <engine/graphics/texture/texture_default.h>
 
 
 RendererOpengl::RendererOpengl()

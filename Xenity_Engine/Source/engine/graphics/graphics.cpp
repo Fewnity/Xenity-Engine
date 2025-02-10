@@ -44,7 +44,7 @@
 #include <engine/debug/stack_debug_object.h>
 #include <engine/time/time.h>
 #include <engine/constants.h>
-#include "shader_opengl.h"
+#include "shader/shader_opengl.h"
 
 std::vector<std::weak_ptr<Camera>> Graphics::cameras;
 std::shared_ptr<Camera> Graphics::usedCamera;

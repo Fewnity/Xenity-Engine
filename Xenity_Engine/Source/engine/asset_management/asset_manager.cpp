@@ -14,9 +14,9 @@
 #include <engine/file_system/file.h>
 
 #include <engine/graphics/graphics.h>
-#include <engine/graphics/shader.h>
+#include <engine/graphics/shader/shader.h>
 #include <engine/graphics/material.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/graphics/skybox.h>
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>

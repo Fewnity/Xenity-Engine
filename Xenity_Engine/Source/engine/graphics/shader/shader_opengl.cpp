@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "graphics.h"
+#include <engine/graphics/graphics.h>
 #include <engine/application.h>
 #include <engine/file_system/file.h>
 #include <engine/debug/debug.h>

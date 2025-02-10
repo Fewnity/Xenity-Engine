@@ -687,12 +687,12 @@
     <ClCompile Include="include\bullet\LinearMath\btSerializer.cpp" />
     <ClCompile Include="include\bullet\LinearMath\btVector3.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_rsx.cpp" />
-    <ClCompile Include="Source\engine\graphics\shader_null.cpp" />
-    <ClCompile Include="Source\engine\graphics\shader_opengl.cpp" />
-    <ClCompile Include="Source\engine\graphics\shader_rsx.cpp" />
-    <ClCompile Include="Source\engine\graphics\texture_default.cpp" />
-    <ClCompile Include="Source\engine\graphics\texture_ps3.cpp" />
-    <ClCompile Include="Source\engine\graphics\texture_psp.cpp" />
+    <ClCompile Include="Source\engine\graphics\shader\shader_null.cpp" />
+    <ClCompile Include="Source\engine\graphics\shader\shader_opengl.cpp" />
+    <ClCompile Include="Source\engine\graphics\shader\shader_rsx.cpp" />
+    <ClCompile Include="Source\engine\graphics\texture\texture_default.cpp" />
+    <ClCompile Include="Source\engine\graphics\texture\texture_ps3.cpp" />
+    <ClCompile Include="Source\engine\graphics\texture\texture_psp.cpp" />
     <ClCompile Include="Source\engine\physics\collision_event.h" />
     <ClCompile Include="Source\engine\physics\sphere_collider.cpp" />
     <ClCompile Include="Source\engine\vectors\quaternion.cpp" />
@@ -748,9 +748,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\engine\assertions\assertions.cpp" />
-    <ClCompile Include="Source\engine\graphics\icon.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\icon.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_sdl3.cpp" />
-    <ClCompile Include="Source\editor\platform_settings.cpp">
+    <ClCompile Include="Source\editor\compilation\platform_settings.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Editor|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">false</ExcludedFromBuild>
@@ -800,7 +800,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Source\editor\file_reference_finder.cpp">
+    <ClCompile Include="Source\editor\utils\file_reference_finder.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
@@ -839,7 +839,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\engine\debug\crash_handler.cpp" />
-    <ClCompile Include="Source\editor\file_handler.cpp">
+    <ClCompile Include="Source\editor\file_handler\file_handler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
@@ -891,7 +891,7 @@
     <ClCompile Include="Source\engine\physics\collider.cpp" />
     <ClCompile Include="Source\engine\physics\physics_manager.cpp" />
     <ClCompile Include="Source\engine\physics\rigidbody.cpp" />
-    <ClCompile Include="Source\editor\gizmo.cpp">
+    <ClCompile Include="Source\editor\rendering\gizmo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
@@ -929,7 +929,7 @@
     </ClCompile>
     <ClCompile Include="Source\engine\graphics\2d_graphics\billboard_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\material.cpp" />
-    <ClCompile Include="Source\engine\graphics\shader.cpp" />
+    <ClCompile Include="Source\engine\graphics\shader\shader.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\font.cpp" />
     <ClCompile Include="Source\engine\graphics\skybox.cpp" />
     <ClCompile Include="Source\editor\ui\menus\lighting_menu.cpp">
@@ -1100,7 +1100,7 @@
     <ClCompile Include="Source\engine\vectors\vector3.cpp" />
     <ClCompile Include="Source\engine\vectors\vector4.cpp" />
     <ClCompile Include="Source\engine\ui\window.cpp" />
-    <ClCompile Include="Source\engine\graphics\texture.cpp" />
+    <ClCompile Include="Source\engine\graphics\texture\texture.cpp" />
     <ClCompile Include="Source\engine\game_elements\transform.cpp" />
     <ClCompile Include="Source\engine\file_system\mesh_loader\wavefront_loader.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_manager.cpp" />
@@ -1129,7 +1129,7 @@
     <ClCompile Include="Source\engine\tools\string_tag_finder.cpp" />
     <ClCompile Include="Source\engine\world_partitionner\world_partitionner.cpp" />
     <ClCompile Include="Source\engine\debug\stack_debug_object.cpp" />
-    <ClCompile Include="Source\editor\update_checker.cpp">
+    <ClCompile Include="Source\editor\update_checker\update_checker.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -1419,12 +1419,12 @@
     <ClInclude Include="Source\engine\graphics\3d_graphics\sphere.h" />
     <ClInclude Include="Source\engine\graphics\material_rendering_modes.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_rsx.h" />
-    <ClInclude Include="Source\engine\graphics\shader_null.h" />
-    <ClInclude Include="Source\engine\graphics\shader_opengl.h" />
-    <ClInclude Include="Source\engine\graphics\shader_rsx.h" />
-    <ClInclude Include="Source\engine\graphics\texture_default.h" />
-    <ClInclude Include="Source\engine\graphics\texture_ps3.h" />
-    <ClInclude Include="Source\engine\graphics\texture_psp.h" />
+    <ClInclude Include="Source\engine\graphics\shader\shader_null.h" />
+    <ClInclude Include="Source\engine\graphics\shader\shader_opengl.h" />
+    <ClInclude Include="Source\engine\graphics\shader\shader_rsx.h" />
+    <ClInclude Include="Source\engine\graphics\texture\texture_default.h" />
+    <ClInclude Include="Source\engine\graphics\texture\texture_ps3.h" />
+    <ClInclude Include="Source\engine\graphics\texture\texture_psp.h" />
     <ClInclude Include="Source\engine\physics\sphere_collider.h" />
     <ClInclude Include="Source\engine\project_management\project_errors.h" />
     <ClInclude Include="Source\engine\vectors\quaternion.h" />
@@ -1488,9 +1488,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\engine\assertions\assertions.h" />
-    <ClInclude Include="Source\engine\graphics\icon.h" />
+    <ClInclude Include="Source\engine\graphics\ui\icon.h" />
     <ClInclude Include="include\imgui\imgui_impl_sdl3.h" />
-    <ClInclude Include="Source\editor\platform_settings.h">
+    <ClInclude Include="Source\editor\compilation\platform_settings.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
@@ -1535,7 +1535,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Source\editor\file_reference_finder.h">
+    <ClInclude Include="Source\editor\utils\file_reference_finder.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
@@ -1575,7 +1575,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\engine\debug\crash_handler.h" />
-    <ClInclude Include="Source\editor\file_handler.h">
+    <ClInclude Include="Source\editor\file_handler\file_handler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
@@ -1630,7 +1630,7 @@
     <ClInclude Include="Source\engine\physics\collider.h" />
     <ClInclude Include="Source\engine\physics\physics_manager.h" />
     <ClInclude Include="Source\engine\physics\rigidbody.h" />
-    <ClInclude Include="Source\editor\gizmo.h">
+    <ClInclude Include="Source\editor\rendering\gizmo.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|Win32'">true</ExcludedFromBuild>
@@ -1638,7 +1638,7 @@
     </ClInclude>
     <ClInclude Include="Source\engine\graphics\2d_graphics\billboard_renderer.h" />
     <ClInclude Include="Source\engine\graphics\material.h" />
-    <ClInclude Include="Source\engine\graphics\shader.h" />
+    <ClInclude Include="Source\engine\graphics\shader\shader.h" />
     <ClInclude Include="Source\engine\graphics\ui\font.h" />
     <ClInclude Include="Source\engine\graphics\skybox.h" />
     <ClInclude Include="Source\editor\ui\menus\lighting_menu.h">
@@ -1826,7 +1826,7 @@
     <ClInclude Include="Source\engine\vectors\vector3.h" />
     <ClInclude Include="Source\engine\vectors\vector4.h" />
     <ClInclude Include="Source\engine\ui\window.h" />
-    <ClInclude Include="Source\engine\graphics\texture.h" />
+    <ClInclude Include="Source\engine\graphics\texture\texture.h" />
     <ClInclude Include="Source\engine\game_elements\transform.h" />
     <ClInclude Include="Source\engine\file_system\mesh_loader\wavefront_loader.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_manager.h" />
@@ -1846,7 +1846,7 @@
     <ClInclude Include="Source\engine\tools\string_tag_finder.h" />
     <ClInclude Include="Source\engine\world_partitionner\world_partitionner.h" />
     <ClInclude Include="Source\engine\debug\stack_debug_object.h" />
-    <ClInclude Include="Source\editor\update_checker.h">
+    <ClInclude Include="Source\editor\update_checker\update_checker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
     </ClInclude>

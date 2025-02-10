@@ -15,7 +15,7 @@
 #include <engine/engine_settings.h>
 #include <engine/file_system/file_system.h>
 #include <engine/game_elements/gameplay_manager.h>
-#include <engine/graphics/texture_default.h>
+#include <engine/graphics/texture/texture_default.h>
 
 using json = nlohmann::json;
 

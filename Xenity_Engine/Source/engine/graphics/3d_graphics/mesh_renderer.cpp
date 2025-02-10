@@ -7,7 +7,7 @@
 #include "mesh_renderer.h"
 
 #if defined(EDITOR)
-#include <editor/gizmo.h>
+#include <editor/rendering/gizmo.h>
 #endif
 
 #include <engine/graphics/renderer/renderer.h>
@@ -18,7 +18,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
-#include <engine/graphics/shader.h>
+#include <engine/graphics/shader/shader.h>
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/engine.h>
 #include <engine/debug/stack_debug_object.h>
