@@ -27,10 +27,9 @@
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/graphics/renderer/renderer_rsx.h>
-#include <engine/graphics/shader_rsx.h>
+#include <engine/graphics/shader/shader_rsx.h>
 #include <engine/graphics/graphics.h>
-
-#include "renderer/renderer.h"
+#include <engine/graphics/renderer/renderer.h>
 
 TexturePS3::TexturePS3()
 {

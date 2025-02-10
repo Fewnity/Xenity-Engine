@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 #include <engine/vectors/vector2.h>
 

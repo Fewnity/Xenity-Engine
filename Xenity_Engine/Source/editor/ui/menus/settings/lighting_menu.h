@@ -6,18 +6,16 @@
 
 #pragma once
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
-class EngineDebugMenu : public Menu
+class SkyBox;
+
+class LightingMenu : public Menu
 {
 public:
 	void Init() override;
 	void Draw() override;
 
 private:
-	/**
-	* Draw files reference count list
-	*/
-	void DrawFilesList();
 };
 

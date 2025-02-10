@@ -10,12 +10,12 @@
 #include <vector>
 #include <imgui/imgui.h>
 
-#include <editor/ui/menus/file_explorer_menu.h>
-#include <editor/ui/menus/inspector_menu.h>
+#include <editor/ui/menus/file_management/file_explorer_menu.h>
+#include <editor/ui/menus/basic/inspector_menu.h>
 #include <editor/editor.h>
 #include <editor/command/command_manager.h>
 #include <editor/command/commands/modify.h>
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/file_system/file.h>

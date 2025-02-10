@@ -10,7 +10,7 @@
 
 #include <editor/ui/editor_ui.h>
 #include <editor/editor.h>
-#include <editor/ui/menus/scene_menu.h>
+#include <editor/ui/menus/basic/scene_menu.h>
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/inputs/input_system.h>

@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 #include <imgui/imgui.h>
 

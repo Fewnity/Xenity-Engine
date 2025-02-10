@@ -7,10 +7,10 @@
 #if defined(__PSP__)
 #include "renderer_gu.h"
 
-#include <pspkernel.h>
-
 #include <memory>
+
 #include <glm/gtc/type_ptr.hpp>
+#include <pspkernel.h>
 #include <vram.h>
 #include <pspdisplay.h>
 #include <pspgu.h>
@@ -28,7 +28,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/ui/screen.h>
-#include <engine/graphics/texture_psp.h>
+#include <engine/graphics/texture/texture_psp.h>
 
 static unsigned int __attribute__((aligned(16))) list[262144];
 

@@ -7,6 +7,20 @@
 #if defined(__PS3__)
 #include "renderer_rsx.h"
 
+#include <memory>
+#include <malloc.h>
+#include <unistd.h>
+
+#include <io/pad.h> 
+#include <sysutil/video.h>
+#include <sysutil/sysutil.h>
+#include <sys/process.h>
+
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/asset_management/asset_manager.h>
@@ -15,28 +29,13 @@
 #include <engine/debug/debug.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/material.h>
-#include <engine/graphics/shader_rsx.h>
+#include <engine/graphics/shader/shader_rsx.h>
 #include <engine/ui/window.h>
 #include <engine/graphics/camera.h>
 #include <engine/engine.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/ui/screen.h>
-
-#include <memory>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <io/pad.h> 
-#include <sysutil/video.h>
-#include <sysutil/sysutil.h>
-#include <engine/graphics/texture_ps3.h>
-#include <malloc.h>
-#include <sysutil/sysutil.h>
-#include <sys/process.h>
-
-#include <unistd.h>
 
 #define DEFUALT_CB_SIZE						0x80000		// 512Kb default command buffer size
 #define HOST_STATE_CB_SIZE					0x10000		// 64Kb state command buffer size (used for resetting certain default states)

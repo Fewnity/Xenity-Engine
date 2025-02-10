@@ -12,13 +12,13 @@
 #include <editor/compilation/compiler.h>
 #include <editor/command/commands/create.h>
 #include <editor/command/command_manager.h>
-#include <editor/ui/menus/engine_settings_menu.h>
-#include <editor/ui/menus/project_settings_menu.h>
-#include <editor/ui/menus/lighting_menu.h>
-#include <editor/ui/menus/docker_config_menu.h>
-#include <editor/ui/menus/build_settings_menu.h>
-#include <editor/ui/menus/engine_asset_manager_menu.h>
-#include <editor/ui/menus/database_checker_menu.h>
+#include <editor/ui/menus/settings/engine_settings_menu.h>
+#include <editor/ui/menus/project_management/project_settings_menu.h>
+#include <editor/ui/menus/settings/lighting_menu.h>
+#include <editor/ui/menus/compilation/docker_config_menu.h>
+#include <editor/ui/menus/compilation/build_settings_menu.h>
+#include <editor/ui/menus/debug/engine_asset_manager_menu.h>
+#include <editor/ui/menus/debug/database_checker_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>

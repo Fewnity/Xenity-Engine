@@ -8,16 +8,16 @@
 
 // List of all file types drawn by the EditorUI or the editor wont compile
 #include <engine/file_system/file_reference.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/audio/audio_clip.h>
 #include <engine/scene_management/scene.h>
 #include <engine/graphics/material.h>
-#include <engine/graphics/shader.h>
+#include <engine/graphics/shader/shader.h>
 #include <engine/graphics/ui/font.h>
 #include <engine/graphics/skybox.h>
 #include <engine/debug/debug.h>
-#include <engine/graphics/icon.h>
+#include <engine/graphics/ui/icon.h>
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>

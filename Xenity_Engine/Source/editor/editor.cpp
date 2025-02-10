@@ -13,22 +13,23 @@
 
 #include <imgui/imgui_internal.h>
 
-#include <editor/ui/menus/hierarchy_menu.h>
-#include <editor/ui/menus/inspector_menu.h>
-#include <editor/ui/menus/main_bar_menu.h>
-#include <editor/ui/menus/scene_menu.h>
-#include <editor/ui/menus/bottom_bar_menu.h>
+#include <editor/ui/menus/basic/hierarchy_menu.h>
+#include <editor/ui/menus/basic/inspector_menu.h>
+#include <editor/ui/menus/other/main_bar_menu.h>
+#include <editor/ui/menus/basic/scene_menu.h>
+#include <editor/ui/menus/other/bottom_bar_menu.h>
 #include <editor/compilation/compiler.h>
 #include <editor/command/command_manager.h>
 #include <editor/ui/editor_ui.h>
 #include <editor/update_checker/update_checker.h>
+#include <editor/ui/menus/other/update_available_menu.h>
 #include "command/commands/delete.h"
 #include "command/commands/create.h"
 #include "file_handler/file_handler.h"
 
 #include <engine/engine.h>
 #include <engine/audio/audio_source.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/class_registry/class_registry.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/file_system/mesh_loader/wavefront_loader.h>
@@ -45,7 +46,6 @@
 #include <engine/debug/debug.h>
 #include <engine/event_system/event_system.h>
 #include <engine/debug/stack_debug_object.h>
-#include "ui/menus/update_available_menu.h"
 using json = nlohmann::json;
 
 std::weak_ptr<AudioSource> Editor::audioSource;

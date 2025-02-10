@@ -31,8 +31,7 @@
 #include <engine/asset_management/project_manager.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>
-
-#include "renderer/renderer.h"
+#include <engine/graphics/renderer/renderer.h>
 
 TexturePSP::TexturePSP()
 {

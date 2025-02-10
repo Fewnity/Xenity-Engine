@@ -15,14 +15,13 @@
 
 #include <array>
 
-#include "renderer.h"
-#include <engine/lighting/lighting.h>
-#include <engine/graphics/texture.h>
-#include <engine/graphics/texture_ps3.h>
-#include <engine/vectors/vector2_int.h>
 #include <rsx/rsx.h>
 
-// class gcmContextData;
+#include "renderer.h"
+#include <engine/lighting/lighting.h>
+#include <engine/graphics/texture/texture.h>
+#include <engine/graphics/texture/texture_ps3.h>
+#include <engine/vectors/vector2_int.h>
 
 class API RendererRSX : public Renderer
 {

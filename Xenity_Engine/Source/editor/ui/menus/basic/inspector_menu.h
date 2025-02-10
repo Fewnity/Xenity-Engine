@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 #include <engine/platform.h>
 

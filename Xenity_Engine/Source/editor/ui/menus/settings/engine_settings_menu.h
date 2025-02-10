@@ -8,7 +8,7 @@
 
 #include <string>
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 class EngineSettingsMenu : public Menu
 {

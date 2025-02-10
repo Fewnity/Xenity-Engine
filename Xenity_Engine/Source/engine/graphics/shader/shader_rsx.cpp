@@ -14,7 +14,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "graphics.h"
+#include <rsx/rsx.h>
+
+#include <engine/graphics/graphics.h>
 #include <engine/application.h>
 #include <engine/file_system/file.h>
 #include <engine/debug/debug.h>
@@ -25,9 +27,6 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/lighting/lighting.h>
 #include <engine/debug/performance.h>
-
-#include <rsx/rsx.h>
-
 #include <engine/asset_management/asset_manager.h>
 #include <engine/tools/endian_utils.h>
 

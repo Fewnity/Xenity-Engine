@@ -11,8 +11,8 @@
 
 // Editor
 #include <editor/editor.h>
-#include <editor/ui/menus/docker_config_menu.h>
-#include <editor/ui/menus/build_settings_menu.h>
+#include <editor/ui/menus/compilation/docker_config_menu.h>
+#include <editor/ui/menus/compilation/build_settings_menu.h>
 #include <editor/cooker/cooker.h>
 #include <editor/utils/copy_utils.h>
 #include <editor/compilation/compiler_cache.h>

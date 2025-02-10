@@ -13,7 +13,7 @@
 
 #if defined(EDITOR)
 #include <editor/editor.h>
-#include <editor/ui/menus/scene_menu.h>
+#include <editor/ui/menus/basic/scene_menu.h>
 #include <editor/tool_mode.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #endif
@@ -73,7 +73,7 @@ GraphicsSettings Graphics::s_settings;
 std::vector <Light*> Graphics::s_directionalLights;
 bool Graphics::s_isLightUpdateNeeded = true;
 bool Graphics::s_isGridRenderingEnabled = true;
-float  Graphics::s_gridAlphaMultiplier = 1;
+float Graphics::s_gridAlphaMultiplier = 1;
 
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
@@ -87,10 +87,10 @@ ReflectiveData GraphicsSettings::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, skybox, "skybox", true);
 	Reflective::AddVariable(reflectedVariables, skyColor, "skyColor", true);
-	Reflective::AddVariable(reflectedVariables, isFogEnabled, "isFogEnabled", true);
-	Reflective::AddVariable(reflectedVariables, fogStart, "fogStart", true);
-	Reflective::AddVariable(reflectedVariables, fogEnd, "fogEnd", true);
-	Reflective::AddVariable(reflectedVariables, fogColor, "fogColor", true);
+	Reflective::AddVariable(reflectedVariables, isFogEnabled, "isFogEnabled", false);
+	Reflective::AddVariable(reflectedVariables, fogStart, "fogStart", false);
+	Reflective::AddVariable(reflectedVariables, fogEnd, "fogEnd", false);
+	Reflective::AddVariable(reflectedVariables, fogColor, "fogColor", false);
 	return reflectedVariables;
 }
 

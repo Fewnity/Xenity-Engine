@@ -22,13 +22,13 @@
 #include <imgui/imgui_impl_sdl3.h>
 #include <glad/gl.h>
 
-#include <editor/ui/menus/game_menu.h>
+#include <editor/ui/menus/basic/game_menu.h>
 #include <editor/plugin/plugin_manager.h>
 #include <editor/file_handler/file_handler.h>
 #include <editor/compilation/compiler.h>
 #include <editor/editor.h>
 #include <editor/ui/editor_ui.h>
-
+#include <editor/rendering/gizmo.h>
 #endif
 
 #include <engine/cpu.h>
@@ -92,7 +92,6 @@
 #include <engine/physics/physics_manager.h>
 
 #include <engine/graphics/screen_capture.h>
-#include <editor/rendering/gizmo.h>
 
 std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
 bool Engine::s_canUpdateAudio = false;

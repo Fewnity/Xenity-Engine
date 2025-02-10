@@ -89,7 +89,7 @@ std::unique_ptr<uint8_t[]> Camera::GetRawFrameBuffer()
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, frameBufferData.get());
 #elif defined(__vita__)
 	// Read from framebuffer
-	glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, (uint8_t*)framebuffer); // PsVita
+	glReadPixels(0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, (uint8_t*)frameBufferData.get()); // PsVita
 #elif defined(__PS3__)
 	const RendererRSX& ps3Renderer = dynamic_cast<const RendererRSX&>(Engine::GetRenderer());
 	const uint8_t* ps3FrameBuffer = ps3Renderer.GetFrameBuffer();

@@ -19,7 +19,7 @@
 #include <engine/reflection/enum_utils.h>
 #include <engine/platform.h>
 #include <engine/application.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 
 /**
 * @brief Texture file class

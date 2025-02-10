@@ -8,7 +8,7 @@
 
 #if defined(EDITOR)
 #include <editor/editor.h>
-#include <editor/ui/menus/game_menu.h>
+#include <editor/ui/menus/basic/game_menu.h>
 #include <editor/command/command_manager.h>
 #endif
 

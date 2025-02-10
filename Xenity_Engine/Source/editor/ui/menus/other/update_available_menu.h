@@ -6,12 +6,14 @@
 
 #pragma once
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
-class ProjectSettingsMenu : public Menu
+class UpdateAvailableMenu : public Menu
 {
 public:
 	void Init() override;
 	void Draw() override;
+
+private:
 };
 

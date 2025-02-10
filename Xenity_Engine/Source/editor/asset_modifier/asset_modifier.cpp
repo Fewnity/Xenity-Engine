@@ -11,7 +11,7 @@
 #include <stb_image_write.h>
 #include <stb_image_resize.h>
 
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/file_system/file.h>
 #include <engine/debug/debug.h>
 

@@ -31,7 +31,7 @@
 #include <engine/graphics/color/color.h>
 #include <engine/graphics/texture/texture.h>
 
-#include "menus/select_asset_menu.h"
+#include <editor/ui/menus/file_management/select_asset_menu.h>
 
 class Reflective;
 class ProjectDirectory;

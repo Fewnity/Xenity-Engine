@@ -13,8 +13,8 @@
 #include <engine/unique_id/unique_id.h>
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
-#include <engine/graphics/texture.h>
-#include <engine/graphics/shader.h>
+#include <engine/graphics/texture/texture.h>
+#include <engine/graphics/shader/shader.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/debug/debug.h>
 #include <mutex>

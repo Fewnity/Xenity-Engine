@@ -14,7 +14,7 @@ enum class Side
 	Side_Forward,
 };
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 #include <memory>
 

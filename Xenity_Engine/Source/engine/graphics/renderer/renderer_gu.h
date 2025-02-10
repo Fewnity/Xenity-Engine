@@ -17,7 +17,7 @@
 
 #include "renderer.h"
 #include <engine/lighting/lighting.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 
 class API RendererGU : public Renderer
 {
@@ -70,7 +70,7 @@ private:
 	float fogStart = 0;
 	float fogEnd = 10;
 	Color fogColor;
-	//std::shared_ptr<Texture> usedTexture = nullptr;
+
 	void* usedTexture = nullptr;
 	RenderingSettings lastSettings;
 	void* m_frameBuffer = nullptr;

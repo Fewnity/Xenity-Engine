@@ -9,7 +9,7 @@
 #include <memory>
 
 #include <engine/file_system/data_base/integrity_state.h>
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 class FileDataBase;
 

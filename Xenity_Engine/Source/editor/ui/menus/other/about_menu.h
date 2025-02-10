@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 class AboutMenu : public Menu
 {

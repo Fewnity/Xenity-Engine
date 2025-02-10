@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 #define FPS_HISTORY_SIZE 400
 #define USED_MEMORY_HISTORY_SIZE 1000
 #define USED_VIDE_MEMORY_HISTORY_SIZE 1000

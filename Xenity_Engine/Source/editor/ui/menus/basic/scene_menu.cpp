@@ -24,7 +24,7 @@
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/tools/math.h>
-#include <engine/graphics/texture_default.h>
+#include <engine/graphics/texture/texture_default.h>
 
 
 void SceneMenu::Init()

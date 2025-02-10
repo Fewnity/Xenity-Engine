@@ -23,8 +23,8 @@
 #endif
 
 #if defined(EDITOR)
-#include <editor/ui/menus/game_menu.h> // Need to remove this include
-#include <editor/ui/menus/scene_menu.h> // Need to remove this include
+#include <editor/ui/menus/basic/game_menu.h> // Need to remove this include
+#include <editor/ui/menus/basic/scene_menu.h> // Need to remove this include
 #include <editor/editor.h>
 #endif
 

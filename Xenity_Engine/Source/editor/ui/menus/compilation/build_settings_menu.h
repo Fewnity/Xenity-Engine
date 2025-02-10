@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "menu.h"
+#include <editor/ui/menus/menu.h>
 
 #include <editor/compilation/compiler.h>
 #include <editor/compilation/platform_settings.h>

@@ -9,6 +9,7 @@
 #if defined(__PSP__)
 
 #include <vector>
+
 #include <engine/api.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
@@ -16,7 +17,7 @@
 #include <engine/reflection/enum_utils.h>
 #include <engine/platform.h>
 #include <engine/application.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 
 /**
 * @brief Texture file class

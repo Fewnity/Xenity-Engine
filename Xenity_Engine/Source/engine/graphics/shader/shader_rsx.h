@@ -12,7 +12,7 @@
 
 #include <rsx/rsx.h>
 
-#include <engine/graphics/shader.h>
+#include <engine/graphics/shader/shader.h>
 
 /**
 * @brief [Internal] Shader file class
