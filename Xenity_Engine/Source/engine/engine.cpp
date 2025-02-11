@@ -431,7 +431,7 @@ void Engine::Loop()
 			FrameLimiter::Wait();
 		}
 
-		if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
+		if (Performance::IsProfilerEnabled() && InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
 		{
 			std::string path = "profiler.bin";
 #if defined(__vita__)
