@@ -1004,7 +1004,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 	else if (params.buildPlatform.platform == Platform::P_PS3)
 	{
-		std::string removeSourceCommand = "rm -r Source/editor/ ; rm Source/gl.c ; rm -r include/freetype/ ; rm -r include/glad/ ; rm -r include/imgui/ ; rm -r include/implot/ ; rm -r include/SDL3/ ; rm -r include/KHR/ ;";
+		std::string removeSourceCommand = "rm -r Source/editor/ ; rm Source/gl.c ; rm -r include/glad/ ; rm -r include/imgui/ ; rm -r include/implot/ ; rm -r include/SDL3/ ; rm -r include/KHR/ ;";
 
 		createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/ ; " + removeSourceCommand + "make -j" + std::to_string(threadNumber) + "\"";
 	}

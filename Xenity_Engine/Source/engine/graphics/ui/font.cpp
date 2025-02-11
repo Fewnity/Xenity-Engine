@@ -6,10 +6,8 @@
 
 #include "font.h"
 
-#if !defined(__PS3__) // Not support on PS3 currently, need to build ft2
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#endif
 
 #if defined(__PSP__)
 #include <pspkernel.h>
@@ -72,7 +70,7 @@ void Font::LoadFileReference(const LoadOptions& loadOptions)
 bool Font::CreateFont(Font& font)
 {
 	Debug::Print("Loading font: " + font.m_file->GetPath(), true);
-#if !defined(__LINUX__) && !defined(__PS3__)
+#if !defined(__LINUX__)
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
 	{
@@ -109,7 +107,7 @@ bool Font::CreateFont(Font& font)
 	int atlasSize = 512;
 	//  int atlasSize = 256;
 	int channelCount = 2;
-#if defined(__PSP__) || defined(_EE)
+#if defined(__PSP__) || defined(_EE) || defined(__PS3__)
 	channelCount = 4;
 #endif
 
@@ -163,7 +161,7 @@ bool Font::CreateFont(Font& font)
 					for (int fH = 0; fH < (int)face->glyph->bitmap.width; fH++)
 					{
 						int atlasOffset = (fH * channelCount) + (fW * atlasSize * channelCount) + textureXOffset + yOffset * atlasSize * channelCount;
-#if defined(__PSP__)
+#if defined(__PSP__) || defined(__PS3__)
 						atlas[atlasOffset] = 255;
 						atlas[atlasOffset + 1] = 255;
 						atlas[atlasOffset + 2] = 255;
@@ -196,6 +194,8 @@ bool Font::CreateFont(Font& font)
 	newAtlas->SetChannelCount(channelCount);
 #if defined(__PSP__)
 	reinterpret_cast<TextureSettingsPSP*>(newAtlas->m_settings[AssetPlatform::AP_PSP].get())->type = PSPTextureType::RGBA_4444;
+#elif defined(__PS3__)
+	reinterpret_cast<TextureSettingsPS3*>(newAtlas->m_settings[AssetPlatform::AP_PS3].get())->type = PS3TextureType::ARGB_4444;
 #endif
 	newAtlas->SetData(atlas);
 	newAtlas->SetFilter(Filter::Bilinear);
