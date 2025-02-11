@@ -47,9 +47,9 @@ RUN echo "export PATH=\$VITASDK/bin:\$PATH" >> /root/.bashrc
 # --------------------------- INSTALL PS3 SDK
 
 # Download ps3dev
-RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/ps3dev-ubuntu-latest.tar.gz
+RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/ps3dev-ubuntu-latest3.tar.gz
 # Extract files
-RUN cd /usr/local && tar -xvzf ps3dev-ubuntu-latest.tar.gz && rm ps3dev-ubuntu-latest.tar.gz
+RUN cd /usr/local && tar -xvzf ps3dev-ubuntu-latest3.tar.gz && rm ps3dev-ubuntu-latest3.tar.gz
 
 # Download PSL1GHT
 RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/PSL1GHT.tar.gz
