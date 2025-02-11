@@ -131,6 +131,15 @@ void Performance::Update()
 	ResetCounters();
 }
 
+bool Performance::IsProfilerEnabled()
+{
+#if defined(USE_PROFILER)
+	return EngineSettings::values.useProfiler;
+#else
+	return false;
+#endif
+}
+
 size_t Performance::RegisterScopProfiler(const std::string& name, size_t hash)
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);

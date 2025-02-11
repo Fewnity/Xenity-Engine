@@ -143,6 +143,8 @@ public:
 	*/
 	static void Update();
 
+	static bool IsProfilerEnabled();
+
 	static size_t RegisterScopProfiler(const std::string& name, size_t hash);
 
 	static uint32_t GetProfilerFrameDuration(const std::unordered_map<uint64_t, std::vector<ScopTimerResult>>& profilerFrame);
