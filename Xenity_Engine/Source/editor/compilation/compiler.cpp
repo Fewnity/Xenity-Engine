@@ -1098,19 +1098,6 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
 	}
 
-	std::string fileName = "";
-	if (params.buildPlatform.platform == Platform::P_PSP)
-	{
-		fileName = "EBOOT.PBP";
-	}
-	else if (params.buildPlatform.platform == Platform::P_PsVita)
-	{
-		fileName = gameNameWithoutSpace + ".vpk";
-	}
-	else if (params.buildPlatform.platform == Platform::P_PS3)
-	{
-		fileName = "XenityBuild.self";
-	}
 
 	if (params.buildType == BuildType::BuildShaders)
 	{
@@ -1124,6 +1111,25 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	}
 	else
 	{
+		if (startResult != 0)
+		{
+			return CompileResult::ERROR_DOCKER_COMPILATION;
+		}
+
+		std::string fileName = "";
+		if (params.buildPlatform.platform == Platform::P_PSP)
+		{
+			fileName = "EBOOT.PBP";
+		}
+		else if (params.buildPlatform.platform == Platform::P_PsVita)
+		{
+			fileName = gameNameWithoutSpace + ".vpk";
+		}
+		else if (params.buildPlatform.platform == Platform::P_PS3)
+		{
+			fileName = "XenityBuild.self";
+		}
+
 		// Copy cache files
 		const std::string cacheFolder = params.tempPath + "docker_cache/";
 		fs::create_directories(cacheFolder);
