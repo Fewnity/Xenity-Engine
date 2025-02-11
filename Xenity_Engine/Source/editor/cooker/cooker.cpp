@@ -151,6 +151,7 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 		fileData = cookedFile->ReadAllBinary(cookedFileSize);
 		cookedFile->Close();
 		FileSystem::s_fileSystem->Delete(exportPath);
+		XASSERT(cookedFileSize != 0, "[Cooker::CookAssets] Wrong original meta file size");
 	}
 
 	// Add the meta file to the binary file
@@ -174,7 +175,6 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 
 	XASSERT(metaSize != 0, "[Cooker::CookAssets] Wrong original meta file size");
 	XASSERT(cookedMetaFileSizeOut != 0, "[Cooker::CookAssets] Wrong cooked meta file size");
-	XASSERT(cookedFileSize != 0, "[Cooker::CookAssets] Wrong original meta file size");
 
 	dataBaseMutex.lock();
 
