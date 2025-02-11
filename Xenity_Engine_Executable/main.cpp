@@ -30,11 +30,11 @@ Implement alpha testing on shaders
 Check if force inline for GLM is better or not
 Add unit tests for commands
 Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
+Try to make a dynamic texture
 Lighting bug when there is only one mesh
-Fix error detection on docker
 Implement CreateFolder on console
 Implement a way to get the current date time
-Do not save profiler file if not activated
+Add network on PS3
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
@@ -95,7 +95,6 @@ Add filter to file dialog
 Multiple gameobject selection
 
 --- To do in a long time
-Regenerate an id if a meta file is corrupted
 Finish UploadMeshData for fixed pipeline or shader mode with currently unused vertex structures
 Add a property window on components to have values in a new window
 Add network profiler
