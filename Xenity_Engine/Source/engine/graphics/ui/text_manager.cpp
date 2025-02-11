@@ -18,7 +18,9 @@
 #include <engine/tools/math.h>
 #include <engine/graphics/texture/texture.h>
 #include <engine/graphics/camera.h>
+#include <engine/asset_management/asset_manager.h>
 #include "font.h"
+#include <glm/gtx/quaternion.hpp>
 
 /**
  * @brief Init text manager
@@ -52,9 +54,9 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	float y = 0;
 	int line = 0;
 	if (horizontalAlignment == HorizontalAlignment::Left)
-		x = -textInfo->linesInfo[line].lenght * scale;
+		x = textInfo->linesInfo[line].lenght * scale;
 	else if (horizontalAlignment == HorizontalAlignment::Center)
-		x = -textInfo->linesInfo[line].lenght * 0.5f * scale;
+		x = textInfo->linesInfo[line].lenght * 0.5f * scale;
 
 	y = textInfo->linesInfo[line].y1 * 0.25f * scale;
 	y += -textInfo->maxLineHeight * scale;
@@ -91,9 +93,9 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 			line++;
 
 			if (horizontalAlignment == HorizontalAlignment::Left)
-				x = -textInfo->linesInfo[line].lenght;
+				x = textInfo->linesInfo[line].lenght;
 			else if (horizontalAlignment == HorizontalAlignment::Center)
-				x = -textInfo->linesInfo[line].lenght * 0.5f;
+				x = textInfo->linesInfo[line].lenght * 0.5f;
 			else
 				x = 0;
 
@@ -103,7 +105,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 		{
 			AddCharToMesh(mesh, ch, x, y, drawnCharIndex, scale);
 			drawnCharIndex++;
-			x += ch->rightAdvance * scale;
+			x -= ch->rightAdvance * scale;
 		}
 	}
 
@@ -136,15 +138,21 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = !canvas;
 
-		const Vector3& pos = transform.GetPosition();
+		const glm::mat4& transformationMatrix = transform.GetTransformationMatrix();
 
-		Vector3 scl = transform.GetScale();
-		scl.x = -scl.x;
-		const Quaternion& rot = transform.GetRotation();
-		const glm::mat4 transformationMatrix = Math::CreateModelMatrix(pos, rot, scl);
-		const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * transformationMatrix;
+		if (Graphics::usedCamera->IsEditor() || !canvas)
+		{
+			const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * transformationMatrix;
 
-		Graphics::DrawSubMesh(*mesh.m_subMeshes[0], material, font.GetFontAtlas().get(), renderSettings, transformationMatrix, transformationMatrix, MVP, canvas);
+			Graphics::DrawSubMesh(*mesh.m_subMeshes[0], material, font.GetFontAtlas().get(), renderSettings, transformationMatrix, transformationMatrix, MVP, canvas);
+		}
+		else 
+		{
+			static const glm::mat4 canvasCameraViewMatrix = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
+			const glm::mat4 MVP = (Graphics::usedCamera->m_canvasProjection * canvasCameraViewMatrix) * transformationMatrix;
+
+			Graphics::DrawSubMesh(*mesh.m_subMeshes[0], material, font.GetFontAtlas().get(), renderSettings, transformationMatrix, transformationMatrix, MVP, canvas);
+		}
 	}
 }
 
@@ -154,7 +162,7 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 	const int indice = letterIndex * 6;
 	const int indiceIndex = letterIndex * 6;
 
-	const float w = ch->rightSize.x * scale;
+	const float w = -ch->rightSize.x * scale;
 	const float h = ch->rightSize.y * scale;
 
 	const float fixedY = (y - (ch->rightSize.y - ch->rightBearing.y) * scale);
