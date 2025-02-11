@@ -95,7 +95,7 @@ std::unique_ptr<uint8_t[]> Camera::GetRawFrameBuffer()
 	const uint8_t* ps3FrameBuffer = ps3Renderer.GetFrameBuffer();
 
 	// Copy data and swap colors
-	for (size_t i = 0; i < Graphics::usedCamera->GetWidth() * Graphics::usedCamera->GetHeight(); i++)
+	for (size_t i = 0; i < GetWidth() * GetHeight(); i++)
 	{
 		// PS3 Buffer is ARGB so convert ARGB to RGB
 		frameBufferData[i * 3 + 0] = ps3FrameBuffer[i * 4 + 1]; // Red
@@ -109,12 +109,12 @@ std::unique_ptr<uint8_t[]> Camera::GetRawFrameBuffer()
 	// Copy data and resize framebuffer (PSP uses a larger framebuffer than the screen)
 	if (pspRenderer.UseHighQualityColor())
 	{
-		for (size_t x = 0; x < Graphics::usedCamera->GetWidth(); x++)
+		for (size_t x = 0; x < GetWidth(); x++)
 		{
 			// Convert RGBA_8888 to RGB_888
-			for (size_t y = 0; y < Graphics::usedCamera->GetHeight(); y++)
+			for (size_t y = 0; y < GetHeight(); y++)
 			{
-				const int currentPixel = x + y * Graphics::usedCamera->GetWidth();
+				const int currentPixel = x + y * GetWidth();
 				const int currentPSPPixel = x + y * 512;
 				frameBufferData[(currentPixel * 3) + 0] = pspFrameBuffer[(currentPSPPixel) * 4 + 0]; // Red
 				frameBufferData[(currentPixel * 3) + 1] = pspFrameBuffer[(currentPSPPixel) * 4 + 1]; // Green
@@ -124,12 +124,12 @@ std::unique_ptr<uint8_t[]> Camera::GetRawFrameBuffer()
 	}
 	else
 	{
-		for (size_t x = 0; x < Graphics::usedCamera->GetWidth(); x++)
+		for (size_t x = 0; x < GetWidth(); x++)
 		{
 			// Convert RGBA_5650 to RGB_888
-			for (size_t y = 0; y < Graphics::usedCamera->GetHeight(); y++)
+			for (size_t y = 0; y < GetHeight(); y++)
 			{
-				const int currentPixel = x + y * Graphics::usedCamera->GetWidth();
+				const int currentPixel = x + y * GetWidth();
 				const int currentPSPPixel = x + y * 512;
 				const uint16_t srcPixel = ((uint16_t*)pspFrameBuffer)[currentPSPPixel];
 
@@ -356,7 +356,7 @@ void Camera::UpdateFrustum()
 
 void Camera::UpdateViewMatrix()
 {
-	const Transform* transform = Graphics::usedCamera->GetTransformRaw();
+	const Transform* transform = GetTransformRaw();
 
 	const Vector3& position = transform->GetPosition();
 
@@ -374,7 +374,7 @@ void Camera::UpdateViewMatrix()
 
 void Camera::UpdateViewProjectionMatrix()
 {
-	m_viewProjectionMatrix = Graphics::usedCamera->GetProjection() * Graphics::usedCamera->viewMatrix;
+	m_viewProjectionMatrix = GetProjection() * viewMatrix;
 }
 
 void Camera::SetProjectionType(const ProjectionTypes type)
