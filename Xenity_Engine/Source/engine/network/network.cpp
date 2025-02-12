@@ -33,6 +33,10 @@
 #include <psp2/net/netctl.h>
 #endif
 
+#if defined(__PS3__)
+#include <net/net.h>
+#endif
+
 #if defined(__PSP__)
 #include <pspgu.h>
 #include <pspnet.h>
@@ -81,6 +85,8 @@ void NetworkManager::Init()
 	s_pspNetworkData.adhocparam = &adhocparam;
 
 	sceUtilityNetconfInitStart(&s_pspNetworkData);
+#elif defined(__PS3__)
+	netInitialize();
 #else
 #if defined(_WIN32) || defined(_WIN64)
 	WSADATA WSAData;
@@ -90,13 +96,13 @@ void NetworkManager::Init()
 		Debug::PrintError("[NetworkManager::CreateSocket] Could not start win socket");
 	}
 #endif
+#endif
 
 #if !defined(EDITOR)
 	if (EngineSettings::values.useOnlineDebugger)
 	{
 		Debug::ConnectToOnlineConsole();
 	}
-#endif
 #endif
 }
 
@@ -287,7 +293,12 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 	unsigned long nonblocking_long = false ? 0 : 1;
 	ioctlsocket(newSocketId, FIONBIO, &nonblocking_long);
 #elif defined(__PS3__)
-
+	int i = 1;
+	if (setsockopt(newSocketId, SOL_SOCKET, SO_NBIO, (char*)&i, sizeof(i)) < 0)
+	{
+		Debug::PrintError("Failed to change socket flags");
+		return nullptr;
+	}
 #else
 	int i = 1;
 	if (setsockopt(newSocketId, SOL_SOCKET, SO_NONBLOCK, (char*)&i, sizeof(i)) < 0)
