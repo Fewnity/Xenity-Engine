@@ -143,11 +143,12 @@ void ShaderRSX::Load()
 			m_directionallightVariableIds.emplace_back(i, m_fragmentProgram);
 			m_spotlightVariableIds.emplace_back(i, m_fragmentProgram);
 		}
-
+#if defined(DEBUG)
 		Debug::Print("----------- FRAGMENT SHADER DEBUG -----------");
 		Debug::Print("num_regs: " + std::to_string(m_fragmentProgram->num_regs));
-		Debug::Print("num_attr: " + std::to_string(m_fragmentProgram->num_attr));
-		Debug::Print("num_const: " + std::to_string(m_fragmentProgram->num_const));
+		Debug::Print("Attributs count: " + std::to_string(m_fragmentProgram->num_attr));
+		Debug::Print("Constants count: " + std::to_string(m_fragmentProgram->num_const));
+#endif
 		/*rsxProgramConst* consts = rsxFragmentProgramGetConsts(m_fragmentProgram);
 		for (size_t i = 0; i < m_fragmentProgram->num_const; i++)
 		{
