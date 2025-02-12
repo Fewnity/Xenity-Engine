@@ -7,12 +7,12 @@ class DateTime
 {
 public:
 	static DateTime GetNow();
-	std::string ToString();
-	uint32_t second;
-	uint32_t minute;
-	uint32_t hour;
-	uint32_t day;
-	uint32_t month;
-	uint32_t year;
+	std::string ToString() const;
+	uint32_t second = 0;
+	uint32_t minute = 0;
+	uint32_t hour = 0;
+	uint32_t day = 0;
+	uint32_t month = 0;
+	uint32_t year = 0;
 };
 
