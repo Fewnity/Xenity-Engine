@@ -378,7 +378,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;EDITOR;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;EDITOR;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;_CRT_SECURE_NO_WARNINGS;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source;$(ProjectDir)include/bullet;$(ProjectDir)include/curl</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
@@ -410,7 +410,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>EDITOR;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EDITOR;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;_CRT_SECURE_NO_WARNINGS;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source;$(ProjectDir)include/bullet;$(ProjectDir)include/curl</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
@@ -442,7 +442,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;_CONSOLE;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;_CONSOLE;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source;$(ProjectDir)include/bullet</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
@@ -467,7 +467,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CONSOLE;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;VISUAL_STUDIO;EXPORT;NOMINMAX;_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)/Source;$(ProjectDir)include/bullet</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
@@ -512,6 +512,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\time\date_time.cpp" />
     <ClCompile Include="Source\engine\graphics\screen_capture.cpp" />
     <ClCompile Include="Source\editor\compilation\compiler_cache.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
@@ -1139,6 +1140,7 @@
     <None Include="Source\engine\reflection\reflection_utils.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\time\date_time.h" />
     <ClInclude Include="Source\engine\graphics\screen_capture.h" />
     <ClInclude Include="Source\editor\compilation\compiler_cache.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
