@@ -9,7 +9,7 @@
 DateTime DateTime::GetNow()
 {
     DateTime dateTime;
-#if defined(__PSP__)
+#if defined(__PSP__) // localtime does not work on PSP
 	ScePspDateTime time;
 	sceRtcGetCurrentClockLocalTime(&time);
 	dateTime.second = time.second;
