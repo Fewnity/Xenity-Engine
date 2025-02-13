@@ -34,5 +34,5 @@ DateTime DateTime::GetNow()
 
 std::string DateTime::ToString() const
 {
-	return std::to_string(second) + "s " + std::to_string(minute) + "m " + std::to_string(hour) + "h " + std::to_string(day) + "/" + std::to_string(month) + "/" + std::to_string(year);
+	return std::to_string(hour) + ":" + std::to_string(minute) + ":" + std::to_string(second) + " " + std::to_string(day) + "/" + std::to_string(month) + "/" + std::to_string(year);
 }
