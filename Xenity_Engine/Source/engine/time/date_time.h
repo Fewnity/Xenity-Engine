@@ -3,7 +3,9 @@
 #include <cstdint>
 #include <string>
 
-class DateTime
+#include <engine/api.h>
+
+class API DateTime
 {
 public:
 	static DateTime GetNow();
