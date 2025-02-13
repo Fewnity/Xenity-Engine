@@ -10,12 +10,12 @@ class API DateTime
 public:
 
 	/**
-	* Get the current date and time
+	* @brief Get the current date and time
 	*/
 	static DateTime GetNow();
 
 	/**
-	* Get a string representation of the date and time in the format: "hour:minute:second day/month/year"
+	* @brief Get a string representation of the date and time in the format: "hour:minute:second day/month/year"
 	*/
 	std::string ToString() const;
 
