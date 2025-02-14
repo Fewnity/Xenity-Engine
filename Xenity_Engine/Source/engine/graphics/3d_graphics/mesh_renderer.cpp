@@ -54,6 +54,11 @@ MeshRenderer::MeshRenderer()
 
 void MeshRenderer::OnDrawGizmosSelected()
 {
+	if (!m_meshData)
+	{
+		return;
+	}
+
 	const std::shared_ptr<Texture> lastUnlitTexture = AssetManager::unlitMaterial->GetTexture();
 	AssetManager::unlitMaterial->SetTexture(AssetManager::defaultTexture);
 	AssetManager::unlitMaterial->SetColor(Color::CreateFromRGBA(93, 126, 179, 255));
