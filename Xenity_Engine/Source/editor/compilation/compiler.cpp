@@ -71,7 +71,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	XASSERT(!params.libraryName.empty(), "[Compiler::Compile] Library name is not set");
 
 	FrameLimiter::SetIsEnabled(true);
-	FrameLimiter::SetWaitTiming(500);
+	FrameLimiter::SetWaitTiming(250);
 
 	DeleteTempFiles(params);
 
