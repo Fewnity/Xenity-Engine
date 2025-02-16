@@ -28,6 +28,9 @@
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/debug/performance.h>
+#include <engine/debug/debug.h>
+
+std::default_random_engine ParticleSystem::m_gen;
 
 ParticleSystem::ParticleSystem()
 {

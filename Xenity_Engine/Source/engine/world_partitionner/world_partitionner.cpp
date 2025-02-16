@@ -145,6 +145,10 @@ void WorldPartitionner::RemoveLight(Light* light)
 
 	XASSERT(light, "The light is null");
 
+	// Prevent crash when exiting the game/scene
+	if (Tree::children.empty())
+		return;
+
 	for (auto& position : light->m_worldChunkPositions)
 	{
 		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
@@ -210,7 +214,6 @@ void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 		{
 			// Add the light if it's not already in the list
 			auto it = std::find(meshRenderer->m_affectedByLights.begin(), meshRenderer->m_affectedByLights.end(), light);
-
 			if (it == meshRenderer->m_affectedByLights.end())
 			{
 				meshRenderer->m_affectedByLights.push_back(light);
@@ -231,8 +234,9 @@ void WorldPartitionner::ProcessLight(Light* light)
 		if (light->IsEnabled() && light->GetGameObject()->IsLocalActive())
 		{
 			std::vector<Vector3Fast> intersectedCubes;
+			const Vector3& lightPosition = light->GetTransform()->GetPosition();
 			Sphere sphere;
-			sphere.position = light->GetTransform()->GetPosition();
+			sphere.position = glm::vec3(lightPosition.x, lightPosition.y, lightPosition.z);
 			sphere.radius = light->GetMaxLightDistance();
 			getCubesIntersectedBySphere(intersectedCubes, Vector3Fast(sphere.position.x, sphere.position.y, sphere.position.z), sphere.radius, WORLD_CHUNK_SIZE);
 			for (const Vector3Fast& cube : intersectedCubes)

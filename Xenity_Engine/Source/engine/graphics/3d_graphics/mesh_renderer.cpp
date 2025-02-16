@@ -30,13 +30,11 @@ using namespace std;
 
 bool IsSphereInFrustum(const Frustum& frustum, const Sphere& sphere)
 {
+	const glm::vec4 pos = glm::vec4(sphere.position, 1);
 	for (const Plane& plane : frustum.planes)
 	{
 		// Distance between the center of the sphere and the plane
-		const float distance = plane.A * sphere.position.x +
-			plane.B * sphere.position.y +
-			plane.C * sphere.position.z +
-			plane.D;
+		const float distance = glm::dot(plane.data, pos);
 
 		// If the distance is less than -radius, the sphere is completely out of the frustum
 		if (distance < -sphere.radius)
@@ -112,7 +110,7 @@ Sphere MeshRenderer::ProcessBoundingSphere() const
 
 	sphere = m_meshData->GetBoundingSphere();
 	const glm::vec3 transformedPosition = glm::vec3(GetTransformRaw()->GetTransformationMatrix() * glm::vec4(sphere.position.x, sphere.position.y, sphere.position.z, 1.0f));
-	sphere.position = Vector3(-transformedPosition.x, transformedPosition.y, transformedPosition.z);
+	sphere.position = glm::vec4(-transformedPosition.x, transformedPosition.y, transformedPosition.z, 1);
 
 	const Vector3& scale = GetTransformRaw()->GetScale();
 	sphere.radius *= std::max({ std::abs(scale.x), std::abs(scale.y), std::abs(scale.z) });
@@ -121,7 +119,7 @@ Sphere MeshRenderer::ProcessBoundingSphere() const
 
 void MeshRenderer::OnNewRender()
 {
-	if (Graphics::usedCamera && GetGameObjectRaw()->IsLocalActive() && IsEnabled())
+	if (GetGameObjectRaw()->IsLocalActive() && IsEnabled())
 	{
 		m_outOfFrustum = !IsSphereInFrustum(Graphics::usedCamera->frustum, m_boundingSphere);
 	}
@@ -247,6 +245,7 @@ void MeshRenderer::OnEnabled()
 void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
 	if (m_culled || m_outOfFrustum)
 		return;
 

@@ -512,6 +512,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\game_elements\component_manager.cpp" />
     <ClCompile Include="Source\engine\time\date_time.cpp" />
     <ClCompile Include="Source\engine\graphics\screen_capture.cpp" />
     <ClCompile Include="Source\editor\compilation\compiler_cache.cpp">
@@ -1140,6 +1141,7 @@
     <None Include="Source\engine\reflection\reflection_utils.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\engine\game_elements\component_manager.h" />
     <ClInclude Include="Source\engine\time\date_time.h" />
     <ClInclude Include="Source\engine\graphics\screen_capture.h" />
     <ClInclude Include="Source\editor\compilation\compiler_cache.h">

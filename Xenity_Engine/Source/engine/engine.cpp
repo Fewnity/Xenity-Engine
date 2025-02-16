@@ -87,6 +87,7 @@
 
 // Time
 #include <engine/time/time.h>
+#include <engine/time/date_time.h>
 
 // Physics
 #include <engine/physics/physics_manager.h>
@@ -415,10 +416,10 @@ void Engine::Loop()
 				// Draw
 				Graphics::Draw();
 
-				if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
+				/*if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
 				{
 					ScreenCapture::MakeScreenshot("screenshot");
-				}
+				}*/
 			}
 			else
 			{
@@ -433,7 +434,10 @@ void Engine::Loop()
 
 		if (Performance::IsProfilerEnabled() && InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
 		{
-			std::string path = "profiler.bin";
+			std::string path = "profiler";
+			DateTime now = DateTime::GetNow();
+			path += std::to_string(now.hour) + "h " + std::to_string(now.minute) + "m " + std::to_string(now.second) + "s " + std::to_string(now.day) + "d " + std::to_string(now.month) + "m " + std::to_string(now.year) + "y";
+			path += ".bin";
 #if defined(__vita__)
 			path = PSVITA_DEBUG_LOG_FOLDER + path;
 #endif
@@ -475,6 +479,11 @@ void Engine::Stop()
 		s_renderer->Stop();
 		s_renderer.reset();
 	}
+	GameplayManager::Stop();
+
+#if defined(EDITOR)
+	Editor::Stop();
+#endif
 #if defined(EDITOR) && (defined(_WIN32) || defined(_WIN64))
 	PluginManager::Stop();
 #endif

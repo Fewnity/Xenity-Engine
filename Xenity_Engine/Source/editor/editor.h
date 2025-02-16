@@ -56,6 +56,8 @@ public:
 	*/
 	static void Init();
 
+	static void Stop();
+
 	/**
 	* @brief Update editor (to call each frame)
 	*/

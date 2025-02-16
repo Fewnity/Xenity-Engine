@@ -101,6 +101,7 @@ GameObject::~GameObject()
 {
 	for (int i = 0; i < m_componentCount; i++)
 	{
+		ComponentManager::RemoveComponent(m_components[i]);
 		if (m_components[i])
 			m_components[i]->RemoveReferences();
 	}
@@ -347,7 +348,7 @@ void GameObject::UpdateActive(const GameObject& changed)
 				if (m_localActive) 
 				{
 					component->OnEnabled();
-					if (!component->m_isAwakeCalled && component->IsEnabled())
+					if ((GameplayManager::GetGameState() == GameState::Playing || GameplayManager::GetGameState() == GameState::Paused) && !component->m_isAwakeCalled && component->IsEnabled())
 					{
 						component->m_isAwakeCalled = true;
 						component->Awake();

@@ -13,6 +13,7 @@
 #include <vector>
 #include <memory>
 #include <engine/event_system/event_system.h>
+#include <bitset>
 
 class GameObject;
 class Component;
@@ -28,6 +29,8 @@ enum class GameState
 class GameplayManager
 {
 public:
+	static void Stop();
+
 	/**
 	* @brief Add a component into the game
 	* @param gameObject GameObject to add
@@ -49,8 +52,6 @@ public:
 
 	static bool componentsListDirty;
 	static bool componentsInitListDirty;
-	static std::vector<std::weak_ptr<Component>> orderedComponents;
-	static int componentsCount;
 	static int gameObjectCount;
 	static std::vector<std::shared_ptr<GameObject>> gameObjects;
 #if defined(EDITOR)

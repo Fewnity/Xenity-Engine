@@ -402,43 +402,15 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 		// Call Awake on Components
 		if (GameplayManager::GetGameState() == GameState::Starting)
 		{
-			std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
 			const size_t componentsCount = allComponents.size();
-			int componentsToInitCount = 0;
 
-			// Find uninitiated components and order them
-			for (size_t i = 0; i < componentsCount; i++)
-			{
-				if (auto& componentToCheck = allComponents[i])
-				{
-					if (!componentToCheck->m_initiated)
-					{
-						bool placeFound = false;
-						for (size_t componentToInitIndex = 0; componentToInitIndex < componentsToInitCount; componentToInitIndex++)
-						{
-							// Check if the checked has a higher priority (lower value) than the component in the list
-							if (componentToCheck->m_updatePriority <= orderedComponentsToInit[componentToInitIndex]->m_updatePriority)
-							{
-								orderedComponentsToInit.insert(orderedComponentsToInit.begin() + componentToInitIndex, componentToCheck);
-								placeFound = true;
-								break;
-							}
-						}
-						// if the priority is lower than all components's priorities in the list, add it the end of the list
-						if (!placeFound)
-						{
-							orderedComponentsToInit.push_back(componentToCheck);
-						}
-						componentsToInitCount++;
-					}
-				}
-			}
+			//TODO sort components by their update order
 
 			// Call components Awake() function
-			for (int i = 0; i < componentsToInitCount; i++)
+			for (int i = 0; i < componentsCount; i++)
 			{
-				const std::shared_ptr<Component>& componentToInit = orderedComponentsToInit[i];
-				if (!componentToInit->m_isAwakeCalled && componentToInit->GetGameObject()->IsLocalActive() && componentToInit->IsEnabled())
+				const std::shared_ptr<Component>& componentToInit = allComponents[i];
+				if (componentToInit->GetGameObject()->IsLocalActive() && componentToInit->IsEnabled())
 				{
 					componentToInit->Awake();
 					componentToInit->m_isAwakeCalled = true;
@@ -513,6 +485,11 @@ void SceneManager::ClearScene()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	ComponentManager::Clear();
+	GameplayManager::gameObjectsToDestroy.clear();
+	GameplayManager::componentsToDestroy.clear();
+	GameplayManager::gameObjects.clear();
+	GameplayManager::gameObjectCount = 0;
 	WorldPartitionner::ClearWorld();
 	Graphics::DeleteAllDrawables();
 	Graphics::usedCamera.reset();
@@ -528,12 +505,6 @@ void SceneManager::ClearScene()
 	}
 
 	PhysicsManager::Clear();
-	GameplayManager::orderedComponents.clear();
-	GameplayManager::gameObjectsToDestroy.clear();
-	GameplayManager::componentsToDestroy.clear();
-	GameplayManager::gameObjects.clear();
-	GameplayManager::componentsCount = 0;
-	GameplayManager::gameObjectCount = 0;
 #if defined(EDITOR)
 	Editor::SetSelectedGameObject(nullptr);
 #endif

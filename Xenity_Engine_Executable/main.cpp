@@ -33,8 +33,10 @@ Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make 
 Try to make a dynamic texture
 Lighting bug when there is only one mesh
 Implement CreateFolder on console
-Implement a way to get the current date time
-Add network on PS3
+Do not forget to readd init component ordering in LoadScene
+Try to use SubMesh object instead of pointer
+Try to disable audio on PSP and check if sleep mode works again
+Add the ability to control the game from the editor with network (load scene, quit...)
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
@@ -45,7 +47,6 @@ To make lighting usable on PS3:
 - Try to sort by material and distance
 
 --- Can be done for the next release
-Try to make a new component list system
 Reduce cache size by deleting executable file
 Add an error if game.cpp and game.h are not found
 Disable the ability to move and delete game.cpp and game.h

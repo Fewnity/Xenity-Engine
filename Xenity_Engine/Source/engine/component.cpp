@@ -32,12 +32,6 @@ Component::~Component()
 
 #pragma endregion
 
-void Component::SetUpdatePriority(int priority)
-{
-	m_updatePriority = priority;
-	GameplayManager::componentsListDirty = true;
-}
-
 void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 {
 	XASSERT(newGameObject != nullptr, "[Component::SetGameObject] newGameObject is empty");
@@ -87,6 +81,11 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 	}
 
 	OnComponentAttached();
+}
+
+bool Component::IsLocalActive() const
+{
+	return GetGameObjectRaw()->IsLocalActive();
 }
 
 void Component::SetIsEnabled(bool isEnabled)

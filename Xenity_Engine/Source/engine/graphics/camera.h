@@ -17,14 +17,14 @@
 
 struct Plane
 {
-	float A, B, C, D;
+	glm::vec4 data;
 
 	void Normalize() {
-		float length = sqrt(A * A + B * B + C * C);
-		A /= length;
-		B /= length;
-		C /= length;
-		D /= length;
+		float length = sqrt(data.x * data.x + data.y * data.y + data.z * data.z);
+		data.x /= length;
+		data.y /= length;
+		data.z /= length;
+		data.w /= length;
 	}
 };
 
@@ -59,45 +59,45 @@ struct Frustum
 		}
 
 		// Extract the right plane
-		planes[0].A = clip[3] - clip[0];
-		planes[0].B = clip[7] - clip[4];
-		planes[0].C = clip[11] - clip[8];
-		planes[0].D = clip[15] - clip[12];
+		planes[0].data.x = clip[3] - clip[0];
+		planes[0].data.y = clip[7] - clip[4];
+		planes[0].data.z = clip[11] - clip[8];
+		planes[0].data.w = clip[15] - clip[12];
 		planes[0].Normalize();
 
 		// Extract the left plane
-		planes[1].A = clip[3] + clip[0];
-		planes[1].B = clip[7] + clip[4];
-		planes[1].C = clip[11] + clip[8];
-		planes[1].D = clip[15] + clip[12];
+		planes[1].data.x = clip[3] + clip[0];
+		planes[1].data.y = clip[7] + clip[4];
+		planes[1].data.z = clip[11] + clip[8];
+		planes[1].data.w = clip[15] + clip[12];
 		planes[1].Normalize();
 
 		// Extract the bottom plane
-		planes[2].A = clip[3] + clip[1];
-		planes[2].B = clip[7] + clip[5];
-		planes[2].C = clip[11] + clip[9];
-		planes[2].D = clip[15] + clip[13];
+		planes[2].data.x = clip[3] + clip[1];
+		planes[2].data.y = clip[7] + clip[5];
+		planes[2].data.z = clip[11] + clip[9];
+		planes[2].data.w = clip[15] + clip[13];
 		planes[2].Normalize();
 
 		// Extract the top plane
-		planes[3].A = clip[3] - clip[1];
-		planes[3].B = clip[7] - clip[5];
-		planes[3].C = clip[11] - clip[9];
-		planes[3].D = clip[15] - clip[13];
+		planes[3].data.x = clip[3] - clip[1];
+		planes[3].data.y = clip[7] - clip[5];
+		planes[3].data.z = clip[11] - clip[9];
+		planes[3].data.w = clip[15] - clip[13];
 		planes[3].Normalize();
 
 		// Extract the far plane
-		planes[4].A = clip[3] - clip[2];
-		planes[4].B = clip[7] - clip[6];
-		planes[4].C = clip[11] - clip[10];
-		planes[4].D = clip[15] - clip[14];
+		planes[4].data.x = clip[3] - clip[2];
+		planes[4].data.y = clip[7] - clip[6];
+		planes[4].data.z = clip[11] - clip[10];
+		planes[4].data.w = clip[15] - clip[14];
 		planes[4].Normalize();
 
 		// Extract the near plane
-		planes[5].A = clip[3] + clip[2];
-		planes[5].B = clip[7] + clip[6];
-		planes[5].C = clip[11] + clip[10];
-		planes[5].D = clip[15] + clip[14];
+		planes[5].data.x = clip[3] + clip[2];
+		planes[5].data.y = clip[7] + clip[6];
+		planes[5].data.z = clip[11] + clip[10];
+		planes[5].data.w = clip[15] + clip[14];
 		planes[5].Normalize();
 	}
 };

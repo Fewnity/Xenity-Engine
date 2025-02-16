@@ -14,6 +14,7 @@
 #include <engine/reflection/reflection.h>
 #include <engine/unique_id/unique_id.h>
 #include <engine/component.h>
+#include <engine/game_elements/component_manager.h>
 
 class Transform;
 
@@ -108,9 +109,9 @@ public:
 	std::enable_if_t<std::is_base_of<Component, T>::value, std::shared_ptr<T>>
 	AddComponent()
 	{
-		std::shared_ptr<Component> newC = std::make_shared<T>();
-		AddExistingComponent(newC);
-		return std::shared_ptr<T>(std::dynamic_pointer_cast<T>(newC));
+		std::shared_ptr<T> newComponent = ComponentManager::CreateComponent<T>();
+		AddExistingComponent(newComponent);
+		return newComponent;
 	}
 
 	/**
@@ -252,7 +253,7 @@ private:
 	void RemoveComponent(const std::shared_ptr <Component>& component);
 
 	/**
-	* 
+	* Get a list of all children
 	*/
 	inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
 	{

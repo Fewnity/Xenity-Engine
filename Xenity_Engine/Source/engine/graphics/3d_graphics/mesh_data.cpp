@@ -221,7 +221,7 @@ void MeshData::ComputeBoundingSphere()
 	const Vector3 halfDiagonal = (m_maxBoundingBox - m_minBoundingBox) / 2.0f;
 	const float sphereRadius = sqrt(halfDiagonal.x * halfDiagonal.x + halfDiagonal.y * halfDiagonal.y + halfDiagonal.z * halfDiagonal.z);
 
-	m_boundingSphere.position = spherePosition;
+	m_boundingSphere.position = glm::vec4(spherePosition.x, spherePosition.y, spherePosition.z, 1);
 	m_boundingSphere.radius = sphereRadius;
 }
 

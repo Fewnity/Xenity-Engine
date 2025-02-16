@@ -350,6 +350,7 @@
     <ClCompile Include="Source\unit_tests\editor\unit_test_delete_command.cpp" />
     <ClCompile Include="Source\engine\graphics\screen_capture.cpp" />
     <ClCompile Include="Source\engine\time\date_time.cpp" />
+    <ClCompile Include="Source\engine\game_elements\component_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -808,6 +809,7 @@
     <ClInclude Include="Source\editor\compilation\compiler_cache.h" />
     <ClInclude Include="Source\engine\graphics\screen_capture.h" />
     <ClInclude Include="Source\engine\time\date_time.h" />
+    <ClInclude Include="Source\engine\game_elements\component_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

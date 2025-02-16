@@ -80,6 +80,11 @@ public:
 	}
 
 	/**
+	* @brief Get if the component is active based on gameobject state
+	*/
+	bool IsLocalActive() const;
+
+	/**
 	* @brief Enable or disable the component*
 	* @param isEnabled: true to enable, false to disable
 	*/
@@ -141,15 +146,10 @@ public:
 		return "{" + *m_componentName + "}";
 	}
 
-	inline int GetUpdatePriority() const
-	{
-		return m_updatePriority;
-	}
-
-	void SetUpdatePriority(int priority);
-
 private:
 	friend class GameplayManager;
+	template<class T>
+	friend class ComponentList;
 	friend class GameObject;
 	friend class InspectorMenu;
 	friend class SceneManager;
@@ -184,9 +184,6 @@ private:
 	// Raw pointer for faster access
 	Transform* m_transformRaw = nullptr;
 	GameObject* m_gameObjectRaw = nullptr;
-
-protected:
-	int m_updatePriority = 5000; //Lower is more priority
 
 private:
 	bool m_initiated = false;

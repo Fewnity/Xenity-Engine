@@ -23,8 +23,9 @@ class Menu;
 #endif
 class Component;
 
-#define REGISTER_COMPONENT(component) ClassRegistry::AddComponentClass<component>(#component)
-#define REGISTER_INVISIBLE_COMPONENT(component) ClassRegistry::AddComponentClass<component>(#component, false)
+// maxCount is the maximum number of components of this type that can be used in a scene
+#define REGISTER_COMPONENT(component, disableUpdateLoop) ClassRegistry::AddComponentClass<component>(#component, 100, disableUpdateLoop)
+#define REGISTER_INVISIBLE_COMPONENT(component, disableUpdateLoop) ClassRegistry::AddComponentClass<component>(#component, 100, disableUpdateLoop, false)
 
 #define REGISTER_FILE(fileClass, fileType) AddFileClass<fileClass>(#fileClass, fileType)
 
@@ -43,6 +44,8 @@ public:
 	{
 		std::string name = "";
 		uint64_t typeId = 0;
+		size_t maxCount = 0;
+		bool disableUpdateLoop = false;
 	};
 
 #if defined (EDITOR)
@@ -60,7 +63,7 @@ public:
 	*/
 	template<typename T>
 	std::enable_if_t<std::is_base_of<Component, T>::value, void>
-	static AddComponentClass(const std::string& name, bool isVisible = true)
+	static AddComponentClass(const std::string& name, size_t maxCount = 100, bool disableUpdateLoop = false, bool isVisible = true)
 	{
 		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty");
 
@@ -73,6 +76,8 @@ public:
 		ClassInfo classInfo;
 		classInfo.name = name;
 		classInfo.typeId = typeid(T).hash_code();
+		classInfo.maxCount = maxCount;
+		classInfo.disableUpdateLoop = disableUpdateLoop;
 		s_classInfos.push_back(classInfo);
 	}
 
@@ -177,14 +182,8 @@ public:
 		return nullptr;
 	}
 
-	/**
-	* @brief Get a class info from the class type
-	*/
-	template<typename T>
-	std::enable_if_t<std::is_base_of<Component, T>::value, const ClassInfo*>
-	static GetClassInfo()
+	static const ClassInfo* GetClassInfoById(uint64_t classId)
 	{
-		const uint64_t classId = typeid(T).hash_code();
 		const size_t classInfosCount = s_classInfos.size();
 		for (size_t i = 0; i < classInfosCount; i++)
 		{
@@ -197,6 +196,17 @@ public:
 
 		XASSERT(false, "[ClassRegistry::GetClassInfo] ClassInfo not found");
 		return nullptr;
+	}
+
+	/**
+	* @brief Get a class info from the class type
+	*/
+	template<typename T>
+	std::enable_if_t<std::is_base_of<Component, T>::value, const ClassInfo*>
+	static GetClassInfo()
+	{
+		const uint64_t classId = typeid(T).hash_code();
+		return GetClassInfoById(classId);
 	}
 
 	/**

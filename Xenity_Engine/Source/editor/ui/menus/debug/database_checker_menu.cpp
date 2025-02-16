@@ -24,6 +24,10 @@ DataBaseCheckerMenu::DataBaseCheckerMenu()
 {
 }
 
+DataBaseCheckerMenu::~DataBaseCheckerMenu()
+{
+}
+
 void DataBaseCheckerMenu::Init()
 {
 

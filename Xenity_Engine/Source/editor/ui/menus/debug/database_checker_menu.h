@@ -17,6 +17,7 @@ class DataBaseCheckerMenu : public Menu
 {
 public:
 	DataBaseCheckerMenu();
+	~DataBaseCheckerMenu();
 
 	void Init() override;
 	void Draw() override;

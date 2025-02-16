@@ -96,7 +96,7 @@ protected:
 	float m_lifeTimeMax = 10;
 	float m_speedMin = 1;
 	float m_speedMax = 2;
-	std::default_random_engine m_gen;
+	static std::default_random_engine m_gen;
 	std::uniform_real_distribution<float>m_speedDistribution;
 	std::uniform_real_distribution<float>m_lifeTimeDistribution;
 	std::uniform_real_distribution<float>m_boxXDistribution;

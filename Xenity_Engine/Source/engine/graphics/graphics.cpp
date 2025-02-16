@@ -370,18 +370,16 @@ void Graphics::Draw()
 				// Draw all gizmos
 				{
 					SCOPED_PROFILER("Graphics::DrawGizmo", scopeBenchmarkDrawGizmo);
-					for (const std::weak_ptr<Component>& weakComponent : GameplayManager::orderedComponents)
+					const std::vector<std::shared_ptr<Component>> gameObjects = ComponentManager::GetAllComponents();
+					for (const std::shared_ptr<Component>& component : gameObjects)
 					{
-						if (const std::shared_ptr<Component> component = weakComponent.lock())
+						if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 						{
-							if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
-							{
-								component->OnDrawGizmos();
+							component->OnDrawGizmos();
 
-								if (component->GetGameObjectRaw()->m_isSelected)
-								{
-									component->OnDrawGizmosSelected();
-								}
+							if (component->GetGameObjectRaw()->m_isSelected)
+							{
+								component->OnDrawGizmosSelected();
 							}
 						}
 					}

@@ -65,6 +65,7 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
 #include <engine/graphics/ui/icon.h>
 #include <engine/particle_system/particle_system.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/game_elements/gameobject.h>
 
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> ClassRegistry::s_nameToComponent;
 std::vector<ClassRegistry::FileClassInfo> ClassRegistry::s_fileClassInfos;
@@ -132,31 +133,31 @@ void ClassRegistry::RegisterEngineComponents()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	// List all Engine components
-	REGISTER_COMPONENT(Light);
-	REGISTER_COMPONENT(Camera);
-	REGISTER_COMPONENT(TextRenderer);
-	REGISTER_COMPONENT(Canvas);
-	REGISTER_COMPONENT(RectTransform);
-	REGISTER_COMPONENT(TextMesh);
-	REGISTER_COMPONENT(MeshRenderer);
+	REGISTER_COMPONENT(Light, true);
+	REGISTER_COMPONENT(Camera, true);
+	REGISTER_COMPONENT(TextRenderer, true);
+	REGISTER_COMPONENT(Canvas, true);
+	REGISTER_COMPONENT(RectTransform, true);
+	REGISTER_COMPONENT(TextMesh, true);
+	REGISTER_COMPONENT(MeshRenderer, true);
 #if defined(ENABLE_EXPERIMENTAL_FEATURES)
-	REGISTER_COMPONENT(Tilemap);
+	REGISTER_COMPONENT(Tilemap, 20, true);
 #endif // ENABLE_EXPERIMENTAL_FEATURES
-	REGISTER_COMPONENT(SpriteRenderer);
-	REGISTER_COMPONENT(BillboardRenderer);
+	REGISTER_COMPONENT(SpriteRenderer, true);
+	REGISTER_COMPONENT(BillboardRenderer, true);
 #if defined(ENABLE_EXPERIMENTAL_FEATURES)
-	REGISTER_COMPONENT(LineRenderer);
+	REGISTER_COMPONENT(LineRenderer, true);
 #endif // ENABLE_EXPERIMENTAL_FEATURES
-	REGISTER_COMPONENT(AudioSource);
-	REGISTER_COMPONENT(ParticleSystem);
-	REGISTER_COMPONENT(RigidBody);
-	REGISTER_COMPONENT(BoxCollider);
-	REGISTER_COMPONENT(SphereCollider);
-	REGISTER_COMPONENT(Lod);
+	REGISTER_COMPONENT(AudioSource, true);
+	REGISTER_COMPONENT(ParticleSystem, true);
+	REGISTER_COMPONENT(RigidBody, true);
+	REGISTER_COMPONENT(BoxCollider, true);
+	REGISTER_COMPONENT(SphereCollider, true);
+	REGISTER_COMPONENT(Lod, true);
 #if defined(DEBUG)
-	REGISTER_COMPONENT(TestComponent);
+	REGISTER_COMPONENT(TestComponent, false);
 #endif
-	REGISTER_INVISIBLE_COMPONENT(MissingScript);
+	REGISTER_INVISIBLE_COMPONENT(MissingScript, true);
 }
 
 void ClassRegistry::RegisterEngineFileClasses()

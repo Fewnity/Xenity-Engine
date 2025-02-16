@@ -121,8 +121,13 @@ void SpriteManager::DrawSprite(Transform& transform, const Color& color, Materia
 	const float h = texture->GetHeight() * scaleCoef;
 
 	const glm::mat4 matCopy = glm::scale(transform.GetTransformationMatrix(), glm::vec3(w, h, 1));
+	glm::mat4 mvp;
+	if constexpr (!s_UseOpenGLFixedFunctions)
+	{
+		mvp = Graphics::usedCamera->m_viewProjectionMatrix * matCopy;
+	}
 
-	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matCopy, transform.GetInverseNormalMatrix(), transform.GetMVPMatrix(Graphics::s_currentFrame), false);
+	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matCopy, transform.GetInverseNormalMatrix(), mvp, false);
 }
 
 void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const Color& color, Material& material, Texture* texture)
@@ -146,9 +151,13 @@ void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotati
 	const float h = texture->GetHeight() * scaleCoef;
 
 	const glm::mat4 matrix = glm::scale(Math::CreateModelMatrix(position, rotation, scale), glm::vec3(w, h, 1));
-	const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * matrix;
+	glm::mat4 mvp;
+	if constexpr (!s_UseOpenGLFixedFunctions)
+	{
+		mvp = Graphics::usedCamera->m_viewProjectionMatrix * matrix;
+	}
 
-	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matrix, matrix, MVP, false);
+	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matrix, matrix, mvp, false);
 }
 
 void SpriteManager::Render2DLine(const std::shared_ptr<MeshData>& meshData)

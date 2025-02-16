@@ -20,12 +20,11 @@
 #include <engine/debug/stack_debug_object.h>
 #include <engine/time/time.h>
 #include <engine/asset_management/asset_manager.h>
+#include <engine/game_elements/component_manager.h>
 
 int GameplayManager::gameObjectCount = 0;
 bool GameplayManager::componentsListDirty = true;
 bool GameplayManager::componentsInitListDirty = true;
-std::vector<std::weak_ptr<Component>> GameplayManager::orderedComponents;
-int GameplayManager::componentsCount = 0;
 std::vector<std::shared_ptr<GameObject>> GameplayManager::gameObjects;
 #if defined(EDITOR)
 int GameplayManager::gameObjectEditorCount = 0;
@@ -37,6 +36,27 @@ std::weak_ptr<Component> GameplayManager::s_lastUpdatedComponent;
 Event<> GameplayManager::s_OnPlayEvent;
 
 GameState GameplayManager::s_gameState = GameState::Stopped;
+
+std::unordered_map<size_t, std::unique_ptr<BaseComponentList>> ComponentManager::componentLists;
+
+void GameplayManager::Stop()
+{
+	s_lastUpdatedComponent.reset();
+	componentsToDestroy.clear();
+	gameObjectsToDestroy.clear();
+	gameObjects.clear();
+#if defined(EDITOR)
+	gameObjectsEditor.clear();
+#endif
+	gameObjectCount = 0;
+#if defined(EDITOR)
+	gameObjectEditorCount = 0;
+#endif
+	componentsListDirty = true;
+	componentsInitListDirty = true;
+	s_gameState = GameState::Stopped;
+	s_OnPlayEvent.UnbindAll();;
+}
 
 void GameplayManager::AddGameObject(const std::shared_ptr<GameObject>& gameObject)
 {
@@ -70,6 +90,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 	{
 		s_gameState = GameState::Starting;
 		SceneManager::SaveScene(SaveSceneType::SaveSceneForPlayState);
+		ComponentManager::Clear();
 		SceneManager::RestoreScene();
 		s_gameState = newGameState;
 		s_OnPlayEvent.Trigger();
@@ -116,9 +137,7 @@ void GameplayManager::UpdateComponents()
 	if (componentsListDirty)
 	{
 		componentsListDirty = false;
-		orderedComponents.clear();
 
-		componentsCount = 0;
 		OrderComponents();
 		componentsInitListDirty = true;
 	}
@@ -135,25 +154,7 @@ void GameplayManager::UpdateComponents()
 	if (GetGameState() == GameState::Playing)
 	{
 		// Update components
-		for (int i = 0; i < componentsCount; i++)
-		{
-			if (const std::shared_ptr<Component> component = orderedComponents[i].lock())
-			{
-				if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
-				{
-#if defined(_WIN32) || defined(_WIN64)
-					s_lastUpdatedComponent = component;
-#endif
-					component->Update();
-				}
-			}
-			else
-			{
-				orderedComponents.erase(orderedComponents.begin() + i);
-				i--;
-				componentsCount--;
-			}
-		}
+		ComponentManager::UpdateComponentLists(s_lastUpdatedComponent);
 	}
 	s_lastUpdatedComponent.reset();
 }
@@ -161,66 +162,13 @@ void GameplayManager::UpdateComponents()
 void GameplayManager::OrderComponents()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
-	for(const std::shared_ptr<GameObject>& gameObjectToCheck : gameObjects)
-	{
-		if (gameObjectToCheck)
-		{
-			const int goComponentCount = gameObjectToCheck->GetComponentCount();
-			bool placeFound = false;
-			for (int cIndex = 0; cIndex < goComponentCount; cIndex++)
-			{
-				const std::shared_ptr<Component>& componentToCheck = gameObjectToCheck->m_components[cIndex];
-				if (componentToCheck)
-				{
-					for (int i = 0; i < componentsCount; i++)
-					{
-						// Check if the checked has a higher priority (lower value) than the component in the list
-						if (componentToCheck->m_updatePriority <= orderedComponents[i].lock()->m_updatePriority)
-						{
-							orderedComponents.insert(orderedComponents.begin() + i, componentToCheck);
-							placeFound = true;
-							break;
-						}
-					}
-					// if the priority is lower than all components's priorities in the list, add it the end of the list
-					if (!placeFound)
-					{
-						orderedComponents.push_back(componentToCheck);
-					}
-					componentsCount++;
-				}
-			}
-		}
-	}
 }
 
 void GameplayManager::InitialiseComponents()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	int componentsToInitCount = 0;
-	std::vector<std::shared_ptr<Component>> orderedComponentsToInit;
-	// Find uninitiated components and order them
-	for (int i = 0; i < componentsCount; i++)
-	{
-		if (auto componentToCheck = orderedComponents[i].lock())
-		{
-			if (!componentToCheck->m_initiated && componentToCheck->IsEnabled() && componentToCheck->GetGameObject()->IsLocalActive())
-			{
-				orderedComponentsToInit.push_back(componentToCheck);
-				componentsToInitCount++;
-			}
-		}
-	}
-
-	// Init components
-	for (int i = 0; i < componentsToInitCount; i++)
-	{
-		s_lastUpdatedComponent = orderedComponentsToInit[i];
-		orderedComponentsToInit[i]->Start();
-		orderedComponentsToInit[i]->m_initiated = true;
-	}
+	ComponentManager::InitComponentLists();
 }
 
 void GameplayManager::RemoveDestroyedGameObjects()
@@ -249,14 +197,10 @@ void GameplayManager::RemoveDestroyedComponents()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	const size_t componentToDestroyCount = componentsToDestroy.size();
-	for (size_t i = 0; i < componentToDestroyCount; i++)
+	for (auto& component : componentsToDestroy)
 	{
-		const std::shared_ptr<Component>& component = componentsToDestroy[i];
-		if (component)
-		{
-			component->RemoveReferences();
-		}
+		component->RemoveReferences();
+		ComponentManager::RemoveComponent(component);
 	}
 	componentsToDestroy.clear();
 }

@@ -119,6 +119,11 @@ void Editor::Init()
 	CheckIntegrity();
 }
 
+void Editor::Stop()
+{
+	menus.clear();
+}
+
 void Editor::SaveMenuSettings()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
