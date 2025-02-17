@@ -11,19 +11,50 @@
 class BaseComponentList
 {
 public:
+	/**
+	* @brief Constructor
+	*/
 	BaseComponentList(size_t maxComponentCount, bool disabledLoop)
 	{
 		m_maxComponentCount = maxComponentCount;
 		m_disabledLoop = disabledLoop;
 	}
 
-	virtual std::shared_ptr<void> CreateComponent() = 0;
+	/**
+	* @brief Create a new component of the child template type (Will create a new list if no slot available)
+	*/
+	virtual std::shared_ptr<Component> CreateComponent() = 0;
+	
+	/**
+	* @brief Initialize active components
+	*/
 	virtual void InitComponents() = 0;
+
+	/**
+	* @brief Update active components
+	*/
 	virtual void UpdateComponents(std::weak_ptr<Component>& lastUpdatedComponent) = 0;
-	virtual void RemoveComponent(const std::shared_ptr<void>& component) = 0;
-	size_t GetMaxComponentCount() { return m_maxComponentCount; }
-	bool IsDisabledLoop() { return m_disabledLoop; }
-	const std::vector<std::shared_ptr<Component>>& GetComponents() { return shared_components; }
+
+	/**
+	* @brief Remove a component from the list
+	*/
+	virtual void RemoveComponent(const std::shared_ptr<Component>& component) = 0;
+
+	/**
+	* @brief Get the maximum number of components that can be created per list
+	*/
+	size_t GetMaxComponentCount() const { return m_maxComponentCount; }
+
+	/**
+	* @brief Get if the update loop is disabled for this component list
+	*/
+	bool IsDisabledLoop() const { return m_disabledLoop; }
+
+	/**
+	* @brief Get all components
+	*/
+	const std::vector<std::shared_ptr<Component>>& GetComponents() const { return shared_components; }
+
 protected:
 	std::vector<std::shared_ptr<Component>> shared_components;
 	std::vector<std::shared_ptr<Component>> componentsToInit;
@@ -35,6 +66,9 @@ template<class T>
 class ComponentList : public BaseComponentList
 {
 public:
+	/**
+	* @brief Constructor
+	*/
 	ComponentList(size_t maxComponentCount, bool disabledLoop) : BaseComponentList(maxComponentCount, disabledLoop)
 	{
 		ComponentData& data = componentsData.emplace_back();
@@ -43,7 +77,10 @@ public:
 		data.remainingSlot = m_maxComponentCount;
 	}
 
-	std::shared_ptr<void> CreateComponent()
+	/**
+	* @brief Create a new component of the template type (Will create a new list if no slot available)
+	*/
+	std::shared_ptr<Component> CreateComponent()
 	{
 		// Find available list
 		int listIndex = -1;
@@ -92,12 +129,16 @@ public:
 				componentsData[listIndex].allocated[addedAt] = false;
 			});
 
-		shared_components.push_back(std::dynamic_pointer_cast<Component>(sharedComponent));
-		componentsToInit.push_back(std::dynamic_pointer_cast<Component>(sharedComponent));
-		return sharedComponent;
+		std::shared_ptr<Component> sharedComponentBase = std::dynamic_pointer_cast<Component>(sharedComponent);
+		shared_components.push_back(sharedComponentBase);
+		componentsToInit.push_back(sharedComponentBase);
+		return sharedComponentBase;
 	}
 
-	void RemoveComponent(const std::shared_ptr<void>& component)
+	/**
+	* @brief Remove a component from the list
+	*/
+	void RemoveComponent(const std::shared_ptr<Component>& component)
 	{
 		const size_t sharedCount = shared_components.size();
 		for (size_t i = 0; i < sharedCount; ++i)
@@ -110,6 +151,9 @@ public:
 		}
 	}
 
+	/**
+	* @brief Initialize active components
+	*/
 	void InitComponents()
 	{
 		size_t componentsToInitCount = componentsToInit.size();
@@ -128,6 +172,9 @@ public:
 		}
 	}
 
+	/**
+	* @brief Update active components
+	*/
 	void UpdateComponents(std::weak_ptr<Component>& lastUpdatedComponent)
 	{
 		for (const std::shared_ptr<Component>& component : shared_components)

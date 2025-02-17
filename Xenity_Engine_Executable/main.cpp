@@ -29,9 +29,9 @@ Rework the documentation
 Implement alpha testing on shaders
 Check if force inline for GLM is better or not
 Add unit tests for commands
+Add unit tests for Components Creation/Deletion and Awake/Start/Update/
 Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
 Try to make a dynamic texture
-Lighting bug when there is only one mesh
 Implement CreateFolder on console
 Do not forget to readd init component ordering in LoadScene
 Try to use SubMesh object instead of pointer
