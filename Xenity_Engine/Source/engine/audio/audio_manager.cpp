@@ -20,7 +20,7 @@
 #elif defined(_WIN32) || defined(_WIN64)
 #include <thread>
 #include <chrono>
-#include <windows.h>
+#include <Windows.h>
 #include <mmsystem.h>
 
 WAVEHDR waveHdr[2];
