@@ -353,7 +353,7 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	sceGuTexScale(material.GetTiling().x, material.GetTiling().y);
 
 	// Draw
-	if (!subMesh.meshData->m_hasIndices)
+	if (subMesh.index_count == 0)
 	{
 		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.vertice_count, 0, subMesh.data);
 	}

@@ -35,19 +35,13 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 
-	uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);
+	const uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);
 
 #if defined(__PS3__)
 	subMeshCount = EndianUtils::SwapEndian(subMeshCount);
 #endif // defined(__PS3__)
 
 	fileData += sizeof(uint32_t);
-
-#if defined(__PSP__)
-	mesh.m_hasIndices = false; // Disable indices on psp, this will improve performances
-#else // !defined(__PSP__)
-	mesh.m_hasIndices = true;
-#endif // !defined(__PSP__)
 
 	// Read all sub meshes
 	for (uint32_t i = 0; i < subMeshCount; i++)
@@ -100,7 +94,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #endif // defined(__PS3__)
 
 		mesh.CreateSubMesh(vertice_count, index_count, vertexDescriptorList);
-		std::unique_ptr<MeshData::SubMesh>& subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
+		const std::unique_ptr<MeshData::SubMesh>& subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
 
 		// Copy vertices data
 		memcpy(subMesh->data, fileData, vertexMemSize);
@@ -141,7 +135,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #endif
 
 		// Copy indices data
-		if(mesh.m_hasIndices)
+		if(index_count != 0)
 		{
 			memcpy(subMesh->indices, fileData, indexMemSize);
 			

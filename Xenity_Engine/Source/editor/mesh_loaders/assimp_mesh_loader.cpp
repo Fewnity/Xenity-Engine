@@ -104,17 +104,18 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 			vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
 
 			// PSP for example prefer triangles only for performance
+			bool useIndices = false;
 			if (options.forceNoIndices)
 			{
-				mesh.m_hasIndices = false;
+				useIndices = false;
 			}
 			else
 			{
-				mesh.m_hasIndices = hasFaces;
+				useIndices = hasFaces;
 			}
 
 			// Allocate memory
-			if (mesh.m_hasIndices)
+			if (useIndices)
 			{
 				mesh.CreateSubMesh(assimpMesh->mNumVertices, assimpMesh->mNumFaces * verticesPerFace, vertexDescriptorList);
 			}
@@ -133,7 +134,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 				mesh.m_subMeshes[subMeshIndex]->m_isQuad = false;
 			}
 
-			if (mesh.m_hasIndices)
+			if (useIndices)
 			{
 				// Fill the mesh with the vertex data
 				for (size_t vertexIndex = 0; vertexIndex < assimpMesh->mNumVertices; vertexIndex++)

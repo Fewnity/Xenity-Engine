@@ -80,7 +80,6 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData();
 	mesh->CreateSubMesh(6 * charCountToDraw, 6 * charCountToDraw, vertexDescriptorList);
 	mesh->unifiedColor = color;
-	mesh->m_hasIndices = true;
 
 	int drawnCharIndex = 0;
 	for (int i = 0; i < textLenght; i++)

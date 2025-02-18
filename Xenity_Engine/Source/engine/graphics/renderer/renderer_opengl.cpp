@@ -422,7 +422,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 	// Draw
 	int primitiveType = subMesh.m_isQuad ? GL_QUADS : GL_TRIANGLES;
-	if (!subMesh.meshData->m_hasIndices)
+	if (subMesh.index_count == 0)
 	{
 		glDrawArrays(primitiveType, 0, subMesh.vertice_count);
 	}
@@ -436,7 +436,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 #if defined(EDITOR)
 	if (Graphics::usedCamera->IsEditor())
 	{
-		if (!subMesh.meshData->m_hasIndices)
+		if (subMesh.index_count == 0)
 		{
 			Performance::AddDrawTriangles(subMesh.vertice_count / 3);
 		}

@@ -362,7 +362,6 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 	XASSERT(vcount != 0 || index_count != 0, "[MeshData::CreateSubMesh] vcount and index_count are 0");
 	XASSERT(vertexDescriptorList.m_vertexSize != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList vertex size");
 	XASSERT(vertexDescriptorList.m_vertexElementInfos.size() != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList size");
-	XASSERT((m_hasIndices && index_count != 0) || (!m_hasIndices && index_count == 0), "[MeshData::CreateSubMesh] Wrong index count and hasIndice param");
 
 	std::unique_ptr<MeshData::SubMesh> newSubMesh = std::make_unique<MeshData::SubMesh>();
 	newSubMesh->m_vertexDescriptor = vertexDescriptorList;
@@ -376,7 +375,7 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 		newSubMesh->isShortIndices = true;
 	}
 
-	if (index_count != 0 && m_hasIndices)
+	if (index_count != 0)
 	{
 		const size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
 		newSubMesh->indexMemSize = indexSize * index_count;
@@ -390,7 +389,6 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 
 #if defined (DEBUG)
 		Performance::s_meshDataMemoryTracker->Allocate(newSubMesh->indexMemSize);
-		newSubMesh->debugIndexMemSize = newSubMesh->indexMemSize;
 #endif
 
 		if (newSubMesh->indices == nullptr)
@@ -416,7 +414,7 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 	// Prepare the draw parameters
 	newSubMesh->pspDrawParam |= GU_TRANSFORM_3D;
 
-	if (m_hasIndices)
+	if (index_count != 0)
 	{
 		newSubMesh->pspDrawParam |= GU_INDEX_16BIT;
 	}
@@ -524,7 +522,6 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 
 #if defined (DEBUG)
 	Performance::s_meshDataMemoryTracker->Allocate(newSubMesh->vertexMemSize);
-	newSubMesh->debugVertexMemSize = newSubMesh->vertexMemSize;
 #endif
 
 	newSubMesh->index_count = index_count;
@@ -607,8 +604,8 @@ void MeshData::SubMesh::FreeData()
 #endif
 
 #if defined (DEBUG)
-	Performance::s_meshDataMemoryTracker->Deallocate(debugVertexMemSize);
-	Performance::s_meshDataMemoryTracker->Deallocate(debugIndexMemSize);
+	Performance::s_meshDataMemoryTracker->Deallocate(vertexMemSize);
+	Performance::s_meshDataMemoryTracker->Deallocate(indexMemSize);
 #endif
 	if (Engine::IsRunning(true))
 	{

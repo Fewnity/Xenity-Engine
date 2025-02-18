@@ -44,7 +44,6 @@ void SpriteManager::Init()
 	s_spriteMeshData->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1, 0);
 	s_spriteMeshData->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2, 0);
 	s_spriteMeshData->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3, 0);
-	s_spriteMeshData->m_hasIndices = true;
 
 	std::unique_ptr<MeshData::SubMesh>& subMesh = s_spriteMeshData->m_subMeshes[0];
 	subMesh->isShortIndices = true;
@@ -66,7 +65,6 @@ void SpriteManager::Init()
 	s_spriteMeshDataWithNormals->AddVertex(0.0f, 1.0f, 0, 0, -1, 0.5f, -0.5f, 0.0f, 1, 0);
 	s_spriteMeshDataWithNormals->AddVertex(0.0f, 0.0f, 0, 0, -1, 0.5f, 0.5f, 0.0f, 2, 0);
 	s_spriteMeshDataWithNormals->AddVertex(1.0f, 0.0f, 0, 0, -1, -0.5f, 0.5f, 0.0f, 3, 0);
-	s_spriteMeshDataWithNormals->m_hasIndices = true;
 
 	std::unique_ptr<MeshData::SubMesh>& subMeshWithNormals = s_spriteMeshDataWithNormals->m_subMeshes[0];
 	subMeshWithNormals->isShortIndices = true;

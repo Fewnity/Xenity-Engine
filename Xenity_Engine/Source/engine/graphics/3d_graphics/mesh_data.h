@@ -18,6 +18,7 @@
 #include <engine/api.h>
 #include <engine/graphics/color/color.h>
 #include <engine/vectors/vector3.h>
+#include <engine/debug/debug.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/graphics/3d_graphics/sphere.h>
 #include <engine/graphics/texture/texture.h>
@@ -33,6 +34,27 @@ public:
 		void FreeData();
 
 		~SubMesh();
+
+		/**
+		* @brief Set index value
+		* @param (value) The new vertex index
+		* @param (index) Index to change
+		*/
+		void SetIndex(size_t index, unsigned int value)
+		{
+			XASSERT(value < vertice_count, "Value is larger than vertex count");
+			XASSERT(index < index_count, "Value is larger than index count");
+
+			if(isShortIndices)
+			{
+				((unsigned short*)indices)[index] = static_cast<unsigned short>(value);
+			}
+			else
+			{
+				((unsigned int*)indices)[index] = value;
+			}
+		}
+
 		void *indices = nullptr;
 		MeshData* meshData = nullptr;
 		// On PSP, we have to respect a specific order for the data
@@ -43,10 +65,6 @@ public:
 
 		uint32_t vertexMemSize = 0;
 		uint32_t indexMemSize = 0;
-#if defined(DEBUG)
-		uint32_t debugVertexMemSize = 0;
-		uint32_t debugIndexMemSize = 0;
-#endif
 		uint32_t index_count = 0;
 		uint32_t vertice_count = 0;
 
@@ -183,8 +201,12 @@ public:
 	*/
 	void CreateSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptor& vertexDescriptorList);
 
-	std::unique_ptr<SubMesh>& GetSubMesh(int index)
+	/**
+	* @brief Get sub mesh pointer
+	*/
+	const std::unique_ptr<SubMesh>& GetSubMesh(size_t index)
 	{
+		XASSERT(index < m_subMeshes.size(), "Wrong submesh index");
 		return m_subMeshes[index];
 	}
 
@@ -234,7 +256,7 @@ protected:
 
 	uint32_t m_subMeshCount = 0;
 
-	bool m_hasIndices = true;
+	//bool m_hasIndices = true;
 	bool m_isValid = true;
 
 	Sphere m_boundingSphere;
