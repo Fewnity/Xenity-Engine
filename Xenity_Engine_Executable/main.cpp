@@ -37,6 +37,11 @@ Do not forget to readd init component ordering in LoadScene
 Try to use SubMesh object instead of pointer
 Try to disable audio on PSP and check if sleep mode works again
 Add the ability to control the game from the editor with network (load scene, quit...)
+Add prefab system
+Use new indice function for mesh (safer)
+Add a update mesh fonction when a mesh is done
+Add a fonction to resize a submesh (resize only if size is different, usefull for text)
+Revisit AddVertex params
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
