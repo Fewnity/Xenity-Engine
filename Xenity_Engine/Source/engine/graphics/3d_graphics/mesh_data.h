@@ -178,6 +178,16 @@ public:
 		return m_boundingSphere;
 	}
 
+	/**
+	* @brief Alloc memory for a new submesh
+	*/
+	void CreateSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptor& vertexDescriptorList);
+
+	std::unique_ptr<SubMesh>& GetSubMesh(int index)
+	{
+		return m_subMeshes[index];
+	}
+
 protected:
 	friend class RendererOpengl;
 	friend class RendererRSX;
@@ -221,11 +231,6 @@ protected:
 	* @param texture The texture to use
 	*/
 	void UpdatePS2Packets(int index, std::shared_ptr<Texture> texture);
-
-	/**
-	 * @brief Alloc memory for a new submesh
-	 */
-	void CreateSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptor& vertexDescriptorList);
 
 	uint32_t m_subMeshCount = 0;
 
