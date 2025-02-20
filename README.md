@@ -20,7 +20,7 @@ New features, refactor, bug fixes, optimizations or documentations everything is
 ✔️ | Windows
 ✔️ | PlayStation Portable
 ✔️ | PlayStation Vita
-🚧 | PlayStation 3 (Missing network)
+✔️ | PlayStation 3
 🚧 | Linux (Missing audio and build system)
 ❌ | PlayStation 2
 
