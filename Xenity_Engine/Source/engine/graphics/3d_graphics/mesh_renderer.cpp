@@ -68,9 +68,14 @@ void MeshRenderer::OnDrawGizmosSelected()
 	renderSettings.useLighting = false;
 	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
 	renderSettings.wireframe = true;
-	for (auto& subMesh : m_meshData->m_subMeshes)
+
+	const uint32_t subMeshCount = m_meshData->m_subMeshCount;
+	for (uint32_t i = 0; i < subMeshCount; i++)
 	{
-		MeshManager::DrawMesh(*GetTransformRaw(), *subMesh, *AssetManager::unlitMaterial, renderSettings);
+		if (m_materials[i])
+		{
+			MeshManager::DrawMesh(*GetTransformRaw(), *m_meshData->m_subMeshes[i], *AssetManager::unlitMaterial, renderSettings);
+		}
 	}
 
 	AssetManager::unlitMaterial->SetColor(Color::CreateFromRGBA(255, 255, 255, 255));
@@ -86,7 +91,7 @@ void MeshRenderer::OnDrawGizmosSelected()
 	Gizmo::SetColor(meshLineColor);
 
 	const Vector3& tPos = GetTransformRaw()->GetPosition();
-	for (auto& chunk : m_worldChunkPositions)
+	for (const auto& chunk : m_worldChunkPositions)
 	{
 		Gizmo::DrawLine(tPos, chunk + Vector3(WORLD_CHUNK_HALF_SIZE));
 	}
