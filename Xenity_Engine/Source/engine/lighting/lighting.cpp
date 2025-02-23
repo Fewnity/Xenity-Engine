@@ -30,6 +30,7 @@
 Light::Light()
 {
 	AssetManager::AddReflection(this);
+	UpdateLightValues();
 }
 
 float Light::GetMaxLightDistance() const
@@ -254,9 +255,9 @@ void Light::SetIntensity(float intensity)
 
 void Light::SetRange(float value)
 {
-	if (value < 0)
+	if (value < 0.01f)
 	{
-		value = 0;
+		value = 0.01f;
 	}
 	else if (value > 50)
 	{
