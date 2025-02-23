@@ -2,6 +2,8 @@
 
 #include <engine/class_registry/class_registry.h>
 
+Event<size_t> ComponentManager::onComponentDeletedEvent;
+
 bool ComponentManager::GetCompnentDisabledLoop(size_t typeId)
 {
 	const ClassRegistry::ClassInfo* classInfo = ClassRegistry::GetClassInfoById(typeId);

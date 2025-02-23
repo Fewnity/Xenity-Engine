@@ -467,6 +467,7 @@ void Engine::Stop()
 
 	s_isInitialized = false;
 
+	GameplayManager::Stop();
 	SceneManager::ClearScene();
 	s_game.reset();
 	ProjectManager::UnloadProject();
@@ -479,7 +480,6 @@ void Engine::Stop()
 		s_renderer->Stop();
 		s_renderer.reset();
 	}
-	GameplayManager::Stop();
 
 #if defined(EDITOR)
 	Editor::Stop();
