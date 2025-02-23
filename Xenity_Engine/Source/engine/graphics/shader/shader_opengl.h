@@ -163,11 +163,7 @@ protected:
 		unsigned int color = 0;
 		unsigned int position = 0;
 		unsigned int direction = 0;
-		unsigned int constant = 0;
-		unsigned int linear = 0;
-		unsigned int quadratic = 0;
-		unsigned int cutOff = 0;
-		unsigned int outerCutOff = 0;
+		unsigned int light_data = 0;
 	};
 
 	std::vector<PointLightVariableIds> m_pointlightVariableIds;

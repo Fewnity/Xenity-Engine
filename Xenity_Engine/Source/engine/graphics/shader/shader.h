@@ -107,11 +107,7 @@ protected:
 		char* color = nullptr;
 		char* position = nullptr;
 		char* direction = nullptr;
-		char* constant = nullptr;
-		char* linear = nullptr;
-		char* quadratic = nullptr;
-		char* cutOff = nullptr;
-		char* outerCutOff = nullptr;
+		char* light_data = nullptr;
 	};
 
 	static std::vector<PointLightVariableNames> s_pointlightVariableNames;

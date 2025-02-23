@@ -234,6 +234,7 @@ Shader::PointLightVariableNames::PointLightVariableNames(int index)
 
 Shader::PointLightVariableNames::~PointLightVariableNames()
 {
+	delete[] indices;
 	delete[] color;
 	delete[] position;
 	delete[] light_data;
@@ -259,6 +260,7 @@ Shader::DirectionalLightsVariableNames::DirectionalLightsVariableNames(int index
 
 Shader::DirectionalLightsVariableNames::~DirectionalLightsVariableNames()
 {
+	delete[] indices;
 	delete[] color;
 	delete[] direction;
 }
@@ -271,42 +273,27 @@ Shader::SpotLightVariableNames::SpotLightVariableNames(int index)
 	color = new char[bufferSize];
 	position = new char[bufferSize];
 	direction = new char[bufferSize];
-	constant = new char[bufferSize];
-	linear = new char[bufferSize];
-	quadratic = new char[bufferSize];
-	cutOff = new char[bufferSize];
-	outerCutOff = new char[bufferSize];
+	light_data = new char[bufferSize];
 
 #if defined(_WIN32) || defined(_WIN64)
 	sprintf_s(indices, bufferSize, "spotLightsIndices[%d]", index);
 	sprintf_s(color, bufferSize, "spotLights[%d].color", index);
 	sprintf_s(position, bufferSize, "spotLights[%d].position", index);
 	sprintf_s(direction, bufferSize, "spotLights[%d].direction", index);
-	sprintf_s(constant, bufferSize, "spotLights[%d].constant", index);
-	sprintf_s(linear, bufferSize, "spotLights[%d].linear", index);
-	sprintf_s(quadratic, bufferSize, "spotLights[%d].quadratic", index);
-	sprintf_s(cutOff, bufferSize, "spotLights[%d].cutOff", index);
-	sprintf_s(outerCutOff, bufferSize, "spotLights[%d].outerCutOff", index);
+	sprintf_s(light_data, bufferSize, "spotLights[%d].light_data", index);
 #else
 	sprintf(color, "spotLights[%d].color", index);
 	sprintf(position, "spotLights[%d].position", index);
 	sprintf(direction, "spotLights[%d].direction", index);
-	sprintf(constant, "spotLights[%d].constant", index);
-	sprintf(linear, "spotLights[%d].linear", index);
-	sprintf(quadratic, "spotLights[%d].quadratic", index);
-	sprintf(cutOff, "spotLights[%d].cutOff", index);
-	sprintf(outerCutOff, "spotLights[%d].outerCutOff", index);
+	sprintf(light_data, "spotLights[%d].light_data", index);
 #endif
 }
 
 Shader::SpotLightVariableNames::~SpotLightVariableNames()
 {
+	delete[] indices;
 	delete[] color;
 	delete[] position;
 	delete[] direction;
-	delete[] constant;
-	delete[] linear;
-	delete[] quadratic;
-	delete[] cutOff;
-	delete[] outerCutOff;
+	delete[] light_data;
 }

@@ -48,11 +48,7 @@ ShaderRSX::SpotLightVariableIds::SpotLightVariableIds(int index, rsxFragmentProg
 	color = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].color);
 	position = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].position);
 	direction = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].direction);
-	constant = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].constant);
-	linear = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].linear);
-	quadratic = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].quadratic);
-	cutOff = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].cutOff);
-	outerCutOff = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].outerCutOff);
+	light_data = rsxFragmentProgramGetConst(program, s_spotlightVariableNames[index].light_data);
 }
 
 ShaderRSX::~ShaderRSX()
@@ -522,6 +518,40 @@ void ShaderRSX::SetAmbientLightData(const Vector3& color)
 /// <param name="index">Shader's spot light index</param>
 void ShaderRSX::SetSpotLightData(const Light& light, const int index)
 {
+	if (index >= MAX_LIGHT_COUNT)
+		return;
+
+	const SpotLightVariableIds& ids = m_spotlightVariableIds[index];
+
+	//if (!ids.color || !ids.position || !ids.direction /* || !ids.constant */|| !ids.linear || !ids.quadratic || !ids.cutOff || !ids.outerCutOff)
+	if (!ids.color || !ids.position || !ids.direction || !ids.light_data)
+		return;
+
+	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
+	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z) * light.GetIntensity() * 2;
+	Vector3 pos = Vector3(0);
+	if (light.GetTransformRaw())
+	{
+		pos = light.GetTransformRaw()->GetPosition();
+		pos.x = -pos.x;
+	}
+
+	Vector3 dir = Vector3(0);
+	if (light.GetTransformRaw())
+	{
+		dir = light.GetTransformRaw()->GetForward();
+		dir.x = -dir.x;
+	}
+
+	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, ids.color, (float*)&lightColor.x, m_fp_offset, GCM_LOCATION_RSX);
+	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, ids.position, (float*)&pos.x, m_fp_offset, GCM_LOCATION_RSX);
+	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, ids.direction, (float*)&dir.x, m_fp_offset, GCM_LOCATION_RSX);
+
+	float cutOff = glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness())));
+	float outerCutOff = glm::cos(glm::radians(light.GetSpotAngle()));
+
+	Vector4 lightData = Vector4(light.GetLinearValue(), light.GetQuadraticValue(), cutOff, outerCutOff);
+	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, ids.light_data, (float*)&lightData.x, m_fp_offset, GCM_LOCATION_RSX);
 }
 
 int count = 0;

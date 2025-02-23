@@ -61,21 +61,13 @@ ShaderOpenGL::SpotLightVariableIds::SpotLightVariableIds(int index, unsigned int
 	color = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].color);
 	position = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].position);
 	direction = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].direction);
-	constant = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].constant);
-	linear = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].linear);
-	quadratic = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].quadratic);
-	cutOff = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].cutOff);
-	outerCutOff = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].outerCutOff);
+	light_data = GetShaderUniformLocation(programId, s_spotlightVariableNames[index].light_data);
 
 	// Initialize values
 	SetShaderAttribut(color, Vector3(0, 0, 0));
 	SetShaderAttribut(position, Vector3(0, 0, 0));
 	SetShaderAttribut(direction, Vector3(0, 0, 0));
-	SetShaderAttribut(constant, 1.0f);
-	SetShaderAttribut(linear, 0.0f);
-	SetShaderAttribut(quadratic, 0.0f);
-	SetShaderAttribut(cutOff, 0.0f);
-	SetShaderAttribut(outerCutOff, 0.0f);
+	SetShaderAttribut(light_data, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
 ShaderOpenGL::~ShaderOpenGL()
@@ -326,7 +318,7 @@ void ShaderOpenGL::SetShaderModel(const Vector3& position, const Vector3& rotati
 
 	//if (scale.x != 1 || scale.y != 1|| scale.z != 1)
 	transformationMatrix = glm::scale(transformationMatrix, glm::vec3(scale.x, scale.y, scale.z));
-	
+
 	const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transformationMatrix)));
 	const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * transformationMatrix;
 
@@ -582,11 +574,7 @@ void ShaderOpenGL::SetSpotLightData(const Light& light, const int index)
 	XASSERT(ids.color != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light color uniform");
 	XASSERT(ids.position != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light position uniform");
 	XASSERT(ids.direction != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light direction uniform");
-	XASSERT(ids.constant != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light constant uniform");
-	XASSERT(ids.linear != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light linear uniform");
-	XASSERT(ids.quadratic != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light quadratic uniform");
-	XASSERT(ids.cutOff != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light cutOff uniform");
-	XASSERT(ids.outerCutOff != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light outerCutOff uniform");
+	XASSERT(ids.light_data != INVALID_SHADER_UNIFORM, "[Shader::SetSpotLightData] The shader does not have a spot light light_data uniform");
 
 	const Vector4 lightColorV4 = light.color.GetRGBA().ToVector4();
 	const Vector3 lightColor = Vector3(lightColorV4.x, lightColorV4.y, lightColorV4.z);
@@ -606,11 +594,11 @@ void ShaderOpenGL::SetSpotLightData(const Light& light, const int index)
 	SetShaderAttribut(ids.color, lightColor * light.GetIntensity());
 	SetShaderAttribut(ids.position, pos);
 	SetShaderAttribut(ids.direction, dir);
-	SetShaderAttribut(ids.constant, lightConstant);
-	SetShaderAttribut(ids.linear, light.GetLinearValue());
-	SetShaderAttribut(ids.quadratic, light.GetQuadraticValue());
-	SetShaderAttribut(ids.cutOff, glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness()))));
-	SetShaderAttribut(ids.outerCutOff, glm::cos(glm::radians(light.GetSpotAngle())));
+	SetShaderAttribut(ids.light_data,
+		Vector4(light.GetLinearValue(),
+			light.GetQuadraticValue(),
+			glm::cos(glm::radians(light.GetSpotAngle() * (1 - light.GetSpotSmoothness()))),
+			glm::cos(glm::radians(light.GetSpotAngle()))));
 }
 
 /// <summary>

@@ -90,11 +90,7 @@ protected:
 		rsxProgramConst* color = nullptr;
 		rsxProgramConst* position = nullptr;
 		rsxProgramConst* direction = nullptr;
-		rsxProgramConst* constant = nullptr;
-		rsxProgramConst* linear = nullptr;
-		rsxProgramConst* quadratic = nullptr;
-		rsxProgramConst* cutOff = nullptr;
-		rsxProgramConst* outerCutOff = nullptr;
+		rsxProgramConst* light_data = nullptr;
 	};
 
 	void Load() override;

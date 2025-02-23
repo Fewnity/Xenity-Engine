@@ -59,12 +59,7 @@ struct SpotLight
 	vec3 direction;
 
 	vec3 color;
-
-	float constant;
-	float linear;
-	float quadratic;
-	float cutOff;
-	float outerCutOff;
+	vec4 light_data; // x = linear, y = quadratic, z = cutOff, w = outerCutOff
 };
 
 uniform sampler2D diffuse;
@@ -118,11 +113,11 @@ vec3 CalculateSpotLight(SpotLight light2, vec3 norm, vec3 fragPos)
 	vec3 diffuse = (diff * vec3(texture(diffuse, (v_TexCoord * tiling) + offset))) * light2.color * 2; //Set the light color and intensity
 
 	float distance = length(light2.position - fragPos);
-	float attenuation = 1.0 / (light2.constant + light2.linear * distance + light2.quadratic * (distance * distance));
+	float attenuation = 1.0 / (1 + light2.light_data.x * distance + light2.light_data.y * (distance * distance));
 
 	float theta = dot(lightDir, normalize(-light2.direction));
-	float epsilon = light2.cutOff - light2.outerCutOff;
-	float intensity = clamp((theta - light2.outerCutOff) / epsilon, 0.0, 1.0);
+	float epsilon = light2.light_data.z - light2.light_data.w;
+	float intensity = clamp((theta - light2.light_data.w) / epsilon, 0.0, 1.0);
 	diffuse *= intensity;
 
 	//Result
@@ -203,11 +198,7 @@ struct SpotLight
 
 	vec3 color;
 
-	float constant;
-	float linear;
-	float quadratic;
-	float cutOff;
-	float outerCutOff;
+	vec4 light_data; // x = linear, y = quadratic, z = cutOff, w = outerCutOff
 };
 
 struct DirectionalLight 
@@ -257,16 +248,19 @@ float3 CalculateDirectionalLight(DirectionalLight light, vec3 norm, vec3 texture
 
 vec3 CalculateSpotLight(SpotLight light, vec3 norm, vec3 fragPos, vec3 textureColor) 
 {
-	vec3 lightDir = normalize(light.position - fragPos); //Direction of the point light between the light source and the face
+	float3 lightVec = light.position - fragPos;
+	float3 lightDir = normalize(lightVec); //Direction of the point light between the light source and the face
+
 	float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
 	vec3 diffuse = (diff * textureColor) * light.color * 2; //Set the light color and intensity
 
-	float distance = length(light.position - fragPos);
-	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+	float distanceSq = dot(lightVec, lightVec); // distance²
+	float attenuation = 1.0f / (1 + light.light_data.x * sqrt(distanceSq) + light.light_data.y * distanceSq);
 
 	float theta = dot(lightDir, normalize(-light.direction));
-	float epsilon = light.cutOff - light.outerCutOff;
-	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+	float epsilon = light.light_data.z - light.light_data.w;
+	float intensity = clamp((theta - light.light_data.w) / epsilon, 0.0f, 1.0f);
+
 	diffuse *= intensity;
 
 	vec3 result = (diffuse * attenuation); //Set face result
@@ -376,31 +370,31 @@ void main
 
 struct DirectionalLight 
 {
-	vec3 direction;
-	vec3 color;
+	float3 direction;
+	float3 color;
 };
 
 struct PointLight 
 {
-	vec3 position;
+	float3 position;
 
-	vec3 color;
+	float3 color;
 
-	vec3 light_data; // x = constant, y = linear, z = quadratic
+	float3 light_data; // x = constant, y = linear, z = quadratic
 };
 
 struct SpotLight 
 {
-	vec3 position;
-	vec3 direction;
+	float3 position;
+	float3 direction;
 
-	vec3 color;
-
-	float constant;
-	float linear;
-	float quadratic;
-	float cutOff;
-	float outerCutOff;
+	float3 color;
+	float4 light_data; // x = linear, y = quadratic, z = cutOff, w = outerCutOff
+	// float constant;
+	// float linear;
+	// float quadratic;
+	// float cutOff;
+	// float outerCutOff;
 };
 
 #define NR_POINT_LIGHTS 10
@@ -415,30 +409,40 @@ float3 CalculateDirectionalLight(DirectionalLight light, float3 norm, float4 tex
 	return tx;
 }
 
-//float3 CalculatePointLight(PointLight light, float3 norm, float3 fragPos, float4 textureFrag) 
-//{
-	//float3 lightDir = normalize(light.position - fragPos); //Direction of the point light between the light source and the face
-	//float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
-	//float3 diffuse = (diff * textureFrag.xyz) * light.color * 2; //Set the light color and intensity
+float3 CalculateSpotLight(SpotLight light, float3 norm, float3 fragPos, float4 textureFrag) 
+{
+	float3 lightVec = light.position - fragPos;
+	float3 lightDir = normalize(lightVec); //Direction of the light between the light source and the face
+	float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
+	float3 diffuse = (diff * textureFrag.xyz) * light.color * 2;
+
+	//vec3 lightDir = normalize(light.position - fragPos); //Direction of the point light between the light source and the face
+	//float diff = max(dot(norm, lightDir), 0.0); //If the light is behind the face, diff is 0
+	//vec3 diffuse = (diff * textureColor) * light.color * 2; //Set the light color and intensity
 
 	//float distance = length(light.position - fragPos);
-	//float attenuation = 1.0f / (light.light_data.x + light.light_data.y * distance + light.light_data.z * (distance * distance));
+	//float attenuation = 1.0 / (light.constant + light.light_data * distance + light.quadratic * (distance * distance));
 
-	//return diffuse * attenuation;
-//}
+	float distanceSq = dot(lightVec, lightVec); // distance²
+	float attenuation = 1.0 / (1 + light.light_data.x * sqrt(distanceSq) + light.light_data.y * distanceSq);
+
+	float theta = dot(lightDir, normalize(-light.direction));
+	float epsilon = light.light_data.z - light.light_data.w;
+	float intensity = clamp((theta - light.light_data.w) / epsilon, 0.0f, 1.0f);
+	diffuse *= intensity;
+
+	return diffuse * attenuation;
+}
 
 float3 CalculatePointLight(PointLight light, float3 norm, float3 fragPos, float4 textureFrag) 
 {
 	float3 lightVec = light.position - fragPos;
-	float3 lightDir = normalize(lightVec); //Direction of the point light between the light source and the face
+	float3 lightDir = normalize(lightVec); //Direction of the light between the light source and the face
 	float diff = max(dot(norm, lightDir), 0.0f); //If the light is behind the face, diff is 0
 	float3 diffuse = (diff * textureFrag.xyz) * light.color; //Set the light color and intensity
 
-	// float distance = length(lightVec);
 	float distanceSq = dot(lightVec, lightVec); // distance²
-	float attenuation = 1.0f / (light.light_data.x + light.light_data.y * sqrt(distanceSq) + light.light_data.z * distanceSq);
-	// float attenuation = 1.0f / (light.constant + light.linear * distance);
-	// float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+	float attenuation = 1.0f / (1 + light.light_data.y * sqrt(distanceSq) + light.light_data.z * distanceSq);
 
 	return diffuse * attenuation;
 }
@@ -475,8 +479,10 @@ void main
 
 	result += CalculateDirectionalLight(directionalLights[1], N, textureFrag);
 
+	result += CalculateSpotLight(spotLights[1], N, v_FragPos, textureFrag);
+
 	result += CalculatePointLight(pointLights[1], N, v_FragPos, textureFrag);
-	//result += CalculatePointLight(pointLights[2], N, FragPos, textureFrag);
+	//result += CalculatePointLight(pointLights[2], N, v_FragPos, textureFrag);
 
 	result *= color.xyz;
 
