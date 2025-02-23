@@ -38,7 +38,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 	XASSERT(mesh.m_file, "[AssimpMeshLoader::LoadMesh] File is null");
 	XASSERT(!mesh.m_file->GetPath().empty(), "[AssimpMeshLoader::LoadMesh] File path is empty");
 
-	std::shared_ptr<File>& file = mesh.m_file;
+	const std::shared_ptr<File>& file = mesh.m_file;
 
 	bool opened = true;
 #if defined(EDITOR)
@@ -53,7 +53,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 		// Load the mesh with assimp
 		Assimp::Importer importer;
 		// aiProcess_Triangulate because we want to have only triangles, some submeshes mix triangles and quads and I don't know how to handle that
-		unsigned int flags = aiProcess_RemoveComponent | aiProcess_PreTransformVertices | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate;
+		unsigned int flags = aiProcess_RemoveComponent | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate;
 		const std::string fileExtension = file->GetFileExtension();
 		const aiScene* scene = importer.ReadFileFromMemory(data, size, flags, fileExtension.substr(1).c_str());
 		if (!scene)
@@ -85,20 +85,16 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 			}
 
 			VertexDescriptor vertexDescriptorList;
-			VertexElements vertexDescriptor = VertexElements::POSITION_32_BITS;
 			if (hasUVs)
 			{
-				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::UV_32_BITS);
 				vertexDescriptorList.AddVertexDescriptor(VertexElements::UV_32_BITS);
 			}
 			if (hasColors)
 			{
-				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::COLOR_4_FLOATS);
 				vertexDescriptorList.AddVertexDescriptor(VertexElements::COLOR_4_FLOATS);
 			}
 			if (hasNormals)
 			{
-				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
 				vertexDescriptorList.AddVertexDescriptor(VertexElements::NORMAL_32_BITS);
 			}
 			vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
