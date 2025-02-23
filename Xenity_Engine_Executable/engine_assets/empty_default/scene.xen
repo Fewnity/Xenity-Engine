@@ -1,4 +1,9 @@
 {
+  "UsedFiles": {
+    "Values": []
+  }
+}
+{
   "Version": 1,
   "GameObjects": {
     "1": {
@@ -196,8 +201,5 @@
       },
       "skybox": 0
     }
-  },
-  "UsedFiles": {
-    "Values": []
   }
 }
