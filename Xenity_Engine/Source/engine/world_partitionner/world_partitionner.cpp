@@ -117,6 +117,9 @@ void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 
 	XASSERT(meshRenderer, "The meshRenderer is null");
 
+	if (Tree::children.empty())
+		return;
+
 	for (const auto& position : meshRenderer->m_worldChunkPositions)
 	{
 		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
