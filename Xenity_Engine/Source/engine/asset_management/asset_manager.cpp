@@ -362,7 +362,8 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
-	XASSERT(fileReference != nullptr, "[AssetManager::ForceDeleteFileReference] fileReference is null");
+	if (!fileReference)
+		return;
 
 	RemoveFileReference(fileReference);
 	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
