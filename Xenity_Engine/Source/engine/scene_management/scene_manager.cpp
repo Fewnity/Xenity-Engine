@@ -485,7 +485,6 @@ void SceneManager::ClearScene()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	ComponentManager::Clear();
 	GameplayManager::gameObjectsToDestroy.clear();
 	GameplayManager::componentsToDestroy.clear();
 	GameplayManager::gameObjects.clear();

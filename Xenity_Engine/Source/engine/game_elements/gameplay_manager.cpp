@@ -90,7 +90,6 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 	{
 		s_gameState = GameState::Starting;
 		SceneManager::SaveScene(SaveSceneType::SaveSceneForPlayState);
-		ComponentManager::Clear();
 		SceneManager::RestoreScene();
 		s_gameState = newGameState;
 		s_OnPlayEvent.Trigger();

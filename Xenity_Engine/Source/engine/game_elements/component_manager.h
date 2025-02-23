@@ -312,14 +312,6 @@ public:
 		}
 	}
 
-	/**
-	* @brief Delete all components lists
-	*/
-	static void Clear()
-	{
-		//componentLists.clear();
-	}
-
 	static std::vector<std::shared_ptr<Component>> GetAllComponents()
 	{
 		std::vector<std::shared_ptr<Component>> allComponents;
