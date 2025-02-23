@@ -84,7 +84,7 @@ void NetworkManager::Init()
 	memset(&adhocparam, 0, sizeof(adhocparam));
 	s_pspNetworkData.adhocparam = &adhocparam;
 
-	sceUtilityNetconfInitStart(&s_pspNetworkData);
+	//sceUtilityNetconfInitStart(&s_pspNetworkData);
 #elif defined(__PS3__)
 	netInitialize();
 #else
@@ -204,6 +204,7 @@ void Socket::SendData(const std::string& text)
 
 void NetworkManager::DrawNetworkSetupMenu()
 {
+	return;
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	if (!s_done)
 	{
