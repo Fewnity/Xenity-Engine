@@ -35,7 +35,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 
-	const uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);
+	uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);
 
 #if defined(__PS3__)
 	subMeshCount = EndianUtils::SwapEndian(subMeshCount);
