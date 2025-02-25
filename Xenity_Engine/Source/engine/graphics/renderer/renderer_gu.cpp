@@ -335,11 +335,11 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	lastSettings.useTexture = settings.useTexture;
 	lastSettings.max_depth = settings.max_depth;
 
-	if (lastUsedColor != material.GetColor().GetUnsignedIntABGR() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntABGR())
+	if (lastUsedColor != material.GetColor().GetUnsignedIntABGR() || lastUsedColor2 != subMesh.m_meshData->unifiedColor.GetUnsignedIntABGR())
 	{
 		lastUsedColor = material.GetColor().GetUnsignedIntABGR();
-		lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntABGR();
-		sceGuColor((material.GetColor() * subMesh.meshData->unifiedColor).GetUnsignedIntABGR());
+		lastUsedColor2 = subMesh.m_meshData->unifiedColor.GetUnsignedIntABGR();
+		sceGuColor((material.GetColor() * subMesh.m_meshData->unifiedColor).GetUnsignedIntABGR());
 	}
 
 	// Bind texture
@@ -353,13 +353,13 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	sceGuTexScale(material.GetTiling().x, material.GetTiling().y);
 
 	// Draw
-	if (subMesh.index_count == 0)
+	if (subMesh.m_index_count == 0)
 	{
-		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.vertice_count, 0, subMesh.data);
+		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.m_vertice_count, 0, subMesh.m_data);
 	}
 	else
 	{
-		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.index_count, subMesh.indices, subMesh.data);
+		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.m_index_count, subMesh.m_indices, subMesh.m_data);
 	}
 	//Performance::AddDrawCall();
 

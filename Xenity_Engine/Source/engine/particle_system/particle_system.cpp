@@ -247,7 +247,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 			newMat = glm::scale(newMat, fixedScale); // Fix scale if the camera has a scale (Y and Z are inverted for some raison)
 		}
 
-		renderCommand.subMesh->meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
+		renderCommand.subMesh->m_meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
 		const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * newMat;
 
 		Graphics::DrawSubMesh(*renderCommand.subMesh, *m_material, m_texture.get(), renderSettings, newMat, newMat, MVP, false);

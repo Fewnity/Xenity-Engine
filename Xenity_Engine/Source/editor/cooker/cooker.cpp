@@ -258,11 +258,11 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 			meshFile.write((char*)&vertexDescriptor.vertexElement, sizeof(VertexElements));
 		}
 
-		const uint32_t newVertexMemSize = vertexDescriptorToWrite.m_vertexSize * subMesh->vertice_count;
-		meshFile.write((char*)&subMesh->vertice_count, sizeof(uint32_t));
-		meshFile.write((char*)&subMesh->index_count, sizeof(uint32_t));
+		const uint32_t newVertexMemSize = vertexDescriptorToWrite.m_vertexSize * subMesh->m_vertice_count;
+		meshFile.write((char*)&subMesh->m_vertice_count, sizeof(uint32_t));
+		meshFile.write((char*)&subMesh->m_index_count, sizeof(uint32_t));
 		meshFile.write((char*)&newVertexMemSize, sizeof(uint32_t));
-		meshFile.write((char*)&subMesh->indexMemSize, sizeof(uint32_t));
+		meshFile.write((char*)&subMesh->m_indexMemSize, sizeof(uint32_t));
 
 		const VertexDescriptor& sourceVertexDescriptor = subMesh->m_vertexDescriptor;
 
@@ -272,19 +272,19 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 			char* newMeshData = new char[newVertexMemSize];
 
 			// Simply copy the data to the new buffer or convert it
-			for (uint32_t i = 0; i < subMesh->vertice_count; i++)
+			for (uint32_t i = 0; i < subMesh->m_vertice_count; i++)
 			{
 				if (subMesh->m_vertexDescriptor.m_uvIndex != -1)
 				{
 					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetUvOffset(),
-						(char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetUvOffset(),
+						(char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetUvOffset(),
 						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_uvIndex)));
 				}
 				if (subMesh->m_vertexDescriptor.m_colorIndex != -1)
 				{
 					if (vertexDescriptorToWrite.GetElementFromIndex(vertexDescriptorToWrite.m_colorIndex) == VertexElements::COLOR_32_BITS_UINT)
 					{
-						const float* colorPtr = (float*)((char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetColorOffset());
+						const float* colorPtr = (float*)((char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetColorOffset());
 
 						const Color color = Color::CreateFromRGBAFloat(colorPtr[0], colorPtr[1], colorPtr[2], colorPtr[3]);
 
@@ -293,20 +293,20 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 					else
 					{
 						memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetColorOffset(),
-							(char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetColorOffset(),
+							(char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetColorOffset(),
 							VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_colorIndex)));
 					}
 				}
 				if (subMesh->m_vertexDescriptor.m_normalIndex != -1)
 				{
 					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetNormalOffset(),
-						(char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetNormalOffset(),
+						(char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetNormalOffset(),
 						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_normalIndex)));
 				}
 				if (subMesh->m_vertexDescriptor.m_positionIndex != -1)
 				{
 					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetPositionOffset(),
-						(char*)subMesh->data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetPositionOffset(),
+						(char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetPositionOffset(),
 						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_positionIndex)));
 				}
 			}
@@ -319,9 +319,9 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 		else // No need to convert the vertex data
 		{
 			// Write raw data
-			meshFile.write((char*)subMesh->data, newVertexMemSize);
+			meshFile.write((char*)subMesh->m_data, newVertexMemSize);
 		}
-		meshFile.write((char*)subMesh->indices, subMesh->indexMemSize);
+		meshFile.write((char*)subMesh->m_indices, subMesh->m_indexMemSize);
 	}
 	meshFile.close();
 }

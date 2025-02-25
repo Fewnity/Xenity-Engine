@@ -97,7 +97,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		const std::unique_ptr<MeshData::SubMesh>& subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
 
 		// Copy vertices data
-		memcpy(subMesh->data, fileData, vertexMemSize);
+		memcpy(subMesh->m_data, fileData, vertexMemSize);
 		fileData += vertexMemSize;
 
 #if defined(__PS3__)
@@ -105,7 +105,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		{
 			for (auto& element : vertexDescriptorList.m_vertexElementInfos)
 			{
-				float* vertex = (float*)((char*)subMesh->data + element.offset + vertexIndex * vertexDescriptorList.m_vertexSize);
+				float* vertex = (float*)((char*)subMesh->m_data + element.offset + vertexIndex * vertexDescriptorList.m_vertexSize);
 				if (element.vertexElement == VertexElements::POSITION_32_BITS)
 				{
 					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
@@ -137,19 +137,19 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		// Copy indices data
 		if(index_count != 0)
 		{
-			memcpy(subMesh->indices, fileData, indexMemSize);
+			memcpy(subMesh->m_indices, fileData, indexMemSize);
 			
 #if defined(__PS3__)
 			for (int indexIndex = 0; indexIndex < index_count; indexIndex++)
 			{
 				if (subMesh->isShortIndices)
 				{
-					unsigned short& index = ((unsigned short*)subMesh->indices)[indexIndex];
+					unsigned short& index = ((unsigned short*)subMesh->m_indices)[indexIndex];
 					index = EndianUtils::SwapEndian(index);
 				}
 				else 
 				{
-					unsigned int& index = ((unsigned int*)subMesh->indices)[indexIndex];
+					unsigned int& index = ((unsigned int*)subMesh->m_indices)[indexIndex];
 					index = EndianUtils::SwapEndian(index);
 				}
 			}

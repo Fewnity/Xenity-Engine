@@ -157,7 +157,6 @@ void TextManager::DrawText(const std::string &text, TextInfo *textInfo, Horizont
 
 void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character *ch, float x, float y, int letterIndex, float scale)
 {
-	// int indice = letterIndex * 4;
 	const int indice = letterIndex * 6;
 	const int indiceIndex = letterIndex * 6;
 
@@ -166,28 +165,23 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 
 	const float fixedY = (y - (ch->rightSize.y - ch->rightBearing.y) * scale);
 
-	// mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice, 0);
-	// mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice, 0);
-	// mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice, 0);
-	// mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 3 + indice, 0);
-
 	// Use 6 vertices instead of 4 because at the time the PS2 VU1 renderer do not supports indices
-	mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice, 0);
-	mesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice, 0);
-	mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice, 0);
-
-	mesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, 3 + indice, 0);
-	mesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 4 + indice, 0);
-	mesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 5 + indice, 0);
 
 	std::unique_ptr<MeshData::SubMesh>& subMesh = mesh->m_subMeshes[0];
+	subMesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice);
+	subMesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice);
+	subMesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice);
+
+	subMesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, 3 + indice);
+	subMesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 4 + indice);
+	subMesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 5 + indice);
 	subMesh->isShortIndices = true;
-	((unsigned short*)subMesh->indices)[0 + indiceIndex] = 0 + indice;
-	((unsigned short*)subMesh->indices)[1 + indiceIndex] = 2 + indice;
-	((unsigned short*)subMesh->indices)[2 + indiceIndex] = 1 + indice;
-	((unsigned short*)subMesh->indices)[3 + indiceIndex] = 3 + indice;
-	((unsigned short*)subMesh->indices)[4 + indiceIndex] = 4 + indice;
-	((unsigned short*)subMesh->indices)[5 + indiceIndex] = 5 + indice;
+	((unsigned short*)subMesh->m_indices)[0 + indiceIndex] = 0 + indice;
+	((unsigned short*)subMesh->m_indices)[1 + indiceIndex] = 2 + indice;
+	((unsigned short*)subMesh->m_indices)[2 + indiceIndex] = 1 + indice;
+	((unsigned short*)subMesh->m_indices)[3 + indiceIndex] = 3 + indice;
+	((unsigned short*)subMesh->m_indices)[4 + indiceIndex] = 4 + indice;
+	((unsigned short*)subMesh->m_indices)[5 + indiceIndex] = 5 + indice;
 }
 
 TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, std::shared_ptr<Font> font, float scale)

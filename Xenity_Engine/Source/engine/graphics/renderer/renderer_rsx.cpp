@@ -673,11 +673,11 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		lastOffset = subMesh.positionOffset;
 	}
 
-	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() || (!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
+	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.m_meshData->unifiedColor.GetUnsignedIntRGBA() || (!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
 		lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
-		lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntRGBA();
-		const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
+		lastUsedColor2 = subMesh.m_meshData->unifiedColor.GetUnsignedIntRGBA();
+		const Vector4 colorMix = (material.GetColor() * subMesh.m_meshData->unifiedColor).GetRGBA().ToVector4();
 
 		lastShaderIdUsedColor = material.GetShader()->m_fileId;
 		rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_color, (float*)&colorMix.x, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
@@ -695,7 +695,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 	//rsxInvalidateVertexCache(context);
 	const int indiceMode = subMesh.isShortIndices ? GCM_INDEX_TYPE_16B : GCM_INDEX_TYPE_32B;
-	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, subMesh.indicesOffset, subMesh.index_count, indiceMode, GCM_LOCATION_RSX);
+	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, subMesh.indicesOffset, subMesh.m_index_count, indiceMode, GCM_LOCATION_RSX);
 	rsxSetDepthWriteEnable(context, GCM_TRUE);
 }
 

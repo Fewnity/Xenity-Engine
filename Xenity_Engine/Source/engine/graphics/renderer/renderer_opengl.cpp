@@ -378,12 +378,12 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 	// Maybe check if useLighting was changed to recalculate the color in fixed pipeline?
 	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() ||
-		lastUsedColor2 != subMesh.meshData->unifiedColor.GetUnsignedIntRGBA() ||
+		lastUsedColor2 != subMesh.m_meshData->unifiedColor.GetUnsignedIntRGBA() ||
 		(!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
 	{
 		lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
-		lastUsedColor2 = subMesh.meshData->unifiedColor.GetUnsignedIntRGBA();
-		const Vector4 colorMix = (material.GetColor() * subMesh.meshData->unifiedColor).GetRGBA().ToVector4();
+		lastUsedColor2 = subMesh.m_meshData->unifiedColor.GetUnsignedIntRGBA();
+		const Vector4 colorMix = (material.GetColor() * subMesh.m_meshData->unifiedColor).GetRGBA().ToVector4();
 		if constexpr (s_UseOpenGLFixedFunctions)
 		{
 			if (settings.useLighting)
@@ -422,27 +422,27 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 	// Draw
 	int primitiveType = subMesh.m_isQuad ? GL_QUADS : GL_TRIANGLES;
-	if (subMesh.index_count == 0)
+	if (subMesh.m_index_count == 0)
 	{
-		glDrawArrays(primitiveType, 0, subMesh.vertice_count);
+		glDrawArrays(primitiveType, 0, subMesh.m_vertice_count);
 	}
 	else
 	{
 		const int indiceMode = subMesh.isShortIndices ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
-		glDrawElements(primitiveType, subMesh.index_count, indiceMode, 0);
+		glDrawElements(primitiveType, subMesh.m_index_count, indiceMode, 0);
 	}
 	glBindVertexArray(0);
 
 #if defined(EDITOR)
 	if (Graphics::usedCamera->IsEditor())
 	{
-		if (subMesh.index_count == 0)
+		if (subMesh.m_index_count == 0)
 		{
-			Performance::AddDrawTriangles(subMesh.vertice_count / 3);
+			Performance::AddDrawTriangles(subMesh.m_vertice_count / 3);
 		}
 		else
 		{
-			Performance::AddDrawTriangles(subMesh.index_count / 3);
+			Performance::AddDrawTriangles(subMesh.m_index_count / 3);
 		}
 		Performance::AddDrawCall();
 	}
@@ -777,13 +777,13 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 
 		glBindBuffer(GL_ARRAY_BUFFER, newSubMesh->VBO);
 
-		glBufferData(GL_ARRAY_BUFFER, newSubMesh->vertexMemSize, newSubMesh->data, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, newSubMesh->m_vertexMemSize, newSubMesh->m_data, GL_STATIC_DRAW);
 
 		if (newSubMesh->EBO == 0)
 			newSubMesh->EBO = CreateBuffer();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newSubMesh->EBO);
 		size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * newSubMesh->index_count, newSubMesh->indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * newSubMesh->m_index_count, newSubMesh->m_indices, GL_STATIC_DRAW);
 
 		const VertexDescriptor& vertexDescriptorList = newSubMesh->m_vertexDescriptor;
 		int stride = vertexDescriptorList.m_vertexSize;

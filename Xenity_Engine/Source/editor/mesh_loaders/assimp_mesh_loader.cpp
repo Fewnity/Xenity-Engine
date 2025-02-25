@@ -146,11 +146,11 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 					{
 						if (mesh.m_subMeshes[subMeshIndex]->isShortIndices) // 16 bits indices
 						{
-							((unsigned short*)mesh.m_subMeshes[subMeshIndex]->indices)[faceIndex * verticesPerFace + index] = face.mIndices[index];
+							((unsigned short*)mesh.m_subMeshes[subMeshIndex]->m_indices)[faceIndex * verticesPerFace + index] = face.mIndices[index];
 						}
 						else // 32 bits indices
 						{
-							((unsigned int*)mesh.m_subMeshes[subMeshIndex]->indices)[faceIndex * verticesPerFace + index] = face.mIndices[index];
+							((unsigned int*)mesh.m_subMeshes[subMeshIndex]->m_indices)[faceIndex * verticesPerFace + index] = face.mIndices[index];
 						}
 					}
 				}
@@ -181,27 +181,28 @@ void AssimpMeshLoader::AddVertex(MeshData& mesh, const LoadingOptions& options, 
 	const bool hasNormals = assimpMesh->HasNormals();
 	const bool hasUVs = assimpMesh->HasTextureCoords(0);
 	const bool hasColors = assimpMesh->HasVertexColors(0);
+	MeshData::SubMesh& subMesh = *mesh.m_subMeshes[subMeshIndex];
 
 	if (hasNormals)
 	{
 		const aiVector3D& normals = assimpMesh->mNormals[assimpVertexIndex];
-		mesh.AddNormal(normals.x, normals.y, normals.z, meshVertexIndex, subMeshIndex);
+		subMesh.AddNormal(normals.x, normals.y, normals.z, meshVertexIndex);
 	}
 	if (hasUVs)
 	{
 		const aiVector3D& uv = assimpMesh->mTextureCoords[0][assimpVertexIndex];
-		mesh.AddUV(uv.x, uv.y, meshVertexIndex, subMeshIndex);
+		subMesh.AddUV(uv.x, uv.y, meshVertexIndex);
 	}
 	if (hasColors)
 	{
 		const aiColor4D& color = assimpMesh->mColors[0][assimpVertexIndex];
-		mesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex, subMeshIndex);
+		subMesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex);
 	}
 	else if (options.forceColors)
 	{
 		const aiColor4D color = aiColor4D(1, 1, 1, 1);
-		mesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex, subMeshIndex);
+		subMesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex);
 	}
 
-	mesh.AddPosition(vertex.x, vertex.y, vertex.z, meshVertexIndex, subMeshIndex);
+	subMesh.AddPosition(vertex.x, vertex.y, vertex.z, meshVertexIndex);
 }
