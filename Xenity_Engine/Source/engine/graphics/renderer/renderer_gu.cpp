@@ -359,7 +359,7 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	}
 	else
 	{
-		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.m_index_count, subMesh.m_indices, subMesh.m_data);
+		sceGumDrawArray(GU_TRIANGLES, subMesh.pspDrawParam, subMesh.m_index_count, subMesh.GetIndices(), subMesh.m_data);
 	}
 	//Performance::AddDrawCall();
 
