@@ -321,7 +321,7 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 			// Write raw data
 			meshFile.write((char*)subMesh->m_data, newVertexMemSize);
 		}
-		meshFile.write((char*)subMesh->m_indices, subMesh->m_indexMemSize);
+		meshFile.write((char*)subMesh->GetIndices(), subMesh->m_indexMemSize);
 	}
 	meshFile.close();
 }

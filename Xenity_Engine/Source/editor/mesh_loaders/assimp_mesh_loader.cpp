@@ -144,14 +144,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 					const aiFace& face = assimpMesh->mFaces[faceIndex];
 					for (size_t index = 0; index < verticesPerFace; index++)
 					{
-						if (mesh.m_subMeshes[subMeshIndex]->isShortIndices) // 16 bits indices
-						{
-							((unsigned short*)mesh.m_subMeshes[subMeshIndex]->m_indices)[faceIndex * verticesPerFace + index] = face.mIndices[index];
-						}
-						else // 32 bits indices
-						{
-							((unsigned int*)mesh.m_subMeshes[subMeshIndex]->m_indices)[faceIndex * verticesPerFace + index] = face.mIndices[index];
-						}
+						mesh.m_subMeshes[subMeshIndex]->SetIndex(faceIndex * verticesPerFace + index, face.mIndices[index]);
 					}
 				}
 			}

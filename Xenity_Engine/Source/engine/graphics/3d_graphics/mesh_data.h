@@ -30,6 +30,8 @@ public:
 	class API SubMesh
 	{
 	public:
+		friend MeshData;
+
 		SubMesh() = default;
 		void FreeData();
 
@@ -123,7 +125,14 @@ public:
 			}
 		}
 
+		void* GetIndices() const
+		{
+			return m_indices;
+		}
+
+	private:
 		void * m_indices = nullptr;
+	public:
 		MeshData* m_meshData = nullptr;
 		// On PSP, we have to respect a specific order for the data
 		// UV Color (uint32_t ARGB) Normal  Position

@@ -137,19 +137,19 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		// Copy indices data
 		if(index_count != 0)
 		{
-			memcpy(subMesh->m_indices, fileData, indexMemSize);
+			memcpy(subMesh->GetIndices(), fileData, indexMemSize);
 			
 #if defined(__PS3__)
 			for (int indexIndex = 0; indexIndex < index_count; indexIndex++)
 			{
 				if (subMesh->isShortIndices)
 				{
-					unsigned short& index = ((unsigned short*)subMesh->m_indices)[indexIndex];
+					unsigned short& index = ((unsigned short*)subMesh->GetIndices())[indexIndex];
 					index = EndianUtils::SwapEndian(index);
 				}
 				else 
 				{
-					unsigned int& index = ((unsigned int*)subMesh->m_indices)[indexIndex];
+					unsigned int& index = ((unsigned int*)subMesh->GetIndices())[indexIndex];
 					index = EndianUtils::SwapEndian(index);
 				}
 			}

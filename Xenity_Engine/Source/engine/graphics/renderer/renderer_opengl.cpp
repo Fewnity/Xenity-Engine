@@ -783,7 +783,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 			newSubMesh->EBO = CreateBuffer();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newSubMesh->EBO);
 		size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * newSubMesh->m_index_count, newSubMesh->m_indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * newSubMesh->m_index_count, newSubMesh->GetIndices(), GL_STATIC_DRAW);
 
 		const VertexDescriptor& vertexDescriptorList = newSubMesh->m_vertexDescriptor;
 		int stride = vertexDescriptorList.m_vertexSize;

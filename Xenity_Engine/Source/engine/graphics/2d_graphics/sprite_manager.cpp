@@ -46,15 +46,17 @@ void SpriteManager::Init()
 	subMesh->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1);
 	subMesh->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2);
 	subMesh->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3);
-	subMesh->isShortIndices = true;
-	((unsigned short*)subMesh->m_indices)[0] = 0;
-	((unsigned short*)subMesh->m_indices)[1] = 2;
-	((unsigned short*)subMesh->m_indices)[2] = 1;
-	((unsigned short*)subMesh->m_indices)[3] = 2;
-	((unsigned short*)subMesh->m_indices)[4] = 0;
-	((unsigned short*)subMesh->m_indices)[5] = 3;
+
+	subMesh->SetIndex(0, 0);
+	subMesh->SetIndex(1, 2);
+	subMesh->SetIndex(2, 1);
+	subMesh->SetIndex(3, 2);
+	subMesh->SetIndex(4, 0);
+	subMesh->SetIndex(5, 3);
+
 	s_spriteMeshData->OnLoadFileReferenceFinished();
 
+	// Create sprite mesh with normals
 	s_spriteMeshDataWithNormals = MeshData::MakeMeshData();
 	VertexDescriptor withNormalsDescriptor;
 	withNormalsDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
@@ -67,13 +69,13 @@ void SpriteManager::Init()
 	subMeshWithNormals->AddVertex(0.0f, 1.0f, 0, 0, -1, 0.5f, -0.5f, 0.0f, 1);
 	subMeshWithNormals->AddVertex(0.0f, 0.0f, 0, 0, -1, 0.5f, 0.5f, 0.0f, 2);
 	subMeshWithNormals->AddVertex(1.0f, 0.0f, 0, 0, -1, -0.5f, 0.5f, 0.0f, 3);
-	subMeshWithNormals->isShortIndices = true;
-	((unsigned short*)subMeshWithNormals->m_indices)[0] = 0;
-	((unsigned short*)subMeshWithNormals->m_indices)[1] = 2;
-	((unsigned short*)subMeshWithNormals->m_indices)[2] = 1;
-	((unsigned short*)subMeshWithNormals->m_indices)[3] = 2;
-	((unsigned short*)subMeshWithNormals->m_indices)[4] = 0;
-	((unsigned short*)subMeshWithNormals->m_indices)[5] = 3;
+
+	subMeshWithNormals->SetIndex(0, 0);
+	subMeshWithNormals->SetIndex(1, 2);
+	subMeshWithNormals->SetIndex(2, 1);
+	subMeshWithNormals->SetIndex(3, 2);
+	subMeshWithNormals->SetIndex(4, 0);
+	subMeshWithNormals->SetIndex(5, 3);
 	s_spriteMeshDataWithNormals->OnLoadFileReferenceFinished();
 
 #if defined(__PSP__)
