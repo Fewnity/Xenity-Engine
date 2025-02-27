@@ -5,22 +5,28 @@
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/file_system/file_reference.h>
+#include <engine/debug/debug.h>
 
-void BitFile::Create(const std::string& path)
+bool BitFile::Create(const std::string& path)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	FileSystem::s_fileSystem->Delete(path);
 	m_file = FileSystem::MakeFile(path);
 	const bool openResult = m_file->Open(FileMode::WriteCreateFile);
-	XASSERT(openResult, "[BitFile::Create] Failed to create bit file" + path);
+	XCHECK(openResult, "[BitFile::Create] Failed to create bit file" + path);
+	m_fileSize = 0;
 
 	if (openResult) 
 	{
 		m_file->Close();
+		return true;
 	}
-
-	m_fileSize = 0;
+	else 
+	{
+		Debug::PrintError("[BitFile::Create] Failed to create bit file");
+		return false;
+	}
 }
 
 void BitFile::Open(const std::string& path)
@@ -29,7 +35,7 @@ void BitFile::Open(const std::string& path)
 
 	m_file = FileSystem::MakeFile(path);
 	const bool openResult = m_file->Open(FileMode::ReadOnly);
-	XASSERT(openResult, "[BitFile::Open] Failed to open bit file" + path);
+	XCHECK(openResult, "[BitFile::Open] Failed to open bit file" + path);
 }
 
 void BitFile::Close()

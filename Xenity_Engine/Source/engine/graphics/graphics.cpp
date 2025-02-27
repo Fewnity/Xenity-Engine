@@ -165,7 +165,7 @@ void Graphics::Draw()
 	s_currentShader = nullptr;
 
 	OrderDrawables();
-	
+
 	const int shaderCount = AssetManager::GetShaderCount();
 	const int matCount = AssetManager::GetMaterialCount();
 
@@ -226,7 +226,7 @@ void Graphics::Draw()
 			{
 				Engine::GetRenderer().SetCameraPosition(*usedCamera);
 			}
-			else 
+			else
 			{
 				UpdateShadersCameraMatrices();
 			}
@@ -624,11 +624,18 @@ void Graphics::OnProjectLoaded()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	skyPlane = AssetManager::LoadEngineAsset<MeshData>("public_engine_assets/models/PlaneTriangulate.obj");
-	XASSERT(skyPlane != nullptr, "[Graphics::OnProjectLoaded] skyPlane is null");
-	FileReference::LoadOptions loadOptions;
-	loadOptions.platform = Application::GetPlatform();
-	loadOptions.threaded = false;
-	skyPlane->LoadFileReference(loadOptions);
+
+	if (skyPlane)
+	{
+		FileReference::LoadOptions loadOptions;
+		loadOptions.platform = Application::GetPlatform();
+		loadOptions.threaded = false;
+		skyPlane->LoadFileReference(loadOptions);
+	}
+	else 
+	{
+		Debug::PrintError("[Graphics::OnProjectLoaded] skyPlane is null", true);
+	}
 }
 
 void Graphics::DrawSkybox(const Vector3& cameraPosition)

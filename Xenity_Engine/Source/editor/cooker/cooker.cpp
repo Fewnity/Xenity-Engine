@@ -29,7 +29,7 @@ using ordered_json = nlohmann::ordered_json;
 std::mutex dataBaseMutex;
 std::mutex copyMutex;
 
-void Cooker::CookAssets(const CookSettings& settings)
+bool Cooker::CookAssets(const CookSettings& settings)
 {
 	XASSERT(settings.assetPlatform != AssetPlatform::AP_COUNT, "[Cooker::CookAssets] Asset platform is not set");
 	XASSERT(!settings.exportPath.empty(), "[Cooker::CookAssets] Export path is not set");
@@ -37,7 +37,12 @@ void Cooker::CookAssets(const CookSettings& settings)
 
 	// Create a new data base and binary file
 	fileDataBase.Clear();
-	fileDataBase.GetBitFile().Create(settings.exportPath + "data.xenb");
+	bool databaseCreated = fileDataBase.GetBitFile().Create(settings.exportPath + "data.xenb");
+
+	if (!databaseCreated)
+	{
+		return false;
+	}
 
 	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath();
 	const size_t projectFolderPathLen = projectAssetFolder.size();
@@ -91,11 +96,14 @@ void Cooker::CookAssets(const CookSettings& settings)
 	if (integrityState != IntegrityState::Integrity_Ok)
 	{
 		Debug::PrintError("[Cooker::CookAssets] Data base integrity check failed");
+		return false;
 	}
 
 	// Save the data base file
 	fileDataBase.SaveToFile(settings.exportPath + "db.xenb");
 	fileDataBase.GetBitFile().Close();
+
+	return true;
 }
 
 //void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)

@@ -20,7 +20,7 @@ struct CookSettings
 class Cooker
 {
 public:
-	static void CookAssets(const CookSettings& settings);
+	static bool CookAssets(const CookSettings& settings);
 
 private:
 	static FileDataBase fileDataBase;

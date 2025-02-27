@@ -19,7 +19,7 @@ public:
 	/**
 	* @brief Create the file at the given path
 	*/
-	void Create(const std::string& path);
+	bool Create(const std::string& path);
 
 	/**
 	* @brief Open the file at the given path

@@ -138,6 +138,8 @@ CompileResult Compiler::Compile(CompilerParams params)
 		ProjectManager::projectSettings = projectSettingsCopy;
 	}
 
+	bool cookResult = true;
+
 	// Cook assets
 	if (params.buildType != BuildType::EditorHotReloading)
 	{
@@ -155,12 +157,17 @@ CompileResult Compiler::Compile(CompilerParams params)
 		{
 			cookSettings.exportShadersOnly = false;
 		}
-		Cooker::CookAssets(cookSettings);
+		cookResult = Cooker::CookAssets(cookSettings);
 		cookBenchmark.Stop();
 		timings.cookTime = cookBenchmark.GetMicroSeconds();
 	}
 
 	CleanDestinationFolder(params.exportPath);
+
+	if (!cookResult)
+	{
+		return CompileResult::ERROR_COOK_FAILED;
+	}
 
 	// Compile depending on platform
 	CompileResult result = CompileResult::ERROR_UNKNOWN;
@@ -577,6 +584,9 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 		break;
 	case CompileResult::ERROR_FILE_COPY:
 		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying files");
+		break;
+	case CompileResult::ERROR_COOK_FAILED:
+		Debug::PrintError("[Compiler::OnCompileEnd] Error when cooking files");
 		break;
 
 		// Specific to WSL
@@ -1151,6 +1161,12 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		{
 			std::string fileName2 = "hello.prx";
 			const std::string copyGameFileCommand2 = "docker cp XenityEngineBuild:\"/home/XenityBuild/build/" + fileName2 + "\" \"" + params.exportPath + fileName2 + "\"";
+			[[maybe_unused]] const int copyGameFileResult2 = system(copyGameFileCommand2.c_str()); // Engine's source code + (game's code but to change later)
+		}
+		else if (params.buildPlatform.platform == Platform::P_PS3)
+		{
+			std::string fileName2 = "XenityBuild.fake.self";
+			const std::string copyGameFileCommand2 = "docker cp XenityEngineBuild:\"/home/XenityBuild/" + fileName2 + "\" \"" + params.exportPath + fileName2 + "\"";
 			[[maybe_unused]] const int copyGameFileResult2 = system(copyGameFileCommand2.c_str()); // Engine's source code + (game's code but to change later)
 		}
 
