@@ -17,12 +17,17 @@
 */
 API void OnAssertionFailed(const std::string& condition, const std::string& message, const std::string fileName, size_t line);
 
+API void OnCheckFailed(const std::string& message);
+
 // XASSERT is a macro to assert a condition and print a message in the logs in debug mode
 #if defined(DEBUG)
 #define XASSERT(condition, message) if (!(condition)) { OnAssertionFailed(#condition, message, __FILE__, __LINE__); assert(false); } 0
 #else
 #define XASSERT(condition, message) 0
 #endif
+
+// XCHECK is a macro to print a message in the logs if a condition fails, quit the program if the condition is false
+#define XCHECK(condition, message) if (!(condition)) { OnCheckFailed(message); exit(-1); } 0
 
 // ------------------------------- Type assertions -------------------------------
 static_assert(sizeof(int) == 4, "int is not 4 byte");

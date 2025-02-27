@@ -12,3 +12,8 @@ void OnAssertionFailed(const std::string& condition, const std::string& message,
 {
 	Debug::PrintError("Assertion failed!\nCondition: " + condition + "\nMessage: " + message + "\nFile: " + fileName + "\nLine: " + std::to_string(line));
 }
+
+void OnCheckFailed(const std::string& message)
+{
+	Debug::PrintError(message);
+}
