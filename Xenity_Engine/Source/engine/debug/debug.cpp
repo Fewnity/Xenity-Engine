@@ -248,6 +248,8 @@ int Debug::Init()
 	if (!EngineSettings::values.useDebugger)
 		return 0;
 
+	debugMutex = new MyMutex("DebugMutex");
+
 	std::string fileName = DEBUG_LOG_FILE;
 #if defined(__vita__)
 	fileName = PSVITA_DEBUG_LOG_FOLDER + fileName;
@@ -258,10 +260,10 @@ int Debug::Init()
 
 	if (!s_file->Open(FileMode::WriteCreateFile))
 	{
+		s_file = nullptr;
 		PrintError("-------- Debug file not created --------");
 		return -1;
 	}
-	debugMutex = new MyMutex("DebugMutex");
 
 	Print("-------- Debug initiated --------", true);
 	return 0;
