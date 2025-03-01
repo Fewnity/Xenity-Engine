@@ -1121,9 +1121,17 @@ int Editor::ExecuteSystemCommand(const std::string& command, std::string& output
 #else
 	FILE* f = _popen(command.c_str(), "r");
 #endif
-	constexpr size_t bufferSize = 2048;
+
+	constexpr size_t bufferSize = 10000;
 	char output[bufferSize];
-	fgets(output, bufferSize, f);
+	output[0] = '\0';
+	int length = strlen(output);
+	while (fgets(output + length, bufferSize - length, f))
+	{
+		length = strlen(output);
+		if (length >= bufferSize - 1)
+			break;
+	}
 #if defined(__LINUX__)
 	int ret = pclose(f);
 #else
