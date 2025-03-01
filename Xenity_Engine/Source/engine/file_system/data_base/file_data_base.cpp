@@ -81,7 +81,7 @@ void FileDataBase::SaveToFile(const std::string& path)
 	}
 }
 
-void FileDataBase::LoadFromFile(const std::string& path)
+bool FileDataBase::LoadFromFile(const std::string& path)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -90,7 +90,7 @@ void FileDataBase::LoadFromFile(const std::string& path)
 	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool openResult = file->Open(FileMode::ReadOnly);
 
-	XASSERT(openResult, "[FileDataBase::LoadFromFile] Data base file not found");
+	XCHECK(openResult, "[FileDataBase::LoadFromFile] Data base file not found");
 
 	if (openResult)
 	{
@@ -111,6 +111,8 @@ void FileDataBase::LoadFromFile(const std::string& path)
 
 		ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
 	}
+
+	return openResult;
 }
 
 IntegrityState FileDataBase::CheckIntegrity()

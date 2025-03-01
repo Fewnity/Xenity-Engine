@@ -579,7 +579,12 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	{
 		SceneManager::LoadScene(ProjectManager::GetStartScene());
 	}
-
+#if !defined(EDITOR)
+	else
+	{
+		return ProjectLoadingErrors::NoStartupScene;
+	}
+#endif
 	projectLoadedEvent.Trigger();
 
 	Debug::Print("Project loaded", true);
@@ -883,7 +888,6 @@ ProjectSettings ProjectManager::GetProjectSettings(const std::string& projectPat
 	}
 	else
 	{
-		//XASSERT(false, "[ProjectManager::LoadProjectSettings] Fail to open the project settings file");
 		Debug::PrintError("[ProjectManager::LoadProjectSettings] Fail to open the project settings file", true);
 	}
 

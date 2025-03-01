@@ -54,7 +54,7 @@ public:
 	/**
 	* @brief Load infos from a file at the given path
 	*/
-	void LoadFromFile(const std::string& path);
+	bool LoadFromFile(const std::string& path);
 
 	/*
 	* @brief Get the files list

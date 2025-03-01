@@ -42,13 +42,6 @@ MyMutex* debugMutex = nullptr;
  */
 void Debug::PrintError(const std::string& text, bool hideInEditorConsole)
 {
-	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
-		return;
-
-	debugMutex->Lock();
-	if(!hideInEditorConsole)
-		AddMessageInHistory(text, DebugType::Error);
-	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithoutColor = "[ERROR] " + finalText;
 	const std::string textWithColor = "\033[31m" + textWithoutColor + "\033[37m";
@@ -57,11 +50,20 @@ void Debug::PrintError(const std::string& text, bool hideInEditorConsole)
 #else
 	PrintInConsole(textWithoutColor); // Do not print in color on game consoles
 #endif
+	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
+	{
+		return;
+	}
+
+	debugMutex->Lock();
+	if(!hideInEditorConsole)
+		AddMessageInHistory(text, DebugType::Error);
+	PrintInOnlineConsole(text);
 	PrintInFile(textWithoutColor);
 	if (!hideInEditorConsole)
 		s_debugText += textWithoutColor;
-	debugMutex->Unlock();
 	s_onDebugLogEvent.Trigger();
+	debugMutex->Unlock();
 }
 
 /**
@@ -69,13 +71,6 @@ void Debug::PrintError(const std::string& text, bool hideInEditorConsole)
  */
 void Debug::PrintWarning(const std::string& text, bool hideInEditorConsole)
 {
-	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
-		return;
-
-	debugMutex->Lock();
-	if (!hideInEditorConsole)
-		AddMessageInHistory(text, DebugType::Warning);
-	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithoutColor = "[WARNING] " + finalText;
 	const std::string textWithColor = "\033[33m" + textWithoutColor + "\033[37m";
@@ -84,11 +79,20 @@ void Debug::PrintWarning(const std::string& text, bool hideInEditorConsole)
 #else
 	PrintInConsole(textWithoutColor); // Do not print in color on game consoles
 #endif
+	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
+	{
+		return;
+	}
+
+	debugMutex->Lock();
+	if (!hideInEditorConsole)
+		AddMessageInHistory(text, DebugType::Warning);
+	PrintInOnlineConsole(text);
 	PrintInFile(textWithoutColor);
 	if (!hideInEditorConsole)
 		s_debugText += textWithoutColor;
-	debugMutex->Unlock();
 	s_onDebugLogEvent.Trigger();
+	debugMutex->Unlock();
 }
 
 /**
@@ -96,13 +100,6 @@ void Debug::PrintWarning(const std::string& text, bool hideInEditorConsole)
  */
 void Debug::Print(const std::string& text, bool hideInEditorConsole)
 {
-	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
-		return;
-
-	debugMutex->Lock();
-	if (!hideInEditorConsole)
-		AddMessageInHistory(text, DebugType::Log);
-	PrintInOnlineConsole(text);
 	const std::string finalText = text + '\n';
 	const std::string textWithColor = "\033[37m" + finalText;
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
@@ -110,11 +107,21 @@ void Debug::Print(const std::string& text, bool hideInEditorConsole)
 #else
 	PrintInConsole(finalText); // Do not print in color on game consoles
 #endif
+	if (!EngineSettings::values.useDebugger || debugMutex == nullptr || !Engine::IsRunning(false))
+	{
+		return;
+	}
+
+	debugMutex->Lock();
+	if (!hideInEditorConsole)
+		AddMessageInHistory(text, DebugType::Log);
+	PrintInOnlineConsole(text);
+
 	PrintInFile(finalText);
 	if (!hideInEditorConsole)
 		s_debugText += finalText; // Disable because cause crashes, why? Maybe thread?
-	debugMutex->Unlock();
 	s_onDebugLogEvent.Trigger();
+	debugMutex->Unlock();
 }
 
 void Debug::SendProfilerDataToServer()

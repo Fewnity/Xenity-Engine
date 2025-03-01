@@ -14,7 +14,7 @@ bool BitFile::Create(const std::string& path)
 	FileSystem::s_fileSystem->Delete(path);
 	m_file = FileSystem::MakeFile(path);
 	const bool openResult = m_file->Open(FileMode::WriteCreateFile);
-	XCHECK(openResult, "[BitFile::Create] Failed to create bit file" + path);
+	XCHECK(openResult, "[BitFile::Create] Failed to create bit file: " + m_file->GetPath());
 	m_fileSize = 0;
 
 	if (openResult) 
@@ -35,7 +35,7 @@ void BitFile::Open(const std::string& path)
 
 	m_file = FileSystem::MakeFile(path);
 	const bool openResult = m_file->Open(FileMode::ReadOnly);
-	XCHECK(openResult, "[BitFile::Open] Failed to open bit file" + path);
+	XCHECK(openResult, "[BitFile::Open] Failed to open bit file: " + m_file->GetPath());
 }
 
 void BitFile::Close()
@@ -49,7 +49,7 @@ size_t BitFile::AddData(const std::vector<uint8_t>& data)
 
 	const size_t dataSize = data.size();
 	const bool openResult = m_file->Open(FileMode::WriteOnly);
-	XASSERT(openResult, "[BitFile::AddData] Failed to open bit file");
+	XASSERT(openResult, "[BitFile::AddData] Failed to open bit file: " + m_file->GetPath());
 	m_file->Write(reinterpret_cast<const unsigned char*>(data.data()), dataSize);
 	m_file->Close();
 
@@ -64,7 +64,7 @@ size_t BitFile::AddData(const unsigned char* data, size_t size)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	const bool openResult = m_file->Open(FileMode::WriteOnly);
-	XASSERT(openResult, "[BitFile::AddData] Failed to open bit file");
+	XASSERT(openResult, "[BitFile::AddData] Failed to open bit file: " + m_file->GetPath());
 	m_file->Write(data, size);
 	m_file->Close();
 

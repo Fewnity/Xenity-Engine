@@ -2,6 +2,7 @@
 
 enum class ProjectLoadingErrors
 {
-	NoAssetFolder,
 	Success,
+	NoAssetFolder,
+	NoStartupScene,
 };
