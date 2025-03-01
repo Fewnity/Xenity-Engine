@@ -265,18 +265,18 @@ void DevKitControlMenu::LaunchGame(DevKitRunningMode devKitRunningMode)
 
 	std::string returnText = "";
 	std::string command = "\"\"" + EngineSettings::values.ps3CtrlPath + "\"";
-	command += " -t " + devKits[selectedDevKit].name;
 	// Option used to run the game from fake dev kit (retail console with DEX firmware) since fake dev kit cannot run games from PC
+	command += " run -t " + devKits[selectedDevKit].name;
 	if (devKitRunningMode == DevKitRunningMode::FromHDD)
 	{
-		command += " run ../dev_hdd0/xenity_engine/XenityBuild.self";
+		command += " ../dev_hdd0/xenity_engine/XenityBuild.self";
 		// Add arguments
 		command += " \"dev_kit=1\"";
 		command += " \"dev_kit_file_mode=hdd\"";
 	}
 	else if (devKitRunningMode == DevKitRunningMode::FromPC)
 	{
-		command += " run C:\\Users\\elect\\Desktop\\Builds\\Benchmark\\PS3\\XenityBuild.fake.self"; // Real dev kit cannot run normal self files so use fake.self
+		command += " C:\\Users\\elect\\Desktop\\Builds\\Benchmark\\PS3\\XenityBuild.fake.self"; // Real dev kit cannot run normal self files so use fake.self
 		// Add arguments
 		command += " \"dev_kit=1\"";
 		command += " \"dev_kit_file_mode=pc\"";
