@@ -68,6 +68,28 @@ bool Application::IsInEditor()
 #endif
 }
 
+std::string Application::GetMountingPoint()
+{
+	if (GetPlatform() == Platform::P_PS3)
+	{
+		if (Engine::GetArguments().devKitRunningMode == DevKitRunningMode::FromHDD)
+		{
+			return "/dev_hdd0/";
+		}
+		else if (Engine::GetArguments().devKitRunningMode == DevKitRunningMode::FromPC)
+		{
+			return "/app_home/";
+		}
+		else 
+		{
+			XCHECK(false, "[Application::GetMountingPoint] PS3 running mode not supported");
+			return "";
+		}
+		//return PS3_DATA_FOLDER;
+	}
+	return "";
+}
+
 AssetPlatform Application::PlatformToAssetPlatform(Platform platform)
 {
 	if (platform == Platform::P_PSP)

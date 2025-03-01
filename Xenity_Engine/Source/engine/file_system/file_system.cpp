@@ -34,6 +34,7 @@
 
 #include <engine/debug/debug.h>
 #include <engine/constants.h>
+#include <engine/application.h>
 
 #include "directory.h"
 #include "file.h"
@@ -343,8 +344,8 @@ void FileSystem::Delete(const std::string& path)
 #if defined(__PSP__)
 	sceIoRemove(path.c_str());
 #elif defined(__PS3__)
-	sysFsRmdir((std::string(PS3_DATA_FOLDER) + path).c_str()); // Remove if dir
-	sysFsUnlink((std::string(PS3_DATA_FOLDER) + path).c_str()); // Remove if file
+	sysFsRmdir((Application::GetMountingPoint() + std::string(PS3_DATA_FOLDER) + path).c_str()); // Remove if dir
+	sysFsUnlink((Application::GetMountingPoint() + std::string(PS3_DATA_FOLDER) + path).c_str()); // Remove if file
 #else
 	try
 	{

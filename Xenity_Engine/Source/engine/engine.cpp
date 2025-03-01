@@ -98,16 +98,12 @@ std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
 bool Engine::s_canUpdateAudio = false;
 bool Engine::s_isRunning = true;
 bool Engine::s_isInitialized = false;
+EngineArgs Engine::s_engineArgs;
 
 std::unique_ptr<GameInterface> Engine::s_game = nullptr;
 Event<>* Engine::s_onWindowFocusEvent = new Event<>();
 
-void Engine::OnCloseSignal([[maybe_unused]] int s)
-{
-	s_isRunning = false;
-}
-
-int Engine::Init()
+int Engine::Init(int argc, char* argv[])
 {
 #if defined(_WIN32) || defined(_WIN64)
 	signal(SIGBREAK, Engine::OnCloseSignal);
@@ -115,6 +111,8 @@ int Engine::Init()
 
 	//  Init random
 	srand(static_cast<unsigned int>(time(nullptr)));
+
+	ParseEngineArguments(argc, argv);
 
 #if defined(__PSP__)
 	SetupCallbacks();
@@ -511,4 +509,57 @@ void Engine::Quit()
 #else
 	s_isRunning = false;
 #endif
+}
+
+void Engine::ParseEngineArguments(int argc, char* argv[])
+{
+	for (size_t i = 0; i < argc; i++)
+	{
+		const std::string param = argv[i];
+		const size_t equalsIndex = param.find("=");
+		if (equalsIndex != std::string::npos)
+		{
+			std::string paramName = param.substr(0, equalsIndex);
+			const size_t paramNameLength = paramName.length();
+			for (size_t i = 0; i < paramNameLength; i++)
+			{
+				paramName[i] = tolower(paramName[i]);
+			}
+
+			const std::string value = param.substr(equalsIndex + 1);
+			if (paramName == "dev_kit")
+			{
+				if (value == "1")
+				{
+					s_engineArgs.runningOnDevKit = true;
+					Debug::Print("-------- Running on dev kit --------", true);
+				}
+				else
+				{
+					s_engineArgs.runningOnDevKit = false;
+				}
+			}
+			else if (paramName == "dev_kit_file_mode")
+			{
+				if (value == "hdd")
+				{
+					s_engineArgs.devKitRunningMode = DevKitRunningMode::FromHDD;
+					Debug::Print("-------- Running game from HDD --------", true);
+				}
+				else if (value == "pc")
+				{
+					s_engineArgs.devKitRunningMode = DevKitRunningMode::FromPC;
+					Debug::Print("-------- Running game from PC --------", true);
+				}
+			}
+		}
+		else
+		{
+		}
+	}
+}
+
+void Engine::OnCloseSignal([[maybe_unused]] int s)
+{
+	s_isRunning = false;
 }

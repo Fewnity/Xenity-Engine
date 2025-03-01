@@ -10,6 +10,7 @@
 
 #include <engine/api.h>
 #include <engine/event_system/event_system.h>
+#include <engine/engine_args.h>
 
 class Renderer;
 class GameObject;
@@ -31,7 +32,7 @@ public:
 	/**
 	 * @brief Init Engine
 	 */
-	[[nodiscard]] API static int Init();
+	[[nodiscard]] API static int Init(int argc, char* argv[]);
 
 	/**
 	 * @brief Stop engine
@@ -77,8 +78,15 @@ public:
 		return s_onWindowFocusEvent;
 	}
 
+	static const EngineArgs& GetArguments()
+	{
+		return s_engineArgs;
+	}
+
 private:
 	static Event<>* s_onWindowFocusEvent;
+
+	static void ParseEngineArguments(int argc, char* argv[]);
 
 	/**
 	 * @brief Close signal, called when the software is closing
@@ -91,6 +99,8 @@ private:
 	static void CheckEvents();
 
 	static std::unique_ptr<Renderer> s_renderer;
+	static EngineArgs s_engineArgs;
+
 	static bool s_isRunning;
 	static bool s_isInitialized;
 };

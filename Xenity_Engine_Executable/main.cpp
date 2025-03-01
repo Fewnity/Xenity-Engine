@@ -132,7 +132,7 @@ Create OnReflectionUpdated in transform and set isTransformationMatrixDirty = tr
 int main(int argc, char* argv[])
 {
 	// Init engine
-	const int engineInitResult = Engine::Init();
+	const int engineInitResult = Engine::Init(argc, argv);
 	if (engineInitResult != 0)
 	{
 		Debug::PrintError("-------- Engine failed to init --------", true);

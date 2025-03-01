@@ -10,6 +10,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
 #include <engine/debug/debug.h>
+#include <engine/application.h>
 
 bool ScreenCapture::MakeScreenshot(const std::string& fileName)
 {
@@ -27,14 +28,14 @@ bool ScreenCapture::MakeScreenshot(const std::string& fileName)
 #if defined(__vita__)
 		path = std::string(PSVITA_DEBUG_LOG_FOLDER) + "screenshots/" + path;
 #elif defined(__PS3__)
-		path = std::string(PS3_DATA_FOLDER) + path;
+		path = Application::GetMountingPoint() + std::string(PS3_DATA_FOLDER) + path;
 #endif
 
 		// On some platforms, the framebuffer is flipped vertically
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
 		stbi_flip_vertically_on_write(true); // Windows / PsVita
 #else // PSP, PS3
-		stbi_flip_vertically_on_write(false); // PSP PS3
+		stbi_flip_vertically_on_write(false); // PSP / PS3
 #endif
 
 		if (stbi_write_png(path.c_str(), Graphics::usedCamera->GetWidth(), Graphics::usedCamera->GetHeight(), 3, frameBufferData.get(), 0) == 0)

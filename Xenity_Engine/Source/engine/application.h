@@ -23,6 +23,7 @@ public:
 	static std::string GetCompanyName();
 	static AssetPlatform GetAssetPlatform();
 	static bool IsInEditor();
+	static std::string GetMountingPoint();
 
 private:
 	friend class InspectorMenu;
