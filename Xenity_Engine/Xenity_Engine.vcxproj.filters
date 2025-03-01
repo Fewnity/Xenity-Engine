@@ -104,7 +104,7 @@
     <ClCompile Include="Source\engine\physics\box_collider.cpp" />
     <ClCompile Include="Source\engine\physics\collider.cpp" />
     <ClCompile Include="Source\editor\ui\menus\file_management\create_class_menu.cpp" />
-    <ClCompile Include="Source\engine\tools\string_tag_finder.cpp" />
+    <ClCompile Include="Source\engine\tools\string_utils.cpp" />
     <ClCompile Include="Source\engine\game_elements\gameplay_manager.cpp" />
     <ClCompile Include="Source\windows\cpu.cpp" />
     <ClCompile Include="Source\engine\graphics\renderer\renderer_gskit.cpp" />
@@ -467,7 +467,7 @@
     <ClInclude Include="Source\engine\physics\collider.h" />
     <ClInclude Include="Source\engine\file_system\file_type.h" />
     <ClInclude Include="Source\editor\ui\menus\file_management\create_class_menu.h" />
-    <ClInclude Include="Source\engine\tools\string_tag_finder.h" />
+    <ClInclude Include="Source\engine\tools\string_utils.h" />
     <ClInclude Include="Source\engine\game_elements\gameplay_manager.h" />
     <ClInclude Include="Source\engine\cpu.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_gskit.h" />

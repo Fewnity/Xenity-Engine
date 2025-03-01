@@ -21,7 +21,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/debug/debug.h>
-#include <engine/tools/string_tag_finder.h>
+#include <engine/tools/string_utils.h>
 #include <engine/file_system/file.h>
 #include <engine/game_elements/transform.h>
 #include <engine/graphics/graphics.h>

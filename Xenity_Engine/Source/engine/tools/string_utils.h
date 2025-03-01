@@ -7,8 +7,9 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
-class StringTagFinder
+class StringUtils
 {
 public:
 	/**
@@ -22,5 +23,12 @@ public:
 	* @return True if the tag was found, false otherwise
 	*/
 	static bool FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, int& startPosition, int& endPosition);
+
+	/**
+	* @brief Split a string into a vector of strings
+	* @param text The text to split
+	* @param delimiter The delimiter to split the text with
+	*/
+	static std::vector<std::string> Split(const std::string& text, const char delimiter);
 };
 

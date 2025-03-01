@@ -49,7 +49,7 @@
 #include "game_code/source/game.h"
 #endif
 #include <engine/engine_settings.h>
-#include <engine/tools/string_tag_finder.h>
+#include <engine/tools/string_utils.h>
 #include <engine/graphics/ui/icon.h>
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
@@ -262,7 +262,7 @@ void ProjectManager::CreateVisualStudioSettings()
 			int beg = 0, end = 0;
 			for (size_t i = 0; i < vsCodeTextSize; i++)
 			{
-				if (StringTagFinder::FindTag(vsCodeText, i, vsCodeTextSize, "{ENGINE_SOURCE_PATH}", beg, end))
+				if (StringUtils::FindTag(vsCodeText, i, vsCodeTextSize, "{ENGINE_SOURCE_PATH}", beg, end))
 				{
 					vsCodeText.replace(beg, end - beg - 1, includesPath);
 					break;

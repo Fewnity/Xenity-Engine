@@ -10,7 +10,7 @@
 
 #include <editor/ui/editor_ui.h>
 
-#include <engine/tools/string_tag_finder.h>
+#include <engine/tools/string_utils.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
 
@@ -115,12 +115,12 @@ void CreateClassMenu::CreateFiles()
 	int end;
 	for (int i = 0; i < codeDataSize; i++)
 	{
-		if (StringTagFinder::FindTag(codeData, i, codeDataSize, "{CLASSNAME}", beg, end))
+		if (StringUtils::FindTag(codeData, i, codeDataSize, "{CLASSNAME}", beg, end))
 		{
 			codeData.replace(beg, end - beg - 1, className);
 			codeDataSize = codeData.size();
 		}
-		else if (StringTagFinder::FindTag(codeData, i, codeDataSize, "{FILENAME}", beg, end))
+		else if (StringUtils::FindTag(codeData, i, codeDataSize, "{FILENAME}", beg, end))
 		{
 			codeData.replace(beg, end - beg - 1, fileName);
 			codeDataSize = codeData.size();
@@ -128,7 +128,7 @@ void CreateClassMenu::CreateFiles()
 	}
 	for (size_t i = 0; i < headerDataSize; i++)
 	{
-		if (StringTagFinder::FindTag(headerData, i, headerDataSize, "{CLASSNAME}", beg, end))
+		if (StringUtils::FindTag(headerData, i, headerDataSize, "{CLASSNAME}", beg, end))
 		{
 			headerData.replace(beg, end - beg - 1, className);
 			headerDataSize = headerData.size();
