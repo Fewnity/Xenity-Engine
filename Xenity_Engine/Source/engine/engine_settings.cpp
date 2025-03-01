@@ -33,6 +33,7 @@ ReflectiveData EngineSettingsValues::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, compilerPath, "compilerPath", true);
 	Reflective::AddVariable(reflectedVariables, ppssppExePath, "ppssppExePath", true);
 	Reflective::AddVariable(reflectedVariables, dockerExePath, "dockerExePath", true);
+	Reflective::AddVariable(reflectedVariables, ps3CtrlPath, "ps3CtrlPath", true);
 	Reflective::AddVariable(reflectedVariables, compileOnCodeChanged, "compileOnCodeChanged", true);
 	Reflective::AddVariable(reflectedVariables, compileWhenOpeningProject, "compileWhenOpeningProject", true);
 

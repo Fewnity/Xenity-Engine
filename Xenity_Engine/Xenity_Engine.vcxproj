@@ -512,6 +512,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\editor\ui\menus\engine_control\dev_kit_control_menu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\engine_args.cpp" />
     <ClCompile Include="Source\engine\game_elements\component_manager.cpp" />
     <ClCompile Include="Source\engine\time\date_time.cpp" />
@@ -1142,6 +1146,10 @@
     <None Include="Source\engine\reflection\reflection_utils.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\editor\ui\menus\engine_control\dev_kit_control_menu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\engine_args.h" />
     <ClInclude Include="Source\engine\game_elements\component_manager.h" />
     <ClInclude Include="Source\engine\time\date_time.h" />

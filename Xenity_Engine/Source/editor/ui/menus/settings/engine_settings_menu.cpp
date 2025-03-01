@@ -76,6 +76,19 @@ bool EngineSettingsMenu::DrawCompilerOptions()
 		settingsChanged = true;
 	}
 
+	ImGui::Separator();
+	ImGui::Text("For PS3 dev kits owner:");
+	ImGui::Separator();
+	std::string tempPs3CtrlExePath = EngineSettings::values.ps3CtrlPath;
+	ImGui::Text("(Default ps3ctrl location: C:\\Program Files (x86)\\SN Systems\\PS3\\bin)");
+	ImGui::Text("ps3ctrl location: %s", EngineSettings::values.ps3CtrlPath.c_str());
+	valueChanged = DrawSelectFolderButton(tempDockerExePath);
+	if (valueChanged)
+	{
+		EngineSettings::values.ps3CtrlPath = tempPs3CtrlExePath + "ps3ctrl.exe";
+		settingsChanged = true;
+	}
+
 	// Does not work well
 	/*ImGui::Separator();
 	valueChanged = ImGui::Checkbox("Compile On Code Changed", &EngineSettings::values.compileOnCodeChanged);

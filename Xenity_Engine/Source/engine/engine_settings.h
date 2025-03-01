@@ -31,6 +31,7 @@ public:
 	std::string compilerPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\";
 	std::string ppssppExePath = "C:\\Program Files\\PPSSPP\\PPSSPPWindows64.exe";
 	std::string dockerExePath = "C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe";
+	std::string ps3CtrlPath = "C:\\Program Files (x86)\\SN Systems\\PS3\\bin\\PS3Ctrl.exe";
 
 	bool compileOnCodeChanged = false;
 	bool compileWhenOpeningProject = false;

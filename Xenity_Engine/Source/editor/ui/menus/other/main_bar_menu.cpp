@@ -19,6 +19,7 @@
 #include <editor/ui/menus/compilation/build_settings_menu.h>
 #include <editor/ui/menus/debug/engine_asset_manager_menu.h>
 #include <editor/ui/menus/debug/database_checker_menu.h>
+#include <editor/ui/menus/engine_control/dev_kit_control_menu.h>
 
 #include <engine/engine.h>
 #include <engine/class_registry/class_registry.h>
@@ -497,6 +498,12 @@ void MainBarMenu::Draw()
 		{
 			Editor::GetMenu<DockerConfigMenu>()->SetActive(true);
 			Editor::GetMenu<DockerConfigMenu>()->Focus();
+		}
+		ImGui::Separator();
+		if (ImGui::MenuItem("Dev Kit Control"))
+		{
+			Editor::GetMenu<DevKitControlMenu>()->SetActive(true);
+			Editor::GetMenu<DevKitControlMenu>()->Focus();
 		}
 
 		ImGui::EndMenu();
