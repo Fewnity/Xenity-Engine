@@ -27,17 +27,13 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Rework the documentation
 Implement alpha testing on shaders
-Check if force inline for GLM is better or not
 Add unit tests for commands
 Add unit tests for Components Creation/Deletion and Awake/Start/Update/
-Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
 Try to make a dynamic texture
 Do not forget to readd init component ordering in LoadScene
-Try to use SubMesh object instead of pointer
 Fix PSP sleep mode when networking is enabled
-Add the ability to control the game from the editor with network (load scene, quit...)
 Add prefab system
-Add a update mesh fonction when a mesh is done
+Add a update mesh function when a mesh is done
 Add a function to resize a submesh (resize only if size is different, usefull for text)
 Fix lighting settings save
 Fix delete gameobject and undo with parent
@@ -47,19 +43,19 @@ Try to build dll with debug symbols
 Implement CreateFolder on PSP
 Implement Delete on PsVita
 Implement Application::GetGameFolder() on PsVita
-
-Add more shader uniform check on PS3
-Try to add an option on mesh renderer to disable lights
-Add an option for light compatability
+Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
+Try to use SubMesh object instead of pointer
+Test lighting compatibility mode with fixed pipeline
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
 To make lighting usable on PS3:
 - Try to make directional lighting in the vertex shader
 - Try to detect light per draw to use with sphere test (filter light first by camera frustum)
-- Try to sort by material and distance
 
 --- Can be done for the next release
+Check if force inline for GLM is better or not
+Add the ability to control the game from the editor with network (load scene, quit...)
 Reduce cache size by deleting executable file
 Add an error if game.cpp and game.h are not found
 Disable the ability to move and delete game.cpp and game.h
