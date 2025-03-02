@@ -137,6 +137,16 @@ public:
 
 	float GetMaxLightDistance() const;
 
+	bool GetOldConsoleCompatibility() const
+	{
+		return m_oldConsoleCompatibility;
+	}
+
+	void SetOldConsoleCompatibility(bool value)
+	{
+		m_oldConsoleCompatibility = value;
+	}
+
 protected:
 	void OnEnabled() override;
 	void OnDisabled() override;
@@ -193,4 +203,5 @@ protected:
 	float m_spotSmoothness = 0;
 
 	LightType m_type = LightType::Directional;
+	bool m_oldConsoleCompatibility = true;
 };

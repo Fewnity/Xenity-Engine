@@ -87,14 +87,18 @@ ReflectiveData Light::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
 	Reflective::AddVariable(reflectedVariables, m_intensity, "intensity", true);
 	Reflective::AddVariable(reflectedVariables, m_range, "range", m_type != LightType::Directional && m_type != LightType::Ambient);
+
 	ReflectiveEntry& spotAngleEntry = Reflective::AddVariable(reflectedVariables, m_spotAngle, "spotAngle", m_type == LightType::Spot);
 	spotAngleEntry.isSlider = true;
 	spotAngleEntry.minSliderValue = 0;
 	spotAngleEntry.maxSliderValue = 90;
+
 	ReflectiveEntry& spotSmoothnessEntry = Reflective::AddVariable(reflectedVariables, m_spotSmoothness, "spotSmoothness", m_type == LightType::Spot);
 	spotSmoothnessEntry.isSlider = true;
 	spotSmoothnessEntry.minSliderValue = 0;
 	spotSmoothnessEntry.maxSliderValue = 1;
+
+	Reflective::AddVariable(reflectedVariables, m_oldConsoleCompatibility, "oldConsoleCompatibility", true);
 	return reflectedVariables;
 }
 
@@ -203,8 +207,17 @@ void Light::UpdateLightValues()
 		tempInsity = 0.0001f;
 	}
 
-	m_linear = (0.7f * 7.0f) / (m_range / tempInsity);
-	m_quadratic = (7 * 1.8f) / ((powf(m_range, 2) / 6.0f) / tempInsity);
+	// High intensity in vertex lighting does not affect a lot
+	if (m_oldConsoleCompatibility)
+	{
+		m_linear = (0.7f * 7.0f) / (m_range / tempInsity);
+		m_quadratic = (7 * 1.8f) / ((powf(m_range, 2) / 6.0f) / tempInsity);
+	}
+	else 
+	{
+		m_linear = (0.7f * 7.0f) / m_range;
+		m_quadratic = (7 * 1.8f) / (powf(m_range, 2) / 6.0f);
+	}
 }
 
 void Light::SetType(LightType type)
