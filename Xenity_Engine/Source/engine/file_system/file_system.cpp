@@ -321,7 +321,17 @@ bool FileSystem::CreateFolder(const std::string& path)
 {
 	XASSERT(!path.empty(), "[FileSystem::CreateFolder] path is empty");
 	bool result = true;
-#if !defined(__PS3__)
+#if defined(__PS3__)
+	std::string tempPath = path;
+	if (tempPath[0] != '/')
+	{
+		tempPath += Application::GetGameFolder();
+	}
+	sysFsMkdir(tempPath.c_str(), 0777);
+#elif defined(__vita__)
+	std::string tempPath = path;
+	sceIoMkdir(tempPath.c_str(), 0777);
+#else
 	try
 	{
 		std::filesystem::create_directory(path);
@@ -364,8 +374,8 @@ void FileSystem::Delete(const std::string& path)
 int FileSystem::InitFileSystem()
 {
 #if defined(__vita__)
-	sceIoMkdir("ux0:/data/xenity_engine", 0777);
-	sceIoMkdir("ux0:/data/xenity_engine/screenshots", 0777);
+	CreateFolder("ux0:/data/xenity_engine");
+	CreateFolder("ux0:/data/xenity_engine/screenshots");
 #endif
 #if defined(_EE)
 	// 	SifInitRpc(0);
