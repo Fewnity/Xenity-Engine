@@ -91,7 +91,19 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
 
+	int childFlags = ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding;
+	bool isSelected = Editor::GetSelectedFileReference() == item.file && item.file;
+	// Set child background color
+	if (isSelected)
+	{
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+		childFlags |= ImGuiChildFlags_Borders;
+	}
+	ImVec2 oldPadding = ImGui::GetStyle().WindowPadding;
+	ImGui::GetStyle().WindowPadding = ImVec2(0, 14);
+	ImGui::BeginChild(EditorUI::GenerateItemId().c_str(), ImVec2(0,0), childFlags);
 	ImGui::BeginGroup();
+
 	const int cursorPos = (int)ImGui::GetCursorPosX();
 	const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
@@ -189,6 +201,13 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	}
 
 	ImGui::EndGroup();
+	ImGui::EndChild();
+	if (isSelected)
+	{
+		ImGui::PopStyleColor(1);
+	}
+
+	ImGui::GetStyle().WindowPadding = oldPadding;
 
 	// Set a drag drop target for folders
 	if (!item.file)
