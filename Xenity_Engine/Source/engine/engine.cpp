@@ -516,6 +516,12 @@ void Engine::ParseEngineArguments(int argc, char* argv[])
 	for (size_t i = 0; i < argc; i++)
 	{
 		const std::string param = argv[i];
+		Debug::Print("param: " + param);
+		if (i == 0)
+		{
+			s_engineArgs.executableLocation = param;
+			continue;
+		}
 		const size_t equalsIndex = param.find("=");
 		if (equalsIndex != std::string::npos)
 		{

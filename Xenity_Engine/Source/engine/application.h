@@ -24,7 +24,7 @@ public:
 	static AssetPlatform GetAssetPlatform();
 	static bool IsInEditor();
 	static std::string GetMountingPoint();
-
+	static std::string GetGameFolder();
 private:
 	friend class InspectorMenu;
 	friend class BuildSettingsMenu;

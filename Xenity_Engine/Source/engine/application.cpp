@@ -90,6 +90,20 @@ std::string Application::GetMountingPoint()
 	return "";
 }
 
+std::string Application::GetGameFolder()
+{
+	const std::string executableFolder = FileSystem::ConvertWindowsPathToBasicPath(Engine::GetArguments().executableLocation);
+	const size_t lastSlash = executableFolder.find_last_of("/");
+	const size_t lastBackSlash = executableFolder.find_last_of("\\");
+	size_t limit = lastSlash;
+	if (limit == -1 || (lastBackSlash != -1 && lastBackSlash > limit))
+	{
+		limit = lastBackSlash;
+	}
+
+	return executableFolder.substr(0, limit + 1);
+}
+
 AssetPlatform Application::PlatformToAssetPlatform(Platform platform)
 {
 	if (platform == Platform::P_PSP)

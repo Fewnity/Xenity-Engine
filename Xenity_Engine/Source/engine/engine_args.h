@@ -20,6 +20,7 @@ enum class DevKitRunningMode
 class EngineArgs
 {
 public:
+	std::string executableLocation;
 	bool runningOnDevKit = false;
 	DevKitRunningMode devKitRunningMode = DevKitRunningMode::FromHDD;
 };
