@@ -28,7 +28,7 @@ bool ScreenCapture::MakeScreenshot(const std::string& fileName)
 #if defined(__vita__)
 		path = std::string(PSVITA_DEBUG_LOG_FOLDER) + "screenshots/" + path;
 #elif defined(__PS3__)
-		path = Application::GetMountingPoint() + std::string(PS3_DATA_FOLDER) + path;
+		path = Application::GetGameFolder() + path;
 #endif
 
 		// On some platforms, the framebuffer is flipped vertically

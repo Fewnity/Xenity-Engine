@@ -22,7 +22,7 @@
 static constexpr int FS_SEEK_SET = 0;
 static constexpr int FS_SEEK_END = 2;
 
-FilePS3::FilePS3(const std::string& _path) : File(Application::GetMountingPoint() + PS3_DATA_FOLDER + _path)
+FilePS3::FilePS3(const std::string& _path) : File(Application::GetGameFolder() + _path)
 {
 }
 

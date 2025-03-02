@@ -832,7 +832,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const 
 	// Temp fix for PS3
 	std::string filePathFixed;
 #if defined(__PS3__)
-	filePathFixed = Application::GetMountingPoint() + PS3_DATA_FOLDER;
+	filePathFixed = Application::GetGameFolder();
 #endif
 	filePathFixed += filePath;
 

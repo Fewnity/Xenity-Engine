@@ -354,8 +354,8 @@ void FileSystem::Delete(const std::string& path)
 #if defined(__PSP__)
 	sceIoRemove(path.c_str());
 #elif defined(__PS3__)
-	sysFsRmdir((Application::GetMountingPoint() + std::string(PS3_DATA_FOLDER) + path).c_str()); // Remove if dir
-	sysFsUnlink((Application::GetMountingPoint() + std::string(PS3_DATA_FOLDER) + path).c_str()); // Remove if file
+	sysFsRmdir((Application::GetGameFolder() + path).c_str()); // Remove if dir
+	sysFsUnlink((Application::GetGameFolder() + path).c_str()); // Remove if file
 #else
 	try
 	{
