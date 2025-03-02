@@ -140,6 +140,7 @@ ReflectiveData MeshRenderer::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_meshData, "meshData", true);
 	Reflective::AddVariable(reflectedVariables, m_materials, "materials", true);
+	Reflective::AddVariable(reflectedVariables, m_useAdvancedLighting, "useAdvancedLighting", true);
 	return reflectedVariables;
 }
 
@@ -269,7 +270,11 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 
 	if (renderCommand.material->GetUseLighting())
 	{
-		const size_t lightCount = m_affectedByLights.size();
+		size_t lightCount = 0;
+		if(m_useAdvancedLighting)
+		{
+			lightCount = m_affectedByLights.size();
+		}
 
 		const size_t directionalLightCount = Graphics::s_directionalLights.size();
 #if defined(ENABLE_SHADER_VARIANT_OPTIMIZATION)
@@ -281,7 +286,7 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 				Graphics::s_currentMaterial = nullptr;
 			}
 		}
-		else 
+		else
 		{
 			if (renderCommand.material->GetShader() != AssetManager::standardShader)
 			{
@@ -330,30 +335,37 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 
 			LightsIndices lightsIndices;
 			lightsIndices.usedDirectionalLightCount = static_cast<int>(directionalLightCount);
-			shader->m_currentLights = m_affectedByLights;
 			shader->m_currentDirectionalLights = Graphics::s_directionalLights;
 
-			for (size_t i = 0; i < lightCount; i++)
+			if (m_useAdvancedLighting)
 			{
-				const Light* light = m_affectedByLights[i];
-				if (light->GetType() == LightType::Point)
+				shader->m_currentLights = m_affectedByLights;
+				for (size_t i = 0; i < lightCount; i++)
 				{
-					if constexpr (s_UseOpenGLFixedFunctions)
-						lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInLightList + 1;
-					else
-						lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInShaderList + 1;
+					const Light* light = m_affectedByLights[i];
+					if (light->GetType() == LightType::Point)
+					{
+						if constexpr (s_UseOpenGLFixedFunctions)
+							lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInLightList + 1;
+						else
+							lightsIndices.pointLightIndices[pointLightCount].x = light->m_indexInShaderList + 1;
 
-					pointLightCount++;
-				}
-				else if (light->GetType() == LightType::Spot)
-				{
-					if constexpr (s_UseOpenGLFixedFunctions)
-						lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInLightList + 1;
-					else
-						lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInShaderList + 1;
+						pointLightCount++;
+					}
+					else if (light->GetType() == LightType::Spot)
+					{
+						if constexpr (s_UseOpenGLFixedFunctions)
+							lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInLightList + 1;
+						else
+							lightsIndices.spotLightIndices[spotLightCount].x = light->m_indexInShaderList + 1;
 
-					spotLightCount++;
+						spotLightCount++;
+					}
 				}
+			}
+			else
+			{
+				shader->m_currentLights.clear();
 			}
 
 			for (size_t i = 0; i < directionalLightCount; i++)

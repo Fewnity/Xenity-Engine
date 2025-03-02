@@ -61,6 +61,16 @@ public:
 
 	void OnDrawGizmosSelected() override;
 
+	void SetUseAdvancedLighting(bool value)
+	{
+		m_useAdvancedLighting = value;
+	}
+
+	bool GetUseAdvancedLighting() const
+	{
+		return m_useAdvancedLighting;
+	}
+
 protected:
 	friend class WorldPartitionner;
 
@@ -104,4 +114,5 @@ protected:
 
 	bool m_culled = false;
 	bool m_outOfFrustum = false;
+	bool m_useAdvancedLighting = true;
 };
