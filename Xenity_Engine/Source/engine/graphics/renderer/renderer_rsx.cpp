@@ -673,14 +673,17 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		lastOffset = subMesh.positionOffset;
 	}
 
-	if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.m_meshData->unifiedColor.GetUnsignedIntRGBA() || (!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
+	if (rsxShader.m_color)
 	{
-		lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
-		lastUsedColor2 = subMesh.m_meshData->unifiedColor.GetUnsignedIntRGBA();
-		const Vector4 colorMix = (material.GetColor() * subMesh.m_meshData->unifiedColor).GetRGBA().ToVector4();
+		if (lastUsedColor != material.GetColor().GetUnsignedIntRGBA() || lastUsedColor2 != subMesh.m_meshData->unifiedColor.GetUnsignedIntRGBA() || (!s_UseOpenGLFixedFunctions && lastShaderIdUsedColor != material.GetShader()->m_fileId))
+		{
+			lastUsedColor = material.GetColor().GetUnsignedIntRGBA();
+			lastUsedColor2 = subMesh.m_meshData->unifiedColor.GetUnsignedIntRGBA();
+			const Vector4 colorMix = (material.GetColor() * subMesh.m_meshData->unifiedColor).GetRGBA().ToVector4();
 
-		lastShaderIdUsedColor = material.GetShader()->m_fileId;
-		rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_color, (float*)&colorMix.x, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
+			lastShaderIdUsedColor = material.GetShader()->m_fileId;
+			rsxSetFragmentProgramParameter(context, rsxShader.m_fragmentProgram, rsxShader.m_color, (float*)&colorMix.x, rsxShader.m_fp_offset, GCM_LOCATION_RSX);
+		}
 	}
 
 	// While rsxSetUpdateFragmentProgramParameter is missing, we have to set the fragment shader to apply rsxSetFragmentProgramParameter calls

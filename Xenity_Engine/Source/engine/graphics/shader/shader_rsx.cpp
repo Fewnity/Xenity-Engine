@@ -213,7 +213,6 @@ void ShaderRSX::SetShaderModel(const glm::mat4& trans, const glm::mat3& normalMa
 	}
 	if (m_MVPMatrix)
 	{
-		//const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * trans;
 		rsxSetVertexProgramParameter(RendererRSX::context, m_vertexProgram, m_MVPMatrix, (float*)&mvpMatrix);
 	}
 	if (m_normalMatrix)
@@ -233,8 +232,14 @@ void ShaderRSX::SetShaderModel(const Vector3& position, const Vector3& rotation,
 
 void ShaderRSX::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling)
 {
-	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_tilingLocation, (float*)&tiling.x, m_fp_offset, GCM_LOCATION_RSX);
-	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_offsetLocation, (float*)&offset.x, m_fp_offset, GCM_LOCATION_RSX);
+	if (m_tilingLocation)
+	{
+		rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_tilingLocation, (float*)&tiling.x, m_fp_offset, GCM_LOCATION_RSX);
+	}
+	if (m_offsetLocation)
+	{
+		rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_offsetLocation, (float*)&offset.x, m_fp_offset, GCM_LOCATION_RSX);
+	}
 }
 
 void ShaderRSX::SetLightIndices(const LightsIndices& lightsIndices)
@@ -508,7 +513,10 @@ void ShaderRSX::SetDirectionalLightData(const Light& light, const int index)
 
 void ShaderRSX::SetAmbientLightData(const Vector3& color)
 {
-	rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_ambientLightLocation, (float*)&color.x, m_fp_offset, GCM_LOCATION_RSX);
+	if (m_ambientLightLocation)
+	{
+		rsxSetFragmentProgramParameter(RendererRSX::context, m_fragmentProgram, m_ambientLightLocation, (float*)&color.x, m_fp_offset, GCM_LOCATION_RSX);
+	}
 }
 
 /// <summary>
@@ -523,7 +531,6 @@ void ShaderRSX::SetSpotLightData(const Light& light, const int index)
 
 	const SpotLightVariableIds& ids = m_spotlightVariableIds[index];
 
-	//if (!ids.color || !ids.position || !ids.direction /* || !ids.constant */|| !ids.linear || !ids.quadratic || !ids.cutOff || !ids.outerCutOff)
 	if (!ids.color || !ids.position || !ids.direction || !ids.light_data)
 		return;
 
