@@ -208,7 +208,19 @@ void InspectorMenu::DrawFilePreview()
 		// If the file is a texture, get the texture id
 		if (loadedPreview->m_fileType == FileType::File_Texture)
 		{
-			textureId = EditorUI::GetTextureId(*std::dynamic_pointer_cast<Texture>(loadedPreview));
+			const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
+			if (texture)
+			{
+				textureId = EditorUI::GetTextureId(*texture);
+			}
+		}
+		else if (loadedPreview->m_fileType == FileType::File_Material)
+		{
+			const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Material>(loadedPreview)->GetTexture();
+			if (texture)
+			{
+				textureId = EditorUI::GetTextureId(*texture);
+			}
 		}
 
 		// If the preview is a text, calculate the text size
@@ -226,26 +238,44 @@ void InspectorMenu::DrawFilePreview()
 		}
 		else if (textureId != 0) // Draw image preview
 		{
-			const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
-			const ImVec2 availArea = ImGui::GetContentRegionAvail();
-			texture->Bind();
-			ImGui::Image((ImTextureID)(size_t)textureId, availArea);
+			std::shared_ptr<Texture> texture;
+			ImVec4 color = ImVec4(1, 1, 1, 1);
+			if (loadedPreview->m_fileType == FileType::File_Texture)
+			{
+				texture = std::dynamic_pointer_cast<Texture>(loadedPreview);
+			}
+			else if (loadedPreview->m_fileType == FileType::File_Material)
+			{
+				texture = std::dynamic_pointer_cast<Material>(loadedPreview)->GetTexture();
+				const RGBA rgba = std::dynamic_pointer_cast<Material>(loadedPreview)->GetColor().GetRGBA();
+				color = ImVec4(rgba.r, rgba.g, rgba.b, 1);
+			}
 
-			const std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
-			const ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
-			ImVec2 textPos;
-			textPos.x = availArea.x / 2.0f - textSize.x / 2.0f + ImGui::GetCursorPosX();
-			textPos.y = availArea.y - textSize.y / 2.0f;
+			if (texture)
+			{
+				const ImVec2 availArea = ImGui::GetContentRegionAvail();
+				texture->Bind();
+				ImGui::Image((ImTextureID)(size_t)textureId, availArea, ImVec2(0, 0), ImVec2(1, 1), color);
 
-			//Draw text background
-			const ImVec2 childWindowPos = ImGui::GetWindowPos();
-			const ImVec2 rectTopLeftPos = ImVec2(childWindowPos.x + textPos.x - 4, childWindowPos.y + textPos.y - 1);
-			const ImVec2 rectBottomRightPos = ImVec2(childWindowPos.x + textPos.x + textSize.x + 4, childWindowPos.y + textPos.y + textSize.y - 1);
-			draw_list->AddRectFilled(rectTopLeftPos, rectBottomRightPos, ImColor(ImVec4(0, 0, 0, 0.35f)));
+				if (loadedPreview->m_fileType == FileType::File_Texture)
+				{
+					const std::string text = std::to_string(texture->GetWidth()) + "x" + std::to_string(texture->GetHeight());
+					const ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
+					ImVec2 textPos;
+					textPos.x = availArea.x / 2.0f - textSize.x / 2.0f + ImGui::GetCursorPosX();
+					textPos.y = availArea.y - textSize.y / 2.0f;
 
-			// Print texture resolution
-			ImGui::SetCursorPos(textPos);
-			ImGui::Text("%s", text.c_str());
+					//Draw text background
+					const ImVec2 childWindowPos = ImGui::GetWindowPos();
+					const ImVec2 rectTopLeftPos = ImVec2(childWindowPos.x + textPos.x - 4, childWindowPos.y + textPos.y - 1);
+					const ImVec2 rectBottomRightPos = ImVec2(childWindowPos.x + textPos.x + textSize.x + 4, childWindowPos.y + textPos.y + textSize.y - 1);
+					draw_list->AddRectFilled(rectTopLeftPos, rectBottomRightPos, ImColor(ImVec4(0, 0, 0, 0.35f)));
+
+					// Print texture resolution
+					ImGui::SetCursorPos(textPos);
+					ImGui::Text("%s", text.c_str());
+				}
+			}
 		}
 		else if (loadedPreview->m_fileType == FileType::File_Mesh) // Draw audio preview
 		{

@@ -100,7 +100,15 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	const bool doubleClicked = ImGui::IsMouseDoubleClicked(0);
 	iconTexture->Bind();
-	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(*iconTexture), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+
+	ImVec4 color = ImVec4(1, 1, 1, 1);
+	if (item.file && item.file->GetFileType() == FileType::File_Material)
+	{
+		const RGBA rgba = std::dynamic_pointer_cast<Material>(item.file)->GetColor().GetRGBA();
+		color = ImVec4(rgba.r, rgba.g, rgba.b, rgba.a);
+	}
+
+	ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(*iconTexture), ImVec2(iconSize, iconSize), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f), ImVec4(0, 0, 0, 0), color);
 	const bool hovered = ImGui::IsItemHovered();
 
 	// Create an unique popupid
