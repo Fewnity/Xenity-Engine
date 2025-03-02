@@ -630,20 +630,26 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 {
 	XASSERT(gameObjectToAdd != nullptr, "[Editor::AddSelectedGameObject] gameObjectToAdd is nullptr");
 
-	bool found = false;
-	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	int foundAt = -1;
+	size_t selectedGameObjectsCount = selectedGameObjects.size();
+	for (size_t i = 0; i < selectedGameObjectsCount; i++)
 	{
-		if (currentGameObject.lock() == gameObjectToAdd)
+		if (selectedGameObjects[i].lock() == gameObjectToAdd)
 		{
-			found = true;
+			foundAt = i;
 			break;
 		}
 	}
 
-	if (!found)
+	if (foundAt == -1)
 	{
 		gameObjectToAdd->m_isSelected = true;
 		selectedGameObjects.push_back(gameObjectToAdd);
+	}
+	else 
+	{
+		gameObjectToAdd->m_isSelected = false;
+		selectedGameObjects.erase(selectedGameObjects.begin() + foundAt);
 	}
 }
 
