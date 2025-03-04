@@ -16,6 +16,7 @@
 #endif
 
 #include <engine/engine_settings.h>
+#include <engine/application.h>
 #include <engine/network/network.h>
 #include <engine/engine.h>
 #include <engine/file_system/file_system.h>
@@ -259,7 +260,7 @@ int Debug::Init()
 
 	std::string fileName = DEBUG_LOG_FILE;
 #if defined(__vita__)
-	fileName = PSVITA_DEBUG_LOG_FOLDER + fileName;
+	fileName = Application::GetGameDataFolder() + fileName;
 #endif
 	FileSystem::s_fileSystem->Delete(fileName);
 

@@ -556,7 +556,9 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 #if defined(EDITOR)
 	SaveProjectSettings(); // Save to update the file if the engine version has changed
 #endif
-
+#if defined(__vita__)
+	FileSystem::s_fileSystem->CreateFolder(Application::GetGameDataFolder());
+#endif
 	CreateGame();
 
 #if defined(EDITOR)

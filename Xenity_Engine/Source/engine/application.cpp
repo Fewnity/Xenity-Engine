@@ -90,8 +90,32 @@ std::string Application::GetMountingPoint()
 	return "";
 }
 
+/*
+* @brief Internal: If the game is not started yet, the return path on PsVita won't be the same since we don't know the game name at the beginning
+*/
+std::string Application::GetGameDataFolder()
+{
+	std::string folder = "";
+#if defined(__vita__)
+	if (ProjectManager::projectSettings.gameName.empty())
+	{
+		folder = "ux0:/data/xenity_engine/";
+	}
+	else
+	{
+		folder = "ux0:/data/" + ProjectManager::projectSettings.gameName + "/";
+	}
+#else
+	folder = GetGameFolder();
+#endif
+	return folder;
+}
+
 std::string Application::GetGameFolder()
 {
+#if defined(__vita__)
+	return "";
+#else
 	const std::string executableFolder = FileSystem::ConvertWindowsPathToBasicPath(Engine::GetArguments().executableLocation);
 	const size_t lastSlash = executableFolder.find_last_of("/");
 	const size_t lastBackSlash = executableFolder.find_last_of("\\");
@@ -101,7 +125,15 @@ std::string Application::GetGameFolder()
 		limit = lastBackSlash;
 	}
 
-	return executableFolder.substr(0, limit + 1);
+	if (limit == -1)
+	{
+		return executableFolder.substr(0, limit + 1);
+	}
+	else 
+	{
+		return "";
+	}
+#endif
 }
 
 AssetPlatform Application::PlatformToAssetPlatform(Platform platform)

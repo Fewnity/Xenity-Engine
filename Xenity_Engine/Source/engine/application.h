@@ -24,6 +24,11 @@ public:
 	static AssetPlatform GetAssetPlatform();
 	static bool IsInEditor();
 	static std::string GetMountingPoint();
+
+	/**
+	* @brief Return the game folder (folder where you can write data)
+	*/
+	static std::string GetGameDataFolder();
 	static std::string GetGameFolder();
 private:
 	friend class InspectorMenu;

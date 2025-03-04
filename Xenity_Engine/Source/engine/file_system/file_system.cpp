@@ -325,13 +325,36 @@ bool FileSystem::CreateFolder(const std::string& path)
 	std::string tempPath = path;
 	if (tempPath[0] != '/')
 	{
-		tempPath += Application::GetGameFolder();
+		tempPath = Application::GetGameDataFolder() + path;
 	}
 	sysFsMkdir(tempPath.c_str(), 0777);
 #elif defined(__vita__)
 	std::string tempPath = path;
+	size_t pathSize = path.size();
+	if (pathSize >= 5)
+	{
+		if (path.substr(0, 5) != "ux0:/")
+		{
+			tempPath = Application::GetGameDataFolder() + path;
+		}
+		else
+		{
+			if (pathSize == 5)
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		tempPath = Application::GetGameDataFolder() + path;
+	}
+	Debug::Print("path: " + path);
+	Debug::Print("tempPath: " + tempPath);
 	sceIoMkdir(tempPath.c_str(), 0777);
-#else
+	Debug::Print(std::filesystem::current_path().generic_string());
+#else	
+
 	try
 	{
 		std::filesystem::create_directory(path);
@@ -351,15 +374,44 @@ void FileSystem::Delete(const std::string& path)
 	return;
 #endif
 
+	std::string tempPath = path;
+#if defined(__vita__)
+	size_t pathSize = path.size();
+	if (pathSize >= 5)
+	{
+		if (path.substr(0, 5) != "ux0:/")
+		{
+			tempPath = Application::GetGameDataFolder() + path;
+		}
+		else 
+		{
+			if (pathSize == 5)
+			{
+				return;
+			}
+		}
+	}
+	else
+	{
+		tempPath = Application::GetGameDataFolder() + path;
+	}
+#endif
+
+
 #if defined(__PSP__)
 	sceIoRemove(path.c_str());
+	sceIoRmdir(path.c_str());
 #elif defined(__PS3__)
-	sysFsRmdir((Application::GetGameFolder() + path).c_str()); // Remove if dir
-	sysFsUnlink((Application::GetGameFolder() + path).c_str()); // Remove if file
+	if (tempPath[0] != '/')
+	{
+		tempPath = Application::GetGameDataFolder() + path;
+	}
+	sysFsRmdir(tempPath.c_str()); // Remove if dir
+	sysFsUnlink(tempPath.c_str()); // Remove if file
 #else
 	try
 	{
-		std::filesystem::remove_all(path.c_str());
+		std::filesystem::remove_all(tempPath.c_str());
 	}
 	catch (const std::exception&)
 	{
@@ -374,8 +426,8 @@ void FileSystem::Delete(const std::string& path)
 int FileSystem::InitFileSystem()
 {
 #if defined(__vita__)
-	CreateFolder("ux0:/data/xenity_engine");
-	CreateFolder("ux0:/data/xenity_engine/screenshots");
+	CreateFolder(Application::GetGameDataFolder());
+	CreateFolder(Application::GetGameDataFolder() + "screenshots");
 #endif
 #if defined(_EE)
 	// 	SifInitRpc(0);
