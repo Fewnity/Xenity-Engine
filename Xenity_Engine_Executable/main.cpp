@@ -40,11 +40,7 @@ Fix delete gameobject and undo with parent
 Store chunk ptr in mesh renderer
 Try to build dll with debug symbols
 
-Implement CreateFolder on PSP
-Implement Delete on PsVita
-Implement Application::GetGameFolder() on PsVita
 Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
-Try to use SubMesh object instead of pointer
 Test lighting compatibility mode with fixed pipeline
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
