@@ -63,7 +63,7 @@ Download Docker Desktop: https://www.docker.com/products/docker-desktop/
 Then finish the docker install in Xenity. Go in "Window->Docker Configuration", the process can take several minutes especially if you have a slow computer or a slow internet connection.
 
 ## Compatible files
-Images: `.png .jpg .bmp`
+Images: `.png .jpg .bmp, .tga`
 
 Audio: `.wav .mp3` (Please use 44100Hz audio except on PS3, you have to use 48000Hz audio)
 
