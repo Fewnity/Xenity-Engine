@@ -125,7 +125,7 @@ std::string Application::GetGameFolder()
 		limit = lastBackSlash;
 	}
 
-	if (limit == -1)
+	if (limit != -1)
 	{
 		return executableFolder.substr(0, limit + 1);
 	}
