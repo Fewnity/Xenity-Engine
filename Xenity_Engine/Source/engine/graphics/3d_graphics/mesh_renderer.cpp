@@ -225,6 +225,7 @@ void MeshRenderer::SetMeshData(const std::shared_ptr<MeshData>& meshData)
 	{
 
 	}
+	OnTransformPositionUpdated();
 	Graphics::s_isRenderingBatchDirty = true;
 }
 
