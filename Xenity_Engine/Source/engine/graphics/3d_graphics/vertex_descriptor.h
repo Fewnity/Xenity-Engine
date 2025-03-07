@@ -121,6 +121,13 @@ struct VertexDescriptor
 		if (vertexElement == VertexElements::NONE)
 			return;
 
+#if defined(__PSP__)
+		if (vertexElement == VertexElements::COLOR_4_FLOATS)
+		{
+			vertexElement = VertexElements::COLOR_32_BITS_UINT;
+		}
+#endif
+
 		if ((vertexElement & VertexElements::POSITION_32_BITS) == VertexElements::POSITION_32_BITS || (vertexElement & VertexElements::POSITION_16_BITS) == VertexElements::POSITION_16_BITS || (vertexElement & VertexElements::POSITION_8_BITS) == VertexElements::POSITION_8_BITS)
 		{
 			if (m_positionIndex != -1)

@@ -147,13 +147,20 @@ void MeshData::SubMesh::AddColor(const Color& color, unsigned int vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddColor] Index out of bound");
 
-	const Vector4 colorVector = color.GetRGBA().ToVector4();
-
-	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.m_vertexSize) + m_vertexDescriptor.m_vertexElementInfos[m_vertexDescriptor.m_colorIndex].offset;
-	reinterpret_cast<float*>(vertexData)[0] = colorVector.x;
-	reinterpret_cast<float*>(vertexData)[1] = colorVector.y;
-	reinterpret_cast<float*>(vertexData)[2] = colorVector.z;
-	reinterpret_cast<float*>(vertexData)[3] = colorVector.w;
+	VertexElementInfo& colorElement = m_vertexDescriptor.m_vertexElementInfos[m_vertexDescriptor.m_colorIndex];
+	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.m_vertexSize) + colorElement.offset;
+	if (colorElement.vertexElement == VertexElements::COLOR_4_FLOATS)
+	{
+		const Vector4 colorVector = color.GetRGBA().ToVector4();
+		reinterpret_cast<float*>(vertexData)[0] = colorVector.x;
+		reinterpret_cast<float*>(vertexData)[1] = colorVector.y;
+		reinterpret_cast<float*>(vertexData)[2] = colorVector.z;
+		reinterpret_cast<float*>(vertexData)[3] = colorVector.w;
+	}
+	else //if (colorElement.vertexElement == VertexElements::COLOR_32_BITS_UINT)
+	{
+		reinterpret_cast<unsigned int*>(vertexData)[0] = color.GetUnsignedIntABGR();
+	}
 }
 
 void MeshData::SendDataToGpu()
