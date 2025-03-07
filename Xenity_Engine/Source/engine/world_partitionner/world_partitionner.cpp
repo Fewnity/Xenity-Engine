@@ -87,6 +87,12 @@ void getCubesIntersectedBySphere(std::vector<Vector3Fast>& intersectedCubes, con
 		std::floor((pos.z + r) / cubeSize) * cubeSize
 	);
 
+	// Security for very large mesh
+	if (maxCube.x - minCube.x >= 1000 || maxCube.y - minCube.y >= 1000 || maxCube.z - minCube.z >= 1000)
+	{
+		return;
+	}
+
 	// Parcours de tous les cubes potentiellement concern�s
 	for (float x = minCube.x; x <= maxCube.x; x += cubeSize)
 	{
