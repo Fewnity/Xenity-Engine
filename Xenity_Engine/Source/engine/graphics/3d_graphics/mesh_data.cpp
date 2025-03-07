@@ -40,6 +40,12 @@ MeshData::MeshData()
 std::shared_ptr<MeshData> MeshData::MakeMeshData()
 {
 	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>();
+	return newFileRef;
+}
+
+std::shared_ptr<MeshData> MeshData::MakeMeshDataForFile()
+{
+	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>();
 	AssetManager::AddFileReference(newFileRef);
 	return newFileRef;
 }

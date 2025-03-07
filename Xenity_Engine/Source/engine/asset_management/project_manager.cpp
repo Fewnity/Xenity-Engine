@@ -1050,7 +1050,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const std::st
 		fileRef = AudioClip::MakeAudioClip();
 		break;
 	case FileType::File_Mesh:
-		fileRef = MeshData::MakeMeshData();
+		fileRef = MeshData::MakeMeshDataForFile();
 		break;
 	case FileType::File_Texture:
 		fileRef = Texture::MakeTexture();
@@ -1112,7 +1112,7 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInf
 		fileRef = AudioClip::MakeAudioClip();
 		break;
 	case FileType::File_Mesh:
-		fileRef = MeshData::MakeMeshData();
+		fileRef = MeshData::MakeMeshDataForFile();
 		break;
 	case FileType::File_Texture:
 		fileRef = Texture::MakeTexture();

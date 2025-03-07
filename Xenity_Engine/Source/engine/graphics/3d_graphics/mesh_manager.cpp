@@ -27,7 +27,7 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 
 	XASSERT(!path.empty(), "[MeshManager::LoadMesh] path is empty");
 
-	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshData();
+	std::shared_ptr <MeshData> mesh = MeshData::MakeMeshDataForFile();
 	mesh->m_file = FileSystem::MakeFile(path);
 	mesh->m_fileType = FileType::File_Mesh;
 

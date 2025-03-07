@@ -35,7 +35,7 @@ std::shared_ptr <MeshData> SpriteManager::s_spriteMeshDataWithNormals = nullptr;
 void SpriteManager::Init()
 {
 	// Create sprite mesh
-	s_spriteMeshData = MeshData::MakeMeshData();
+	s_spriteMeshData = MeshData::MakeMeshDataForFile();
 	VertexDescriptor spriteDescriptor;
 	spriteDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
 	spriteDescriptor.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
@@ -57,7 +57,7 @@ void SpriteManager::Init()
 	s_spriteMeshData->OnLoadFileReferenceFinished();
 
 	// Create sprite mesh with normals
-	s_spriteMeshDataWithNormals = MeshData::MakeMeshData();
+	s_spriteMeshDataWithNormals = MeshData::MakeMeshDataForFile();
 	VertexDescriptor withNormalsDescriptor;
 	withNormalsDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
 	withNormalsDescriptor.AddVertexDescriptor(VertexElements::NORMAL_32_BITS);

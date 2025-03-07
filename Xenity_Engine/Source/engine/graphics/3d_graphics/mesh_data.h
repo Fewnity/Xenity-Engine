@@ -175,9 +175,9 @@ public:
 	};
 
 	MeshData();
+	~MeshData();
 
 	static std::shared_ptr<MeshData> MakeMeshData();
-	~MeshData();
 
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 
@@ -239,6 +239,7 @@ protected:
 	friend class Cooker;
 	friend class BinaryMeshLoader;
 	friend class AssimpMeshLoader;
+	friend class ProjectManager;
 
 	Vector3 m_minBoundingBox;
 	Vector3 m_maxBoundingBox;
@@ -255,6 +256,7 @@ protected:
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 	void OnLoadFileReferenceFinished() override;
 	void UnloadFileReference() override;
+	static std::shared_ptr<MeshData> MakeMeshDataForFile();
 
 	/**
 	* @brief Update ps2 packets
