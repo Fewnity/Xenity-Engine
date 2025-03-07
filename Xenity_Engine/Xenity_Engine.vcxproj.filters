@@ -98,7 +98,7 @@
     <ClCompile Include="Source\editor\rendering\gizmo.cpp" />
     <ClCompile Include="Source\engine\graphics\shader\shader.cpp" />
     <ClCompile Include="Source\engine\graphics\material.cpp" />
-    <ClCompile Include="Source\game_test\fps_counter.cpp" />
+    <ClCompile Include="Source\engine\tools\fps_counter.cpp" />
     <ClCompile Include="Source\engine\physics\physics_manager.cpp" />
     <ClCompile Include="Source\engine\physics\rigidbody.cpp" />
     <ClCompile Include="Source\engine\physics\box_collider.cpp" />
@@ -462,7 +462,7 @@
     <ClInclude Include="Source\editor\rendering\gizmo.h" />
     <ClInclude Include="Source\engine\graphics\shader\shader.h" />
     <ClInclude Include="Source\engine\graphics\material.h" />
-    <ClInclude Include="Source\game_test\fps_counter.h" />
+    <ClInclude Include="Source\engine\tools\fps_counter.h" />
     <ClInclude Include="Source\engine\physics\physics_manager.h" />
     <ClInclude Include="Source\engine\physics\rigidbody.h" />
     <ClInclude Include="Source\engine\physics\box_collider.h" />

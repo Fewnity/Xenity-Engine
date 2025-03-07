@@ -64,6 +64,7 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
 #include <engine/graphics/shader/shader.h>
 #include <engine/graphics/material.h>
 #include <engine/graphics/ui/icon.h>
+#include <engine/tools/fps_counter.h>
 #include <engine/particle_system/particle_system.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/game_elements/gameobject.h>
@@ -155,6 +156,7 @@ void ClassRegistry::RegisterEngineComponents()
 	REGISTER_COMPONENT(BoxCollider, true);
 	REGISTER_COMPONENT(SphereCollider, true);
 	REGISTER_COMPONENT(Lod, true);
+	REGISTER_COMPONENT(FpsCounter, false);
 #if defined(DEBUG)
 	REGISTER_COMPONENT(TestComponent, false);
 #endif
