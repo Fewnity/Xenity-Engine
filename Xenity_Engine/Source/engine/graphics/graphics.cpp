@@ -42,6 +42,7 @@
 #include <engine/tools/math.h>
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/audio/audio_source.h>
 #include <engine/time/time.h>
 #include <engine/constants.h>
 #include "shader/shader_opengl.h"
@@ -375,11 +376,14 @@ void Graphics::Draw()
 					{
 						if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 						{
-							component->OnDrawGizmos();
-
-							if (component->GetGameObjectRaw()->m_isSelected)
+							if (component->GetUniqueId() != Editor::audioSource.lock()->GetUniqueId())
 							{
-								component->OnDrawGizmosSelected();
+								component->OnDrawGizmos();
+
+								if (component->GetGameObjectRaw()->m_isSelected)
+								{
+									component->OnDrawGizmosSelected();
+								}
 							}
 						}
 					}
@@ -632,7 +636,7 @@ void Graphics::OnProjectLoaded()
 		loadOptions.threaded = false;
 		skyPlane->LoadFileReference(loadOptions);
 	}
-	else 
+	else
 	{
 		Debug::PrintError("[Graphics::OnProjectLoaded] skyPlane is null", true);
 	}
