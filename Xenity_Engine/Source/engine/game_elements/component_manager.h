@@ -315,9 +315,10 @@ public:
 	static std::vector<std::shared_ptr<Component>> GetAllComponents()
 	{
 		std::vector<std::shared_ptr<Component>> allComponents;
-		for (auto& componentList : componentLists)
+		for (const auto& componentList : componentLists)
 		{
-			allComponents.insert(allComponents.end(), componentList.second->GetComponents().begin(), componentList.second->GetComponents().end());
+			const std::vector<std::shared_ptr<Component>>& components = componentList.second->GetComponents();
+			allComponents.insert(allComponents.end(), components.begin(), components.end());
 		}
 		return allComponents;
 	}

@@ -41,7 +41,7 @@ void SpriteManager::Init()
 	spriteDescriptor.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
 	s_spriteMeshData->CreateSubMesh(4, 6, spriteDescriptor);
 
-	std::unique_ptr<MeshData::SubMesh>& subMesh = s_spriteMeshData->m_subMeshes[0];
+	const std::unique_ptr<MeshData::SubMesh>& subMesh = s_spriteMeshData->m_subMeshes[0];
 	subMesh->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0);
 	subMesh->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1);
 	subMesh->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2);
@@ -64,7 +64,7 @@ void SpriteManager::Init()
 	withNormalsDescriptor.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
 	s_spriteMeshDataWithNormals->CreateSubMesh(4, 6, withNormalsDescriptor);
 
-	std::unique_ptr<MeshData::SubMesh>& subMeshWithNormals = s_spriteMeshDataWithNormals->m_subMeshes[0];
+	const std::unique_ptr<MeshData::SubMesh>& subMeshWithNormals = s_spriteMeshDataWithNormals->m_subMeshes[0];
 	subMeshWithNormals->AddVertex(1.0f, 1.0f, 0, 0, -1, -0.5f, -0.5f, 0.0f, 0);
 	subMeshWithNormals->AddVertex(0.0f, 1.0f, 0, 0, -1, 0.5f, -0.5f, 0.0f, 1);
 	subMeshWithNormals->AddVertex(0.0f, 0.0f, 0, 0, -1, 0.5f, 0.5f, 0.0f, 2);
