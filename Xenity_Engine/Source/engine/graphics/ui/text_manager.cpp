@@ -75,7 +75,11 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 
 	VertexDescriptor vertexDescriptorList;
 	vertexDescriptorList.AddVertexDescriptor(VertexElements::UV_32_BITS);
+#if defined(__vita__)
+	vertexDescriptorList.AddVertexDescriptor(VertexElements::COLOR_4_FLOATS);
+#endif
 	vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
+
 
 	std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData();
 	mesh->CreateSubMesh(6 * charCountToDraw, 6 * charCountToDraw, vertexDescriptorList);
@@ -168,6 +172,17 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 	// Use 6 vertices instead of 4 because at the time the PS2 VU1 renderer do not supports indices
 
 	std::unique_ptr<MeshData::SubMesh>& subMesh = mesh->m_subMeshes[0];
+
+	const Color white = Color::CreateFromRGBFloat(1, 1, 1);
+#if defined(__vita__)
+	subMesh->AddVertex(ch->uv.x, ch->uv.y, white, w + x, fixedY, 0, indice);
+	subMesh->AddVertex(ch->uvOffet.x, ch->uv.y, white, x, fixedY, 0, 1 + indice);
+	subMesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, white, x, h + fixedY, 0, 2 + indice);
+
+	subMesh->AddVertex(ch->uv.x, ch->uv.y, white, w + x, fixedY, 0, 3 + indice);
+	subMesh->AddVertex(ch->uv.x, ch->uvOffet.y, white, w + x, h + fixedY, 0, 4 + indice);
+	subMesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, white, x, h + fixedY, 0, 5 + indice);
+#else
 	subMesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, indice);
 	subMesh->AddVertex(ch->uvOffet.x, ch->uv.y, x, fixedY, 0, 1 + indice);
 	subMesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 2 + indice);
@@ -175,7 +190,7 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 	subMesh->AddVertex(ch->uv.x, ch->uv.y, w + x, fixedY, 0, 3 + indice);
 	subMesh->AddVertex(ch->uv.x, ch->uvOffet.y, w + x, h + fixedY, 0, 4 + indice);
 	subMesh->AddVertex(ch->uvOffet.x, ch->uvOffet.y, x, h + fixedY, 0, 5 + indice);
-
+#endif
 	subMesh->SetIndex(indiceIndex + 0, indice + 0);
 	subMesh->SetIndex(indiceIndex + 1, indice + 2);
 	subMesh->SetIndex(indiceIndex + 2, indice + 1);
