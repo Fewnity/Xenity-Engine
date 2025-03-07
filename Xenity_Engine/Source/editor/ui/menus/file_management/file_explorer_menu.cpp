@@ -69,7 +69,7 @@ void FileExplorerMenu::SetFileToRename(const std::shared_ptr<FileReference>& fil
 		renamingString = directoryToRename->GetFolderName();
 }
 
-void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, const int colCount, const float offset, const FileExplorerItem& item, const int itemIndex)
+void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, const int colCount, const float offset, const FileExplorerItem& item)
 {
 	//Get name
 	std::string itemName;
@@ -133,13 +133,13 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	{
 		popupId += item.directory->GetFolderName();
 	}
-	CheckOpenRightClickPopupFile(item, true, popupId, itemIndex);
+	CheckOpenRightClickPopupFile(item, true, popupId);
 
-	ImVec2 finalImageCursorPos = ImGui::GetCursorPos();
+	const ImVec2 finalImageCursorPos = ImGui::GetCursorPos();
 
 	if (item.file && item.file->GetFileType() == FileType::File_Material)
 	{
-		std::shared_ptr<Texture> matTexture = EditorUI::icons[(int)IconName::Icon_Material];
+		const std::shared_ptr<Texture>& matTexture = EditorUI::icons[(int)IconName::Icon_Material];
 		matTexture->Bind();
 		imageCursorPos.x -= iconSize / 3 / 2;
 		imageCursorPos.y -= iconSize / 3 / 2;
@@ -201,14 +201,6 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	}
 
 	ImGui::EndGroup();
-	ImGui::EndChild();
-	if (isSelected)
-	{
-		ImGui::PopStyleColor(1);
-	}
-
-	ImGui::GetStyle().WindowPadding = oldPadding;
-
 	// Set a drag drop target for folders
 	if (!item.file)
 	{
@@ -216,7 +208,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		const bool dropFileInFolder = EditorUI::DragDropTarget("Files", fileRef);
 		if (dropFileInFolder)
 		{
-			std::shared_ptr<File>& file = fileRef->m_file;
+			const std::shared_ptr<File>& file = fileRef->m_file;
 			int copyResult = FileSystem::s_fileSystem->CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
 			if (copyResult == 0)
 			{
@@ -242,12 +234,18 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 			ProjectManager::RefreshProjectDirectory();
 		}
 	}
+	ImGui::GetStyle().WindowPadding = oldPadding;
 	CheckItemDrag(item, *iconTexture, iconSize, itemName);
+	ImGui::EndChild();
+	if (isSelected)
+	{
+		ImGui::PopStyleColor(1);
+	}
 
 	ImGui::PopStyleColor(3);
 }
 
-int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileExplorerItem, const bool itemSelected, const std::string& id, const int itemIndex)
+int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileExplorerItem, const bool itemSelected, const std::string& id)
 {
 	RightClickMenu fileExplorerRightClickMenu = RightClickMenu(id);
 	RightClickMenuState rightClickState = fileExplorerRightClickMenu.Check(false);
@@ -508,7 +506,6 @@ void FileExplorerMenu::Draw()
 			if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None | ImGuiTableFlags_ScrollY))
 			{
 				int currentCol = 0;
-				int itemIndex = 0;
 				std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 				if (currentDir)
 				{
@@ -520,8 +517,7 @@ void FileExplorerMenu::Draw()
 					{
 						FileExplorerItem item;
 						item.directory = currentDir->subdirectories[i];
-						DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
-						itemIndex++;
+						DrawExplorerItem(iconSize, currentCol, colCount, offset, item);
 					}
 
 					for (size_t i = 0; i < fileCount; i++)
@@ -529,8 +525,7 @@ void FileExplorerMenu::Draw()
 						FileExplorerItem item;
 						item.file = filesRefs[i];
 						item.directory = currentDir;
-						DrawExplorerItem(iconSize, currentCol, colCount, offset, item, itemIndex);
-						itemIndex++;
+						DrawExplorerItem(iconSize, currentCol, colCount, offset, item);
 					}
 				}
 					ImGui::EndTable();
@@ -540,7 +535,7 @@ void FileExplorerMenu::Draw()
 					std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 					FileExplorerItem item;
 					item.directory = currentDir;
-					const int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick", -1);
+					const int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick");
 					if (result != 0 || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)))
 					{
 						if (ignoreClose)
@@ -568,7 +563,8 @@ void FileExplorerMenu::Draw()
 		}
 
 		CalculateWindowValues();
-		isHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem); // Do this after CalculateWindowValues()
+		// Recheck for isHovered because of child windows and dragging item UI
+		isHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_ChildWindows); // Do this after CalculateWindowValues()
 	}
 	else
 	{

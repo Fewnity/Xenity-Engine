@@ -37,12 +37,12 @@ private:
 	/**
 	* Draw a file/folder icon and check for clicks/drag
 	*/
-	void DrawExplorerItem(const float iconSize, int& currentCol, const int colCount, const float offset, const FileExplorerItem& item, const int itemIndex);
+	void DrawExplorerItem(const float iconSize, int& currentCol, const int colCount, const float offset, const FileExplorerItem& item);
 	
 	/**
 	* Check for right click on item and draw the right click menu
 	*/
-	int CheckOpenRightClickPopupFile(const FileExplorerItem& fileExplorerItem, const bool itemSelected, const std::string& id, const int itemIndex);
+	int CheckOpenRightClickPopupFile(const FileExplorerItem& fileExplorerItem, const bool itemSelected, const std::string& id);
 
 	/**
 	* Check if an item is being dragged, and apply drag behavior if needed
