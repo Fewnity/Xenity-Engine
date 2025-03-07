@@ -306,12 +306,7 @@ void MeshData::LoadFileReference(const LoadOptions& loadOptions)
 
 void MeshData::OnLoadFileReferenceFinished()
 {
-#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	SendDataToGpu();
-#endif
-	ComputeBoundingBox();
-	ComputeBoundingSphere();
-	m_isValid = true;
+	Update();
 }
 
 void MeshData::UnloadFileReference()
@@ -553,6 +548,16 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 
 	m_subMeshes.push_back(std::move(newSubMesh));
 	m_subMeshCount++;
+}
+
+void MeshData::Update()
+{
+#if defined(__vita__) || defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	SendDataToGpu();
+#endif
+	ComputeBoundingBox();
+	ComputeBoundingSphere();
+	m_isValid = true;
 }
 
 void MeshData::SubMesh::FreeData()

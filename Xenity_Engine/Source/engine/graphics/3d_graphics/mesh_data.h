@@ -219,6 +219,8 @@ public:
 		return m_subMeshes[index];
 	}
 
+	void Update();
+
 protected:
 	friend class RendererOpengl;
 	friend class RendererRSX;
