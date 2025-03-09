@@ -32,8 +32,7 @@ void Prefab::SetData(GameObject& gameObject)
 {
 	std::set<uint64_t> usedFilesIds;
 
-	const std::string gameObjectId = std::to_string(gameObject.GetUniqueId());
-	data[gameObjectId] = SceneManager::GameObjectToJson(gameObject, usedFilesIds);
+	SaveGameObject(gameObject, usedFilesIds);
 
 	json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
@@ -80,5 +79,18 @@ void Prefab::LoadFileReference(const LoadOptions& loadOptions)
 			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + m_file->GetPath(), true);
 			m_fileStatus = FileStatus::FileStatus_Failed;
 		}
+	}
+}
+
+void Prefab::SaveGameObject(GameObject& gameObject, std::set<uint64_t>& usedFilesIds)
+{
+	const std::string gameObjectId = std::to_string(gameObject.GetUniqueId());
+	data[gameObjectId] = SceneManager::GameObjectToJson(gameObject, usedFilesIds);
+
+	// Save children
+	const size_t childrenCount = gameObject.GetChildrenCount();
+	for (size_t i = 0; i < childrenCount; i++)
+	{
+		SaveGameObject(*gameObject.GetChild(i).lock(), usedFilesIds);
 	}
 }

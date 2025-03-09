@@ -1,7 +1,7 @@
 #pragma once
 
 #include <json.hpp>
-
+#include <set>
 #include <engine/api.h>
 #include <engine/file_system/file_reference.h>
 
@@ -19,6 +19,7 @@ public:
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 private:
 	nlohmann::json data;
+	void SaveGameObject(GameObject& gameObject, std::set<uint64_t>& usedFilesIds);
 
 	static constexpr int s_version = 1;
 };

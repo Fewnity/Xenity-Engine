@@ -72,8 +72,10 @@ private:
 	friend class Editor;
 	friend class MainBarMenu;
 	friend class Prefab;
+	friend class SceneMenu;
 
-	static  nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
+	static nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
+	static void CreateObjectsFromJson(const nlohmann::ordered_json& jsonData);
 
 #if defined(EDITOR)
 	/**

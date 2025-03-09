@@ -109,6 +109,140 @@ nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, st
 	return j;
 }
 
+void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData)
+{
+	std::vector<std::shared_ptr<Component>> allComponents;
+	// Create all GameObjects and Components
+	for (const auto& gameObjectKV : jsonData.items())
+	{
+		const std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+		// Set gameobject id
+		const uint64_t id = std::stoull(gameObjectKV.key());
+		newGameObject->SetUniqueId(id);
+
+		// Fill gameobjet's values from json
+		ReflectionUtils::JsonToReflective(gameObjectKV.value(), *newGameObject.get());
+
+		// Create components if there is any
+		if (gameObjectKV.value().contains("Components"))
+		{
+			for (auto& componentKV : gameObjectKV.value()["Components"].items())
+			{
+				const std::string componentName = componentKV.value()["Type"];
+				std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, *newGameObject);
+
+				// Get and set component id
+				const uint64_t compId = std::stoull(componentKV.key());
+
+				if (comp)
+				{
+					// Enable or disable component
+					if (componentKV.value().contains("Enabled"))
+					{
+						const bool isEnabled = componentKV.value()["Enabled"];
+						comp->SetIsEnabled(isEnabled);
+					}
+				}
+#if defined(EDITOR)
+				else
+				{
+					// If the component is missing (the class doesn't exist anymore or the game is not compiled
+					// Create a missing script and copy component data to avoid data loss
+					const std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
+					missingScript->data = componentKV.value();
+					newGameObject->AddExistingComponent(missingScript);
+					comp = missingScript;
+				}
+#endif
+				if (comp)
+				{
+					allComponents.push_back(comp);
+					comp->SetUniqueId(compId);
+				}
+				else
+				{
+#if defined(EDITOR)
+					XASSERT(false, "[SceneManager::LoadScene] Missing script not created!");
+#endif
+				}
+			}
+		}
+	}
+
+	// Set gameobjects parents
+	for (auto& kv : jsonData.items())
+	{
+		const std::shared_ptr<GameObject> parentGameObject = FindGameObjectById(std::stoull(kv.key()));
+		// Check if the parent has children
+		if (parentGameObject && kv.value().contains("Children"))
+		{
+			// For each child, set his parent
+			for (const auto& kv2 : kv.value()["Children"].items())
+			{
+				const std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
+				if (goChild)
+				{
+					goChild->SetParent(parentGameObject);
+				}
+			}
+		}
+	}
+
+	// Bind Components values
+	for (auto& kv : jsonData.items())
+	{
+		const std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
+		if (go)
+		{
+			// Update transform
+			const std::shared_ptr<Transform> transform = go->GetTransform();
+			ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
+			transform->m_isTransformationMatrixDirty = true;
+			transform->UpdateLocalRotation();
+			transform->UpdateWorldValues();
+
+			// If the gameobject has components
+			if (kv.value().contains("Components"))
+			{
+				const int componentCount = go->GetComponentCount();
+				// Find the component with the Id
+				for (const auto& kv2 : kv.value()["Components"].items())
+				{
+					for (int compI = 0; compI < componentCount; compI++)
+					{
+						const std::shared_ptr<Component>& component = go->m_components[compI];
+						if (component->GetUniqueId() == std::stoull(kv2.key()))
+						{
+							// Fill values
+							ReflectionUtils::JsonToReflective(kv2.value(), *component.get());
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Call Awake on Components
+	if (GameplayManager::GetGameState() == GameState::Starting)
+	{
+		const size_t componentsCount = allComponents.size();
+
+		//TODO sort components by their update order
+
+		// Call components Awake() function
+		for (int i = 0; i < componentsCount; i++)
+		{
+			const std::shared_ptr<Component>& componentToInit = allComponents[i];
+			if (componentToInit->GetGameObject()->IsLocalActive() && componentToInit->IsEnabled())
+			{
+				componentToInit->Awake();
+				componentToInit->m_isAwakeCalled = true;
+			}
+		}
+	}
+}
+
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
@@ -293,139 +427,10 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 
 	ClearScene();
 
-	std::vector<std::shared_ptr<Component>> allComponents;
 
 	if (jsonData.contains("GameObjects"))
 	{
-		// Create all GameObjects and Components
-		for (const auto& gameObjectKV : jsonData["GameObjects"].items())
-		{
-			const std::shared_ptr<GameObject> newGameObject = CreateGameObject();
-			// Set gameobject id
-			const uint64_t id = std::stoull(gameObjectKV.key());
-			newGameObject->SetUniqueId(id);
-
-			// Fill gameobjet's values from json
-			ReflectionUtils::JsonToReflective(gameObjectKV.value(), *newGameObject.get());
-
-			// Create components if there is any
-			if (gameObjectKV.value().contains("Components"))
-			{
-				for (auto& componentKV : gameObjectKV.value()["Components"].items())
-				{
-					const std::string componentName = componentKV.value()["Type"];
-					std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, *newGameObject);
-
-					// Get and set component id
-					const uint64_t compId = std::stoull(componentKV.key());
-
-					if (comp)
-					{
-						// Enable or disable component
-						if (componentKV.value().contains("Enabled"))
-						{
-							const bool isEnabled = componentKV.value()["Enabled"];
-							comp->SetIsEnabled(isEnabled);
-						}
-					}
-#if defined(EDITOR)
-					else
-					{
-						// If the component is missing (the class doesn't exist anymore or the game is not compiled
-						// Create a missing script and copy component data to avoid data loss
-						const std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
-						missingScript->data = componentKV.value();
-						newGameObject->AddExistingComponent(missingScript);
-						comp = missingScript;
-					}
-#endif
-					if (comp)
-					{
-						allComponents.push_back(comp);
-						comp->SetUniqueId(compId);
-					}
-					else
-					{
-#if defined(EDITOR)
-						XASSERT(false, "[SceneManager::LoadScene] Missing script not created!");
-#endif
-					}
-				}
-			}
-		}
-
-		// Set gameobjects parents
-		for (auto& kv : jsonData["GameObjects"].items())
-		{
-			const std::shared_ptr<GameObject> parentGameObject = FindGameObjectById(std::stoull(kv.key()));
-			// Check if the parent has children
-			if (parentGameObject && kv.value().contains("Children"))
-			{
-				// For each child, set his parent
-				for (const auto& kv2 : kv.value()["Children"].items())
-				{
-					const std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
-					if (goChild)
-					{
-						goChild->SetParent(parentGameObject);
-					}
-				}
-			}
-		}
-
-		// Bind Components values
-		for (auto& kv : jsonData["GameObjects"].items())
-		{
-			const std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
-			if (go)
-			{
-				// Update transform
-				const std::shared_ptr<Transform> transform = go->GetTransform();
-				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
-				transform->m_isTransformationMatrixDirty = true;
-				transform->UpdateLocalRotation();
-				transform->UpdateWorldValues();
-
-				// If the gameobject has components
-				if (kv.value().contains("Components"))
-				{
-					const int componentCount = go->GetComponentCount();
-					// Find the component with the Id
-					for (const auto& kv2 : kv.value()["Components"].items())
-					{
-						for (int compI = 0; compI < componentCount; compI++)
-						{
-							const std::shared_ptr<Component>& component = go->m_components[compI];
-							if (component->GetUniqueId() == std::stoull(kv2.key()))
-							{
-								// Fill values
-								ReflectionUtils::JsonToReflective(kv2.value(), *component.get());
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// Call Awake on Components
-		if (GameplayManager::GetGameState() == GameState::Starting)
-		{
-			const size_t componentsCount = allComponents.size();
-
-			//TODO sort components by their update order
-
-			// Call components Awake() function
-			for (int i = 0; i < componentsCount; i++)
-			{
-				const std::shared_ptr<Component>& componentToInit = allComponents[i];
-				if (componentToInit->GetGameObject()->IsLocalActive() && componentToInit->IsEnabled())
-				{
-					componentToInit->Awake();
-					componentToInit->m_isAwakeCalled = true;
-				}
-			}
-		}
+		CreateObjectsFromJson(jsonData["GameObjects"]);
 	}
 
 	// Load lighting values

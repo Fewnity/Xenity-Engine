@@ -856,7 +856,13 @@ void SceneMenu::Draw()
 						std::shared_ptr<Prefab> prefab = std::dynamic_pointer_cast<Prefab>(prefabFileRef);
 						if (prefab)
 						{
-							Debug::Print(prefab->GetData().dump(4));
+							std::shared_ptr<GameObject> newGameObject = CreateGameObject(prefab->m_file->GetFileName()); // Temp code, get the gameobject of the prefab
+							SceneManager::CreateObjectsFromJson(prefab->GetData());
+
+							newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
+							Editor::SetSelectedGameObject(newGameObject);
+							SceneManager::SetSceneModified(true);
+							draggedMeshGameObject = newGameObject;
 						}
 					}
 				}
