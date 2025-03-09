@@ -25,6 +25,7 @@
 #include <engine/asset_management/asset_manager.h>
 #include <engine/tools/math.h>
 #include <engine/graphics/texture/texture_default.h>
+#include <engine/game_elements/prefab.h>
 
 
 void SceneMenu::Init()
@@ -128,7 +129,7 @@ void SceneMenu::MoveCamera()
 						Editor::cameraSpeed = 100;
 					}
 				}
-				else 
+				else
 				{
 					fwd -= InputSystem::mouseWheel / 15.0f;
 				}
@@ -816,9 +817,11 @@ void SceneMenu::Draw()
 			camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(startAvailableSize.x), static_cast<int>(startAvailableSize.y)));
 			ImGui::Image((ImTextureID)(size_t)camera->m_secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 
-			std::shared_ptr<FileReference> mesh;
+			std::shared_ptr<FileReference> mesh = nullptr;
 			EditorUI::DragDropTarget("Files" + std::to_string((int)FileType::File_Mesh), mesh, false);
-			if (mesh)
+			std::shared_ptr<FileReference> prefabFileRef = nullptr;
+			EditorUI::DragDropTarget("Files" + std::to_string((int)FileType::File_Prefab), prefabFileRef, false);
+			if (mesh || prefabFileRef)
 			{
 				Vector3 worldCoords;
 				Vector3 mouseWorldDir;
@@ -831,19 +834,31 @@ void SceneMenu::Draw()
 				}
 				else
 				{
-					std::shared_ptr<GameObject> newGameObject = CreateGameObject(mesh->m_file->GetFileName());
-
-					newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
-					std::shared_ptr<MeshRenderer> meshRenderer = newGameObject->AddComponent<MeshRenderer>();
-					meshRenderer->SetMeshData(std::dynamic_pointer_cast<MeshData>(mesh));
-					const size_t matCount = meshRenderer->GetMaterials().size();
-					for (int i = 0; i < matCount; i++)
+					if (mesh)
 					{
-						meshRenderer->SetMaterial(AssetManager::standardMaterial, i);
+						std::shared_ptr<GameObject> newGameObject = CreateGameObject(mesh->m_file->GetFileName());
+
+						newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
+						std::shared_ptr<MeshRenderer> meshRenderer = newGameObject->AddComponent<MeshRenderer>();
+						meshRenderer->SetMeshData(std::dynamic_pointer_cast<MeshData>(mesh));
+						const size_t matCount = meshRenderer->GetMaterials().size();
+						for (int i = 0; i < matCount; i++)
+						{
+							meshRenderer->SetMaterial(AssetManager::standardMaterial, i);
+						}
+						Editor::SetSelectedGameObject(newGameObject);
+						SceneManager::SetSceneModified(true);
+						draggedMeshGameObject = newGameObject;
 					}
-					Editor::SetSelectedGameObject(newGameObject);
-					SceneManager::SetSceneModified(true);
-					draggedMeshGameObject = newGameObject;
+					else 
+					{
+						// Instantiate prefab
+						std::shared_ptr<Prefab> prefab = std::dynamic_pointer_cast<Prefab>(prefabFileRef);
+						if (prefab)
+						{
+							Debug::Print(prefab->GetData().dump(4));
+						}
+					}
 				}
 			}
 			else
@@ -953,7 +968,7 @@ bool SceneMenu::DrawToolWindow()
 			Editor::isToolLocalMode = false;
 		}
 
-		if (gridClicked) 
+		if (gridClicked)
 		{
 			Graphics::SetIsGridRenderingEnabled(!Graphics::IsGridRenderingEnabled());
 		}

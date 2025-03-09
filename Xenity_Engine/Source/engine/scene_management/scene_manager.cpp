@@ -51,11 +51,69 @@ void SceneManager::SetSceneModified(bool value)
 	}
 }
 
+nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds)
+{
+	ordered_json j;
+	//const std::string gameObjectId = std::to_string(gameObject.GetUniqueId());
+
+	// Save GameObject's and Transform's values
+	j["Transform"]["Values"] = ReflectionUtils::ReflectiveToJson(*gameObject.GetTransform().get());
+	j["Values"] = ReflectionUtils::ReflectiveToJson(gameObject);
+
+	// Save GameObject's children ids
+	std::vector<uint64_t> ids;
+	const int childCount = gameObject.GetChildrenCount();
+	for (int childI = 0; childI < childCount; childI++)
+	{
+		const uint64_t id = gameObject.GetChildren()[childI].lock()->GetUniqueId();
+		//if (usedIds[id])
+		//{
+		//	Debug::PrintError("[SceneManager::SaveScene] GameObject Id already used by another Component/GameObject! Id: " + std::to_string(id), true);
+		//}
+		//usedIds[id] = true;
+		ids.push_back(id);
+	}
+	j["Children"] = ids;
+
+	// Save components values
+	for (const std::shared_ptr<Component>& component : gameObject.m_components)
+	{
+		const uint64_t compId = component->GetUniqueId();
+		const std::string compIdString = std::to_string(compId);
+		//if (usedIds[compId])
+		//{
+		//	Debug::PrintError("[SceneManager::SaveScene] Component Id already used by another Component/GameObject! Id: " + compIdString, true);
+		//}
+		//usedIds[compId] = true;
+
+		const ReflectiveData componentData = component->GetReflectiveData();
+
+		const std::shared_ptr<MissingScript> missingScript = std::dynamic_pointer_cast<MissingScript>(component);
+		// If the component is valide, save values
+		if (!missingScript)
+		{
+			j["Components"][compIdString]["Type"] = component->GetComponentName();
+			j["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveDataToJson(componentData);
+			j["Components"][compIdString]["Enabled"] = component->IsEnabled();
+		}
+		else
+		{
+			// Or save component raw values
+			j["Components"][compIdString] = missingScript->data;
+		}
+
+		// Get all files ids used by the component
+		FileReferenceFinder::GetUsedFilesInReflectiveData(uniqueIds, componentData);
+	}
+
+	return j;
+}
+
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	std::unordered_map<uint64_t, bool> usedIds;
+	//std::unordered_map<uint64_t, bool> usedIds;
 	std::set<uint64_t> usedFilesIds;
 
 	// Use ordered json to keep gameobject's order
@@ -68,56 +126,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	for (const std::shared_ptr<GameObject>& go : GameplayManager::gameObjects)
 	{
 		const std::string gameObjectId = std::to_string(go->GetUniqueId());
-
-		// Save GameObject's and Transform's values
-		j["GameObjects"][gameObjectId]["Transform"]["Values"] = ReflectionUtils::ReflectiveToJson(*go->GetTransform().get());
-		j["GameObjects"][gameObjectId]["Values"] = ReflectionUtils::ReflectiveToJson(*go.get());
-
-		// Save GameObject's children ids
-		std::vector<uint64_t> ids;
-		const int childCount = go->GetChildrenCount();
-		for (int childI = 0; childI < childCount; childI++)
-		{
-			const uint64_t id = go->GetChildren()[childI].lock()->GetUniqueId();
-			if (usedIds[id])
-			{
-				Debug::PrintError("[SceneManager::SaveScene] GameObject Id already used by another Component/GameObject! Id: " + std::to_string(id), true);
-			}
-			usedIds[id] = true;
-			ids.push_back(id);
-		}
-		j["GameObjects"][gameObjectId]["Children"] = ids;
-
-		// Save components values
-		for (const std::shared_ptr<Component>& component : go->m_components)
-		{
-			const uint64_t compId = component->GetUniqueId();
-			const std::string compIdString = std::to_string(compId);
-			if (usedIds[compId])
-			{
-				Debug::PrintError("[SceneManager::SaveScene] Component Id already used by another Component/GameObject! Id: " + compIdString, true);
-			}
-			usedIds[compId] = true;
-
-			const ReflectiveData componentData = component->GetReflectiveData();
-
-			const std::shared_ptr<MissingScript> missingScript = std::dynamic_pointer_cast<MissingScript>(component);
-			// If the component is valide, save values
-			if (!missingScript)
-			{
-				j["GameObjects"][gameObjectId]["Components"][compIdString]["Type"] = component->GetComponentName();
-				j["GameObjects"][gameObjectId]["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveDataToJson(componentData);
-				j["GameObjects"][gameObjectId]["Components"][compIdString]["Enabled"] = component->IsEnabled();
-			}
-			else
-			{
-				// Or save component raw values
-				j["GameObjects"][gameObjectId]["Components"][compIdString] = missingScript->data;
-			}
-
-			// Get all files ids used by the component
-			FileReferenceFinder::GetUsedFilesInReflectiveData(usedFilesIds, componentData);
-		}
+		j["GameObjects"][gameObjectId] = GameObjectToJson(*go, usedFilesIds);
 	}
 
 	// Save lighting data

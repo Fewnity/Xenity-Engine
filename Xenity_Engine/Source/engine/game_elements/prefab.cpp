@@ -1,0 +1,84 @@
+#include "prefab.h"
+
+#include <engine/asset_management/asset_manager.h>
+#include <engine/reflection/reflection_utils.h>
+#include <engine/scene_management/scene_manager.h>
+
+using json = nlohmann::json;
+
+Prefab::Prefab()
+{
+}
+
+Prefab::~Prefab()
+{
+}
+
+std::shared_ptr<Prefab> Prefab::MakePrefab()
+{
+	std::shared_ptr<Prefab> newFileRef = std::make_shared<Prefab>();
+	AssetManager::AddFileReference(newFileRef);
+	return newFileRef;
+}
+
+ReflectiveData Prefab::GetReflectiveData()
+{
+	ReflectiveData reflectedVariables;
+	Reflective::AddVariable(reflectedVariables, data, "data", true);
+	return reflectedVariables;
+}
+
+void Prefab::SetData(GameObject& gameObject)
+{
+	std::set<uint64_t> usedFilesIds;
+
+	const std::string gameObjectId = std::to_string(gameObject.GetUniqueId());
+	data[gameObjectId] = SceneManager::GameObjectToJson(gameObject, usedFilesIds);
+
+	json jsonData;
+	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
+	jsonData["Version"] = s_version;
+
+	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, m_file);
+	if (!saveResult)
+	{
+		Debug::PrintError("[Prefab::OnReflectionUpdated] Fail to save the Prefab file: " + m_file->GetPath(), true);
+	}
+}
+
+const nlohmann::json& Prefab::GetData() const
+{
+	return data;
+}
+
+void Prefab::LoadFileReference(const LoadOptions& loadOptions)
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
+	{
+		const std::string jsonString = ReadString();
+		if (!jsonString.empty())
+		{
+			json j;
+			try
+			{
+				j = json::parse(jsonString);
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[ProjectManager::LoadFileReference] Failed to load the material file", true);
+				m_fileStatus = FileStatus::FileStatus_Failed;
+				return;
+			}
+			ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
+
+			m_fileStatus = FileStatus::FileStatus_Loaded;
+		}
+		else
+		{
+			Debug::PrintError("[SkyBox::LoadFileReference] Fail to load the skybox file: " + m_file->GetPath(), true);
+			m_fileStatus = FileStatus::FileStatus_Failed;
+		}
+	}
+}

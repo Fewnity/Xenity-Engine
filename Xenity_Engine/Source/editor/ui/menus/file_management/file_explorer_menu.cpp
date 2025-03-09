@@ -28,6 +28,7 @@
 
 #include "create_class_menu.h"
 #include <engine/graphics/texture/texture_default.h>
+#include <engine/game_elements/prefab.h>
 
 void FileExplorerMenu::Init()
 {
@@ -503,10 +504,10 @@ void FileExplorerMenu::Draw()
 			if (colCount <= 0)
 				colCount = 1;
 
+			std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 			if (ImGui::BeginTable("filetable", colCount, ImGuiTableFlags_None | ImGuiTableFlags_ScrollY))
 			{
 				int currentCol = 0;
-				std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 				if (currentDir)
 				{
 					size_t folderCount = currentDir->subdirectories.size();
@@ -528,7 +529,7 @@ void FileExplorerMenu::Draw()
 						DrawExplorerItem(iconSize, currentCol, colCount, offset, item);
 					}
 				}
-					ImGui::EndTable();
+				ImGui::EndTable();
 				// Unselect file or open the popup if background is clicked
 				if (!fileHovered)
 				{
@@ -556,6 +557,25 @@ void FileExplorerMenu::Draw()
 			}
 			ImGui::EndTable();
 
+			// Detect drag and drop for prefabs
+			// std::shared_ptr<GameObject> is unused because we only want to detect the drop 
+			std::shared_ptr<GameObject> unused = nullptr;
+			const bool droppedGameObject = EditorUI::DragDropTarget("MultiDragData", unused);
+			if (droppedGameObject)
+			{
+				if (EditorUI::multiDragData.gameObjects.size() == 1)
+				{
+					Debug::Print("Create prefab of: " + EditorUI::multiDragData.gameObjects[0]->GetName());
+					std::shared_ptr<File> newFile = Editor::CreateNewFile(currentDir->path + "\\" + EditorUI::multiDragData.gameObjects[0]->GetName(), FileType::File_Prefab, true);
+					std::shared_ptr<FileReference> newFileRef = ProjectManager::GetFileReferenceByFile(*newFile);
+					if (newFileRef)
+					{
+						std::shared_ptr<Prefab> prefab = std::dynamic_pointer_cast<Prefab>(newFileRef);
+						prefab->SetData(*EditorUI::multiDragData.gameObjects[0]);
+					}
+					//SetFileToRename(newFileRef, nullptr);
+				}
+			}
 			if (InputSystem::GetKeyDown(KeyCode::RETURN))
 			{
 				Rename();

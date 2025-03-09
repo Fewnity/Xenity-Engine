@@ -54,6 +54,7 @@
 #include <engine/assertions/assertions.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/constants.h>
+#include <engine/game_elements/prefab.h>
 
 using json = nlohmann::ordered_json;
 
@@ -480,6 +481,10 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 	else if (extension == ".ico") // If the file is an icon
 	{
 		fileType = FileType::File_Icon;
+	}
+	else if (extension == ".prefab") // If the file is an icon
+	{
+		fileType = FileType::File_Prefab;
 	}
 
 	return fileType;
@@ -1140,6 +1145,9 @@ std::shared_ptr<FileReference> ProjectManager::CreateFileReference(const FileInf
 		break;
 	case FileType::File_Icon:
 		fileRef = Icon::MakeIcon();
+		break;
+	case FileType::File_Prefab:
+		fileRef = Prefab::MakePrefab();
 		break;
 
 	case FileType::File_Other:

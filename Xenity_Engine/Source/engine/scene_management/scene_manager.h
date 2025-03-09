@@ -7,12 +7,14 @@
 #pragma once
 
 #include <memory>
+#include <set>
 #include <json.hpp>
 
 #include <engine/api.h>
 
 class Scene;
 class Component;
+class GameObject;
 
 enum class SaveSceneType
 {
@@ -69,6 +71,9 @@ private:
 	friend class GameplayManager;
 	friend class Editor;
 	friend class MainBarMenu;
+	friend class Prefab;
+
+	static  nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
 
 #if defined(EDITOR)
 	/**

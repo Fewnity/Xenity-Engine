@@ -744,6 +744,9 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 	case FileType::File_Shader:
 		fileExt = ".shader";
 		break;
+	case FileType::File_Prefab:
+		fileExt = ".prefab";
+		break;
 	default:
 	{
 		XASSERT(false, "[Editor::CreateNewFile] Try to created an unsupported file");

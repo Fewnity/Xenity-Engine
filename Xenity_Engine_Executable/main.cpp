@@ -29,18 +29,16 @@ Rework the documentation
 Implement alpha testing on shaders
 Add unit tests for commands
 Add unit tests for Components Creation/Deletion and Awake/Start/Update/
-Try to make a dynamic texture
 Do not forget to readd init component ordering in LoadScene
 Fix PSP sleep mode when networking is enabled
-Add prefab system
 Add a update mesh function when a mesh is done
 Add a function to resize a submesh (resize only if size is different, usefull for text)
 Fix lighting settings save
-Fix delete gameobject and undo with parent
 Store chunk ptr in mesh renderer
-Try to build dll with debug symbols
 
-Try to make a scene with a dynamic mesh (see how it works in Unity/Godot) (Make a simple API that convert vertex data for the current platform)
+Fix delete gameobject and undo with parent
+Try to make a dynamic texture
+Add prefab system: Add ID redirection for prefab in ReflectionUtils::JsonToVariable with a map of prefab id to new id, create a new function in scene manager to create objects from json
 Test lighting compatibility mode with fixed pipeline
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
@@ -50,6 +48,8 @@ To make lighting usable on PS3:
 - Try to detect light per draw to use with sphere test (filter light first by camera frustum)
 
 --- Can be done for the next release
+Check how referenced files are handled when in a missing_script
+Try to build dll with debug symbols
 Check if force inline for GLM is better or not
 Add the ability to control the game from the editor with network (load scene, quit...)
 Reduce cache size by deleting executable file

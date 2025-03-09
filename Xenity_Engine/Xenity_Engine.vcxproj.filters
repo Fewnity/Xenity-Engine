@@ -353,6 +353,7 @@
     <ClCompile Include="Source\engine\game_elements\component_manager.cpp" />
     <ClCompile Include="Source\editor\ui\menus\engine_control\dev_kit_control_menu.cpp" />
     <ClCompile Include="Source\engine\engine_args.cpp" />
+    <ClCompile Include="Source\engine\game_elements\prefab.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -814,6 +815,7 @@
     <ClInclude Include="Source\engine\game_elements\component_manager.h" />
     <ClInclude Include="Source\editor\ui\menus\engine_control\dev_kit_control_menu.h" />
     <ClInclude Include="Source\engine\engine_args.h" />
+    <ClInclude Include="Source\engine\game_elements\prefab.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

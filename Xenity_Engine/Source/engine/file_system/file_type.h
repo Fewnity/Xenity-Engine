@@ -25,4 +25,6 @@ ENUM(FileType,
 	File_Material,
 	File_Shader,
 	File_Icon,
+	File_Prefab,
+	COUNT,
 	);
