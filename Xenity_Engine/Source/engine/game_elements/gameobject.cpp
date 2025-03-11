@@ -16,6 +16,7 @@
 #include <engine/debug/stack_debug_object.h>
 #include <engine/constants.h>
 #include <engine/class_registry/class_registry.h>
+#include <engine/scene_management/scene_manager.h>
 
 #pragma region Constructors / Destructor
 
@@ -58,6 +59,22 @@ std::shared_ptr<Component> FindComponentById(const uint64_t id)
 		const std::vector<std::shared_ptr<Component>>& gameobjectComponents = gameobjectAcc.GetComponents();
 
 		const int componentCount = gameobject->GetComponentCount();
+		if (!SceneManager::idRedirection.empty())
+		{
+			auto v = SceneManager::idRedirection.find(id);
+			if (v != SceneManager::idRedirection.end())
+			{
+				uint64_t realId = v->second;
+				for (int compI = 0; compI < componentCount; compI++)
+				{
+					if (gameobjectComponents[compI]->GetUniqueId() == realId)
+					{
+						return gameobjectComponents[compI];
+					}
+				}
+			}
+		}
+
 		for (int compI = 0; compI < componentCount; compI++)
 		{
 			if (gameobjectComponents[compI]->GetUniqueId() == id)
@@ -284,11 +301,26 @@ std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
 
 	const size_t gameObjectCount = gameObjects.size();
 
+	if (!SceneManager::idRedirection.empty())
+	{
+		auto v = SceneManager::idRedirection.find(id);
+		if (v != SceneManager::idRedirection.end())
+		{
+			uint64_t realId = v->second;
+			for (size_t i = 0; i < gameObjectCount; i++)
+			{
+				if (gameObjects[i]->GetUniqueId() == realId)
+					return gameObjects[i];
+			}
+		}
+	}
+
 	for (size_t i = 0; i < gameObjectCount; i++)
 	{
 		if (gameObjects[i]->GetUniqueId() == id)
 			return gameObjects[i];
 	}
+
 	return std::shared_ptr<GameObject>();
 }
 
@@ -345,7 +377,7 @@ void GameObject::UpdateActive(const GameObject& changed)
 			const std::shared_ptr<Component>& component = m_components[i];
 			if (component)
 			{
-				if (m_localActive) 
+				if (m_localActive)
 				{
 					component->OnEnabled();
 					if ((GameplayManager::GetGameState() == GameState::Playing || GameplayManager::GetGameState() == GameState::Paused) && !component->m_isAwakeCalled && component->IsEnabled())
@@ -354,7 +386,7 @@ void GameObject::UpdateActive(const GameObject& changed)
 						component->Awake();
 					}
 				}
-				else 
+				else
 				{
 					component->OnDisabled();
 				}

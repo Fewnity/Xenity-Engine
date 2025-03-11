@@ -857,7 +857,7 @@ void SceneMenu::Draw()
 						if (prefab)
 						{
 							std::shared_ptr<GameObject> newGameObject = CreateGameObject(prefab->m_file->GetFileName()); // Temp code, get the gameobject of the prefab
-							SceneManager::CreateObjectsFromJson(prefab->GetData());
+							SceneManager::CreateObjectsFromJson(prefab->GetData(), true);
 
 							newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
 							Editor::SetSelectedGameObject(newGameObject);

@@ -35,10 +35,11 @@ Add a update mesh function when a mesh is done
 Add a function to resize a submesh (resize only if size is different, usefull for text)
 Fix lighting settings save
 Store chunk ptr in mesh renderer
+Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
 
 Fix delete gameobject and undo with parent
 Try to make a dynamic texture
-Add prefab system: Add ID redirection for prefab in ReflectionUtils::JsonToVariable with a map of prefab id to new id, create a new function in scene manager to create objects from json
+Add a way to get the created gameobject of the prefab
 Test lighting compatibility mode with fixed pipeline
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time

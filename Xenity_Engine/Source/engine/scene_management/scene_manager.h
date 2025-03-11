@@ -64,6 +64,8 @@ public:
 	API static void SetSceneModified(bool value);
 #endif
 
+	static std::unordered_map<uint64_t, uint64_t> idRedirection;
+
 private:
 	friend class Engine;
 	friend class Compiler;
@@ -75,7 +77,7 @@ private:
 	friend class SceneMenu;
 
 	static nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
-	static void CreateObjectsFromJson(const nlohmann::ordered_json& jsonData);
+	static void CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds);
 
 #if defined(EDITOR)
 	/**
@@ -86,7 +88,6 @@ private:
 
 #endif
 	static size_t FindSceneDataPosition(const std::string& jsonString);
-
 
 	/**
 	* @brief [Internal] Restore the saved scene backup

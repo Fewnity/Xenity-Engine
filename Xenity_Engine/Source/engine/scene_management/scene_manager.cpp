@@ -38,6 +38,8 @@ ordered_json savedSceneDataHotReloading;
 
 bool SceneManager::s_sceneModified = false;
 
+std::unordered_map<uint64_t, uint64_t> SceneManager::idRedirection;
+
 #if defined(EDITOR)
 
 void SceneManager::SetSceneModified(bool value)
@@ -109,16 +111,25 @@ nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, st
 	return j;
 }
 
-void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData)
+void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds)
 {
+	idRedirection.clear();
+
 	std::vector<std::shared_ptr<Component>> allComponents;
 	// Create all GameObjects and Components
 	for (const auto& gameObjectKV : jsonData.items())
 	{
 		const std::shared_ptr<GameObject> newGameObject = CreateGameObject();
 		// Set gameobject id
-		const uint64_t id = std::stoull(gameObjectKV.key());
-		newGameObject->SetUniqueId(id);
+		const uint64_t gameObjectId = std::stoull(gameObjectKV.key());
+		if (createNewIds)
+		{
+			idRedirection[gameObjectId] = newGameObject->GetUniqueId();
+		}
+		else 
+		{
+			newGameObject->SetUniqueId(gameObjectId);
+		}
 
 		// Fill gameobjet's values from json
 		ReflectionUtils::JsonToReflective(gameObjectKV.value(), *newGameObject.get());
@@ -130,9 +141,6 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData)
 			{
 				const std::string componentName = componentKV.value()["Type"];
 				std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, *newGameObject);
-
-				// Get and set component id
-				const uint64_t compId = std::stoull(componentKV.key());
 
 				if (comp)
 				{
@@ -146,7 +154,7 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData)
 #if defined(EDITOR)
 				else
 				{
-					// If the component is missing (the class doesn't exist anymore or the game is not compiled
+					// If the component is missing (the class doesn't exist anymore or the game is not compiled)
 					// Create a missing script and copy component data to avoid data loss
 					const std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
 					missingScript->data = componentKV.value();
@@ -157,13 +165,17 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData)
 				if (comp)
 				{
 					allComponents.push_back(comp);
-					comp->SetUniqueId(compId);
-				}
-				else
-				{
-#if defined(EDITOR)
-					XASSERT(false, "[SceneManager::LoadScene] Missing script not created!");
-#endif
+
+					// Get and set component id
+					const uint64_t componentId = std::stoull(componentKV.key());
+					if (createNewIds)
+					{
+						idRedirection[componentId] = comp->GetUniqueId();
+					}
+					else
+					{
+						comp->SetUniqueId(componentId);
+					}
 				}
 			}
 		}
@@ -208,10 +220,15 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData)
 				// Find the component with the Id
 				for (const auto& kv2 : kv.value()["Components"].items())
 				{
+					uint64_t componentId = std::stoull(kv2.key());
+					if (createNewIds)
+					{
+						componentId = idRedirection[componentId];
+					}
 					for (int compI = 0; compI < componentCount; compI++)
 					{
 						const std::shared_ptr<Component>& component = go->m_components[compI];
-						if (component->GetUniqueId() == std::stoull(kv2.key()))
+						if ((createNewIds && component->GetUniqueId() == idRedirection[std::stoull(kv2.key())]) || (!createNewIds && component->GetUniqueId() == std::stoull(kv2.key())))
 						{
 							// Fill values
 							ReflectionUtils::JsonToReflective(kv2.value(), *component.get());
@@ -222,6 +239,8 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData)
 			}
 		}
 	}
+
+	idRedirection.clear();
 
 	// Call Awake on Components
 	if (GameplayManager::GetGameState() == GameState::Starting)
@@ -430,7 +449,7 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 
 	if (jsonData.contains("GameObjects"))
 	{
-		CreateObjectsFromJson(jsonData["GameObjects"]);
+		CreateObjectsFromJson(jsonData["GameObjects"], false);
 	}
 
 	// Load lighting values
