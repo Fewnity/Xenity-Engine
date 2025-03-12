@@ -39,7 +39,6 @@ Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
 
 Fix delete gameobject and undo with parent
 Try to make a dynamic texture
-Add a way to get the created gameobject of the prefab
 Test lighting compatibility mode with fixed pipeline
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time

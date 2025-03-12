@@ -77,7 +77,14 @@ private:
 	friend class SceneMenu;
 
 	static nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
-	static void CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds);
+
+	/**
+	* @brief [Internal] Create gameobjects and component from json data
+	* @param jsonData Json data
+	* @param createNewIds If true, create new ids for gameobjects and components (true used for prefabs)
+	* @param rootGameObject If not null, get the root gameobject, the parent of all gameobjects (used for prefabs)
+	*/
+	static void CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds, std::shared_ptr<GameObject>* rootGameObject = nullptr);
 
 #if defined(EDITOR)
 	/**

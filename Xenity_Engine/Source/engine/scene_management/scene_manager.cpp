@@ -56,7 +56,6 @@ void SceneManager::SetSceneModified(bool value)
 nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds)
 {
 	ordered_json j;
-	//const std::string gameObjectId = std::to_string(gameObject.GetUniqueId());
 
 	// Save GameObject's and Transform's values
 	j["Transform"]["Values"] = ReflectionUtils::ReflectiveToJson(*gameObject.GetTransform().get());
@@ -91,7 +90,7 @@ nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, st
 		const ReflectiveData componentData = component->GetReflectiveData();
 
 		const std::shared_ptr<MissingScript> missingScript = std::dynamic_pointer_cast<MissingScript>(component);
-		// If the component is valide, save values
+		// If the component is valid, save values
 		if (!missingScript)
 		{
 			j["Components"][compIdString]["Type"] = component->GetComponentName();
@@ -111,7 +110,7 @@ nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, st
 	return j;
 }
 
-void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds)
+void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds, std::shared_ptr<GameObject>* rootGameObject)
 {
 	idRedirection.clear();
 
@@ -206,8 +205,14 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 		const std::shared_ptr<GameObject> go = FindGameObjectById(std::stoull(kv.key()));
 		if (go)
 		{
+			// Get the root gameobject for prefabs
+			if (rootGameObject && go->GetParent().lock() == nullptr)
+			{
+				*rootGameObject = go;
+			}
+
 			// Update transform
-			const std::shared_ptr<Transform> transform = go->GetTransform();
+			const std::shared_ptr<Transform>& transform = go->GetTransform();
 			ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
 			transform->m_isTransformationMatrixDirty = true;
 			transform->UpdateLocalRotation();
