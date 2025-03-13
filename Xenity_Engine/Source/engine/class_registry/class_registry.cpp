@@ -128,6 +128,7 @@ void ClassRegistry::Reset()
 
 	s_nameToComponent.clear();
 	s_classInfos.clear();
+	s_fileClassInfos.clear();
 }
 
 void ClassRegistry::RegisterEngineComponents()

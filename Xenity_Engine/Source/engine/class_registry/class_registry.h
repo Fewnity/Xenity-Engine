@@ -250,6 +250,7 @@ public:
 			}
 		}
 
+		XASSERT(false, "[ClassRegisty::GetFileClassInfoById] FileClassInfo is null (Maybe the class is not registered in the class registy?)");
 		return nullptr;
 	}
 
