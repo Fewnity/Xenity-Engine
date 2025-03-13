@@ -13,14 +13,17 @@ public:
 
 	static std::shared_ptr<Prefab> MakePrefab();
 
-	ReflectiveData GetReflectiveData();
+	ReflectiveData GetReflectiveData() override;
+#if defined(EDITOR)
 	void SetData(GameObject& gameObject);
+#endif
 	const nlohmann::json& GetData() const;
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 private:
-	nlohmann::json data;
+#if defined(EDITOR)
 	void SaveGameObject(GameObject& gameObject, std::set<uint64_t>& usedFilesIds);
-
+#endif
+	nlohmann::json data;
 	static constexpr int s_version = 1;
 };
 

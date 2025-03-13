@@ -28,23 +28,6 @@ ReflectiveData Prefab::GetReflectiveData()
 	return reflectedVariables;
 }
 
-void Prefab::SetData(GameObject& gameObject)
-{
-	std::set<uint64_t> usedFilesIds;
-
-	SaveGameObject(gameObject, usedFilesIds);
-
-	json jsonData;
-	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
-	jsonData["Version"] = s_version;
-
-	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, m_file);
-	if (!saveResult)
-	{
-		Debug::PrintError("[Prefab::OnReflectionUpdated] Fail to save the Prefab file: " + m_file->GetPath(), true);
-	}
-}
-
 const nlohmann::json& Prefab::GetData() const
 {
 	return data;
@@ -82,6 +65,24 @@ void Prefab::LoadFileReference(const LoadOptions& loadOptions)
 	}
 }
 
+#if defined(EDITOR)
+void Prefab::SetData(GameObject& gameObject)
+{
+	std::set<uint64_t> usedFilesIds;
+
+	SaveGameObject(gameObject, usedFilesIds);
+
+	json jsonData;
+	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
+	jsonData["Version"] = s_version;
+
+	const bool saveResult = ReflectionUtils::JsonToFile(jsonData, m_file);
+	if (!saveResult)
+	{
+		Debug::PrintError("[Prefab::OnReflectionUpdated] Fail to save the Prefab file: " + m_file->GetPath(), true);
+	}
+}
+
 void Prefab::SaveGameObject(GameObject& gameObject, std::set<uint64_t>& usedFilesIds)
 {
 	const std::string gameObjectId = std::to_string(gameObject.GetUniqueId());
@@ -94,3 +95,4 @@ void Prefab::SaveGameObject(GameObject& gameObject, std::set<uint64_t>& usedFile
 		SaveGameObject(*gameObject.GetChild(i).lock(), usedFilesIds);
 	}
 }
+#endif

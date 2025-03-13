@@ -101,3 +101,6 @@
 
 // Particles
 #include <engine/particle_system/particle_system.h>
+
+// Prefab
+#include <engine/game_elements/prefab.h>

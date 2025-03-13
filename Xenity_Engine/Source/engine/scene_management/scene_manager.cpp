@@ -110,6 +110,86 @@ nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, st
 	return j;
 }
 
+void SceneManager::SaveScene(SaveSceneType saveType)
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	//std::unordered_map<uint64_t, bool> usedIds;
+	std::set<uint64_t> usedFilesIds;
+
+	// Use ordered json to keep gameobject's order
+	ordered_json j;
+	ordered_json usedFilesJson;
+
+	j["Version"] = s_sceneVersion;
+
+	// For each gameobject:
+	for (const std::shared_ptr<GameObject>& go : GameplayManager::gameObjects)
+	{
+		const std::string gameObjectId = std::to_string(go->GetUniqueId());
+		j["GameObjects"][gameObjectId] = GameObjectToJson(*go, usedFilesIds);
+	}
+
+	// Save lighting data
+	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::s_settings.GetReflectiveData());
+
+	// Add skybox file to the usedFile list
+	if (Graphics::s_settings.skybox != nullptr)
+	{
+		usedFilesIds.insert(Graphics::s_settings.skybox->m_fileId);
+	}
+
+	// Save the usedFilesIds list
+	usedFilesJson["UsedFiles"]["Values"] = usedFilesIds;
+
+	if (saveType == SaveSceneType::SaveSceneForPlayState) // Save Scene in a temporary json to restore it after quitting play mode
+	{
+		savedSceneData = j;
+	}
+	else if (saveType == SaveSceneType::SaveSceneForHotReloading)// Save Scene in a temporary json to restore it after compiling the game
+	{
+		savedSceneDataHotReloading = j;
+	}
+	else
+	{
+		// Get scene path
+		std::string path = "";
+		if (SceneManager::s_openedScene)
+		{
+			path = SceneManager::s_openedScene->m_file->GetPath();
+			XASSERT(!path.empty(), "[SceneManager::SaveScene] Scene path is empty");
+		}
+		else
+		{
+			path = EditorUI::SaveFileDialog("Save Scene", ProjectManager::GetAssetFolderPath());
+		}
+
+		// If there is no error, save the file
+		if (!path.empty())
+		{
+			FileSystem::s_fileSystem->Delete(path);
+			const std::shared_ptr<File> file = FileSystem::MakeFile(path);
+			if (file->Open(FileMode::WriteCreateFile))
+			{
+				const std::string usedFilesJsonData = usedFilesJson.dump(2);
+				const std::string jsonData = j.dump(2);
+				file->Write(usedFilesJsonData);
+				file->Write("\n");
+				file->Write(jsonData);
+				file->Close();
+				ProjectManager::RefreshProjectDirectory();
+				SetSceneModified(false);
+			}
+			else
+			{
+				Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + file->GetPath(), true);
+			}
+		}
+	}
+}
+
+#endif
+
 void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds, std::shared_ptr<GameObject>* rootGameObject)
 {
 	idRedirection.clear();
@@ -125,7 +205,7 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 		{
 			idRedirection[gameObjectId] = newGameObject->GetUniqueId();
 		}
-		else 
+		else
 		{
 			newGameObject->SetUniqueId(gameObjectId);
 		}
@@ -266,86 +346,6 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 		}
 	}
 }
-
-void SceneManager::SaveScene(SaveSceneType saveType)
-{
-	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
-	//std::unordered_map<uint64_t, bool> usedIds;
-	std::set<uint64_t> usedFilesIds;
-
-	// Use ordered json to keep gameobject's order
-	ordered_json j;
-	ordered_json usedFilesJson;
-
-	j["Version"] = s_sceneVersion;
-
-	// For each gameobject:
-	for (const std::shared_ptr<GameObject>& go : GameplayManager::gameObjects)
-	{
-		const std::string gameObjectId = std::to_string(go->GetUniqueId());
-		j["GameObjects"][gameObjectId] = GameObjectToJson(*go, usedFilesIds);
-	}
-
-	// Save lighting data
-	j["Lighting"]["Values"] = ReflectionUtils::ReflectiveDataToJson(Graphics::s_settings.GetReflectiveData());
-
-	// Add skybox file to the usedFile list
-	if (Graphics::s_settings.skybox != nullptr)
-	{
-		usedFilesIds.insert(Graphics::s_settings.skybox->m_fileId);
-	}
-
-	// Save the usedFilesIds list
-	usedFilesJson["UsedFiles"]["Values"] = usedFilesIds;
-
-	if (saveType == SaveSceneType::SaveSceneForPlayState) // Save Scene in a temporary json to restore it after quitting play mode
-	{
-		savedSceneData = j;
-	}
-	else if (saveType == SaveSceneType::SaveSceneForHotReloading)// Save Scene in a temporary json to restore it after compiling the game
-	{
-		savedSceneDataHotReloading = j;
-	}
-	else
-	{
-		// Get scene path
-		std::string path = "";
-		if (SceneManager::s_openedScene)
-		{
-			path = SceneManager::s_openedScene->m_file->GetPath();
-			XASSERT(!path.empty(), "[SceneManager::SaveScene] Scene path is empty");
-		}
-		else
-		{
-			path = EditorUI::SaveFileDialog("Save Scene", ProjectManager::GetAssetFolderPath());
-		}
-
-		// If there is no error, save the file
-		if (!path.empty())
-		{
-			FileSystem::s_fileSystem->Delete(path);
-			const std::shared_ptr<File> file = FileSystem::MakeFile(path);
-			if (file->Open(FileMode::WriteCreateFile))
-			{
-				const std::string usedFilesJsonData = usedFilesJson.dump(2);
-				const std::string jsonData = j.dump(2);
-				file->Write(usedFilesJsonData);
-				file->Write("\n");
-				file->Write(jsonData);
-				file->Close();
-				ProjectManager::RefreshProjectDirectory();
-				SetSceneModified(false);
-			}
-			else
-			{
-				Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + file->GetPath(), true);
-			}
-		}
-	}
-}
-
-#endif
 
 size_t SceneManager::FindSceneDataPosition(const std::string& jsonString)
 {

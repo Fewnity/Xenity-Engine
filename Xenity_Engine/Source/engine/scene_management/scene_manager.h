@@ -75,8 +75,8 @@ private:
 	friend class MainBarMenu;
 	friend class Prefab;
 	friend class SceneMenu;
+	friend API std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<Prefab>& prefab);
 
-	static nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
 
 	/**
 	* @brief [Internal] Create gameobjects and component from json data
@@ -93,6 +93,7 @@ private:
 	*/
 	static void SaveScene(SaveSceneType saveType);
 
+	static nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
 #endif
 	static size_t FindSceneDataPosition(const std::string& jsonString);
 
