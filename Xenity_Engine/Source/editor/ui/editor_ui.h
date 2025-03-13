@@ -478,7 +478,7 @@ public:
 			if (ptr->m_file != nullptr)
 				inputText = ptr->m_file->GetFileName();
 			else
-				inputText = "Filled but invalid file reference (" + classInfo->name + ")";
+				inputText = "Dynamic " + classInfo->name;
 
 			/*inputText += " " + std::to_string(ptr->m_fileId) + " ";
 			if (ptr->m_file)
