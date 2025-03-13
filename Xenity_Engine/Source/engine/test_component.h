@@ -27,6 +27,7 @@ class SkyBox;
 class Font;
 class Shader;
 class Material;
+class Prefab;
 
 class CustomClass : public Reflective
 {
@@ -67,6 +68,7 @@ public:
 
 	Color color;
 	std::shared_ptr <SkyBox> skyBox;
+	std::shared_ptr <Prefab> prefab;
 
 	std::vector <std::shared_ptr<Texture>> textures;
 	std::vector <std::shared_ptr<MeshData>> meshData;
@@ -76,6 +78,7 @@ public:
 	std::vector <std::shared_ptr<Font>> fonts;
 	std::vector <std::shared_ptr<Shader>> shaders;
 	std::vector <std::shared_ptr<Material>> materials;
+	std::vector <std::shared_ptr<Prefab>> prefabs;
 
 	std::vector <std::weak_ptr<MeshRenderer>> myComponents;
 	std::vector <std::weak_ptr<GameObject>> myGameObjects;

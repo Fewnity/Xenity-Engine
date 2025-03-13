@@ -19,6 +19,7 @@
 #include <engine/graphics/material.h>
 #include <engine/graphics/shader/shader.h>
 #include <engine/graphics/ui/font.h>
+#include <engine/game_elements/prefab.h>
 #include <engine/audio/audio_clip.h>
 #include <engine/scene_management/scene.h>
 
@@ -59,6 +60,7 @@ ReflectiveData TestComponent::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, myBool, "myBool", true);
 
 	Reflective::AddVariable(reflectedVariables, skyBox, "skyBox", true);
+	Reflective::AddVariable(reflectedVariables, prefab, "prefab", true);
 
 	Reflective::AddVariable(reflectedVariables, textures, "textures", true);
 	Reflective::AddVariable(reflectedVariables, meshData, "meshData", true);
@@ -68,6 +70,7 @@ ReflectiveData TestComponent::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, fonts, "fonts", true);
 	Reflective::AddVariable(reflectedVariables, shaders, "shaders", true);
 	Reflective::AddVariable(reflectedVariables, materials, "materials", true);
+	Reflective::AddVariable(reflectedVariables, prefabs, "prefabs", true);
 
 	Reflective::AddVariable(reflectedVariables, myComponents, "myComponents", true);
 	Reflective::AddVariable(reflectedVariables, myGameObjects, "myGameObjects", true);

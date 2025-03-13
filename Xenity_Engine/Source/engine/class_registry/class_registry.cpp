@@ -68,6 +68,7 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
 #include <engine/particle_system/particle_system.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/prefab.h>
 
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Component>(GameObject&)>, bool>> ClassRegistry::s_nameToComponent;
 std::vector<ClassRegistry::FileClassInfo> ClassRegistry::s_fileClassInfos;
@@ -178,6 +179,7 @@ void ClassRegistry::RegisterEngineFileClasses()
 	REGISTER_FILE(Shader, FileType::File_Shader);
 	REGISTER_FILE(Material, FileType::File_Material);
 	REGISTER_FILE(Icon, FileType::File_Icon);
+	REGISTER_FILE(Prefab, FileType::File_Prefab);
 }
 #if defined (EDITOR)
 void ClassRegistry::RegisterMenus()
