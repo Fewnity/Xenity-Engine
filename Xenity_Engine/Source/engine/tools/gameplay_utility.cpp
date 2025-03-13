@@ -14,6 +14,8 @@
 #include <engine/class_registry/class_registry.h>
 #include <engine/reflection/reflection_utils.h>
 #include <engine/accessors/acc_gameobject.h>
+#include <engine/scene_management/scene_manager.h>
+#include <engine/game_elements/prefab.h>
 
 using json = nlohmann::json;
 
@@ -95,8 +97,6 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 
 std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToDuplicate)
 {
-	XASSERT(goToDuplicate != nullptr, "[GamePlayUtility::Instantiate] goToDuplicate is nullptr");
-
 	if (!goToDuplicate)
 		return nullptr;
 
@@ -198,6 +198,16 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 	}
 
 	return GameObjectsAndIds[0].newGameObject;
+}
+
+std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<Prefab>& prefab)
+{
+	if (!prefab)
+		return nullptr;
+
+	std::shared_ptr<GameObject> newGameObject = nullptr;
+	SceneManager::CreateObjectsFromJson(prefab->GetData(), true, &newGameObject);
+	return newGameObject;
 }
 
 void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)

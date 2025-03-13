@@ -13,6 +13,8 @@
 #include <engine/component.h>
 #include <engine/accessors/acc_gameobject.h>
 
+class Prefab;
+
 /**
 * @brief Check if a GameObject or a Component is valid
 * @param pointer The pointer to check
@@ -69,6 +71,12 @@ bool IsValid(const std::weak_ptr<T>& pointer)
 * @param gameObject GameObject to instanciate
 */
 API std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& gameObject);
+
+/**
+* @brief Create GameObjects from a prefab
+* @param prefab Prefab to instanciate
+*/
+API std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<Prefab>& prefab);
 
 /**
 * @brief Destroy a gameObject
