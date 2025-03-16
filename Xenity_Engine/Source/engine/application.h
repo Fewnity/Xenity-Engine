@@ -23,7 +23,6 @@ public:
 	static std::string GetCompanyName();
 	static AssetPlatform GetAssetPlatform();
 	static bool IsInEditor();
-	static std::string GetMountingPoint();
 
 	/**
 	* @brief Return the game folder (folder where you can write data)

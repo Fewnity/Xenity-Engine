@@ -516,7 +516,6 @@ void Engine::ParseEngineArguments(int argc, char* argv[])
 	for (size_t i = 0; i < argc; i++)
 	{
 		const std::string param = argv[i];
-		Debug::Print("param: " + param);
 		if (i == 0)
 		{
 			s_engineArgs.executableLocation = param;
@@ -543,19 +542,6 @@ void Engine::ParseEngineArguments(int argc, char* argv[])
 				else
 				{
 					s_engineArgs.runningOnDevKit = false;
-				}
-			}
-			else if (paramName == "dev_kit_file_mode")
-			{
-				if (value == "hdd")
-				{
-					s_engineArgs.devKitRunningMode = DevKitRunningMode::FromHDD;
-					Debug::Print("-------- Running game from HDD --------", true);
-				}
-				else if (value == "pc")
-				{
-					s_engineArgs.devKitRunningMode = DevKitRunningMode::FromPC;
-					Debug::Print("-------- Running game from PC --------", true);
 				}
 			}
 		}

@@ -68,28 +68,6 @@ bool Application::IsInEditor()
 #endif
 }
 
-std::string Application::GetMountingPoint()
-{
-	if (GetPlatform() == Platform::P_PS3)
-	{
-		if (Engine::GetArguments().devKitRunningMode == DevKitRunningMode::FromHDD)
-		{
-			return "/dev_hdd0/";
-		}
-		else if (Engine::GetArguments().devKitRunningMode == DevKitRunningMode::FromPC)
-		{
-			return "/app_home/";
-		}
-		else 
-		{
-			XCHECK(false, "[Application::GetMountingPoint] PS3 running mode not supported");
-			return "";
-		}
-		//return PS3_DATA_FOLDER;
-	}
-	return "";
-}
-
 /*
 * @brief Internal: If the game is not started yet, the return path on PsVita won't be the same since we don't know the game name at the beginning
 */

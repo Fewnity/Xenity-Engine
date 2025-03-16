@@ -270,16 +270,10 @@ void DevKitControlMenu::LaunchGame(DevKitRunningMode devKitRunningMode)
 	if (devKitRunningMode == DevKitRunningMode::FromHDD)
 	{
 		command += " ../dev_hdd0/xenity_engine/XenityBuild.self";
-		// Add arguments
-		command += " \"dev_kit=1\"";
-		command += " \"dev_kit_file_mode=hdd\"";
 	}
 	else if (devKitRunningMode == DevKitRunningMode::FromPC)
 	{
 		command += " C:\\Users\\elect\\Desktop\\Builds\\Benchmark\\PS3\\XenityBuild.fake.self"; // Real dev kit cannot run normal self files so use fake.self
-		// Add arguments
-		command += " \"dev_kit=1\"";
-		command += " \"dev_kit_file_mode=pc\"";
 	}
 	command += "\"";
 
