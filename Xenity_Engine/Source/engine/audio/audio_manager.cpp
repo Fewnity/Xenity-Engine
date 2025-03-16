@@ -59,6 +59,8 @@ constexpr int buffSize = 1024 * 16;
 int halfBuffSize = 0;
 int quarterBuffSize = 0;
 MyMutex* AudioManager::s_myMutex = nullptr;
+std::thread AudioManager::sendAudioThread;
+std::thread AudioManager::fillBufferThread;
 
 static_assert(buffSize % 16 == 0, "buffSize must be a multiple of 16");
 static_assert(AUDIO_BUFFER_SIZE % 16 == 0, "AUDIO_BUFFER_SIZE must be a multiple of 16");
@@ -485,10 +487,8 @@ int AudioManager::Init()
 		waveHdr[i].dwFlags = WHDR_DONE;
 	}
 
-	std::thread sendAudioThread = std::thread(audio_thread);
-	sendAudioThread.detach();
-	std::thread fillBufferThread = std::thread(fillAudioBufferThread);
-	fillBufferThread.detach();
+	sendAudioThread = std::thread(audio_thread);
+	fillBufferThread = std::thread(fillAudioBufferThread);
 #elif (__PS3__)
 	int ret = audioInit();
 	if (ret != 0)
@@ -576,6 +576,9 @@ void AudioManager::Stop()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 #if defined(_WIN32) || defined(_WIN64)
+
+	sendAudioThread.join();
+	fillBufferThread.join();
 
 	// Stop WaveOut
 	waveOutReset(hWaveOut);

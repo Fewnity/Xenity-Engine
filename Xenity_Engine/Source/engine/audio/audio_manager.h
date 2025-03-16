@@ -22,6 +22,8 @@
 #include <psp2/kernel/threadmgr.h>
 #elif defined(__PS3__)
 #include <sys/mutex.h>
+#else
+#include <thread>
 #endif
 
 #include "audio_source.h"
@@ -153,5 +155,8 @@ public:
 	static MyMutex* s_myMutex;
 
 	static void FillChannelBuffer(short* buffer, uint64_t length, Channel* channel);
+
+	static std::thread sendAudioThread;
+	static std::thread fillBufferThread;
 private:
 };
