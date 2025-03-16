@@ -516,11 +516,14 @@ void Engine::ParseEngineArguments(int argc, char* argv[])
 	for (size_t i = 0; i < argc; i++)
 	{
 		const std::string param = argv[i];
+		// PsVita doesn't give the executable location
+#if !defined(vita)
 		if (i == 0)
 		{
 			s_engineArgs.executableLocation = param;
 			continue;
 		}
+#endif
 		const size_t equalsIndex = param.find("=");
 		if (equalsIndex != std::string::npos)
 		{
