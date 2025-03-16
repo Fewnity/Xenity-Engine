@@ -36,10 +36,10 @@ Add a function to resize a submesh (resize only if size is different, usefull fo
 Fix lighting settings save
 Store chunk ptr in mesh renderer
 Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
-
-Fix delete gameobject and undo with parent
-Try to make a dynamic texture
+Check why the tv texture does not load on PSP
+Improve audio manager stop system to fix crashes
 Test lighting compatibility mode with fixed pipeline
+Fix PSP unit tests
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
