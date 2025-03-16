@@ -21,6 +21,7 @@
 #include <engine/ui/window.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
+#include <engine/game_elements/prefab.h>
 #include <engine/physics/physics_manager.h>
 #include <engine/tools/template_utils.h>
 #include <engine/debug/debug.h>

@@ -15,6 +15,7 @@
 class Scene;
 class Component;
 class GameObject;
+class Prefab;
 
 enum class SaveSceneType
 {
