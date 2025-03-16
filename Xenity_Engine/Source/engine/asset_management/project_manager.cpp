@@ -438,7 +438,7 @@ FileType ProjectManager::GetFileType(const std::string& _extension)
 		extension[i] = tolower(extension[i]);
 	}
 
-	if (extension == ".png" || extension == ".jpg" || extension == ".bmp" || extension == ".tga") // If the file is an image
+	if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" || extension == ".bmp" || extension == ".tga") // If the file is an image
 	{
 		fileType = FileType::File_Texture;
 	}
