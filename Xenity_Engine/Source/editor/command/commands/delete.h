@@ -47,6 +47,7 @@ private:
 		nlohmann::json gameObjectData;
 		nlohmann::json transformData;
 		uint64_t gameObjectId = 0;
+		uint64_t parentGameObjectId = 0;
 		std::vector<GameObjectChild> children;
 		std::vector<GameObjectComponent> components;
 	};
@@ -106,6 +107,7 @@ inline void InspectorDeleteComponentCommand<T>::Undo()
 		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
 		component->SetIsEnabled(isEnabled);
 		component->SetUniqueId(componentId);
+		component->OnReflectionUpdated();
 		SceneManager::SetSceneModified(true);
 	}
 }

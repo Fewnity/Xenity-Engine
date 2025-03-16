@@ -10,6 +10,7 @@ InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObjectComma
 {
 	GameObjectChild gameObjectChild;
 	gameObjectChild.gameObjectId = child->GetUniqueId();
+	gameObjectChild.parentGameObjectId = child->GetParent().lock() ? child->GetParent().lock()->GetUniqueId() : 0;
 	gameObjectChild.gameObjectData["Values"] = ReflectionUtils::ReflectiveDataToJson(child->GetReflectiveData());
 	gameObjectChild.transformData["Values"] = ReflectionUtils::ReflectiveDataToJson(child->GetTransform()->GetReflectiveData());
 	for (std::weak_ptr<GameObject> childChild : child->GetChildren())
@@ -51,7 +52,9 @@ void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChild& chil
 	newGameObject->OnReflectionUpdated();
 	newGameObject->SetUniqueId(child.gameObjectId);
 	if (parent)
+	{
 		newGameObject->SetParent(parent);
+	}
 	ReflectionUtils::JsonToReflectiveData(child.transformData, transformToUpdate->GetReflectiveData());
 	transformToUpdate->m_isTransformationMatrixDirty = true;
 	transformToUpdate->UpdateWorldValues();
@@ -94,7 +97,13 @@ void InspectorDeleteGameObjectCommand::Execute()
 
 void InspectorDeleteGameObjectCommand::Undo()
 {
-	ReCreateChild(gameObjectChild, nullptr);
+	std::shared_ptr<GameObject> parentGameObject = nullptr;
+	if (gameObjectChild.parentGameObjectId != 0)
+	{
+		parentGameObject = FindGameObjectById(gameObjectChild.parentGameObjectId);
+	}
+
+	ReCreateChild(gameObjectChild, parentGameObject);
 	UpdateChildComponents(gameObjectChild);
 	/*std::shared_ptr<GameObject> gameObject = CreateGameObject();
 	ReflectionUtils::JsonToReflectiveData(gameObjectData, gameObject->GetReflectiveData());
