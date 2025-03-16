@@ -55,11 +55,11 @@ void RightClickMenu::DrawRecursive(const RightClickMenuItem& item) const
 	}
 }
 
-RightClickMenuState RightClickMenu::Check(const bool blockOpen)
+RightClickMenuState RightClickMenu::Check(const bool blockOpen, bool disableHoveredCheck)
 {
 	RightClickMenuState state = RightClickMenuState::Closed;
 	bool isHovered = ImGui::IsItemHovered();
-	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && isHovered)
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && (isHovered || disableHoveredCheck))
 	{
 		isFocusCorrect = true;
 	}
@@ -67,7 +67,7 @@ RightClickMenuState RightClickMenu::Check(const bool blockOpen)
 	bool isClicked = ImGui::IsMouseReleased(ImGuiMouseButton_Right);
 	isHovered = ImGui::IsItemHovered();
 
-	if (isClicked && isHovered)
+	if (isClicked && (isHovered || disableHoveredCheck))
 	{
 		if (!blockOpen && isFocusCorrect)
 		{

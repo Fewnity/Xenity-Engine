@@ -107,9 +107,10 @@ public:
 	/**
 	* @brief Check if the menu should be opened or closed
 	* @param blockOpen If true, won't be able to be opened
+	* @param disableHoveredCheck If true, will disable the item hovered check
 	* @return The state of the menu
 	*/
-	RightClickMenuState Check(const bool blockOpen);
+	RightClickMenuState Check(const bool blockOpen, bool disableHoveredCheck);
 
 	/**
 	* @brief Draw the menu

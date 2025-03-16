@@ -65,7 +65,7 @@ void ConsoleMenu::Draw()
 		{
 			ImGui::Text("%s", Debug::GetDebugString().c_str());
 			RightClickMenu rightClickMenu = RightClickMenu("ConsoleMenuRightClick");
-			RightClickMenuState rightClickState = rightClickMenu.Check(false);
+			RightClickMenuState rightClickState = rightClickMenu.Check(false, false);
 			if (rightClickState != RightClickMenuState::Closed)
 			{
 				rightClickMenu.AddItem("Clear", []() { Debug::ClearDebugLogs(); });
@@ -101,7 +101,7 @@ void ConsoleMenu::Draw()
 
 				ImGui::TextColored(color, "[%d] %s", history.count, history.message.c_str());
 				RightClickMenu rightClickMenu = RightClickMenu("ConsoleItemRightClickMenu" + std::to_string(i) + "," + std::to_string(id));
-				RightClickMenuState rightClickState = rightClickMenu.Check(false);
+				RightClickMenuState rightClickState = rightClickMenu.Check(false, false);
 				if (rightClickState != RightClickMenuState::Closed)
 				{
 					rightClickMenu.AddItem("Copy", [&history]() {

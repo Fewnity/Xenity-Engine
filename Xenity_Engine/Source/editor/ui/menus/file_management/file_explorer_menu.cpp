@@ -104,7 +104,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 	ImGui::GetStyle().WindowPadding = ImVec2(0, 14);
 	ImGui::BeginChild(EditorUI::GenerateItemId().c_str(), ImVec2(0,0), childFlags);
 	ImGui::BeginGroup();
-
+	ImGui::GetStyle().WindowPadding = oldPadding;
 	const int cursorPos = (int)ImGui::GetCursorPosX();
 	const int availWidth = (int)ImGui::GetContentRegionAvail().x;
 	ImGui::SetCursorPosX(cursorPos + (availWidth - iconSize) / 2.0f - offset / 2.0f);
@@ -235,7 +235,6 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 			ProjectManager::RefreshProjectDirectory();
 		}
 	}
-	ImGui::GetStyle().WindowPadding = oldPadding;
 	CheckItemDrag(item, *iconTexture, iconSize, itemName);
 	ImGui::EndChild();
 	if (isSelected)
@@ -249,7 +248,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileExplorerItem, const bool itemSelected, const std::string& id)
 {
 	RightClickMenu fileExplorerRightClickMenu = RightClickMenu(id);
-	RightClickMenuState rightClickState = fileExplorerRightClickMenu.Check(false);
+	RightClickMenuState rightClickState = fileExplorerRightClickMenu.Check(false, !itemSelected);
 	if (rightClickState != RightClickMenuState::Closed)
 	{
 		//-
@@ -531,7 +530,7 @@ void FileExplorerMenu::Draw()
 				}
 				ImGui::EndTable();
 				// Unselect file or open the popup if background is clicked
-				if (!fileHovered)
+				if (!fileHovered && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup))
 				{
 					std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 					FileExplorerItem item;
@@ -549,8 +548,10 @@ void FileExplorerMenu::Draw()
 							{
 								Rename();
 							}
-							if (ImGui::IsWindowHovered())
+							if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows))
+							{
 								Editor::SetSelectedFileReference(nullptr);
+							}
 						}
 					}
 				}

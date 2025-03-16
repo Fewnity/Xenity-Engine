@@ -74,7 +74,7 @@ void HierarchyMenu::Draw()
 
 		// Start creating right click menu
 		RightClickMenu backgroundRightClickMenu = RightClickMenu("HierarchyRightClickMenu");
-		RightClickMenuState rightClickState = backgroundRightClickMenu.Check(!firstClickedInWindow);
+		RightClickMenuState rightClickState = backgroundRightClickMenu.Check(!firstClickedInWindow, false);
 
 		if (rightClickState != RightClickMenuState::Closed)
 		{
