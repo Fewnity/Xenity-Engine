@@ -180,19 +180,29 @@ void TexturePS3::SetData(const unsigned char* texData)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	XASSERT(texData != nullptr, "[TexturePS3::SetTextureLevel] texData is nullptr");
 
-	if (!isFloatFormat)
+	if (!m_ps3buffer)
 	{
-		m_ps3buffer = (unsigned char*)rsxMemalign(128, (GetWidth() * GetHeight() * 4));
-	}
-	else if (isFloatFormat)
-	{
-		m_ps3buffer = (unsigned char*)rsxMemalign(128, (GetWidth() * GetHeight() * 4 * sizeof(float)));
+		size_t byteCount = 0;
+		if (!isFloatFormat)
+		{
+			byteCount = GetWidth() * GetHeight() * 4;
+		}
+		else if (isFloatFormat)
+		{
+			byteCount = GetWidth() * GetHeight() * 4 * sizeof(float);
+		}
+		m_ps3buffer = (unsigned char*)rsxMemalign(128, byteCount);
+#if defined (DEBUG)
+		Performance::s_textureMemoryTracker->Allocate(byteCount);
+#endif
 	}
 
 	if (!m_ps3buffer)
+	{
 		return;
+	}
 
-	PS3TextureType type = reinterpret_cast<TextureSettingsPS3*>(m_settings[Application::GetAssetPlatform()].get())->type;
+	PS3TextureType type = GetSettings().type;
 	unsigned int colorByteCount = GetColorByteCount(type);
 	ConvertTextureDataType(m_ps3buffer, texData, GetWidth(), GetHeight(), type, PS3TextureType::ARGB_8888);
 
@@ -230,7 +240,9 @@ void TexturePS3::SetData(const unsigned char* texData)
 	m_gcmTexture.location = GCM_LOCATION_RSX;
 	m_gcmTexture.pitch = GetWidth() * colorByteCount * resolutionMultiplier;
 	m_gcmTexture.offset = m_textureOffset;
+
 	isValid = true;
+	m_fileStatus = FileStatus::FileStatus_Loaded;
 }
 
 void TexturePS3::Bind() const
@@ -297,7 +309,16 @@ void TexturePS3::Unload()
 	rsxFree(m_ps3buffer);
 
 #if defined (DEBUG)
-	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
+	size_t byteCount = 0;
+	if (!isFloatFormat)
+	{
+		byteCount = GetWidth() * GetHeight() * 4;
+	}
+	else if (isFloatFormat)
+	{
+		byteCount = GetWidth() * GetHeight() * 4 * sizeof(float);
+	}
+	Performance::s_textureMemoryTracker->Deallocate(byteCount);
 #endif
 }
 

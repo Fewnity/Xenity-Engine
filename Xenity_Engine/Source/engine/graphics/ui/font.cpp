@@ -106,7 +106,7 @@ bool Font::CreateFont(Font& font)
 	// int atlasSize = 256;
 	int atlasSize = 512;
 	//  int atlasSize = 256;
-	int channelCount = 2;
+	int channelCount = 4;
 #if defined(__PSP__) || defined(_EE) || defined(__PS3__)
 	channelCount = 4;
 #endif
@@ -172,9 +172,12 @@ bool Font::CreateFont(Font& font)
 						atlas[atlasOffset + 2] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
 						atlas[atlasOffset + 3] = 255;
 #else
-						// atlas[atlasOffset] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
 						atlas[atlasOffset] = 255;
-						atlas[atlasOffset + 1] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+						atlas[atlasOffset + 1] = 255;
+						atlas[atlasOffset + 2] = 255;
+						atlas[atlasOffset + 3] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];
+						/*atlas[atlasOffset] = 255;
+						atlas[atlasOffset + 1] = face->glyph->bitmap.buffer[fH + (fW * face->glyph->bitmap.width)];*/
 #endif
 					}
 				}

@@ -86,6 +86,24 @@ void TexturePSP::swizzle_fast(uint8_t* out, const uint8_t* in, const unsigned in
 	}
 }
 
+void TexturePSP::GetPowerOfTwoResolution(unsigned int& width, unsigned int& height, unsigned int mipmapLevel)
+{
+	int diviser = (int)pow(2, mipmapLevel);
+
+	width = pW / diviser;
+	height = pH / diviser;
+}
+
+size_t TexturePSP::GetByteCount(unsigned int mipmapLevel)
+{
+	unsigned int resizedPW, resizedPH;
+	GetPowerOfTwoResolution(resizedPW, resizedPH, mipmapLevel);
+	PSPTextureType type = GetSettings().type;
+	const int bytePerPixel = GetColorByteCount(type);
+	int byteCount = (resizedPW * resizedPH) * bytePerPixel;
+	return byteCount;
+}
+
 // See https://github.com/pspdev/pspsdk/blob/master/src/debug///scr_printf.c
 void TexturePSP::copy_texture_data(void* dest, const void* src, int width, int height, const PSPTextureType destType, const PSPTextureType srcType)
 {
@@ -228,26 +246,29 @@ void TexturePSP::SetTextureLevel(int level, const unsigned char* texData)
 {
 	XASSERT(texData != nullptr, "[TexturePSP::SetTextureLevel] texData is nullptr");
 
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings[Application::GetAssetPlatform()].get())->type;
-	bool tryPutInVram = reinterpret_cast<TextureSettingsPSP*>(m_settings[Application::GetAssetPlatform()].get())->tryPutInVram;
+	PSPTextureType type = GetSettings().type;
+	bool tryPutInVram = GetSettings().tryPutInVram;
+
+	const int bytePerPixel = GetColorByteCount(type);
+
+	//int diviser = (int)pow(2, level);
+
+	//int resizedPW = pW / diviser;
+	//int resizedPH = pH / diviser;
+
+	//int byteCount = (resizedPW * resizedPH) * bytePerPixel;
+	unsigned int resizedPW, resizedPH;
+	GetPowerOfTwoResolution(resizedPW, resizedPH, level);
+	int byteCount = GetByteCount(level);
+
 
 	bool needResize = false;
-	int bytePerPixel = GetColorByteCount(type);
-
-	int diviser = (int)pow(2, level);
-
-	int resizedPW = pW / diviser;
-	int resizedPH = pH / diviser;
-
-	int byteCount = (resizedPW * resizedPH) * bytePerPixel;
-
-	unsigned int* dataBuffer = (unsigned int*)memalign(16, byteCount);
-
 	if (level != 0 || (m_width != pW || height != pH))
 	{
 		needResize = true;
 	}
 
+	unsigned int* dataBuffer = (unsigned int*)memalign(16, byteCount);
 	if (needResize)
 	{
 		unsigned char* resizedData = (unsigned char*)malloc((resizedPW * resizedPH) * 4);
@@ -267,32 +288,38 @@ void TexturePSP::SetTextureLevel(int level, const unsigned char* texData)
 		Debug::PrintWarning("[TexturePSP::SetTextureLevel] Texture too big to be in vram", true);
 	}
 
-	// Allocate memory in ram or vram
-	if (isLevelInVram)
+	if (level >= data.size())
 	{
-		unsigned int* newData = nullptr;
-		if (tryPutInVram)
+		// Allocate memory in ram or vram
+		if (isLevelInVram)
 		{
-			newData = (unsigned int*)vramalloc(byteCount);
-		}
-
-		// If there is no more free vram or if we don't want to put it in vram
-		if (!newData)
-		{
+			unsigned int* newData = nullptr;
 			if (tryPutInVram)
 			{
-				Debug::PrintWarning("[TexturePSP::SetTextureLevel] No enough free vram", true);
+				newData = (unsigned int*)vramalloc(byteCount);
 			}
-			newData = (unsigned int*)memalign(16, byteCount);
-			isLevelInVram = false;
+
+			// If there is no more free vram or if we don't want to put it in vram
+			if (!newData)
+			{
+				if (tryPutInVram)
+				{
+					Debug::PrintWarning("[TexturePSP::SetTextureLevel] No enough free vram", true);
+				}
+				newData = (unsigned int*)memalign(16, byteCount);
+				isLevelInVram = false;
+			}
+			data.push_back((unsigned int*)newData);
 		}
-		data.push_back((unsigned int*)newData);
+		else
+		{
+			data.push_back((unsigned int*)memalign(16, byteCount));
+		}
+#if defined (DEBUG)
+		Performance::s_textureMemoryTracker->Allocate(byteCount);
+#endif
+		inVram.push_back(isLevelInVram);
 	}
-	else
-	{
-		data.push_back((unsigned int*)memalign(16, byteCount));
-	}
-	inVram.push_back(isLevelInVram);
 	// tx_compress_dxtn(4, resizedPW, resizedPH, (const unsigned char*)dataBuffer, type, (unsigned char*)data[level]);
 
 	// Place image data in the memory
@@ -327,6 +354,7 @@ void TexturePSP::SetData(const unsigned char* texData)
 	}
 
 	isValid = true;
+	m_fileStatus = FileStatus::FileStatus_Loaded;
 }
 
 int TexturePSP::TypeToGUPSM(PSPTextureType psm) const
@@ -358,7 +386,7 @@ int TexturePSP::TypeToGUPSM(PSPTextureType psm) const
 
 void TexturePSP::Bind() const
 {
-	PSPTextureType type = reinterpret_cast<TextureSettingsPSP*>(m_settings.at(Application::GetAssetPlatform()).get())->type;
+	PSPTextureType type = GetSettings().type;
 
 	sceGuTexMode(TypeToGUPSM(type), GetMipmaplevelCount(), 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
@@ -444,11 +472,12 @@ void TexturePSP::Unload()
 			vfree(data[i]);
 		else
 			free(data[i]);
-	}
 
+		int byteCount = GetByteCount(i);
 #if defined (DEBUG)
-	Performance::s_textureMemoryTracker->Deallocate(m_width * height * 4);
+	Performance::s_textureMemoryTracker->Deallocate(byteCount);
 #endif
+	}
 }
 
 #endif

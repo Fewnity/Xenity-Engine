@@ -45,7 +45,7 @@ protected:
 	int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
 
-	unsigned int m_textureId = 0;
+	unsigned int m_textureId = -1;
 };
 
 #endif

@@ -65,6 +65,24 @@ Texture::Texture()
 	m_settings[AssetPlatform::AP_PS3] = std::move(textureSettingsPS3);
 }
 
+std::shared_ptr<Texture> Texture::CreateTexture(const TextureConstructorParams& params)
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+	std::shared_ptr<Texture> newTexture = MakeTexture(true);
+
+	newTexture->SetSize(params.width, params.width);
+	newTexture->SetChannelCount(params.hasAlpha ? 4 : 3);
+#if defined(__PSP__)
+	reinterpret_cast<TextureSettingsPSP*>(newTexture->m_settings[AssetPlatform::AP_PSP].get())->type = PSPTextureType::RGBA_4444;
+#elif defined(__PS3__)
+	reinterpret_cast<TextureSettingsPS3*>(newTexture->m_settings[AssetPlatform::AP_PS3].get())->type = PS3TextureType::ARGB_4444;
+#endif
+	newTexture->SetFilter(Filter::Bilinear);
+	newTexture->SetWrapMode(WrapMode::ClampToEdge);
+
+	return newTexture;
+}
+
 ReflectiveData Texture::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -98,7 +116,7 @@ void Texture::OnReflectionUpdated()
 #endif
 }
 
-std::shared_ptr<Texture> Texture::MakeTexture()
+std::shared_ptr<Texture> Texture::MakeTexture(bool isDynamic)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -109,7 +127,11 @@ std::shared_ptr<Texture> Texture::MakeTexture()
 #else
 	std::shared_ptr<Texture> newTexture = std::make_shared<TextureDefault>();
 #endif
-	AssetManager::AddFileReference(newTexture);
+	if (!isDynamic)
+	{
+		AssetManager::AddFileReference(newTexture);
+	}
+
 	return newTexture;
 }
 
@@ -124,17 +146,17 @@ void Texture::LoadFileReference(const LoadOptions& loadOptions)
 #if defined(EDITOR)
 		if (!loadOptions.threaded)
 		{
-			CreateTexture(GetFilter(), GetUseMipmap());
+			LoadTexture();
 			OnLoadFileReferenceFinished();
 		}
 		else
 		{
 			AsyncFileLoading::AddFile(shared_from_this());
-			std::thread threadLoading = std::thread(&Texture::CreateTexture, this, GetFilter(), GetUseMipmap());
+			std::thread threadLoading = std::thread(&Texture::LoadTexture, this);
 			threadLoading.detach();
 		}
 #else
-		CreateTexture(GetFilter(), GetUseMipmap());
+		LoadTexture();
 		OnLoadFileReferenceFinished();
 #endif
 	}
@@ -164,23 +186,6 @@ void Texture::ClearSpriteSelections()
 		delete spriteSelections[i];
 	}
 	spriteSelections.clear();
-}
-
-/// <summary>
-/// Create the texture from the file path and texture settings
-/// </summary>
-/// <param name="filePath">File path</param>
-/// <param name="filter">Filter to use</param>
-/// <param name="useMipMap">Will texture use mipmap</param>
-void Texture::CreateTexture(const Filter filter, const bool useMipMap)
-{
-	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
-	SetFilter(filter);
-
-	m_settings[Application::GetAssetPlatform()]->useMipMap = useMipMap;
-
-	LoadTexture();
 }
 
 void Texture::LoadTexture()
@@ -248,16 +253,12 @@ void Texture::LoadTexture()
 
 	if (!m_buffer)
 	{
-		Debug::PrintError("[Texture::LoadTexture] Failed to load texture", true);
+		Debug::PrintError("[Texture::LoadTexture] Failed to load texture: " + m_file->GetPath(), true);
 		m_fileStatus = FileStatus::FileStatus_Failed;
 		return;
 	}
 
-#if defined (DEBUG)
-	Performance::s_textureMemoryTracker->Allocate(m_width * height * 4);
-#endif
-
-	m_fileStatus = FileStatus::FileStatus_Loaded;
+	m_fileStatus = FileStatus::FileStatus_AsyncWaiting;
 }
 
 #pragma endregion

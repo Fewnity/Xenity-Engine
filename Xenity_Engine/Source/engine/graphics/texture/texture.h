@@ -101,6 +101,15 @@ public:
 	}
 };
 
+struct TextureConstructorParams
+{
+	unsigned int width = 0;
+	unsigned int height = 0;
+	bool hasAlpha = false;
+	Filter filter = Filter::Bilinear;
+	WrapMode wrapMode = WrapMode::Repeat;
+};
+
 /**
 * @brief Texture file class
 */
@@ -108,6 +117,8 @@ class API Texture : public FileReference
 {
 public:
 	Texture();
+
+	static std::shared_ptr<Texture> CreateTexture(const TextureConstructorParams& params);
 
 	inline void SetSize(int width, int height)
 	{
@@ -190,6 +201,12 @@ public:
 		return m_settings.at(Application::GetAssetPlatform())->wrapMode;
 	}
 
+	/**
+	 * @brief Set texture data
+	 * @param data Texture data
+	 */
+	virtual void SetData(const unsigned char* data) = 0;
+
 protected:
 	template <class T>
 	friend class SelectAssetMenu;
@@ -270,23 +287,10 @@ protected:
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	void OnReflectionUpdated() override;
 
-	static std::shared_ptr<Texture> MakeTexture();
+	static std::shared_ptr<Texture> MakeTexture(bool isDynamic = false);
 
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 	void UnloadFileReference() override;
-
-	/**
-	 * @brief Set texture data
-	 * @param data Texture data
-	 */
-	virtual void SetData(const unsigned char* data) = 0;
-
-	/**
-	 * @brief Create the texture
-	 * @param filter Texture filter
-	 * @param useMipMap Use mip map
-	 */
-	void CreateTexture(const Filter filter, const bool useMipMap);
 
 	/**
 	 * @brief Load texture data

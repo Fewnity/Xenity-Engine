@@ -50,6 +50,10 @@ protected:
 	void copy_texture_data(void* dest, const void* src, int width, int height, const PSPTextureType destType, const PSPTextureType srcType);
 	void swizzle_fast(uint8_t* out, const uint8_t* in, const unsigned int width, const unsigned int height);
 
+	void GetPowerOfTwoResolution(unsigned int& width, unsigned int& height, unsigned int mipmapLevel);
+	size_t GetByteCount(unsigned int mipmapLevel);
+	TextureSettingsPSP& GetSettings() { return *reinterpret_cast<TextureSettingsPSP*>(m_settings[Application::GetAssetPlatform()].get()); }
+
 	// One vector element for each mipmap level
 	std::vector<bool> inVram;
 

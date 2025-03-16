@@ -41,6 +41,8 @@ protected:
 	unsigned int TextureTypeToGCMType(PS3TextureType type);
 	int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
+	TextureSettingsPS3& GetSettings() { return *reinterpret_cast<TextureSettingsPS3*>(m_settings[Application::GetAssetPlatform()].get()); }
+
 	gcmTexture m_gcmTexture;
 	uint32_t m_textureOffset = 0;
 };

@@ -131,18 +131,9 @@ void TextureDefault::OnLoadFileReferenceFinished()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	glGenTextures(1, &m_textureId);
-	Bind();
-
-	const unsigned int textureType = GL_RGBA; // rgba
-	glTexImage2D(GL_TEXTURE_2D, 0, textureType, GetWidth(), GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, m_buffer);
-	if (GetUseMipmap())
-	{
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
+	SetData(m_buffer);
 
 	free(m_buffer);
-	isValid = true;
 }
 
 // TODO: This function only supports 1 color textures, add enum for texture color type
@@ -152,10 +143,17 @@ void TextureDefault::SetData(const unsigned char *texData)
 
 	XASSERT(texData != nullptr, "[TextureDefault::SetTextureLevel] texData is nullptr");
 
-	glGenTextures(1, &m_textureId);
+	if (m_textureId == -1)
+	{
+		glGenTextures(1, &m_textureId);
+#if defined (DEBUG)
+		Performance::s_textureMemoryTracker->Allocate(m_width * height * 4);
+#endif
+	}
 	Bind();
 
-	const unsigned int textureType = GL_LUMINANCE_ALPHA;
+	//const unsigned int textureType = GL_LUMINANCE_ALPHA;
+	const unsigned int textureType = GL_RGBA; // rgba
 	glTexImage2D(GL_TEXTURE_2D, 0, textureType, GetWidth(), GetHeight(), 0, textureType, GL_UNSIGNED_BYTE, texData);
 	if (GetUseMipmap())
 	{
@@ -163,6 +161,7 @@ void TextureDefault::SetData(const unsigned char *texData)
 	}
 
 	isValid = true;
+	m_fileStatus = FileStatus::FileStatus_Loaded;
 }
 
 void TextureDefault::Unload()

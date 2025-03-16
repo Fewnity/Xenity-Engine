@@ -22,6 +22,7 @@ enum class FileStatus
 {
 	FileStatus_Not_Loaded,
 	FileStatus_Loading,
+	FileStatus_AsyncWaiting,
 	FileStatus_Loaded,
 	FileStatus_Failed
 };
