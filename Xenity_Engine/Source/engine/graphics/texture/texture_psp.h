@@ -52,7 +52,7 @@ protected:
 
 	void GetPowerOfTwoResolution(unsigned int& width, unsigned int& height, unsigned int mipmapLevel);
 	size_t GetByteCount(unsigned int mipmapLevel);
-	TextureSettingsPSP& GetSettings() { return *reinterpret_cast<TextureSettingsPSP*>(m_settings[Application::GetAssetPlatform()].get()); }
+	const TextureSettingsPSP& GetSettings() const { return *reinterpret_cast<const TextureSettingsPSP*>(m_settings.at(Application::GetAssetPlatform()).get()); }
 
 	// One vector element for each mipmap level
 	std::vector<bool> inVram;

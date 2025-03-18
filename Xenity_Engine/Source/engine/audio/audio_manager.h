@@ -155,8 +155,13 @@ public:
 	static MyMutex* s_myMutex;
 
 	static void FillChannelBuffer(short* buffer, uint64_t length, Channel* channel);
-
+#if defined(_WIN32) || defined(_WIN64)
 	static std::thread sendAudioThread;
 	static std::thread fillBufferThread;
+#endif
+#if defined(__PSP__) || defined(__vita__)
+	static SceUID thd_id;
+	static SceUID thd_id2;
+#endif
 private:
 };
