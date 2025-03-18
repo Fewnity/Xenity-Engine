@@ -59,8 +59,16 @@ constexpr int buffSize = 1024 * 16;
 int halfBuffSize = 0;
 int quarterBuffSize = 0;
 MyMutex* AudioManager::s_myMutex = nullptr;
+
+#if defined(_WIN32) || defined(_WIN64)
 std::thread AudioManager::sendAudioThread;
 std::thread AudioManager::fillBufferThread;
+#endif
+
+#if defined(__PSP__) || defined(__vita__)
+SceUID AudioManager::thd_id;
+SceUID AudioManager::thd_id2;
+#endif
 
 static_assert(buffSize % 16 == 0, "buffSize must be a multiple of 16");
 static_assert(AUDIO_BUFFER_SIZE % 16 == 0, "AUDIO_BUFFER_SIZE must be a multiple of 16");
@@ -434,14 +442,14 @@ int AudioManager::Init()
 #if defined(__PSP__)
 	pspAudioInit();
 	sceAudioChReserve(0, AUDIO_BUFFER_SIZE, 0);
-	SceUID thd_id = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x18, 0x10000, 0, NULL);
+	thd_id = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x18, 0x10000, 0, NULL);
 	XASSERT(thd_id >= 0, "[AudioManager::Init] thd_id is bad");
 	if (thd_id >= 0)
 	{
 		sceKernelStartThread(thd_id, 0, 0);
 	}
 
-	SceUID thd_id2 = sceKernelCreateThread("audio_thread", audio_thread, 0x18, 0x10000, 0, NULL);
+	thd_id2 = sceKernelCreateThread("audio_thread", audio_thread, 0x18, 0x10000, 0, NULL);
 	XASSERT(thd_id2 >= 0, "[AudioManager::Init] thd_id2 is bad");
 	if (thd_id2 >= 0)
 	{
@@ -449,8 +457,8 @@ int AudioManager::Init()
 	}
 
 #elif defined(__vita__)
-	SceUID thd_id = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x10000, 0, 0, NULL);
-	SceUID thd_id2 = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x40, 0x10000, 0, 0, NULL);
+	thd_id = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x10000, 0, 0, NULL);
+	thd_id2 = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x40, 0x10000, 0, 0, NULL);
 	XASSERT(thd_id >= 0, "[AudioManager::Init] thd_id is bad");
 	XASSERT(thd_id2 >= 0, "[AudioManager::Init] thd_id2 is bad");
 	if (thd_id >= 0 && thd_id2 >= 0)
@@ -588,6 +596,10 @@ void AudioManager::Stop()
 
 	free(audioData);
 	free(audioData2);
+#elif defined(__PSP__)
+	sceKernelTerminateDeleteThread(thd_id);
+	sceKernelTerminateDeleteThread(thd_id2);
+	pspAudioEnd();
 #elif (__PS3__)
 	int ret=audioQuit();
 #endif
