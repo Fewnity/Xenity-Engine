@@ -29,15 +29,9 @@ Rework the documentation
 Implement alpha testing on shaders
 Add unit tests for commands
 Add unit tests for Components Creation/Deletion and Awake/Start/Update/
-Do not forget to readd init component ordering in LoadScene
 Fix PSP sleep mode when networking is enabled
-Add a update mesh function when a mesh is done
 Add a function to resize a submesh (resize only if size is different, usefull for text)
-Fix lighting settings save
-Store chunk ptr in mesh renderer
 Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
-Check why the tv texture does not load on PSP
-Improve audio manager stop system to fix crashes
 Test lighting compatibility mode with fixed pipeline
 Fix PSP unit tests
 
@@ -48,6 +42,9 @@ To make lighting usable on PS3:
 - Try to detect light per draw to use with sphere test (filter light first by camera frustum)
 
 --- Can be done for the next release
+Do not forget to re-add init component ordering in LoadScene
+Use octree for light culling
+Check why the tv texture does not load on PSP
 Check how referenced files are handled when in a missing_script
 Try to build dll with debug symbols
 Check if force inline for GLM is better or not
