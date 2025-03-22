@@ -858,11 +858,17 @@ void SceneMenu::Draw()
 						{
 							std::shared_ptr<GameObject> newGameObject = nullptr;
 							SceneManager::CreateObjectsFromJson(prefab->GetData(), true, &newGameObject);
-
-							newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
-							Editor::SetSelectedGameObject(newGameObject);
-							SceneManager::SetSceneModified(true);
-							draggedMeshGameObject = newGameObject;
+							if (newGameObject)
+							{
+								newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
+								Editor::SetSelectedGameObject(newGameObject);
+								SceneManager::SetSceneModified(true);
+								draggedMeshGameObject = newGameObject;
+							}
+							else 
+							{
+								Debug::PrintError("Corrupted prefab! " + prefabFileRef->m_file->GetPath());
+							}
 						}
 					}
 				}
