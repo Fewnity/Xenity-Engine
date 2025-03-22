@@ -373,7 +373,7 @@ ValueInputState EditorUI::DrawReflectiveData(ReflectiveDataToDraw& reflectiveDat
 			}
 		}
 	}
-	if (onValueChangedEvent && valueInputState != ValueInputState::NO_CHANGE)
+	if (onValueChangedEvent && valueInputState != ValueInputState::NO_CHANGE && valueInputState != ValueInputState::ON_OPEN)
 	{
 		onValueChangedEvent->Trigger();
 	}
