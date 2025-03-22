@@ -91,10 +91,10 @@ void MeshRenderer::OnDrawGizmosSelected()
 	Gizmo::SetColor(meshLineColor);
 
 	const Vector3& tPos = GetTransformRaw()->GetPosition();
-	for (const auto& chunk : m_worldChunkPositions)
+	/*for (const auto& chunk : m_worldChunkPositions)
 	{
 		Gizmo::DrawLine(tPos, chunk + Vector3(WORLD_CHUNK_HALF_SIZE));
-	}
+	}*/
 
 	const Color lightLineColor = Color::CreateFromRGBAFloat(1, 0, 0, 1);
 
@@ -105,6 +105,19 @@ void MeshRenderer::OnDrawGizmosSelected()
 		Gizmo::DrawLine(tPos, light->GetTransformRaw()->GetPosition());
 	}
 #endif
+}
+
+void MeshRenderer::SetUseAdvancedLighting(bool value)
+{
+	m_useAdvancedLighting = value;
+	if (!m_useAdvancedLighting)
+	{
+		WorldPartitionner::RemoveMeshRenderer(this);
+	}
+	else 
+	{
+		WorldPartitionner::ProcessMeshRenderer(this);
+	}
 }
 
 Sphere MeshRenderer::ProcessBoundingSphere() const
@@ -157,7 +170,14 @@ void MeshRenderer::OnReflectionUpdated()
 	Graphics::s_isRenderingBatchDirty = true;
 
 	m_boundingSphere = ProcessBoundingSphere();
-	WorldPartitionner::ProcessMeshRenderer(this);
+	if (!m_useAdvancedLighting)
+	{
+		WorldPartitionner::RemoveMeshRenderer(this);
+	}
+	else 
+	{
+		WorldPartitionner::ProcessMeshRenderer(this);
+	}
 }
 
 /// <summary>
@@ -405,5 +425,8 @@ void MeshRenderer::DrawCommand(const RenderCommand& renderCommand)
 void MeshRenderer::OnTransformPositionUpdated()
 {
 	m_boundingSphere = ProcessBoundingSphere();
-	WorldPartitionner::ProcessMeshRenderer(this);
+	if (m_useAdvancedLighting)
+	{
+		WorldPartitionner::ProcessMeshRenderer(this);
+	}
 }

@@ -11,6 +11,7 @@
 #include <engine/api.h>
 #include <engine/graphics/iDrawable.h>
 #include <engine/graphics/3d_graphics/sphere.h>
+#include <engine/world_partitionner/world_partitionner.h>
 
 class MeshData;
 class Material;
@@ -61,10 +62,7 @@ public:
 
 	void OnDrawGizmosSelected() override;
 
-	void SetUseAdvancedLighting(bool value)
-	{
-		m_useAdvancedLighting = value;
-	}
+	void SetUseAdvancedLighting(bool value);
 
 	bool GetUseAdvancedLighting() const
 	{
@@ -76,7 +74,7 @@ protected:
 
 	void OnNewRender() override;
 	void OnComponentAttached() override;
-	std::vector<Vector3> m_worldChunkPositions;
+	std::vector<WorldPartitionner::Chunk*> m_worldChunkPositions;
 	std::vector<Light*> m_affectedByLights;
 	Sphere ProcessBoundingSphere() const;
 	Sphere m_boundingSphere;

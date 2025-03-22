@@ -20,6 +20,7 @@ public:
 	public:
 		std::vector<Light*> lights;
 		std::vector<MeshRenderer*> meshes;
+		int meshCount = 0;
 	};
 
 	class ZNode

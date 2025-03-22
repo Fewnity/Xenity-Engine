@@ -126,21 +126,16 @@ void WorldPartitionner::RemoveMeshRenderer(MeshRenderer* meshRenderer)
 	if (Tree::children.empty())
 		return;
 
-	for (const auto& position : meshRenderer->m_worldChunkPositions)
+	for (const auto chunk : meshRenderer->m_worldChunkPositions)
 	{
-		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
-		const int y = static_cast<int>(position.y / WORLD_CHUNK_SIZE);
-		const int z = static_cast<int>(position.z / WORLD_CHUNK_SIZE);
-
-		XNode& xNode = Tree::children[x];
-		YNode& yNode = xNode.children[y];
-		ZNode& zNode = yNode.children[z];
-		Chunk& chunk = zNode.chunk;
-
-		auto it = std::find(chunk.meshes.begin(), chunk.meshes.end(), meshRenderer);
-		if (it != chunk.meshes.end())
+		for (size_t i = 0; i < chunk->meshCount; i++)
 		{
-			chunk.meshes.erase(it);
+			if (chunk->meshes[i] == meshRenderer) 
+			{
+				chunk->meshes.erase(chunk->meshes.begin()+i);
+				chunk->meshCount--;
+				break;
+			}
 		}
 	}
 
@@ -158,7 +153,7 @@ void WorldPartitionner::RemoveLight(Light* light)
 	if (Tree::children.empty())
 		return;
 
-	for (auto& position : light->m_worldChunkPositions)
+	for (const auto& position : light->m_worldChunkPositions)
 	{
 		const int x = static_cast<int>(position.x / WORLD_CHUNK_SIZE);
 		const int y = static_cast<int>(position.y / WORLD_CHUNK_SIZE);
@@ -178,10 +173,10 @@ void WorldPartitionner::RemoveLight(Light* light)
 		for (MeshRenderer* meshRenderer : chunk.meshes)
 		{
 			// Add the light if it's not already in the list
-			auto it = std::find(meshRenderer->m_affectedByLights.begin(), meshRenderer->m_affectedByLights.end(), light);
-			if (it != meshRenderer->m_affectedByLights.end())
+			auto it2 = std::find(meshRenderer->m_affectedByLights.begin(), meshRenderer->m_affectedByLights.end(), light);
+			if (it2 != meshRenderer->m_affectedByLights.end())
 			{
-				meshRenderer->m_affectedByLights.erase(it);
+				meshRenderer->m_affectedByLights.erase(it2);
 			}
 		}
 	}
@@ -215,8 +210,9 @@ void WorldPartitionner::ProcessMeshRenderer(MeshRenderer* meshRenderer)
 		ZNode& zNode = yNode.children[z];
 		Chunk& chunk = zNode.chunk;
 		chunk.meshes.push_back(meshRenderer);
+		chunk.meshCount++;
 
-		meshRenderer->m_worldChunkPositions.emplace_back(cube.x, cube.y, cube.z);
+		meshRenderer->m_worldChunkPositions.push_back(&chunk);
 
 		// Add light to mesh
 		for (Light* light : chunk.lights)
