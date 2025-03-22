@@ -8,6 +8,8 @@
 
 #include <editor/ui/menus/menu.h>
 
+#include <engine/event_system/event_system.h>
+
 class SkyBox;
 
 class LightingMenu : public Menu
@@ -17,5 +19,7 @@ public:
 	void Draw() override;
 
 private:
+	Event<> m_onValueChangedEvent;
+	void OnValueChanged();
 };
 

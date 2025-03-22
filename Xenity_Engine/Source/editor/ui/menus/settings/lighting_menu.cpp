@@ -14,6 +14,7 @@
 
 void LightingMenu::Init()
 {
+	m_onValueChangedEvent.Bind(&LightingMenu::OnValueChanged, this);
 }
 
 void LightingMenu::Draw()
@@ -29,15 +30,11 @@ void LightingMenu::Draw()
 		ImGui::Separator();
 
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(AssetPlatform::AP_Standalone);
-		EditorUI::DrawReflectiveData(reflectiveDataToDraw, Graphics::s_settings.GetReflectiveData(), nullptr);
+		EditorUI::DrawReflectiveData(reflectiveDataToDraw, Graphics::s_settings.GetReflectiveData(), &m_onValueChangedEvent);
 		if (reflectiveDataToDraw.command)
 		{
 			CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
 			Graphics::OnLightingSettingsReflectionUpdate();
-		}
-		if (ImGui::Button("Save"))
-		{
-			ProjectManager::SaveProjectSettings();
 		}
 
 		CalculateWindowValues();
@@ -48,4 +45,10 @@ void LightingMenu::Draw()
 	}
 
 	ImGui::End();
+}
+
+void LightingMenu::OnValueChanged()
+{
+	ProjectManager::SaveProjectSettings();
+	SceneManager::SetSceneModified(true);
 }
