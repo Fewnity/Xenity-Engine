@@ -63,11 +63,12 @@ MyMutex* AudioManager::s_myMutex = nullptr;
 #if defined(_WIN32) || defined(_WIN64)
 std::thread AudioManager::sendAudioThread;
 std::thread AudioManager::fillBufferThread;
-#endif
-
-#if defined(__PSP__) || defined(__vita__)
-SceUID AudioManager::thd_id;
-SceUID AudioManager::thd_id2;
+#elif defined(__PSP__) || defined(__vita__)
+SceUID AudioManager::sendAudioThread;
+SceUID AudioManager::fillBufferThread;
+#elif defined(__PS3__)
+sys_ppu_thread_t AudioManager::sendAudioThread;
+sys_ppu_thread_t AudioManager::fillBufferThread;
 #endif
 
 static_assert(buffSize % 16 == 0, "buffSize must be a multiple of 16");
@@ -442,29 +443,34 @@ int AudioManager::Init()
 #if defined(__PSP__)
 	pspAudioInit();
 	sceAudioChReserve(0, AUDIO_BUFFER_SIZE, 0);
-	thd_id = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x18, 0x10000, 0, NULL);
-	XASSERT(thd_id >= 0, "[AudioManager::Init] thd_id is bad");
-	if (thd_id >= 0)
-	{
-		sceKernelStartThread(thd_id, 0, 0);
-	}
+	sendAudioThread = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x18, 0x10000, 0, NULL);
+	fillBufferThread = sceKernelCreateThread("audio_thread", audio_thread, 0x18, 0x10000, 0, NULL);
+	XASSERT(sendAudioThread >= 0, "[AudioManager::Init] sendAudioThread is bad");
+	XASSERT(fillBufferThread >= 0, "[AudioManager::Init] fillBufferThread is bad");
 
-	thd_id2 = sceKernelCreateThread("audio_thread", audio_thread, 0x18, 0x10000, 0, NULL);
-	XASSERT(thd_id2 >= 0, "[AudioManager::Init] thd_id2 is bad");
-	if (thd_id2 >= 0)
+	if (fillBufferThread >= 0 && sendAudioThread >= 0)
 	{
-		sceKernelStartThread(thd_id2, 0, 0);
+		sceKernelStartThread(sendAudioThread, 0, 0);
+		sceKernelStartThread(fillBufferThread, 0, 0);
 	}
-
+	else 
+	{
+		return -1;
+	}
 #elif defined(__vita__)
-	thd_id = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x10000, 0, 0, NULL);
-	thd_id2 = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x40, 0x10000, 0, 0, NULL);
-	XASSERT(thd_id >= 0, "[AudioManager::Init] thd_id is bad");
-	XASSERT(thd_id2 >= 0, "[AudioManager::Init] thd_id2 is bad");
-	if (thd_id >= 0 && thd_id2 >= 0)
+	sendAudioThread = sceKernelCreateThread("audio_thread", audio_thread, 0x40, 0x10000, 0, 0, NULL);
+	fillBufferThread = sceKernelCreateThread("fillAudioBufferThread", fillAudioBufferThread, 0x40, 0x10000, 0, 0, NULL);
+	XASSERT(sendAudioThread >= 0, "[AudioManager::Init] sendAudioThread is bad");
+	XASSERT(fillBufferThread >= 0, "[AudioManager::Init] fillBufferThread is bad");
+
+	if (sendAudioThread >= 0 && fillBufferThread >= 0)
 	{
-		sceKernelStartThread(thd_id2, 0, 0);
-		sceKernelStartThread(thd_id, 0, 0);
+		sceKernelStartThread(sendAudioThread, 0, 0);
+		sceKernelStartThread(fillBufferThread, 0, 0);
+	}
+	else
+	{
+		return -1;
 	}
 #elif defined(_WIN32) || defined(_WIN64)
 	audioData = (short*)malloc(sizeof(short) * buffSize);
@@ -502,7 +508,7 @@ int AudioManager::Init()
 	if (ret != 0)
 	{
 		Debug::PrintError("[AudioManager::Init] audioInit error code: " + std::to_string(ret));
-		return 1;
+		return -1;
 	}
 	u32 portNum;
 
@@ -520,61 +526,57 @@ int AudioManager::Init()
 	if (ret != 0)
 	{
 		Debug::PrintError("[AudioManager::Init] audioPortOpen " + std::to_string(ret));
-		return 1;
+		return -1;
 	}
 
 	ret = audioGetPortConfig(portNum, &config);
 	if (ret != 0)
 	{
 		Debug::PrintError("[AudioManager::Init] audioGetPortConfig " + std::to_string(ret));
-		return 1;
+		return -1;
 	}
 
 	ret = audioCreateNotifyEventQueue(&snd_queue, &snd_key);
 	if (ret != 0)
 	{
 		Debug::PrintError("[AudioManager::Init] audioCreateNotifyEventQueue " + std::to_string(ret));
-		return 1;
+		return -1;
 	}
 
 	ret = audioSetNotifyEventQueue(snd_key);
 	if (ret != 0)
 	{
 		Debug::PrintError("[AudioManager::Init] audioSetNotifyEventQueue " + std::to_string(ret));
-		return 1;
+		return -1;
 	}
 
 	ret = sysEventQueueDrain(snd_queue);
 	if (ret != 0)
 	{
 		Debug::PrintError("[AudioManager::Init] sysEventQueueDrain " + std::to_string(ret));
-		return 1;
+		return -1;
 	}
 
 	ret = audioPortStart(portNum);
 	if (ret != 0)
 	{
 		Debug::PrintError("[AudioManager::Init] audioPortStart " + std::to_string(ret));
-		return 1;
+		return -1;
 	}
 
-	sys_ppu_thread_t id;
-	u64 prio = 1500;
+	uint64_t prio = 1500;
 	size_t stacksize = 0x10000;
 	char *audioThreadname = (char*) malloc(13*sizeof(char));
 
 	strcpy(audioThreadname, "audio_thread");
 	void *threadarg = (void*)0x1337;
-	int tret = sysThreadCreate(&id, audio_thread, threadarg, prio, stacksize, THREAD_JOINABLE, audioThreadname);
+	int tret = sysThreadCreate(&sendAudioThread, audio_thread, threadarg, prio, stacksize, THREAD_JOINABLE, audioThreadname);
 
-	sys_ppu_thread_t id2;
-	u64 prio2 = 1500;
+	uint64_t prio2 = 1500;
 	size_t stacksize2 = 0x100000;
 	char *audioBufferThreadname = (char*) malloc(22*sizeof(char));
 	strcpy(audioBufferThreadname, "fillAudioBufferThread");
-	int tret2 = sysThreadCreate(&id2, fillAudioBufferThread, threadarg, prio2, stacksize2, THREAD_JOINABLE, audioBufferThreadname);
-	sysThreadDetach(id2);
-	sysThreadDetach(id);
+	int tret2 = sysThreadCreate(&fillBufferThread, fillAudioBufferThread, threadarg, prio2, stacksize2, THREAD_JOINABLE, audioBufferThreadname);
 #endif
 	return 0;
 }
@@ -597,11 +599,17 @@ void AudioManager::Stop()
 	free(audioData);
 	free(audioData2);
 #elif defined(__PSP__)
-	sceKernelTerminateDeleteThread(thd_id);
-	sceKernelTerminateDeleteThread(thd_id2);
+	sceKernelTerminateDeleteThread(sendAudioThread);
+	sceKernelTerminateDeleteThread(fillBufferThread);
 	pspAudioEnd();
+#elif defined(__vita__)
+	sceKernelDeleteThread(sendAudioThread);
+	sceKernelDeleteThread(fillBufferThread);
 #elif (__PS3__)
-	int ret=audioQuit();
+	uint64_t returnValue = 0;
+	sysThreadJoin(sendAudioThread, &returnValue);
+	sysThreadJoin(fillBufferThread, &returnValue);
+	int ret = audioQuit();
 #endif
 }
 
