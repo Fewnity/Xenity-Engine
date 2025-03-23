@@ -31,13 +31,20 @@ include_directories(
 
 # Spécifiez le répertoire contenant vos fichiers source
 set(SOURCES_DIR "Source")
+if(MODE STREQUAL "LINUX")
+set(INCLUDES_DIR "include")
+else()
 set(INCLUDES_DIR "include/bullet")
+endif()
 
 # Recherchez tous les fichiers .cpp dans le répertoire et ses sous-répertoires
 file(GLOB_RECURSE SOURCES "${SOURCES_DIR}/*.cpp" "${SOURCES_DIR}/*.c" "${INCLUDES_DIR}/*.cpp")
 
+if(MODE STREQUAL "LINUX")
+else()
 list(FILTER SOURCES EXCLUDE REGEX "Source/editor/.*")
 list(FILTER SOURCES EXCLUDE REGEX "Source/gl.c")
+endif()
 
 if(DEBUG)
 	add_definitions(-DDEBUG)
@@ -180,12 +187,19 @@ vita_create_vpk(${GAME_NAME}.vpk ${VITA_TITLEID} ${PROJECT_NAME}.self
 elseif(MODE STREQUAL "LINUX") #--------------------------------------------- LINUX
 message(STATUS "BUILD LINUX")
 
+target_link_libraries(${PROJECT_NAME}
+    ${CMAKE_SOURCE_DIR}/libs/libcurl.a
+    ${CMAKE_SOURCE_DIR}/libs/libSDL3.a
+    ${CMAKE_SOURCE_DIR}/libs/libassimp.so
+    -lcrypto
+    -lssl
+)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -O2 -fpermissive")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -rdynamic -fpermissive")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3 -fpermissive")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -rdynamic -fpermissive")
 add_definitions(-D__LINUX__=1)
 add_definitions(-DEDITOR=1)
-add_definitions(-DDEBUG=1)
 else()
 message(STATUS "BUILD WINDOWS")
 endif()
