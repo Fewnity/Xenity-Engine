@@ -20,7 +20,13 @@ std::string EditorUI::OpenFolderDialog(const std::string& title, const std::stri
 {
 	std::string path = "";
 	#if defined(__LINUX__)
-
+	std::string output;
+	int retResult = Editor::ExecuteSystemCommand("zenity --file-selection --directory", output);
+	if(retResult == 0)
+	{
+		output.pop_back(); // Remove the last character which is a new line
+		path = output + "/";
+	}
 	#elif defined(_WIN32) || defined(_WIN64)
 
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
@@ -188,7 +194,7 @@ std::string EditorUI::SaveFileDialog(const std::string& title, const std::string
 	//Debug::Print(Editor::ExecuteSystemCommand("zenity --file-selection --save --file-filter=\"*.xen\""));
 	std::string output;
 	int retResult = Editor::ExecuteSystemCommand("zenity --file-selection --save --file-filter=\"*.xen\"", output);
-	if(reResult == 0)
+	if(retResult == 0)
 	{
 		path = output;
 	}
