@@ -34,6 +34,7 @@ Add a function to resize a submesh (resize only if size is different, usefull fo
 Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
 Test lighting compatibility mode with fixed pipeline
 Fix PSP unit tests
+Try to create a benchmark for each component update
 
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
@@ -42,6 +43,7 @@ To make lighting usable on PS3:
 - Try to detect light per draw to use with sphere test (filter light first by camera frustum)
 
 --- Can be done for the next release
+Try fix include on Linux in asset selection menu and EditorUI
 Do not forget to re-add init component ordering in LoadScene
 Use octree for light culling
 Check why the tv texture does not load on PSP
