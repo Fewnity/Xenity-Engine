@@ -7,6 +7,7 @@
 #include "crash_handler.h"
 
 
+#include <iostream>
 #if defined(__LINUX__)
 #include <csignal>
 #include <execinfo.h>

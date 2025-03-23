@@ -9,6 +9,7 @@
 #include <memory>
 #include <vector>
 #include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
 
 #include <editor/ui/menus/file_management/file_explorer_menu.h>
 #include <editor/ui/menus/basic/inspector_menu.h>

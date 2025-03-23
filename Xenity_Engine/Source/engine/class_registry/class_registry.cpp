@@ -31,6 +31,7 @@
 #include <editor/ui/menus/debug/database_checker_menu.h>
 #include <editor/ui/menus/other/update_available_menu.h>
 #include <editor/ui/menus/engine_control/dev_kit_control_menu.h>
+#include <engine/file_system/data_base/file_data_base.h> // Here to fix compilation on Linux
 
 std::unordered_map <std::string, std::pair<std::function<std::shared_ptr<Menu>()>, bool>> ClassRegistry::s_nameToMenu;
 std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;

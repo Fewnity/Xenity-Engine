@@ -3,6 +3,10 @@
 #include <string>
 #include <filesystem>
 #include <fstream>
+#include <mutex>
+#include <cstring>
+#include <thread>
+
 #include <stb_image.h>
 #include <stb_image_write.h>
 #include <stb_image_resize.h>
@@ -17,7 +21,6 @@
 #include <engine/graphics/shader/shader.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/debug/debug.h>
-#include <mutex>
 
 namespace fs = std::filesystem;
 

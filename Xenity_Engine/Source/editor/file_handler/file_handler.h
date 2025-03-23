@@ -12,6 +12,7 @@
 
 #include <string>
 #include <functional>
+#include <cstdint>
 
 class FileHandler
 {

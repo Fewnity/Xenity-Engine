@@ -285,11 +285,11 @@ Side SceneMenu::GetNearSide(float camDistance,
 	float rightPointsDist = Vector3::Distance(rightClosestPointCam, rightClosestPoint);
 	float upPointsDist = Vector3::Distance(upClosestPointCam, upClosestPoint);
 	float forwardPointsDist = Vector3::Distance(forwardClosestPointCam, forwardClosestPoint);
-	if (isnan(rightPointsDist))
+	if (std::isnan(rightPointsDist))
 		rightPointsDist = 99999999.0f;
-	if (isnan(upPointsDist))
+	if (std::isnan(upPointsDist))
 		upPointsDist = 99999999.0f;
-	if (isnan(forwardPointsDist))
+	if (std::isnan(forwardPointsDist))
 		forwardPointsDist = 99999999.0f;
 
 	float distanceDiviser = camDistance;
@@ -607,7 +607,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 					{
 						const double angle = startDragPos.Dot(finalIntersection) / (startDragPos.Magnitude() * finalIntersection.Magnitude());
 						float angleDeg = static_cast<float>(acos(angle) * 180.0 / Math::PI);
-						if (!isnan(angleDeg))
+						if (!std::isnan(angleDeg))
 						{
 							float crossProduct = 0;
 
