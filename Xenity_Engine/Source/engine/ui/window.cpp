@@ -104,6 +104,8 @@ int Window::Init()
 		return static_cast<int>(WindowError::WND_ERROR_SDL_INIT);
 	}
 
+	// Force linux to use OpenGL glsl
+	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 	// Create SDL Window
 	s_window = SDL_CreateWindow(ENGINE_NAME, s_width, s_height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
 	if (s_window == nullptr)
