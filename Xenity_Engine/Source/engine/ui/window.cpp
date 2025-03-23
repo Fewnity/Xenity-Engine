@@ -109,7 +109,7 @@ int Window::Init()
 	if (s_window == nullptr)
 	{
 		std::string sdlError = SDL_GetError();
-		Debug::PrintError("[Window::Init] SDL_Init Error: " + sdlError);
+		Debug::PrintError("[Window::Init] SDL_CreateWindow Error: " + sdlError);
 		return static_cast<int>(WindowError::WND_ERROR_SDL_CREATE_WINDOW);
 	}
 
@@ -118,7 +118,7 @@ int Window::Init()
 	if (context == nullptr)
 	{
 		std::string sdlError = SDL_GetError();
-		Debug::PrintError("[Window::Init] SDL_Init Error: " + sdlError);
+		Debug::PrintError("[Window::Init] SDL_GL_CreateContext Error: " + sdlError);
 		return static_cast<int>(WindowError::WND_ERROR_SDL_GL_CONTEXT);
 	}
 
