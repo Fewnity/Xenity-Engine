@@ -427,7 +427,11 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 #endif
 
 	//Bind all the data
-	glBindVertexArray(subMesh.VAO);
+	if (lastUsedVAO != subMesh.VAO)
+	{
+		glBindVertexArray(subMesh.VAO);
+		lastUsedVAO = subMesh.VAO;
+	}
 	const TextureDefault& openglTexture = dynamic_cast<const TextureDefault&>(texture);
 	if (usedTexture != openglTexture.GetTextureId())
 	{
@@ -454,7 +458,6 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		const int indiceMode = subMesh.isShortIndices ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
 		glDrawElements(primitiveType, subMesh.m_index_count, indiceMode, 0);
 	}
-	glBindVertexArray(0);
 
 #if defined(EDITOR)
 	if (Graphics::usedCamera->IsEditor())
@@ -474,7 +477,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	glDepthMask(GL_TRUE);
 }
 
-// TODO : Improve this function, it's not optimized and using shaders
+// TODO : Improve this function, it's not optimized and not using shaders
 void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
 {
 	if (settings.useDepth)
@@ -482,6 +485,11 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	else
 		glDisable(GL_DEPTH_TEST);
 
+	if (lastUsedVAO != 0)
+	{
+		glBindVertexArray(0);
+		lastUsedVAO = 0;
+	}
 	glDepthRange(0, 1);
 	glEnable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

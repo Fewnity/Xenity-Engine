@@ -98,6 +98,7 @@ private:
 	unsigned int usedTexture = 0;
 	unsigned int lastUsedColor = 0x00000000;
 	unsigned int lastUsedColor2 = 0xFFFFFFFF;
+	unsigned int lastUsedVAO = 0;
 	uint64_t lastShaderIdUsedColor = 0;
 	// int GetDrawModeEnum(DrawMode drawMode);
 };
