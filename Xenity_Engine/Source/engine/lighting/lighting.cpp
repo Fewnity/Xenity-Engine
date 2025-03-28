@@ -150,8 +150,7 @@ void Light::SetupSpotLight(const Color &_color, const float _intensity, const fl
 
 void Light::SetupSpotLight(const Color &_color, const float _intensity, const float _range, const float _angle, const float _smoothness)
 {
-
-	this->color = _color;
+	color = _color;
 	m_intensity = _intensity;
 	SetRange(_range);
 	SetSpotAngle(_angle);
@@ -166,16 +165,17 @@ void Light::SetupSpotLight(const Color &_color, const float _intensity, const fl
 void Light::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-
 	IconName icon = IconName::Icon_Point_Light;
 	if(m_type == LightType::Directional || m_type == LightType::Ambient)
+	{
 		icon = IconName::Icon_Sun_Light;
+	}
 	else if (m_type == LightType::Spot)
+	{
 		icon = IconName::Icon_Spot_Light;
+	}
 
-	Gizmo::DrawBillboard(GetTransform()->GetPosition(), Vector2(0.2f), EditorUI::icons[static_cast<int>(icon)], color);
-
+	Gizmo::DrawBillboard(GetTransformRaw()->GetPosition(), Vector2(0.2f), EditorUI::icons[static_cast<int>(icon)], color);
 #endif
 }
 
@@ -184,17 +184,15 @@ void Light::OnDrawGizmosSelected()
 #if defined(EDITOR)
 	Gizmo::SetColor(Color::CreateFromRGBA(255, 245, 130, 255));
 
-	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-
 	if (m_type == LightType::Point) 
 	{
 		const float dis = GetMaxLightDistance();
 
-		Gizmo::DrawSphere(GetTransform()->GetPosition(), dis);
+		Gizmo::DrawSphere(GetTransformRaw()->GetPosition(), GetTransformRaw()->GetRotation(), dis);
 	}
 	else if (m_type == LightType::Directional || m_type == LightType::Spot)
 	{
-		Gizmo::DrawLine(GetTransform()->GetPosition(), GetTransform()->GetPosition() + GetTransform()->GetForward() * 3);
+		Gizmo::DrawLine(GetTransformRaw()->GetPosition(), GetTransformRaw()->GetPosition() + GetTransformRaw()->GetForward() * 3);
 	}
 #endif
 }

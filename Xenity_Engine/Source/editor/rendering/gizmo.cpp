@@ -6,6 +6,8 @@
 
 #include "gizmo.h"
 
+#include <glm/gtx/quaternion.hpp>
+
 // Graphics
 #include <engine/graphics/renderer/renderer.h>
 #include <engine/graphics/2d_graphics/sprite_manager.h>
@@ -67,52 +69,57 @@ void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const s
 	SpriteManager::DrawSprite(position, Graphics::usedCamera->GetTransform()->GetRotation(), Vector3(0.2f), Color::CreateFromRGBAFloat(rgba.r, rgba.g, rgba.b, alpha), *AssetManager::unlitMaterial, texture.get());
 }
 
-void Gizmo::DrawSphere(const Vector3& position, const float radius)
+void Gizmo::DrawSphere(const Vector3& position, const Quaternion& rotation, const float radius)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
 	if (radius == 0)
 		return;
 
+	glm::quat quat = glm::quat(rotation.w, rotation.x, rotation.y, rotation.z);
+
+
 	const int steps = 30;
 	const float angleStep = 360.0f / steps;
+	Vector3 pos0;
+	Vector3 pos1;
 	for (int i = 0; i < steps; i++)
 	{
 		// Draw sphere with lines
 		{
-			Vector3 pos0 = position;
-			pos0.x += radius * cos((angleStep * i) * Math::PI / 180.0f);
-			pos0.z += radius * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.x = radius * cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.y = 0;
+			pos0.z = radius * sin((angleStep * i) * Math::PI / 180.0f);
 
-			Vector3 pos1 = position;
-			pos1.x += radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-			pos1.z += radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.x = radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.y = 0;
+			pos1.z = radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
 
-			Gizmo::DrawLine(pos0, pos1);
+			Gizmo::DrawLine((rotation * Vector3(pos0)) + position, (rotation * Vector3(pos1)) + position);
 		}
 
 		{
-			Vector3 pos0 = position;
-			pos0.x += radius * cos((angleStep * i) * Math::PI / 180.0f);
-			pos0.y += radius * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.x = radius * cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.y = radius * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.z = 0;
 
-			Vector3 pos1 = position;
-			pos1.x += radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-			pos1.y += radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.x = radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.y = radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.z = 0;
 
-			Gizmo::DrawLine(pos0, pos1);
+			Gizmo::DrawLine((rotation * Vector3(pos0)) + position, (rotation * Vector3(pos1)) + position);
 		}
 
 		{
-			Vector3 pos0 = position;
-			pos0.y += radius * cos((angleStep * i) * Math::PI / 180.0f);
-			pos0.z += radius * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.x = 0;
+			pos0.y = radius * cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.z = radius * sin((angleStep * i) * Math::PI / 180.0f);
 
-			Vector3 pos1 = position;
-			pos1.y += radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-			pos1.z += radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.x = 0;
+			pos1.y = radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.z = radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
 
-			Gizmo::DrawLine(pos0, pos1);
+			Gizmo::DrawLine((rotation * Vector3(pos0)) + position, (rotation * Vector3(pos1)) + position);
 		}
 	}
 }

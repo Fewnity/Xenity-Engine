@@ -81,13 +81,11 @@ void SphereCollider::OnDrawGizmosSelected()
 
 	Gizmo::SetColor(lineColor);
 
-	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-
 	const float maxScale = GetTransform()->GetScale().Max();
 	const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
 	const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
 
-	Gizmo::DrawSphere(Vector3(-newPos.x, newPos.y, newPos.z), m_size / 2 * maxScale);
+	Gizmo::DrawSphere(Vector3(-newPos.x, newPos.y, newPos.z), GetTransformRaw()->GetRotation(), m_size / 2 * maxScale);
 #endif
 }
 

@@ -197,9 +197,6 @@ void BoxCollider::OnDrawGizmosSelected()
 	top2.x = -top2.x;
 	top3.x = -top3.x;
 
-
-	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-
 	// Bottom
 	Gizmo::DrawLine(bottom0, bottom1);
 	Gizmo::DrawLine(bottom0, bottom2);

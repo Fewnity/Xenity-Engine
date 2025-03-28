@@ -146,8 +146,6 @@ void ParticleSystem::OnDrawGizmosSelected()
 		const Vector3 v7 = pos + Vector3(m_boxSize.x, m_boxSize.y, -m_boxSize.z) / 2.0f;
 		const Vector3 v8 = pos + Vector3(m_boxSize.x, m_boxSize.y, m_boxSize.z) / 2.0f;
 
-		Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-
 		// Bottom
 		Gizmo::DrawLine(v1, v2);
 		Gizmo::DrawLine(v1, v3);
@@ -165,6 +163,10 @@ void ParticleSystem::OnDrawGizmosSelected()
 		Gizmo::DrawLine(v2, v6);
 		Gizmo::DrawLine(v3, v7);
 		Gizmo::DrawLine(v4, v8);
+	}
+	else if (m_emitterShape == EmitterShape::Cone)
+	{
+		Gizmo::DrawLine(pos, pos + GetTransformRaw()->GetUp() * 3);
 	}
 #endif
 }

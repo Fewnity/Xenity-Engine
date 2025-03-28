@@ -64,7 +64,7 @@ void MeshRenderer::OnDrawGizmosSelected()
 	RenderingSettings renderSettings = RenderingSettings();
 	renderSettings.invertFaces = false;
 	renderSettings.useDepth = true;
-	renderSettings.useTexture = true;
+	renderSettings.useTexture = false;
 	renderSettings.useLighting = false;
 	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
 	renderSettings.wireframe = true;
@@ -83,8 +83,7 @@ void MeshRenderer::OnDrawGizmosSelected()
 	return;
 
 #if defined(EDITOR)
-	Engine::GetRenderer().SetCameraPosition(*Graphics::usedCamera);
-	Gizmo::DrawSphere(m_boundingSphere.position, m_boundingSphere.radius);
+	Gizmo::DrawSphere(m_boundingSphere.position, Quaternion::Identity(), m_boundingSphere.radius);
 
 	const Color meshLineColor = Color::CreateFromRGBAFloat(0, 0, 1, 1);
 

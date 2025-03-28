@@ -11,6 +11,7 @@
 
 class Vector3;
 class Vector2;
+class Quaternion;
 class Color;
 class Texture;
 
@@ -45,7 +46,7 @@ public:
 	*/
 	static void DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color);
 
-	static void DrawSphere(const Vector3& position, const float radius);
+	static void DrawSphere(const Vector3& position, const Quaternion& rotation, const float radius);
 
 private:
 	static Color color;

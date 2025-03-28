@@ -335,7 +335,14 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 	if (lastSettings.useTexture != settings.useTexture)
 	{
-		glEnable(GL_TEXTURE_2D);
+		if (settings.useTexture)
+		{
+			glEnable(GL_TEXTURE_2D);
+		}
+		else
+		{
+			glDisable(GL_TEXTURE_2D);
+		}
 	}
 
 	if (settings.renderingMode == MaterialRenderingModes::Transparent || settings.max_depth)
@@ -402,6 +409,22 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 			material.GetShader()->SetShaderAttribut("color", colorMix);
 		}
 	}
+
+	// Fix for wireframe using the fixed pipeline
+#if defined(EDITOR)
+	if constexpr (s_UseOpenGLFixedFunctions)
+	{
+		if (settings.wireframe)
+		{
+			const Vector4 colorMix = (material.GetColor() * subMesh.m_meshData->unifiedColor).GetRGBA().ToVector4();
+			glColor4f(colorMix.x, colorMix.y, colorMix.z, colorMix.w);
+		}
+		else 
+		{
+			glColor4f(1, 1, 1, 1);
+		}
+	}
+#endif
 
 	//Bind all the data
 	glBindVertexArray(subMesh.VAO);
