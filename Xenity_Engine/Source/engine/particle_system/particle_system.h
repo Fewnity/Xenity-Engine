@@ -9,9 +9,12 @@
 #include <vector>
 #include <random>
 
+#include <glm/ext/matrix_transform.hpp>
+
 #include <engine/api.h>
 #include <engine/graphics/iDrawable.h>
 #include <engine/vectors/vector3.h>
+#include <engine/vectors/quaternion.h>
 
 class MeshData;
 class Material;
@@ -28,7 +31,7 @@ public:
 	~ParticleSystem();
 
 	/**
-	* Emitte particle when not in loop mode
+	* Emitte all particles when not in loop mode
 	*/
 	void Play();
 
@@ -45,11 +48,15 @@ public:
 protected:
 	struct Particle
 	{
+		glm::mat4 matrix;
 		Vector3 position;
 		Vector3 direction;
+		Quaternion rotation;
+		float billboardRotation = 0;
 		float currentSpeed = 1;
 		float currentLifeTime = 0;
 		float lifeTime = 1;
+		int frameBeforeUpdate = 0;
 		bool isDead = true;
 	};
 
@@ -69,6 +76,8 @@ protected:
 	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
+
+	void OnNewRender(int cameraIndex) override;
 
 	bool m_isEmitting = true;
 
@@ -107,9 +116,11 @@ protected:
 	float m_spawnRate = 1;
 	float m_timer = 0;
 	float m_maxParticles = 10;
+	bool m_randomRotation = true;
 	Color m_color = Color::CreateFromRGBAFloat(1, 1, 1, 1);
 	bool m_loop = true;
 	bool m_play = false;
+	bool m_worldSimulation = true;
 
 	Vector3 m_boxSize = Vector3(1);
 	Vector3 m_direction = Vector3(0,1,0);

@@ -8,6 +8,7 @@
 
 #include <random>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #if defined(EDITOR)
 #include <editor/rendering/gizmo.h>
@@ -35,8 +36,6 @@ std::default_random_engine ParticleSystem::m_gen;
 ParticleSystem::ParticleSystem()
 {
 	AssetManager::AddReflection(this);
-
-	AllocateParticlesMemory();
 }
 
 ParticleSystem::~ParticleSystem()
@@ -65,9 +64,11 @@ ReflectiveData ParticleSystem::GetReflectiveData()
 
 	Reflective::AddVariable(reflectedVariables, m_spawnRate, "spawnRate", true);
 	Reflective::AddVariable(reflectedVariables, m_maxParticles, "maxParticles", true);
+	Reflective::AddVariable(reflectedVariables, m_randomRotation, "randomRotation", true);
 
 	//Reflective::AddVariable(reflectedVariables, reset, "reset", true);
 	Reflective::AddVariable(reflectedVariables, m_isEmitting, "isEmitting", true);
+	Reflective::AddVariable(reflectedVariables, m_worldSimulation, "worldSimulation", true);
 	Reflective::AddVariable(reflectedVariables, m_loop, "loop", true);
 	Reflective::AddVariable(reflectedVariables, m_play, "play", !m_loop);
 
@@ -79,15 +80,30 @@ void ParticleSystem::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 	Graphics::s_isRenderingBatchDirty = true;
+
+	// Check variables values and correct them if needed
 	if (m_speedMin > m_speedMax)
+	{
 		m_speedMin = m_speedMax;
+	}
 	else if (m_speedMax < m_speedMin)
+	{
 		m_speedMax = m_speedMin;
+	}
+
+	if (m_lifeTimeMax < 0.01f)
+	{
+		m_lifeTimeMax = 0.01f;
+	}
 
 	if (m_lifeTimeMin > m_lifeTimeMax)
+	{
 		m_lifeTimeMin = m_lifeTimeMax;
+	}
 	else if (m_lifeTimeMax < m_lifeTimeMin)
+	{
 		m_lifeTimeMax = m_lifeTimeMin;
+	}
 
 	m_speedDistribution = std::uniform_real_distribution<float>(m_speedMin, m_speedMax);
 	m_lifeTimeDistribution = std::uniform_real_distribution<float>(m_lifeTimeMin, m_lifeTimeMax);
@@ -171,27 +187,61 @@ void ParticleSystem::OnDrawGizmosSelected()
 #endif
 }
 
+int currentFrame = 0;
+
 void ParticleSystem::ResetParticle(Particle& particle, bool setIsDead)
 {
+	glm::vec3 direction;
 	if (m_emitterShape == EmitterShape::Cone)
 	{
 		particle.position = Vector3(0);
-		particle.direction = Vector3((rand() % 2000 - 1000) / 1000.0f * m_coneAngle / 180.0f, (rand() % 1000) / 1000.0f + (180 - m_coneAngle) / 180.0f, (rand() % 2000 - 1000) / 1000.0f * m_coneAngle / 180.0f);
+		direction = glm::vec3((rand() % 2000 - 1000) / 1000.0f * m_coneAngle / 180.0f, (rand() % 1000) / 1000.0f + (180 - m_coneAngle) / 180.0f, (rand() % 2000 - 1000) / 1000.0f * m_coneAngle / 180.0f);
 	}
 	else if (m_emitterShape == EmitterShape::Box)
 	{
 		particle.position = Vector3(m_boxXDistribution(m_gen), m_boxYDistribution(m_gen), m_boxZDistribution(m_gen));
-		particle.direction = m_direction;
+		direction = glm::vec3(m_direction.x, m_direction.y, m_direction.z);
 	}
 
-	particle.direction.Normalize();
+	if (m_worldSimulation)
+	{
+		const Quaternion& objectRotation = GetTransformRaw()->GetRotation();
+		const glm::quat glmObjectRotation = glm::quat(objectRotation.w, objectRotation.x, -objectRotation.y, -objectRotation.z);
 
+		// Apply the object rotation to the direction
+		particle.direction = glmObjectRotation * direction;
+	}
+	else
+	{
+		particle.direction = direction;
+	}
+	if (m_randomRotation)
+	{
+		particle.billboardRotation = rand() % 360;
+	}
 	particle.currentSpeed = m_speedDistribution(m_gen);
 
 	particle.currentLifeTime = 0;
 
 	particle.lifeTime = m_lifeTimeDistribution(m_gen);
 	particle.isDead = setIsDead;
+
+	static const Quaternion identity = Quaternion::Identity();
+	const Quaternion rotation = m_randomRotation ? Quaternion((rand() % 100) / 100.0f, (rand() % 100) / 100.0f, (rand() % 100) / 100.0f, (rand() % 100) / 100.0f) : identity;
+
+	if (m_worldSimulation)
+	{
+		const glm::mat4& transMat = GetTransformRaw()->GetTransformationMatrix();
+		particle.matrix = Math::MultiplyMatrices(transMat, Math::CreateModelMatrix(particle.position, rotation, Vector3(1)));
+	}
+	else
+	{
+		particle.matrix = Math::CreateModelMatrix(particle.position, rotation, Vector3(1));
+	}
+
+	particle.frameBeforeUpdate = currentFrame + 1;
+	currentFrame++;
+	currentFrame %= 2;
 }
 
 void ParticleSystem::AllocateParticlesMemory()
@@ -199,9 +249,11 @@ void ParticleSystem::AllocateParticlesMemory()
 	m_particles.clear();
 	for (int i = 0; i < m_maxParticles; i++)
 	{
-		Particle newParticle = Particle();
-		ResetParticle(newParticle, true);
-		m_particles.push_back(newParticle);
+		Particle& newParticle = m_particles.emplace_back();
+		if (GetTransformRaw())
+		{
+			ResetParticle(newParticle, true);
+		}
 	}
 }
 
@@ -216,10 +268,6 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	renderSettings.useLighting = renderCommand.material->GetUseLighting();
 	renderSettings.renderingMode = renderCommand.material->GetRenderingMode();
 
-	static const Quaternion rotation = Quaternion::Identity();
-
-	const size_t camCount = Graphics::cameras.size();
-
 	const Vector3& camScale = Graphics::usedCamera->GetTransformRaw()->GetScale();
 	const glm::mat4& camMat = Graphics::usedCamera->GetTransformRaw()->GetTransformationMatrix();
 	const glm::mat4& transMat = GetTransformRaw()->GetTransformationMatrix();
@@ -228,65 +276,83 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	const Vector3& scale = GetTransformRaw()->GetScale();
 	const glm::vec3 fixedScale = glm::vec3(1.0f / camScale.x, 1.0f / camScale.z, 1.0f / camScale.y) * glm::vec3(scale.x, scale.y, scale.z);
 
+	glm::mat4 newMat;
 	for (int i = 0; i < m_maxParticles; i++)
 	{
-		Particle& particle = m_particles[i];
+		const Particle& particle = m_particles[i];
 		if (particle.isDead)
 		{
 			continue;
 		}
 
-		glm::mat4 newMat = Math::MultiplyMatrices(transMat, Math::CreateModelMatrix(particle.position, rotation, Vector3(1)));
+		newMat = particle.matrix;
+
+		if (!m_worldSimulation)
+		{
+			newMat = Math::MultiplyMatrices(transMat, newMat);
+		}
 		if (m_isBillboard)
 		{
-			for (int matI = 0; matI < 3; matI++)
+			// Copy camera rotation matrix
+			newMat[0] = camMat[0];
+			newMat[1] = camMat[1];
+			newMat[2] = camMat[2];
+			// Apply the object rotation on Z
+			newMat = glm::rotate(newMat, particle.billboardRotation, glm::vec3(0, 0, 1));
+			// Fix scale if the camera has a scale (Y and Z are inverted for some raison)
+			newMat = glm::scale(newMat, fixedScale);
+		}
+		renderCommand.subMesh->m_meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
+
+#if defined(__PSP__)
+		Graphics::DrawSubMesh(*renderCommand.subMesh, *m_material, m_texture.get(), renderSettings, newMat, newMat, newMat, false);
+#else
+		const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * newMat;
+		Graphics::DrawSubMesh(*renderCommand.subMesh, *m_material, m_texture.get(), renderSettings, newMat, newMat, MVP, false);
+#endif
+	}
+}
+
+void ParticleSystem::OnNewRender(int cameraIndex)
+{
+	// Only update particles for the render
+	if (cameraIndex != 0)
+	{
+		return;
+	}
+
+	for (int i = 0; i < m_maxParticles; i++)
+	{
+		Particle& particle = m_particles[i];
+		if (particle.isDead)
+		{
+			// Spawn new particles
+			if (m_isEmitting && m_loop && m_timer >= 1)
 			{
-				for (int matJ = 0; matJ < 3; matJ++)
-				{
-					newMat[matI][matJ] = camMat[matI][matJ];
-				}
+				ResetParticle(particle, false);
+				m_timer -= 1;
 			}
-			newMat = glm::scale(newMat, fixedScale); // Fix scale if the camera has a scale (Y and Z are inverted for some raison)
+			continue;
+		}
+		particle.frameBeforeUpdate--;
+		if (particle.frameBeforeUpdate == 0)
+		{
+			particle.matrix[3] += glm::vec4(glm::vec3(particle.direction.x, particle.direction.y, particle.direction.z), 0.0f) * Time::GetDeltaTime() * particle.currentSpeed * 2.0f;
+
+			//particle.matrix *= glm::toMat4(glm::quat(particle.rotation.w, particle.rotation.x, -particle.rotation.y, -particle.rotation.z));
+			particle.frameBeforeUpdate += 2;
 		}
 
-		renderCommand.subMesh->m_meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
-		const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * newMat;
-
-		Graphics::DrawSubMesh(*renderCommand.subMesh, *m_material, m_texture.get(), renderSettings, newMat, newMat, MVP, false);
-
-		particle.position += particle.direction * Time::GetDeltaTime() / static_cast<float>(camCount) * particle.currentSpeed;
-
-		particle.currentLifeTime += Time::GetDeltaTime() / camCount;
+		particle.currentLifeTime += Time::GetDeltaTime();
 		if (particle.currentLifeTime >= particle.lifeTime)
 		{
 			particle.isDead = true;
 		}
 	}
 
-	// Spawn new particles
 	if (m_isEmitting && m_loop)
 	{
-		m_timer += Time::GetDeltaTime() / camCount * m_spawnRate;
-		while (m_timer > 1)
-		{
-			m_timer -= 1;
-			bool found = false;
-			for (int i = 0; i < m_maxParticles; i++)
-			{
-				Particle& particle = m_particles[i];
-				if (particle.isDead)
-				{
-					ResetParticle(particle, false);
-					found = true;
-					break;
-				}
-			}
-
-			if (!found)
-			{
-				m_timer = 0;
-			}
-		}
+		m_timer += Time::GetDeltaTime() * m_spawnRate;
 	}
 
 	/*if (reset)
