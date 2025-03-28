@@ -15,7 +15,6 @@
 #include <engine/vectors/vector3.h>
 #include <engine/vectors/vector2.h>
 #include <engine/vectors/quaternion.h>
-#include <engine/tools/math.h>
 
 void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {

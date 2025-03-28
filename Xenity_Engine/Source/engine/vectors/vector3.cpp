@@ -10,6 +10,7 @@
 #include "vector3.h"
 #include "vector2_int.h"
 #include "vector2.h"
+#include "quaternion.h"
 
 #pragma region Constructors / Destructor
 
@@ -158,4 +159,17 @@ Vector3 Vector3::Lerp(const Vector3& a, const Vector3& b, const float t)
 std::string Vector3::ToString() const
 {
 	return "{x:" + std::to_string(x) + " y:" + std::to_string(y) + " z:" + std::to_string(z) + "}";
+}
+
+Vector3 operator*(const Quaternion& left, const Vector3& right)
+{
+	// Code from GLM
+
+	// Extract the vector part of the quaternion
+	const Vector3 QuatVector(left.x, left.y, left.z);
+
+	const Vector3 uv(Vector3::Cross(QuatVector, right));
+	const Vector3 uuv(Vector3::Cross(QuatVector, uv));
+
+	return right + ((uv * left.w) + uuv) * 2.0f;
 }

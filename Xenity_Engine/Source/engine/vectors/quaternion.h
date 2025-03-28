@@ -19,7 +19,10 @@ public:
 	Quaternion();
 
 	inline explicit Quaternion(const float x, const float y, const float z, const float w)
-		: x(x), y(y), z(z), w(w) {}
+		: x(x), y(y), z(z), w(w) 
+	{
+		Normalize();
+	}
 
 	explicit Quaternion(const Vector4& vector);
 
@@ -30,6 +33,13 @@ public:
 	Vector3 ToEuler() const;
 
 	void Set(const float x, const float y, const float z, const float w);
+	void Normalize();
+
+	Vector3 GetForward() const;
+
+	Vector3 GetUp() const;
+
+	Vector3 GetRight() const;
 
 	/**
 	* @brief Return a string representation of the quaternion
@@ -44,7 +54,7 @@ public:
 
 inline Quaternion Quaternion::Identity()
 {
-	return Quaternion { 0, 0, 0 , 1 };
+	return Quaternion { 0, 0, 0, 1 };
 }
 
 inline void Quaternion::Set(const float x, const float y, const float z, const float w)
@@ -53,6 +63,20 @@ inline void Quaternion::Set(const float x, const float y, const float z, const f
 	this->y = y;
 	this->z = z;
 	this->w = w;
+	Normalize();
+}
+
+inline void Quaternion::Normalize()
+{
+	const float length = sqrtf(x * x + y * y + z * z + w * w);
+	if (length > 0.0f)
+	{
+		const float invLength = 1.0f / length;
+		x *= invLength;
+		y *= invLength;
+		z *= invLength;
+		w *= invLength;
+	}
 }
 
 inline std::string Quaternion::ToString() const

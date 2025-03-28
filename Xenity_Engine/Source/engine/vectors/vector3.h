@@ -18,6 +18,7 @@
 
 class Vector2Int;
 class Vector2;
+class Quaternion;
 
 /*
 * @brief Contains 3D coordinates
@@ -249,3 +250,5 @@ inline bool operator!=(const Vector3& left, const Vector3& right)
 {
 	return left.x != right.x || left.y != right.y || left.z != right.z;
 }
+
+Vector3 operator*(const Quaternion& left, const Vector3& right);

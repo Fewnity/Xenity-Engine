@@ -28,6 +28,7 @@ Quaternion::Quaternion(const Vector4& vector)
 	y = vector.y;
 	z = vector.z;
 	w = vector.w;
+	Normalize();
 }
 
 Quaternion Quaternion::Inverse(const Quaternion& q)
@@ -35,6 +36,33 @@ Quaternion Quaternion::Inverse(const Quaternion& q)
 	float normSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
 	return Quaternion(-q.x / normSq, -q.y / normSq, -q.z / normSq, q.w / normSq);
 	//return Quaternion(-q.x, -q.y, -q.z, q.w);
+}
+
+Vector3 Quaternion::GetForward() const
+{
+	return Vector3(
+		2 * (x * z + w * y),
+		2 * (y * z - w * x),
+		1 - 2 * (x * x + y * y)
+	);
+}
+
+Vector3 Quaternion::GetUp() const
+{
+	return Vector3(
+		2 * (x * y - w * z),
+		1 - 2 * (x * x + z * z),
+		2 * (y * z + w * x)
+	);
+}
+
+Vector3 Quaternion::GetRight() const
+{
+	return Vector3(
+		1 - 2 * (y * y + z * z),
+		2 * (x * y + w * z),
+		2 * (x * z - w * y)
+	);
 }
 
 Quaternion Quaternion::Euler(const float x, const float y, const float z)
