@@ -22,6 +22,7 @@
 #include <engine/file_system/file.h>
 #include <engine/graphics/texture/texture.h>
 #include <engine/event_system/event_system.h>
+#include <engine/tools/string_utils.h>
 
 template <class T>
 class SelectAssetMenu : public Menu
@@ -85,7 +86,8 @@ public:
 			// Filter files by user search
 			if (!searchBuffer.empty())
 			{
-				if (fileRef->m_file->GetFileName().find(searchBuffer) == std::string::npos)
+				std::string lowerFileName = StringUtils::ToLower(fileRef->m_file->GetFileName());
+				if (lowerFileName.find(searchBuffer) == std::string::npos)
 				{
 					continue;
 				}
@@ -195,6 +197,7 @@ public:
 			const bool scearchBarChanged = ImGui::InputText("##SearchBar", &searchBuffer);
 			if (scearchBarChanged)
 			{
+				searchBuffer = StringUtils::ToLower(searchBuffer);
 				SearchFiles(fileType);
 			}
 			ImGui::SameLine();
