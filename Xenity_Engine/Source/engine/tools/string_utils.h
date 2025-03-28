@@ -30,5 +30,15 @@ public:
 	* @param delimiter The delimiter to split the text with
 	*/
 	static std::vector<std::string> Split(const std::string& text, const char delimiter);
+
+	/**
+	* @brief Take a string and convert it to lowercase
+	*/
+	static std::string ToLower(const std::string& text);
+
+	/**
+	* @brief Take a string and convert it to uppercase
+	*/
+	static std::string ToUpper(const std::string& text);
 };
 

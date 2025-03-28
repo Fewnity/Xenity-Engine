@@ -63,3 +63,29 @@ std::vector<std::string> StringUtils::Split(const std::string& text, const char 
 
 	return result;
 }
+
+std::string StringUtils::ToLower(const std::string& text)
+{
+	std::string result = text;
+
+	size_t size = result.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		result[i] = std::tolower(result[i]);
+	}
+
+	return result;
+}
+
+std::string StringUtils::ToUpper(const std::string& text)
+{
+	std::string result = text;
+
+	size_t size = result.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		result[i] = std::toupper(result[i]);
+	}
+
+	return result;
+}
