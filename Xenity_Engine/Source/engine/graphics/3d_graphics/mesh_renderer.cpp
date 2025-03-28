@@ -134,7 +134,7 @@ Sphere MeshRenderer::ProcessBoundingSphere() const
 	return sphere;
 }
 
-void MeshRenderer::OnNewRender()
+void MeshRenderer::OnNewRender(int cameraIndex)
 {
 	if (GetGameObjectRaw()->IsLocalActive() && IsEnabled())
 	{

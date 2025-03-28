@@ -32,5 +32,5 @@ protected:
 	*/
 	virtual void DrawCommand(const RenderCommand & renderCommand) = 0;
 
-	virtual void OnNewRender() {};
+	virtual void OnNewRender(int cameraIndex) {};
 };

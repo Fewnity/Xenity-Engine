@@ -185,6 +185,7 @@ void Graphics::Draw()
 		}
 	}
 
+	int currentCameraIndex = 0;
 	for (const std::weak_ptr<Camera>& weakCam : cameras)
 	{
 		usedCamera = weakCam.lock();
@@ -240,7 +241,7 @@ void Graphics::Draw()
 				SCOPED_PROFILER("Graphics::CallOnNewRender", scopeBenchmarkNewRender);
 				for (IDrawable* drawable : s_orderedIDrawable)
 				{
-					drawable->OnNewRender();
+					drawable->OnNewRender(currentCameraIndex);
 				}
 			}
 
@@ -395,6 +396,7 @@ void Graphics::Draw()
 			}
 #endif
 			usedCamera->CopyMultiSampledFrameBuffer();
+			currentCameraIndex++;
 		}
 	}
 

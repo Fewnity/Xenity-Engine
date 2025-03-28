@@ -72,7 +72,7 @@ public:
 protected:
 	friend class WorldPartitionner;
 
-	void OnNewRender() override;
+	void OnNewRender(int cameraIndex) override;
 	void OnComponentAttached() override;
 	std::vector<WorldPartitionner::Chunk*> m_worldChunkPositions;
 	std::vector<Light*> m_affectedByLights;
