@@ -150,17 +150,29 @@ void ParticleSystem::OnDrawGizmosSelected()
 
 	if (m_emitterShape == EmitterShape::Box)
 	{
+		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
+
 		// Bottom vertex
-		const Vector3 v1 = pos + Vector3(-m_boxSize.x, -m_boxSize.y, -m_boxSize.z) / 2.0f;
-		const Vector3 v2 = pos + Vector3(-m_boxSize.x, -m_boxSize.y, m_boxSize.z) / 2.0f;
-		const Vector3 v3 = pos + Vector3(m_boxSize.x, -m_boxSize.y, -m_boxSize.z) / 2.0f;
-		const Vector3 v4 = pos + Vector3(m_boxSize.x, -m_boxSize.y, m_boxSize.z) / 2.0f;
+		Vector3 v1 = matrix * (glm::vec4(-m_boxSize.x, -m_boxSize.y, -m_boxSize.z, 2) / 2.0f);
+		Vector3 v2 = matrix * (glm::vec4(-m_boxSize.x, -m_boxSize.y, m_boxSize.z, 2) / 2.0f);
+		Vector3 v3 = matrix * (glm::vec4(m_boxSize.x, -m_boxSize.y, -m_boxSize.z, 2) / 2.0f);
+		Vector3 v4 = matrix * (glm::vec4(m_boxSize.x, -m_boxSize.y, m_boxSize.z, 2) / 2.0f);
 
 		// Top vertex
-		const Vector3 v5 = pos + Vector3(-m_boxSize.x, m_boxSize.y, -m_boxSize.z) / 2.0f;
-		const Vector3 v6 = pos + Vector3(-m_boxSize.x, m_boxSize.y, m_boxSize.z) / 2.0f;
-		const Vector3 v7 = pos + Vector3(m_boxSize.x, m_boxSize.y, -m_boxSize.z) / 2.0f;
-		const Vector3 v8 = pos + Vector3(m_boxSize.x, m_boxSize.y, m_boxSize.z) / 2.0f;
+		Vector3 v5 = matrix * (glm::vec4(-m_boxSize.x, m_boxSize.y, -m_boxSize.z, 2) / 2.0f);
+		Vector3 v6 = matrix * (glm::vec4(-m_boxSize.x, m_boxSize.y, m_boxSize.z, 2) / 2.0f);
+		Vector3 v7 = matrix * (glm::vec4(m_boxSize.x, m_boxSize.y, -m_boxSize.z, 2) / 2.0f);
+		Vector3 v8 = matrix * (glm::vec4(m_boxSize.x, m_boxSize.y, m_boxSize.z, 2) / 2.0f);
+
+		v1.x = -v1.x;
+		v2.x = -v2.x;
+		v3.x = -v3.x;
+		v4.x = -v4.x;
+
+		v5.x = -v5.x;
+		v6.x = -v6.x;
+		v7.x = -v7.x;
+		v8.x = -v8.x;
 
 		// Bottom
 		Gizmo::DrawLine(v1, v2);
