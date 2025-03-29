@@ -206,8 +206,11 @@ void ParticleSystem::ResetParticle(Particle& particle, bool setIsDead)
 	if (m_worldSimulation)
 	{
 		const Quaternion& objectRotation = GetTransformRaw()->GetRotation();
+		const Vector3& scale = GetTransformRaw()->GetScale();
 		const glm::quat glmObjectRotation = glm::quat(objectRotation.w, objectRotation.x, -objectRotation.y, -objectRotation.z);
 
+		// Fix particle speed
+		direction *= glm::vec3(scale.x, scale.y, scale.z);
 		// Apply the object rotation to the direction
 		particle.direction = glmObjectRotation * direction;
 	}
