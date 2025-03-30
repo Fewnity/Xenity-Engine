@@ -36,6 +36,9 @@ std::default_random_engine ParticleSystem::m_gen;
 ParticleSystem::ParticleSystem()
 {
 	AssetManager::AddReflection(this);
+	scaleOverLifeTimeFunction = DefaultGetScaleOverLifeTime;
+	speedMultiplierOverLifeTimeFunction = DefaultGetSpeedOverLifeTime;
+	colorOverLifeTimeFunction = DefaultGetColorOverLifeTime;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -68,6 +71,7 @@ ReflectiveData ParticleSystem::GetReflectiveData()
 
 	//Reflective::AddVariable(reflectedVariables, reset, "reset", true);
 	Reflective::AddVariable(reflectedVariables, m_isEmitting, "isEmitting", true);
+	Reflective::AddVariable(reflectedVariables, m_simulationRate, "simulationRate", true);
 	Reflective::AddVariable(reflectedVariables, m_worldSimulation, "worldSimulation", true);
 	Reflective::AddVariable(reflectedVariables, m_loop, "loop", true);
 	Reflective::AddVariable(reflectedVariables, m_play, "play", !m_loop);
@@ -121,10 +125,7 @@ void ParticleSystem::OnReflectionUpdated()
 
 void ParticleSystem::Start()
 {
-	for (int i = 0; i < m_maxParticles; i++)
-	{
-		ResetParticle(m_particles[i], true);
-	}
+	ResetParticles();
 }
 
 void ParticleSystem::Update()
@@ -137,6 +138,14 @@ void ParticleSystem::Play()
 	for (int i = 0; i < m_maxParticles; i++)
 	{
 		ResetParticle(m_particles[i], false);
+	}
+}
+
+void ParticleSystem::ResetParticles()
+{
+	for (int i = 0; i < m_maxParticles; i++)
+	{
+		ResetParticle(m_particles[i], true);
 	}
 }
 
@@ -208,6 +217,7 @@ void ParticleSystem::ResetParticle(Particle& particle, bool setIsDead)
 	{
 		particle.position = Vector3(0);
 		direction = glm::vec3((rand() % 2000 - 1000) / 1000.0f * m_coneAngle / 180.0f, (rand() % 1000) / 1000.0f + (180 - m_coneAngle) / 180.0f, (rand() % 2000 - 1000) / 1000.0f * m_coneAngle / 180.0f);
+		direction = glm::normalize(direction);
 	}
 	else if (m_emitterShape == EmitterShape::Box)
 	{
@@ -254,7 +264,29 @@ void ParticleSystem::ResetParticle(Particle& particle, bool setIsDead)
 		particle.matrix = Math::CreateModelMatrix(particle.position, rotation, Vector3(1));
 	}
 
-	particle.frameBeforeUpdate = currentFrame + 1;
+	particle.scale = scaleOverLifeTimeFunction(0);
+
+	//particle.frameBeforeUpdate = currentFrame + 1;
+	if (currentFrame == 0)
+	{
+		if (m_simulationRate == SimulationRate::fps_30)
+		{
+			particle.simulationCooldown = 1 / 30.0f;
+		}
+		else if (m_simulationRate == SimulationRate::fps_60)
+		{
+			particle.simulationCooldown = 1 / 60.0f;
+		}
+		else
+		{
+			particle.simulationCooldown = 0;
+		}
+	}
+	else
+	{
+		particle.simulationCooldown = 0;
+	}
+
 	currentFrame++;
 	currentFrame %= 2;
 }
@@ -270,6 +302,21 @@ void ParticleSystem::AllocateParticlesMemory()
 			ResetParticle(newParticle, true);
 		}
 	}
+}
+
+float ParticleSystem::DefaultGetScaleOverLifeTime(float lifeTime)
+{
+	return std::sin(lifeTime * Math::PI);
+}
+
+float ParticleSystem::DefaultGetSpeedOverLifeTime(float lifeTime)
+{
+	return 1;
+}
+
+Vector4 ParticleSystem::DefaultGetColorOverLifeTime(float lifeTime)
+{
+	return Vector4(1, 1, 1, sin(lifeTime * Math::PI));
 }
 
 void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
@@ -317,6 +364,8 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 			// Fix scale if the camera has a scale (Y and Z are inverted for some raison)
 			newMat = glm::scale(newMat, fixedScale);
 		}
+
+		newMat = glm::scale(newMat, glm::vec3(particle.scale));
 		renderCommand.subMesh->m_meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
 
 #if defined(__PSP__)
@@ -336,6 +385,29 @@ void ParticleSystem::OnNewRender(int cameraIndex)
 		return;
 	}
 
+	float simulationTimer = 0;
+	float simulationSpeedMultiplier = 1;
+	if(m_simulationRate == SimulationRate::fps_30)
+	{
+		simulationTimer = 1 / 30.0f;
+		simulationSpeedMultiplier = simulationTimer;
+	}
+	else if (m_simulationRate == SimulationRate::fps_60)
+	{
+		simulationTimer = 1 / 60.0f;
+		simulationSpeedMultiplier = simulationTimer;
+	}
+	else
+	{
+		simulationTimer = 0;
+		simulationSpeedMultiplier = Time::GetDeltaTime();
+	}
+	if (Time::GetDeltaTime() > simulationTimer)
+	{
+		simulationTimer = Time::GetDeltaTime();
+		simulationSpeedMultiplier = simulationTimer;
+	}
+
 	for (int i = 0; i < m_maxParticles; i++)
 	{
 		Particle& particle = m_particles[i];
@@ -349,13 +421,17 @@ void ParticleSystem::OnNewRender(int cameraIndex)
 			}
 			continue;
 		}
-		particle.frameBeforeUpdate--;
-		if (particle.frameBeforeUpdate == 0)
-		{
-			particle.matrix[3] += glm::vec4(glm::vec3(particle.direction.x, particle.direction.y, particle.direction.z), 0.0f) * Time::GetDeltaTime() * particle.currentSpeed * 2.0f;
 
+		particle.simulationCooldown -= Time::GetUnscaledDeltaTime();
+		if (particle.simulationCooldown <= 0)
+		{
+			particle.matrix[3] += glm::vec4(glm::vec3(particle.direction.x, particle.direction.y, particle.direction.z), 0.0f) * simulationSpeedMultiplier * particle.currentSpeed * particle.speedMultiplier * 1.0f;
+
+			particle.scale = scaleOverLifeTimeFunction(particle.currentLifeTime / particle.lifeTime);
+			particle.speedMultiplier = speedMultiplierOverLifeTimeFunction(particle.currentLifeTime / particle.lifeTime);
 			//particle.matrix *= glm::toMat4(glm::quat(particle.rotation.w, particle.rotation.x, -particle.rotation.y, -particle.rotation.z));
-			particle.frameBeforeUpdate += 2;
+
+			particle.simulationCooldown += simulationTimer;
 		}
 
 		particle.currentLifeTime += Time::GetDeltaTime();
