@@ -35,7 +35,7 @@ Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
 Test lighting compatibility mode with fixed pipeline
 Fix PSP unit tests
 Try to create a benchmark for each component update
-
+Add an option to allow only one instance of a component on a gameobject (for rigidbody)
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
 To make lighting usable on PS3:
