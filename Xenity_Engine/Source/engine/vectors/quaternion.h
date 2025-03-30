@@ -8,6 +8,7 @@
 
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
+#include <cmath>
 
 class Vector3;
 class Vector4;
