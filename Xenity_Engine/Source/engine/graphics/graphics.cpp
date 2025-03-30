@@ -241,7 +241,10 @@ void Graphics::Draw()
 				SCOPED_PROFILER("Graphics::CallOnNewRender", scopeBenchmarkNewRender);
 				for (IDrawable* drawable : s_orderedIDrawable)
 				{
-					drawable->OnNewRender(currentCameraIndex);
+					if (drawable->GetGameObjectRaw()->IsLocalActive() && drawable->IsEnabled())
+					{
+						drawable->OnNewRender(currentCameraIndex);
+					}
 				}
 			}
 
