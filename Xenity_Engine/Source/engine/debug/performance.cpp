@@ -148,7 +148,7 @@ size_t Performance::RegisterScopProfiler(const std::string& name, size_t hash)
 	return hash;
 }
 
-uint32_t Performance::GetProfilerFrameDuration(const std::unordered_map<uint64_t, std::vector<ScopTimerResult>>& profilerFrame)
+uint32_t Performance::GetProfilerFrameDuration()
 {
 	uint64_t engineLoopKey = 0;
 	for (const auto& profilerNamesKV : Performance::s_scopProfilerNames)
@@ -315,7 +315,7 @@ void Performance::ResetProfiler()
 	{
 		if (!Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults.empty())
 		{
-			Performance::s_scopProfilerList[s_currentProfilerFrame].frameDuration = GetProfilerFrameDuration(Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults);
+			Performance::s_scopProfilerList[s_currentProfilerFrame].frameDuration = GetProfilerFrameDuration();
 		}
 		s_currentProfilerFrame++;
 		if (s_currentProfilerFrame == s_maxProfilerFrameCount)

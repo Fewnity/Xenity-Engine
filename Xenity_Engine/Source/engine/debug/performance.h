@@ -147,7 +147,7 @@ public:
 
 	static size_t RegisterScopProfiler(const std::string& name, size_t hash);
 
-	static uint32_t GetProfilerFrameDuration(const std::unordered_map<uint64_t, std::vector<ScopTimerResult>>& profilerFrame);
+	static uint32_t GetProfilerFrameDuration();
 
 	static std::unordered_map<std::string, ProfilerCategory*> s_profilerCategories;
 	static std::vector<ProfilerFrameAnalysis> s_scopProfilerList;  // Hash to the name, List
