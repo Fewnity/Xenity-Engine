@@ -44,6 +44,9 @@ void Performance::Init()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 	Debug::Print("-------- Profiler initiated --------", true);
 	s_scopProfilerList.resize(s_maxProfilerFrameCount);
+#if defined(USE_PROFILER)
+	s_scopProfilerNames.reserve(40);
+#endif
 #if defined(DEBUG)
 	s_gameObjectMemoryTracker = new MemoryTracker("GameObjects");
 	s_meshDataMemoryTracker = new MemoryTracker("Mesh Data");
