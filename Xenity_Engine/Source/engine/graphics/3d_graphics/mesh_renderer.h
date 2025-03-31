@@ -108,7 +108,7 @@ protected:
 
 	std::shared_ptr <MeshData> m_meshData = nullptr;
 	std::vector<std::shared_ptr <Material>> m_materials;
-	size_t m_matCount = 0;
+	uint8_t m_matCount = 0;
 
 	bool m_culled = false;
 	bool m_outOfFrustum = false;
