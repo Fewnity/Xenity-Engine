@@ -93,7 +93,7 @@ struct ProfilerFrameAnalysis
 	uint32_t frameDuration;
 };
 
-class Performance
+class API Performance
 {
 public:
 

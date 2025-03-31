@@ -3,7 +3,9 @@
 #include <string>
 #include <cstdint>
 
-class ScopeBenchmark
+#include <engine/api.h>
+
+class API ScopeBenchmark
 {
 public:
 	ScopeBenchmark(const size_t hash);
