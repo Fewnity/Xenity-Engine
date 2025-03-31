@@ -8,6 +8,7 @@
 
 #include <engine/component.h>
 #include <engine/event_system/event_system.h>
+#include <engine/debug/performance.h>
 
 class BaseComponentList
 {
@@ -77,7 +78,7 @@ public:
 		data->data = std::make_unique<uint8_t[]>(sizeof(T) * m_maxComponentCount);
 		data->allocated.resize(m_maxComponentCount);
 		data->remainingSlot = m_maxComponentCount;
-		componentsData.push_back(std::move(data));
+		m_componentsData.push_back(std::move(data));
 	}
 
 	/**
@@ -87,11 +88,11 @@ public:
 	{
 		// Find available list
 		int listIndex = -1;
-		const size_t listCount = componentsData.size();
+		const size_t listCount = m_componentsData.size();
 
 		for (size_t currentListIndex = 0; currentListIndex < listCount; currentListIndex++)
 		{
-			if (componentsData[currentListIndex]->remainingSlot != 0)
+			if (m_componentsData[currentListIndex]->remainingSlot != 0)
 			{
 				listIndex = currentListIndex;
 				break;
@@ -107,18 +108,18 @@ public:
 			data->data = std::make_unique<uint8_t[]>(sizeof(T) * m_maxComponentCount);
 			data->allocated.resize(m_maxComponentCount);
 			data->remainingSlot = m_maxComponentCount;
-			componentsData.push_back(std::move(data));
+			m_componentsData.push_back(std::move(data));
 			listIndex = listCount;
 		}
 
 		int addedAt = -1;
 		for (size_t i = 0; i < m_maxComponentCount; ++i)
 		{
-			if (!componentsData[listIndex]->allocated[i])
+			if (!m_componentsData[listIndex]->allocated[i])
 			{
-				componentsData[listIndex]->allocated[i] = true;
-				new (&componentsData[listIndex]->data[i * sizeof(T)]) T(); // Allocate components memory and call constructor
-				componentsData[listIndex]->remainingSlot--;
+				m_componentsData[listIndex]->allocated[i] = true;
+				new (&m_componentsData[listIndex]->data[i * sizeof(T)]) T(); // Allocate components memory and call constructor
+				m_componentsData[listIndex]->remainingSlot--;
 				addedAt = i;
 				break;
 			}
@@ -127,14 +128,14 @@ public:
 		XASSERT(addedAt != -1, "No slot available for the next item");
 
 
-		ComponentsData* componentsDataPtr = componentsData[listIndex].get();
+		ComponentsData* componentsDataPtr = m_componentsData[listIndex].get();
 
 		// Create shared_ptr from raw pointer and define custom destructor
-		const std::shared_ptr<T> sharedComponent = std::shared_ptr<T>((T*)&componentsData[listIndex]->data[addedAt * sizeof(T)],
+		const std::shared_ptr<T> sharedComponent = std::shared_ptr<T>((T*)&m_componentsData[listIndex]->data[addedAt * sizeof(T)],
 			[this, addedAt, componentsDataPtr, onComponentDeletedEvent](T* pi)
 			{
 				pi->~T();
-				if (componentsData.empty())
+				if (m_componentsData.empty())
 					return;
 				componentsDataPtr->allocated[addedAt] = false;
 				componentsDataPtr->remainingSlot++;
@@ -142,10 +143,10 @@ public:
 				{
 					for (size_t i = 0; i < m_maxComponentCount; i++)
 					{
-						if (componentsData[i].get() == componentsDataPtr)
+						if (m_componentsData[i].get() == componentsDataPtr)
 						{
-							componentsData.erase(componentsData.begin() + i);
-							if (componentsData.size() == 0)
+							m_componentsData.erase(m_componentsData.begin() + i);
+							if (m_componentsData.size() == 0)
 							{
 								const size_t typeId = typeid(T).hash_code();
 								onComponentDeletedEvent->Trigger(typeId);
@@ -214,24 +215,30 @@ public:
 	*/
 	void UpdateComponents(std::weak_ptr<Component>& lastUpdatedComponent)
 	{
-		for (const std::shared_ptr<Component>& component : shared_components)
+		if (!shared_components.empty())
 		{
-			if (component->IsLocalActive() && component->IsEnabled())
+			SCOPED_DYNAMIC_PROFILER(shared_components[0]->GetComponentName(), scopeBenchmark);
+
+			for (const std::shared_ptr<Component>& component : shared_components)
 			{
+				if (component->IsLocalActive() && component->IsEnabled())
+				{
 #if defined(_WIN32) || defined(_WIN64)
-				lastUpdatedComponent = component;
+					lastUpdatedComponent = component;
 #endif
-				component->Update();
+					component->Update();
+				}
 			}
 		}
 	}
 
 	size_t GetListCount() override
 	{
-		return componentsData.size();
+		return m_componentsData.size();
 	}
 
 private:
+
 	// Struct that contains the raw data of components
 	struct ComponentsData
 	{
@@ -239,7 +246,7 @@ private:
 		std::vector<bool> allocated;
 		size_t remainingSlot = 0;
 	};
-	std::vector<std::unique_ptr<ComponentsData>> componentsData;
+	std::vector<std::unique_ptr<ComponentsData>> m_componentsData;
 };
 
 /**
