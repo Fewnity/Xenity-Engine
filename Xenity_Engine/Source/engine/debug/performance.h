@@ -16,13 +16,21 @@
 #include <cstdint>
 #include <functional>
 
+#include <engine/api.h>
 #include <engine/tools/scope_benchmark.h>
 #include <engine/constants.h>
 
 #if defined(USE_PROFILER)
+// Macro to profile a piece of code, the name is the name of the profiler and the profiling ends at the end of the scope
 #define SCOPED_PROFILER(name, variableName) static const size_t hash##variableName = Performance::RegisterScopProfiler(name, std::hash<std::string>{}(name)); \
 const ScopeBenchmark variableName = ScopeBenchmark(hash##variableName)
+
+// Macro to profile a piece of code, the name is the name of the profiler and the profiling ends at the end of the scope. 
+// The name can change during the execution, but it's slower than SCOPED_PROFILER
+#define SCOPED_DYNAMIC_PROFILER(name, variableName) const size_t hash##variableName = Performance::RegisterScopProfiler(name, std::hash<std::string>{}(name)); \
+const ScopeBenchmark variableName = ScopeBenchmark(hash##variableName)
 #else
+// Disabled macro for the profiler
 #define SCOPED_PROFILER(name, variableName)
 #endif
 
