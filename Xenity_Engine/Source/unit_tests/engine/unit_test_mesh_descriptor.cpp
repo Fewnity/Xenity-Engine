@@ -12,6 +12,12 @@ TestResult VertexDescriptorFloatTest::Start(std::string& errorOut)
 {
 	BEGIN_TEST();
 
+	// PSP uses unsigned int for color, it's automatically converted
+	int colorBytesCount = sizeof(float[4]);
+#if defined(__PSP__)
+	colorBytesCount = sizeof(unsigned int);
+#endif
+
 	VertexDescriptor vertexDescriptor;
 
 	// Check initial values
@@ -42,7 +48,7 @@ TestResult VertexDescriptorFloatTest::Start(std::string& errorOut)
 	EXPECT_EQUALS(vertexDescriptor.m_uvIndex, -1, "Bad uv index");
 	EXPECT_EQUALS(vertexDescriptor.m_colorIndex, 1, "Bad color index");
 
-	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[3]) + sizeof(float[4]), "Bad vertex size");
+	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[3]) + colorBytesCount, "Bad vertex size");
 	EXPECT_EQUALS(vertexDescriptor.m_vertexElementInfos.size(), 2, "Bad vertex element count");
 
 	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), 0, "Bad position offset");
@@ -55,12 +61,12 @@ TestResult VertexDescriptorFloatTest::Start(std::string& errorOut)
 	EXPECT_EQUALS(vertexDescriptor.m_uvIndex, -1, "Bad uv index");
 	EXPECT_EQUALS(vertexDescriptor.m_colorIndex, 1, "Bad color index");
 
-	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[3]) + sizeof(float[4]) + sizeof(float[3]), "Bad vertex size");
+	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[3]) + colorBytesCount + sizeof(float[3]), "Bad vertex size");
 	EXPECT_EQUALS(vertexDescriptor.m_vertexElementInfos.size(), 3, "Bad vertex element count");
 
 	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), 0, "Bad position offset");
 	EXPECT_EQUALS(vertexDescriptor.GetColorOffset(), sizeof(float[3]), "Bad color offset");
-	EXPECT_EQUALS(vertexDescriptor.GetNormalOffset(), sizeof(float[3]) + sizeof(float[4]), "Bad normal offset");
+	EXPECT_EQUALS(vertexDescriptor.GetNormalOffset(), sizeof(float[3]) + colorBytesCount, "Bad normal offset");
 
 	vertexDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
 
@@ -69,13 +75,13 @@ TestResult VertexDescriptorFloatTest::Start(std::string& errorOut)
 	EXPECT_EQUALS(vertexDescriptor.m_uvIndex, 3, "Bad uv index");
 	EXPECT_EQUALS(vertexDescriptor.m_colorIndex, 1, "Bad color index");
 
-	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[3]) + sizeof(float[4]) + sizeof(float[3]) + sizeof(float[2]), "Bad vertex size");
+	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[3]) + colorBytesCount + sizeof(float[3]) + sizeof(float[2]), "Bad vertex size");
 	EXPECT_EQUALS(vertexDescriptor.m_vertexElementInfos.size(), 4, "Bad vertex element count");
 
 	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), 0, "Bad position offset");
 	EXPECT_EQUALS(vertexDescriptor.GetColorOffset(), sizeof(float[3]), "Bad color offset");
-	EXPECT_EQUALS(vertexDescriptor.GetNormalOffset(), sizeof(float[3]) + sizeof(float[4]), "Bad normal offset");
-	EXPECT_EQUALS(vertexDescriptor.GetUvOffset(), sizeof(float[3]) + sizeof(float[4]) + sizeof(float[3]), "Bad normal offset");
+	EXPECT_EQUALS(vertexDescriptor.GetNormalOffset(), sizeof(float[3]) + colorBytesCount, "Bad normal offset");
+	EXPECT_EQUALS(vertexDescriptor.GetUvOffset(), sizeof(float[3]) + colorBytesCount + sizeof(float[3]), "Bad normal offset");
 
 	END_TEST();
 }
@@ -142,6 +148,12 @@ TestResult VertexDescriptorWrongTest::Start(std::string& errorOut)
 {
 	BEGIN_TEST();
 
+	int colorBytesCount = sizeof(float[4]);
+	// PSP uses unsigned int for color, it's automatically converted
+#if defined(__PSP__)
+	colorBytesCount = sizeof(unsigned int);
+#endif
+
 	VertexDescriptor vertexDescriptor;
 
 	vertexDescriptor.AddVertexDescriptor(VertexElements::NONE);
@@ -161,7 +173,7 @@ TestResult VertexDescriptorWrongTest::Start(std::string& errorOut)
 	EXPECT_EQUALS(vertexDescriptor.m_uvIndex, -1, "Bad uv index");
 	EXPECT_EQUALS(vertexDescriptor.m_colorIndex, 0, "Bad color index");
 
-	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[4]), "Bad vertex size");
+	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, colorBytesCount, "Bad vertex size");
 	EXPECT_EQUALS(vertexDescriptor.m_vertexElementInfos.size(), 1, "Bad vertex element count");
 
 	EXPECT_EQUALS(vertexDescriptor.GetColorOffset(), 0, "Bad color offset");
@@ -173,11 +185,11 @@ TestResult VertexDescriptorWrongTest::Start(std::string& errorOut)
 	EXPECT_EQUALS(vertexDescriptor.m_uvIndex, -1, "Bad uv index");
 	EXPECT_EQUALS(vertexDescriptor.m_colorIndex, 0, "Bad color index");
 
-	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[4]) + sizeof(float[3]), "Bad vertex size");
+	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, colorBytesCount + sizeof(float[3]), "Bad vertex size");
 	EXPECT_EQUALS(vertexDescriptor.m_vertexElementInfos.size(), 2, "Bad vertex element count");
 
 	EXPECT_EQUALS(vertexDescriptor.GetColorOffset(), 0, "Bad color offset");
-	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), sizeof(float[4]), "Bad position offset");
+	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), colorBytesCount, "Bad position offset");
 
 	// Try to add a color again (should not change anything)
 	vertexDescriptor.AddVertexDescriptor(VertexElements::COLOR_4_FLOATS);
@@ -187,11 +199,11 @@ TestResult VertexDescriptorWrongTest::Start(std::string& errorOut)
 	EXPECT_EQUALS(vertexDescriptor.m_uvIndex, -1, "Bad uv index");
 	EXPECT_EQUALS(vertexDescriptor.m_colorIndex, 0, "Bad color index");
 
-	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[4]) + sizeof(float[3]), "Bad vertex size");
+	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, colorBytesCount + sizeof(float[3]), "Bad vertex size");
 	EXPECT_EQUALS(vertexDescriptor.m_vertexElementInfos.size(), 2, "Bad vertex element count");
 
 	EXPECT_EQUALS(vertexDescriptor.GetColorOffset(), 0, "Bad color offset");
-	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), sizeof(float[4]), "Bad position offset");
+	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), colorBytesCount, "Bad position offset");
 
 	// Try to add a position again but different size (should not change anything)
 	vertexDescriptor.AddVertexDescriptor(VertexElements::POSITION_16_BITS);
@@ -201,11 +213,11 @@ TestResult VertexDescriptorWrongTest::Start(std::string& errorOut)
 	EXPECT_EQUALS(vertexDescriptor.m_uvIndex, -1, "Bad uv index");
 	EXPECT_EQUALS(vertexDescriptor.m_colorIndex, 0, "Bad color index");
 
-	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, sizeof(float[4]) + sizeof(float[3]), "Bad vertex size");
+	EXPECT_EQUALS(vertexDescriptor.m_vertexSize, colorBytesCount + sizeof(float[3]), "Bad vertex size");
 	EXPECT_EQUALS(vertexDescriptor.m_vertexElementInfos.size(), 2, "Bad vertex element count");
 
 	EXPECT_EQUALS(vertexDescriptor.GetColorOffset(), 0, "Bad color offset");
-	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), sizeof(float[4]), "Bad position offset");
+	EXPECT_EQUALS(vertexDescriptor.GetPositionOffset(), colorBytesCount, "Bad position offset");
 
 	END_TEST();
 }

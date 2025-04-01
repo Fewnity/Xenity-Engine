@@ -33,7 +33,6 @@ Fix PSP sleep mode when networking is enabled
 Add a function to resize a submesh (resize only if size is different, usefull for text)
 Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
 Test lighting compatibility mode with fixed pipeline
-Fix PSP unit tests
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
 To make lighting usable on PS3:
