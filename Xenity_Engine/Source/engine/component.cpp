@@ -20,9 +20,10 @@
 
 #pragma region Constructors / Destructor
 
-Component::Component(bool canBeDisabled)
+Component::Component(bool canBeDisabled, bool allowOtherInstanceOnGameObject)
 {
 	m_canBeDisabled = canBeDisabled;
+	m_allowOtherInstanceOnGameObject = allowOtherInstanceOnGameObject;
 }
 
 

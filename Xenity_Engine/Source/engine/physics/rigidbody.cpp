@@ -18,7 +18,7 @@
 #include "physics_manager.h"
 #include <glm/gtx/quaternion.hpp>
 
-RigidBody::RigidBody() : Component(false)
+RigidBody::RigidBody() : Component(false, false)
 {
 	AssetManager::AddReflection(this);
 }
@@ -361,7 +361,10 @@ void RigidBody::Tick()
 
 RigidBody::~RigidBody()
 {
-	GetTransformRaw()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
+	if (GetTransformRaw())
+	{
+		GetTransformRaw()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
+	}
 
 	AssetManager::RemoveReflection(this);
 	for (Collider* c : m_colliders)

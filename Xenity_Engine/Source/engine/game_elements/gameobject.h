@@ -110,6 +110,16 @@ public:
 	AddComponent()
 	{
 		std::shared_ptr<T> newComponent = ComponentManager::CreateComponent<T>();
+		
+		if (!newComponent->m_allowOtherInstanceOnGameObject)
+		{
+			if (GetComponent<T>() != nullptr)
+			{
+				RemoveComponent(newComponent);
+				return nullptr;
+			}
+		}
+
 		AddExistingComponent(newComponent);
 		return newComponent;
 	}

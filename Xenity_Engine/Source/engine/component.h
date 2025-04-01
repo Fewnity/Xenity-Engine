@@ -22,8 +22,8 @@ class Transform;
 class API Component : public UniqueId, public Reflective, public std::enable_shared_from_this<Component>
 {
 public:
-	Component() : Component(true) {}
-	Component(bool canBeDisabled);
+	Component() : Component(true, true) {}
+	Component(bool canBeDisabled, bool allowOtherInstanceOnGameObject);
 	Component(const Component& other) = delete;
 	Component& operator=(const Component&) = delete;
 
@@ -191,4 +191,5 @@ private:
 	bool m_waitingForDestroy = false;
 	bool m_isEnabled = true;
 	bool m_canBeDisabled = true;
+	bool m_allowOtherInstanceOnGameObject = true;
 };
