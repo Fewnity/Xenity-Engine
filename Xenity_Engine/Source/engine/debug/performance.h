@@ -32,6 +32,8 @@ const ScopeBenchmark variableName = ScopeBenchmark(hash##variableName)
 #else
 // Disabled macro for the profiler
 #define SCOPED_PROFILER(name, variableName)
+// Disabled macro for the profiler
+#define SCOPED_DYNAMIC_PROFILER(name, variableName)
 #endif
 
 class MemoryTracker;
