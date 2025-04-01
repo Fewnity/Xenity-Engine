@@ -181,17 +181,17 @@ public:
 	/**
 	* @brief Get children count
 	*/
-	inline int GetChildrenCount() const
+	inline uint32_t GetChildrenCount() const
 	{
-		return m_childCount;
+		return static_cast<uint32_t>(m_childCount);
 	}
 
 	/**
 	* @brief Get component count
 	*/
-	inline int GetComponentCount() const
+	inline uint32_t GetComponentCount() const
 	{
-		return m_componentCount;
+		return static_cast<uint32_t>(m_componentCount);
 	}
 
 	/**
@@ -279,8 +279,8 @@ private:
 
 	std::shared_ptr<Transform> m_transform;
 
-	int m_childCount = 0;
-	int m_componentCount = 0;
+	uint16_t m_childCount = 0;
+	uint16_t m_componentCount = 0;
 
 #if defined(EDITOR)
 	bool m_isSelected = false;
