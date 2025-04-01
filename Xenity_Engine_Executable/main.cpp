@@ -34,8 +34,6 @@ Add a function to resize a submesh (resize only if size is different, usefull fo
 Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
 Test lighting compatibility mode with fixed pipeline
 Fix PSP unit tests
-Try to create a benchmark for each component update
-Add an option to allow only one instance of a component on a gameobject (for rigidbody)
 Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
 
 To make lighting usable on PS3:
@@ -43,6 +41,10 @@ To make lighting usable on PS3:
 - Try to detect light per draw to use with sphere test (filter light first by camera frustum)
 
 --- Can be done for the next release
+Try to remove some enable_shared_from_this (GameObject, Transform, Component, Filereference)
+Try to remove rotation and local rotation from transform, maybe remove position
+Use flags for gameobject
+Use flags for components
 Try fix include on Linux in asset selection menu and EditorUI
 Do not forget to re-add init component ordering in LoadScene
 Use octree for light culling
