@@ -146,6 +146,7 @@ int Engine::Init(int argc, char* argv[])
 	CrashHandler::Init();
 
 #if defined(DEBUG)
+	Debug::Print("-------- Build date: " + std::string(__DATE__) + " " + std::string(__TIME__) + " --------");
 #if defined(EDITOR)
 	Debug::PrintWarning("-------- The editor is running in debug mode --------", true);
 #else
