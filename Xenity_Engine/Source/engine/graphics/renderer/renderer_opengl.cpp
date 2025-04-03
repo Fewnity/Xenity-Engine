@@ -593,7 +593,7 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 	if (type == LightType::Directional)
 		typeIntensity = 2;
 	if (type == LightType::Ambient)
-		typeIntensity = 4;
+		typeIntensity = 1;
 	else if (type == LightType::Point)
 		typeIntensity = 2;
 	else if (type == LightType::Spot)
