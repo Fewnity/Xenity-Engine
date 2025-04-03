@@ -99,6 +99,7 @@ bool Engine::s_canUpdateAudio = false;
 bool Engine::s_isRunning = true;
 bool Engine::s_isInitialized = false;
 EngineArgs Engine::s_engineArgs;
+int Engine::frameToSkip = 4;
 
 std::unique_ptr<GameInterface> Engine::s_game = nullptr;
 Event<>* Engine::s_onWindowFocusEvent = new Event<>();
@@ -348,8 +349,12 @@ void Engine::Loop()
 #else
 			InputSystem::Read();
 #endif
-
 			s_canUpdateAudio = false;
+
+			if (frameToSkip > 0)
+			{
+				frameToSkip--;
+			}
 #if defined(EDITOR)
 			AsyncFileLoading::FinishThreadedFileLoading();
 
@@ -367,65 +372,70 @@ void Engine::Loop()
 			}
 #endif
 
-			if (ProjectManager::IsProjectLoaded())
+			// Skip some frames to stabilize delta time
+			if (frameToSkip == 0)
 			{
-				AssetManager::RemoveUnusedFiles();
-				if (GameplayManager::GetGameState() == GameState::Playing)
+
+				if (ProjectManager::IsProjectLoaded())
 				{
-					PhysicsManager::Update();
-				}
+					AssetManager::RemoveUnusedFiles();
+					if (GameplayManager::GetGameState() == GameState::Playing)
+					{
+						PhysicsManager::Update();
+					}
 
 #if defined(__PS3__) // Temp solution to quit the game with a PS4 controller
-				if (InputSystem::GetKeyDown(KeyCode::CIRCLE))
-				{
-					Quit();
-				}
+					if (InputSystem::GetKeyDown(KeyCode::CIRCLE))
+					{
+						Quit();
+					}
 #endif
 
-				// Update all components
+					// Update all components
 #if defined(EDITOR)
 				// Catch game's code error to prevent the editor to crash
-				const bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
-				if (tryResult)
-				{
-					std::string lastComponentMessage = "Error in game's code! Stopping the game...\n";
-					const std::shared_ptr<Component> lastComponent = GameplayManager::GetLastUpdatedComponent().lock();
-					if (lastComponent)
+					const bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
+					if (tryResult)
 					{
-						lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
-						if (lastComponent->GetGameObjectRaw())
+						std::string lastComponentMessage = "Error in game's code! Stopping the game...\n";
+						const std::shared_ptr<Component> lastComponent = GameplayManager::GetLastUpdatedComponent().lock();
+						if (lastComponent)
 						{
-							lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObjectRaw()->GetName();
+							lastComponentMessage += "Component name: " + lastComponent->GetComponentName();
+							if (lastComponent->GetGameObjectRaw())
+							{
+								lastComponentMessage += "\nThis component was on the gameobject: " + lastComponent->GetGameObjectRaw()->GetName();
+							}
 						}
+						Debug::PrintError(lastComponentMessage);
+
+						GameplayManager::SetGameState(GameState::Stopped, true);
 					}
-					Debug::PrintError(lastComponentMessage);
-
-					GameplayManager::SetGameState(GameState::Stopped, true);
-				}
 #else
-				GameplayManager::UpdateComponents();
+					GameplayManager::UpdateComponents();
 #endif
 
-				// Remove all destroyed gameobjects and components
-				GameplayManager::RemoveDestroyedGameObjects();
-				GameplayManager::RemoveDestroyedComponents();
+					// Remove all destroyed gameobjects and components
+					GameplayManager::RemoveDestroyedGameObjects();
+					GameplayManager::RemoveDestroyedComponents();
 
-				s_canUpdateAudio = true;
+					s_canUpdateAudio = true;
 
-				// Draw
-				Graphics::Draw();
+					// Draw
+					Graphics::Draw();
 
-				/*if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
+					/*if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
+					{
+						ScreenCapture::MakeScreenshot("screenshot");
+					}*/
+				}
+				else
 				{
-					ScreenCapture::MakeScreenshot("screenshot");
-				}*/
-			}
-			else
-			{
 #if defined(EDITOR)
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-				s_renderer->Clear();
+					glBindFramebuffer(GL_FRAMEBUFFER, 0);
+					s_renderer->Clear();
 #endif
+				}
 			}
 			InputSystem::s_blockGameInput = false;
 			FrameLimiter::Wait();

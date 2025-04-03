@@ -103,4 +103,5 @@ private:
 
 	static bool s_isRunning;
 	static bool s_isInitialized;
+	static int frameToSkip;
 };
