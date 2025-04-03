@@ -206,7 +206,7 @@ void Light::UpdateLightValues()
 	}
 
 	// High intensity in vertex lighting does not affect a lot
-	if (m_oldConsoleCompatibility)
+	if (m_oldConsoleCompatibility && !s_UseOpenGLFixedFunctions)
 	{
 		m_linear = (0.7f * 7.0f) / (m_range / tempInsity);
 		m_quadratic = (7 * 1.8f) / ((powf(m_range, 2) / 6.0f) / tempInsity);
