@@ -797,7 +797,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 {
 	for (int i = 0; i < meshData.m_subMeshCount; i++)
 	{
-		std::unique_ptr<MeshData::SubMesh>& newSubMesh = meshData.m_subMeshes[i];
+		const std::unique_ptr<MeshData::SubMesh>& newSubMesh = meshData.m_subMeshes[i];
 
 		if (newSubMesh->VAO == 0)
 			newSubMesh->VAO = CreateVertexArray();
