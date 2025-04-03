@@ -48,7 +48,6 @@
 #define MSVC_START_FILE_32BITS "vcvars32.bat"
 
 // Debug
-#define CRASH_DUMP_FILE "crash_dump.txt"
 #define DEBUG_LOG_FILE "xenity_engine_debug.txt"
 #define PSVITA_DEBUG_LOG_FOLDER "ux0:data/xenity_engine/"
 

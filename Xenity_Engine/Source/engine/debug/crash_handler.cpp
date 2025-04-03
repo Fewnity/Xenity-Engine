@@ -24,13 +24,18 @@
 #include <engine/component.h>
 #include <engine/assertions/assertions.h>
 #include <engine/constants.h>
+#include <engine/time/date_time.h>
 #include "debug.h"
 
 void CrashHandler::Handler(int signum)
 {
+	std::string filePath = "crash_dump_";
+	DateTime now = DateTime::GetNow();
+	filePath += std::to_string(now.hour) + "h " + std::to_string(now.minute) + "m " + std::to_string(now.second) + "s " + std::to_string(now.day) + "d " + std::to_string(now.month) + "m " + std::to_string(now.year) + "y";
+	filePath += ".txt";
 #if defined(_WIN32) || defined(_WIN64)
 	// Create crash dump file
-	const std::shared_ptr<File> file = FileSystem::MakeFile(CRASH_DUMP_FILE);
+	const std::shared_ptr<File> file = FileSystem::MakeFile(filePath);
 	bool isFileDumpOpened = file->Open(FileMode::WriteCreateFile);
 
 	const std::string crashDetectedMessage = "!!! Crash detected !!!";
