@@ -384,6 +384,12 @@ void ParticleSystem::OnNewRender(int cameraIndex)
 	{
 		return;
 	}
+#if defined(EDITOR)
+	if (GameplayManager::GetGameState() == GameState::Paused)
+	{
+		return;
+	}
+#endif
 
 	float simulationTimer = 0;
 	float simulationSpeedMultiplier = 1;
