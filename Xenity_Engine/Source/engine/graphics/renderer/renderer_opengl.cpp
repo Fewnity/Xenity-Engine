@@ -125,7 +125,7 @@ void RendererOpengl::NewFrame()
 	{
 		lastUpdatedLights[i] = nullptr;
 	}
-	lastUsedVAO = 0;
+	lastUsedVAO = -1;
 }
 
 void RendererOpengl::EndFrame()
