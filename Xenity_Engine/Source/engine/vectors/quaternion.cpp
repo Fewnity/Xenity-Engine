@@ -85,11 +85,38 @@ Quaternion Quaternion::Euler(const float x, const float y, const float z)
 	return quat;
 }
 
+float Quaternion::Dot(const Quaternion& q1, const Quaternion& q2) 
+{
+	return q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
+}
+
+Quaternion Quaternion::Lerp(const Quaternion& q1, const Quaternion& q2, const float t)
+{
+	Quaternion q2Corrected = q2;
+
+	if (Dot(q1, q2) < 0.0f) {
+		q2Corrected.w = -q2.w;
+		q2Corrected.x = -q2.x;
+		q2Corrected.y = -q2.y;
+		q2Corrected.z = -q2.z;
+	}
+
+	// Interpolation lin�aire
+	Quaternion result;
+	result.x = q1.x - t * (q1.x - q2Corrected.x);
+	result.y = q1.y - t * (q1.y - q2Corrected.y);
+	result.z = q1.z - t * (q1.z - q2Corrected.z);
+	result.w = q1.w - t * (q1.w - q2Corrected.w);
+
+	result.Normalize();
+	return result;
+}
+
 Quaternion Quaternion::AngleAxis(float angle, const Vector3& axis)
 {
 	const float rad = angle * Math::PI / 180.0f;
-	const float s = sin(rad / 2);
-	const float c = cos(rad / 2);
+	const float s = std::sin(rad / 2);
+	const float c = std::cos(rad / 2);
 
 	return Quaternion(axis.x * s, axis.y * s, axis.z * s, c);
 }

@@ -29,12 +29,19 @@ public:
 
 	static Quaternion Inverse(const Quaternion& q);
 	static Quaternion Euler(const float x, const float y, const float z);
+
+	/**
+	* @brief Linearly interpolates between quaternions
+	*/
+	static Quaternion Lerp(const Quaternion& a, const Quaternion& b, const float t);
+	static float Dot(const Quaternion& q1, const Quaternion& q2);
 	static Quaternion AngleAxis(float angle, const Vector3& axis);
 	static Quaternion Identity();
 	Vector3 ToEuler() const;
 
 	void Set(const float x, const float y, const float z, const float w);
 	void Normalize();
+	Quaternion Normalized();
 
 	Vector3 GetForward() const;
 
@@ -78,6 +85,13 @@ inline void Quaternion::Normalize()
 		z *= invLength;
 		w *= invLength;
 	}
+}
+
+inline Quaternion Quaternion::Normalized()
+{
+	Quaternion normalizedQuaternion = Quaternion(x, y, z, w);
+	normalizedQuaternion.Normalize();
+	return normalizedQuaternion;
 }
 
 inline std::string Quaternion::ToString() const
