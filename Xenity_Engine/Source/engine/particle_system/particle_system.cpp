@@ -12,6 +12,7 @@
 
 #if defined(EDITOR)
 #include <editor/rendering/gizmo.h>
+#include <engine/game_elements/gameplay_manager.h>
 #endif
 
 #include <engine/asset_management/asset_manager.h>
@@ -125,7 +126,10 @@ void ParticleSystem::OnReflectionUpdated()
 
 void ParticleSystem::Start()
 {
-	ResetParticles();
+	if (m_loop)
+	{
+		ResetParticles();
+	}
 }
 
 void ParticleSystem::Update()
