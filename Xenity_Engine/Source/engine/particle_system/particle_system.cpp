@@ -316,7 +316,7 @@ float ParticleSystem::DefaultGetSpeedOverLifeTime(float lifeTime)
 
 Vector4 ParticleSystem::DefaultGetColorOverLifeTime(float lifeTime)
 {
-	return Vector4(1, 1, 1, sin(lifeTime * Math::PI));
+	return Vector4(1, 1, 1, std::sin(lifeTime * Math::PI));
 }
 
 void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
@@ -366,7 +366,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 		}
 
 		newMat = glm::scale(newMat, glm::vec3(particle.scale));
-		renderCommand.subMesh->m_meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
+		renderCommand.subMesh->m_meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, std::sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
 
 #if defined(__PSP__)
 		Graphics::DrawSubMesh(*renderCommand.subMesh, *m_material, m_texture.get(), renderSettings, newMat, newMat, newMat, false);

@@ -87,24 +87,24 @@ void Gizmo::DrawSphere(const Vector3& position, const Quaternion& rotation, cons
 	{
 		// Draw sphere with lines
 		{
-			pos0.x = radius * cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.x = radius * std::cos((angleStep * i) * Math::PI / 180.0f);
 			pos0.y = 0;
-			pos0.z = radius * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.z = radius * std::sin((angleStep * i) * Math::PI / 180.0f);
 
-			pos1.x = radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.x = radius * std::cos((angleStep * (i + 1)) * Math::PI / 180.0f);
 			pos1.y = 0;
-			pos1.z = radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.z = radius * std::sin((angleStep * (i + 1)) * Math::PI / 180.0f);
 
 			Gizmo::DrawLine((rotation * Vector3(pos0)) + position, (rotation * Vector3(pos1)) + position);
 		}
 
 		{
-			pos0.x = radius * cos((angleStep * i) * Math::PI / 180.0f);
-			pos0.y = radius * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.x = radius * std::cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.y = radius * std::sin((angleStep * i) * Math::PI / 180.0f);
 			pos0.z = 0;
 
-			pos1.x = radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-			pos1.y = radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.x = radius * std::cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.y = radius * std::sin((angleStep * (i + 1)) * Math::PI / 180.0f);
 			pos1.z = 0;
 
 			Gizmo::DrawLine((rotation * Vector3(pos0)) + position, (rotation * Vector3(pos1)) + position);
@@ -112,12 +112,12 @@ void Gizmo::DrawSphere(const Vector3& position, const Quaternion& rotation, cons
 
 		{
 			pos0.x = 0;
-			pos0.y = radius * cos((angleStep * i) * Math::PI / 180.0f);
-			pos0.z = radius * sin((angleStep * i) * Math::PI / 180.0f);
+			pos0.y = radius * std::cos((angleStep * i) * Math::PI / 180.0f);
+			pos0.z = radius * std::sin((angleStep * i) * Math::PI / 180.0f);
 
 			pos1.x = 0;
-			pos1.y = radius * cos((angleStep * (i + 1)) * Math::PI / 180.0f);
-			pos1.z = radius * sin((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.y = radius * std::cos((angleStep * (i + 1)) * Math::PI / 180.0f);
+			pos1.z = radius * std::sin((angleStep * (i + 1)) * Math::PI / 180.0f);
 
 			Gizmo::DrawLine((rotation * Vector3(pos0)) + position, (rotation * Vector3(pos1)) + position);
 		}
