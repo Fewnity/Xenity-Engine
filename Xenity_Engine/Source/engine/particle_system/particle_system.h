@@ -57,6 +57,20 @@ public:
 		return m_isEmitting;
 	}
 
+	void SetSpawnRate(float spawnRate) 
+	{
+		if (spawnRate < 0)
+		{
+			spawnRate = 0;
+		}
+		m_spawnRate = spawnRate;
+	}
+
+	float GetSpawnRate() const
+	{
+		return m_spawnRate;
+	}
+
 	/**
 	* @brief Set you own function to set the global scale of the particle over its life time
 	* @brief The function takes the life time ratio [0;1] and return the scale of the particle
