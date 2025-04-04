@@ -79,6 +79,7 @@ bool Editor::isToolLocalMode;
 Event<bool>* Editor::onUpdateCheckedEvent = new Event<bool>();
 bool Editor::updateAvailable = false;
 float Editor::cameraSpeed = 30;
+bool Editor::needProjectDiretoryUpdate = false;
 
 void Editor::Init()
 {
@@ -229,8 +230,7 @@ void Editor::CreateNewMenuSettings()
 void Editor::OnFileModified()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
-	ProjectManager::RefreshProjectDirectory();
+	needProjectDiretoryUpdate = true;
 }
 
 void Editor::OnCodeModified()
@@ -356,6 +356,12 @@ void Editor::Update()
 			{
 				SceneManager::SaveScene(SaveSceneType::SaveSceneToFile);
 			}
+		}
+
+		if (needProjectDiretoryUpdate)
+		{
+			needProjectDiretoryUpdate = false;
+			ProjectManager::RefreshProjectDirectory();
 		}
 	}
 }

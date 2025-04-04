@@ -523,5 +523,6 @@ private:
 	static std::shared_ptr <BottomBarMenu> bottomBar;
 	static std::vector<std::string> dragdropEntries;
 	static Event<bool>* onUpdateCheckedEvent;
+	static bool needProjectDiretoryUpdate;
 };
 
