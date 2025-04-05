@@ -18,6 +18,13 @@
 class Directory;
 class File;
 
+enum class CopyFileResult
+{
+	Success,
+	Failed,
+	FileAlreadyExists,
+};
+
 class API FileSystem
 {
 public:
@@ -44,7 +51,7 @@ public:
 
 	bool Rename(const std::string& path, const std::string& newPath);
 
-	int CopyFile(const std::string& path, const std::string& newPath, bool replace);
+	CopyFileResult CopyFile(const std::string& path, const std::string& newPath, bool replace);
 
 	/**
 	 * @brief [Internal] ?

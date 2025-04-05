@@ -216,9 +216,9 @@ bool FileSystem::Rename(const std::string& path, const std::string& newPath)
 	return success;
 }
 
-int FileSystem::CopyFile(const std::string& path, const std::string& newPath, bool replace)
+CopyFileResult FileSystem::CopyFile(const std::string& path, const std::string& newPath, bool replace)
 {
-	int result = 0;
+	CopyFileResult result = CopyFileResult::Success;
 #if !defined(__PS3__)
 	try
 	{
@@ -226,21 +226,25 @@ int FileSystem::CopyFile(const std::string& path, const std::string& newPath, bo
 		{
 			if (std::filesystem::exists(newPath))
 			{
-				result = -1; // File already exists
+				result = CopyFileResult::FileAlreadyExists;
 			}
 		}
 
 		std::filesystem::copy_options option = std::filesystem::copy_options::none;
 
 		if (replace)
+		{
 			option |= std::filesystem::copy_options::overwrite_existing;
+		}
 
-		if (result == 0)
+		if (result == CopyFileResult::Success)
+		{
 			std::filesystem::copy_file(path, newPath, option);
+		}
 	}
 	catch (const std::exception&)
 	{
-		result = -2; // Error
+		result = CopyFileResult::Failed;
 	}
 #endif
 	return result;

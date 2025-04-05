@@ -972,8 +972,8 @@ void Editor::OnDragAndDropFileFinished()
 			}
 			else
 			{
-				const int copyResult = FileSystem::s_fileSystem->CopyFile(path, newPath, false);
-				if (copyResult == -1)
+				const CopyFileResult copyResult = FileSystem::s_fileSystem->CopyFile(path, newPath, false);
+				if (copyResult == CopyFileResult::FileAlreadyExists)
 				{
 					DialogResult result = EditorUI::OpenDialog("File copy error", "This file already exists in this location.\nDo you want to replace it?", DialogType::Dialog_Type_YES_NO_CANCEL);
 					if (result == DialogResult::Dialog_YES)

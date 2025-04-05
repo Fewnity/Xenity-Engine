@@ -210,12 +210,12 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		if (dropFileInFolder)
 		{
 			const std::shared_ptr<File>& file = fileRef->m_file;
-			int copyResult = FileSystem::s_fileSystem->CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
-			if (copyResult == 0)
+			CopyFileResult copyResult = FileSystem::s_fileSystem->CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
+			if (copyResult == CopyFileResult::Success)
 			{
 				copyResult = FileSystem::s_fileSystem->CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
 
-				if (copyResult == 0)
+				if (copyResult == CopyFileResult::Success)
 				{
 					FileSystem::s_fileSystem->Delete(file->GetPath());
 					FileSystem::s_fileSystem->Delete(file->GetPath() + ".meta");
