@@ -26,20 +26,20 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Rework the documentation
-Implement alpha testing on shaders
 Add unit tests for commands
 Add unit tests for Components Creation/Deletion and Awake/Start/Update/
 Fix PSP sleep mode when networking is enabled
-Add a function to resize a submesh (resize only if size is different, usefull for text)
 Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
-Test lighting compatibility mode with fixed pipeline
-Try to skip some frame (2 or 3) at the beginning to stabilize the delta time
+Replace InspectorDeleteGameObjectCommand weak_ptr by a reference
+Create enum for CopyFile file_system.h
 
 To make lighting usable on PS3:
 - Try to make directional lighting in the vertex shader
 - Try to detect light per draw to use with sphere test (filter light first by camera frustum)
 
 --- Can be done for the next release
+Implement alpha testing on shaders
+Add a function to resize a submesh (resize only if size is different, usefull for text)
 Try to remove some enable_shared_from_this (GameObject, Transform, Component, Filereference)
 Try to remove rotation and local rotation from transform, maybe remove position
 Use flags for gameobject
@@ -63,14 +63,12 @@ Separate mesh platform specific code
 Separate socket platform specific code
 Separate time platform specific code?
 Do not create a new mesh data in text renderer
-Disable update function call on many components
 Check peekinput for PSP
 Reorder if needed the vertex descriptor for platforms like PSP in the cooker
 Use VAO for lines (create one sphere model for all gizmo, create one vao for the grid when camera moves)
 Fix light in fixed pipeline with 2 cameras
 Create a GetFileSize function in File class
 New Input system
-Implement AudioManager::Stop for PSP and PsVita
 Pre-open audio file for faster loading
 Compress scene json files in builds
 Add assert if project settings file is not found
@@ -93,7 +91,6 @@ Clean Component::SetGameObject code
 
 Add event for input system for the screen size and mouse position
 Add event in SceneManager for UpdateWindowTitle?
-Move/Store engine name and version somewhere
 
 --- To do soon:
 Reload texture/mesh/audio if modified (only if scene is stopped)
@@ -101,11 +98,9 @@ Add filter to file dialog
 Multiple gameobject selection
 
 --- To do in a long time
-Finish UploadMeshData for fixed pipeline or shader mode with currently unused vertex structures
 Add a property window on components to have values in a new window
 Add network profiler
 Add map reflection support
-Add more unit tests
 Add support for mesh material loading
 Fix thread problem when trying to load in different threads the same file at the same time
 Add transparency setting on textures
@@ -113,7 +108,6 @@ Preview part in inspector : Add mesh preview
 Add find function for child only in a gameobject
 Tilemap: Reduce memory usage, fix tilemap when removing a texture (remove all id of a texture)
 Touch : Add  input state : Begin, Hold (and End?)
-Create one shader per material to avoid reupdate shader when using the same shader on multiple material?
 Check memory leak when removing an item from vector in the editorUI
 Change rightClickedElement and use selected gameobjects if clicked on selected gameobjects
 Create OnReflectionUpdated in transform and set isTransformationMatrixDirty = true; and call UpdateWorldValues in the function?
