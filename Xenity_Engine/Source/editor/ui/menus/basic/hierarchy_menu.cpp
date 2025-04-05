@@ -80,9 +80,12 @@ void HierarchyMenu::Draw()
 		{
 		std::function<void()> destroyGameObjectFunc = [this]()
 			{
-				auto command = std::make_shared<InspectorDeleteGameObjectCommand>(rightClickedElement);
-				CommandManager::AddCommandAndExecute(command);
-				rightClickedElement.reset();
+				if (rightClickedElement.lock())
+				{
+					auto command = std::make_shared<InspectorDeleteGameObjectCommand>(*rightClickedElement.lock());
+					CommandManager::AddCommandAndExecute(command);
+					rightClickedElement.reset();
+				}
 			};
 
 			const size_t selectedGameObjectCount = Editor::GetSelectedGameObjects().size();

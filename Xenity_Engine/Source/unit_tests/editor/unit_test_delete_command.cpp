@@ -113,8 +113,7 @@ TestResult DeleteGameObjectCommandTest::Start(std::string& errorOut)
 
 	//----------------------------------------------------------------------------  Simple test with one component
 	{
-		std::weak_ptr<GameObject> weakGameObject = newGameObject;
-		InspectorDeleteGameObjectCommand deleteGameObjectCommand(weakGameObject);
+		InspectorDeleteGameObjectCommand deleteGameObjectCommand(*newGameObject);
 		const uint64_t gameobjectId = newGameObject->GetUniqueId();
 		const uint64_t audioSourceId = audioSource->GetUniqueId();
 

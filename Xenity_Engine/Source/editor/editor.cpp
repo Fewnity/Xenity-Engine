@@ -323,8 +323,11 @@ void Editor::Update()
 			{
 				for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
 				{
-					auto command = std::make_shared<InspectorDeleteGameObjectCommand>(currentGameObject);
-					CommandManager::AddCommandAndExecute(command);
+					if (currentGameObject.lock())
+					{
+						auto command = std::make_shared<InspectorDeleteGameObjectCommand>(*currentGameObject.lock());
+						CommandManager::AddCommandAndExecute(command);
+					}
 				}
 				selectedGameObjects.clear();
 			}

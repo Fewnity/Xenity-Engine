@@ -6,19 +6,19 @@
 
 #include "delete.h"
 
-InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObjectCommand::AddChild(const std::shared_ptr<GameObject>& child)
+InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObjectCommand::AddChild(GameObject& child)
 {
 	GameObjectChild gameObjectChild;
-	gameObjectChild.gameObjectId = child->GetUniqueId();
-	gameObjectChild.parentGameObjectId = child->GetParent().lock() ? child->GetParent().lock()->GetUniqueId() : 0;
-	gameObjectChild.gameObjectData["Values"] = ReflectionUtils::ReflectiveDataToJson(child->GetReflectiveData());
-	gameObjectChild.transformData["Values"] = ReflectionUtils::ReflectiveDataToJson(child->GetTransform()->GetReflectiveData());
-	for (std::weak_ptr<GameObject> childChild : child->GetChildren())
+	gameObjectChild.gameObjectId = child.GetUniqueId();
+	gameObjectChild.parentGameObjectId = child.GetParent().lock() ? child.GetParent().lock()->GetUniqueId() : 0;
+	gameObjectChild.gameObjectData["Values"] = ReflectionUtils::ReflectiveDataToJson(child.GetReflectiveData());
+	gameObjectChild.transformData["Values"] = ReflectionUtils::ReflectiveDataToJson(child.GetTransform()->GetReflectiveData());
+	for (std::weak_ptr<GameObject> childChild : child.GetChildren())
 	{
-		gameObjectChild.children.push_back(AddChild(childChild.lock()));
+		gameObjectChild.children.push_back(AddChild(*childChild.lock()));
 	}
 
-	for (std::shared_ptr<Component> component : child->m_components)
+	for (std::shared_ptr<Component> component : child.m_components)
 	{
 		GameObjectComponent gameObjectComponent;
 		gameObjectComponent.componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(component->GetReflectiveData());
@@ -75,10 +75,9 @@ void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChild& chil
 	}
 }
 
-InspectorDeleteGameObjectCommand::InspectorDeleteGameObjectCommand(std::weak_ptr<GameObject>& gameObjectToDestroy)
+InspectorDeleteGameObjectCommand::InspectorDeleteGameObjectCommand(GameObject& gameObjectToDestroy)
 {
-	std::shared_ptr<GameObject> gameObjectToDestroyLock = gameObjectToDestroy.lock();
-	gameObjectChild = AddChild(gameObjectToDestroyLock);
+	gameObjectChild = AddChild(gameObjectToDestroy);
 	//this->gameObjectId = gameObjectToDestroyLock->GetUniqueId();
 	//this->gameObjectData["Values"] = ReflectionUtils::ReflectiveDataToJson(gameObjectToDestroyLock->GetReflectiveData());
 	//this->componentName = componentToDestroyLock->GetComponentName();

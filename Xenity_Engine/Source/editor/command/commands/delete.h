@@ -30,7 +30,7 @@ class InspectorDeleteGameObjectCommand : public Command
 {
 public:
 	InspectorDeleteGameObjectCommand() = delete;
-	InspectorDeleteGameObjectCommand(std::weak_ptr<GameObject>& gameObjectToDestroy);
+	InspectorDeleteGameObjectCommand(GameObject& gameObjectToDestroy);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -51,7 +51,7 @@ private:
 		std::vector<GameObjectChild> children;
 		std::vector<GameObjectComponent> components;
 	};
-	GameObjectChild AddChild(const std::shared_ptr<GameObject>& child);
+	GameObjectChild AddChild(GameObject& child);
 	void ReCreateChild(const GameObjectChild& child, const std::shared_ptr<GameObject>& parent);
 	void UpdateChildComponents(const GameObjectChild& child);
 	GameObjectChild gameObjectChild;
