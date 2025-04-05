@@ -118,7 +118,7 @@ class API Texture : public FileReference
 public:
 	Texture();
 
-	static std::shared_ptr<Texture> CreateTexture(const TextureConstructorParams& params);
+	[[nodiscard]] static std::shared_ptr<Texture> CreateTexture(const TextureConstructorParams& params);
 
 	inline void SetSize(int width, int height)
 	{
@@ -147,7 +147,7 @@ public:
 	/**
 	 * @brief Get texture width
 	 */
-	inline int GetWidth() const
+	[[nodiscard]] inline int GetWidth() const
 	{
 		return m_width;
 	}
@@ -155,7 +155,7 @@ public:
 	/**
 	 * @brief Get texture height
 	 */
-	inline int GetHeight() const
+	[[nodiscard]] inline int GetHeight() const
 	{
 		return height;
 	}
@@ -172,7 +172,7 @@ public:
 	/**
 	 * @brief Get texture pixel per unit
 	 */
-	inline int GetPixelPerUnit() const
+	[[nodiscard]] inline int GetPixelPerUnit() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->pixelPerUnit;
 	}
@@ -180,7 +180,7 @@ public:
 	/**
 	 * @brief Get if the texture is using mipmap
 	 */
-	inline bool GetUseMipmap() const
+	[[nodiscard]] inline bool GetUseMipmap() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->useMipMap;
 	}
@@ -188,7 +188,7 @@ public:
 	/**
 	 * @brief Get texture filter
 	 */
-	inline Filter GetFilter() const
+	[[nodiscard]] inline Filter GetFilter() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->filter;
 	}
@@ -196,7 +196,7 @@ public:
 	/**
 	 * @brief Get texture wrap mode
 	 */
-	inline WrapMode GetWrapMode() const
+	[[nodiscard]] inline WrapMode GetWrapMode() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->wrapMode;
 	}
@@ -232,7 +232,7 @@ protected:
 	/**
 	* @brief Get texture channel count
 	*/
-	inline int GetChannelCount() const
+	[[nodiscard]] inline int GetChannelCount() const
 	{
 		return nrChannels;
 	}
@@ -245,7 +245,7 @@ protected:
 	/**
 	 * @brief Return if the texture is valid
 	 */
-	inline bool IsValid() const
+	[[nodiscard]] inline bool IsValid() const
 	{
 		return isValid;
 	}
@@ -254,12 +254,12 @@ protected:
 	* @brief [Internal] Get mipmap level count
 	* @return 0 if mipmapping is not used
 	*/
-	inline int GetMipmaplevelCount() const
+	[[nodiscard]] inline int GetMipmaplevelCount() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->mipmaplevelCount;
 	}
 
-	inline TextureResolutions GetCookResolution() const
+	[[nodiscard]] inline TextureResolutions GetCookResolution() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->resolution;
 	}
@@ -267,7 +267,7 @@ protected:
 	/**
 	 * @brief [Internal]
 	 */
-	inline std::shared_ptr<Texture> GetThisShared()
+	[[nodiscard]] inline std::shared_ptr<Texture> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<Texture>(shared_from_this());
 	}

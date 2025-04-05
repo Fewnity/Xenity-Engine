@@ -67,37 +67,37 @@ public:
 		t_tiling = _tiling;
 	}
 
-	inline const std::shared_ptr<Shader>& GetShader() const
+	[[nodiscard]] inline const std::shared_ptr<Shader>& GetShader() const
 	{
 		return m_shader;
 	}
 
-	inline const std::shared_ptr<Texture>& GetTexture() const
+	[[nodiscard]] inline const std::shared_ptr<Texture>& GetTexture() const
 	{
 		return m_texture;
 	}
 
-	inline bool GetUseLighting() const
+	[[nodiscard]] inline bool GetUseLighting() const
 	{
 		return m_useLighting;
 	}
 
-	MaterialRenderingModes GetRenderingMode() const
+	[[nodiscard]] MaterialRenderingModes GetRenderingMode() const
 	{
 		return m_renderingMode;
 	}
 
-	inline const Vector2& GetOffset() const
+	[[nodiscard]] inline const Vector2& GetOffset() const
 	{
 		return t_offset;
 	}
 
-	inline const Vector2& GetTiling() const
+	[[nodiscard]] inline const Vector2& GetTiling() const
 	{
 		return t_tiling;
 	}
 
-	inline const Color& GetColor() const
+	[[nodiscard]] inline const Color& GetColor() const
 	{
 		return m_color;
 	}
@@ -120,7 +120,7 @@ public:
 		}
 	}
 
-	float GetAlphaCutoff() const
+	[[nodiscard]] float GetAlphaCutoff() const
 	{
 		return m_alphaCutoff;
 	}
@@ -138,15 +138,15 @@ protected:
 	void OnReflectionUpdated() override;
 
 	void LoadFileReference(const LoadOptions& loadOptions) override;
-	static std::shared_ptr<Material> MakeMaterial();
-	std::vector<uint64_t> GetUsedFilesIds();
+	[[nodiscard]] static std::shared_ptr<Material> MakeMaterial();
+	[[nodiscard]] std::vector<uint64_t> GetUsedFilesIds();
 
 	/**
 	* @brief Update the material
 	*/
 	void Update();
 
-	Camera* m_lastUsedCamera;
+	Camera* m_lastUsedCamera = nullptr;
 	//std::unordered_map <const char *, Texture*> uniformsTextures;
 	std::unordered_map <const char*, Vector2> m_uniformsVector2;
 	std::unordered_map <const char*, Vector3> m_uniformsVector3;

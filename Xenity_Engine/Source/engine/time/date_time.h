@@ -12,12 +12,12 @@ public:
 	/**
 	* @brief Get the current date and time
 	*/
-	static DateTime GetNow();
+	[[nodiscard]] static DateTime GetNow();
 
 	/**
 	* @brief Get a string representation of the date and time in the format: "hour:minute:second day/month/year"
 	*/
-	std::string ToString() const;
+	[[nodiscard]] std::string ToString() const;
 
 	uint32_t second = 0;
 	uint32_t minute = 0;

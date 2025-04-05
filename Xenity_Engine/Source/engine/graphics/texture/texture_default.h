@@ -30,7 +30,7 @@ public:
 	/**
 	* @brief [Internal] Get texture ID
 	*/
-	unsigned int GetTextureId() const
+	[[nodiscard]] unsigned int GetTextureId() const
 	{
 		return m_textureId;
 	}
@@ -42,7 +42,7 @@ protected:
 
 	void Bind() const override;
 	void ApplyTextureFilters() const;
-	int GetWrapModeEnum(WrapMode wrapMode) const;
+	[[nodiscard]] int GetWrapModeEnum(WrapMode wrapMode) const;
 	void Unload() override;
 
 	unsigned int m_textureId = -1;

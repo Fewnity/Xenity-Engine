@@ -55,11 +55,15 @@ void DataBaseCheckerMenu::Draw()
 				db = std::make_unique<FileDataBase>();
 				try
 				{
-					db->LoadFromFile(path);
-					db->GetBitFile().Open(binaryFilePath);
-					integrityState = db->CheckIntegrity();
-					db->GetBitFile().Close();
-					loaded = true;
+					if (db->LoadFromFile(path)) 
+					{
+						if (db->GetBitFile().Open(binaryFilePath)) 
+						{
+							integrityState = db->CheckIntegrity();
+							db->GetBitFile().Close();
+							loaded = true;
+						}
+					}
 				}
 				catch (const std::exception&)
 				{
@@ -160,6 +164,10 @@ void DataBaseCheckerMenu::Draw()
 					ImGui::EndTable();
 				}
 			}
+		}
+		else 
+		{
+			ImGui::TextColored(ImVec4(1, 0, 0, 1), "Failed to open data base");
 		}
 
 		CalculateWindowValues();

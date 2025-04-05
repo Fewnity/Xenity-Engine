@@ -60,7 +60,7 @@ public:
 	/**
 	* @brief Get the event when a debug message is printed
 	*/
-	static Event<>& GetOnDebugLogEvent()
+	[[nodiscard]] static Event<>& GetOnDebugLogEvent()
 	{
 		return s_onDebugLogEvent;
 	}
@@ -78,7 +78,7 @@ private:
 	/**
 	* @brief [Internal] Init debug system
 	*/
-	static int Init();
+	[[nodiscard]] static int Init();
 
 	/**
 	* @brief [Internal] Send all profiler data to the debug server
@@ -93,7 +93,7 @@ private:
 	/**
 	* @brief [Internal] Get all the debug text into a string
 	*/
-	static const std::string& GetDebugString()
+	[[nodiscard]] static const std::string& GetDebugString()
 	{
 		return s_debugText;
 	}

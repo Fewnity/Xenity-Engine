@@ -26,11 +26,11 @@ public:
 	* @param mesh Mesh file to load
 	* @return True if the mesh was loaded successfully
 	*/
-	static bool LoadFromRawData(MeshData& mesh);
+	[[nodiscard]] static bool LoadFromRawData(MeshData& mesh);
 
 private:
 
-	static bool ReadMtlFile(const std::string& path);
+	[[nodiscard]] static bool ReadMtlFile(const std::string& path);
 
 	struct SubMesh
 	{

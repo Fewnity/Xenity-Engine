@@ -53,7 +53,7 @@ public:
 	 * @brief Get if the engine is running
 	 * @param checkRenderer Check if the renderer exists
 	 */
-	static bool IsRunning(bool checkRenderer)
+	[[nodiscard]] static bool IsRunning(bool checkRenderer)
 	{
 		return s_isRunning && (!checkRenderer || s_renderer != nullptr);
 	}
@@ -65,7 +65,7 @@ public:
 	/**
 	 * @brief Get the renderer
 	 */
-	API static inline Renderer &GetRenderer()
+	[[nodiscard]] API static inline Renderer &GetRenderer()
 	{
 		return *s_renderer;
 	}
@@ -73,12 +73,12 @@ public:
 	/**
 	 * @brief Get the OnWindowFocus event
 	 */
-	static inline Event<>* GetOnWindowFocusEvent()
+	[[nodiscard]] static inline Event<>* GetOnWindowFocusEvent()
 	{
 		return s_onWindowFocusEvent;
 	}
 
-	static const EngineArgs& GetArguments()
+	[[nodiscard]] static const EngineArgs& GetArguments()
 	{
 		return s_engineArgs;
 	}

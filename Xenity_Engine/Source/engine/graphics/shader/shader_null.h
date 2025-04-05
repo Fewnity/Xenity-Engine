@@ -43,7 +43,7 @@ public:
 
 	void Link() override {}
 
-	bool Compile(const std::string& filePath, ShaderType type) override { return false; }
+	[[nodiscard]] bool Compile(const std::string& filePath, ShaderType type) override { return false; }
 
 	void SetPointLightData(const Light& light, const int index) override {}
 	void SetDirectionalLightData(const Light& light, const int index) override {}

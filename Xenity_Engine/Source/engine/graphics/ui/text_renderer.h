@@ -40,7 +40,7 @@ public:
 	/**
 	* @brief Get order in layer
 	*/
-	int GetOrderInLayer() const
+	[[nodiscard]] int GetOrderInLayer() const
 	{
 		return m_orderInLayer;
 	}
@@ -57,36 +57,36 @@ public:
 	*/
 	void SetFont(const std::shared_ptr<Font>& font);
 
-	std::shared_ptr<Material> GetMaterial();
+	[[nodiscard]] std::shared_ptr<Material> GetMaterial();
 
 	void SetMaterial(std::shared_ptr<Material> _material);
 
 	void SetFontSize(float fontSize);
-	float GetFontSize() const
+	[[nodiscard]] float GetFontSize() const
 	{
 		return m_fontSize;
 	}
 
 	void SetLineSpacing(float lineSpacing);
-	float GetLineSpacing() const
+	[[nodiscard]] float GetLineSpacing() const
 	{
 		return m_lineSpacing;
 	}
 
 	void SetCharacterSpacing(float characterSpacing);
-	float GetCharacterSpacing() const
+	[[nodiscard]] float GetCharacterSpacing() const
 	{
 		return m_characterSpacing;
 	}
 
 	void SetVerticalAlignment(VerticalAlignment verticalAlignment);
-	VerticalAlignment GetVerticalAlignment() const
+	[[nodiscard]] VerticalAlignment GetVerticalAlignment() const
 	{
 		return m_verticalAlignment;
 	}
 
 	void SetHorizontalAlignment(HorizontalAlignment horizontalAlignment);
-	HorizontalAlignment GetHorizontalAlignment() const
+	[[nodiscard]] HorizontalAlignment GetHorizontalAlignment() const
 	{
 		return m_horizontalAlignment;
 	}

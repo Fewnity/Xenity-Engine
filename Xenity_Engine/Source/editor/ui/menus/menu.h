@@ -38,27 +38,27 @@ public:
 	/**
 	* @brief Return if the menu is focused
 	*/
-	bool IsFocused() const;
+	[[nodiscard]] bool IsFocused() const;
 
 	/**
 	* @brief Return if the menu is hovered
 	*/
-	bool IsHovered() const;
+	[[nodiscard]] bool IsHovered() const;
 
 	/**
 	* @brief Return the window size
 	*/
-	Vector2 GetWindowSize() const;
+	[[nodiscard]] Vector2 GetWindowSize() const;
 
 	/**
 	* @brief Return the window position
 	*/
-	Vector2 GetWindowPosition() const;
+	[[nodiscard]] Vector2 GetWindowPosition() const;
 
 	/**
 	* @brief Return the mouse position
 	*/
-	Vector2 GetMousePosition() const;
+	[[nodiscard]] Vector2 GetMousePosition() const;
 
 	/**
 	* @brief Activate or deactivate the menu
@@ -69,7 +69,7 @@ public:
 	/**
 	* @brief Return if the menu is active
 	*/
-	virtual bool IsActive() const;
+	[[nodiscard]] virtual bool IsActive() const;
 
 	MenuGroup group = MenuGroup::Menu_Editor;
 	int id = 0;

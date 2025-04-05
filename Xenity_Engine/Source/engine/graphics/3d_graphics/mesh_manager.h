@@ -57,7 +57,7 @@ public:
 	* @param path File path
 	* @return The loaded mesh
 	*/
-	static std::shared_ptr <MeshData> LoadMesh(const std::string& path);
+	[[nodiscard]] static std::shared_ptr <MeshData> LoadMesh(const std::string& path);
 
 private:
 };

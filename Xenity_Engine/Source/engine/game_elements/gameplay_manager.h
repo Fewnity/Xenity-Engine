@@ -96,7 +96,7 @@ public:
 	/**
 	* @brief Get game state
 	*/
-	static inline GameState GetGameState()
+	[[nodiscard]] static inline GameState GetGameState()
 	{
 		return s_gameState;
 	}
@@ -104,7 +104,7 @@ public:
 	/**
 	* @brief Get the OnPlay event
 	*/
-	static inline Event<>& GetOnPlayEvent()
+	[[nodiscard]] static inline Event<>& GetOnPlayEvent()
 	{
 		return s_OnPlayEvent;
 	}
@@ -112,7 +112,7 @@ public:
 	/**
 	* Get a weak pointer to the last updated component (only for debug)
 	*/
-	static const std::weak_ptr<Component>& GetLastUpdatedComponent()
+	[[nodiscard]] static const std::weak_ptr<Component>& GetLastUpdatedComponent()
 	{
 		return s_lastUpdatedComponent;
 	}

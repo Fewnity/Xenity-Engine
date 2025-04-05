@@ -130,7 +130,10 @@ void Editor::SaveMenuSettings()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	std::shared_ptr<File> file = FileSystem::MakeFile("menu_settings.json");
-	ReflectionUtils::ReflectiveDataToFile(menuSettings.GetReflectiveData(), file);
+	if (!ReflectionUtils::ReflectiveDataToFile(menuSettings.GetReflectiveData(), file)) 
+	{
+		Debug::PrintError("[Editor::SaveMenuSettings] Failed to save menu settings", true);
+	}
 }
 
 void Editor::LoadMenuSettings()

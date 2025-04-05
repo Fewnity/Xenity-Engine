@@ -26,7 +26,7 @@ public:
 	/**
 	* @brief Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha
 	*/
-	Vector4 ToVector4() const;
+	[[nodiscard]] Vector4 ToVector4() const;
 
 	float r = 1;
 	float g = 1;
@@ -34,7 +34,7 @@ public:
 	float a = 1;
 
 protected:
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 };
 
 class API Color : public Reflective
@@ -46,7 +46,7 @@ public:
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
 	*/
-	static Color CreateFromRGB(int r, int g, int b);
+	[[nodiscard]] static Color CreateFromRGB(int r, int g, int b);
 
 	/**
 	* @brief Create color from floats
@@ -54,7 +54,7 @@ public:
 	* @param g Green level [0.0f;1.0f]
 	* @param b Blue level [0.0f;1.0f]
 	*/
-	static Color CreateFromRGBFloat(float r, float g, float b);
+	[[nodiscard]] static Color CreateFromRGBFloat(float r, float g, float b);
 
 	/**
 	* @brief Create color with alpha information from ints
@@ -63,7 +63,7 @@ public:
 	* @param b Blue level [0;255]
 	* @param a Alpha level [0;255]
 	*/
-	static Color CreateFromRGBA(int r, int g, int b, int a);
+	[[nodiscard]] static Color CreateFromRGBA(int r, int g, int b, int a);
 
 	/**
 	* @brief Create color from floats
@@ -72,7 +72,7 @@ public:
 	* @param b Blue level [0.0f;1.0f]
 	* @param a Alpha level [0.0f;1.0f]
 	*/
-	static Color CreateFromRGBAFloat(float r, float g, float b, float a);
+	[[nodiscard]] static Color CreateFromRGBAFloat(float r, float g, float b, float a);
 
 	/**
 	* @brief Set color with alpha information from ints
@@ -95,7 +95,7 @@ public:
 	/**
 	* @brief Get RGBA
 	*/
-	const RGBA& GetRGBA() const
+	[[nodiscard]] const RGBA& GetRGBA() const
 	{
 		return m_rgba;
 	}
@@ -103,7 +103,7 @@ public:
 	/**
 	* @brief Get RGBA value as an unsigned int
 	*/
-	unsigned int GetUnsignedIntRGBA() const
+	[[nodiscard]] unsigned int GetUnsignedIntRGBA() const
 	{
 		return m_rgbaInt;
 	}
@@ -111,7 +111,7 @@ public:
 	/**
 	* @brief Get ABGR value as an unsigned int
 	*/
-	unsigned int GetUnsignedIntABGR() const
+	[[nodiscard]] unsigned int GetUnsignedIntABGR() const
 	{
 		return m_abgrInt;
 	}
@@ -119,7 +119,7 @@ public:
 	/**
 	* @brief Get ABGR value as an unsigned int
 	*/
-	unsigned int GetUnsignedIntARGB() const
+	[[nodiscard]] unsigned int GetUnsignedIntARGB() const
 	{
 		return m_argbInt;
 	}
@@ -127,11 +127,11 @@ public:
 	/**
 	* @brief Return a string representation of the color
 	*/
-	std::string ToString() const;
+	[[nodiscard]] std::string ToString() const;
 
 protected:
 
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	/**

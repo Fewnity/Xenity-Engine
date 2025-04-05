@@ -52,7 +52,7 @@ public:
 		this->onChangeEvent = onChangeEvent;
 	}
 
-	ReflectiveData GetReflectiveData() override
+	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		return reflectedVariables;
@@ -66,7 +66,7 @@ public:
 		}
 	}
 
-	virtual int IsValid() = 0;
+	[[nodiscard]] virtual int IsValid() = 0;
 
 	bool isDebugMode = false;
 	bool enableOnlineProfiler = false;
@@ -84,7 +84,7 @@ public:
 	PlatformSettingsPSP(Event<>* onChangeEvent) : PlatformSettings(onChangeEvent) {}
 
 
-	ReflectiveData GetReflectiveData() override
+	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
@@ -97,7 +97,7 @@ public:
 		return reflectedVariables;
 	}
 
-	int IsValid() override;
+	[[nodiscard]] int IsValid() override;
 
 	std::shared_ptr<Texture> backgroundImage;
 	std::shared_ptr<Texture> iconImage;
@@ -111,7 +111,7 @@ public:
 	PlatformSettingsPsVita() = delete;
 	PlatformSettingsPsVita(Event<>* onChangeEvent) : PlatformSettings(onChangeEvent) {}
 
-	ReflectiveData GetReflectiveData() override
+	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
@@ -125,7 +125,7 @@ public:
 		return reflectedVariables;
 	}
 
-	int IsValid() override;
+	[[nodiscard]] int IsValid() override;
 
 	std::shared_ptr<Texture> backgroundImage;
 	std::shared_ptr<Texture> iconImage;
@@ -140,7 +140,7 @@ public:
 	PlatformSettingsPS3() = delete;
 	PlatformSettingsPS3(Event<>* onChangeEvent) : PlatformSettings(onChangeEvent) {}
 
-	ReflectiveData GetReflectiveData() override
+	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
@@ -150,7 +150,7 @@ public:
 		return reflectedVariables;
 	}
 
-	int IsValid() override;
+	[[nodiscard]] int IsValid() override;
 private:
 };
 
@@ -160,7 +160,7 @@ public:
 	PlatformSettingsWindows() = delete;
 	PlatformSettingsWindows(Event<>* onChangeEvent) : PlatformSettings(onChangeEvent) {}
 
-	ReflectiveData GetReflectiveData() override
+	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		//Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
@@ -170,7 +170,7 @@ public:
 		return reflectedVariables;
 	}
 
-	int IsValid() override;
+	[[nodiscard]] int IsValid() override;
 
 	std::shared_ptr<Icon> icon;
 private:

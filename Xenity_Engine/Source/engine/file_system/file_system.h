@@ -49,11 +49,11 @@ public:
 	/**
 	 * @brief [Internal] ?
 	 */
-	static std::shared_ptr<File> MakeFile(const std::string& path);
+	[[nodiscard]] static std::shared_ptr<File> MakeFile(const std::string& path);
 
-	static std::string ConvertWindowsPathToBasicPath(const std::string& path);
+	[[nodiscard]] static std::string ConvertWindowsPathToBasicPath(const std::string& path);
 
-	static std::string ConvertBasicPathToWindowsPath(const std::string& path);
+	[[nodiscard]] static std::string ConvertBasicPathToWindowsPath(const std::string& path);
 
 private:
 	friend class Engine;
@@ -62,5 +62,5 @@ private:
 	* @brief [Internal] Init file system
 	* @return 0 if success
 	*/
-	int InitFileSystem();
+	[[nodiscard]] int InitFileSystem();
 };

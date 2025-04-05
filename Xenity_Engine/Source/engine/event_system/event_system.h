@@ -149,7 +149,7 @@ public:
 	/**
 	* @brief Get the number of listener
 	*/
-	inline size_t GetBindedFunctionCount()
+	[[nodiscard]] inline size_t GetBindedFunctionCount()
 	{
 		return m_functionCount;
 	}
@@ -203,7 +203,7 @@ private:
 	* 
 	* @return index of the function in the list, -1 if not found
 	*/
-	size_t FindExistingFunction(const size_t functionAddress, const size_t objectAddress)
+	[[nodiscard]] size_t FindExistingFunction(const size_t functionAddress, const size_t objectAddress)
 	{
 		for (size_t i = 0; i < m_functionCount; i++)
 		{
@@ -225,7 +225,7 @@ private:
 	* @return std::function
 	*/
 	template<typename ObjType, std::size_t... Is>
-	std::function<void(Args...)> CreateBindHelper(void(ObjType::* function)(Args...), ObjType* obj, const std::index_sequence<Is...>)
+	[[nodiscard]] std::function<void(Args...)> CreateBindHelper(void(ObjType::* function)(Args...), ObjType* obj, const std::index_sequence<Is...>)
 	{
 		XASSERT(function != nullptr, "[Event::CreateBindHelper] ObjType::function is nullptr");
 		XASSERT(obj != nullptr, "[Event::CreateBindHelper] ObjType::function is nullptr");
@@ -246,7 +246,7 @@ private:
 	* @return std::function
 	*/
 	template<std::size_t... Is>
-	std::function<void(Args...)> CreateBindHelper(void(*function)(Args...), const std::index_sequence<Is...>)
+	[[nodiscard]] std::function<void(Args...)> CreateBindHelper(void(*function)(Args...), const std::index_sequence<Is...>)
 	{
 		XASSERT(function != nullptr, "[Event::CreateBindHelper] function is nullptr");
 

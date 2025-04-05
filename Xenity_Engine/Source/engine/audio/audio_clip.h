@@ -51,9 +51,9 @@ protected:
 	friend class AudioClipStream;
 	friend class ProjectManager;
 
-	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
-	static std::shared_ptr<AudioClip> MakeAudioClip();
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
+	[[nodiscard]] static std::shared_ptr<AudioClip> MakeAudioClip();
 
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 	void UnloadFileReference() override;
@@ -71,7 +71,7 @@ protected:
 	/**
 	* [Internal] Is the audio clip stored in memory?
 	*/
-	inline bool IsStoredInMemory() const
+	[[nodiscard]] inline bool IsStoredInMemory() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->m_loadedInMemory;
 	}
@@ -84,7 +84,7 @@ protected:
 	/**
 	* [Internal] Get the audio memory data (to use if the audio is stored in memory)
 	*/
-	inline const AudioMemory& GetAudioMemory() const
+	[[nodiscard]] inline const AudioMemory& GetAudioMemory() const
 	{
 		return m_audioMemory;
 	}

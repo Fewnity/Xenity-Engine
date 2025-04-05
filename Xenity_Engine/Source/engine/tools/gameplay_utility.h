@@ -21,7 +21,7 @@ class Prefab;
 * @return True if the pointer is valid, false otherwise
 */
 template <typename T>
-bool IsValid(const std::shared_ptr<T>& pointer)
+[[nodiscard]] bool IsValid(const std::shared_ptr<T>& pointer)
 {
 	return IsValid(std::weak_ptr<T>(pointer)); // TODO why creating a weak ptr? Better to check if the pointer is valid here instead of checking in the other function
 }
@@ -32,7 +32,7 @@ bool IsValid(const std::shared_ptr<T>& pointer)
 * @return True if the pointer is valid, false otherwise
 */
 template <typename T>
-bool IsValid(const std::weak_ptr<T>& pointer)
+[[nodiscard]] bool IsValid(const std::weak_ptr<T>& pointer)
 {
 	bool valid = true;
 	if (const auto lockPointer = pointer.lock())

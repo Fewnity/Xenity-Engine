@@ -67,7 +67,7 @@ public:
 	InspectorDeleteComponentCommand(Component& componentToDestroy);
 	void Execute() override;
 	void Undo() override;
-	uint64_t GetComponentId() const
+	[[nodiscard]] uint64_t GetComponentId() const
 	{
 		return componentId;
 	}

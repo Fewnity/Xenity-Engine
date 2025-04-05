@@ -90,7 +90,7 @@ public:
 	* @param fillWithDefaultData Fill the file with default data
 	* @return The created file
 	*/
-	static std::shared_ptr<File> CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData);
+	[[nodiscard]] static std::shared_ptr<File> CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData);
 
 	/**
 	* @brief Open a file in the file explorer of the OS
@@ -116,20 +116,20 @@ public:
 	* @param child Child GameObject
 	* @return True if the parent is a parent of the child
 	*/
-	static bool IsParentOf(const std::shared_ptr<GameObject>& parent, const std::shared_ptr<GameObject>& child);
+	[[nodiscard]] static bool IsParentOf(const std::shared_ptr<GameObject>& parent, const std::shared_ptr<GameObject>& child);
 
 	/**
 	* @brief Remove all children and keep parents of a list with a mix of parents and children
 	* @param parentsAndChildren List of GameObjects
 	*/
-	static std::vector<std::shared_ptr<GameObject>> RemoveChildren(std::vector<std::shared_ptr<GameObject>> parentsAndChildren);
+	[[nodiscard]] static std::vector<std::shared_ptr<GameObject>> RemoveChildren(std::vector<std::shared_ptr<GameObject>> parentsAndChildren);
 
 	/**
 	* @brief Get menu of type T
 	* @return Menu of type T or nullptr if not found
 	*/
 	template <typename T>
-	static std::shared_ptr<T> GetMenu(bool createIfNotFound = true)
+	[[nodiscard]] static std::shared_ptr<T> GetMenu(bool createIfNotFound = true)
 	{
 		for (int i = 0; i < menuCount; i++)
 		{
@@ -150,7 +150,7 @@ public:
 	* @return List of menus of type T or empty list if nothing found
 	*/
 	template <typename T>
-	static std::vector<std::shared_ptr<T>> GetMenus()
+	[[nodiscard]] static std::vector<std::shared_ptr<T>> GetMenus()
 	{
 		std::vector<std::shared_ptr<T>> menusListT;
 		for (int i = 0; i < menuCount; i++)
@@ -204,7 +204,7 @@ public:
 	* @return The created menu
 	*/
 	template <typename T>
-	static std::shared_ptr<T> AddMenu(bool active)
+	[[nodiscard]] static std::shared_ptr<T> AddMenu(bool active)
 	{
 		int count = 0;
 		for (int i = 0; i < menuCount; i++)
@@ -336,7 +336,7 @@ public:
 	/**
 	* @brief Get selected file reference
 	*/
-	static std::shared_ptr<FileReference> GetSelectedFileReference();
+	[[nodiscard]] static std::shared_ptr<FileReference> GetSelectedFileReference();
 
 	/**
 	* @brief Set current project directory
@@ -348,7 +348,7 @@ public:
 	* @brief Get current project directory
 	* @return Current project directory
 	*/
-	static std::shared_ptr <ProjectDirectory> GetCurrentProjectDirectory();
+	[[nodiscard]] static std::shared_ptr <ProjectDirectory> GetCurrentProjectDirectory();
 
 	/**
 	* @brief Function called when the window is focused
@@ -398,7 +398,7 @@ public:
 	/**
 	* @brief Get the name of a GameObject incremented by the number of GameObjects with the same name
 	*/
-	static std::string GetIncrementedGameObjectName(const std::string& name);
+	[[nodiscard]] static std::string GetIncrementedGameObjectName(const std::string& name);
 
 	/**
 	* @brief Apply editor style to all next ImGui calls
@@ -425,6 +425,7 @@ public:
 	 * 
 	 */
 	static int ExecuteSystemCommand(const std::string& command, std::string& outputText);
+
 	/**
 	* @brief Get folder path and file name from a full path
 	* @param fullPath Full path
@@ -455,7 +456,7 @@ private:
 	class MenuSetting : public Reflective
 	{
 	public:
-		ReflectiveData GetReflectiveData() override
+		[[nodiscard]] ReflectiveData GetReflectiveData() override
 		{
 			ReflectiveData reflectedVariables;
 			Reflective::AddVariable(reflectedVariables, name, "name", true);
@@ -474,7 +475,7 @@ private:
 	class MenuSettings : public Reflective
 	{
 	public:
-		ReflectiveData GetReflectiveData() override
+		[[nodiscard]] ReflectiveData GetReflectiveData() override
 		{
 			ReflectiveData reflectedVariables;
 			Reflective::AddVariable(reflectedVariables, settings, "settings", true);
@@ -487,7 +488,7 @@ private:
 	};
 	static MenuSettings menuSettings;
 
-	static bool CheckIntegrity();
+	[[nodiscard]] static bool CheckIntegrity();
 	static void CheckItemIntegrity(const std::string& itemPath, bool& success);
 	static void SaveMenuSettings();
 	static void LoadMenuSettings();

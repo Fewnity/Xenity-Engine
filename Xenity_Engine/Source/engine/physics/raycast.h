@@ -36,7 +36,7 @@ public:
 	* @param maxDistance The max distance of the ray
 	* @param raycastHit The raycastHit struct that will be filled with the hit information
 	*/
-	static bool Check(const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit);
+	[[nodiscard]] static bool Check(const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit);
 private:
 };
 

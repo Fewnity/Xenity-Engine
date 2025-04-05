@@ -116,13 +116,13 @@ protected:
 
 	virtual void CreateShader(Shader::ShaderType type) = 0;
 
-	std::string GetShaderCode(const std::string& fullShaderCode, ShaderType type, Platform platform) const;
-	std::string ReadShader() const;
+	[[nodiscard]] std::string GetShaderCode(const std::string& fullShaderCode, ShaderType type, Platform platform) const;
+	[[nodiscard]] std::string ReadShader() const;
 
 	/**
 	* Data needs to be deleted by the caller
 	*/
-	unsigned char* ReadShaderBinary(size_t& size) const;
+	[[nodiscard]] unsigned char* ReadShaderBinary(size_t& size) const;
 
 	friend class Renderer;
 	friend class AssetManager;
@@ -134,7 +134,7 @@ protected:
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 	virtual void Load() = 0;
 
-	static std::shared_ptr<Shader> MakeShader();
+	[[nodiscard]] static std::shared_ptr<Shader> MakeShader();
 
 	friend class Material;
 	friend class Graphics;
@@ -214,7 +214,7 @@ protected:
 	* @param filePath The file path of the shader
 	* @param type The type of the shader
 	*/
-	virtual bool Compile(const std::string& filePath, ShaderType type) = 0;
+	[[nodiscard]] virtual bool Compile(const std::string& filePath, ShaderType type) = 0;
 
 	/**
 	* @brief Set the shader uniform of a point light

@@ -92,7 +92,7 @@ public:
 	* @param scale Test scale
 	* @return Text informations
 	*/
-	static TextInfo* GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale);
+	[[nodiscard]] static TextInfo* GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale);
 
 	/**
 	* @brief Create a mesh from a text
@@ -105,7 +105,7 @@ public:
 	* @param scale Scale
 	* @return The mesh
 	*/
-	static std::shared_ptr <MeshData> CreateMesh(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Color& color, const std::shared_ptr<Font>& font, float scale);
+	[[nodiscard]] static std::shared_ptr <MeshData> CreateMesh(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Color& color, const std::shared_ptr<Font>& font, float scale);
 
 private:
 

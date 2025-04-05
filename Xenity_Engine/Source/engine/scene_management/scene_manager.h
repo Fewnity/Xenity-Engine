@@ -45,7 +45,7 @@ public:
 	/**
 	* @brief Get opened scene
 	*/
-	API static inline const std::shared_ptr<Scene>& GetOpenedScene()
+	[[nodiscard]] API static inline const std::shared_ptr<Scene>& GetOpenedScene()
 	{
 		return s_openedScene;
 	}
@@ -54,7 +54,7 @@ public:
 	/**
 	 * @brief Get if the scene has been modified
 	 */
-	API static inline bool GetSceneModified()
+	[[nodiscard]] API static inline bool GetSceneModified()
 	{
 		return s_sceneModified;
 	}
@@ -94,9 +94,9 @@ private:
 	*/
 	static void SaveScene(SaveSceneType saveType);
 
-	static nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
+	[[nodiscard]] static nlohmann::ordered_json GameObjectToJson(GameObject& gameObject, std::set<uint64_t>& uniqueIds);
 #endif
-	static size_t FindSceneDataPosition(const std::string& jsonString);
+	[[nodiscard]] static size_t FindSceneDataPosition(const std::string& jsonString);
 
 	/**
 	* @brief [Internal] Restore the saved scene backup
@@ -130,7 +130,7 @@ private:
 	 * @brief [Internal] Show a dialog to ask if the user wants to save the scene if it has been modified
 	 * @return True if canceled
 	 */
-	static bool OnQuit();
+	[[nodiscard]] static bool OnQuit();
 
 	/**
 	* @brief [Internal] Load scene from json data

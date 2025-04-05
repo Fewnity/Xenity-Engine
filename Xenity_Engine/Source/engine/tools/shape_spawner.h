@@ -57,7 +57,6 @@ public:
 	*/
 	static std::shared_ptr <GameObject> SpawnCylinder();
 
-
 private:
 	/**
 	* Create a GameObject and add a MeshRenderer to it

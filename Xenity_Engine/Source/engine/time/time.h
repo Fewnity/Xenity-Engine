@@ -18,7 +18,7 @@ public:
 	/**
 	* @brief Get total scaled elapsed time
 	*/
-	static inline float GetTime()
+	[[nodiscard]] static inline float GetTime()
 	{
 		return s_time;
 	}
@@ -26,7 +26,7 @@ public:
 	/**
 	* @brief Get total unscaled elapsed time
 	*/
-	static inline float GetUnscaledTime()
+	[[nodiscard]] static inline float GetUnscaledTime()
 	{
 		return s_unscaledTime;
 	}
@@ -34,14 +34,14 @@ public:
 	/**
 	* @brief Get scaled delta time
 	*/
-	static inline float GetDeltaTime()
+	[[nodiscard]] static inline float GetDeltaTime()
 	{
 		return s_deltaTime;
 	}
 	/**
 	* @brief Get unscaled delta time
 	*/
-	static inline float GetUnscaledDeltaTime()
+	[[nodiscard]] static inline float GetUnscaledDeltaTime()
 	{
 		return s_unscaledDeltaTime;
 	}
@@ -49,7 +49,7 @@ public:
 	/**
 	* @brief Get time scale
 	*/
-	static inline float GetTimeScale()
+	[[nodiscard]] static inline float GetTimeScale()
 	{
 		return s_timeScale;
 	}

@@ -30,7 +30,7 @@ public:
 	RendererRSX(const RendererRSX& other) = delete;
 	RendererRSX& operator=(const RendererRSX&) = delete;
 
-	int Init() override;
+	[[nodiscard]] int Init() override;
 	void Setup() override;
 	void Stop() override;
 	void NewFrame() override;
@@ -49,7 +49,7 @@ public:
 	void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings) override;
 	void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings) override;
 	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings) override;
-	unsigned int CreateNewTexture() override;
+	[[nodiscard]] unsigned int CreateNewTexture() override;
 	void DeleteTexture(Texture& texture) override;
 	void SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer) override;
 	void Clear() override;
@@ -61,7 +61,7 @@ public:
 
 	void Setlights(const LightsIndices& lightsIndices) override;
 
-	const uint8_t* GetFrameBuffer() const;
+	[[nodiscard]] const uint8_t* GetFrameBuffer() const;
 
 	static gcmContextData* context;
 	static rsxProgramAttrib* textureUnit; // Move this to shader

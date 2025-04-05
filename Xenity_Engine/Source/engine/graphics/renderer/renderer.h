@@ -66,7 +66,7 @@ public:
 	virtual ~Renderer() = default;
 	Renderer& operator=(const Renderer&) = delete;
 
-	virtual int Init() = 0;
+	[[nodiscard]] virtual int Init() = 0;
 	virtual void Setup() = 0;
 	virtual void Stop() = 0;
 
@@ -93,7 +93,7 @@ public:
 	virtual void SetTransform(const glm::mat4& mat) = 0;
 
 	// Texture
-	virtual unsigned int CreateNewTexture() = 0;
+	[[nodiscard]] virtual unsigned int CreateNewTexture() = 0;
 	virtual void BindTexture(const Texture& texture) = 0;
 	virtual void SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer) = 0;
 	virtual void DeleteTexture(Texture& texture) = 0;

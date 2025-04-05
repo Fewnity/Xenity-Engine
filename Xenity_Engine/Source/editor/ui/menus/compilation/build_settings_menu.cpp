@@ -344,7 +344,12 @@ void BuildSettingsMenu::LoadSettings()
 {
 	// Read file data
 	std::shared_ptr<File> file = FileSystem::MakeFile(ProjectManager::GetProjectFolderPath() + "build_settings.json");
-	file->Open(FileMode::ReadOnly);
+	if (!file->Open(FileMode::ReadOnly)) 
+	{
+		Debug::PrintError("[BuildSettingsMenu::LoadSettings] Error while opening build settings file: " + file->GetPath());
+		return;
+	}
+
 	const std::string data = file->ReadAll();
 	file->Close();
 
@@ -392,7 +397,11 @@ void BuildSettingsMenu::SaveSettings()
 
 	// Write json into the file
 	std::shared_ptr<File> file = FileSystem::MakeFile(ProjectManager::GetProjectFolderPath() + "build_settings.json");
-	file->Open(FileMode::WriteCreateFile);
+	if (!file->Open(FileMode::WriteCreateFile))
+	{
+		Debug::PrintError("[BuildSettingsMenu::SaveSettings] Error while saving build settings: " + file->GetPath());
+		return;
+	}
 	file->Write(buildSettingsData.dump(0));
 	file->Close();
 }

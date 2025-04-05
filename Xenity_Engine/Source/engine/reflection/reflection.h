@@ -64,7 +64,7 @@ class TypeSpawner
 {
 public:
 	virtual ~TypeSpawner() {}
-	virtual void* Allocate() const = 0;
+	[[nodiscard]] virtual void* Allocate() const = 0;
 };
 
 template<typename T> class TypeSpawnerImpl : public TypeSpawner
@@ -73,7 +73,7 @@ public:
 	/**
 	* @brief Allocate a new instance of the type
 	*/
-	virtual void* Allocate()const { return new T; }
+	[[nodiscard]] virtual void* Allocate()const { return new T; }
 };
 
 /**
@@ -111,7 +111,7 @@ public:
 	/**
 	* @brief Get all child class variables references
 	*/
-	virtual ReflectiveData GetReflectiveData() = 0;
+	[[nodiscard]] virtual ReflectiveData GetReflectiveData() = 0;
 
 	/**
 	* @brief Called when a variable is updated
@@ -315,6 +315,6 @@ private:
 	* @param id The variable type id (hash code)
 	* @param isEnum If the variable is an enum
 	*/
-	static ReflectiveEntry& CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum);
+	[[nodiscard]] static ReflectiveEntry& CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum);
 };
 

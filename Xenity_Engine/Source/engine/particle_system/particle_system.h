@@ -52,7 +52,7 @@ public:
 	/**
 	* @brief Get if the particle system is emitting particles
 	*/
-	inline bool IsEmitting() const
+	[[nodiscard]] inline bool IsEmitting() const
 	{
 		return m_isEmitting;
 	}
@@ -66,7 +66,7 @@ public:
 		m_spawnRate = spawnRate;
 	}
 
-	float GetSpawnRate() const
+	[[nodiscard]] float GetSpawnRate() const
 	{
 		return m_spawnRate;
 	}
@@ -171,9 +171,9 @@ protected:
 	void ResetParticle(Particle& particle, bool setIsDead);
 	void AllocateParticlesMemory();
 
-	static float DefaultGetScaleOverLifeTime(float lifeTime);
-	static float DefaultGetSpeedOverLifeTime(float lifeTime);
-	static Vector4 DefaultGetColorOverLifeTime(float lifeTime);
+	[[nodiscard]] static float DefaultGetScaleOverLifeTime(float lifeTime);
+	[[nodiscard]] static float DefaultGetSpeedOverLifeTime(float lifeTime);
+	[[nodiscard]] static Vector4 DefaultGetColorOverLifeTime(float lifeTime);
 
 	std::shared_ptr<MeshData> m_mesh = nullptr;
 	std::shared_ptr<Material> m_material = nullptr;

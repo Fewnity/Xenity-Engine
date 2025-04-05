@@ -29,13 +29,15 @@ bool BitFile::Create(const std::string& path)
 	}
 }
 
-void BitFile::Open(const std::string& path)
+bool BitFile::Open(const std::string& path)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	m_file = FileSystem::MakeFile(path);
 	const bool openResult = m_file->Open(FileMode::ReadOnly);
 	XCHECK(openResult, "[BitFile::Open] Failed to open bit file: " + m_file->GetPath());
+
+	return openResult;
 }
 
 void BitFile::Close()

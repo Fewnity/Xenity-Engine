@@ -27,7 +27,7 @@ public:
 	/**
 	* @brief Get position
 	*/
-	inline const Vector3& GetPosition() const
+	[[nodiscard]] inline const Vector3& GetPosition() const
 	{
 		return m_position;
 	}
@@ -35,7 +35,7 @@ public:
 	/**
 	* @brief Get local position
 	*/
-	inline const Vector3& GetLocalPosition() const
+	[[nodiscard]] inline const Vector3& GetLocalPosition() const
 	{
 		return m_localPosition;
 	}
@@ -43,7 +43,7 @@ public:
 	/**
 	* @brief Get rotation (in degree)
 	*/
-	inline const Vector3& GetEulerAngles() const
+	[[nodiscard]] inline const Vector3& GetEulerAngles() const
 	{
 		return m_rotation;
 	}
@@ -51,7 +51,7 @@ public:
 	/**
 	* @brief Get local rotation (in degree)
 	*/
-	inline const Vector3& GetLocalEulerAngles() const
+	[[nodiscard]] inline const Vector3& GetLocalEulerAngles() const
 	{
 		return m_localRotation;
 	}
@@ -59,7 +59,7 @@ public:
 	/**
 	* @brief Get rotation
 	*/
-	inline const Quaternion& GetRotation() const
+	[[nodiscard]] inline const Quaternion& GetRotation() const
 	{
 		return m_rotationQuaternion;
 	}
@@ -67,7 +67,7 @@ public:
 	/**
 	* @brief Get local rotation
 	*/
-	inline const Quaternion& GetLocalRotation() const
+	[[nodiscard]] inline const Quaternion& GetLocalRotation() const
 	{
 		return m_localRotationQuaternion;
 	}
@@ -75,7 +75,7 @@ public:
 	/**
 	* @brief Get scale
 	*/
-	inline const Vector3& GetScale() const
+	[[nodiscard]] inline const Vector3& GetScale() const
 	{
 		return m_scale;
 	}
@@ -83,7 +83,7 @@ public:
 	/**
 	* @brief Get local scale
 	*/
-	inline const Vector3& GetLocalScale() const
+	[[nodiscard]] inline const Vector3& GetLocalScale() const
 	{
 		return m_localScale;
 	}
@@ -91,7 +91,7 @@ public:
 	/**
 	* @brief Get forward direction
 	*/
-	inline Vector3 GetForward() const
+	[[nodiscard]] inline Vector3 GetForward() const
 	{
 		const Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], rotationMatrix[8]);
 		return direction;
@@ -100,7 +100,7 @@ public:
 	/**
 	* @brief Get backward direction
 	*/
-	inline Vector3 GetBackward() const
+	[[nodiscard]] inline Vector3 GetBackward() const
 	{
 		return -GetForward();
 	}
@@ -108,7 +108,7 @@ public:
 	/**
 	* @brief Get left direction
 	*/
-	inline Vector3 GetLeft() const
+	[[nodiscard]] inline Vector3 GetLeft() const
 	{
 		return -GetRight();
 	}
@@ -116,7 +116,7 @@ public:
 	/**
 	* @brief Get right direction
 	*/
-	inline Vector3 GetRight() const
+	[[nodiscard]] inline Vector3 GetRight() const
 	{
 		const Vector3 direction = Vector3(rotationMatrix[0], -rotationMatrix[1], -rotationMatrix[2]);
 		return direction;
@@ -125,7 +125,7 @@ public:
 	/**
 	* @brief Get up direction
 	*/
-	inline Vector3 GetUp() const
+	[[nodiscard]] inline Vector3 GetUp() const
 	{
 		const Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], rotationMatrix[5]);
 		return direction;
@@ -134,7 +134,7 @@ public:
 	/**
 	* @brief Get down direction
 	*/
-	inline Vector3 GetDown() const
+	[[nodiscard]] inline Vector3 GetDown() const
 	{
 		return -GetUp();
 	}
@@ -181,12 +181,12 @@ public:
 	*/
 	void SetLocalScale(const Vector3& value);
 
-	inline const glm::mat4& GetTransformationMatrix() const
+	[[nodiscard]] inline const glm::mat4& GetTransformationMatrix() const
 	{
 		return transformationMatrix;
 	}
 
-	inline const glm::mat3& GetInverseNormalMatrix()
+	[[nodiscard]] inline const glm::mat3& GetInverseNormalMatrix()
 	{
 		if constexpr (!s_UseOpenGLFixedFunctions)
 		{
@@ -199,12 +199,12 @@ public:
 		return normalMatrix;
 	}
 
-	const glm::mat4& GetMVPMatrix(size_t currentFrame);
+	[[nodiscard]] const glm::mat4& GetMVPMatrix(size_t currentFrame);
 
 	/**
 	* @brief Get GameObject
 	*/
-	inline std::shared_ptr<GameObject> GetGameObject() const
+	[[nodiscard]] inline std::shared_ptr<GameObject> GetGameObject() const
 	{
 		return m_gameObject.lock();
 	}
@@ -212,7 +212,7 @@ public:
 	/**
 	* Get the event that is called when the transform is updated (new position, or new rotation or new scale)
 	*/
-	Event<>& GetOnTransformUpdated()
+	[[nodiscard]] Event<>& GetOnTransformUpdated()
 	{
 		return m_onTransformUpdated;
 	}
@@ -220,7 +220,7 @@ public:
 	/**
 	* Get the event that is called when the transform is scamled
 	*/
-	Event<>& GetOnTransformScaled()
+	[[nodiscard]] Event<>& GetOnTransformScaled()
 	{
 		return m_onTransformScaled;
 	}
@@ -236,7 +236,7 @@ private:
 	Event<> m_onTransformUpdated;
 	Event<> m_onTransformScaled;
 
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 
 	friend class InspectorSetTransformDataCommand;
 	friend class InspectorDeleteGameObjectCommand;
@@ -300,7 +300,7 @@ private:
 	* @param parentMatrix The parent matrix
 	* @return The local position
 	*/
-	Vector3 GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const;
+	[[nodiscard]] Vector3 GetLocalPositionFromMatrices(const glm::mat4& childMatrix, const glm::mat4& parentMatrix) const;
 
 	/**
 	* @brief Get localRotation from matrices
@@ -308,7 +308,7 @@ private:
 	* @param parentMatrix The parent matrix
 	* @return The local rotation
 	*/
-	Vector3 GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation) const;
+	[[nodiscard]] Vector3 GetLocalRotationFromWorldRotations(const Vector3& childWorldRotation, const Vector3& parentWorldRotation) const;
 	size_t lastMVPFrame = 0;
 	bool m_isNormalMatrixDirty = true;
 public:

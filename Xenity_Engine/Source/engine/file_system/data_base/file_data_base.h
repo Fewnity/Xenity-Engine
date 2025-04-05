@@ -34,7 +34,7 @@ public:
 	FileDataBase(const FileDataBase& other) = delete;
 	FileDataBase& operator=(const FileDataBase&) = delete;
 
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 
 	/**
 	* @brief Add a infos about a file to the list
@@ -54,12 +54,12 @@ public:
 	/**
 	* @brief Load infos from a file at the given path
 	*/
-	bool LoadFromFile(const std::string& path);
+	[[nodiscard]] bool LoadFromFile(const std::string& path);
 
 	/*
 	* @brief Get the files list
 	*/
-	const std::vector<FileDataBaseEntry*>& GetFileList() const
+	[[nodiscard]] const std::vector<FileDataBaseEntry*>& GetFileList() const
 	{
 		return m_fileList;
 	}
@@ -67,12 +67,12 @@ public:
 	/**
 	* @brief Get the bit file
 	*/
-	BitFile& GetBitFile()
+	[[nodiscard]] BitFile& GetBitFile()
 	{
 		return m_bitFile;
 	}
 
-	IntegrityState CheckIntegrity();
+	[[nodiscard]] IntegrityState CheckIntegrity();
 
 private:
 	// Pointer list because the reflection system do not support basic objects in lists

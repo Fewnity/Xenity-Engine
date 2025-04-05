@@ -26,12 +26,12 @@ public:
 		m_gameObject = gameObject;
 	}
 
-	inline std::vector<std::shared_ptr<Component>>& GetComponents()
+	[[nodiscard]] inline std::vector<std::shared_ptr<Component>>& GetComponents()
 	{
 		return m_gameObject->m_components;
 	}
 
-	inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
+	[[nodiscard]] inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
 	{
 		return m_gameObject->m_children;
 	}
@@ -46,7 +46,7 @@ public:
 		m_gameObject->Setup();
 	}
 
-	inline bool IsWaitingForDestroy()
+	[[nodiscard]] inline bool IsWaitingForDestroy()
 	{
 		return m_gameObject->m_waitingForDestroy;
 	}

@@ -119,7 +119,7 @@ public:
 	/**
 	* @brief Get field of view
 	*/
-	float GetFov() const;
+	[[nodiscard]] float GetFov() const;
 
 	/**
 	* @brief Set projection size
@@ -130,7 +130,7 @@ public:
 	/**
 	* @brief Get projection size
 	*/
-	float GetProjectionSize() const
+	[[nodiscard]] float GetProjectionSize() const
 	{
 		return m_projectionSize;
 	}
@@ -138,7 +138,7 @@ public:
 	/**
 	* @brief Get near clipping plane
 	*/
-	float GetNearClippingPlane() const
+	[[nodiscard]] float GetNearClippingPlane() const
 	{
 		return m_nearClippingPlane;
 	}
@@ -146,7 +146,7 @@ public:
 	/**
 	* @brief Get far clipping plane
 	*/
-	float GetFarClippingPlane() const
+	[[nodiscard]] float GetFarClippingPlane() const
 	{
 		return m_farClippingPlane;
 	}
@@ -168,12 +168,12 @@ public:
 	* @param x X pixel position
 	* @param x Y pixel position
 	*/
-	Vector2 ScreenTo2DWorld(int x, int y);
+	[[nodiscard]] Vector2 ScreenTo2DWorld(int x, int y);
 
 	/**
 	* @brief Get 2D world position from mouse's position
 	*/
-	Vector2 MouseTo2DWorld();
+	[[nodiscard]] Vector2 MouseTo2DWorld();
 
 	/**
 	* @brief Set projection type
@@ -184,7 +184,7 @@ public:
 	/**
 	* @brief Get projection matrix
 	*/
-	const glm::mat4& GetProjection() const
+	[[nodiscard]] const glm::mat4& GetProjection() const
 	{
 		return m_projection;
 	}
@@ -192,17 +192,17 @@ public:
 	/**
 	* @brief Get projection type
 	*/
-	ProjectionTypes GetProjectionType() const
+	[[nodiscard]] ProjectionTypes GetProjectionType() const
 	{
 		return m_projectionType;
 	}
 
-	Vector3 GetMouseRay();
+	[[nodiscard]] Vector3 GetMouseRay();
 
 	/**
 	* @brief Get view width in pixel
 	*/
-	int GetWidth() const
+	[[nodiscard]] int GetWidth() const
 	{
 		return m_width;
 	}
@@ -210,7 +210,7 @@ public:
 	/**
 	* @brief Get view height in pixel
 	*/
-	int GetHeight() const
+	[[nodiscard]] int GetHeight() const
 	{
 		return m_height;
 	}
@@ -218,7 +218,7 @@ public:
 	/**
 	* @brief Get view aspect ratio
 	*/
-	float GetAspectRatio() const
+	[[nodiscard]] float GetAspectRatio() const
 	{
 		return m_aspect;
 	}
@@ -226,7 +226,7 @@ public:
 	/**
 	* @brief Get if the camera is using multisampling (Windows Only)
 	*/
-	bool GetUseMultisampling() const
+	[[nodiscard]] bool GetUseMultisampling() const
 	{
 		return m_useMultisampling;
 	}
@@ -244,7 +244,10 @@ public:
 
 	void UpdateCameraTransformMatrix();
 
-	std::unique_ptr<uint8_t[]> GetRawFrameBuffer();
+	/**
+	* Heavy operation, use with caution
+	*/
+	[[nodiscard]] std::unique_ptr<uint8_t[]> GetRawFrameBuffer();
 
 protected:
 	friend class SceneMenu;

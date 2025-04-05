@@ -23,12 +23,12 @@ public:
 	LineRenderer();
 	~LineRenderer();
 
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	void SetOrderInLayer(int orderInLayer);
 
-	inline int GetOrderInLayer() const
+	[[nodiscard]] inline int GetOrderInLayer() const
 	{
 		return m_orderInLayer;
 	}
@@ -41,17 +41,17 @@ public:
 		m_color = color;
 	}
 
-	inline const Color& GetColor() const
+	[[nodiscard]] inline const Color& GetColor() const
 	{
 		return m_color;
 	}
 
-	inline const Vector3& GetStartPosition()
+	[[nodiscard]] inline const Vector3& GetStartPosition()
 	{
 		return m_startPosition;
 	}
 
-	inline const Vector3& GetEndPosition()
+	[[nodiscard]] inline const Vector3& GetEndPosition()
 	{
 		return m_endPosition;
 	}

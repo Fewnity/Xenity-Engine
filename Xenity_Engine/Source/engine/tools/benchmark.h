@@ -33,7 +33,7 @@ public:
 	/**
 	* @brief Get elapsed microseconds between Start and Stop calls
 	*/
-	inline uint64_t GetMicroSeconds() const
+	[[nodiscard]] inline uint64_t GetMicroSeconds() const
 	{
 		return m_time;
 	}
@@ -41,7 +41,7 @@ public:
 	/**
 	* @brief Get elapsed milliseconds between Start and Stop calls
 	*/
-	inline uint64_t GetMilliseconds() const
+	[[nodiscard]] inline uint64_t GetMilliseconds() const
 	{
 		return (uint64_t)(m_time / 1000.0f);
 	}
@@ -49,7 +49,7 @@ public:
 	/**
 	* @brief Get elapsed seconds between Start and Stop calls
 	*/
-	inline float GetSeconds() const
+	[[nodiscard]] inline float GetSeconds() const
 	{
 		return m_time / 1000000.0f;
 	}

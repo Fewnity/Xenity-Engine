@@ -23,7 +23,7 @@ public:
 	/**
 	* @brief Create a new component of the child template type (Will create a new list if no slot available)
 	*/
-	virtual std::shared_ptr<Component> CreateComponent(Event<size_t>* onComponentDeletedEvent) = 0;
+	[[nodiscard]] virtual std::shared_ptr<Component> CreateComponent(Event<size_t>* onComponentDeletedEvent) = 0;
 
 	/**
 	* @brief Initialize active components
@@ -40,22 +40,22 @@ public:
 	*/
 	virtual void RemoveComponent(const std::shared_ptr<Component>& component) = 0;
 
-	virtual size_t GetListCount() = 0;
+	[[nodiscard]] virtual size_t GetListCount() = 0;
 
 	/**
 	* @brief Get the maximum number of components that can be created per list
 	*/
-	size_t GetMaxComponentCount() const { return m_maxComponentCount; }
+	[[nodiscard]] size_t GetMaxComponentCount() const { return m_maxComponentCount; }
 
 	/**
 	* @brief Get if the update loop is disabled for this component list
 	*/
-	bool IsDisabledLoop() const { return m_disabledLoop; }
+	[[nodiscard]] bool IsDisabledLoop() const { return m_disabledLoop; }
 
 	/**
 	* @brief Get all components
 	*/
-	const std::vector<std::shared_ptr<Component>>& GetComponents() const { return shared_components; }
+	[[nodiscard]] const std::vector<std::shared_ptr<Component>>& GetComponents() const { return shared_components; }
 
 protected:
 	std::vector<std::shared_ptr<Component>> shared_components;
@@ -84,7 +84,7 @@ public:
 	/**
 	* @brief Create a new component of the template type (Will create a new list if no slot available)
 	*/
-	std::shared_ptr<Component> CreateComponent(Event<size_t>* onComponentDeletedEvent)
+	[[nodiscard]] std::shared_ptr<Component> CreateComponent(Event<size_t>* onComponentDeletedEvent)
 	{
 		// Find available list
 		size_t listIndex = -1;
@@ -232,7 +232,7 @@ public:
 		}
 	}
 
-	size_t GetListCount() override
+	[[nodiscard]] size_t GetListCount() override
 	{
 		return m_componentsData.size();
 	}
@@ -258,7 +258,7 @@ public:
 	/**
 	* @brief Get if a component has it's update loop disabled
 	*/
-	static bool GetCompnentDisabledLoop(size_t typeId);
+	[[nodiscard]] static bool GetCompnentDisabledLoop(size_t typeId);
 
 	template<typename T>
 	static void AddComponentList(size_t typeId)
@@ -281,7 +281,7 @@ public:
 	}
 
 	template<typename T>
-	static std::shared_ptr<T> CreateComponent()
+	[[nodiscard]] static std::shared_ptr<T> CreateComponent()
 	{
 		// Create component list if it doesn't exist
 		const size_t typeId = typeid(T).hash_code();
@@ -319,7 +319,7 @@ public:
 		}
 	}
 
-	static std::vector<std::shared_ptr<Component>> GetAllComponents()
+	[[nodiscard]] static std::vector<std::shared_ptr<Component>> GetAllComponents()
 	{
 		std::vector<std::shared_ptr<Component>> allComponents;
 		for (const auto& componentList : componentLists)

@@ -22,23 +22,23 @@ public:
 	* @param endPosition The position of the end of the tag (if found)
 	* @return True if the tag was found, false otherwise
 	*/
-	static bool FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, size_t& startPosition, size_t& endPosition);
+	[[nodiscard]] static bool FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, size_t& startPosition, size_t& endPosition);
 
 	/**
 	* @brief Split a string into a vector of strings
 	* @param text The text to split
 	* @param delimiter The delimiter to split the text with
 	*/
-	static std::vector<std::string> Split(const std::string& text, const char delimiter);
+	[[nodiscard]] static std::vector<std::string> Split(const std::string& text, const char delimiter);
 
 	/**
 	* @brief Take a string and convert it to lowercase
 	*/
-	static std::string ToLower(const std::string& text);
+	[[nodiscard]] static std::string ToLower(const std::string& text);
 
 	/**
 	* @brief Take a string and convert it to uppercase
 	*/
-	static std::string ToUpper(const std::string& text);
+	[[nodiscard]] static std::string ToUpper(const std::string& text);
 };
 

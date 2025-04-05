@@ -22,6 +22,6 @@ protected:
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
-	static std::shared_ptr<Scene> MakeScene();
+	[[nodiscard]] static std::shared_ptr<Scene> MakeScene();
 };
 

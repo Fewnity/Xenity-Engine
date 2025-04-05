@@ -17,18 +17,18 @@ public:
 	static void OpenURL(const std::string& url);
 	static void Quit();
 
-	static Platform GetPlatform();
-	static std::string GetXenityVersion();
-	static std::string GetGameName();
-	static std::string GetCompanyName();
-	static AssetPlatform GetAssetPlatform();
-	static bool IsInEditor();
+	[[nodiscard]] static Platform GetPlatform();
+	[[nodiscard]] static std::string GetXenityVersion();
+	[[nodiscard]] static std::string GetGameName();
+	[[nodiscard]] static std::string GetCompanyName();
+	[[nodiscard]] static AssetPlatform GetAssetPlatform();
+	[[nodiscard]] static bool IsInEditor();
 
 	/**
 	* @brief Return the game folder (folder where you can write data)
 	*/
-	static std::string GetGameDataFolder();
-	static std::string GetGameFolder();
+	[[nodiscard]] static std::string GetGameDataFolder();
+	[[nodiscard]] static std::string GetGameFolder();
 private:
 	friend class InspectorMenu;
 	friend class BuildSettingsMenu;

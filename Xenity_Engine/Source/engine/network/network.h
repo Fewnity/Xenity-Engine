@@ -45,7 +45,7 @@ public:
 	/**
 	* @brief Return recieved data during this frame
 	*/
-	std::string GetIncommingData()
+	[[nodiscard]] std::string GetIncommingData()
 	{
 		const std::string data = m_incommingData;
 		m_incommingData.clear();
@@ -70,8 +70,8 @@ public:
 	/**
 	* @brief Create a socket
 	*/
-	static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
-	static std::shared_ptr<Socket> GetClientSocket();
+	[[nodiscard]] static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
+	[[nodiscard]] static std::shared_ptr<Socket> GetClientSocket();
 
 private:
 	friend class Engine;

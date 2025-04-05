@@ -48,7 +48,7 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float u, float v, const Color& color, float x, float y, float z, unsigned int vertexIndex);
+		void AddVertex(float u, float v, const Color& color, float x, float y, float z, uint32_t vertexIndex);
 
 		/**
 		 * @brief Add a vertex to a submesh
@@ -58,7 +58,7 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float x, float y, float z, unsigned int vertexIndex);
+		void AddVertex(float x, float y, float z, uint32_t vertexIndex);
 
 		/**
 		 * @brief Add a vertex to a submesh
@@ -70,7 +70,7 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float u, float v, float x, float y, float z, unsigned int vertexIndex);
+		void AddVertex(float u, float v, float x, float y, float z, uint32_t vertexIndex);
 
 		/**
 		 * @brief Add a vertex to a submesh
@@ -85,7 +85,7 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, unsigned int vertexIndex);
+		void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex);
 
 		/**
 		 * @brief Add a vertex to a submesh
@@ -98,34 +98,34 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float nx, float ny, float nz, float x, float y, float z, unsigned int vertexIndex);
+		void AddVertex(float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex);
 
-		void AddPosition(float x, float y, float z, unsigned int vertexIndex);
-		void AddNormal(float nx, float ny, float nz, unsigned int vertexIndex);
-		void AddUV(float u, float v, unsigned int vertexIndex);
-		void AddColor(const Color& color, unsigned int vertexIndex);
+		void AddPosition(float x, float y, float z, uint32_t vertexIndex);
+		void AddNormal(float nx, float ny, float nz, uint32_t vertexIndex);
+		void AddUV(float u, float v, uint32_t vertexIndex);
+		void AddColor(const Color& color, uint32_t vertexIndex);
 
 		/**
 		* @brief Set index value
 		* @param (value) The new vertex index
 		* @param (index) Index to change
 		*/
-		void SetIndex(size_t index, unsigned int value)
+		void SetIndex(size_t index, uint32_t value)
 		{
 			XASSERT(value < m_vertice_count, "Value is larger than vertex count");
 			XASSERT(index < m_index_count, "Value is larger than index count");
 
 			if(isShortIndices)
 			{
-				((unsigned short*)m_indices)[index] = static_cast<unsigned short>(value);
+				((uint16_t*)m_indices)[index] = static_cast<uint16_t>(value);
 			}
 			else
 			{
-				((unsigned int*)m_indices)[index] = value;
+				((uint32_t*)m_indices)[index] = value;
 			}
 		}
 
-		void* GetIndices() const
+		[[nodiscard]] void* GetIndices() const
 		{
 			return m_indices;
 		}
@@ -177,14 +177,14 @@ public:
 	MeshData();
 	~MeshData();
 
-	static std::shared_ptr<MeshData> MakeMeshData();
+	[[nodiscard]] static std::shared_ptr<MeshData> MakeMeshData();
 
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 
 	/**
 	* Get mesh min bounding box point
 	*/
-	inline const Vector3& GetMinBoundingBox()  const
+	[[nodiscard]] inline const Vector3& GetMinBoundingBox()  const
 	{
 		return m_minBoundingBox;
 	}
@@ -192,7 +192,7 @@ public:
 	/**
 	* Get mesh max bounding box point
 	*/
-	inline const Vector3& GetMaxBoundingBox()  const
+	[[nodiscard]] inline const Vector3& GetMaxBoundingBox()  const
 	{
 		return m_maxBoundingBox;
 	}
@@ -200,7 +200,7 @@ public:
 	/**
 	* Get mesh bounding sphere
 	*/
-	const Sphere& GetBoundingSphere() const
+	[[nodiscard]] const Sphere& GetBoundingSphere() const
 	{
 		return m_boundingSphere;
 	}
@@ -213,7 +213,7 @@ public:
 	/**
 	* @brief Get sub mesh pointer
 	*/
-	const std::unique_ptr<SubMesh>& GetSubMesh(size_t index)
+	[[nodiscard]] const std::unique_ptr<SubMesh>& GetSubMesh(size_t index)
 	{
 		XASSERT(index < m_subMeshes.size(), "Wrong submesh index");
 		return m_subMeshes[index];
@@ -253,12 +253,12 @@ protected:
 	*/
 	void SendDataToGpu();
 
-	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 	void OnLoadFileReferenceFinished() override;
 	void UnloadFileReference() override;
-	static std::shared_ptr<MeshData> MakeMeshDataForFile();
+	[[nodiscard]] static std::shared_ptr<MeshData> MakeMeshDataForFile();
 
 	/**
 	* @brief Update ps2 packets

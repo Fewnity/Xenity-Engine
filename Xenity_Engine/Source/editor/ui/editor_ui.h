@@ -161,9 +161,9 @@ public:
 	* @param variableName Variable name to convert
 	* @return Pretty variable name
 	*/
-	static std::string GetPrettyVariableName(std::string variableName);
+	[[nodiscard]] static std::string GetPrettyVariableName(std::string variableName);
 
-	static unsigned int GetTextureId(const Texture& texture);
+	[[nodiscard]] static unsigned int GetTextureId(const Texture& texture);
 
 	/**
 	* @brief Draw a centered text
@@ -373,10 +373,10 @@ public:
 		return returnValue;
 	}
 
-	static ReflectiveDataToDraw CreateReflectiveDataToDraw(AssetPlatform platform);
+	[[nodiscard]] static ReflectiveDataToDraw CreateReflectiveDataToDraw(AssetPlatform platform);
 
 	template<typename T>
-	static ReflectiveDataToDraw CreateReflectiveDataToDraw(T& owner, AssetPlatform platform)
+	[[nodiscard]] static ReflectiveDataToDraw CreateReflectiveDataToDraw(T& owner, AssetPlatform platform)
 	{
 		ReflectiveDataToDraw reflectiveDataToDraw;
 		reflectiveDataToDraw.platform = platform;
@@ -414,7 +414,7 @@ public:
 	* @param defaultLocation Default location
 	* @return Path of the folder
 	*/
-	static std::string OpenFolderDialog(const std::string& title, const std::string& defaultLocation);
+	[[nodiscard]] static std::string OpenFolderDialog(const std::string& title, const std::string& defaultLocation);
 
 	/**
 	* @brief Open file dialog (Windows only)
@@ -422,7 +422,7 @@ public:
 	* @param defaultLocation Default location
 	* @return Path of the file
 	*/
-	static std::string OpenFileDialog(const std::string& title, const std::string& defaultLocation);
+	[[nodiscard]] static std::string OpenFileDialog(const std::string& title, const std::string& defaultLocation);
 
 	/**
 	* @brief Save file dialog (Windows only)
@@ -430,7 +430,7 @@ public:
 	* @param defaultLocation Default location
 	* @return Path of the file
 	*/
-	static std::string SaveFileDialog(const std::string& title, const std::string& defaultLocation);
+	[[nodiscard]] static std::string SaveFileDialog(const std::string& title, const std::string& defaultLocation);
 
 	/**
 	* @brief Open a dialog box (Windows only)
@@ -444,7 +444,7 @@ public:
 	/**
 	* @brief Generate an id for the next ui element
 	*/
-	static std::string GenerateItemId();
+	[[nodiscard]] static std::string GenerateItemId();
 
 	static std::vector<std::shared_ptr<Texture>> icons;
 	static std::map<std::string, std::shared_ptr<Texture>> componentsIcons;
@@ -453,7 +453,7 @@ public:
 	/**
 	* @brief Get the ui scale based on the screen resolution/settings
 	*/
-	static float GetUiScale()
+	[[nodiscard]] static float GetUiScale()
 	{
 		return uiScale;
 	}
@@ -703,7 +703,7 @@ public:
 	/**
 	* @brief Get if an element is being edited
 	*/
-	static bool IsEditingElement()
+	[[nodiscard]] static bool IsEditingElement()
 	{
 		return isEditingElement;
 	}

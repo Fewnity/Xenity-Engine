@@ -12,7 +12,7 @@
 class SpriteSelection : Reflective
 {
 public:
-	ReflectiveData GetReflectiveData() override
+	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, position, "position", true);

@@ -126,7 +126,7 @@ public:
 	/**
 	* @brief Init audio manager
 	*/
-	static int Init();
+	[[nodiscard]] static int Init();
 
 	/**
 	* @brief Stop audio manager

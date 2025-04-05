@@ -33,7 +33,7 @@ public:
 	/**
 	* @brief Get the material of the sprite
 	*/
-	inline std::shared_ptr <Material> GetMaterial()
+	[[nodiscard]] inline std::shared_ptr <Material> GetMaterial()
 	{
 		return m_material;
 	}
@@ -41,7 +41,7 @@ public:
 	/**
 	* @brief Get the texture of the sprite
 	*/
-	inline std::shared_ptr <Texture> GetTexture()
+	[[nodiscard]] inline std::shared_ptr <Texture> GetTexture()
 	{
 		return m_texture;
 	}

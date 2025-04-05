@@ -57,7 +57,7 @@ Directory::~Directory()
 	files.clear();
 }
 
-void AddDirectoryFiles(std::vector<std::shared_ptr<File>> &vector, Directory& directory)
+void AddDirectoryFiles(std::vector<std::shared_ptr<File>> &vector, const Directory& directory)
 {
 	const size_t fileCount = directory.files.size();
 	for (size_t i = 0; i < fileCount; i++)

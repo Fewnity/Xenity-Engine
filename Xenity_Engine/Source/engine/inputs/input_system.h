@@ -177,7 +177,7 @@ public:
 	* @brief Return true if the key has just been pressed
 	* @param Key code to check
 	*/
-	static inline bool GetKeyDown(const KeyCode keyCode, const int controllerIndex = 0)
+	[[nodiscard]] static inline bool GetKeyDown(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
@@ -198,7 +198,7 @@ public:
 	* @brief Return true if the key is held
 	* @param Key code to check
 	*/
-	static inline bool GetKey(const KeyCode keyCode, const int controllerIndex = 0)
+	[[nodiscard]] static inline bool GetKey(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
@@ -219,7 +219,7 @@ public:
 	* @brief Return true if the key has just been released
 	* @param Key code to check
 	*/
-	static inline bool GetKeyUp(const KeyCode keyCode, const int controllerIndex = 0)
+	[[nodiscard]] static inline bool GetKeyUp(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
@@ -236,7 +236,7 @@ public:
 		return s_inputs[controllerIndex][(int)keyCode].released;
 	}
 
-	static Vector2 GetLeftJoystick(const int controllerIndex = 0)
+	[[nodiscard]] static Vector2 GetLeftJoystick(const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
@@ -253,7 +253,7 @@ public:
 		return leftJoystick[controllerIndex];
 	}
 
-	static Vector2 GetRightJoystick(const int controllerIndex = 0)
+	[[nodiscard]] static Vector2 GetRightJoystick(const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
@@ -273,20 +273,20 @@ public:
 	/**
 	* @brief Get how many touch screens the device has
 	*/
-	static int GetTouchScreenCount();
+	[[nodiscard]] static int GetTouchScreenCount();
 
 	/**
 	* @brief Get how many touch inputs the screen has
 	* @param screenIndex Screen index
 	*/
-	static int GetTouchCount(const int screenIndex);
+	[[nodiscard]] static int GetTouchCount(const int screenIndex);
 
 	/**
 	* @brief Get touch data
 	* @param touchIndex Touch index
 	* @param screenIndex Screen index
 	*/
-	static Touch GetTouch(const int touchIndex, const int screenIndex);
+	[[nodiscard]] static Touch GetTouch(const int touchIndex, const int screenIndex);
 
 
 	/**

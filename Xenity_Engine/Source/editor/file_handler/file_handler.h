@@ -48,7 +48,7 @@ private:
 	/**
 	* @brief Check if files have changed or added recursively
 	*/
-	static bool HasFileChangedOrAddedRecursive(const std::string& folderPath);
+	[[nodiscard]] static bool HasFileChangedOrAddedRecursive(const std::string& folderPath);
 
 	static uint64_t lastModifiedCodeFileTime;
 	static uint64_t lastModifiedFileTime;
@@ -58,11 +58,11 @@ private:
 	/**
 	* @brief Check if code files have changed
 	*/
-	static bool HasCodeChangedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback);
+	[[nodiscard]] static bool HasCodeChangedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback);
 
 	/**
 	* @brief Check if files have changed or added
 	*/
-	static bool HasFileChangedOrAddedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback);
+	[[nodiscard]] static bool HasFileChangedOrAddedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback);
 };
 

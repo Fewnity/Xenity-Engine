@@ -94,7 +94,7 @@ public:
 	*/
 	void SetIntensity(float intensity);
 
-	inline LightType GetType() const
+	[[nodiscard]] inline LightType GetType() const
 	{
 		return m_type;
 	}
@@ -105,7 +105,7 @@ public:
 	* @brief Get light range
 	* @param value Light range
 	*/
-	inline float GetRange() const
+	[[nodiscard]] inline float GetRange() const
 	{
 		return m_range;
 	}
@@ -113,7 +113,7 @@ public:
 	/**
 	* @brief Get spot angle
 	*/
-	inline float GetSpotAngle() const
+	[[nodiscard]] inline float GetSpotAngle() const
 	{
 		return m_spotAngle;
 	}
@@ -121,7 +121,7 @@ public:
 	/**
 	* @brief Get spot smoothness
 	*/
-	inline float GetSpotSmoothness() const
+	[[nodiscard]] inline float GetSpotSmoothness() const
 	{
 		return m_spotSmoothness;
 	}
@@ -129,15 +129,15 @@ public:
 	/**
 	* @brief Get light intensity
 	*/
-	inline float GetIntensity() const
+	[[nodiscard]] inline float GetIntensity() const
 	{
 		return m_intensity;
 	}
 
 
-	float GetMaxLightDistance() const;
+	[[nodiscard]] float GetMaxLightDistance() const;
 
-	bool GetOldConsoleCompatibility() const
+	[[nodiscard]] bool GetOldConsoleCompatibility() const
 	{
 		return m_oldConsoleCompatibility;
 	}
@@ -160,12 +160,12 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	float GetLinearValue() const
+	[[nodiscard]] float GetLinearValue() const
 	{
 		return m_linear;
 	}
 
-	float GetQuadraticValue() const
+	[[nodiscard]] float GetQuadraticValue() const
 	{
 		return m_quadratic;
 	}

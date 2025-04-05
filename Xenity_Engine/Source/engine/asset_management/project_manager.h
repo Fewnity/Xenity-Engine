@@ -47,7 +47,7 @@ public:
 	/**
 	* Get folder name
 	*/
-	std::string GetFolderName();
+	[[nodiscard]] std::string GetFolderName();
 
 	std::string path = "";
 	std::vector<std::shared_ptr<ProjectDirectory>> subdirectories;
@@ -113,14 +113,14 @@ public:
 	* @param folderPath Project folder parent
 	* @return True if the project has been created
 	*/
-	static bool CreateProject(const std::string& name, const std::string& folderPath);
+	[[nodiscard]] static bool CreateProject(const std::string& name, const std::string& folderPath);
 
 	/**
 	* @brief Load a project
 	* @param projectPathToLoad Project path
 	* @return True if the project has been loaded
 	*/
-	static ProjectLoadingErrors LoadProject(const std::string& projectPathToLoad);
+	[[nodiscard]] static ProjectLoadingErrors LoadProject(const std::string& projectPathToLoad);
 
 	/**
 	* @brief Unload a project
@@ -132,28 +132,28 @@ public:
 	* @param id File reference Id
 	* @return File reference (nullptr if not found)
 	*/
-	static std::shared_ptr<FileReference> GetFileReferenceById(const uint64_t id);
+	[[nodiscard]] static std::shared_ptr<FileReference> GetFileReferenceById(const uint64_t id);
 
 	/**
 	* @brief Get file reference by file (does not load the file reference)
 	* @param file File
 	* @return File reference (nullptr if not found)
 	*/
-	static std::shared_ptr<FileReference> GetFileReferenceByFile(const File& file);
+	[[nodiscard]] static std::shared_ptr<FileReference> GetFileReferenceByFile(const File& file);
 
 	/**
 	* @brief Get file reference by file path (does not load the file reference)
 	* @param filePath File path
 	* @return File reference (nullptr if not found)
 	*/
-	static std::shared_ptr<FileReference> GetFileReferenceByFilePath(const std::string& filePath);
+	[[nodiscard]] static std::shared_ptr<FileReference> GetFileReferenceByFilePath(const std::string& filePath);
 
 	/**
 	* @brief Get file by Id
 	* @param id File Id
 	* @return File
 	*/
-	static FileInfo* GetFileById(const uint64_t id);
+	[[nodiscard]] static FileInfo* GetFileById(const uint64_t id);
 
 	/**
 	* @brief Save the meta file of a file reference
@@ -170,7 +170,7 @@ public:
 	/**
 	* @brief Get project name
 	*/
-	static inline std::string GetProjectName()
+	[[nodiscard]] static inline std::string GetProjectName()
 	{
 		return projectSettings.projectName;
 	}
@@ -178,7 +178,7 @@ public:
 	/**
 	* @brief Get game name
 	*/
-	static inline std::string GetGameName()
+	[[nodiscard]] static inline std::string GetGameName()
 	{
 		return projectSettings.gameName;
 	}
@@ -186,7 +186,7 @@ public:
 	/**
 	* @brief Get game start scene
 	*/
-	static inline std::shared_ptr<Scene> GetStartScene()
+	[[nodiscard]] static inline std::shared_ptr<Scene> GetStartScene()
 	{
 		return projectSettings.startScene;
 	}
@@ -194,7 +194,7 @@ public:
 	/**
 	* @brief Get project folder path
 	*/
-	static inline const std::string& GetProjectFolderPath()
+	[[nodiscard]] static inline const std::string& GetProjectFolderPath()
 	{
 		return projectFolderPath;
 	}
@@ -202,7 +202,7 @@ public:
 	/**
 	* @brief Get asset folder path
 	*/
-	static inline const std::string& GetAssetFolderPath()
+	[[nodiscard]] static inline const std::string& GetAssetFolderPath()
 	{
 		return assetFolderPath;
 	}
@@ -210,7 +210,7 @@ public:
 	/**
 	* @brief Get engine asset folder path
 	*/
-	static inline const std::string& GetEngineAssetFolderPath()
+	[[nodiscard]] static inline const std::string& GetEngineAssetFolderPath()
 	{
 		return engineAssetsFolderPath;
 	}
@@ -218,7 +218,7 @@ public:
 	/**
 	* @brief Get engine asset folder path
 	*/
-	static inline const std::string& GetPublicEngineAssetFolderPath()
+	[[nodiscard]] static inline const std::string& GetPublicEngineAssetFolderPath()
 	{
 		return publicEngineAssetsFolderPath;
 	}
@@ -226,7 +226,7 @@ public:
 	/**
 	* @brief Get if the project is loaded
 	*/
-	static inline bool IsProjectLoaded()
+	[[nodiscard]] static inline bool IsProjectLoaded()
 	{
 		return projectLoaded;
 	}
@@ -235,12 +235,12 @@ public:
 	* @brief Get project settings
 	* @param path Project path
 	*/
-	static ProjectSettings GetProjectSettings(const std::string& projectPath);
+	[[nodiscard]] static ProjectSettings GetProjectSettings(const std::string& projectPath);
 
 	/**
 	* @brief Get opened projects list
 	*/
-	static std::vector<ProjectListItem> GetProjectsList();
+	[[nodiscard]] static std::vector<ProjectListItem> GetProjectsList();
 
 	/**
 	* @brief Save opened projects list
@@ -264,31 +264,31 @@ public:
 	* @param directoryToCheck ProjectDirectory to use to find the ProjectDirectory from the path
 	* @param directoryPath Path of the directory to find
 	*/
-	static std::shared_ptr <ProjectDirectory> FindProjectDirectory(const ProjectDirectory& directoryToCheck, const std::string& directoryPath);
+	[[nodiscard]] static std::shared_ptr <ProjectDirectory> FindProjectDirectory(const ProjectDirectory& directoryToCheck, const std::string& directoryPath);
 
 	/**
 	* @brief Get file type from extension
 	* @param extension File extension
 	* @return File type
 	*/
-	static FileType GetFileType(const std::string& extension);
+	[[nodiscard]] static FileType GetFileType(const std::string& extension);
 
 	/**
 	* @brief Get all files by type
 	* @param type File type
 	* @return Files
 	*/
-	static std::vector<FileInfo> GetFilesByType(const FileType type);
+	[[nodiscard]] static std::vector<FileInfo> GetFilesByType(const FileType type);
 
 	/**
 	* @brief Get all used files by the game
 	*/
-	static std::set<uint64_t> GetAllUsedFileByTheGame();
+	[[nodiscard]] static std::set<uint64_t> GetAllUsedFileByTheGame();
 
 	/**
 	* @brief Get project directory
 	*/
-	static std::shared_ptr<ProjectDirectory> GetProjectDirectory() 
+	[[nodiscard]] static std::shared_ptr<ProjectDirectory> GetProjectDirectory()
 	{
 		return projectDirectory;
 	}
@@ -296,7 +296,7 @@ public:
 	/**
 	* Get the event that is called when a project is loaded
 	*/
-	static inline Event<>& GetProjectLoadedEvent()
+	[[nodiscard]] static inline Event<>& GetProjectLoadedEvent()
 	{
 		return projectLoadedEvent;
 	}
@@ -304,7 +304,7 @@ public:
 	/**
 	* Get the event that is called when a project is unloaded
 	*/
-	static inline Event<>& GetProjectUnloadedEvent()
+	[[nodiscard]] static inline Event<>& GetProjectUnloadedEvent()
 	{
 		return projectUnloadedEvent;
 	}
@@ -328,7 +328,7 @@ private:
 	*/
 	static void CreateProjectDirectories(Directory& projectDirectoryBase, ProjectDirectory& realProjectDirectory);
 
-	static uint64_t ReadFileId(const File& file);
+	[[nodiscard]] static uint64_t ReadFileId(const File& file);
 
 	/**
 	* @brief Create a file reference pointer and load the meta file (if editor mode, create a meta file too)
@@ -336,8 +336,8 @@ private:
 	* @param id File Id
 	* @return File reference
 	*/
-	static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id, const FileType type);
-	static std::shared_ptr<FileReference> CreateFileReference(const FileInfo& fileInfo, const uint64_t id);
+	[[nodiscard]] static std::shared_ptr<FileReference> CreateFileReference(const std::string& path, const uint64_t id, const FileType type);
+	[[nodiscard]] static std::shared_ptr<FileReference> CreateFileReference(const FileInfo& fileInfo, const uint64_t id);
 
 	/**
 	* @brief Add all files of a directory to a list of project file list
@@ -375,7 +375,7 @@ private:
 
 	static void CreateGame();
 
-	static std::vector<FileInfo> GetCompatibleFiles();
+	[[nodiscard]] static std::vector<FileInfo> GetCompatibleFiles();
 
 	static void CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFiles);
 

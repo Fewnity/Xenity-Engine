@@ -37,7 +37,7 @@ public:
 	/**
 	* @brief Check if the directory exists
 	*/
-	bool CheckIfExist() const;
+	[[nodiscard]] bool CheckIfExist() const;
 
 	std::vector<std::shared_ptr<Directory>> subdirectories;
 	std::vector<std::shared_ptr<File>> files;
@@ -45,7 +45,7 @@ public:
 	/**
 	* @brief Get directory path
 	*/
-	inline const std::string& GetPath() const
+	[[nodiscard]] inline const std::string& GetPath() const
 	{
 		return m_path;
 	}

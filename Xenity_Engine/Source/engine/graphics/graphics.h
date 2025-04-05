@@ -161,7 +161,7 @@ public:
 	static void CreateLightLists();
 	static bool s_isLightUpdateNeeded;
 	static void SetIsGridRenderingEnabled(bool enabled);
-	static bool IsGridRenderingEnabled();
+	[[nodiscard]] static bool IsGridRenderingEnabled();
 
 private:
 	static bool s_isGridRenderingEnabled;

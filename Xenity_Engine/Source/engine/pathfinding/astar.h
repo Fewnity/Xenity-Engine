@@ -24,7 +24,7 @@ public:
 	* @brief Compute pathfinding and get the path
 	* @return Points positions (start and end included) or empty if not path was found
 	*/
-	std::vector<Vector2> GetPath();
+	[[nodiscard]] std::vector<Vector2> GetPath();
 
 	/**
 	* @brief Set destination
@@ -56,7 +56,7 @@ public:
 	/**
 	* @brief Get X (columns) grid size
 	*/
-	int GetXGridSize() const
+	[[nodiscard]] int GetXGridSize() const
 	{
 		return xGridSize;
 	}
@@ -64,7 +64,7 @@ public:
 	/**
 	* @brief Get Y (rows) grid size
 	*/
-	int GetYGridSize() const
+	[[nodiscard]] int GetYGridSize() const
 	{
 		return yGridSize;
 	}
@@ -89,7 +89,7 @@ private:
 	/**
 	* @brief Get tile (fast version)
 	*/
-	Tile* GetTileFast(int x, int y) const
+	[[nodiscard]] Tile* GetTileFast(int x, int y) const
 	{
 		return &grid[x * yGridSize + y];
 	}
@@ -97,7 +97,7 @@ private:
 	/**
 	* @brief Get tile (fastest version)
 	*/
-	Tile* GetTileUltraFast(int row, int col) const
+	[[nodiscard]] Tile* GetTileUltraFast(int row, int col) const
 	{
 		return &grid[row + col];
 	}
@@ -105,7 +105,7 @@ private:
 	/**
 	* @brief Get tile
 	*/
-	Tile* GetTile(int x, int y) const
+	[[nodiscard]] Tile* GetTile(int x, int y) const
 	{
 		if (grid == nullptr || !IsValidPosition(x, y))
 			return nullptr;
@@ -116,7 +116,7 @@ private:
 	/**
 	* @brief Get if the position if valid or out of bounds
 	*/
-	bool IsValidPosition(int x, int y) const
+	[[nodiscard]] bool IsValidPosition(int x, int y) const
 	{
 		if (x < 0 || y < 0 || x >= xGridSize || y >= yGridSize)
 			return false;

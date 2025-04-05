@@ -159,7 +159,7 @@ protected:
 	* @param filePath The file path of the shader
 	* @param type The type of the shader
 	*/
-	bool Compile(const std::string& filePath, ShaderType type) override;
+	[[nodiscard]] bool Compile(const std::string& filePath, ShaderType type) override;
 
 	/**
 	* @brief Set the shader uniform of a point light

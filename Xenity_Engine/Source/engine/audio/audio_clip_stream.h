@@ -47,17 +47,17 @@ public:
 	* 
 	* @return Frame read count, will be less than amount if the stream ends
 	*/
-	uint64_t FillBuffer(uint64_t amount, short* buff, bool loop);
+	[[nodiscard]] uint64_t FillBuffer(uint64_t amount, short* buff, bool loop);
 
 	/**
 	* @brief Get audio clip frequency in Hz
 	*/
-	uint32_t GetFrequency() const;
+	[[nodiscard]] uint32_t GetFrequency() const;
 
 	/**
 	* @brief Get audio clip sample count
 	*/
-	uint64_t GetSampleCount() const;
+	[[nodiscard]] uint64_t GetSampleCount() const;
 
 	/**
 	* @brief Reset seek position
@@ -73,12 +73,12 @@ public:
 	/**
 	* @brief Get seek position
 	*/
-	uint64_t GetSeekPosition() const;
+	[[nodiscard]] uint64_t GetSeekPosition() const;
 
 	/**
 	* @brief Get channel count
 	*/
-	inline uint32_t GetChannelCount() const
+	[[nodiscard]] inline uint32_t GetChannelCount() const
 	{
 		return m_channelCount;
 	}
@@ -86,7 +86,7 @@ public:
 	/**
 	* @brief Get audio type (Mp3, Wav...)
 	*/
-	inline AudioType GetAudioType() const
+	[[nodiscard]] inline AudioType GetAudioType() const
 	{
 		return m_type;
 	}

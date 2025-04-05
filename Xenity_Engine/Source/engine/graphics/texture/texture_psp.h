@@ -43,16 +43,16 @@ protected:
 
 	void Bind() const override;
 	void ApplyTextureFilters() const;
-	int GetWrapModeEnum(WrapMode wrapMode) const;
-	int TypeToGUPSM(PSPTextureType psm) const;
+	[[nodiscard]] int GetWrapModeEnum(WrapMode wrapMode) const;
+	[[nodiscard]] int TypeToGUPSM(PSPTextureType psm) const;
 	void Unload() override;
-	unsigned int GetColorByteCount(PSPTextureType psm);
+	[[nodiscard]] unsigned int GetColorByteCount(PSPTextureType psm);
 	void copy_texture_data(void* dest, const void* src, int width, int height, const PSPTextureType destType, const PSPTextureType srcType);
 	void swizzle_fast(uint8_t* out, const uint8_t* in, const unsigned int width, const unsigned int height);
 
 	void GetPowerOfTwoResolution(unsigned int& width, unsigned int& height, unsigned int mipmapLevel);
-	size_t GetByteCount(unsigned int mipmapLevel);
-	const TextureSettingsPSP& GetSettings() const { return *reinterpret_cast<const TextureSettingsPSP*>(m_settings.at(Application::GetAssetPlatform()).get()); }
+	[[nodiscard]] size_t GetByteCount(unsigned int mipmapLevel);
+	[[nodiscard]] const TextureSettingsPSP& GetSettings() const { return *reinterpret_cast<const TextureSettingsPSP*>(m_settings.at(Application::GetAssetPlatform()).get()); }
 
 	// One vector element for each mipmap level
 	std::vector<bool> inVram;

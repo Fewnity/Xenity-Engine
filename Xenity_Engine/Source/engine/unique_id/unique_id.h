@@ -33,7 +33,7 @@ public:
 	/**
 	* @brief Get unique Id
 	*/
-	inline uint64_t GetUniqueId() const
+	[[nodiscard]] inline uint64_t GetUniqueId() const
 	{
 		return m_uniqueId;
 	}

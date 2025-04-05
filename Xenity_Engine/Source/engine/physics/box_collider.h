@@ -33,29 +33,29 @@ public:
 	BoxCollider();
 	~BoxCollider();
 
-	inline const Vector3& GetMin() const
+	[[nodiscard]] inline const Vector3& GetMin() const
 	{
 		return m_min;
 	}
 
-	inline const Vector3& GetMax() const
+	[[nodiscard]] inline const Vector3& GetMax() const
 	{
 		return m_max;
 	}
 
 	void SetSize(const Vector3& size);
-	inline const Vector3& GetSize() const
+	[[nodiscard]] inline const Vector3& GetSize() const
 	{
 		return s_size;
 	}
 
 	void SetOffset(const Vector3& offset);
-	inline const Vector3& GetOffset() const
+	[[nodiscard]] inline const Vector3& GetOffset() const
 	{
 		return m_offset;
 	}
 
-	std::string ToString() override;
+	[[nodiscard]] std::string ToString() override;
 
 protected:
 

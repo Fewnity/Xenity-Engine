@@ -27,32 +27,32 @@ public:
 
 	explicit Quaternion(const Vector4& vector);
 
-	static Quaternion Inverse(const Quaternion& q);
-	static Quaternion Euler(const float x, const float y, const float z);
+	[[nodiscard]] static Quaternion Inverse(const Quaternion& q);
+	[[nodiscard]] static Quaternion Euler(const float x, const float y, const float z);
 
 	/**
 	* @brief Linearly interpolates between quaternions
 	*/
-	static Quaternion Lerp(const Quaternion& a, const Quaternion& b, const float t);
-	static float Dot(const Quaternion& q1, const Quaternion& q2);
-	static Quaternion AngleAxis(float angle, const Vector3& axis);
-	static Quaternion Identity();
-	Vector3 ToEuler() const;
+	[[nodiscard]] static Quaternion Lerp(const Quaternion& a, const Quaternion& b, const float t);
+	[[nodiscard]] static float Dot(const Quaternion& q1, const Quaternion& q2);
+	[[nodiscard]] static Quaternion AngleAxis(float angle, const Vector3& axis);
+	[[nodiscard]] static Quaternion Identity();
+	[[nodiscard]] Vector3 ToEuler() const;
 
 	void Set(const float x, const float y, const float z, const float w);
 	void Normalize();
 	Quaternion Normalized();
 
-	Vector3 GetForward() const;
+	[[nodiscard]] Vector3 GetForward() const;
 
-	Vector3 GetUp() const;
+	[[nodiscard]] Vector3 GetUp() const;
 
-	Vector3 GetRight() const;
+	[[nodiscard]] Vector3 GetRight() const;
 
 	/**
 	* @brief Return a string representation of the quaternion
 	*/
-	std::string ToString() const;
+	[[nodiscard]] std::string ToString() const;
 
 	float x = 0;
 	float y = 0;

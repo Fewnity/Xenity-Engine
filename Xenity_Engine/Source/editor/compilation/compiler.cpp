@@ -1268,7 +1268,11 @@ void Compiler::FixCompileShadersScript()
 {
 	// In case the script has windows line endings, remove them to avoid errors on linux
 	std::shared_ptr<File> shaderScriptFile = FileSystem::MakeFile(engineFolderLocation + "compile_shaders.sh");
-	shaderScriptFile->Open(FileMode::ReadOnly);
+	if (!shaderScriptFile->Open(FileMode::ReadOnly)) 
+	{
+		Debug::PrintError("[Compiler::FixCompileShadersScript] Failed to open compile_shaders.sh");
+		return;
+	}
 	std::string scriptText = shaderScriptFile->ReadAll();
 	shaderScriptFile->Close();
 
@@ -1285,7 +1289,11 @@ void Compiler::FixCompileShadersScript()
 	FileSystem::s_fileSystem->Delete(engineFolderLocation + "compile_shaders_fixed.sh");
 	// Write the new script
 	std::shared_ptr<File> updatedShaderScriptFile = FileSystem::MakeFile(engineFolderLocation + "compile_shaders_fixed.sh");
-	updatedShaderScriptFile->Open(FileMode::WriteCreateFile);
+	if (!updatedShaderScriptFile->Open(FileMode::WriteCreateFile))
+	{
+		Debug::PrintError("[Compiler::FixCompileShadersScript] Failed to create compile_shaders_fixed.sh");
+		return;
+	}
 	updatedShaderScriptFile->Write(scriptText);
 	updatedShaderScriptFile->Close();
 }

@@ -135,7 +135,7 @@ public:
 	/**
 	* @brief Get a list of all component names
 	*/
-	static std::vector<std::string> GetComponentNames();
+	[[nodiscard]] static std::vector<std::string> GetComponentNames();
 
 	/**
 	* @brief Reset all registered components
@@ -164,7 +164,7 @@ public:
 	* @brief Get a file class info from the class type
 	*/
 	template<typename T>
-	std::enable_if_t<std::is_base_of<FileReference, T>::value, const FileClassInfo*>
+	[[nodiscard]] std::enable_if_t<std::is_base_of<FileReference, T>::value, const FileClassInfo*>
 	static GetFileClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
@@ -182,7 +182,7 @@ public:
 		return nullptr;
 	}
 
-	static const ClassInfo* GetClassInfoById(uint64_t classId)
+	[[nodiscard]] static const ClassInfo* GetClassInfoById(uint64_t classId)
 	{
 		const size_t classInfosCount = s_classInfos.size();
 		for (size_t i = 0; i < classInfosCount; i++)
@@ -202,7 +202,7 @@ public:
 	* @brief Get a class info from the class type
 	*/
 	template<typename T>
-	std::enable_if_t<std::is_base_of<Component, T>::value, const ClassInfo*>
+	[[nodiscard]] std::enable_if_t<std::is_base_of<Component, T>::value, const ClassInfo*>
 	static GetClassInfo()
 	{
 		const uint64_t classId = typeid(T).hash_code();
@@ -214,7 +214,7 @@ public:
 	* @param classId Class type id (hash code)
 	* @return Class name (Component if not found)
 	*/
-	static const std::string& GetClassNameById(uint64_t classId)
+	[[nodiscard]] static const std::string& GetClassNameById(uint64_t classId)
 	{
 		const size_t classInfosCount = s_classInfos.size();
 		for (size_t i = 0; i < classInfosCount; i++)
@@ -238,7 +238,7 @@ public:
 		return s_classInfos[0].name;
 	}
 
-	static const FileClassInfo* GetFileClassInfoById(uint64_t classId)
+	[[nodiscard]] static const FileClassInfo* GetFileClassInfoById(uint64_t classId)
 	{
 		const size_t fileClassInfosCount = s_fileClassInfos.size();
 		for (size_t i = 0; i < fileClassInfosCount; i++)
@@ -254,18 +254,18 @@ public:
 		return nullptr;
 	}
 
-	static size_t GetClassInfosCount()
+	[[nodiscard]] static size_t GetClassInfosCount()
 	{
 		return s_classInfos.size();
 	}
 
-	static size_t GetFileClassInfosCount()
+	[[nodiscard]] static size_t GetFileClassInfosCount()
 	{
 		return s_fileClassInfos.size();
 	}
 
 #if defined(EDITOR)
-	static size_t GetMenuClassInfosCount()
+	[[nodiscard]] static size_t GetMenuClassInfosCount()
 	{
 		return s_menuClassInfos.size();
 	}

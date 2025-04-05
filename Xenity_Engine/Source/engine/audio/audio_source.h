@@ -59,7 +59,7 @@ public:
 	/**
 	* @brief Get volume
 	*/
-	inline float GetVolume() const
+	[[nodiscard]] inline float GetVolume() const
 	{
 		return m_volume;
 	}
@@ -67,7 +67,7 @@ public:
 	/**
 	* @brief Get panning
 	*/
-	inline float GetPanning() const
+	[[nodiscard]] inline float GetPanning() const
 	{
 		return m_pan;
 	}
@@ -75,7 +75,7 @@ public:
 	/**
 	* @brief Get is playing
 	*/
-	inline bool IsPlaying() const
+	[[nodiscard]] inline bool IsPlaying() const
 	{
 		return m_isPlaying;
 	}
@@ -83,12 +83,12 @@ public:
 	/**
 	* @brief Get is looping
 	*/
-	inline bool IsLooping() const
+	[[nodiscard]] inline bool IsLooping() const
 	{
 		return m_loop;
 	}
 
-	inline const std::shared_ptr<AudioClip>& GetAudioClip()
+	[[nodiscard]] inline const std::shared_ptr<AudioClip>& GetAudioClip()
 	{
 		return m_audioClip;
 	}
@@ -106,7 +106,7 @@ protected:
 
 	void RemoveReferences() override;
 
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 
 	void Awake() override;
 
@@ -115,7 +115,7 @@ protected:
 	/**
 	* @brief Get shared pointer from this
 	*/
-	inline std::shared_ptr<AudioSource> GetThisShared()
+	[[nodiscard]] inline std::shared_ptr<AudioSource> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
 	}

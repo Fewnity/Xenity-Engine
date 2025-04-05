@@ -38,6 +38,6 @@ public:
 	/**
 	* @brief Create a game interface from the DLL
 	*/
-	static std::unique_ptr<GameInterface> CreateGame();
+	[[nodiscard]] static std::unique_ptr<GameInterface> CreateGame();
 };
 #endif

@@ -349,10 +349,7 @@ bool FileSystem::CreateFolder(const std::string& path)
 	{
 		tempPath = Application::GetGameDataFolder() + path;
 	}
-	Debug::Print("path: " + path);
-	Debug::Print("tempPath: " + tempPath);
 	sceIoMkdir(tempPath.c_str(), 0777);
-	Debug::Print(std::filesystem::current_path().generic_string());
 #else	
 
 	try

@@ -22,14 +22,14 @@ class Transform;
 * @brief Create a GameObject with the default name
 * @return The created GameObject
 */
-API std::shared_ptr<GameObject> CreateGameObject();
+[[nodiscard]] API std::shared_ptr<GameObject> CreateGameObject();
 
 /**
 * @brief Create a GameObject
 * @param name GameObject name
 * @return The created GameObject
 */
-API std::shared_ptr<GameObject> CreateGameObject(const std::string& name);
+[[nodiscard]] API std::shared_ptr<GameObject> CreateGameObject(const std::string& name);
 
 #if defined(EDITOR)
 /**
@@ -37,7 +37,7 @@ API std::shared_ptr<GameObject> CreateGameObject(const std::string& name);
 * @param name GameObject name
 * @return The created GameObject
 */
-API std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name);
+[[nodiscard]] API std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name);
 #endif
 
 /**
@@ -45,28 +45,28 @@ API std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name);
 * @param name GameObject name
 * @return The found GameObject
 */
-API std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name);
+[[nodiscard]] API std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name);
 
 /**
 * @brief Find a GameObject with an id
 * @param id GameObject id
 * @return The found GameObject
 */
-API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id);
+[[nodiscard]] API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id);
 
 /**
 * @brief Find a component with an id
 * @param id Component id
 * @return The found component
 */
-API std::shared_ptr<Component> FindComponentById(const uint64_t id);
+[[nodiscard]] API std::shared_ptr<Component> FindComponentById(const uint64_t id);
 
 /**
 * @brief Find GameObjects with a name
 * @param name GameObjects name
 * @return The found GameObjects
 */
-API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string& name);
+[[nodiscard]] API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string& name);
 
 class API GameObject : public Reflective, public UniqueId, public std::enable_shared_from_this<GameObject>
 {
@@ -79,7 +79,7 @@ public:
 
 	virtual ~GameObject();
 
-	/*const*/ inline std::string & GetName()
+	[[nodiscard]]/*const*/ inline std::string & GetName()
 	{
 		return m_name;
 	}
@@ -129,7 +129,7 @@ public:
 	* @return The component
 	*/
 	template <typename T>
-	std::enable_if_t<std::is_base_of<Component, T>::value, std::shared_ptr<T>>
+	[[nodiscard]] std::enable_if_t<std::is_base_of<Component, T>::value, std::shared_ptr<T>>
 	GetComponent() const
 	{
 		for (int i = 0; i < m_componentCount; i++)
@@ -147,7 +147,7 @@ public:
 	* @return The component
 	*/
 	template <typename T>
-	std::enable_if_t<std::is_base_of<Component, T>::value, std::vector<std::shared_ptr<T>>>
+	[[nodiscard]] std::enable_if_t<std::is_base_of<Component, T>::value, std::vector<std::shared_ptr<T>>>
 	GetComponents() const
 	{
 		std::vector<std::shared_ptr<T>> componentList;
@@ -164,7 +164,7 @@ public:
 	/**
 	* @brief Get if the GameObject is marked as active
 	*/
-	inline bool IsActive() const
+	[[nodiscard]] inline bool IsActive() const
 	{
 		return m_active;
 	}
@@ -172,7 +172,7 @@ public:
 	/**
 	* @brief Get if the GameObject is active based on his parents
 	*/
-	inline bool IsLocalActive() const
+	[[nodiscard]] inline bool IsLocalActive() const
 	{
 		return m_localActive;
 	}
@@ -183,7 +183,7 @@ public:
 	*/
 	void SetActive(const bool active);
 
-	inline bool IsStatic() const
+	[[nodiscard]] inline bool IsStatic() const
 	{
 		return m_isStatic;
 	}
@@ -191,7 +191,7 @@ public:
 	/**
 	* @brief Get children count
 	*/
-	inline uint32_t GetChildrenCount() const
+	[[nodiscard]] inline uint32_t GetChildrenCount() const
 	{
 		return static_cast<uint32_t>(m_childCount);
 	}
@@ -199,7 +199,7 @@ public:
 	/**
 	* @brief Get component count
 	*/
-	inline uint32_t GetComponentCount() const
+	[[nodiscard]] inline uint32_t GetComponentCount() const
 	{
 		return static_cast<uint32_t>(m_componentCount);
 	}
@@ -207,17 +207,17 @@ public:
 	/**
 	* @brief Get transform
 	*/
-	inline const std::shared_ptr<Transform>& GetTransform() const
+	[[nodiscard]] inline const std::shared_ptr<Transform>& GetTransform() const
 	{
 		return m_transform;
 	}
 
-	inline const std::weak_ptr<GameObject>& GetParent() const
+	[[nodiscard]] inline const std::weak_ptr<GameObject>& GetParent() const
 	{
 		return m_parent;
 	}
 
-	inline const std::weak_ptr<GameObject>& GetChild(int index)
+	[[nodiscard]] inline const std::weak_ptr<GameObject>& GetChild(int index)
 	{
 		return m_children[index];
 	}
@@ -267,7 +267,7 @@ private:
 	/**
 	* Get a list of all children
 	*/
-	inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
+	[[nodiscard]] inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
 	{
 		return m_children;
 	}
@@ -287,7 +287,7 @@ private:
 	/**
 	* @brief Check if the GameObject is a parent of another GameObject
 	*/
-	bool IsParentOf(const std::shared_ptr<GameObject>& gameObject);
+	[[nodiscard]] bool IsParentOf(const std::shared_ptr<GameObject>& gameObject);
 
 	std::shared_ptr<Transform> m_transform;
 

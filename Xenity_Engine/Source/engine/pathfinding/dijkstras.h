@@ -26,7 +26,7 @@ public:
 	void processDijkstras(int source, int destination);
 	void printParentPath(int parent[], int i, std::string& str);
 	void fillPath(int parent[], int path[], int i, int pathIndex);
-	int GetMin(int dist[], bool visited[]);
+	[[nodiscard]] int GetMin(int dist[], bool visited[]);
 
 private:
 };

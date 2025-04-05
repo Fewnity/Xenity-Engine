@@ -59,7 +59,7 @@ struct VertexElementInfo
 
 struct VertexDescriptor
 {
-	static uint16_t GetVertexElementSize(VertexElements vertexElement)
+	[[nodiscard]] static uint16_t GetVertexElementSize(VertexElements vertexElement)
 	{
 		XASSERT(vertexElement != VertexElements::NONE, "[VertexDescriptor::AddVertexDescriptor] Wrong vertexElement");
 
@@ -175,42 +175,42 @@ struct VertexDescriptor
 		m_vertexSize += vertexElementInfo.size;
 	}
 
-	VertexElements GetElementFromIndex(int32_t index) const
+	[[nodiscard]] VertexElements GetElementFromIndex(int32_t index) const
 	{
 		XASSERT(index >= 0 && index < static_cast<int32_t>(m_vertexElementInfos.size()), "[VertexDescriptor::GetOffsetFromIndex] Index out of bound");
 
 		return m_vertexElementInfos[index].vertexElement;
 	}
 
-	uint32_t GetOffsetFromIndex(int32_t index) const
+	[[nodiscard]] uint32_t GetOffsetFromIndex(int32_t index) const
 	{
 		XASSERT(index >= 0 && index < static_cast<int32_t>(m_vertexElementInfos.size()), "[VertexDescriptor::GetOffsetFromIndex] Index out of bound");
 
 		return m_vertexElementInfos[index].offset;
 	}
 
-	uint32_t GetPositionOffset() const
+	[[nodiscard]] uint32_t GetPositionOffset() const
 	{
 		XASSERT(m_positionIndex >= 0 && m_positionIndex < static_cast<int32_t>(m_vertexElementInfos.size()), "[VertexDescriptor::GetPositionOffset] Index out of bound");
 
 		return m_vertexElementInfos[m_positionIndex].offset;
 	}
 
-	uint32_t GetNormalOffset() const
+	[[nodiscard]] uint32_t GetNormalOffset() const
 	{
 		XASSERT(m_normalIndex >= 0 && m_normalIndex < static_cast<int32_t>(m_vertexElementInfos.size()), "[VertexDescriptor::GetNormalOffset] Index out of bound");
 
 		return m_vertexElementInfos[m_normalIndex].offset;
 	}
 
-	uint32_t GetUvOffset() const
+	[[nodiscard]] uint32_t GetUvOffset() const
 	{
 		XASSERT(m_uvIndex >= 0 && m_uvIndex < static_cast<int32_t>(m_vertexElementInfos.size()), "[VertexDescriptor::GetUvOffset] Index out of bound");
 
 		return m_vertexElementInfos[m_uvIndex].offset;
 	}
 
-	uint32_t GetColorOffset() const
+	[[nodiscard]] uint32_t GetColorOffset() const
 	{
 		XASSERT(m_colorIndex >= 0 && m_colorIndex < static_cast<int32_t>(m_vertexElementInfos.size()), "[VertexDescriptor::GetColorOffset] Index out of bound");
 

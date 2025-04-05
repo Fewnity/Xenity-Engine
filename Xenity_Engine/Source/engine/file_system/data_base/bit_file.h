@@ -19,12 +19,12 @@ public:
 	/**
 	* @brief Create the file at the given path
 	*/
-	bool Create(const std::string& path);
+	[[nodiscard]] bool Create(const std::string& path);
 
 	/**
 	* @brief Open the file at the given path
 	*/
-	void Open(const std::string& path);
+	[[nodiscard]] bool Open(const std::string& path);
 
 	/**
 	* @brief Close the file
@@ -35,24 +35,24 @@ public:
 	* @brief Add binary data at the end of the file
 	* 
 	*/
-	size_t AddData(const std::vector<uint8_t>& data);
+	[[nodiscard]] size_t AddData(const std::vector<uint8_t>& data);
 
 	/**
 	* @brief Add binary data at the end of the file
 	*/
-	size_t AddData(const unsigned char* data, size_t size);
+	[[nodiscard]] size_t AddData(const unsigned char* data, size_t size);
 
 	/**
 	* @brief Read binary data
 	*/
-	unsigned char* ReadBinary(size_t offset, size_t size);
+	[[nodiscard]] unsigned char* ReadBinary(size_t offset, size_t size);
 
 	/**
 	* @brief Read binary data
 	*/
-	unsigned char* ReadBinary(const FileReference& fileReference);
+	[[nodiscard]] unsigned char* ReadBinary(const FileReference& fileReference);
 
-	std::shared_ptr<File> GetFile() const { return m_file; }
+	[[nodiscard]] std::shared_ptr<File> GetFile() const { return m_file; }
 
 private:
 	std::shared_ptr<File> m_file;

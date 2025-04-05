@@ -24,7 +24,7 @@ class ReflectionUtils
 {
 public:
 
-	static ReflectiveEntry GetReflectiveEntryByName(const ReflectiveData& dataList, const std::string& name);
+	[[nodiscard]] static ReflectiveEntry GetReflectiveEntryByName(const ReflectiveData& dataList, const std::string& name);
 
 #pragma region Fill variables
 
@@ -63,21 +63,21 @@ public:
 	* @param reflection Reflective object
 	* @return Json data
 	*/
-	static nlohmann::ordered_json ReflectiveToJson(Reflective& reflective);
+	[[nodiscard]] static nlohmann::ordered_json ReflectiveToJson(Reflective& reflective);
 
 	/**
 	* @brief Create Json data from Reflective object
 	* @param reflection Reflective object
 	* @return Json data
 	*/
-	static nlohmann::ordered_json ReflectiveEntryToJson(const ReflectiveEntry& entry);
+	[[nodiscard]] static nlohmann::ordered_json ReflectiveEntryToJson(const ReflectiveEntry& entry);
 
 	/**
 	* @brief Create Json data from Reflective data list
 	* @param theMap The Reflective data list
 	* @return Json data
 	*/
-	static nlohmann::ordered_json ReflectiveDataToJson(const ReflectiveData& dataList);
+	[[nodiscard]] static nlohmann::ordered_json ReflectiveDataToJson(const ReflectiveData& dataList);
 
 #pragma endregion
 
@@ -89,7 +89,7 @@ public:
 	* @param dataList Reflective data list to fill
 	* @return True if the file has been read successfully
 	*/
-	static bool FileToReflectiveData(const std::shared_ptr<File>& file, const ReflectiveData& dataList);
+	[[nodiscard]] static bool FileToReflectiveData(const std::shared_ptr<File>& file, const ReflectiveData& dataList);
 
 	/**
 	* @brief Write Reflective data in a list
@@ -97,7 +97,7 @@ public:
 	* @param file File to write in
 	* @return True if the data has been written successfully
 	*/
-	static bool ReflectiveDataToFile(const ReflectiveData& dataList, const std::shared_ptr<File>& file);
+	[[nodiscard]] static bool ReflectiveDataToFile(const ReflectiveData& dataList, const std::shared_ptr<File>& file);
 
 	/**
 	* @brief Write Reflective data in a list
@@ -105,7 +105,7 @@ public:
 	* @param file File to write in
 	* @return True if the data has been written successfully
 	*/
-	static bool JsonToFile(const nlohmann::ordered_json& data, std::shared_ptr<File> file);
+	[[nodiscard]] static bool JsonToFile(const nlohmann::ordered_json& data, std::shared_ptr<File> file);
 
 #pragma endregion
 

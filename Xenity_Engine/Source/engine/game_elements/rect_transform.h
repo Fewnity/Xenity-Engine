@@ -22,7 +22,7 @@ public:
 
 
 protected:
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	friend class Canvas;

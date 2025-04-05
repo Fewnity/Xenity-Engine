@@ -25,7 +25,7 @@ protected:
 	friend class ProjectManager;
 
 
-	static std::shared_ptr<Font> MakeFont();
+	[[nodiscard]] static std::shared_ptr<Font> MakeFont();
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
@@ -39,7 +39,7 @@ protected:
 	/**
 	* @brief [Internal] Get the shared pointer of this object
 	*/
-	inline std::shared_ptr<Font> GetThisShared()
+	[[nodiscard]] inline std::shared_ptr<Font> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<Font>(shared_from_this());
 	}
@@ -47,7 +47,7 @@ protected:
 	/**
 	* Get font atlas texture
 	*/
-	inline const std::shared_ptr <Texture>& GetFontAtlas() const
+	[[nodiscard]] inline const std::shared_ptr <Texture>& GetFontAtlas() const
 	{
 		return fontAtlas;
 	}

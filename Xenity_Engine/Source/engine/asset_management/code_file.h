@@ -21,15 +21,15 @@ public:
 protected:
 	friend class ProjectManager;
 
-	ReflectiveData GetReflectiveData() override;
-	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
-	static std::shared_ptr<CodeFile> MakeCode(const bool isHeader);
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
+	[[nodiscard]] static std::shared_ptr<CodeFile> MakeCode(const bool isHeader);
 
 	/**
 	* @brief Gets if the file is a header file
 	* @return If the file is a header file
 	*/
-	inline bool IsHeader()
+	[[nodiscard]] inline bool IsHeader()
 	{
 		return isHeader;
 	}

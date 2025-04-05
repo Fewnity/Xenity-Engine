@@ -92,7 +92,7 @@ public:
 	/**
 	* Get tile map width (column)
 	*/
-	inline int GetWidth() const
+	[[nodiscard]] inline int GetWidth() const
 	{
 		return width;
 	}
@@ -100,14 +100,14 @@ public:
 	/**
 	* Get tile map height (row)
 	*/
-	inline int GetHeight() const
+	[[nodiscard]] inline int GetHeight() const
 	{
 		return height;
 	}
 
 	void SetOrderInLayer(int orderInLayer);
 
-	inline int GetOrderInLayer() const
+	[[nodiscard]] inline int GetOrderInLayer() const
 	{
 		return m_orderInLayer;
 	}

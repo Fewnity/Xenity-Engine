@@ -63,7 +63,7 @@ public:
 	/**
 	* @brief Get the value
 	*/
-	inline long long GetValue()
+	[[nodiscard]] inline uint64_t GetValue()
 	{
 		return lastValue;
 	}
@@ -136,28 +136,28 @@ public:
 	/**
 	* @brief Get draw call count
 	*/
-	static int GetDrawCallCount();
+	[[nodiscard]] static int GetDrawCallCount();
 
 	/**
 	* @brief Get draw triangle count
 	*/
-	static int GetDrawTrianglesCount();
+	[[nodiscard]] static int GetDrawTrianglesCount();
 
 	/**
 	* @brief Get updated material count
 	*/
-	static int GetUpdatedMaterialCount();
+	[[nodiscard]] static int GetUpdatedMaterialCount();
 
 	/**
 	* @brief Update the profiler (To call every frame)
 	*/
 	static void Update();
 
-	static bool IsProfilerEnabled();
+	[[nodiscard]] static bool IsProfilerEnabled();
 
-	static size_t RegisterScopProfiler(const std::string& name, size_t hash);
+	[[nodiscard]] static size_t RegisterScopProfiler(const std::string& name, size_t hash);
 
-	static uint32_t GetProfilerFrameDuration();
+	[[nodiscard]] static uint32_t GetProfilerFrameDuration();
 
 	static std::unordered_map<std::string, ProfilerCategory*> s_profilerCategories;
 	static std::vector<ProfilerFrameAnalysis> s_scopProfilerList;  // Hash to the name, List

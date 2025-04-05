@@ -209,7 +209,12 @@ int Engine::Init(int argc, char* argv[])
 	ProjectManager::Init();
 	Graphics::Init();
 	AssetManager::Init();
-	AudioManager::Init();
+	if (AudioManager::Init() != 0)
+	{
+		Debug::PrintError("-------- Audio manager init error --------", true);
+		return -1;
+	}
+
 	Time::Init();
 	PhysicsManager::Init();
 

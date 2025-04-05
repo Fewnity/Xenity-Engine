@@ -127,7 +127,7 @@ public:
 	* @param index The index of the material
 	* @return The material
 	*/
-	static inline Material* GetMaterial(const int index)
+	[[nodiscard]] static inline Material* GetMaterial(const int index)
 	{
 		XASSERT(index < materials.size(), "[AssetManager::GetMaterial] index is invalid");
 		return materials[index];
@@ -138,7 +138,7 @@ public:
 	* @param index The index of the shader
 	* @return The shader
 	*/
-	static inline Shader* GetShader(const int index)
+	[[nodiscard]] static inline Shader* GetShader(const int index)
 	{
 		XASSERT(index < shaders.size(), "[AssetManager::GetShader] index is invalid");
 		return shaders[index];
@@ -149,7 +149,7 @@ public:
 	* @param index The index of the reflection
 	* @return The reflection
 	*/
-	static inline Reflective* GetReflectiveData(const int index)
+	[[nodiscard]] static inline Reflective* GetReflectiveData(const int index)
 	{
 		XASSERT(index < reflections.size(), "[AssetManager::GetReflectiveData] index is invalid");
 		return reflections[index];
@@ -160,7 +160,7 @@ public:
 	* @param index The index of the file reference
 	* @return The file reference
 	*/
-	static inline const std::shared_ptr<FileReference>& GetFileReference(const int index)
+	[[nodiscard]] static inline const std::shared_ptr<FileReference>& GetFileReference(const int index)
 	{
 		XASSERT(index < fileReferences.size(), "[AssetManager::GetFileReference] index is invalid");
 		return fileReferences[index];
@@ -171,13 +171,13 @@ public:
 	* @param index The index of the light
 	* @return The light
 	*/
-	static inline const Light* GetLight(const int index)
+	[[nodiscard]] static inline const Light* GetLight(const int index)
 	{
 		XASSERT(index < lights.size(), "[AssetManager::GetLight] index is invalid");
 		return lights[index];
 	}
 
-	static inline const std::vector<Light*>& GetLights()
+	[[nodiscard]] static inline const std::vector<Light*>& GetLights()
 	{
 		return lights;
 	}
@@ -190,7 +190,7 @@ public:
 	/**
 	* @brief Get the number of materials
 	*/
-	static inline int GetMaterialCount()
+	[[nodiscard]] static inline int GetMaterialCount()
 	{
 		return materialCount;
 	}
@@ -198,7 +198,7 @@ public:
 	/**
 	* @brief Get the number of shaders
 	*/
-	static inline int GetShaderCount()
+	[[nodiscard]] static inline int GetShaderCount()
 	{
 		return shaderCount;
 	}
@@ -206,7 +206,7 @@ public:
 	/**
 	* @brief Get the number of reflections
 	*/
-	static inline int GetReflectionCount()
+	[[nodiscard]] static inline int GetReflectionCount()
 	{
 		return reflectionCount;
 	}
@@ -214,7 +214,7 @@ public:
 	/**
 	* @brief Get the number of file references
 	*/
-	static inline int GetFileReferenceCount()
+	[[nodiscard]] static inline int GetFileReferenceCount()
 	{
 		return fileReferenceCount;
 	}
@@ -222,7 +222,7 @@ public:
 	/**
 	* @brief Get the number of lights
 	*/
-	static inline int GetLightCount()
+	[[nodiscard]] static inline int GetLightCount()
 	{
 		return lightCount;
 	}
@@ -232,7 +232,7 @@ public:
 	* @param fileType The file type
 	* @return The default file data
 	*/
-	static std::string GetDefaultFileData(FileType fileType);
+	[[nodiscard]] static std::string GetDefaultFileData(FileType fileType);
 
 	static std::shared_ptr <Texture> defaultTexture;
 	static std::shared_ptr<Shader> standardShader;
@@ -245,7 +245,7 @@ public:
 	static std::shared_ptr<Material> unlitMaterial;
 
 	template <typename T>
-	static std::shared_ptr<T> LoadEngineAsset(const std::string& filePath)
+	[[nodiscard]] static std::shared_ptr<T> LoadEngineAsset(const std::string& filePath)
 	{
 		return std::dynamic_pointer_cast<T>(ProjectManager::GetFileReferenceByFilePath(filePath));
 	}

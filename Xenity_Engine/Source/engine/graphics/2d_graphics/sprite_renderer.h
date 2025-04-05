@@ -22,7 +22,7 @@ public:
 
 	void SetOrderInLayer(int orderInLayer);
 
-	inline int GetOrderInLayer() const
+	[[nodiscard]] inline int GetOrderInLayer() const
 	{
 		return m_orderInLayer;
 	}
@@ -46,7 +46,7 @@ public:
 	void SetTexture(const std::shared_ptr <Texture>& texture);
 
 protected:
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	/**

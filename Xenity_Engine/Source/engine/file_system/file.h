@@ -51,14 +51,14 @@ public:
 	/**
 	* @brief Read all the content of the file as a string
 	*/
-	virtual std::string ReadAll() { return ""; };
+	[[nodiscard]] virtual std::string ReadAll() { return ""; };
 
 	/**
 	* @brief Read all the content of the file as a binary (Need to free the pointer after)
 	* @param size Output: The size of the binary in byte
 	* @return The binary data
 	*/
-	virtual unsigned char* ReadAllBinary(size_t& size) { return nullptr; };
+	[[nodiscard]] virtual unsigned char* ReadAllBinary(size_t& size) { return nullptr; };
 
 	/**
 	* @brief Read a part of the content of the file as a binary (Need to free the pointer after)
@@ -66,20 +66,20 @@ public:
 	* @param size The size to read in byte
 	* @return The binary data
 	*/
-	virtual unsigned char* ReadBinary(size_t offset, size_t size) { return nullptr; };
+	[[nodiscard]] virtual unsigned char* ReadBinary(size_t offset, size_t size) { return nullptr; };
 
 	/**
 	* @brief Check if the file exists
 	* @return True if the file exists
 	*/
-	virtual bool CheckIfExist() { return false; };
+	[[nodiscard]] virtual bool CheckIfExist() { return false; };
 
 	/**
 	* @brief Open the file
 	* @param fileMode The mode to open the file
 	* @return True if the file is opened successfully
 	*/
-	virtual bool Open(FileMode fileMode) { return false; };
+	[[nodiscard]] virtual bool Open(FileMode fileMode) { return false; };
 
 	/**
 	* @brief Close file
@@ -89,7 +89,7 @@ public:
 	/**
 	* @brief Get file path
 	*/
-	inline const std::string& GetPath() const
+	[[nodiscard]] inline const std::string& GetPath() const
 	{
 		return m_path;
 	}
@@ -97,17 +97,17 @@ public:
 	/**
 	* @brief Get file's folder path
 	*/
-	std::string GetFolderPath() const;
+	[[nodiscard]] std::string GetFolderPath() const;
 
 	/**
 	* @brief Get file name
 	*/
-	const std::string& GetFileName() const;
+	[[nodiscard]] const std::string& GetFileName() const;
 
 	/**
 	* @brief Get file extension (dot included)
 	*/
-	inline const std::string& GetFileExtension() const
+	[[nodiscard]] inline const std::string& GetFileExtension() const
 	{
 		return m_pathExtention;
 	}

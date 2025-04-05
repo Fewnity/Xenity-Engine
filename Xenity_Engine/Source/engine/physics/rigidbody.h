@@ -39,35 +39,35 @@ public:
 
 	void Awake() override;
 
-	inline const Vector3& GetVelocity() const { return m_velocity; }
+	[[nodiscard]] inline const Vector3& GetVelocity() const { return m_velocity; }
 	void SetVelocity(const Vector3& _velocity);
 
 	void ApplyTorque(const Vector3& torque);
-	Vector3 GetTorque() const;
+	[[nodiscard]] Vector3 GetTorque() const;
 
 	void SetAngularVelocity(const Vector3& torque);
 	void AddAngularVelocity(const Vector3& torque);
-	Vector3 GetAngularVelocity() const;
+	[[nodiscard]] Vector3 GetAngularVelocity() const;
 
-	inline float GetDrag() const { return m_drag; }
+	[[nodiscard]] inline float GetDrag() const { return m_drag; }
 	void SetDrag(float _drag);
 
-	inline float GetAngularDrag() const { return m_angularDrag; }
+	[[nodiscard]] inline float GetAngularDrag() const { return m_angularDrag; }
 	void SetAngularDrag(float _angularDrag);
 
-	inline float GetBounce() const { return m_bounce; }
+	[[nodiscard]] inline float GetBounce() const { return m_bounce; }
 	void SetBounce(float _bounce);
 
-	inline float GetGravityMultiplier() const  { return m_gravityMultiplier; }
+	[[nodiscard]] inline float GetGravityMultiplier() const  { return m_gravityMultiplier; }
 	void SetGravityMultiplier(float _gravityMultiplier);
 
-	inline float IsStatic() const  { return m_isStatic; }
+	[[nodiscard]] inline float IsStatic() const  { return m_isStatic; }
 	void SetIsStatic(float _isStatic);
 
-	inline float GetMass() const { return m_mass; }
+	[[nodiscard]] inline float GetMass() const { return m_mass; }
 	void SetMass(float _mass);
 
-	inline float GetFriction() const { return m_friction; }
+	[[nodiscard]] inline float GetFriction() const { return m_friction; }
 	void SetFriction(float _friction);
 
 	LockedAxis lockedMovementAxis;

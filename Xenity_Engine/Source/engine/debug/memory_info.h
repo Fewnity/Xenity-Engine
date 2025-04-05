@@ -17,21 +17,21 @@ public:
 	/**
 	* Get the used memory in bytes
 	*/
-	static size_t GetUsedMemory();
+	[[nodiscard]] static size_t GetUsedMemory();
 
 	/**
 	* Get the total memory in bytes
 	*/
-	static size_t GetTotalMemory();
+	[[nodiscard]] static size_t GetTotalMemory();
 
 	/**
 	* Get the used video memory in bytes
 	*/
-	static size_t GetUsedVideoMemory();
+	[[nodiscard]] static size_t GetUsedVideoMemory();
 	
 	/**
 	* Get the total video memory in bytes
 	*/
-	static size_t GetTotalVideoMemory();
+	[[nodiscard]] static size_t GetTotalVideoMemory();
 };
 

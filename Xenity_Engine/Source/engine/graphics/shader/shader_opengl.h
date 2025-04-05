@@ -66,8 +66,8 @@ protected:
 	void SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling) override;
 
 	void SetLightIndices(const LightsIndices& lightsIndices) override;
-	unsigned int GetShaderUniformLocation(const char* name);
-	static unsigned int GetShaderUniformLocation(unsigned int programId, const char* name);
+	[[nodiscard]] unsigned int GetShaderUniformLocation(const char* name);
+	[[nodiscard]] static unsigned int GetShaderUniformLocation(unsigned int programId, const char* name);
 
 	/**
 	* @brief Set the shader uniform for basic types
@@ -103,7 +103,7 @@ protected:
 	* @param filePath The file path of the shader
 	* @param type The type of the shader
 	*/
-	bool Compile(const std::string& filePath, ShaderType type) override;
+	[[nodiscard]] bool Compile(const std::string& filePath, ShaderType type) override;
 
 	/**
 	* @brief Set the shader uniform of a point light
@@ -127,7 +127,7 @@ protected:
 	*/
 	void SetSpotLightData(const Light& light, const int index) override;
 
-	unsigned int FindOrAddAttributId(const std::string& attribut);
+	[[nodiscard]] unsigned int FindOrAddAttributId(const std::string& attribut);
 
 	class PointLightVariableIds
 	{

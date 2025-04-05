@@ -67,7 +67,7 @@ public:
 	/**
 	* @brief Get the title of the item
 	*/
-	const std::string& GetTitle() const
+	[[nodiscard]] const std::string& GetTitle() const
 	{
 		return text;
 	}
@@ -75,7 +75,7 @@ public:
 	/**
 	* @brief Get the enabled state of the item
 	*/
-	bool IsEnabled() const
+	[[nodiscard]] bool IsEnabled() const
 	{
 		return isEnabled;
 	}
@@ -83,7 +83,7 @@ public:
 	/**
 	* @brief Get the visible state of the item
 	*/
-	bool GetIsVisible() const
+	[[nodiscard]] bool GetIsVisible() const
 	{
 		return isVisible;
 	}

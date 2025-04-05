@@ -36,7 +36,7 @@ public:
 	* @param fileMode The mode to open the file
 	* @return True if the file is opened successfully
 	*/
-	bool Open(FileMode fileMode) override;
+	[[nodiscard]] bool Open(FileMode fileMode) override;
 
 	/**
 	* @brief Close the file
@@ -47,19 +47,19 @@ public:
 	* @brief Check if the file exists
 	* @return True if the file exists
 	*/
-	bool CheckIfExist() override;
+	[[nodiscard]] bool CheckIfExist() override;
 
 	/**
 	* @brief Read all the content of the file as a string
 	*/
-	std::string ReadAll() override;
+	[[nodiscard]] std::string ReadAll() override;
 
 	/**
 	* @brief Read all the content of the file as a binary
 	* @param size Output: The size of the binary
 	* @return The binary data
 	*/
-	unsigned char* ReadAllBinary(int& size) override;
+	[[nodiscard]] unsigned char* ReadAllBinary(int& size) override;
 
 	/**
 	* @brief Write string data to the file

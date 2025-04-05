@@ -26,13 +26,13 @@ public:
 	~SphereCollider();
 
 	void SetSize(const float& size);
-	inline const float& GetSize() const
+	[[nodiscard]] inline const float& GetSize() const
 	{
 		return m_size;
 	}
 
 	void SetOffset(const Vector3& offset);
-	inline const Vector3& GetOffset() const
+	[[nodiscard]] inline const Vector3& GetOffset() const
 	{
 		return m_offset;
 	}
@@ -61,7 +61,7 @@ protected:
 	*/
 	void SetDefaultSize() override;
 
-	const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
+	[[nodiscard]] const std::weak_ptr<RigidBody>& GetAttachedRigidbody()
 	{
 		return m_attachedRigidbody;
 	}

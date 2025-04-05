@@ -11,9 +11,9 @@ public:
 	Prefab();
 	~Prefab();
 
-	static std::shared_ptr<Prefab> MakePrefab();
+	[[nodiscard]] static std::shared_ptr<Prefab> MakePrefab();
 
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 #if defined(EDITOR)
 	void SetData(GameObject& gameObject);
 #endif

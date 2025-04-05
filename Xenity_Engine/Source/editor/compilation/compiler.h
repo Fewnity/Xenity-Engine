@@ -96,7 +96,7 @@ struct CompilerParams
 	/**
 	 * @brief Get the editor dynamic-linked library file name (appending extension)
 	 */
-	std::string getEditorDynamicLibraryName() const
+	[[nodiscard]] std::string getEditorDynamicLibraryName() const
 	{
 		return libraryName + "_Editor.dll";
 	}
@@ -104,7 +104,7 @@ struct CompilerParams
 	/**
 	 * @brief Get runtime dynamic-linked library file name (appending extension)
 	 */
-	std::string getDynamicLibraryName() const
+	[[nodiscard]] std::string getDynamicLibraryName() const
 	{
 		return libraryName + ".dll";
 	}
@@ -124,14 +124,14 @@ public:
 	/**
 	* @brief Check if the compiler has all needed files to start a compilation
 	*/
-	static CompilerAvailability CheckCompilerAvailability(const CompilerParams& params);
+	[[nodiscard]] static CompilerAvailability CheckCompilerAvailability(const CompilerParams& params);
 
 	/**
 	 * @brief Compile an engine plugin
 	 * @param platform Target compilation platform
 	 * @param pluginPath Source code path for the plugin
 	 */
-	static CompileResult CompilePlugin(
+	[[nodiscard]] static CompileResult CompilePlugin(
 		Platform platform,
 		const std::string &pluginPath);
 
@@ -151,7 +151,7 @@ public:
 	/**
 	* @brief Get the event when the compilation ends
 	*/
-	static Event<CompilerParams, bool>& GetOnCompilationEndedEvent()
+	[[nodiscard]] static Event<CompilerParams, bool>& GetOnCompilationEndedEvent()
 	{
 		return OnCompilationEndedEvent;
 	}
@@ -159,7 +159,7 @@ public:
 	/**
 	* @brief Get the event when the compilation starts
 	*/
-	static Event<CompilerParams>& GetOnCompilationStartedEvent()
+	[[nodiscard]] static Event<CompilerParams>& GetOnCompilationStartedEvent()
 	{
 		return OnCompilationStartedEvent;
 	}
@@ -169,17 +169,17 @@ public:
 	* @param callback Event to call when the check is done if the check is async
 	* @return Docker state
 	*/
-	static DockerState CheckDockerState(Event<DockerState>* callback);
+	[[nodiscard]] static DockerState CheckDockerState(Event<DockerState>* callback);
 
 	/**
 	* @brief Create a Docker image to install all needed sdk and tools
 	* @return True if the image was created
 	*/
-	static bool CreateDockerImage();
+	[[nodiscard]] static bool CreateDockerImage();
 
 	static void CancelCompilation();
 
-	static CompilationMethod GetCompilationMethod() 
+	[[nodiscard]] static CompilationMethod GetCompilationMethod()
 	{
 		return compilationMethod;
 	}
@@ -196,13 +196,13 @@ private:
 	* @param params Compilation parameters
 	* @return True if the export was successful
 	*/
-	static bool ExportProjectFiles(const std::string& exportPath);
+	[[nodiscard]] static bool ExportProjectFiles(const std::string& exportPath);
 
 	/**
 	 * @brief General function to compile a source code
 	 * @param params Compilation parameters
 	 */
-	static CompileResult Compile(CompilerParams params);
+	[[nodiscard]] static CompileResult Compile(CompilerParams params);
 
 	/**
 	 * @brief Compile the game code
@@ -211,7 +211,7 @@ private:
 	 * @param exportPath Folder location for the build
 	 * @return Compilation result
 	 */
-	static CompileResult CompileGame(
+	[[nodiscard]] static CompileResult CompileGame(
 		const BuildPlatform buildPlatform,
 		BuildType buildType,
 		const std::string &exportPath);
@@ -221,21 +221,21 @@ private:
 	 * @param params Compilation parameters
 	 * @return Compilation result
 	 */
-	static CompileResult CompileWindows(const CompilerParams &params);
+	[[nodiscard]] static CompileResult CompileWindows(const CompilerParams &params);
 
 	/**
 	 * @brief Compile code in WSL for PSP or PsVita
 	 * @param params Compilation parameters
 	 * @return Compilation result
 	 */
-	static CompileResult CompileWSL(const CompilerParams &params);
+	[[nodiscard]] static CompileResult CompileWSL(const CompilerParams &params);
 
 	/**
 	 * @brief Compile code in WSL for PSP or PsVita
 	 * @param params Compilation parameters
 	 * @return Compilation result
 	 */
-	static CompileResult CompileInDocker(const CompilerParams& params);
+	[[nodiscard]] static CompileResult CompileInDocker(const CompilerParams& params);
 
 	/**
 	 * @brief To call when the compile function ends
@@ -247,33 +247,33 @@ private:
 	/**
 	 * @brief Get the command to start the compiler
 	 */
-	static std::string GetStartCompilerCommand();
+	[[nodiscard]] static std::string GetStartCompilerCommand();
 
 	/**
 	 * @brief Get the command to add another command
 	 */
-	static std::string GetAddNextCommand();
+	[[nodiscard]] static std::string GetAddNextCommand();
 
 	/**
 	 * @brief Get the command to navigate to the engine folder
 	 * @param params Compilation parameters
 	 */
-	static std::string GetNavToEngineFolderCommand(const CompilerParams &params);
+	[[nodiscard]] static std::string GetNavToEngineFolderCommand(const CompilerParams &params);
 
 	/**
 	 * @brief Get the command to compile the game as a dynamic library
 	 * @param params Compilation parameters
 	 * @param sourceDestFolders Source code destination folders
 	 */
-	static std::string GetCompileGameLibCommand(const CompilerParams &params, const std::vector<std::string>& sourceDestFolders);
+	[[nodiscard]] static std::string GetCompileGameLibCommand(const CompilerParams &params, const std::vector<std::string>& sourceDestFolders);
 
 	/**
 	 * @brief Get the command to compile the game as an executable file
 	 * @param params Compilation parameters
 	 */
-	static std::string GetCompileExecutableCommand(const CompilerParams &params);
+	[[nodiscard]] static std::string GetCompileExecutableCommand(const CompilerParams &params);
 
-	static std::string GetCompileIconCommand(const CompilerParams& params);
+	[[nodiscard]] static std::string GetCompileIconCommand(const CompilerParams& params);
 
 	/**
 	 * @brief Start game for build and run (PsVita not supported)

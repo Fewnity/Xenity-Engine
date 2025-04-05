@@ -37,27 +37,27 @@ public:
 	/**
 	* @brief Get window width
 	*/
-	static int GetWidth();
+	[[nodiscard]] static int GetWidth();
 
 	/**
 	* @brief Get window height
 	*/
-	static int GetHeight();
+	[[nodiscard]] static int GetHeight();
 
 	/**
 	* @brief Get window's title bar height
 	*/
-	static int GetTitleBarHeight();
+	[[nodiscard]] static int GetTitleBarHeight();
 
 	/**
 	* @brief Get window's aspect ratio
 	*/
-	static float GetAspectRatio();
+	[[nodiscard]] static float GetAspectRatio();
 
 	/**
 	 * @brief [Internal] Initialize the window
 	 */
-	static int Init();
+	[[nodiscard]] static int Init();
 
 	/**
 	 * @brief [Internal] Update the window

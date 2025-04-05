@@ -32,7 +32,7 @@ public:
 	/**
 	* @brief Get mesh data
 	*/
-	inline const std::shared_ptr<MeshData>& GetMeshData() const
+	[[nodiscard]] inline const std::shared_ptr<MeshData>& GetMeshData() const
 	{
 		return m_meshData;
 	}
@@ -40,14 +40,14 @@ public:
 	/**
 	* Get materials list
 	*/
-	inline std::vector<std::shared_ptr <Material>> GetMaterials() const
+	[[nodiscard]] inline std::vector<std::shared_ptr <Material>> GetMaterials() const
 	{
 		return m_materials;
 	}
 
 	void SetMaterial(const std::shared_ptr <Material>& material, int index);
 
-	inline std::shared_ptr <Material> GetMaterial(int index) const
+	[[nodiscard]] inline std::shared_ptr <Material> GetMaterial(int index) const
 	{
 		if (index < m_materials.size())
 			return m_materials[index];
@@ -55,7 +55,7 @@ public:
 		return nullptr;
 	}
 
-	const Sphere& GetBoundingSphere() const
+	[[nodiscard]] const Sphere& GetBoundingSphere() const
 	{
 		return m_boundingSphere;
 	}
@@ -64,7 +64,7 @@ public:
 
 	void SetUseAdvancedLighting(bool value);
 
-	bool GetUseAdvancedLighting() const
+	[[nodiscard]] bool GetUseAdvancedLighting() const
 	{
 		return m_useAdvancedLighting;
 	}
@@ -76,12 +76,12 @@ protected:
 	void OnComponentAttached() override;
 	std::vector<WorldPartitionner::Chunk*> m_worldChunkPositions;
 	std::vector<Light*> m_affectedByLights;
-	Sphere ProcessBoundingSphere() const;
+	[[nodiscard]] Sphere ProcessBoundingSphere() const;
 	Sphere m_boundingSphere;
 
 	friend class Lod;
 
-	ReflectiveData GetReflectiveData() override;
+	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
 	/**

@@ -74,7 +74,7 @@ public:
 	/**
 	* @brief Get if the component is enabled
 	*/
-	inline bool IsEnabled() const
+	[[nodiscard]] inline bool IsEnabled() const
 	{
 		return m_isEnabled;
 	}
@@ -82,7 +82,7 @@ public:
 	/**
 	* @brief Get if the component is active based on gameobject state
 	*/
-	bool IsLocalActive() const;
+	[[nodiscard]] bool IsLocalActive() const;
 
 	/**
 	* @brief Enable or disable the component*
@@ -93,7 +93,7 @@ public:
 	/**
 	* @brief Get component's GameObject
 	*/
-	inline std::shared_ptr <GameObject> GetGameObject() const
+	[[nodiscard]] inline std::shared_ptr <GameObject> GetGameObject() const
 	{
 		XASSERT(m_gameObject.lock(), "The gameobject is null");
 		return m_gameObject.lock();
@@ -102,7 +102,7 @@ public:
 	/**
 	* @brief Get component's GameObject raw pointer for faster access
 	*/
-	inline GameObject* GetGameObjectRaw() const
+	[[nodiscard]] inline GameObject* GetGameObjectRaw() const
 	{
 		XASSERT(m_gameObjectRaw, "The gameobject is null");
 		return m_gameObjectRaw;
@@ -111,7 +111,7 @@ public:
 	/**
 	* @brief Get component's Transform
 	*/
-	inline std::shared_ptr <Transform> GetTransform() const
+	[[nodiscard]] inline std::shared_ptr<Transform> GetTransform() const
 	{
 		XASSERT(m_transform.lock(), "The transform is null");
 		return m_transform.lock();
@@ -120,7 +120,7 @@ public:
 	/**
 	* @brief Get component's Transform raw pointer for faster access
 	*/
-	inline Transform* GetTransformRaw() const
+	[[nodiscard]] inline Transform* GetTransformRaw() const
 	{
 		//XASSERT(m_transformRaw, "The transform is null"); // Disabled for a small hack in the lighting system
 		return m_transformRaw;
@@ -129,7 +129,7 @@ public:
 	/**
 	* @brief Get component's name
 	*/
-	inline const std::string& GetComponentName() const
+	[[nodiscard]] inline const std::string& GetComponentName() const
 	{
 		XASSERT(m_componentName, "The component's name is null");
 		XASSERT(!(*m_componentName).empty(), "The component's name is empty");
@@ -139,7 +139,7 @@ public:
 	/**
 	* @brief Return a string representation of the component
 	*/
-	inline virtual std::string ToString()
+	[[nodiscard]] inline virtual std::string ToString()
 	{
 		XASSERT(m_componentName, "The component's name is null");
 		XASSERT(!(*m_componentName).empty(), "The component's name is empty");

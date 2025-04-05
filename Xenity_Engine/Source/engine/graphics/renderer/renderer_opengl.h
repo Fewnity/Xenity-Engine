@@ -38,7 +38,7 @@ public:
 	RendererOpengl(const RendererOpengl& other) = delete;
 	RendererOpengl& operator=(const RendererOpengl&) = delete;
 
-	int Init() override;
+	[[nodiscard]] int Init() override;
 	void Setup() override;
 	void Stop() override;
 	void NewFrame() override;
@@ -57,7 +57,7 @@ public:
 	void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, RenderingSettings& settings) override;
 	void DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings) override;
 	void DrawLine(const Vector3& a, const Vector3& bn, const Color& color, RenderingSettings& settings) override;
-	unsigned int CreateNewTexture() override;
+	[[nodiscard]] unsigned int CreateNewTexture() override;
 	void DeleteTexture(Texture& texture) override;
 	void SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer) override;
 	void Clear() override;
@@ -74,15 +74,15 @@ public:
 
 private:
 	void ApplyTextureFilters(const Texture& texture);
-	unsigned int CreateVertexArray();
-	unsigned int CreateBuffer();
+	[[nodiscard]] unsigned int CreateVertexArray();
+	[[nodiscard]] unsigned int CreateBuffer();
 	void BindVertexArray(unsigned int bufferId);
 	void DeleteBuffer(unsigned int bufferId);
 	void DeleteVertexArray(unsigned int bufferId);
 
-	int GetBufferTypeEnum(BufferType bufferType);
+	[[nodiscard]] int GetBufferTypeEnum(BufferType bufferType);
 	// int GetBufferModeEnum(BufferMode bufferMode);
-	int GetWrapModeEnum(WrapMode wrapMode);
+	[[nodiscard]] int GetWrapModeEnum(WrapMode wrapMode);
 	int maxLightCount = 8;
 	void DisableAllLight();
 	void SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection) override;

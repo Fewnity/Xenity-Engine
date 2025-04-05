@@ -23,7 +23,7 @@ public:
 	* @brief Call a function in a try/catch
 	* @param function Function to call
 	*/
-	static bool CallInTry(void (*function)());
+	[[nodiscard]] static bool CallInTry(void (*function)());
 
 private:
 

@@ -11,6 +11,6 @@ public:
 	/**
 	* Load mesh data
 	*/
-	static bool LoadMesh(MeshData& mesh);
+	[[nodiscard]] static bool LoadMesh(MeshData& mesh);
 };
 

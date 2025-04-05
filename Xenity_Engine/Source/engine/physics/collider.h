@@ -26,7 +26,7 @@ public:
 		OnTransformUpdated();
 	}
 
-	bool IsTrigger() const
+	[[nodiscard]] bool IsTrigger() const
 	{
 		return m_isTrigger;
 	}
@@ -36,7 +36,7 @@ public:
 		m_generateCollisionEvents = generateCollisionEvents;
 	}
 
-	bool GetGenerateCollisionEvents() const
+	[[nodiscard]] bool GetGenerateCollisionEvents() const
 	{
 		return m_generateCollisionEvents;
 	}
@@ -47,7 +47,7 @@ protected:
 	friend class InspectorMenu;
 	friend class MainBarMenu;
 
-	const std::weak_ptr<RigidBody>& GetAttachedRigidbody() const
+	[[nodiscard]] const std::weak_ptr<RigidBody>& GetAttachedRigidbody() const
 	{
 		return m_attachedRigidbody;
 	}

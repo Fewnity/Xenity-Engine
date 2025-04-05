@@ -16,6 +16,6 @@ protected:
 
 	ReflectiveData GetReflectiveData() override;
 
-	static std::shared_ptr<Icon> MakeIcon();
+	[[nodiscard]] static std::shared_ptr<Icon> MakeIcon();
 };
 
