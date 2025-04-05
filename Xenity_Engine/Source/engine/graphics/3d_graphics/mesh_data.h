@@ -208,7 +208,7 @@ public:
 	/**
 	* @brief Alloc memory for a new submesh
 	*/
-	void CreateSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptor& vertexDescriptorList);
+	void CreateSubMesh(uint32_t vcount, uint32_t index_count, const VertexDescriptor& vertexDescriptorList);
 
 	/**
 	* @brief Get sub mesh pointer

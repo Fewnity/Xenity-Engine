@@ -18,7 +18,8 @@ subject to the following restrictions:
 #include "BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
 #include "BulletCollision/NarrowPhaseCollision/btConvexPenetrationDepthSolver.h"
 
-
+#pragma warning( push )
+#pragma warning( disable : 4305 )
 
 #if defined(DEBUG) || defined (_DEBUG)
 //#define TEST_NON_VIRTUAL 1
@@ -461,7 +462,4 @@ void btGjkPairDetector::getClosestPointsNonVirtual(const ClosestPointInput& inpu
 
 }
 
-
-
-
-
+#pragma warning( pop )

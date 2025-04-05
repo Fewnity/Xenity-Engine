@@ -33,6 +33,9 @@
 #include <TargetConditionals.h>
 #endif
 
+#pragma warning( push )
+#pragma warning( disable : 4244 )
+
 #if defined(WIN32) || defined(_WIN32)
 
 #define BT_USE_WINDOWS_TIMERS
@@ -779,3 +782,4 @@ CProfileSample::~CProfileSample( void )
 	btLeaveProfileZone();
 }
 
+#pragma warning( pop )

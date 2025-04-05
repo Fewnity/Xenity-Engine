@@ -242,6 +242,8 @@ private:
 	friend class InspectorChangeValueCommand;
 	template<typename T>
 	friend class InspectorItemSetStaticCommand;
+	template <typename T>
+	friend bool IsValid(const std::weak_ptr<T>& pointer);
 
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;

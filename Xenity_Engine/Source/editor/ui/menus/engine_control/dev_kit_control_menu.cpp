@@ -47,7 +47,7 @@ void DevKitControlMenu::Draw()
 				selectableText += "##" + std::to_string(i);
 				if (ImGui::Selectable(selectableText.c_str(), i == selectedDevKit, 0))
 				{
-					selectedDevKit = i;
+					selectedDevKit = static_cast<int>(i);
 				}
 			}
 			devKitListMutex.unlock();

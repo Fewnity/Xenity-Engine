@@ -22,7 +22,7 @@ public:
 	* @param endPosition The position of the end of the tag (if found)
 	* @return True if the tag was found, false otherwise
 	*/
-	static bool FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, int& startPosition, int& endPosition);
+	static bool FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, size_t& startPosition, size_t& endPosition);
 
 	/**
 	* @brief Split a string into a vector of strings

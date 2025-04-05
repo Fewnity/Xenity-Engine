@@ -90,7 +90,7 @@ private:
 	float fogStart = 0;
 	float fogEnd = 10;
 	Color fogColor;
-	std::array<const Light*, MAX_LIGHT_COUNT> lastUpdatedLights;
+	std::array<const Light*, MAX_LIGHT_COUNT> lastUpdatedLights = std::array<const Light*, MAX_LIGHT_COUNT>();
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(Texture::AnisotropicLevel level);
 

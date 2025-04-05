@@ -66,11 +66,11 @@ ENUM(CompilationMethod,
 
 struct CompilationTimings 
 {
-	uint32_t totalCompileTime = 0;
-	uint32_t prepareDockerTime = 0;
-	uint32_t dockerCompileTime = 0;
-	uint32_t shaderCompileTime = 0;
-	uint32_t cookTime = 0;
+	uint64_t totalCompileTime = 0;
+	uint64_t prepareDockerTime = 0;
+	uint64_t dockerCompileTime = 0;
+	uint64_t shaderCompileTime = 0;
+	uint64_t cookTime = 0;
 };
 
 struct CompilerParams

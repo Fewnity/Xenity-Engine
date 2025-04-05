@@ -111,8 +111,8 @@ void CreateClassMenu::CreateFiles()
 	// Replace tag by class name
 	size_t codeDataSize = codeData.size();
 	size_t headerDataSize = headerData.size();
-	int beg;
-	int end;
+	size_t beg;
+	size_t end;
 	for (int i = 0; i < codeDataSize; i++)
 	{
 		if (StringUtils::FindTag(codeData, i, codeDataSize, "{CLASSNAME}", beg, end))

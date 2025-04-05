@@ -111,7 +111,7 @@ void btMultiBodyJointLimitConstraint::createConstraintRows(btMultiBodyConstraint
 	for (int row=0;row<getNumRows();row++)
 	{
 		
-		btScalar direction = row? -1 : 1;
+		btScalar direction = row? -1.0f : 1.0f;
 
 		btMultiBodySolverConstraint& constraintRow = constraintRows.expandNonInitializing();
         constraintRow.m_orgConstraint = this;

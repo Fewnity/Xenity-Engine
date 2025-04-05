@@ -21,6 +21,9 @@ subject to the following restrictions:
 #include "BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.h"
 #include "LinearMath/btIDebugDraw.h"
 
+#pragma warning( push )
+#pragma warning( disable : 4305 )
+
 #define BTMBFIXEDCONSTRAINT_DIM 6
 
 btMultiBodyFixedConstraint::btMultiBodyFixedConstraint(btMultiBody* body, int link, btRigidBody* bodyB, const btVector3& pivotInA, const btVector3& pivotInB, const btMatrix3x3& frameInA, const btMatrix3x3& frameInB)
@@ -209,3 +212,5 @@ void btMultiBodyFixedConstraint::debugDraw(class btIDebugDraw* drawer)
 		drawer->drawTransform(tr, 0.1);
 	}
 }
+
+#pragma warning( pop )

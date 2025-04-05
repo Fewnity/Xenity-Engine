@@ -92,7 +92,7 @@ void Prefab::SaveGameObject(GameObject& gameObject, std::set<uint64_t>& usedFile
 	const size_t childrenCount = gameObject.GetChildrenCount();
 	for (size_t i = 0; i < childrenCount; i++)
 	{
-		SaveGameObject(*gameObject.GetChild(i).lock(), usedFilesIds);
+		SaveGameObject(*gameObject.GetChild(static_cast<int>(i)).lock(), usedFilesIds);
 	}
 }
 #endif

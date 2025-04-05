@@ -21,6 +21,10 @@
 
 CreateProjectMenu::CreateProjectMenu()
 {
+#pragma warning( push )
+// Disable warning about wchar
+#pragma warning( disable : 4244 )
+
 	group = MenuGroup::Menu_Create_Project;
 #if defined(_WIN32) || defined(_WIN64)
 	// Get Xenity's default project location
@@ -41,7 +45,9 @@ CreateProjectMenu::CreateProjectMenu()
 			projectParentDir.clear();
 		}
 	}
-	#endif
+#endif
+
+#pragma warning( pop )
 }
 
 void CreateProjectMenu::Init()

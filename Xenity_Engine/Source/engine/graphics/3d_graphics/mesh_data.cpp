@@ -73,7 +73,7 @@ ReflectiveData MeshData::GetMetaReflectiveData([[maybe_unused]] AssetPlatform pl
  * @param z Z position
  * @param index Vertex index
  */
-void MeshData::SubMesh::AddVertex(float u, float v, const Color& color, float x, float y, float z, unsigned int vertexIndex)
+void MeshData::SubMesh::AddVertex(float u, float v, const Color& color, float x, float y, float z, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
 
@@ -82,14 +82,14 @@ void MeshData::SubMesh::AddVertex(float u, float v, const Color& color, float x,
 	AddColor(color, vertexIndex);
 }
 
-void MeshData::SubMesh::AddVertex(float x, float y, float z, unsigned int vertexIndex)
+void MeshData::SubMesh::AddVertex(float x, float y, float z, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
 
 	AddPosition(x, y, z, vertexIndex);
 }
 
-void MeshData::SubMesh::AddVertex(float u, float v, float x, float y, float z, unsigned int vertexIndex)
+void MeshData::SubMesh::AddVertex(float u, float v, float x, float y, float z, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
 
@@ -97,7 +97,7 @@ void MeshData::SubMesh::AddVertex(float u, float v, float x, float y, float z, u
 	AddPosition(x, y, z, vertexIndex);
 }
 
-void MeshData::SubMesh::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, unsigned int vertexIndex)
+void MeshData::SubMesh::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
 
@@ -106,7 +106,7 @@ void MeshData::SubMesh::AddVertex(float u, float v, float nx, float ny, float nz
 	AddPosition(x, y, z, vertexIndex);
 }
 
-void MeshData::SubMesh::AddVertex(float nx, float ny, float nz, float x, float y, float z, unsigned int vertexIndex)
+void MeshData::SubMesh::AddVertex(float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
 
@@ -114,7 +114,7 @@ void MeshData::SubMesh::AddVertex(float nx, float ny, float nz, float x, float y
 	AddPosition(x, y, z, vertexIndex);
 }
 
-void MeshData::SubMesh::AddPosition(float x, float y, float z, unsigned int vertexIndex)
+void MeshData::SubMesh::AddPosition(float x, float y, float z, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddPosition] vertexIndex out of bound");
 	
@@ -124,7 +124,7 @@ void MeshData::SubMesh::AddPosition(float x, float y, float z, unsigned int vert
 	reinterpret_cast<float*>(vertexData)[2] = z;
 }
 
-void MeshData::SubMesh::AddNormal(float nx, float ny, float nz, unsigned int vertexIndex)
+void MeshData::SubMesh::AddNormal(float nx, float ny, float nz, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddNormal] vertexIndex out of bound");
 
@@ -134,7 +134,7 @@ void MeshData::SubMesh::AddNormal(float nx, float ny, float nz, unsigned int ver
 	reinterpret_cast<float*>(vertexData)[2] = nz;
 }
 
-void MeshData::SubMesh::AddUV(float u, float v, unsigned int vertexIndex)
+void MeshData::SubMesh::AddUV(float u, float v, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddUV] Index out of bound");
 
@@ -143,7 +143,7 @@ void MeshData::SubMesh::AddUV(float u, float v, unsigned int vertexIndex)
 	reinterpret_cast<float*>(vertexData)[1] = v;
 }
 
-void MeshData::SubMesh::AddColor(const Color& color, unsigned int vertexIndex)
+void MeshData::SubMesh::AddColor(const Color& color, uint32_t vertexIndex)
 {
 	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddColor] Index out of bound");
 
@@ -348,7 +348,7 @@ void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 #endif
 }
 
-void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, const VertexDescriptor& vertexDescriptorList)
+void MeshData::CreateSubMesh(uint32_t vcount, uint32_t index_count, const VertexDescriptor& vertexDescriptorList)
 {
 	XASSERT(vcount != 0 || index_count != 0, "[MeshData::CreateSubMesh] vcount and index_count are 0");
 	XASSERT(vertexDescriptorList.m_vertexSize != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList vertex size");
@@ -369,7 +369,7 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 	if (index_count != 0)
 	{
 		const size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
-		newSubMesh->m_indexMemSize = indexSize * index_count;
+		newSubMesh->m_indexMemSize = static_cast<uint32_t>(indexSize * index_count);
 #if defined(__PSP__)
 		newSubMesh->m_indices = memalign(16, newSubMesh->m_indexMemSize);
 #elif defined(__PS3__)
@@ -389,7 +389,7 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 		}
 	}
 
-	newSubMesh->m_vertexMemSize = vertexDescriptorList.m_vertexSize * vcount;
+	newSubMesh->m_vertexMemSize = static_cast<uint32_t>(vertexDescriptorList.m_vertexSize * vcount);
 
 	// Allocate memory for mesh data
 #if defined(__PSP__)
@@ -515,8 +515,8 @@ void MeshData::CreateSubMesh(unsigned int vcount, unsigned int index_count, cons
 	Performance::s_meshDataMemoryTracker->Allocate(newSubMesh->m_vertexMemSize);
 #endif
 
-	newSubMesh->m_index_count = index_count;
-	newSubMesh->m_vertice_count = vcount;
+	newSubMesh->m_index_count = static_cast<uint32_t>(index_count);
+	newSubMesh->m_vertice_count = static_cast<uint32_t>(vcount);
 
 #if defined(__PS3__)
 	if (newSubMesh->isShortIndices)

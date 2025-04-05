@@ -21,6 +21,8 @@ subject to the following restrictions:
 #include "BulletDynamics/Featherstone/btMultiBodyLinkCollider.h"
 #include "BulletDynamics/Featherstone/btMultiBodyConstraint.h"
 
+#pragma warning( push )
+#pragma warning( disable : 4244 )
 
 //
 btSoftBody::btSoftBody(btSoftBodyWorldInfo*	worldInfo,int node_count,  const btVector3* x,  const btScalar* m)
@@ -3700,3 +3702,4 @@ const char*	btSoftBody::serialize(void* dataBuffer, class btSerializer* serializ
 	return btSoftBodyDataName;
 }
 
+#pragma warning( pop )

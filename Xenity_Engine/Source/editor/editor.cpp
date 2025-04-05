@@ -636,7 +636,7 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 {
 	XASSERT(gameObjectToAdd != nullptr, "[Editor::AddSelectedGameObject] gameObjectToAdd is nullptr");
 
-	int foundAt = -1;
+	size_t foundAt = -1;
 	size_t selectedGameObjectsCount = selectedGameObjects.size();
 	for (size_t i = 0; i < selectedGameObjectsCount; i++)
 	{
@@ -1141,8 +1141,8 @@ int Editor::ExecuteSystemCommand(const std::string& command, std::string& output
 	constexpr size_t bufferSize = 10000;
 	char output[bufferSize];
 	output[0] = '\0';
-	int length = strlen(output);
-	while (fgets(output + length, bufferSize - length, f))
+	size_t length = strlen(output);
+	while (fgets(output + length, static_cast<int>(bufferSize - length), f))
 	{
 		length = strlen(output);
 		if (length >= bufferSize - 1)

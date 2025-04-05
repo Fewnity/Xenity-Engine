@@ -37,7 +37,8 @@ email: projectileman@yahoo.com
 http://gimpact.sf.net
 */
 
-
+#pragma warning( push )
+#pragma warning( disable : 4244 )
 
 #include "btGeneric6DofSpring2Constraint.h"
 #include "BulletDynamics/Dynamics/btRigidBody.h"
@@ -1119,3 +1120,4 @@ void btTranslationalLimitMotor2::testLimitValue(int limitIndex, btScalar test_va
 }
 
 
+#pragma warning( pop )

@@ -6,13 +6,13 @@
 
 #include "string_utils.h"
 
-bool StringUtils::FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, int& startPosition, int& endPosition)
+bool StringUtils::FindTag(const std::string& textToSearchIn, const size_t index, const size_t textSize, const std::string& textToFind, size_t& startPosition, size_t& endPosition)
 {
 	bool found = false;
-	const int textToFindSize = (int)textToFind.size();
+	const size_t textToFindSize = textToFind.size();
 	bool notEquals = false;
 
-	for (int i = 0; i < textToFindSize; i++)
+	for (size_t i = 0; i < textToFindSize; i++)
 	{
 		if (textToSearchIn[index + i] != textToFind[i])
 		{
@@ -24,7 +24,7 @@ bool StringUtils::FindTag(const std::string& textToSearchIn, const size_t index,
 	if (!notEquals)
 	{
 		startPosition = index;
-		for (int j = index + 1; j < textSize; j++)
+		for (size_t j = index + 1; j < textSize; j++)
 		{
 			if (textToSearchIn[j] == '}')
 			{

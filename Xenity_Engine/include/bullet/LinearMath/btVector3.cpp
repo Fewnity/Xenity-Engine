@@ -22,7 +22,8 @@
 
 #include "btVector3.h"
 
-
+#pragma warning( push )
+#pragma warning( disable : 4267 )
 
 #if defined BT_USE_SIMD_VECTOR3
 
@@ -1668,3 +1669,4 @@ long _mindot_large_v1( const float *vv, const float *vec, unsigned long count, f
 #endif  /* __APPLE__ */
 
 
+#pragma warning( pop )

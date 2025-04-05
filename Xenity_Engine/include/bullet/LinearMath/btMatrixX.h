@@ -106,7 +106,7 @@ struct btVectorX
 						}
 					}
 				}
-				norm = scale * sqrt(ssq);
+				norm = scale * sqrtf(ssq);
 			}
 		}
 		return norm;

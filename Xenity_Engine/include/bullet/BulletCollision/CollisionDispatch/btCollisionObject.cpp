@@ -17,6 +17,9 @@ subject to the following restrictions:
 #include "btCollisionObject.h"
 #include "LinearMath/btSerializer.h"
 
+#pragma warning( push )
+#pragma warning( disable : 4305 )
+
 btCollisionObject::btCollisionObject()
 	:	m_anisotropicFriction(1.f,1.f,1.f),
 	m_hasAnisotropicFriction(false),
@@ -123,3 +126,5 @@ void btCollisionObject::serializeSingleObject(class btSerializer* serializer) co
 	const char* structType = serialize(chunk->m_oldPtr, serializer);
 	serializer->finalizeChunk(chunk,structType,BT_COLLISIONOBJECT_CODE,(void*)this);
 }
+
+#pragma warning( pop )

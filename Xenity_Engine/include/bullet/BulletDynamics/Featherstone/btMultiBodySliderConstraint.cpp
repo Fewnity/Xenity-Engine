@@ -21,6 +21,9 @@ subject to the following restrictions:
 #include "BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.h"
 #include "LinearMath/btIDebugDraw.h"
 
+#pragma warning( push )
+#pragma warning( disable : 4305 )
+
 #define BTMBSLIDERCONSTRAINT_DIM 5
 #define EPSILON 0.000001
 
@@ -228,3 +231,5 @@ void btMultiBodySliderConstraint::debugDraw(class btIDebugDraw* drawer)
 		drawer->drawTransform(tr, 0.1);
 	}
 }
+
+#pragma warning( pop )

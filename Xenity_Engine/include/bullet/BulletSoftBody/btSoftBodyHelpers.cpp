@@ -21,6 +21,8 @@ subject to the following restrictions:
 #include "LinearMath/btConvexHull.h"
 #include "LinearMath/btConvexHullComputer.h"
 
+#pragma warning( push )
+#pragma warning( disable : 4244 )
 
 //
 static void				drawVertex(	btIDebugDraw* idraw,
@@ -1217,3 +1219,4 @@ printf("Tetras: %u\r\n",psb->m_tetras.size());
 return(psb);
 }
 
+#pragma warning( pop )

@@ -312,7 +312,7 @@ void ProfilerMenu::DrawProfilerGraph()
 					ImPlot::SetupLegend(ImPlotLocation_West, ImPlotLegendFlags_Outside);
 
 					// Set the axis limits
-					ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, (endTime - offsetTime));
+					ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, static_cast<float>(endTime - offsetTime));
 					ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, lastMaxLevel + 1);
 
 					const ImPlotPoint mousePoint = ImPlot::GetPlotMousePos();
@@ -326,8 +326,8 @@ void ProfilerMenu::DrawProfilerGraph()
 						if (ImPlot::BeginItem(item.name.c_str()))
 						{
 							// Get the item position in pixels and draw it
-							const ImVec2 open_pos = ImPlot::PlotToPixels((item.start - offsetTime), item.level * lineHeigh);
-							const ImVec2 close_pos = ImPlot::PlotToPixels((item.end - offsetTime), item.level * lineHeigh + lineHeigh);
+							const ImVec2 open_pos = ImPlot::PlotToPixels(static_cast<float>(item.start - offsetTime), item.level * lineHeigh);
+							const ImVec2 close_pos = ImPlot::PlotToPixels(static_cast<float>(item.end - offsetTime), item.level * lineHeigh + lineHeigh);
 							draw_list->AddRectFilled(open_pos, close_pos, ImGui::GetColorU32(ImPlot::GetCurrentItem()->Color));
 
 							// Check if the mouse is over the item

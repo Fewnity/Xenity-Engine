@@ -6,6 +6,10 @@
 
 #include <sstream>
 
+#pragma warning( push )
+// Disable warning about wchar
+#pragma warning( disable : 4244 )
+
 #if defined(EDITOR)
 #include <variant>
 #if defined(_WIN32) || defined(_WIN64)
@@ -307,3 +311,5 @@ std::string EditorUI::SaveFileDialog(const std::string& title, const std::string
 }
 
 #endif // #if defined(EDITOR)
+
+#pragma warning( pop )

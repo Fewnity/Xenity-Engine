@@ -246,7 +246,7 @@ void ParticleSystem::ResetParticle(Particle& particle, bool setIsDead)
 	}
 	if (m_randomRotation)
 	{
-		particle.billboardRotation = rand() % 360;
+		particle.billboardRotation = static_cast<float>(rand() % 360);
 	}
 	particle.currentSpeed = m_speedDistribution(m_gen);
 

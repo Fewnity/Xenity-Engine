@@ -22,7 +22,8 @@ Written by: Marcus Hennix
 #include "LinearMath/btMinMax.h"
 #include <new>
 
-
+#pragma warning( push )
+#pragma warning( disable : 4244 )
 
 //#define CONETWIST_USE_OBSOLETE_SOLVER true
 #define CONETWIST_USE_OBSOLETE_SOLVER false
@@ -1138,6 +1139,4 @@ void btConeTwistConstraint::setFrames(const btTransform & frameA, const btTransf
 	//calculateTransforms();
 }
 
- 
-
-
+#pragma warning( pop )

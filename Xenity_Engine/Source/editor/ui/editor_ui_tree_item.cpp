@@ -271,7 +271,7 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 
 		if (opened)
 		{
-			for (int i = 0; i < gameObject->GetChildrenCount(); i++)
+			for (uint32_t i = 0; i < gameObject->GetChildrenCount(); i++)
 			{
 				const int clickedTemp = DrawTreeItem(gameObject->GetChildren()[i].lock(), rightClickedElement);
 				if (clickedTemp == 1)

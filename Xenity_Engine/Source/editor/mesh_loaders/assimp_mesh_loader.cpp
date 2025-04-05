@@ -113,11 +113,11 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 			// Allocate memory
 			if (useIndices)
 			{
-				mesh.CreateSubMesh(assimpMesh->mNumVertices, assimpMesh->mNumFaces * verticesPerFace, vertexDescriptorList);
+				mesh.CreateSubMesh(static_cast<uint32_t>(assimpMesh->mNumVertices), static_cast<uint32_t>(assimpMesh->mNumFaces * verticesPerFace), vertexDescriptorList);
 			}
 			else
 			{
-				mesh.CreateSubMesh(assimpMesh->mNumFaces * verticesPerFace, 0, vertexDescriptorList);
+				mesh.CreateSubMesh(static_cast<uint32_t>(assimpMesh->mNumFaces * verticesPerFace), 0, vertexDescriptorList);
 			}
 
 			// Check if the mesh is	using triangles or quads
@@ -168,7 +168,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 	return true;
 }
 
-void AssimpMeshLoader::AddVertex(MeshData& mesh, const LoadingOptions& options, const aiMesh* assimpMesh, unsigned int assimpVertexIndex, unsigned int subMeshIndex, unsigned int meshVertexIndex)
+void AssimpMeshLoader::AddVertex(MeshData& mesh, const LoadingOptions& options, const aiMesh* assimpMesh, size_t assimpVertexIndex, size_t subMeshIndex, size_t meshVertexIndex)
 {
 	const aiVector3D& vertex = assimpMesh->mVertices[assimpVertexIndex];
 	const bool hasNormals = assimpMesh->HasNormals();
@@ -179,23 +179,23 @@ void AssimpMeshLoader::AddVertex(MeshData& mesh, const LoadingOptions& options, 
 	if (hasNormals)
 	{
 		const aiVector3D& normals = assimpMesh->mNormals[assimpVertexIndex];
-		subMesh.AddNormal(normals.x, normals.y, normals.z, meshVertexIndex);
+		subMesh.AddNormal(normals.x, normals.y, normals.z, static_cast<uint32_t>(meshVertexIndex));
 	}
 	if (hasUVs)
 	{
 		const aiVector3D& uv = assimpMesh->mTextureCoords[0][assimpVertexIndex];
-		subMesh.AddUV(uv.x, uv.y, meshVertexIndex);
+		subMesh.AddUV(uv.x, uv.y, static_cast<uint32_t>(meshVertexIndex));
 	}
 	if (hasColors)
 	{
 		const aiColor4D& color = assimpMesh->mColors[0][assimpVertexIndex];
-		subMesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex);
+		subMesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), static_cast<uint32_t>(meshVertexIndex));
 	}
 	else if (options.forceColors)
 	{
 		const aiColor4D color = aiColor4D(1, 1, 1, 1);
-		subMesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), meshVertexIndex);
+		subMesh.AddColor(Color::CreateFromRGBAFloat(color.r, color.g, color.b, color.a), static_cast<uint32_t>(meshVertexIndex));
 	}
 
-	subMesh.AddPosition(vertex.x, vertex.y, vertex.z, meshVertexIndex);
+	subMesh.AddPosition(vertex.x, vertex.y, vertex.z, static_cast<uint32_t>(meshVertexIndex));
 }

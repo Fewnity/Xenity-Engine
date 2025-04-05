@@ -24,7 +24,7 @@ void CommandManager::AddCommand(std::shared_ptr<Command> command)
 	// If we are not at the end of the list, remove all other commands starting from currentCommand to the end of the list
 	if (currentCommand != commandCount - 1)
 	{
-		const int count = (commandCount - 1) - (currentCommand + 1);
+		const int count = static_cast<int>((commandCount - 1) - (currentCommand + 1));
 		for (int i = 0; i < count; i++)
 		{
 			commands.erase(commands.begin() + (currentCommand + 1));
@@ -68,7 +68,7 @@ void CommandManager::ClearInGameCommands()
 			i--;
 		}
 	}
-	currentCommand = commandCount - 1;
+	currentCommand = static_cast<int>(commandCount - 1);
 }
 
 void CommandManager::Undo()

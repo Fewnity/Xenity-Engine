@@ -155,6 +155,8 @@ private:
 	friend class SceneManager;
 	friend class PhysicsManager;
 	friend class ClassRegistry;
+	template <typename T>
+	friend bool IsValid(const std::weak_ptr<T>& pointer);
 
 	/**
 	* @brief [Internal] Set component's GameObject

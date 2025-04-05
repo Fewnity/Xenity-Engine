@@ -795,7 +795,11 @@ void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 
 void RendererOpengl::UploadMeshData(MeshData& meshData)
 {
-	for (int i = 0; i < meshData.m_subMeshCount; i++)
+// Disable warning about (void*) cast
+#pragma warning( push )
+#pragma warning( disable : 4312 )
+
+	for (uint32_t i = 0; i < meshData.m_subMeshCount; i++)
 	{
 		const std::unique_ptr<MeshData::SubMesh>& newSubMesh = meshData.m_subMeshes[i];
 
@@ -894,6 +898,8 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+
+#pragma warning( pop )
 }
 
 void RendererOpengl::UseShaderProgram(unsigned int programId)

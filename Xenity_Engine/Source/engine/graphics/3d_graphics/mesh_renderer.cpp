@@ -165,7 +165,7 @@ void MeshRenderer::OnReflectionUpdated()
 		m_materials.resize(m_meshData->m_subMeshCount);
 	}
 
-	m_matCount = m_materials.size();
+	m_matCount = static_cast<uint8_t>(m_materials.size());
 	Graphics::s_isRenderingBatchDirty = true;
 
 	m_boundingSphere = ProcessBoundingSphere();

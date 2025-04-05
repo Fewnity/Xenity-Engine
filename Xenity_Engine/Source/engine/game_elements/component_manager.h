@@ -87,7 +87,7 @@ public:
 	std::shared_ptr<Component> CreateComponent(Event<size_t>* onComponentDeletedEvent)
 	{
 		// Find available list
-		int listIndex = -1;
+		size_t listIndex = -1;
 		const size_t listCount = m_componentsData.size();
 
 		for (size_t currentListIndex = 0; currentListIndex < listCount; currentListIndex++)
@@ -112,7 +112,7 @@ public:
 			listIndex = listCount;
 		}
 
-		int addedAt = -1;
+		size_t addedAt = -1;
 		for (size_t i = 0; i < m_maxComponentCount; ++i)
 		{
 			if (!m_componentsData[listIndex]->allocated[i])

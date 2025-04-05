@@ -260,7 +260,7 @@ void ProjectManager::CreateVisualStudioSettings()
 			const size_t vsCodeTextSize = vsCodeText.size();
 
 			// Replace tag by the include folder path
-			int beg = 0, end = 0;
+			size_t beg = 0, end = 0;
 			for (size_t i = 0; i < vsCodeTextSize; i++)
 			{
 				if (StringUtils::FindTag(vsCodeText, i, vsCodeTextSize, "{ENGINE_SOURCE_PATH}", beg, end))
