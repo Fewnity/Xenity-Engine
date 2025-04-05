@@ -46,7 +46,6 @@ private:
 	friend class InspectorDeleteGameObjectCommand;
 	friend class EngineAssetManagerMenu;
 	friend class Cooker;
-	template<typename T>
 	friend class InspectorDeleteComponentCommand;
 	friend class UniqueIdTest;
 	template <class T>

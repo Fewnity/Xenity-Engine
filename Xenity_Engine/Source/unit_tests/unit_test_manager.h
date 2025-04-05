@@ -204,14 +204,19 @@ MAKE_TEST(VertexDescriptorGetVertexElementSize);
 
 #pragma region Editor
 
-#pragma region Create Command
-
-// Incomplete tests!
+#pragma region Create Commands
 
 MAKE_TEST(AddComponentCommand);
 MAKE_TEST(CreateEmptyGameObjectCommand);
 MAKE_TEST(CreateChildGameObjectCommand);
 MAKE_TEST(CreateParentGameObjectCommand);
+
+#pragma endregion
+
+#pragma region Delete Commands
+
+MAKE_TEST(DeleteComponentCommand);
+MAKE_TEST(DeleteGameObjectCommand);
 
 #pragma endregion
 

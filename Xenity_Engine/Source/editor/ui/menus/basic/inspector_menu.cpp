@@ -130,7 +130,7 @@ int InspectorMenu::CheckOpenRightClickPopup(Component& component, int& component
 {
 	std::function<void()> deleteFunc = [&component, &componentCount, &componentIndex]()
 		{
-			auto command = std::make_shared<InspectorDeleteComponentCommand<Component>>(component);
+			auto command = std::make_shared<InspectorDeleteComponentCommand>(component);
 			CommandManager::AddCommandAndExecute(command);
 			componentCount--;
 			componentIndex--;

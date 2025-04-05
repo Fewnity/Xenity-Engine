@@ -6,7 +6,7 @@
 
 #include "modify.h"
 
-InspectorTransformSetPositionCommand::InspectorTransformSetPositionCommand(uint64_t _targetId, Vector3 newValue, Vector3 lastValue, bool isLocalPosition)
+InspectorTransformSetPositionCommand::InspectorTransformSetPositionCommand(uint64_t _targetId, const Vector3& newValue, const Vector3& lastValue, bool isLocalPosition)
 {
 	this->targetId = _targetId;
 	this->newValue = newValue;
@@ -45,7 +45,7 @@ void InspectorTransformSetPositionCommand::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-InspectorTransformSetRotationCommand::InspectorTransformSetRotationCommand(uint64_t _targetId, Vector3 newValue, Vector3 lastValue, bool isLocalRotation)
+InspectorTransformSetRotationCommand::InspectorTransformSetRotationCommand(uint64_t _targetId, const Vector3& newValue, const Vector3& lastValue, bool isLocalRotation)
 {
 	this->targetId = _targetId;
 	this->newValue = newValue;
@@ -82,7 +82,7 @@ void InspectorTransformSetRotationCommand::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCommand(uint64_t _targetId, Vector3 _newValue, Vector3 _lastValue) : newValue(_newValue), lastValue(_lastValue)
+InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCommand(uint64_t _targetId, const Vector3& _newValue, const Vector3& _lastValue) : newValue(_newValue), lastValue(_lastValue)
 {
 	this->targetId = _targetId;
 }
@@ -110,7 +110,7 @@ void InspectorTransformSetLocalScaleCommand::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(Transform& transform, nlohmann::json newTransformDataData) : transformData(newTransformDataData)
+InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(Transform& transform, const nlohmann::json& newTransformDataData) : transformData(newTransformDataData)
 {
 	this->transformtId = transform.GetGameObject()->GetUniqueId();
 	this->oldTransformData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform.GetReflectiveData());

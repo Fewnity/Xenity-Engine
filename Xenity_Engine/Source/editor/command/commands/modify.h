@@ -204,7 +204,7 @@ class InspectorChangeValueCommand : public Command
 {
 public:
 	InspectorChangeValueCommand() = delete;
-	InspectorChangeValueCommand(std::weak_ptr<U> target, T* valuePtr, T newValue, T lastValue);
+	InspectorChangeValueCommand(const std::weak_ptr<U>& target, T* valuePtr, T newValue, T lastValue);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -217,7 +217,7 @@ private:
 };
 
 template<typename U, typename T>
-inline InspectorChangeValueCommand<U, T>::InspectorChangeValueCommand(std::weak_ptr<U> target, T* valuePtr, T newValue, T lastValue)
+inline InspectorChangeValueCommand<U, T>::InspectorChangeValueCommand(const std::weak_ptr<U>& target, T* valuePtr, T newValue, T lastValue)
 {
 	if constexpr (std::is_base_of<U, FileReference>())
 	{
@@ -436,7 +436,7 @@ class InspectorTransformSetPositionCommand : public Command
 {
 public:
 	InspectorTransformSetPositionCommand() = delete;
-	InspectorTransformSetPositionCommand(uint64_t _targetId, Vector3 newValue, Vector3 lastValue, bool isLocalPosition);
+	InspectorTransformSetPositionCommand(uint64_t _targetId, const Vector3& newValue, const Vector3& lastValue, bool isLocalPosition);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -453,7 +453,7 @@ class InspectorTransformSetRotationCommand : public Command
 {
 public:
 	InspectorTransformSetRotationCommand() = delete;
-	InspectorTransformSetRotationCommand(uint64_t _targetId, Vector3 newValue, Vector3 lastValue, bool isLocalRotation);
+	InspectorTransformSetRotationCommand(uint64_t _targetId, const Vector3& newValue, const Vector3& lastValue, bool isLocalRotation);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -470,7 +470,7 @@ class InspectorTransformSetLocalScaleCommand : public Command
 {
 public:
 	InspectorTransformSetLocalScaleCommand() = delete;
-	InspectorTransformSetLocalScaleCommand(uint64_t _target, Vector3 newValue, Vector3 lastValue);
+	InspectorTransformSetLocalScaleCommand(uint64_t _target, const Vector3& newValue, const Vector3& lastValue);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -487,7 +487,7 @@ class InspectorSetComponentDataCommand : public Command
 {
 public:
 	InspectorSetComponentDataCommand() = delete;
-	InspectorSetComponentDataCommand(T& componentToUse, nlohmann::json newComponentData);
+	InspectorSetComponentDataCommand(T& componentToUse, const nlohmann::json& newComponentData);
 	void Execute() override;
 	void Undo() override;
 private:
@@ -498,7 +498,7 @@ private:
 };
 
 template<typename T>
-inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(T& componentToUse, nlohmann::json newComponentData) : componentData(newComponentData)
+inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(T& componentToUse, const nlohmann::json& newComponentData) : componentData(newComponentData)
 {
 	this->componentId = componentToUse.GetUniqueId();
 	this->oldComponentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.GetReflectiveData());
@@ -536,7 +536,7 @@ class InspectorSetTransformDataCommand : public Command
 {
 public:
 	InspectorSetTransformDataCommand() = delete;
-	InspectorSetTransformDataCommand(Transform& transform, nlohmann::json newComponentData);
+	InspectorSetTransformDataCommand(Transform& transform, const nlohmann::json& newComponentData);
 	void Execute() override;
 	void Undo() override;
 private:

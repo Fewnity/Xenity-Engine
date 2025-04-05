@@ -147,6 +147,12 @@ void UnitTestManager::StartAllTests()
 
 		CreateParentGameObjectCommandTest createParentGameObjectCommandTest = CreateParentGameObjectCommandTest("Create Parent GameObject Command");
 		TryTest(createParentGameObjectCommandTest);
+
+		DeleteComponentCommandTest deleteComponentCommandTest = DeleteComponentCommandTest("Delete Component Command");
+		TryTest(deleteComponentCommandTest);
+
+		DeleteGameObjectCommandTest deleteGameObjectCommandTest = DeleteGameObjectCommandTest("Delete GameObject Command");
+		TryTest(deleteGameObjectCommandTest);
 	}
 #endif
 

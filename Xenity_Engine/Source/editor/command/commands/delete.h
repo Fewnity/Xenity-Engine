@@ -60,14 +60,17 @@ private:
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-template<typename T>
 class InspectorDeleteComponentCommand : public Command
 {
 public:
 	InspectorDeleteComponentCommand() = delete;
-	InspectorDeleteComponentCommand(T& componentToDestroy);
+	InspectorDeleteComponentCommand(Component& componentToDestroy);
 	void Execute() override;
 	void Undo() override;
+	uint64_t GetComponentId() const
+	{
+		return componentId;
+	}
 private:
 	uint64_t gameObjectId = 0;
 	uint64_t componentId = 0;
@@ -76,8 +79,7 @@ private:
 	bool isEnabled = true;
 };
 
-template<typename T>
-inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(T& componentToDestroy)
+inline InspectorDeleteComponentCommand::InspectorDeleteComponentCommand(Component& componentToDestroy)
 {
 	this->componentId = componentToDestroy.GetUniqueId();
 	this->gameObjectId = componentToDestroy.GetGameObject()->GetUniqueId();
@@ -86,8 +88,7 @@ inline InspectorDeleteComponentCommand<T>::InspectorDeleteComponentCommand(T& co
 	isEnabled = componentToDestroy.IsEnabled();
 }
 
-template<typename T>
-inline void InspectorDeleteComponentCommand<T>::Execute()
+inline void InspectorDeleteComponentCommand::Execute()
 {
 	std::shared_ptr<Component> componentToDestroy = FindComponentById(componentId);
 	if (componentToDestroy)
@@ -97,8 +98,7 @@ inline void InspectorDeleteComponentCommand<T>::Execute()
 	}
 }
 
-template<typename T>
-inline void InspectorDeleteComponentCommand<T>::Undo()
+inline void InspectorDeleteComponentCommand::Undo()
 {
 	std::shared_ptr<GameObject> gameObject = FindGameObjectById(gameObjectId);
 	if (gameObject)
