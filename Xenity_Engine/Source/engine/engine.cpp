@@ -508,6 +508,7 @@ void Engine::Stop()
 	AssetManager::Clear();
 	s_isRunning = false;
 	AudioManager::Stop();
+	NetworkManager::Stop();
 }
 
 void Engine::Quit()

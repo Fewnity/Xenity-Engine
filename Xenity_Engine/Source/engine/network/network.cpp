@@ -106,6 +106,17 @@ void NetworkManager::Init()
 #endif
 }
 
+void NetworkManager::Stop()
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+#if defined(__PSP__)
+	sceUtilityNetconfShutdownStart();
+	sceNetApctlTerm();
+	sceNetInetTerm();
+	sceNetTerm();
+#endif
+}
+
 std::shared_ptr<Socket> NetworkManager::GetClientSocket()
 {
 #if defined(_WIN32) || defined(_WIN64)
@@ -138,6 +149,14 @@ std::shared_ptr<Socket> NetworkManager::GetClientSocket()
 	return myNewSocket;
 #else
 	return nullptr;
+#endif
+}
+
+void NetworkManager::ShowPSPNetworkSetupMenu()
+{
+#if defined(__PSP__)
+	sceUtilityNetconfInitStart(&s_pspNetworkData);
+	s_needDrawMenu = true;
 #endif
 }
 
@@ -204,7 +223,6 @@ void Socket::SendData(const std::string& text)
 
 void NetworkManager::DrawNetworkSetupMenu()
 {
-	return;
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	if (!s_done)
 	{

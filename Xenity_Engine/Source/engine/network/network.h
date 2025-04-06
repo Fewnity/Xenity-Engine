@@ -73,6 +73,8 @@ public:
 	[[nodiscard]] static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
 	[[nodiscard]] static std::shared_ptr<Socket> GetClientSocket();
 
+	static void ShowPSPNetworkSetupMenu();
+
 private:
 	friend class Engine;
 	friend class Graphics;
@@ -82,6 +84,8 @@ private:
 	* @brief [Internal] Init network manager
 	*/
 	static void Init();
+
+	static void Stop();
 
 	/**
 	* @brief [Internal] Update all sockets (To call every frame)
