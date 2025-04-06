@@ -22,7 +22,14 @@ void InspectorAddComponentCommand::Execute()
 		const std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentName, *foundGameObject);
 		if (newComponent)
 		{
-			componentId = newComponent->GetUniqueId();
+			if (componentId != 0)
+			{
+				newComponent->SetUniqueId(componentId);
+			}
+			else 
+			{
+				componentId = newComponent->GetUniqueId();
+			}
 			SceneManager::SetSceneModified(true);
 		}
 		else
