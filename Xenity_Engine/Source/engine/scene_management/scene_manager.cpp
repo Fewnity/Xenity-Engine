@@ -30,6 +30,7 @@
 #include "scene.h"
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/tools/gameplay_utility.h>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -224,41 +225,7 @@ std::shared_ptr<GameObject> SceneManager::FindGameObjectByIdAdvanced(const uint6
 
 std::shared_ptr<Component> SceneManager::FindComponentByIdAdvanced(const uint64_t id, bool searchInTempList)
 {
-	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
-	{
-		const std::shared_ptr<GameObject> gameobject = GameplayManager::gameObjects[i];
-
-		GameObjectAccessor gameobjectAcc = GameObjectAccessor(gameobject);
-		const std::vector<std::shared_ptr<Component>>& gameobjectComponents = gameobjectAcc.GetComponents();
-
-		const int componentCount = gameobject->GetComponentCount();
-		if (!SceneManager::idRedirection.empty())
-		{
-			auto v = SceneManager::idRedirection.find(id);
-			if (v != SceneManager::idRedirection.end())
-			{
-				uint64_t realId = v->second;
-				for (int compI = 0; compI < componentCount; compI++)
-				{
-					if (gameobjectComponents[compI]->GetUniqueId() == realId)
-					{
-						return gameobjectComponents[compI];
-					}
-				}
-			}
-		}
-
-		for (int compI = 0; compI < componentCount; compI++)
-		{
-			if (gameobjectComponents[compI]->GetUniqueId() == id)
-			{
-				return gameobjectComponents[compI];
-			}
-		}
-	}
-	return std::shared_ptr<Component>();
-
-	/*uint64_t realId = -1;
+	uint64_t realId = -1;
 	if (!SceneManager::idRedirection.empty())
 	{
 		auto v = SceneManager::idRedirection.find(id);
@@ -271,12 +238,12 @@ std::shared_ptr<Component> SceneManager::FindComponentByIdAdvanced(const uint64_
 	const std::vector<std::shared_ptr<Component>>& components = (!SceneManager::tempComponents.empty() && searchInTempList) ? SceneManager::tempComponents : ComponentManager::GetAllComponents();
 	for (const std::shared_ptr<Component>& component : components)
 	{
-		if (component->GetUniqueId() == id || component->GetUniqueId() == realId)
+		if ((component->GetUniqueId() == id || component->GetUniqueId() == realId) && IsValid(component))
 		{
 			return component;
 		}
 	}
-	return std::shared_ptr<Component>();*/
+	return std::shared_ptr<Component>();
 }
 
 void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds, std::shared_ptr<GameObject>* rootGameObject)

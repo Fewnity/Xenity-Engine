@@ -50,6 +50,7 @@ private:
 	friend class UniqueIdTest;
 	template <class T>
 	friend class SelectAssetMenu;
+	friend class InspectorAddComponentCommand;
 
 	static constexpr uint64_t reservedFileId = 100000;
 
