@@ -29,9 +29,6 @@ Rework the documentation
 Add unit tests for modify commands and Awake/Start/Update/
 
 Fix PSP sleep mode when networking is enabled
-Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
-Improve FindComponentByIdAdvanced to get a component list from the component manager
-Fix destroy system with the new compoent search system
 
 To make lighting usable on PS3:
 - Try to make directional lighting in the vertex shader
