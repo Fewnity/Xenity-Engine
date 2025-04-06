@@ -375,8 +375,8 @@ void Graphics::Draw()
 				// Draw all gizmos
 				{
 					SCOPED_PROFILER("Graphics::DrawGizmo", scopeBenchmarkDrawGizmo);
-					const std::vector<std::shared_ptr<Component>> gameObjects = ComponentManager::GetAllComponents();
-					for (const std::shared_ptr<Component>& component : gameObjects)
+					const std::vector<std::shared_ptr<Component>> components = ComponentManager::GetAllComponents();
+					for (const std::shared_ptr<Component>& component : components)
 					{
 						if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 						{
