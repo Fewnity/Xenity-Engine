@@ -51,39 +51,7 @@ std::shared_ptr<GameObject> CreateGameObjectEditor(const std::string& name)
 
 std::shared_ptr<Component> FindComponentById(const uint64_t id)
 {
-	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
-	{
-		const std::shared_ptr<GameObject> gameobject = GameplayManager::gameObjects[i];
-
-		GameObjectAccessor gameobjectAcc = GameObjectAccessor(gameobject);
-		const std::vector<std::shared_ptr<Component>>& gameobjectComponents = gameobjectAcc.GetComponents();
-
-		const int componentCount = gameobject->GetComponentCount();
-		if (!SceneManager::idRedirection.empty())
-		{
-			auto v = SceneManager::idRedirection.find(id);
-			if (v != SceneManager::idRedirection.end())
-			{
-				uint64_t realId = v->second;
-				for (int compI = 0; compI < componentCount; compI++)
-				{
-					if (gameobjectComponents[compI]->GetUniqueId() == realId)
-					{
-						return gameobjectComponents[compI];
-					}
-				}
-			}
-		}
-
-		for (int compI = 0; compI < componentCount; compI++)
-		{
-			if (gameobjectComponents[compI]->GetUniqueId() == id)
-			{
-				return gameobjectComponents[compI];
-			}
-		}
-	}
-	return std::shared_ptr<Component>();
+	return SceneManager::FindComponentByIdAdvanced(id, true);
 }
 
 GameObject::GameObject() : m_name(DEFAULT_GAMEOBJECT_NAME)
@@ -297,31 +265,7 @@ std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name)
 
 std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id)
 {
-	const std::vector<std::shared_ptr<GameObject>>& gameObjects = GameplayManager::GetGameObjects();
-
-	const size_t gameObjectCount = gameObjects.size();
-
-	if (!SceneManager::idRedirection.empty())
-	{
-		auto v = SceneManager::idRedirection.find(id);
-		if (v != SceneManager::idRedirection.end())
-		{
-			uint64_t realId = v->second;
-			for (size_t i = 0; i < gameObjectCount; i++)
-			{
-				if (gameObjects[i]->GetUniqueId() == realId)
-					return gameObjects[i];
-			}
-		}
-	}
-
-	for (size_t i = 0; i < gameObjectCount; i++)
-	{
-		if (gameObjects[i]->GetUniqueId() == id)
-			return gameObjects[i];
-	}
-
-	return std::shared_ptr<GameObject>();
+	return SceneManager::FindGameObjectByIdAdvanced(id, true);
 }
 
 #pragma endregion

@@ -11,6 +11,7 @@
 #include <editor/utils/file_reference_finder.h>
 #endif
 
+#include <engine/accessors/acc_gameobject.h>
 #include <engine/file_system/file_system.h>
 #include <engine/file_system/file.h>
 #include <engine/class_registry/class_registry.h>
@@ -40,7 +41,8 @@ ordered_json savedSceneDataHotReloading;
 bool SceneManager::s_sceneModified = false;
 
 std::unordered_map<uint64_t, uint64_t> SceneManager::idRedirection;
-
+std::vector<std::shared_ptr<GameObject>> SceneManager::tempGameobjects;
+std::vector<std::shared_ptr<Component>> SceneManager::tempComponents;
 #if defined(EDITOR)
 
 void SceneManager::SetSceneModified(bool value)
@@ -191,15 +193,105 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 #endif
 
+std::shared_ptr<GameObject> SceneManager::FindGameObjectByIdAdvanced(const uint64_t id, bool searchInTempList)
+{
+	const std::vector<std::shared_ptr<GameObject>>& gameObjects = (!SceneManager::tempGameobjects.empty() && searchInTempList) ? SceneManager::tempGameobjects : GameplayManager::GetGameObjects();
+
+	const size_t gameObjectCount = gameObjects.size();
+
+	if (!SceneManager::idRedirection.empty())
+	{
+		auto v = SceneManager::idRedirection.find(id);
+		if (v != SceneManager::idRedirection.end())
+		{
+			uint64_t realId = v->second;
+			for (size_t i = 0; i < gameObjectCount; i++)
+			{
+				if (gameObjects[i]->GetUniqueId() == realId)
+					return gameObjects[i];
+			}
+		}
+	}
+
+	for (size_t i = 0; i < gameObjectCount; i++)
+	{
+		if (gameObjects[i]->GetUniqueId() == id)
+			return gameObjects[i];
+	}
+
+	return std::shared_ptr<GameObject>();
+}
+
+std::shared_ptr<Component> SceneManager::FindComponentByIdAdvanced(const uint64_t id, bool searchInTempList)
+{
+	for (int i = 0; i < GameplayManager::gameObjectCount; i++)
+	{
+		const std::shared_ptr<GameObject> gameobject = GameplayManager::gameObjects[i];
+
+		GameObjectAccessor gameobjectAcc = GameObjectAccessor(gameobject);
+		const std::vector<std::shared_ptr<Component>>& gameobjectComponents = gameobjectAcc.GetComponents();
+
+		const int componentCount = gameobject->GetComponentCount();
+		if (!SceneManager::idRedirection.empty())
+		{
+			auto v = SceneManager::idRedirection.find(id);
+			if (v != SceneManager::idRedirection.end())
+			{
+				uint64_t realId = v->second;
+				for (int compI = 0; compI < componentCount; compI++)
+				{
+					if (gameobjectComponents[compI]->GetUniqueId() == realId)
+					{
+						return gameobjectComponents[compI];
+					}
+				}
+			}
+		}
+
+		for (int compI = 0; compI < componentCount; compI++)
+		{
+			if (gameobjectComponents[compI]->GetUniqueId() == id)
+			{
+				return gameobjectComponents[compI];
+			}
+		}
+	}
+	return std::shared_ptr<Component>();
+
+	/*uint64_t realId = -1;
+	if (!SceneManager::idRedirection.empty())
+	{
+		auto v = SceneManager::idRedirection.find(id);
+		if (v != SceneManager::idRedirection.end())
+		{
+			realId = v->second;
+		}
+	}
+
+	const std::vector<std::shared_ptr<Component>>& components = (!SceneManager::tempComponents.empty() && searchInTempList) ? SceneManager::tempComponents : ComponentManager::GetAllComponents();
+	for (const std::shared_ptr<Component>& component : components)
+	{
+		if (component->GetUniqueId() == id || component->GetUniqueId() == realId)
+		{
+			return component;
+		}
+	}
+	return std::shared_ptr<Component>();*/
+}
+
 void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds, std::shared_ptr<GameObject>* rootGameObject)
 {
 	idRedirection.clear();
+	tempGameobjects.clear();
+	tempComponents.clear();
 
 	std::vector<std::shared_ptr<Component>> allComponents;
 	// Create all GameObjects and Components
 	for (const auto& gameObjectKV : jsonData.items())
 	{
 		const std::shared_ptr<GameObject> newGameObject = CreateGameObject();
+		tempGameobjects.push_back(newGameObject);
+
 		// Set gameobject id
 		const uint64_t gameObjectId = std::stoull(gameObjectKV.key());
 		if (createNewIds)
@@ -224,6 +316,8 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 
 				if (comp)
 				{
+					tempComponents.push_back(comp);
+
 					// Enable or disable component
 					if (componentKV.value().contains("Enabled"))
 					{
@@ -327,6 +421,8 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 	}
 
 	idRedirection.clear();
+	tempGameobjects.clear();
+	tempComponents.clear();
 
 	// Call Awake on Components
 	if (GameplayManager::GetGameState() == GameState::Starting)

@@ -8,6 +8,7 @@
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/tools/gameplay_utility.h>
+#include <engine/scene_management/scene_manager.h>
 
 std::random_device UniqueId::rd;  // a seed source for the random number engine
 std::mt19937_64 UniqueId::gen = std::mt19937_64(rd()); // mersenne_twister_engine seeded with rd()
@@ -34,7 +35,7 @@ uint64_t UniqueId::GenerateUniqueId(bool forFile)
 		}
 		else
 		{
-			const std::shared_ptr<GameObject> gameObject = FindGameObjectById(newId);
+			const std::shared_ptr<GameObject> gameObject = SceneManager::FindGameObjectByIdAdvanced(newId, false);
 			if (gameObject)
 			{
 				needNewId = true;
