@@ -26,12 +26,12 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 /*
 --- Needed
 Rework the documentation
-Add unit tests for commands
-Add unit tests for Components Creation/Deletion and Awake/Start/Update/
+Add unit tests for modify commands and Awake/Start/Update/
+
 Fix PSP sleep mode when networking is enabled
 Optimize CreateObjectsFromJson to use smaller list for FindGameObjectById
-Replace InspectorDeleteGameObjectCommand weak_ptr by a reference
-Create enum for CopyFile file_system.h
+Improve FindComponentByIdAdvanced to get a component list from the component manager
+Fix destroy system with the new compoent search system
 
 To make lighting usable on PS3:
 - Try to make directional lighting in the vertex shader
