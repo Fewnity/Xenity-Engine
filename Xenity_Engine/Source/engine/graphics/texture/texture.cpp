@@ -245,7 +245,7 @@ void Texture::LoadTexture()
 	height = newHeight;
 #else
 		// Load image with stb_image
-	m_buffer = stbi_load_from_memory(fileData, fileBufferSize, &m_width, &height,
+	m_buffer = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &m_width, &height,
 		&nrChannels, 4);
 
 	free(fileData);

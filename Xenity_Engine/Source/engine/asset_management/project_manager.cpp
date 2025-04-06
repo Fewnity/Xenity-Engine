@@ -537,8 +537,19 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	assetFolderPath = projectPathToLoad + "assets/";
 
 #if !defined(EDITOR)
-	fileDataBase.LoadFromFile(projectPathToLoad + "db.xenb");
-	fileDataBase.GetBitFile().Open("data.xenb");
+	if (fileDataBase.LoadFromFile(projectPathToLoad + "db.xenb"))
+	{
+		if (!fileDataBase.GetBitFile().Open("data.xenb"))
+		{
+			Debug::PrintError("[ProjectManager::LoadProject] Failed to open the data file", true);
+			return ProjectLoadingErrors::FailedToOpenDataFile;
+		}
+	}
+	else
+	{
+		Debug::PrintError("[ProjectManager::LoadProject] Failed to open the data base file", true);
+		return ProjectLoadingErrors::FailedToOpenDataBaseFile;
+	}
 #endif
 
 	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);

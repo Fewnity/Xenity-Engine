@@ -145,7 +145,10 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 	copyMutex.lock();
 	// Copy the raw meta file, maybe we should cook it too later
 	CopyUtils::AddCopyEntry(false, fileInfo.fileAndId.file->GetPath() + ".meta", exportPath + ".meta");
-	CopyUtils::ExecuteCopyEntries();
+	if (!CopyUtils::ExecuteCopyEntries())
+	{
+		Debug::PrintError("[Cooker::CookAssets] Failed to copy the meta file");
+	}
 	copyMutex.unlock();
 
 	const uint64_t metaSize = fs::file_size(exportPath + ".meta");
@@ -158,10 +161,17 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 	if (fileInfo.type != FileType::File_Audio)
 	{
 		const std::shared_ptr<File> cookedFile = FileSystem::MakeFile(exportPath);
-		cookedFile->Open(FileMode::ReadOnly);
-		fileData = cookedFile->ReadAllBinary(cookedFileSize);
-		cookedFile->Close();
-		FileSystem::s_fileSystem->Delete(exportPath);
+		if (cookedFile->Open(FileMode::ReadOnly))
+		{
+			fileData = cookedFile->ReadAllBinary(cookedFileSize);
+			cookedFile->Close();
+			FileSystem::s_fileSystem->Delete(exportPath);
+		}
+		else
+		{
+			Debug::PrintError("[Cooker::CookAsset] Failed to open file: " + exportPath);
+			return;
+		}
 		XASSERT(cookedFileSize != 0, "[Cooker::CookAssets] Wrong original meta file size");
 	}
 
@@ -361,14 +371,27 @@ void Cooker::CookShader(const CookSettings& settings, const FileInfo& fileInfo, 
 			}
 
 			const std::shared_ptr<File> vertexFile = FileSystem::MakeFile(settings.exportPath + "shaders_to_compile/" + std::to_string(fileRef->GetFileId()) + ".vcg");
-			vertexFile->Open(FileMode::WriteCreateFile);
-			vertexFile->Write(vertexShaderCode);
-			vertexFile->Close();
+			if (vertexFile->Open(FileMode::WriteCreateFile)) 
+			{
+				vertexFile->Write(vertexShaderCode);
+				vertexFile->Close();
+			}
+			else 
+			{
+				Debug::PrintError("[Cooker::CookAsset] Failed to create file: " + vertexFile->GetPath());
+			}
 
 			const std::shared_ptr<File> fragmentFile = FileSystem::MakeFile(settings.exportPath + "shaders_to_compile/" + std::to_string(fileRef->GetFileId()) + ".fcg");
-			fragmentFile->Open(FileMode::WriteCreateFile);
-			fragmentFile->Write(fragmentShaderCode);
-			fragmentFile->Close();
+			if (fragmentFile->Open(FileMode::WriteCreateFile))
+			{
+				fragmentFile->Write(fragmentShaderCode);
+				fragmentFile->Close();
+			}
+			else 
+			{
+				Debug::PrintError("[Cooker::CookAsset] Failed to create file: " + fragmentFile->GetPath());
+			}
+
 			copyMutex.lock();
 			CopyUtils::AddCopyEntry(false, fileInfo.fileAndId.file->GetPath(), exportPath);
 			copyMutex.unlock();

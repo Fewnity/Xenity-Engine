@@ -54,8 +54,8 @@ void Window::OnResize()
 	UpdateAspectRatio();
 
 #if !defined(EDITOR)
-	const int cameraCount = Graphics::cameras.size();
-	for (int i = 0; i < cameraCount; i++)
+	const size_t cameraCount = Graphics::cameras.size();
+	for (size_t i = 0; i < cameraCount; i++)
 	{
 		Graphics::cameras[i].lock()->ChangeFrameBufferSize(Vector2Int(s_width, s_height));
 	}

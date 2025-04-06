@@ -117,7 +117,10 @@ void Editor::Init()
 
 	Engine::GetOnWindowFocusEvent()->Bind(&OnWindowFocused);
 
-	CheckIntegrity();
+	if (!CheckIntegrity())
+	{
+		Debug::PrintError("Some files/folders are missing, please check the integrity of the engine's files");
+	}
 }
 
 void Editor::Stop()
@@ -489,11 +492,6 @@ bool Editor::CheckIntegrity()
 	CheckItemIntegrity("Dockerfile", success);
 	CheckItemIntegrity("compile_shaders.sh", success);
 	CheckItemIntegrity("main.cpp", success);
-
-	if (!success)
-	{
-		Debug::PrintError("Some files/folders are missing, please check the integrity of the engine files");
-	}
 
 	return success;
 }

@@ -79,7 +79,10 @@ void DockerConfigMenu::Draw()
 			ImGui::Text("You have to create the Ubuntu Docker image (automatic process, can take few minutes)");
 			if (ImGui::Button("Create image"))
 			{
-				Compiler::CreateDockerImage();
+				if (!Compiler::CreateDockerImage())
+				{
+					Debug::PrintError("Failed to create Docker image");
+				}
 				Refresh();
 			}
 		}
