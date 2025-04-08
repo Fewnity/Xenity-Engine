@@ -42,11 +42,11 @@ static_assert(sizeof(bool) == 1, "bool is not 1 byte");
 static_assert(sizeof(uint64_t) == 8, "uint64_t is not 8 byte");
 static_assert(sizeof(uint32_t) == 4, "uint32_t is not 4 byte");
 static_assert(sizeof(uint16_t) == 2, "uint16_t is not 2 byte");
-static_assert(sizeof(uint8_t) == 1, "uint16_t is not 1 byte");
+static_assert(sizeof(uint8_t) == 1, "uint8_t is not 1 byte");
 static_assert(sizeof(int64_t) == 8, "int64_t is not 8 byte");
 static_assert(sizeof(int32_t) == 4, "int32_t is not 4 byte");
 static_assert(sizeof(int16_t) == 2, "int16_t is not 2 byte");
-static_assert(sizeof(int8_t) == 1, "int16_t is not 1 byte");
+static_assert(sizeof(int8_t) == 1, "int8_t is not 1 byte");
 
 #if defined(__PSP__)
 static_assert(sizeof(size_t) == sizeof(int32_t), "size_t is not 4 byte");
