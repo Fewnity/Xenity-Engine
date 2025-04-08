@@ -60,6 +60,13 @@ enum class DrawMode
 	Quads,
 };
 
+enum class ClearMode
+{
+	Color,
+	Depth,
+	Color_Depth,
+};
+
 class API Renderer
 {
 public:
@@ -73,7 +80,7 @@ public:
 	virtual void NewFrame() = 0;
 	virtual void EndFrame() = 0;
 	virtual void SetClearColor(const Color& color) = 0;
-	virtual void Clear() = 0;
+	virtual void Clear(ClearMode mode) = 0;
 
 	// Fog
 	virtual void SetFog(bool active) = 0;

@@ -438,7 +438,7 @@ void Engine::Loop()
 				{
 #if defined(EDITOR)
 					glBindFramebuffer(GL_FRAMEBUFFER, 0);
-					s_renderer->Clear();
+					s_renderer->Clear(ClearMode::Color_Depth);
 #endif
 				}
 			}

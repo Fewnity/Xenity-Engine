@@ -534,9 +534,20 @@ bool RendererGU::UseHighQualityColor() const
 	return useHighQualityColor;
 }
 
-void RendererGU::Clear()
+void RendererGU::Clear(ClearMode mode)
 {
-	sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT /*| GU_STENCIL_BUFFER_BIT*/);
+	if (mode == ClearMode::Color_Depth)
+	{
+		sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT);
+	}
+	else if (mode == ClearMode::Color)
+	{
+		sceGuClear(GU_COLOR_BUFFER_BIT);
+	}
+	else if (mode == ClearMode::Depth)
+	{
+		sceGuClear(GU_DEPTH_BUFFER_BIT/*| GU_STENCIL_BUFFER_BIT*/);
+	}
 }
 
 void RendererGU::SetFog(bool m_active)

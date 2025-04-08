@@ -717,10 +717,20 @@ void RendererOpengl::Setlights(const LightsIndices& lightsIndices)
 	}
 }
 
-void RendererOpengl::Clear()
+void RendererOpengl::Clear(ClearMode mode)
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT /*| GL_STENCIL_BUFFER_BIT*/);
-	// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	if (mode == ClearMode::Color_Depth)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	else if (mode == ClearMode::Color)
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+	else if (mode == ClearMode::Depth)
+	{
+		glClear(GL_DEPTH_BUFFER_BIT/*| GL_STENCIL_BUFFER_BIT*/);
+	}
 }
 
 void RendererOpengl::SetFog(bool active)

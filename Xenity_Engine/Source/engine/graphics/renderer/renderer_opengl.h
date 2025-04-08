@@ -60,7 +60,7 @@ public:
 	[[nodiscard]] unsigned int CreateNewTexture() override;
 	void DeleteTexture(Texture& texture) override;
 	void SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer) override;
-	void Clear() override;
+	void Clear(ClearMode mode) override;
 	void SetFog(bool active) override;
 	void SetFogValues(float start, float end, const Color& color) override;
 

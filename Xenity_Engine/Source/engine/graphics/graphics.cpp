@@ -222,7 +222,7 @@ void Graphics::Draw()
 			const Vector3& camPos = usedCamera->GetTransformRaw()->GetPosition();
 
 			Engine::GetRenderer().SetClearColor(s_settings.skyColor);
-			Engine::GetRenderer().Clear();
+			Engine::GetRenderer().Clear(ClearMode::Color_Depth);
 
 			if constexpr (s_UseOpenGLFixedFunctions)
 			{
@@ -418,7 +418,7 @@ void Graphics::Draw()
 #if defined(EDITOR)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	Engine::GetRenderer().SetClearColor(Color::CreateFromRGB(15, 15, 15));
-	Engine::GetRenderer().Clear();
+	Engine::GetRenderer().Clear(ClearMode::Color_Depth);
 #endif
 	Engine::GetRenderer().EndFrame();
 
@@ -918,6 +918,8 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 	// Draw tool
 	if (Editor::GetSelectedGameObjects().size() == 1 && sceneMenu)
 	{
+		Engine::GetRenderer().Clear(ClearMode::Depth);
+
 		const std::shared_ptr<GameObject> selectedGo = Editor::GetSelectedGameObjects()[0].lock();
 		if (!selectedGo)
 			return;
@@ -940,7 +942,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		RenderingSettings renderSettings = RenderingSettings();
 		renderSettings.invertFaces = false;
 		renderSettings.renderingMode = MaterialRenderingModes::Opaque;
-		renderSettings.useDepth = false;
+		renderSettings.useDepth = true;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 

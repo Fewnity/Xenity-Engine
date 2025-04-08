@@ -790,7 +790,7 @@ const uint8_t* RendererRSX::GetFrameBuffer() const
 	return reinterpret_cast<const uint8_t*>(color_buffer[1]);
 }
 
-void RendererRSX::Clear()
+void RendererRSX::Clear(ClearMode mode)
 {
 }
 
