@@ -322,12 +322,32 @@ public:
 	[[nodiscard]] static std::vector<std::shared_ptr<Component>> GetAllComponents()
 	{
 		std::vector<std::shared_ptr<Component>> allComponents;
+		size_t totalSize = 0;
+		for (const auto& componentList : componentLists)
+		{
+			totalSize += componentList.second->GetComponents().size();
+		}
+		allComponents.reserve(totalSize);
 		for (const auto& componentList : componentLists)
 		{
 			const std::vector<std::shared_ptr<Component>>& components = componentList.second->GetComponents();
 			allComponents.insert(allComponents.end(), components.begin(), components.end());
 		}
 		return allComponents;
+	}
+
+	/**
+	* @brief Unsafe function to get all components lists
+	*/
+	[[nodiscard]] static std::vector<const std::vector<std::shared_ptr<Component>>*> GetAllComponentsLists()
+	{
+		std::vector<const std::vector<std::shared_ptr<Component>>*> allComponentsLists;
+		for (const auto& componentList : componentLists)
+		{
+			const std::vector<std::shared_ptr<Component>>& components = componentList.second->GetComponents();
+			allComponentsLists.push_back(&components);
+		}
+		return allComponentsLists;
 	}
 
 	static void RemoveList(const size_t id)
