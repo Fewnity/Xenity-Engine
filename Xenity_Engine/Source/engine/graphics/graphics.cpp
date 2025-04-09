@@ -375,18 +375,22 @@ void Graphics::Draw()
 				// Draw all gizmos
 				{
 					SCOPED_PROFILER("Graphics::DrawGizmo", scopeBenchmarkDrawGizmo);
-					const std::vector<std::shared_ptr<Component>> components = ComponentManager::GetAllComponents();
-					for (const std::shared_ptr<Component>& component : components)
+					const std::vector<const std::vector<std::shared_ptr<Component>>*> componentsLists = ComponentManager::GetAllComponentsLists();
+					const uint64_t audioSourceUniqueId = Editor::audioSource.lock()->GetUniqueId();
+					for (const std::vector<std::shared_ptr<Component>>* componentsList : componentsLists)
 					{
-						if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
+						for (const std::shared_ptr<Component>& component : *componentsList)
 						{
-							if (component->GetUniqueId() != Editor::audioSource.lock()->GetUniqueId())
+							if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 							{
-								component->OnDrawGizmos();
-
-								if (component->GetGameObjectRaw()->m_isSelected)
+								if (component->GetUniqueId() != audioSourceUniqueId)
 								{
-									component->OnDrawGizmosSelected();
+									component->OnDrawGizmos();
+
+									if (component->GetGameObjectRaw()->m_isSelected)
+									{
+										component->OnDrawGizmosSelected();
+									}
 								}
 							}
 						}
