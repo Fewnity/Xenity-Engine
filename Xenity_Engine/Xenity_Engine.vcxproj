@@ -701,7 +701,7 @@
     <ClCompile Include="Source\engine\graphics\texture\texture_default.cpp" />
     <ClCompile Include="Source\engine\graphics\texture\texture_ps3.cpp" />
     <ClCompile Include="Source\engine\graphics\texture\texture_psp.cpp" />
-    <ClCompile Include="Source\engine\physics\collision_event.h" />
+    <ClInclude Include="Source\engine\physics\collision_event.h" />
     <ClCompile Include="Source\engine\physics\sphere_collider.cpp" />
     <ClCompile Include="Source\engine\vectors\quaternion.cpp" />
     <ClCompile Include="Source\engine\tools\scope_benchmark.cpp" />

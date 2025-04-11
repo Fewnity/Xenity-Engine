@@ -307,7 +307,6 @@
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.cpp" />
-    <ClCompile Include="Source\engine\physics\collision_event.h" />
     <ClCompile Include="Source\engine\file_system\mesh_loader\binary_mesh_loader.cpp" />
     <ClCompile Include="include\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.cpp" />
     <ClCompile Include="include\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp" />
@@ -816,6 +815,7 @@
     <ClInclude Include="Source\editor\ui\menus\engine_control\dev_kit_control_menu.h" />
     <ClInclude Include="Source\engine\engine_args.h" />
     <ClInclude Include="Source\engine\game_elements\prefab.h" />
+    <ClInclude Include="Source\engine\physics\collision_event.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />
