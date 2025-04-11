@@ -76,7 +76,7 @@ private:
 	void* m_frameBuffer = nullptr;
 	unsigned int lastUsedColor = 0x00000000;
 	unsigned int lastUsedColor2 = 0xFFFFFFFF;
-	bool useHighQualityColor = true;
+	bool useHighQualityColor = false;
 	// int GetCullFaceEnum(CullFace face);
 	// float GetAnisotropicValueEnum(AnisotropicLevel level);
 
