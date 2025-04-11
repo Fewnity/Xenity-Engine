@@ -70,7 +70,7 @@ public:
 	static void UpdateWindowTitle();
 
 	/**
-	* @brief Set the window title
+	* @brief Set the window fullscreen mode
 	*/
 	static void SetFullScreenMode(bool enable);
 
