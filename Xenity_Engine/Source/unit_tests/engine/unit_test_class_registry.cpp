@@ -68,8 +68,9 @@ TestResult ClassRegistryAddComponentFromNameTest::Start(std::string& errorOut)
 	}
 
 	Destroy(newGameObject);
-	GameplayManager::RemoveDestroyedGameObjects();
 	newGameObject.reset();
+	GameplayManager::RemoveDestroyedGameObjects();
+	GameplayManager::RemoveDestroyedComponents();
 
 	END_TEST();
 }

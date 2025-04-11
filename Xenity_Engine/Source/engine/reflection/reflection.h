@@ -137,7 +137,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<T>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
@@ -159,7 +159,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<Reflective>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
@@ -177,7 +177,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, isPublic, type, false);
 		for (ReflectiveEntry& otherEntry : vector)
 		{
@@ -206,7 +206,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<int>((int&)value), variableName, false, isPublic, type, true);
 		return newReflectiveEntry;
 	}
@@ -223,7 +223,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, isPublic, type, true);
 		return newReflectiveEntry;
 	}
@@ -244,7 +244,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::weak_ptr<Component>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
@@ -261,7 +261,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::weak_ptr<Component>>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
@@ -282,7 +282,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::shared_ptr<FileReference>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}
@@ -299,7 +299,7 @@ protected:
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
-		const uint64_t type = typeid(T).hash_code();
+		static const uint64_t type = typeid(T).hash_code();
 		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::shared_ptr<FileReference>>&>(value), variableName, false, isPublic, type, false);
 		return newReflectiveEntry;
 	}

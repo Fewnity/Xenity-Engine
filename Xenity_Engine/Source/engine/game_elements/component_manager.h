@@ -148,7 +148,7 @@ public:
 							m_componentsData.erase(m_componentsData.begin() + i);
 							if (m_componentsData.size() == 0)
 							{
-								const size_t typeId = typeid(T).hash_code();
+								static const size_t typeId = typeid(T).hash_code();
 								onComponentDeletedEvent->Trigger(typeId);
 							}
 							break;
@@ -284,7 +284,7 @@ public:
 	[[nodiscard]] static std::shared_ptr<T> CreateComponent()
 	{
 		// Create component list if it doesn't exist
-		const size_t typeId = typeid(T).hash_code();
+		static const size_t typeId = typeid(T).hash_code();
 		if (componentLists.find(typeId) == componentLists.end() || componentLists.at(typeId) == nullptr)
 		{
 			AddComponentList<T>(typeId);

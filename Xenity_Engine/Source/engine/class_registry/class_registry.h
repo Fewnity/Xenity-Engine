@@ -73,9 +73,10 @@ public:
 		};
 		s_nameToComponent[name] = { function , isVisible };
 
+		static const size_t classHashCode = typeid(T).hash_code();
 		ClassInfo classInfo;
 		classInfo.name = name;
-		classInfo.typeId = typeid(T).hash_code();
+		classInfo.typeId = classHashCode;
 		classInfo.maxCount = maxCount;
 		classInfo.disableUpdateLoop = disableUpdateLoop;
 		s_classInfos.push_back(classInfo);
@@ -99,9 +100,10 @@ public:
 		};
 		s_nameToMenu[name] = { function , isVisible };
 
+		static const size_t classHashCode = typeid(T).hash_code();
 		MenuClassInfo classInfo;
 		classInfo.name = name;
-		classInfo.typeId = typeid(T).hash_code();
+		classInfo.typeId = classHashCode;
 		s_menuClassInfos.push_back(classInfo);
 	}
 #endif
@@ -153,9 +155,10 @@ public:
 	{
 		XASSERT(!name.empty(), "[ClassRegistry::AddFileClass] name is empty");
 
+		static const size_t classHashCode = typeid(T).hash_code();
 		FileClassInfo fileClassInfo;
 		fileClassInfo.name = name;
-		fileClassInfo.typeId = typeid(T).hash_code();
+		fileClassInfo.typeId = classHashCode;
 		fileClassInfo.fileType = fileType;
 		s_fileClassInfos.push_back(fileClassInfo);
 	}
@@ -167,7 +170,8 @@ public:
 	[[nodiscard]] std::enable_if_t<std::is_base_of<FileReference, T>::value, const FileClassInfo*>
 	static GetFileClassInfo()
 	{
-		const uint64_t classId = typeid(T).hash_code();
+		static const size_t classHashCode = typeid(T).hash_code();
+		const uint64_t classId = classHashCode;
 		const size_t fileClassInfosCount = s_fileClassInfos.size();
 		for (size_t i = 0; i < fileClassInfosCount; i++)
 		{
@@ -205,7 +209,8 @@ public:
 	[[nodiscard]] std::enable_if_t<std::is_base_of<Component, T>::value, const ClassInfo*>
 	static GetClassInfo()
 	{
-		const uint64_t classId = typeid(T).hash_code();
+		static const size_t classHashCode = typeid(T).hash_code();
+		const uint64_t classId = classHashCode;
 		return GetClassInfoById(classId);
 	}
 
