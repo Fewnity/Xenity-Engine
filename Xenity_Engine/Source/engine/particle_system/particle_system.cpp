@@ -40,6 +40,7 @@ ParticleSystem::ParticleSystem()
 	scaleOverLifeTimeFunction = DefaultGetScaleOverLifeTime;
 	speedMultiplierOverLifeTimeFunction = DefaultGetSpeedOverLifeTime;
 	colorOverLifeTimeFunction = DefaultGetColorOverLifeTime;
+	AllocateParticlesMemory();
 }
 
 ParticleSystem::~ParticleSystem()
