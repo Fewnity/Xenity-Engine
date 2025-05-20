@@ -55,6 +55,7 @@
 #include <engine/debug/stack_debug_object.h>
 #include <engine/constants.h>
 #include <engine/game_elements/prefab.h>
+#include <mutex>
 
 using json = nlohmann::ordered_json;
 
@@ -1339,35 +1340,73 @@ void ProjectManager::CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFi
 {
 	// Read meta files and list all files that do not have a meta file for later use
 #if defined(EDITOR)
+	std::mutex mutex;
+	size_t coreCount = std::thread::hardware_concurrency();
+	if (coreCount == 0)
+	{
+		coreCount = 1;
+	}
+	std::vector<std::thread> threads;
+	threads.reserve(coreCount);
+
 	std::unordered_map<uint64_t, bool> usedIds;
 	std::vector<FileInfo*> fileWithoutMeta;
 	int fileWithoutMetaCount = 0;
-	for (auto& compatibleFile : compatibleFiles)
+	const size_t compatibleFilesCount = compatibleFiles.size();
+
+	std::atomic<size_t> file_index(0);
+
+	auto lamba = [&usedIds, &fileWithoutMeta, &mutex, &file_index, &compatibleFiles, &fileWithoutMetaCount, compatibleFilesCount]()
 	{
-		const std::shared_ptr<File>& file = compatibleFile.fileAndId.file;
-		const uint64_t fileId = ReadFileId(*file);
-		if (fileId == -1)
+		while (true) 
 		{
-			fileWithoutMeta.push_back(&compatibleFile);
-			fileWithoutMetaCount++;
-		}
-		else
-		{
-			if (!compatibleFile.isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
-				//if (usedIds[id] == true)
+			size_t index = file_index.fetch_add(1);
+
+			if (index >= compatibleFilesCount) 
+				break;
+
+			mutex.lock();
+			const std::shared_ptr<File>& file = compatibleFiles[index].fileAndId.file;
+			mutex.unlock();
+
+			const uint64_t fileId = ReadFileId(*file);
+
+			mutex.lock();
+			if (fileId == -1)
 			{
-				Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
-				fileWithoutMeta.push_back(&compatibleFile);
+				fileWithoutMeta.push_back(&compatibleFiles[index]);
 				fileWithoutMetaCount++;
-				continue;
 			}
+			else
+			{
+				if (!compatibleFiles[index].isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
+				{
+					Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
+					fileWithoutMeta.push_back(&compatibleFiles[index]);
+					fileWithoutMetaCount++;
+					mutex.unlock();
+					continue;
+				}
 
-			usedIds[fileId] = true;
+				usedIds[fileId] = true;
 
-			//file->SetUniqueId(fileId);
-			compatibleFile.fileAndId.id = fileId;
+				compatibleFiles[index].fileAndId.id = fileId;
+			}
+			mutex.unlock();
 		}
+	};
+
+	for (unsigned int i = 0; i < coreCount; ++i)
+	{
+		std::thread t = std::thread(lamba);
+		threads.push_back(std::move(t));
 	}
+
+	for (auto& t : threads)
+	{
+		t.join();
+	}
+
 	usedIds.clear();
 
 	// Set new files ids
@@ -1375,7 +1414,6 @@ void ProjectManager::CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFi
 	{
 		const uint64_t id = UniqueId::GenerateUniqueId(true);
 		fileWithoutMeta[i]->fileAndId.id = id;
-		//fileWithoutMeta[i]->SetUniqueId(id);
 	}
 #endif
 }
