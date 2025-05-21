@@ -380,7 +380,6 @@ void Engine::Loop()
 			// Skip some frames to stabilize delta time
 			if (frameToSkip == 0)
 			{
-
 				if (ProjectManager::IsProjectLoaded())
 				{
 					AssetManager::RemoveUnusedFiles();
@@ -439,6 +438,12 @@ void Engine::Loop()
 #if defined(EDITOR)
 					glBindFramebuffer(GL_FRAMEBUFFER, 0);
 					s_renderer->Clear(ClearMode::Color_Depth);
+
+					// Limit frame rate to reduce CPU and GPU usage in the editor start page
+					if (Time::GetUnscaledDeltaTime() < 1 / 60.0f)
+					{
+						SDL_Delay((1 / 60.0f - Time::GetUnscaledDeltaTime()) * 1000);
+					}
 #endif
 				}
 			}
