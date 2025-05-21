@@ -600,8 +600,11 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 
 	std::shared_ptr<Texture> texture = EditorUI::componentsIcons["Transform"];
 
+	float headerHeight = 0;
 	if (ImGui::CollapsingHeader("##Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
+		headerHeight = ImGui::GetItemRectSize().y;
+
 		std::shared_ptr<Transform> selectedTransform = selectedGameObject.GetTransform();
 		CheckOpenRightClickPopupTransform(*selectedTransform, "RightClick" + std::to_string(selectedTransform->GetGameObject()->GetUniqueId()));
 
@@ -614,7 +617,7 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 			if (texture)
 			{
 				texture->Bind();
-				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
+				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(headerHeight + 2, headerHeight + 2));
 				ImGui::SameLine();
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 			}
@@ -657,6 +660,11 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 		//ImGui::Text("World Scale: %f %f %f", selectedTransform->GetScale().x, selectedTransform->GetScale().y, selectedTransform->GetScale().z);
 		ImGui::Separator();
 	}
+	else
+	{
+		headerHeight = ImGui::GetItemRectSize().y;
+	}
+
 	float finalCursorX = ImGui::GetCursorPosX();
 	float finalCursorY = ImGui::GetCursorPosY();
 	ImGui::SetCursorPosX(63);
@@ -668,7 +676,7 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 		ImGui::SetCursorPosX(35);
 		ImGui::SetCursorPosY(cursorY + 1);
 		texture->Bind();
-		ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
+		ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(headerHeight - 2, headerHeight - 2));
 	}
 
 	ImGui::SetCursorPosX(finalCursorX);
@@ -693,9 +701,11 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 			texture = EditorUI::componentsIcons["Default"];
 		}
 
+		float headerHeight = 0;
 		const std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowOverlap))
 		{
+			headerHeight = ImGui::GetItemRectSize().y;
 			CheckOpenRightClickPopup(*comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
 			if (!comp->m_waitingForDestroy)
 			{
@@ -708,7 +718,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 					if (texture)
 					{
 						texture->Bind();
-						ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
+						ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(headerHeight+2, headerHeight + 2));
 						ImGui::SameLine();
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 					}
@@ -745,6 +755,10 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 				}
 			}
 		}
+		else
+		{
+			headerHeight = ImGui::GetItemRectSize().y;
+		}
 
 		const float lastCursorX = ImGui::GetCursorPosX();
 		const float lastCursorY = ImGui::GetCursorPosY();
@@ -776,7 +790,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 		if (texture)
 		{
 			texture->Bind();
-			ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
+			ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(headerHeight - 2, headerHeight - 2));
 		}
 
 		ImGui::SetCursorPosX(lastCursorX);
