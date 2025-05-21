@@ -505,10 +505,10 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 	ImGui::SameLine();
 	ImGui::InputText("##Name ", &gameObjectName);
 
-	bool isStatic = selectedGameObject.IsStatic();
-	ImGui::Checkbox("##IsStatic", &isStatic);
-	ImGui::SameLine();
-	ImGui::Text("Is Static");
+	//bool isStatic = selectedGameObject.IsStatic();
+	//ImGui::Checkbox("##IsStatic", &isStatic);
+	//ImGui::SameLine();
+	//ImGui::Text("Is Static");
 
 	//Apply new values if changed
 	if (gameObjectName != selectedGameObject.GetName() && (InputSystem::GetKeyDown(KeyCode::RETURN) || InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT)))
@@ -527,11 +527,11 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 		CommandManager::AddCommandAndExecute(command);
 	}
 
-	if (isStatic != selectedGameObject.IsStatic())
+	/*if (isStatic != selectedGameObject.IsStatic())
 	{
 		auto command = std::make_shared<InspectorItemSetStaticCommand<GameObject>>(selectedGameObject, isStatic);
 		CommandManager::AddCommandAndExecute(command);
-	}
+	}*/
 
 	ImGui::Spacing();
 	ImGui::Separator();

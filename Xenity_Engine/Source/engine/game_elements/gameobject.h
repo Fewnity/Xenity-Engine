@@ -183,10 +183,10 @@ public:
 	*/
 	void SetActive(const bool active);
 
-	[[nodiscard]] inline bool IsStatic() const
-	{
-		return m_isStatic;
-	}
+	//[[nodiscard]] inline bool IsStatic() const
+	//{
+	//	return m_isStatic;
+	//}
 
 	/**
 	* @brief Get children count
@@ -301,5 +301,5 @@ private:
 
 	bool m_active = true;
 	bool m_localActive = true;
-	bool m_isStatic = false;
+	//bool m_isStatic = false;
 };

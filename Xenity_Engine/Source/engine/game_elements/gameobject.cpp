@@ -78,7 +78,7 @@ ReflectiveData GameObject::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_name, "name", true);
 	Reflective::AddVariable(reflectedVariables, m_active, "active", true);
-	Reflective::AddVariable(reflectedVariables, m_isStatic, "isStatic", true);
+	//Reflective::AddVariable(reflectedVariables, m_isStatic, "isStatic", true);
 	return reflectedVariables;
 }
 
