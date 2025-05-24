@@ -59,7 +59,7 @@ size_t MemoryInfo::GetUsedMemory()
 	GetProcessMemoryInfo(GetCurrentProcess(), &s_memoryInfo, sizeof(s_memoryInfo));
 	return s_memoryInfo.WorkingSetSize;
 #elif defined(__PSP__)
-	return pspSdkTotalFreeUserMemSize();
+	return GetTotalMemory() - pspSdkTotalFreeUserMemSize();
 #elif defined(__vita__)
 	return 0; // Currently no way to get available memory on the vita because functions do not track newlib heap memory
 #else
@@ -91,7 +91,7 @@ size_t MemoryInfo::GetUsedVideoMemory()
 	size_t usedVRAM = videoMemoryInfo.CurrentUsage;
 	return usedVRAM;
 #elif defined(__PSP__)
-	return vmemavail();
+	return GetTotalVideoMemory() - vmemavail();
 #elif defined(__vita__)
 	return vglMemTotal(VGL_MEM_VRAM);
 #else
