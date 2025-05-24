@@ -816,7 +816,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	{
 		const std::string dll_name = params.getDynamicLibraryName();
 		CopyUtils::AddCopyEntry(false, params.tempPath + dll_name, params.exportPath + dll_name);
-		CopyUtils::AddCopyEntry(false, params.tempPath + params.libraryName + ".exe", params.exportPath + params.libraryName + ".exe");
+		CopyUtils::AddCopyEntry(false, params.tempPath + ProjectManager::GetGameName() + ".exe", params.exportPath + ProjectManager::GetGameName() + ".exe");
 	}
 	const bool gameCopyResult = CopyUtils::ExecuteCopyEntries();
 	if (!gameCopyResult)
@@ -1403,7 +1403,7 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 {
 	std::string command;
 	//Buid game exe
-	command = "cl /Fe\"" + params.libraryName + ".exe\" res.res /std:c++17 /MP /EHsc /DNOMINMAX";
+	command = "cl /Fe\"" + ProjectManager::GetGameName() + ".exe\" res.res /std:c++17 /MP /EHsc /DNOMINMAX";
 #if !defined(DEBUG)
 	command += " /O2";
 #endif
