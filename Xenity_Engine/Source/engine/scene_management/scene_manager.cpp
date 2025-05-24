@@ -554,9 +554,9 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 
 	XASSERT(!jsonString.empty(), "[SceneManager::LoadScene] jsonString is empty");
 
+	ordered_json data;
 	try
 	{
-		ordered_json data;
 		if (!jsonString.empty())
 		{
 			const size_t sceneDataPosition = FindSceneDataPosition(jsonString);
@@ -566,11 +566,6 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 				data = ordered_json::parse(sceneStr);
 			}
 		}
-		LoadScene(data);
-		s_openedScene = scene;
-#if defined(EDITOR)
-		SetSceneModified(false);
-#endif
 	}
 	catch (const std::exception& e)
 	{
@@ -581,6 +576,12 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		Debug::PrintError("[SceneManager::LoadScene] Scene file error: " + std::string(e.what()), true);
 		return;
 	}
+
+	LoadScene(data);
+	s_openedScene = scene;
+#if defined(EDITOR)
+	SetSceneModified(false);
+#endif
 }
 
 void SceneManager::ClearScene()
