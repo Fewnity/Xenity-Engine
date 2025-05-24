@@ -80,12 +80,6 @@ void AssetManager::Clear()
 
 	standardMaterial.reset();
 	unlitMaterial.reset();
-
-	fileReferences.clear();
-	materials.clear();
-	shaders.clear();
-	reflections.clear();
-	lights.clear();
 }
 
 void AssetManager::OnProjectLoaded()
