@@ -333,7 +333,9 @@ DockerState Compiler::CheckDockerState(Event<DockerState>* callback)
 		}
 		else
 		{
-			const int checkDockerImageResult = system("docker image inspect ubuntu_test 2>nul 1>nul");
+			system("docker images -f r=u"); // Workaround for docker image inspect not working when resource saver mode is enabled
+
+			const int checkDockerImageResult = system("docker image inspect xenity_1_0_0 2>nul 1>nul");
 			if (checkDockerImageResult != 0)
 			{
 				result = DockerState::MISSING_IMAGE;
@@ -918,7 +920,7 @@ CompileResult Compiler::CompileWSL(const CompilerParams& params)
 
 bool Compiler::CreateDockerImage()
 {
-	const int result = system("docker build -t ubuntu_test . 1>nul");
+	const int result = system("docker build -t xenity_1_0_0 . 1>nul");
 	return result == 0;
 }
 
@@ -1007,17 +1009,17 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		threadNumber = 1;
 	}
 
-	std::string createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/build/ ; " + prepareCompileCommand + " ; cmake --build . -j" + std::to_string(threadNumber) + "\"";
+	std::string createCommand = "docker create --name XenityEngineBuild xenity_1_0_0 /bin/bash -c -it \"cd /home/XenityBuild/build/ ; " + prepareCompileCommand + " ; cmake --build . -j" + std::to_string(threadNumber) + "\"";
 
 	if (params.buildType == BuildType::BuildShaders)
 	{
-		createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/ ; ./compile_shaders.sh\"";
+		createCommand = "docker create --name XenityEngineBuild xenity_1_0_0 /bin/bash -c -it \"cd /home/XenityBuild/ ; ./compile_shaders.sh\"";
 	}
 	else if (params.buildPlatform.platform == Platform::P_PS3)
 	{
 		std::string removeSourceCommand = "rm -r Source/editor/ ; rm Source/gl.c ; rm -r include/glad/ ; rm -r include/imgui/ ; rm -r include/implot/ ; rm -r include/SDL3/ ; rm -r include/KHR/ ;";
 
-		createCommand = "docker create --name XenityEngineBuild ubuntu_test /bin/bash -c -it \"cd /home/XenityBuild/ ; " + removeSourceCommand + "make -j" + std::to_string(threadNumber) + "\"";
+		createCommand = "docker create --name XenityEngineBuild xenity_1_0_0 /bin/bash -c -it \"cd /home/XenityBuild/ ; " + removeSourceCommand + "make -j" + std::to_string(threadNumber) + "\"";
 	}
 
 	[[maybe_unused]] const int createResult = system(createCommand.c_str());
