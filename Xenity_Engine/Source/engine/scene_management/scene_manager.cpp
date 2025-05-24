@@ -515,7 +515,6 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 
 	ClearScene();
 
-
 	if (jsonData.contains("GameObjects"))
 	{
 		CreateObjectsFromJson(jsonData["GameObjects"], false);

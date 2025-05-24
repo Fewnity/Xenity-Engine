@@ -511,6 +511,7 @@ inline void ReflectionUtils::FillFileReference(const uint64_t fileId, const std:
 		FileReference::LoadOptions loadOptions;
 		loadOptions.platform = Application::GetPlatform();
 		loadOptions.threaded = true;
+
 		// Load file data
 		file->LoadFileReference(loadOptions);
 		//Put the file in the variable reference

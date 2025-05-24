@@ -539,16 +539,19 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 
 unsigned int RendererOpengl::CreateNewTexture()
 {
+	// Should be deleted
 	unsigned int textureId = 0;
 	return textureId;
 }
 
 void RendererOpengl::DeleteTexture(Texture& texture)
 {
+	// Should be deleted
 }
 
 void RendererOpengl::SetTextureData(const Texture& texture, unsigned int textureType, const unsigned char* buffer)
 {
+	// Should be deleted
 }
 
 void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)

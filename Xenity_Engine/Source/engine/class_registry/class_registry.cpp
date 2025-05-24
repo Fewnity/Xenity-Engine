@@ -182,6 +182,7 @@ void ClassRegistry::RegisterEngineFileClasses()
 	REGISTER_FILE(Icon, FileType::File_Icon);
 	REGISTER_FILE(Prefab, FileType::File_Prefab);
 }
+
 #if defined (EDITOR)
 void ClassRegistry::RegisterMenus()
 {
