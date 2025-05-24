@@ -67,12 +67,16 @@ std::string ProjectManager::assetFolderPath = "";
 std::string ProjectManager::engineAssetsFolderPath = "";
 std::string ProjectManager::publicEngineAssetsFolderPath = "";
 bool ProjectManager::projectLoaded = false;
+ProjectState ProjectManager::projectState = ProjectState::NotLoaded;
 std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
 std::shared_ptr<Directory> ProjectManager::publicEngineAssetsDirectoryBase = nullptr;
 std::shared_ptr<Directory> ProjectManager::additionalAssetDirectoryBase = nullptr;
 Event<> ProjectManager::projectLoadedEvent;
 Event<> ProjectManager::projectUnloadedEvent;
 FileDataBase ProjectManager::fileDataBase;
+
+int ProjectManager::loadedFilesCount = 0;
+int ProjectManager::totalFilesCount = 0;
 
 std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(const ProjectDirectory& directoryToCheck, const std::string& directoryPath)
 {
@@ -182,7 +186,8 @@ void ProjectManager::FindAllProjectFiles()
 	projectFilesIds.clear();
 
 	std::vector<FileInfo> compatibleFiles = GetCompatibleFiles();
-
+	totalFilesCount = compatibleFiles.size();
+	loadedFilesCount = 0;
 	CheckAndGenerateFileIds(compatibleFiles);
 
 	// Fill projectFilesIds
@@ -530,6 +535,8 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	projectState = ProjectState::Loading;
+
 	Debug::Print("Loading project: " + projectPathToLoad, true);
 
 	projectLoaded = false;
@@ -591,20 +598,17 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	}
 #endif
 
-	projectLoaded = true;
-
-	// Load start scene
-	if (ProjectManager::GetStartScene())
-	{
-		SceneManager::LoadScene(ProjectManager::GetStartScene());
-	}
+	// A project should have a start scene
 #if !defined(EDITOR)
-	else
+	if (!ProjectManager::GetStartScene())
 	{
 		return ProjectLoadingErrors::NoStartupScene;
 	}
 #endif
+
 	projectLoadedEvent.Trigger();
+	projectLoaded = true;
+	projectState = ProjectState::WaitingForScene;
 
 	Debug::Print("Project loaded", true);
 
@@ -628,6 +632,7 @@ void ProjectManager::UnloadProject()
 
 	ClassRegistry::Reset();
 	ClassRegistry::RegisterEngineComponents();
+	ClassRegistry::RegisterEngineFileClasses();
 
 	projectSettings.startScene.reset();
 	projectDirectoryBase.reset();
@@ -641,7 +646,11 @@ void ProjectManager::UnloadProject()
 	projectFolderPath.clear();
 	assetFolderPath.clear();
 
+	loadedFilesCount = 0;
+	totalFilesCount = 0;
+
 	projectLoaded = false;
+	projectState = ProjectState::NotLoaded;
 
 	Engine::s_game.reset();
 	DynamicLibrary::UnloadGameLibrary();
@@ -1372,6 +1381,7 @@ void ProjectManager::CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFi
 			const uint64_t fileId = ReadFileId(*file);
 
 			mutex.lock();
+			loadedFilesCount++;
 			if (fileId == -1)
 			{
 				fileWithoutMeta.push_back(&compatibleFiles[index]);

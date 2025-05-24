@@ -61,7 +61,7 @@ void ShaderRSX::Init()
 
 }
 
-void ShaderRSX::Load()
+void ShaderRSX::Load(const LoadOptions& loadOptions)
 {
 	size_t size = 0;
 	unsigned char* fullShader = ReadShaderBinary(size);

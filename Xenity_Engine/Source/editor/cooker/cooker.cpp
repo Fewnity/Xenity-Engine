@@ -233,6 +233,8 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 	FileReference::LoadOptions loadOptions;
 	loadOptions.platform = settings.platform;
 	loadOptions.threaded = false;
+	loadOptions.forceDisableAsync = true;
+	loadOptions.onlyLoadData = true;
 	meshData.LoadFileReference(loadOptions);
 
 	// REMINDER: NEVER WRITE A SIZE_T TO A FILE, ALWAYS CONVERT IT TO A FIXED SIZE TYPE

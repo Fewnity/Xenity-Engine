@@ -29,6 +29,14 @@ class Scene;
 class Directory;
 struct CompilerParams;
 
+enum ProjectState 
+{
+	NotLoaded,
+	WaitingForScene,
+	Loading,
+	Loaded,
+};
+
 class ProjectDirectory
 {
 public:
@@ -231,6 +239,16 @@ public:
 		return projectLoaded;
 	}
 
+	[[nodiscard]] static inline ProjectState GetProjectState()
+	{
+		return projectState;
+	}
+
+	static inline void SetProjectState(ProjectState _projectState)
+	{
+		projectState = _projectState;
+	}
+
 	/**
 	* @brief Get project settings
 	* @param path Project path
@@ -258,6 +276,17 @@ public:
 	* @brief Refresh project directory
 	*/
 	static void RefreshProjectDirectory();
+
+	/**
+	* @brief Get a number between 0 and 1 that represents the loading progress of the project
+	*/
+	static float GetLoadingProgress()
+	{
+		if(totalFilesCount == 0)
+			return 0.0f;
+
+		return (float)loadedFilesCount  / (float)totalFilesCount;
+	}
 
 	/**
 	* @brief Find and get a project directory from a path and a parent directory
@@ -315,6 +344,9 @@ public:
 	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
 	static FileDataBase fileDataBase;
 private:
+
+	static int loadedFilesCount;
+	static int totalFilesCount;
 
 	/**
 	* @brief Load project settings
@@ -382,6 +414,7 @@ private:
 	static std::shared_ptr<ProjectDirectory> projectDirectory;
 	static std::unordered_map<uint64_t, FileInfo> projectFilesIds;
 	static bool projectLoaded;
+	static ProjectState projectState;
 	static std::string projectFolderPath;
 	static std::string engineAssetsFolderPath;
 	static std::string publicEngineAssetsFolderPath;

@@ -45,6 +45,8 @@ TextureDefault::~TextureDefault()
 
 void TextureDefault::Bind() const
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glBindTexture(GL_TEXTURE_2D, m_textureId);
 	ApplyTextureFilters();
 	//float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
@@ -89,6 +91,8 @@ int TextureDefault::GetWrapModeEnum(WrapMode wrapMode) const
 
 void TextureDefault::ApplyTextureFilters() const
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	// Get the right filter depending of the texture settings
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
@@ -139,6 +143,8 @@ void TextureDefault::OnLoadFileReferenceFinished()
 // TODO: This function only supports 1 color textures, add enum for texture color type
 void TextureDefault::SetData(const unsigned char *texData)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	XASSERT(texData != nullptr, "[TextureDefault::SetTextureLevel] texData is nullptr");

@@ -28,6 +28,7 @@
 #endif
 #include <engine/asset_management/asset_manager.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <engine/file_system/async_file_loading.h>
 
 unsigned int uboLightBlock;
 
@@ -72,6 +73,8 @@ ShaderOpenGL::SpotLightVariableIds::SpotLightVariableIds(int index, unsigned int
 
 ShaderOpenGL::~ShaderOpenGL()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	if (m_fileStatus == FileStatus::FileStatus_Loaded)
 	{
 		if constexpr (!s_UseOpenGLFixedFunctions)
@@ -94,6 +97,7 @@ ShaderOpenGL::~ShaderOpenGL()
 
 void ShaderOpenGL::Init()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
 	glGenBuffers(1, &uboLightBlock);
@@ -102,13 +106,9 @@ void ShaderOpenGL::Init()
 #endif
 }
 
-void ShaderOpenGL::Load()
+void ShaderOpenGL::OnLoadFileReferenceFinished()
 {
-	if constexpr (s_UseOpenGLFixedFunctions)
-	{
-		m_fileStatus = FileStatus::FileStatus_Loaded;
-		return;
-	}
+	// Make sure the shader is loading on the main thread for OpenGL calls
 
 	const std::string vertexShaderCode = GetShaderCode(ShaderType::Vertex_Shader, Application::GetPlatform());
 	const std::string fragmentShaderCode = GetShaderCode(ShaderType::Fragment_Shader, Application::GetPlatform());
@@ -136,8 +136,24 @@ void ShaderOpenGL::Load()
 	}
 }
 
+void ShaderOpenGL::Load(const LoadOptions& loadOptions)
+{
+	if constexpr (s_UseOpenGLFixedFunctions)
+	{
+		m_fileStatus = FileStatus::FileStatus_Loaded;
+		return;
+	}
+
+	AsyncFileLoading::AddFile(shared_from_this());
+	m_fileStatus = FileStatus::FileStatus_AsyncWaiting;
+
+	// Loading code in OnLoadFileReferenceFinished to ensure it is called on the main thread
+}
+
 bool ShaderOpenGL::Use()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	if (Graphics::s_currentShader != this)
 	{
 		glUseProgram(m_programId);
@@ -172,6 +188,7 @@ int ShaderOpenGL::GetShaderTypeEnum(ShaderType shaderType)
 
 bool ShaderOpenGL::Compile(const std::string& shaderData, ShaderType type)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
 	XASSERT(!shaderData.empty(), "[Shader::Compile] shaderData is empty");
 
 	const char* shaderDataConst = shaderData.c_str();
@@ -252,6 +269,8 @@ bool ShaderOpenGL::Compile(const std::string& shaderData, ShaderType type)
 /// </summary>
 void ShaderOpenGL::SetShaderCameraPosition()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	//Camera position
 	if (Graphics::usedCamera != nullptr)
 	{
@@ -264,6 +283,8 @@ void ShaderOpenGL::SetShaderCameraPosition()
 /// </summary>
 void ShaderOpenGL::SetShaderCameraPositionCanvas()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUniformMatrix4fv(m_cameraLocation, 1, false, glm::value_ptr(m_canvasCameraTransformationMatrix));
 }
 
@@ -333,6 +354,8 @@ void ShaderOpenGL::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2
 
 void ShaderOpenGL::SetLightIndices(const LightsIndices& lightsIndices)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__) || defined(__vita__)
 	glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(lightsIndices), &lightsIndices);
@@ -341,11 +364,15 @@ void ShaderOpenGL::SetLightIndices(const LightsIndices& lightsIndices)
 
 unsigned int ShaderOpenGL::GetShaderUniformLocation(const char* name)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	return glGetUniformLocation(m_programId, name);
 }
 
 unsigned int ShaderOpenGL::GetShaderUniformLocation(unsigned int programId, const char* name)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	return glGetUniformLocation(programId, name);
 }
 
@@ -362,71 +389,97 @@ unsigned int ShaderOpenGL::FindOrAddAttributId(const std::string& attribut)
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector4& value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	unsigned int attributId = FindOrAddAttributId(attribut);
 	glUniform4f(attributId, value.x, value.y, value.z, value.w);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector3& value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	unsigned int attributId = FindOrAddAttributId(attribut);
 	glUniform3f(attributId, value.x, value.y, value.z);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, const Vector2& value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	unsigned int attributId = FindOrAddAttributId(attribut);
 	glUniform2f(attributId, value.x, value.y);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, float value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	unsigned int attributId = FindOrAddAttributId(attribut);
 	glUniform1f(attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(const std::string& attribut, int value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	unsigned int attributId = FindOrAddAttributId(attribut);
 	glUniform1i(attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const Vector4& value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUniform4f(attributId, value.x, value.y, value.z, value.w);
 }
 
 void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const Vector3& value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUniform3f(attributId, value.x, value.y, value.z);
 }
 
 void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const Vector2& value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUniform2f(attributId, value.x, value.y);
 }
 
 void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const float value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUniform1f(attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const int value)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUniform1i(attributId, value);
 }
 
 void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const glm::mat4& trans)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUniformMatrix4fv(attributId, 1, false, glm::value_ptr(trans));
 }
 
 void ShaderOpenGL::SetShaderAttribut(unsigned int attributId, const glm::mat3& trans)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUniformMatrix3fv(attributId, 1, false, glm::value_ptr(trans));
 }
 
 void ShaderOpenGL::Link()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	m_programId = glCreateProgram();
 	glAttachShader(m_programId, m_vertexShaderId);
 

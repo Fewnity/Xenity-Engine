@@ -262,6 +262,12 @@ void MeshData::LoadFileReference(const LoadOptions& loadOptions)
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
 		m_fileStatus = FileStatus::FileStatus_Loading;
+
+		if (!Engine::IsCalledFromMainThread() && !loadOptions.forceDisableAsync)
+		{
+			AsyncFileLoading::AddFile(shared_from_this());
+		}
+
 		m_isValid = false;
 		bool result;
 #if defined(EDITOR)
@@ -285,13 +291,20 @@ void MeshData::LoadFileReference(const LoadOptions& loadOptions)
 #endif
 		if (result)
 		{
-			m_fileStatus = FileStatus::FileStatus_Loaded;
+			if ((Engine::IsCalledFromMainThread() || loadOptions.forceDisableAsync) && !loadOptions.onlyLoadData)
+			{
+				OnLoadFileReferenceFinished();
+			}
+			else
+			{
+				m_fileStatus = FileStatus::FileStatus_AsyncWaiting;
+			}
 		}
 		else
 		{
 			m_fileStatus = FileStatus::FileStatus_Failed;
 		}
-		OnLoadFileReferenceFinished();
+
 		//#if defined(EDITOR)
 		//		isLoading = true;
 		//
@@ -307,6 +320,7 @@ void MeshData::LoadFileReference(const LoadOptions& loadOptions)
 void MeshData::OnLoadFileReferenceFinished()
 {
 	Update();
+	m_fileStatus = FileStatus::FileStatus_Loaded;
 }
 
 void MeshData::UnloadFileReference()
@@ -608,7 +622,7 @@ void MeshData::SubMesh::FreeData()
 	Performance::s_meshDataMemoryTracker->Deallocate(m_vertexMemSize);
 	Performance::s_meshDataMemoryTracker->Deallocate(m_indexMemSize);
 #endif
-	if (Engine::IsRunning(true))
+	if (Engine::IsRunning(true) && m_meshData->GetFileStatus() == FileStatus::FileStatus_Loaded)
 	{
 		Engine::GetRenderer().DeleteSubMeshData(*this);
 	}

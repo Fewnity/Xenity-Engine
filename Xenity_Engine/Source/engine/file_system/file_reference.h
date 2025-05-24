@@ -40,8 +40,10 @@ public:
 
 	struct LoadOptions
 	{
-		bool threaded = false;
-		Platform platform = Platform::P_COUNT;
+		Platform platform = Platform::P_COUNT; // Load asset as a specific platform (used for cooking)
+		bool threaded = false; // Is in async mode
+		bool forceDisableAsync = false; // In some case, the asset will detect if it should be loaded in async or not, but this option will force the loading in non async mode
+		bool onlyLoadData = false; // Only load the data, and disable the data upload on the GPU (or else) if enabled
 	};
 
 	/**

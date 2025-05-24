@@ -132,7 +132,7 @@ protected:
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;
 
 	void LoadFileReference(const LoadOptions& loadOptions) override;
-	virtual void Load() = 0;
+	virtual void Load(const LoadOptions& loadOptions) = 0;
 
 	[[nodiscard]] static std::shared_ptr<Shader> MakeShader();
 

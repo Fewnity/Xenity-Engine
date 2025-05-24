@@ -41,6 +41,8 @@
 
 Camera::Camera() : m_fov(DEFAULT_CAMERA_FOV), m_isProjectionDirty(true)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	glGenFramebuffers(1, &m_framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
@@ -72,6 +74,8 @@ void Camera::UpdateCameraTransformMatrix()
 
 std::unique_ptr<uint8_t[]> Camera::GetRawFrameBuffer()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	const size_t frameBufferWidth = Window::GetWidth();
 	const size_t frameBufferHeight = Window::GetHeight();
 
@@ -187,6 +191,8 @@ void Camera::OnReflectionUpdated()
 
 Camera::~Camera()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	if (m_framebuffer != -1)
 	{
@@ -385,6 +391,8 @@ void Camera::SetProjectionType(const ProjectionTypes type)
 
 void Camera::UpdateFrameBuffer()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	if (m_needFrameBufferUpdate)
 	{
@@ -485,6 +493,8 @@ void Camera::ChangeFrameBufferSize(const Vector2Int& resolution)
 
 void Camera::BindFrameBuffer()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	UpdateFrameBuffer();
 #if defined(EDITOR)
@@ -594,6 +604,8 @@ void Camera::OnDrawGizmosSelected()
 
 void Camera::CopyMultiSampledFrameBuffer()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	if (m_useMultisampling)
 	{
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)

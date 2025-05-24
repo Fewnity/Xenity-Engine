@@ -14,7 +14,7 @@
 class ShaderNull : public Shader
 {
 public:
-	void Load() override {}
+	void Load(const LoadOptions& loadOptions) override {}
 	void CreateShader(Shader::ShaderType type) override {}
 
 	bool Use() override { return false; }

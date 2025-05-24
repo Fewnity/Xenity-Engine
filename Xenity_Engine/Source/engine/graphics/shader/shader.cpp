@@ -40,6 +40,7 @@
 #elif defined(__vita__)
 #include <vitaGL.h>
 #endif
+#include <engine/file_system/async_file_loading.h>
 
 using json = nlohmann::json;
 
@@ -192,7 +193,17 @@ void Shader::LoadFileReference(const LoadOptions& loadOptions)
 	
 	if (m_fileStatus == FileStatus::FileStatus_Not_Loaded)
 	{
-		Load();
+		Load(loadOptions);
+
+		if (Engine::IsCalledFromMainThread())
+		{
+			m_fileStatus = FileStatus::FileStatus_Loaded;
+			OnLoadFileReferenceFinished();
+		}
+		else
+		{
+			m_fileStatus = FileStatus::FileStatus_AsyncWaiting;
+		}
 	}
 }
 

@@ -26,6 +26,7 @@
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 #include <engine/ui/window.h>
+#include <engine/engine.h>
 
 #include <engine/debug/debug.h>
 #include <engine/debug/performance.h>
@@ -79,6 +80,8 @@ int RendererOpengl::Init()
 
 void RendererOpengl::Setup()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	// TODO: this part needs to be improved
 	glEnable(GL_NORMALIZE);
 
@@ -118,6 +121,8 @@ void RendererOpengl::Stop()
 
 void RendererOpengl::NewFrame()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	lastUsedColor = 0x00000000;
 	lastUsedColor2 = 0xFFFFFFFF;
 
@@ -130,6 +135,8 @@ void RendererOpengl::NewFrame()
 
 void RendererOpengl::EndFrame()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	SCOPED_PROFILER("RendererOpengl::EndFrame", scopeBenchmark);
 
 	usedTexture = 0;
@@ -140,17 +147,23 @@ void RendererOpengl::EndFrame()
 
 void RendererOpengl::SetViewport(int x, int y, int width, int height)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glViewport(x, y, width, height);
 }
 
 void RendererOpengl::SetClearColor(const Color& color)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	const RGBA& rgba = color.GetRGBA();
 	glClearColor(rgba.r, rgba.g, rgba.b, rgba.a);
 }
 
 void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPlane, float farClippingPlane)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	const float halfRatio = Graphics::usedCamera->GetAspectRatio() / 2.0f * 10 * (projectionSize / 5.0f);
@@ -160,6 +173,8 @@ void RendererOpengl::SetProjection2D(float projectionSize, float nearClippingPla
 
 void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float farClippingPlane, float aspect)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 #if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
@@ -175,6 +190,8 @@ void RendererOpengl::SetProjection3D(float fov, float nearClippingPlane, float f
 
 void RendererOpengl::ResetView()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(180, 0, 1, 0);
@@ -182,6 +199,8 @@ void RendererOpengl::ResetView()
 
 void RendererOpengl::SetCameraPosition(const Camera& camera)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glMultMatrixf((float*)&camera.m_cameraTransformMatrix);
@@ -189,6 +208,8 @@ void RendererOpengl::SetCameraPosition(const Camera& camera)
 
 void RendererOpengl::SetCameraPosition(const Vector3& position, const Vector3& rotation)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(-rotation.z, 0, 0, 1);
@@ -199,12 +220,16 @@ void RendererOpengl::SetCameraPosition(const Vector3& position, const Vector3& r
 
 void RendererOpengl::ResetTransform()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
 void RendererOpengl::SetTransform(const Vector3& position, const Vector3& rotation, const Vector3& scale, bool resetTransform)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glMatrixMode(GL_MODELVIEW);
 	glTranslatef(-position.x, position.y, position.z);
 
@@ -217,12 +242,16 @@ void RendererOpengl::SetTransform(const Vector3& position, const Vector3& rotati
 
 void RendererOpengl::SetTransform(const glm::mat4& mat)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glMatrixMode(GL_MODELVIEW);
 	glMultMatrixf((float*)&mat);
 }
 
 void RendererOpengl::BindTexture(const Texture& texture)
 {
+	// Should be deleted?
+
 	/*glBindTexture(GL_TEXTURE_2D, texture.GetTextureId());
 	ApplyTextureFilters(texture);*/
 	//float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
@@ -231,6 +260,8 @@ void RendererOpengl::BindTexture(const Texture& texture)
 
 void RendererOpengl::ApplyTextureFilters(const Texture& texture)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	// Get the right filter depending of the texture settings
 	int minFilterValue = GL_LINEAR;
 	int magfilterValue = GL_LINEAR;
@@ -276,6 +307,8 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	// Apply rendering settings
 	if (lastSettings.invertFaces != settings.invertFaces)
 	{
@@ -481,6 +514,8 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 // TODO : Improve this function, it's not optimized and not using shaders
 void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& color, RenderingSettings& settings)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	if (settings.useDepth)
 		glEnable(GL_DEPTH_TEST);
 	else
@@ -556,6 +591,8 @@ void RendererOpengl::SetTextureData(const Texture& texture, unsigned int texture
 
 void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Vector3& lightPosition, const Vector3& lightDirection)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	// This won't compile on PsVita, and if the code compile, it would not work because the fixed pipeline is broken on vitagl
 #if !defined(__vita__)
 	if (lightIndex >= maxLightCount)
@@ -656,6 +693,8 @@ void RendererOpengl::SetLight(const int lightIndex, const Light& light, const Ve
 
 void RendererOpengl::DisableAllLight()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	for (int lightIndex = 0; lightIndex < maxLightCount; lightIndex++)
 	{
 		glDisable(GL_LIGHT0 + lightIndex);
@@ -664,6 +703,8 @@ void RendererOpengl::DisableAllLight()
 
 void RendererOpengl::Setlights(const LightsIndices& lightsIndices)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	DisableAllLight();
 	const int lightCount = AssetManager::GetLightCount();
 
@@ -722,6 +763,8 @@ void RendererOpengl::Setlights(const LightsIndices& lightsIndices)
 
 void RendererOpengl::Clear(ClearMode mode)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	if (mode == ClearMode::Color_Depth)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -738,6 +781,8 @@ void RendererOpengl::Clear(ClearMode mode)
 
 void RendererOpengl::SetFog(bool active)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	if (active)
 		glEnable(GL_FOG);
 	else
@@ -746,6 +791,8 @@ void RendererOpengl::SetFog(bool active)
 
 void RendererOpengl::SetFogValues(float start, float end, const Color& color)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	fogStart = start;
 	fogEnd = end;
 	fogColor = color;
@@ -763,6 +810,8 @@ void RendererOpengl::SetFogValues(float start, float end, const Color& color)
 
 unsigned int RendererOpengl::CreateBuffer()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	unsigned int id = 0;
 	glGenBuffers(1, &id);
 	return id;
@@ -770,6 +819,8 @@ unsigned int RendererOpengl::CreateBuffer()
 
 unsigned int RendererOpengl::CreateVertexArray()
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	unsigned int id = 0;
 	glGenVertexArrays(1, &id);
 	return id;
@@ -777,21 +828,29 @@ unsigned int RendererOpengl::CreateVertexArray()
 
 void RendererOpengl::BindVertexArray(unsigned int bufferId)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glBindVertexArray(bufferId);
 }
 
 void RendererOpengl::DeleteBuffer(unsigned int bufferId)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glDeleteBuffers(1, &bufferId);
 }
 
 void RendererOpengl::DeleteVertexArray(unsigned int bufferId)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glDeleteVertexArrays(1, &bufferId);
 }
 
 void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	if (subMesh.VAO != 0)
 	{
 		DeleteVertexArray(subMesh.VAO);
@@ -808,6 +867,8 @@ void RendererOpengl::DeleteSubMeshData(MeshData::SubMesh& subMesh)
 
 void RendererOpengl::UploadMeshData(MeshData& meshData)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 // Disable warning about (void*) cast
 #pragma warning( push )
 #pragma warning( disable : 4312 )
@@ -818,6 +879,8 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 
 		if (newSubMesh->VAO == 0)
 			newSubMesh->VAO = CreateVertexArray();
+
+		XASSERT(newSubMesh->VAO != 0, "VAO not created");
 
 		glBindVertexArray(newSubMesh->VAO);
 
@@ -917,6 +980,8 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 
 void RendererOpengl::UseShaderProgram(unsigned int programId)
 {
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
 	glUseProgram(programId); // Cannot remove this for now
 }
 

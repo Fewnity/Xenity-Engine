@@ -9,6 +9,7 @@
 #include <filesystem>
 
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 #include <engine/asset_management/project_manager.h>
 #include <editor/editor.h>
@@ -24,6 +25,52 @@ SelectProjectMenu::SelectProjectMenu()
 void SelectProjectMenu::Init()
 {
 	projectsList = ProjectManager::GetProjectsList();
+}
+
+// Code from https://github.com/ocornut/imgui/issues/1901
+bool SelectProjectMenu::BufferingBar(const char* label, float value, const ImVec2& size_arg, const uint32_t& bg_col, const uint32_t& fg_col) 
+{
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	if (window->SkipItems)
+		return false;
+
+	ImGuiContext& g = *GImGui;
+	const ImGuiStyle& style = g.Style;
+	const ImGuiID id = window->GetID(label);
+
+	ImVec2 pos = window->DC.CursorPos;
+	ImVec2 size = size_arg;
+	size.x -= style.FramePadding.x * 2;
+
+	const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+	ImGui::ItemSize(bb, style.FramePadding.y);
+	if (!ImGui::ItemAdd(bb, id))
+		return false;
+
+	// Render
+	const float circleStart = size.x * 0.85f;
+	const float circleEnd = size.x;
+	const float circleWidth = circleEnd - circleStart;
+
+	const float t = static_cast<float>(g.Time);
+	const float r = size.y / 2;
+	const float speed = 2.f;
+
+	const float a = speed * 0;
+	const float b = speed * 0.333f;
+	const float c = speed * 0.666f;
+
+	const float o1 = (circleWidth + r) * (t + a - speed * (int)((t + a) / speed)) / speed;
+	const float o2 = (circleWidth + r) * (t + b - speed * (int)((t + b) / speed)) / speed;
+	const float o3 = (circleWidth + r) * (t + c - speed * (int)((t + c) / speed)) / speed;
+
+	window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o1, bb.Min.y + r), r, bg_col);
+	window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o2, bb.Min.y + r), r, bg_col);
+	window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o3, bb.Min.y + r), r, bg_col);
+
+	window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart, bb.Max.y), bg_col);
+	window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart * value, bb.Max.y), fg_col);
+	return true;
 }
 
 void SelectProjectMenu::Draw()
@@ -55,6 +102,16 @@ void SelectProjectMenu::Draw()
 
 		font->Scale = oldScale * 1.5f;
 		ImGui::PushFont(font);
+
+		const bool isLoadingBegValue = 
+			ProjectManager::GetProjectState() == ProjectState::Loading ||
+			ProjectManager::GetProjectState() == ProjectState::WaitingForScene;
+
+		if (isLoadingBegValue)
+		{
+			ImGui::BeginDisabled();
+		}
+
 		if (ImGui::Button("Create project"))
 		{
 			Editor::currentMenu = MenuGroup::Menu_Create_Project;
@@ -63,6 +120,11 @@ void SelectProjectMenu::Draw()
 		if (ImGui::Button("Load project"))
 		{
 			OnLoadButtonClick();
+		}
+
+		if (isLoadingBegValue)
+		{
+			ImGui::EndDisabled();
 		}
 
 		DrawProjectsList();
@@ -129,6 +191,15 @@ void SelectProjectMenu::DrawProjectsList()
 {
 	ImGui::Separator();
 
+	const bool isLoadingBegValue =
+		ProjectManager::GetProjectState() == ProjectState::Loading ||
+		ProjectManager::GetProjectState() == ProjectState::WaitingForScene;
+
+	if (isLoadingBegValue)
+	{
+		ImGui::BeginDisabled();
+	}
+
 	size_t projectListSize = projectsList.size();
 	for (size_t i = 0; i < projectListSize; i++)
 	{
@@ -147,7 +218,6 @@ void SelectProjectMenu::DrawProjectsList()
 		}
 		if (selectedProject == &project)
 		{
-
 			if (ImGui::BeginPopup(std::to_string(*(size_t*)selectedProject).c_str()))
 			{
 				if (ImGui::MenuItem("Remove from list"))
@@ -178,21 +248,43 @@ void SelectProjectMenu::DrawProjectsList()
 			}
 		}
 		ImGui::SetCursorPos(ImVec2(cursorPos.x, cursorPos.y));
-		if (ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availWidth, 60)))
+		const bool buttonClicked = ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availWidth, 60));
+		if (buttonClicked)
 		{
-			ProjectLoadingErrors result = ProjectManager::LoadProject(project.path);
-			if (result == ProjectLoadingErrors::Success)
+			if (ProjectManager::GetProjectState() == ProjectState::NotLoaded)
 			{
-				Editor::currentMenu = MenuGroup::Menu_Editor;
+				projectToLoad = &project;
+				loadingThread = std::thread([this, project]()
+					{
+						ProjectLoadingErrors result = ProjectManager::LoadProject(project.path);
+						if (result != ProjectLoadingErrors::Success)
+						{
+							ShowProjectError(result);
+						}
+						loadingThread.detach();
+					});
 			}
-			else
+		}
+		if (projectToLoad == &project)
+		{
+			if (ProjectManager::GetProjectState() == ProjectState::NotLoaded && !buttonClicked)
 			{
-				ShowProjectError(result);
+				projectToLoad = nullptr;
+			}
+			else 
+			{
+				ImGui::SetCursorPos(ImVec2(cursorPos.x, cursorPos.y + 53));
+				BufferingBar("##buffer_bar", ProjectManager::GetLoadingProgress(), ImVec2(400, 6), ImGui::GetColorU32(ImGuiCol_Button), ImGui::GetColorU32(ImGuiCol_ButtonHovered));
 			}
 		}
 		ImGui::EndGroup();
 
 		ImGui::Separator();
+	}
+
+	if (isLoadingBegValue)
+	{
+		ImGui::EndDisabled();
 	}
 }
 

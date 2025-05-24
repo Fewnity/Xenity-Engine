@@ -279,7 +279,7 @@ void Engine::CheckEvents()
 		switch (event.type)
 		{
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-			if (event.window.windowID == SDL_GetWindowID(Window::s_window))
+			if (event.window.windowID == SDL_GetWindowID(Window::s_window) && ProjectManager::GetProjectState() != ProjectState::Loading)
 			{
 				Quit();
 				if (!s_isRunning)
@@ -395,7 +395,7 @@ void Engine::Loop()
 			// Skip some frames to stabilize delta time
 			if (frameToSkip == 0)
 			{
-				if (ProjectManager::IsProjectLoaded())
+				if (ProjectManager::GetProjectState() == ProjectState::Loaded)
 				{
 					AssetManager::RemoveUnusedFiles();
 					if (GameplayManager::GetGameState() == GameState::Playing)
@@ -450,6 +450,17 @@ void Engine::Loop()
 				}
 				else
 				{
+					if (ProjectManager::GetProjectState() == ProjectState::WaitingForScene)
+					{
+						if (ProjectManager::GetStartScene())
+						{
+							SceneManager::LoadScene(ProjectManager::GetStartScene());
+#if defined(EDITOR)
+							Editor::currentMenu = MenuGroup::Menu_Editor;
+#endif
+						}
+						ProjectManager::SetProjectState(ProjectState::Loaded);
+					}
 #if defined(EDITOR)
 					glBindFramebuffer(GL_FRAMEBUFFER, 0);
 					s_renderer->Clear(ClearMode::Color_Depth);

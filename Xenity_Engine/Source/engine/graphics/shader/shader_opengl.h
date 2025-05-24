@@ -21,8 +21,9 @@ public:
 	static void Init();
 
 protected:
-	void Load() override;
+	void Load(const LoadOptions& loadOptions) override;
 	void CreateShader(Shader::ShaderType type) override;
+	void OnLoadFileReferenceFinished() override;
 
 	/**
 	* @brief Use the shader program
