@@ -423,7 +423,7 @@ void BuildSettingsMenu::StartBuild(const BuildPlatform& buildPlatform, BuildType
 		}
 		else
 		{
-			Compiler::CompileGameThreaded(buildPlatform, BuildType::BuildGame, exportPath);
+			Compiler::CompileGameThreaded(buildPlatform, buildType, exportPath);
 		}
 	}
 }
