@@ -285,7 +285,15 @@ void TexturePSP::SetTextureLevel(int level, const unsigned char* texData)
 	if (resizedPW > 256 || resizedPH > 256)
 	{
 		isLevelInVram = false;
-		Debug::PrintWarning("[TexturePSP::SetTextureLevel] Texture too big to be in vram: " + m_file->GetPath(), true);
+		
+		if (!m_file)
+		{
+			Debug::PrintWarning("[TexturePSP::SetTextureLevel] Texture too big to be in vram (not a file)", true);
+		}
+		else
+		{
+			Debug::PrintWarning("[TexturePSP::SetTextureLevel] Texture too big to be in vram: " + m_file->GetPath(), true);
+		}
 	}
 
 	if (level >= data.size())
@@ -304,7 +312,14 @@ void TexturePSP::SetTextureLevel(int level, const unsigned char* texData)
 			{
 				if (tryPutInVram)
 				{
-					Debug::PrintWarning("[TexturePSP::SetTextureLevel] No enough free vram: " + m_file->GetPath(), true);
+					if (!m_file)
+					{
+						Debug::PrintWarning("[TexturePSP::SetTextureLevel] No enough free vram (not a file)", true);
+					}
+					else
+					{
+						Debug::PrintWarning("[TexturePSP::SetTextureLevel] No enough free vram: " + m_file->GetPath(), true);
+					}
 				}
 				newData = (unsigned int*)memalign(16, byteCount);
 				isLevelInVram = false;
