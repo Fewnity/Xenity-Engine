@@ -103,11 +103,17 @@ int Engine::frameToSkip = 4;
 
 std::unique_ptr<GameInterface> Engine::s_game = nullptr;
 Event<>* Engine::s_onWindowFocusEvent = new Event<>();
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+std::thread::id Engine::threadId;
+#endif
 
 int Engine::Init(int argc, char* argv[])
 {
 #if defined(_WIN32) || defined(_WIN64)
 	signal(SIGBREAK, Engine::OnCloseSignal);
+#endif
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	threadId = std::this_thread::get_id();
 #endif
 
 	//  Init random
@@ -242,6 +248,15 @@ int Engine::Init(int argc, char* argv[])
 #endif
 
 	return 0;
+}
+
+bool Engine::IsCalledFromMainThread()
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	return std::this_thread::get_id() == threadId;
+#else
+	return true;
+#endif
 }
 
 void Engine::CheckEvents()

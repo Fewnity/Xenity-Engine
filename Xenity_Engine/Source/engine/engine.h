@@ -8,6 +8,10 @@
 
 #include <memory>
 
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#include <thread>
+#endif
+
 #include <engine/api.h>
 #include <engine/event_system/event_system.h>
 #include <engine/engine_args.h>
@@ -49,6 +53,8 @@ public:
 	 */
 	API static void Quit();
 
+	API static bool IsCalledFromMainThread();
+
 	/**
 	 * @brief Get if the engine is running
 	 * @param checkRenderer Check if the renderer exists
@@ -85,7 +91,9 @@ public:
 
 private:
 	static Event<>* s_onWindowFocusEvent;
-
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	static std::thread::id threadId;
+#endif
 	static void ParseEngineArguments(int argc, char* argv[]);
 
 	/**
