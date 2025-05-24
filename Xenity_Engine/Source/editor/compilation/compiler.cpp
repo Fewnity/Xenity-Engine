@@ -257,7 +257,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 			}
 		}
 	}
-	else if (params.buildPlatform.platform == Platform::P_PSP)
+	else if (params.buildPlatform.platform == Platform::P_PSP && params.buildType == BuildType::BuildAndRunGame)
 	{
 		if (!fs::exists(EngineSettings::values.ppssppExePath))
 		{
