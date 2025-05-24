@@ -201,7 +201,7 @@ void Compiler::Init()
 	const CompilerAvailability availability = CheckCompilerAvailability(params);
 	if (availability == CompilerAvailability::MISSING_COMPILER_SOFTWARE)
 	{
-		Debug::PrintWarning("[Compiler::Init] The compiler is not correctly setup. Please check compiler settings at [Window->Engine Settings]", false);
+		Debug::PrintError("The compiler is not correctly setup. Please check compiler settings at [Window->Engine Settings]", false);
 	}
 }
 
@@ -273,15 +273,15 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (error & (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiler executable " + std::string(compilerExecFileName) + " not found in " + EngineSettings::values.compilerPath);
+			Debug::PrintError("Compiler executable " + std::string(compilerExecFileName) + " not found in " + EngineSettings::values.compilerPath);
 		}
 		if (error & (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] Compiled engine library not found in " + engineFolderLocation);
+			Debug::PrintError("Compiled engine library not found in " + engineFolderLocation);
 		}
 		if (error & (int)CompilerAvailability::MISSING_PPSSPP)
 		{
-			Debug::PrintError("[Compiler::CheckCompilerAvailability] PPSSPP emulator not found at " + EngineSettings::values.ppssppExePath);
+			Debug::PrintError("PPSSPP emulator not found at " + EngineSettings::values.ppssppExePath);
 		}
 	}
 	return (CompilerAvailability)error;
@@ -574,67 +574,67 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 	switch (result)
 	{
 	case CompileResult::SUCCESS:
-		Debug::Print("[Compiler::OnCompileEnd] Code compiled successfully!");
+		Debug::Print("Code compiled successfully!");
 		break;
 	case CompileResult::ERROR_UNKNOWN:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
+		Debug::PrintError("Unable to compile (unkown error)");
 		break;
 	case CompileResult::ERROR_GAME_CODE_COPY:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's code");
+		Debug::PrintError("Error when copying game's code");
 		break;
 	case CompileResult::ERROR_FINAL_GAME_FILES_COPY:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying game's files");
+		Debug::PrintError("Error when copying game's files");
 		break;
 	case CompileResult::ERROR_FILE_COPY:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying files");
+		Debug::PrintError("Error when copying files");
 		break;
 	case CompileResult::ERROR_COOK_FAILED:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when cooking files");
+		Debug::PrintError("Error when cooking files");
 		break;
 
 		// Specific to WSL
 	case CompileResult::ERROR_WSL_COMPILATION:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on WSL (probably a C++ error)");
+		Debug::PrintError("Unable to compile on WSL (probably a C++ error)");
 		break;
 	case CompileResult::ERROR_WSL_ENGINE_CODE_COPY:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine's code");
+		Debug::PrintError("Error when copying engine's code");
 		break;
 	case CompileResult::ERROR_WSL_ENGINE_LIBS_INCLUDE_COPY:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying engine's libraries files");
+		Debug::PrintError("Error when copying engine's libraries files");
 		break;
 	case CompileResult::ERROR_WSL_CMAKELISTS_COPY:
-		Debug::PrintError("[Compiler::OnCompileEnd] Error when copying CMakeLists.txt file");
+		Debug::PrintError("Error when copying CMakeLists.txt file");
 		break;
 	case CompileResult::ERROR_COMPILER_AVAILABILITY:
-		Debug::PrintError("[Compiler::OnCompileEnd] The compiler is not correctly setup. Please check compiler settings at [Window->Engine Settings]");
+		Debug::PrintError("The compiler is not correctly setup. Please check compiler settings at [Window->Engine Settings]");
 		break;
 
 		// Specific to Docker
 	case CompileResult::ERROR_DOCKER_COMPILATION:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile on Docker (probably a C++ error)");
+		Debug::PrintError("Unable to compile on Docker (probably a C++ error)");
 		break;
 	case CompileResult::ERROR_DOCKER_SHADERS_COMPILATION:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile shaders on Docker (error in shader code)");
+		Debug::PrintError("Unable to compile shaders on Docker (error in shader code)");
 		break;
 	case CompileResult::ERROR_DOCKER_NOT_FOUND:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to find Docker");
+		Debug::PrintError("Unable to find Docker");
 		break;
 	case CompileResult::ERROR_DOCKER_NOT_RUNNING:
-		Debug::PrintError("[Compiler::OnCompileEnd] Docker is not running");
+		Debug::PrintError("Docker is not running");
 		break;
 	case CompileResult::ERROR_DOCKER_MISSING_IMAGE:
-		Debug::PrintError("[Compiler::OnCompileEnd] Docker image is missing");
+		Debug::PrintError("Docker image is missing");
 		break;
 	case CompileResult::ERROR_DOCKER_COULD_NOT_START:
-		Debug::PrintError("[Compiler::OnCompileEnd] Docker path is not correctly setup. Please check compiler settings at [Window->Engine Settings]");
+		Debug::PrintError("Docker path is not correctly setup. Please check compiler settings at [Window->Engine Settings]");
 		break;
 
 	case CompileResult::ERROR_COMPILATION_CANCELLED:
-		Debug::PrintError("[Compiler::OnCompileEnd] The compilation has been cancelled");
+		Debug::PrintError("The compilation has been cancelled");
 		break;
 
 	default:
-		Debug::PrintError("[Compiler::OnCompileEnd] Unable to compile (unkown error)");
+		Debug::PrintError("Unable to compile (unkown error)");
 		break;
 	}
 
