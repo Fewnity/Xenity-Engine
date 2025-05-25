@@ -4,6 +4,9 @@ Xenity Engine is a crossplatform game engine based on GameObjects and Components
 
 [Xenity Documentation](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/Doc/README.md)
 
+I'm planning to work on a new engine, to fix the big problems of this engine.<br>
+So I probably won't add new feature to this engine. But Pull request are still welcomed!
+
 The game engine is a work in progress, so any pull requests are welcome!<br>
 New features, refactor, bug fixes, optimizations or documentations everything is good to take!
 
@@ -21,8 +24,7 @@ New features, refactor, bug fixes, optimizations or documentations everything is
 ✔️ | PlayStation Portable
 ✔️ | PlayStation Vita
 ✔️ | PlayStation 3
-🚧 | Linux (Missing audio and build system)
-❌ | PlayStation 2
+🚧 | Linux (The UI is a bit glitchy, missing audio and build system)
 
 Features:
 
@@ -38,13 +40,15 @@ Features:
 - [X] C++ Hot Reloading
 
 > [!WARNING]
-> The engine is not finished. So you may encounter problems during game development like:
+> The engine is not perfect. So you may encounter problems during game development like:
 > - Deleting Meta files will have repercussions on your project. Variables that reference the files will be emptied.
 > - Duplicating a meta file will cause problems, each meta file has a unique file id in it.
+> - Audio works "fine" with 44100Hz but on PS3 you need to use 48000Hz audio.
 
 > [!NOTE]
-> If you want to compile a game in the editor, you have to change set `Compiler path` in the `Engine Settings` menu (Window->Engine Settings). You can set the `PPSSPP location` for Build And Run for PSP builds.
-> `Compiler path` is by default `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build`, change this if your Visual Studio installation/version is different.
+> If you want to compile a game in the editor, you have to set `Compiler path` in the `Engine Settings` menu (Window->Engine Settings).<br>
+> `Compiler path` is by default `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build`, change this if your Visual Studio installation/version is different.<br>
+> You can set the `PPSSPP location` for Build And Run for PSP builds.
 
 ## How to use the editor
 ### How to play the game in the editor
@@ -60,7 +64,7 @@ Features:
 Docker Desktop is needed to compile PSP, PS3 and PsVita games.<br>
 Download Docker Desktop: https://www.docker.com/products/docker-desktop/
 
-Then finish the docker install in Xenity. Go in "Window->Docker Configuration", the process can take several minutes especially if you have a slow computer or a slow internet connection.
+Then finish the docker install in Xenity. Go in "Window->Docker Configuration", the process can take several minutes especially if you have a slow computer or a slow internet connection. (The editor will freeze).
 
 ## Compatible files
 Images: `.png .jpg .bmp, .tga`
