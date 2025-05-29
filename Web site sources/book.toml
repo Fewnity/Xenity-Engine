@@ -1,0 +1,5 @@
+[book]
+authors = ["Fewnity"]
+language = "en"
+src = "src"
+title = "Xenity Engine"
