@@ -112,7 +112,7 @@ void EngineSettingsMenu::Draw()
 
 		bool settingsChanged = false;
 		bool valueChanged = false;
-		valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::values.useProfiler);
+		/*valueChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &EngineSettings::values.useProfiler);
 		ImGui::SameLine();
 		ImGui::TextWrapped("Use Profiler");
 		if (valueChanged)
@@ -128,7 +128,7 @@ void EngineSettingsMenu::Draw()
 		ImGui::SameLine();
 		ImGui::TextWrapped("Use Online Debugger (Print logs to an online console)");
 		if (valueChanged)
-			settingsChanged = true;
+			settingsChanged = true;*/
 
 		valueChanged = EditorUI::DrawInput("Backbground color",EngineSettings::values.backbgroundColor) != ValueInputState::NO_CHANGE;
 		if (valueChanged)

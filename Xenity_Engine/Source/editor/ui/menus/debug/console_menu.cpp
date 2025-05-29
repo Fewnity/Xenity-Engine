@@ -171,8 +171,8 @@ void ConsoleMenu::Draw()
 			EditorUI::EndButtonColor();
 		}
 
-		ImGui::SameLine();
-		if (ImGui::Button("Connect to client"))
+		//ImGui::SameLine();
+		/*if (ImGui::Button("Connect to client"))
 		{
 			clientSocket = NetworkManager::GetClientSocket();
 			totalClientText = "";
@@ -196,7 +196,7 @@ void ConsoleMenu::Draw()
 				startPos = totalClientText.find_first_of('{');
 				endPos = totalClientText.find_first_of('}');
 			}
-		}
+		}*/
 
 		ImGui::EndChild();
 
