@@ -3,3 +3,6 @@ authors = ["Fewnity"]
 language = "en"
 src = "src"
 title = "Xenity Engine"
+
+[output.html.fold]
+enable = true
