@@ -47,6 +47,7 @@
 #include <engine/graphics/3d_graphics/lod.h>
 #include <engine/game_elements/rect_transform.h>
 #include "update_available_menu.h"
+#include <editor/ui/editor_icons.h>
 
 void MainBarMenu::Init()
 {
@@ -570,11 +571,11 @@ void MainBarMenu::Draw()
 	style.FramePadding.x = 14;
 	ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x / 2.0f - (18 * 3 + style.ItemSpacing.x * 2 + style.FramePadding.x * 6) / 2.0f);
 	ImGui::BeginGroup();
-	const bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, *EditorUI::icons[(int)IconName::Icon_Play]);
+	const bool playClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Playing, *EditorIcons::GetIcons()[(int)IconName::Icon_Play]);
 	ImGui::SameLine();
-	const bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, *EditorUI::icons[(int)IconName::Icon_Pause]);
+	const bool pauseClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, *EditorIcons::GetIcons()[(int)IconName::Icon_Pause]);
 	ImGui::SameLine();
-	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, *EditorUI::icons[(int)IconName::Icon_Stop]);
+	const bool stopClicked = DrawImageButton(GameplayManager::GetGameState() != GameState::Stopped, *EditorIcons::GetIcons()[(int)IconName::Icon_Stop]);
 	ImGui::EndGroup();
 	style.FramePadding.x = oldFramePadding;
 

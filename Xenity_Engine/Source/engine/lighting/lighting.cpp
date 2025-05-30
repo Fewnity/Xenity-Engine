@@ -175,7 +175,7 @@ void Light::OnDrawGizmos()
 		icon = IconName::Icon_Spot_Light;
 	}
 
-	Gizmo::DrawBillboard(GetTransformRaw()->GetPosition(), Vector2(0.2f), EditorUI::icons[static_cast<int>(icon)], color);
+	Gizmo::DrawBillboard(GetTransformRaw()->GetPosition(), Vector2(0.2f), EditorIcons::GetIcons()[static_cast<int>(icon)], color);
 #endif
 }
 

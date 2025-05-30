@@ -228,6 +228,7 @@ protected:
 	friend class ProjectManager;
 	friend class TextManager;
 	friend class Cooker;
+	friend class EditorIcons;
 
 	/**
 	* @brief Get texture channel count

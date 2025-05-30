@@ -16,6 +16,7 @@
 #include <engine/file_system/file_system.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/graphics/texture/texture_default.h>
+#include <editor/ui/editor_icons.h>
 
 using json = nlohmann::json;
 
@@ -29,7 +30,7 @@ void BuildSettingsMenu::Init()
 
 	BuildPlatform windowsPlatform = BuildPlatform();
 	windowsPlatform.name = "Windows";
-	windowsPlatform.icon = EditorUI::icons[(int)IconName::Icon_Platform_Windows];
+	windowsPlatform.icon = EditorIcons::GetIcons()[(int)IconName::Icon_Platform_Windows];
 	windowsPlatform.isSupported = true;
 	windowsPlatform.supportBuildAndRun = true;
 	windowsPlatform.supportBuildAndRunOnHardware = false;
@@ -38,7 +39,7 @@ void BuildSettingsMenu::Init()
 
 	BuildPlatform linuxPlatform = BuildPlatform();
 	linuxPlatform.name = "Linux";
-	linuxPlatform.icon = EditorUI::icons[(int)IconName::Icon_Platform_Linux];
+	linuxPlatform.icon = EditorIcons::GetIcons()[(int)IconName::Icon_Platform_Linux];
 	linuxPlatform.isSupported = false;
 	linuxPlatform.supportBuildAndRun = false;
 	linuxPlatform.supportBuildAndRunOnHardware = false;
@@ -47,7 +48,7 @@ void BuildSettingsMenu::Init()
 
 	BuildPlatform pspPlatform = BuildPlatform();
 	pspPlatform.name = "PSP";
-	pspPlatform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PSP];
+	pspPlatform.icon = EditorIcons::GetIcons()[(int)IconName::Icon_Platform_PSP];
 	pspPlatform.isSupported = true;
 	pspPlatform.supportBuildAndRun = true;
 	pspPlatform.supportBuildAndRunOnHardware = false;
@@ -56,7 +57,7 @@ void BuildSettingsMenu::Init()
 
 	BuildPlatform psvitaPlatform = BuildPlatform();
 	psvitaPlatform.name = "PsVita";
-	psvitaPlatform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PSVITA];
+	psvitaPlatform.icon = EditorIcons::GetIcons()[(int)IconName::Icon_Platform_PSVITA];
 	psvitaPlatform.isSupported = true;
 	psvitaPlatform.supportBuildAndRun = false;
 	psvitaPlatform.supportBuildAndRunOnHardware = false;
@@ -65,7 +66,7 @@ void BuildSettingsMenu::Init()
 
 	/*BuildPlatform ps2Platform = BuildPlatform();
 	ps2Platform.name = "PS2";
-	ps2Platform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PS2];
+	ps2Platform.icon = EditorIcons::GetIcons()[(int)IconName::Icon_Platform_PS2];
 	ps2Platform.isSupported = false;
 	ps2Platform.supportBuildAndRun = false;
 	ps2Platform.supportBuildAndRunOnHardware = false;
@@ -73,7 +74,7 @@ void BuildSettingsMenu::Init()
 
 	BuildPlatform ps3Platform = BuildPlatform();
 	ps3Platform.name = "PS3";
-	ps3Platform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PS3];
+	ps3Platform.icon = EditorIcons::GetIcons()[(int)IconName::Icon_Platform_PS3];
 	ps3Platform.isSupported = true;
 	ps3Platform.supportBuildAndRun = false;
 	ps3Platform.supportBuildAndRunOnHardware = false;
@@ -82,7 +83,7 @@ void BuildSettingsMenu::Init()
 
 	/*BuildPlatform ps4Platform = BuildPlatform();
 	ps4Platform.name = "PS4";
-	ps4Platform.icon = EditorUI::icons[(int)IconName::Icon_Platform_PS4];
+	ps4Platform.icon = EditorIcons::GetIcons()[(int)IconName::Icon_Platform_PS4];
 	ps4Platform.isSupported = false;
 	ps4Platform.supportBuildAndRun = false;
 	ps4Platform.supportBuildAndRunOnHardware = false;

@@ -525,7 +525,7 @@ void Camera::BindFrameBuffer()
 void Camera::OnDrawGizmos()
 {
 #if defined(EDITOR)
-	Gizmo::DrawBillboard(GetTransformRaw()->GetPosition(), Vector2(0.2f), EditorUI::icons[(int)IconName::Icon_Camera], Color::CreateFromRGBFloat(1, 1, 1));
+	Gizmo::DrawBillboard(GetTransformRaw()->GetPosition(), Vector2(0.2f), EditorIcons::GetIcons()[(int)IconName::Icon_Camera], Color::CreateFromRGBFloat(1, 1, 1));
 #endif
 }
 

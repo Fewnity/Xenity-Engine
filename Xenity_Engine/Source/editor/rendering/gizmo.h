@@ -8,6 +8,7 @@
 #include <memory>
 
 #include <engine/api.h>
+#include <editor/ui/editor_icons.h>
 
 class Vector3;
 class Vector2;
@@ -20,22 +21,17 @@ class API Gizmo
 public:
 
 	/**
-	* @brief [Internal] Init Gizmo system
+	* @brief Set Gizmo draw color (does not affect sprites)
+	* @param newColor New color to set
 	*/
-	static void Init();
+	static void SetColor(const Color& newColor);
 
 	/**
-	* @brief Draw a simple line From A to B
+	* @brief Draw a simple line from A to B
 	* @param a Start point
 	* @param b End point
 	*/
 	static void DrawLine(const Vector3& a, const Vector3& b);
-
-	/**
-	* @brief Set Gizmo draw color
-	* @param newColor New color to set
-	*/
-	static void SetColor(const Color& newColor);
 
 	/**
 	* @brief Draw a billboard sprite
@@ -46,9 +42,22 @@ public:
 	*/
 	static void DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color);
 
+	/**
+	* @brief Draw a wired sphere
+	* @param position Position
+	* @param rotation Rotation
+	* @param raduis Radius
+	*/
 	static void DrawSphere(const Vector3& position, const Quaternion& rotation, const float radius);
 
 private:
+	friend class Engine;
+
+	/**
+	* @brief [Internal] Init Gizmo system
+	*/
+	static void Init();
+
 	static Color color;
 };
 

@@ -46,43 +46,6 @@ enum class EditorUIError
 	EDITOR_UI_ERROR_MISSING_FONT = -1,
 };
 
-enum class IconName
-{
-	Icon_Folder,
-	Icon_File,
-	Icon_Scene,
-	Icon_Image,
-	Icon_Mesh,
-	Icon_Code,
-	Icon_Header,
-	Icon_Audio,
-	Icon_Sky,
-	Icon_Font,
-	Icon_Audio_Source,
-	Icon_Point_Light,
-	Icon_Sun_Light,
-	Icon_Spot_Light,
-	Icon_Camera,
-	Icon_Material,
-	Icon_Shader,
-	Icon_Play,
-	Icon_Pause,
-	Icon_Stop,
-	Icon_Camera_Move,
-	Icon_Move,
-	Icon_Rotate,
-	Icon_Scale,
-	Icon_Grid,
-	Icon_Platform_Windows,
-	Icon_Platform_Linux,
-	Icon_Platform_PSP,
-	Icon_Platform_PSVITA,
-	Icon_Platform_PS2,
-	Icon_Platform_PS3,
-	Icon_Platform_PS4,
-	Icon_Count, // Last item
-};
-
 enum class DialogType
 {
 	Dialog_Type_OK,
@@ -446,7 +409,6 @@ public:
 	*/
 	[[nodiscard]] static std::string GenerateItemId();
 
-	static std::vector<std::shared_ptr<Texture>> icons;
 	static std::map<std::string, std::shared_ptr<Texture>> componentsIcons;
 	static std::shared_ptr<Menu> currentSelectAssetMenu;
 
@@ -722,10 +684,6 @@ private:
 	*/
 	static void UpdateUIScale();
 
-	/**
-	* @brief Load editor icons
-	*/
-	static void LoadEditorIcon(IconName iconName, const std::string& path);
 	static void LoadComponentIcon(std::string iconName, const std::string& path);
 
 	/**

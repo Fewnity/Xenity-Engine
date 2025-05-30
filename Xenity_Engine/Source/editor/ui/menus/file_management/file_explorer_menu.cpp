@@ -29,6 +29,7 @@
 #include "create_class_menu.h"
 #include <engine/graphics/texture/texture_default.h>
 #include <engine/game_elements/prefab.h>
+#include <editor/ui/editor_icons.h>
 
 void FileExplorerMenu::Init()
 {
@@ -140,7 +141,7 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	if (item.file && item.file->GetFileType() == FileType::File_Material)
 	{
-		const std::shared_ptr<Texture>& matTexture = EditorUI::icons[(int)IconName::Icon_Material];
+		const std::shared_ptr<Texture>& matTexture = EditorIcons::GetIcons()[(int)IconName::Icon_Material];
 		matTexture->Bind();
 		imageCursorPos.x -= iconSize / 3 / 2;
 		imageCursorPos.y -= iconSize / 3 / 2;
@@ -407,10 +408,10 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, c
 std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& fileExplorerItem)
 {
 	// Get item icon
-	std::shared_ptr<Texture> tex = EditorUI::icons[(int)IconName::Icon_File];
+	std::shared_ptr<Texture> tex = EditorIcons::GetIcons()[(int)IconName::Icon_File];
 	if (!fileExplorerItem.file)
 	{
-		tex = EditorUI::icons[(int)IconName::Icon_Folder];
+		tex = EditorIcons::GetIcons()[(int)IconName::Icon_Folder];
 	}
 	else
 	{
@@ -423,30 +424,30 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 			tex = std::dynamic_pointer_cast<Texture>(fileExplorerItem.file);
 			if (EditorUI::GetTextureId(*tex) == 0)
 			{
-				tex = EditorUI::icons[(int)IconName::Icon_Image];
+				tex = EditorIcons::GetIcons()[(int)IconName::Icon_Image];
 			}
 			break;
 		}
 		case FileType::File_Scene:
-			tex = EditorUI::icons[(int)IconName::Icon_Scene];
+			tex = EditorIcons::GetIcons()[(int)IconName::Icon_Scene];
 			break;
 		case FileType::File_Code:
-			tex = EditorUI::icons[(int)IconName::Icon_Code];
+			tex = EditorIcons::GetIcons()[(int)IconName::Icon_Code];
 			break;
 		case FileType::File_Header:
-			tex = EditorUI::icons[(int)IconName::Icon_Header];
+			tex = EditorIcons::GetIcons()[(int)IconName::Icon_Header];
 			break;
 		case FileType::File_Mesh:
-			tex = EditorUI::icons[(int)IconName::Icon_Mesh];
+			tex = EditorIcons::GetIcons()[(int)IconName::Icon_Mesh];
 			break;
 		case FileType::File_Audio:
-			tex = EditorUI::icons[(int)IconName::Icon_Audio];
+			tex = EditorIcons::GetIcons()[(int)IconName::Icon_Audio];
 			break;
 		case FileType::File_Skybox:
-			tex = EditorUI::icons[(int)IconName::Icon_Sky];
+			tex = EditorIcons::GetIcons()[(int)IconName::Icon_Sky];
 			break;
 		case FileType::File_Font:
-			tex = EditorUI::icons[(int)IconName::Icon_Font];
+			tex = EditorIcons::GetIcons()[(int)IconName::Icon_Font];
 			break;
 		case FileType::File_Material:
 		{
@@ -462,7 +463,7 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 			break;
 		}
 		case FileType::File_Shader:
-			tex = EditorUI::icons[(int)IconName::Icon_Shader];
+			tex = EditorIcons::GetIcons()[(int)IconName::Icon_Shader];
 			break;
 
 		case FileType::File_Other:

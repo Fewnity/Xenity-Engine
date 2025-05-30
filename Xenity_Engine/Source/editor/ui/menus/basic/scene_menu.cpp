@@ -26,6 +26,7 @@
 #include <engine/tools/math.h>
 #include <engine/graphics/texture/texture_default.h>
 #include <engine/game_elements/prefab.h>
+#include <editor/ui/editor_icons.h>
 
 
 void SceneMenu::Init()
@@ -945,20 +946,20 @@ bool SceneMenu::DrawToolWindow()
 	if (ImGui::CollapsingHeader(toolModeText.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_MoveCamera);
-		const bool moveCameraClicked = DrawImageButton(true, *EditorUI::icons[static_cast<int>(IconName::Icon_Camera_Move)], "##SceneMoveCameraButton", buttonHovered);
+		const bool moveCameraClicked = DrawImageButton(true, *EditorIcons::GetIcons()[static_cast<int>(IconName::Icon_Camera_Move)], "##SceneMoveCameraButton", buttonHovered);
 		EditorUI::EndButtonColor();
 
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Move);
-		const bool moveClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Move], "##SceneMoveButton", buttonHovered);
+		const bool moveClicked = DrawImageButton(true, *EditorIcons::GetIcons()[(int)IconName::Icon_Move], "##SceneMoveButton", buttonHovered);
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Rotate);
-		const bool rotateClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Rotate], "##SceneRotateButton", buttonHovered);
+		const bool rotateClicked = DrawImageButton(true, *EditorIcons::GetIcons()[(int)IconName::Icon_Rotate], "##SceneRotateButton", buttonHovered);
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_Scale);
-		const bool scaleClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Scale], "##SceneScaleButton", buttonHovered);
+		const bool scaleClicked = DrawImageButton(true, *EditorIcons::GetIcons()[(int)IconName::Icon_Scale], "##SceneScaleButton", buttonHovered);
 		EditorUI::EndButtonColor();
 		EditorUI::SetButtonColor(Graphics::IsGridRenderingEnabled());
-		const bool gridClicked = DrawImageButton(true, *EditorUI::icons[(int)IconName::Icon_Grid], "##SceneGridButton", buttonHovered);
+		const bool gridClicked = DrawImageButton(true, *EditorIcons::GetIcons()[(int)IconName::Icon_Grid], "##SceneGridButton", buttonHovered);
 		EditorUI::EndButtonColor();
 
 		if (moveCameraClicked)
