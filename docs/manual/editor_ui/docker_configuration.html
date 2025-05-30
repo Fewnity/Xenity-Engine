@@ -29,6 +29,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -234,7 +235,16 @@
 
 </style>
 <h1 id="docker-configuration"><a class="header" href="#docker-configuration">Docker configuration</a></h1>
+<p>The Docker configuration window shows you the current state of Docker and steps to finish the installation of Docker if Docker is not fully installed.</p>
 <p><img src="images/docker_config.jpg" alt="image" /></p>
+<p>The Check Docker state button re-check if there is any change about the Docker installation.
+Here is the list of different states:</p>
+<ul>
+<li>Docker not installed: Docker is not detected on your system. See <a href="../../installation/game_console_installation.html">Game console support</a> to install Docker.</li>
+<li>Docker not running: Docker is found on your system but the software is not running. When building a game Docker is automatically started. You can launch yourself Docker too.</li>
+<li>Missing Docker Image: Docker is running but Xenity Engine can't find the Docker Image (The image includes all the needed files and tools to compile games).</li>
+<li>Running: Docker is ready to use, the configuration is done.</li>
+</ul>
 
                     </main>
 

@@ -30,6 +30,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -236,6 +237,7 @@
 </style>
 <h1 id="presentation-of-xenity-engine"><a class="header" href="#presentation-of-xenity-engine">Presentation of Xenity Engine</a></h1>
 <p>Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows.</p>
+<p><a href="https://github.com/Fewnity/Xenity-Engine">GitHub page here!</a></p>
 <p><img src="images/editor_screenshot.png" alt="image" /></p>
 <h3 id="supported-platforms"><a class="header" href="#supported-platforms">Supported platforms:<br></a></h3>
 <p>✔️ Supported<br>
@@ -432,7 +434,7 @@ C++ Hot Reloading</li>
 <p>You have to:</p>
 <ul>
 <li>Install <a href="https://visualstudio.microsoft.com/">Visual Studio 2022</a>,</li>
-<li>Set <code>Compiler path</code> in the <code>Engine Settings</code> menu (<code>Window -&gt; Engine Settings</code>) if your Visual Studio installation/version is different.<br>.</li>
+<li>Set <code>Compiler path</code> in the <code>Engine Settings</code> menu (<code>Window -&gt; Engine Settings</code>) if your Visual Studio installation/version is different.<br></li>
 </ul>
 <p>To be able to compile your game on game consoles (PlayStation Portable, PlayStation Vita, PlayStation 3), follow this part: <a href="installation/./game_console_installation.html">Game console support</a></p>
 <div style="break-before: page; page-break-before: always;"></div><style>
@@ -503,22 +505,26 @@ C++ Hot Reloading</li>
 
 </style>
 <h1 id="game-console-support"><a class="header" href="#game-console-support">Game console support</a></h1>
+<p>Docker Desktop is needed to compile PSP, PS3 and PsVita games.<br>
+The main reason is most SDKs are only working on Linux. Docker is a simple way to install Linux and every SDK and needed tools to compile your game even if your system is running Windows.</p>
+<p>Virtualization shoud be enabled in the bios. Click here to see <a href="https://stackoverflow.com/questions/49005791/how-to-check-if-intel-virtualization-is-enabled-without-going-to-bios-in-windows">how to check if virtualization is enabled on my system.</a></p>
+<p>The SDKs alone take around 8GB, and Docker will also install a Linux image (this won't affect your Windows system). Please make sure you have at least 20-30GB of free disk space available.</p>
+<p>If you are already using Docker, Xenity Engine won't affect your existing images/containers.</p>
 <h2 id="docker-setup"><a class="header" href="#docker-setup">Docker Setup</a></h2>
-<p>Docker Desktop is needed to compile PSP, PS3 and PsVita games.<br></p>
-<p>You have to:</p>
+<p>To be able to compile on game consoles you have to:</p>
 <ul>
 <li>Download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>,</li>
-<li>Finish the docker install in Xenity. For this go in the Docker Configuration menu (<code>Window -&gt; Docker Configuration</code>), and follow the instructions.</li>
+<li>Finish the docker install in Xenity. For this, go to the <a href="installation/../manual/editor_ui/docker_configuration.html">Docker Configuration menu</a> (<code>Window -&gt; Docker Configuration</code>), and follow the instructions.</li>
 </ul>
 <p>The process can take several minutes especially if you have a slow computer or a slow internet connection. (The editor will freeze, do not close it).</p>
-<p>If anything goes wrong during the installation, check in Docker Desktop if an Image called <code>xenity_x_x_x</code> (<code>x_x_x</code> is the engine version).<br>
-If there is any, delete it and retry the installation from the editor.</p>
+<p>If anything goes wrong during the installation, check in Docker Desktop if an Image called <code>xenity_x_x_x</code> (<code>x_x_x</code> is a version).<br>
+If there is an image, delete it and retry the installation from the editor.</p>
 <h2 id="build-and-run"><a class="header" href="#build-and-run">Build and run</a></h2>
 <p>A build and run option is supported for the PSP to launch the game on an emulator after the build.<br></p>
 <p>You have to:</p>
 <ul>
 <li>Install the <a href="https://www.ppsspp.org/">PPSSPP Emulator</a>.<br></li>
-<li>Set <code>PPSSPP location</code> in the <code>Engine Settings</code> menu if your installation location is different.<br>.</li>
+<li>Set <code>PPSSPP location</code> in the <code>Engine Settings</code> menu if your installation location is different.<br></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -667,75 +673,8 @@ They all work on game consoles too.<br></p>
 
 </style>
 <h1 id="manual"><a class="header" href="#manual">Manual</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="project-manager"><a class="header" href="#project-manager">Project Manager</a></h1>
-<p><img src="manual/images/project_manager.jpg" alt="image" /></p>
+<p>Here is a manual to present the engine and on how to use the editor.</p>
+<p>To learn more about menus and their uses, see <a href="manual/./editor_ui/editor_ui.html">Editor UI</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -806,7 +745,8 @@ They all work on game consoles too.<br></p>
 <h1 id="the-editor-ui"><a class="header" href="#the-editor-ui">The editor UI</a></h1>
 <p>Here is a presentation of every menu of the editor.<br>
 Click on link to get more details.</p>
-<p>The <a href="manual/editor_ui/./hierarchy.html">hierarchy</a> window displays all GameObjects of the scene.<br>
+<p>The <a href="manual/editor_ui/./project_manager.html">project manager</a> window displays all the projects made with Xenity Engine.<br>
+The <a href="manual/editor_ui/./hierarchy.html">hierarchy</a> window displays all GameObjects of the scene.<br>
 The <a href="manual/editor_ui/./inspector.html">inspector</a> window displays all Components a the selected GameObject.<br>
 The <a href="manual/editor_ui/./file_explorer.html">file explorer</a> window displays all files of your project.<br>
 The <a href="manual/editor_ui/./game_tab.html">game Tab</a> window displays the view of the game's camera.<br>
@@ -886,8 +826,85 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 }
 
 </style>
+<h1 id="project-manager"><a class="header" href="#project-manager">Project Manager</a></h1>
+<p>The project manager window shows the list of projects made with Xenity.<br>
+You can create new project, delete them or simply open them.</p>
+<p><img src="manual/editor_ui/images/project_manager.jpg" alt="image" /></p>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="the-hierarchy"><a class="header" href="#the-hierarchy">The hierarchy</a></h1>
+<p>The hierarchy window show all GameObjects if your scene.</p>
 <p><img src="manual/editor_ui/images/hierarchy.jpg" alt="image" /></p>
+<h3 id="interactions"><a class="header" href="#interactions">Interactions:</a></h3>
+<ul>
+<li>You can click on a GameObject to select it and use it in the <a href="manual/editor_ui/./inspector.html">inspector</a> or in the <a href="manual/editor_ui/./scene_tab.html">scene tab</a>.</li>
+<li>You can right click on a GameObject to manage it (delete, create a new GameObject...).</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -956,6 +973,11 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="the-inspector"><a class="header" href="#the-inspector">The inspector</a></h1>
+<p>The inspector window lists all components of a <a href="manual/editor_ui/../../script_api_reference/engine/gameobject/gameobject.html">GameObject</a>.</p>
+<p>You have the name of the GameObject and a check box to enable or disable it.<br>
+Then the <a href="manual/editor_ui/../../script_api_reference/engine/components/transform/transform.html">transform</a> of the GameObject that contains the informations about the position, rotation and scale.<br>
+And finally you have the list of components, you can add new, edit or delete them.<br>
+Most components have a check box to enable or disable them.</p>
 <p><img src="manual/editor_ui/images/inspector.jpg" alt="image" /></p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -1025,7 +1047,15 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="the-file-explorer"><a class="header" href="#the-file-explorer">The file explorer</a></h1>
+<p>Ther file explorer Window show all the files of your opened project.<br></p>
 <p><img src="manual/editor_ui/images/file_explorer.jpg" alt="image" /></p>
+<h3 id="manage-files"><a class="header" href="#manage-files">Manage files</a></h3>
+<ul>
+<li>You can double click on folders to open them or use the folder list on the left.</li>
+<li>To move a files you can drag it into a folder.</li>
+<li>To manage a file, you can right click on it and you will see a list of command (delete, rename...).</li>
+<li>You can right click the back of the file explorer, and you will see a list of commands (Create files, open folder in explorer...).</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1094,7 +1124,10 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="game-tab"><a class="header" href="#game-tab">Game tab</a></h1>
+<p>This window show the view of the game camera. This is the same view in builds.</p>
+<p>You can interract with it only in Play mode.</p>
 <p><img src="manual/editor_ui/images/game_tab.jpg" alt="image" /></p>
+<p>The numbers in the tab name are the view's resolution (width x height).</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1163,7 +1196,25 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="scene-tab"><a class="header" href="#scene-tab">Scene tab</a></h1>
+<p>This window show the view of the editor camera.</p>
 <p><img src="manual/editor_ui/images/scene_tab.jpg" alt="image" /></p>
+<h3 id="controls"><a class="header" href="#controls">Controls</a></h3>
+<p>You can move the camera using the arrow keys of the keyboard.<br>
+You can move the camera by moving the mouse while holding the mouse wheel button.<br>
+You can zoom/unzoom using the mouse wheel button.
+You can select objects by left clicking them with the mouse cursor.<br></p>
+<p>The numbers in the tab name are the view's resolution (width x height).</p>
+<h3 id="tools"><a class="header" href="#tools">Tools</a></h3>
+<p>At the left you have a list of tool modes:</p>
+<ul>
+<li>1: Move the camera with the mouse.</li>
+<li>2: Show arrows on the selected object to move it.</li>
+<li>2: Show circles on the selected object to rotate it.</li>
+<li>3: Show arrows on the selected object to scale it.</li>
+<li>4: Toggle the grid.</li>
+<li>2D: Set the view in 2D mode.</li>
+<li>World: Toggle if the arrows are affected by the rotation of the object.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1232,7 +1283,24 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="the-console"><a class="header" href="#the-console">The console</a></h1>
+<p>The console window displays messages, warnings, and errors from both the game and the editor.<br>
+It helps you debug your game and understand any issues that occur within the editor.</p>
 <p><img src="manual/editor_ui/images/console.jpg" alt="image" /></p>
+<p>There are 3 types of messages:</p>
+<ul>
+<li>Log: Informational messages that are not critical. These messages are mostly used for general feedback, such as successful loading of assets or routine operations.</li>
+<li>Warning: Indicates a potential issue that does not stop the game or editor from running, but might lead to problems if ignored. Warnings should be reviewed and addressed when possible.</li>
+<li>Error: Critical issues that usually prevent something from working correctly. Errors often stop certain systems from functioning and should be fixed immediately to ensure the game or editor runs properly.</li>
+</ul>
+<p>Here is the list of buttons:</p>
+<ul>
+<li>Console mode/List mode: Console mode will show all messages without colors and ordered from the oldest to the newest message.<br>List mode enable color and collaps identical messages.</li>
+<li>Clear: Remove all messages from the console.</li>
+<li>Clear on play: Remove all messages from the console when launching the game.</li>
+<li>Show Logs: On/Off button to list or not logs in List mode.</li>
+<li>Show Warnings: On/Off button to list or not warnings in List mode.</li>
+<li>Show Errors: On/Off button to list or not errors in List mode.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1301,9 +1369,39 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="the-profiler"><a class="header" href="#the-profiler">The profiler</a></h1>
-<p><img src="manual/editor_ui/images/profiler_basics.jpg" alt="image" />
-<img src="manual/editor_ui/images/profiler_memory.jpg" alt="image" />
-<img src="manual/editor_ui/images/profiler_graphs.jpg" alt="image" /></p>
+<p>The profiler window provides you informations about the performances of your game and of the engine.</p>
+<p>In the first part of the profiler, you can see basic information:</p>
+<ul>
+<li>FPS graph: The graph shows the number of frame per seconds. stable graph and high numbers are better.</li>
+<li>FPS average: The average number of frame per seconds. Higher is better.</li>
+<li>DrawCalls Count: When a submesh is rendered, it adds one to this counter. Lower is better, especially on older game consoles.</li>
+<li>Triangles Count: The number of rendered triangles. Lower is better.</li>
+<li>Materials update count: This counts how many times a material has been updated, specifically when its uniforms are modified before rendering. Lower is better.</li>
+</ul>
+<p><img src="manual/editor_ui/images/profiler_basics.jpg" alt="image" /></p>
+<p>In the second part of the profiler, show the memory consumption of the engine.<br></p>
+<ul>
+<li>Used memory: It's the RAM usage (Components, audio clips...).</li>
+<li>Used video memory: It's the RAM usage of the graphics card (FrameBuffers, Textures, Meshes...).</li>
+</ul>
+<p>There are some categories (GameObject, Mesh Data and Textures).</p>
+<ul>
+<li>Current allocation is the amount of memory used at this moment.</li>
+<li>Total is the amount of memory allocated since the beginning.</li>
+<li>Alloc count is the number of created objects since the beginning.</li>
+<li>Delete count is the number of deleted objects since the beginning.</li>
+</ul>
+<p>Mesh Data and textures are the most important, for example the PSP only have 2MB of video memory. If the PSP is running out of VRAM, the RAM is used instead of textures and mesh data, but it's slower.</p>
+<p><img src="manual/editor_ui/images/profiler_memory.jpg" alt="image" /></p>
+<p>In the third part of the profiler, you can see a list of frame. Each frame is recorded (in a limit of 400 frames).<br>
+You can select the frame by clicking on the element in the list.
+You will see the profiling data in two forms:</p>
+<ul>
+<li>A simple list of C++ functions with the total CPU time used by them.</li>
+<li>A graph that draw each call.</li>
+</ul>
+<p>You can pause the profiler with the button to read the value and you can load a profiler record file if you want to profile a build outside the editor.</p>
+<p><img src="manual/editor_ui/images/profiler_graphs.jpg" alt="image" /></p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1372,7 +1470,16 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="project-settings"><a class="header" href="#project-settings">Project settings</a></h1>
+<p>The project settings window show all settings related to the project.<br>
+Each projet has it's own settings.</p>
 <p><img src="manual/editor_ui/images/project_settings.jpg" alt="image" /></p>
+<h3 id="values"><a class="header" href="#values">Values:</a></h3>
+<ul>
+<li>Project Name: The name of the project, used by the <a href="manual/editor_ui/./project_manager.html">project manager</a>.</li>
+<li>Game Name: The name of the game, used in builds.</li>
+<li>Company Name: The name of your company. Can be your user name if you don't have one.</li>
+<li>Start Scene: The scene to load when the project is loaded. Used in builds. Should not be empty!</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1441,7 +1548,27 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="engine-settings"><a class="header" href="#engine-settings">Engine settings</a></h1>
+<p>This windows show all settings related to the editor.<br>
+The settings are shared between all projects.</p>
 <p><img src="manual/editor_ui/images/engine_settings.jpg" alt="image" /></p>
+<p>Here is the list of settings:</p>
+<h3 id="ui-color"><a class="header" href="#ui-color">UI color</a></h3>
+<ul>
+<li>Background color: Change the color of the editor background.</li>
+<li>Secondary color: Change the color of borders, buttons...</li>
+<li>Play tint color: Change the color of the background in play mode.</li>
+<li>Is Play Tint Additive: If enabled, the color is added to the background color, if disabled the color is multiplied to the background color.</li>
+</ul>
+<h3 id="compiler-options"><a class="header" href="#compiler-options">Compiler options:</a></h3>
+<ul>
+<li>Compiler location: Set the location of MSVC compiler.</li>
+<li>PPSSPP location: Set the location of PPSSPP emulator (Used for build and run).</li>
+<li>Docker location: Set the location of Docker Desktop (Used for game consoles builds).</li>
+</ul>
+<h3 id="for-ps3-dev-kits-owner"><a class="header" href="#for-ps3-dev-kits-owner">For PS3 dev kits owner:</a></h3>
+<ul>
+<li>ps3ctrl location: Set the location of ps3ctrl (Software from Sony).</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1510,7 +1637,13 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="lighting-settings"><a class="header" href="#lighting-settings">Lighting settings</a></h1>
+<p>The lighting settings window show all lighting settings related to the scene.</p>
 <p><img src="manual/editor_ui/images/lighting_settings.jpg" alt="image" /></p>
+<h3 id="options"><a class="header" href="#options">Options:</a></h3>
+<ul>
+<li>Skybox: Set a <a href="manual/editor_ui/../../script_api_reference/engine/assets/skybox/skybox.html">skybox</a> for the scene.</li>
+<li>Sky Color: Set the color if the sky if no skybox is set.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1579,7 +1712,16 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="docker-configuration"><a class="header" href="#docker-configuration">Docker configuration</a></h1>
+<p>The Docker configuration window shows you the current state of Docker and steps to finish the installation of Docker if Docker is not fully installed.</p>
 <p><img src="manual/editor_ui/images/docker_config.jpg" alt="image" /></p>
+<p>The Check Docker state button re-check if there is any change about the Docker installation.
+Here is the list of different states:</p>
+<ul>
+<li>Docker not installed: Docker is not detected on your system. See <a href="manual/editor_ui/../../installation/game_console_installation.html">Game console support</a> to install Docker.</li>
+<li>Docker not running: Docker is found on your system but the software is not running. When building a game Docker is automatically started. You can launch yourself Docker too.</li>
+<li>Missing Docker Image: Docker is running but Xenity Engine can't find the Docker Image (The image includes all the needed files and tools to compile games).</li>
+<li>Running: Docker is ready to use, the configuration is done.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1732,7 +1874,18 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="dev-kit-control"><a class="header" href="#dev-kit-control">Dev kit control</a></h1>
+<p>If you are an owner of a PlayStation 3 dev kit, this menu can be useful for you.<br>
+This window provides a way to control a dev kit using official PS3 tools. (Softwares not included with Xenity Engine).</p>
 <p><img src="manual/editor_ui/images/dev_kit_control.jpg" alt="image" /></p>
+<p>The Dev kits list shows every registred dev kit in Target Manager.<br>
+The <code>Update dev kits list</code> button will launch Target Manager and get the list of dev kits.<br>
+Then you can click on the dev kit to use.<br></p>
+<h3 id="power-management"><a class="header" href="#power-management">Power Management</a></h3>
+<p>You can turn on or off your dev kit from the editor.<br>
+If you want to leave the game you can reset the dev kit.</p>
+<h3 id="game-management"><a class="header" href="#game-management">Game Management</a></h3>
+<p>If the game's files are located on the dev kit hard drive, you can launch it with the <code>Launch game from ps3 hdd</code>.<br>This option is useful with fake dev kit (retail PS3 running dev kit firmware).</p>
+<p>If the game's files are on your computer, you can launch it with the <code>Launch game from pc</code>.<br>This option only works with an official PlayStation dev kit.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1801,6 +1954,7 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="scripting-api-reference"><a class="header" href="#scripting-api-reference">Scripting API reference</a></h1>
+<p>This part of the documentation show all details about the classes and lines of code that you can use in Xenity Engine.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1869,6 +2023,10 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="editor"><a class="header" href="#editor">Editor</a></h1>
+<p>Editor functions and classes can't be used in game builds. You can use them only in the editor.</p>
+<ul>
+<li><a href="script_api_reference/editor/./gizmo.html">Gizmo</a>: Class used to rendering shapes in the editor.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1937,6 +2095,57 @@ The <a href="manual/editor_ui/./dev_kit_control.html">dev kit control</a> window
 
 </style>
 <h1 id="gizmo"><a class="header" href="#gizmo">Gizmo</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;editor/rendering/gizmo.h&gt;
+</code></pre>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="setcolor"><a class="header" href="#setcolor">SetColor</a></h3>
+<p>Set Gizmo draw color (does not affect sprites)</p>
+<pre><code class="language-cpp">SetColor(const Color&amp; newColor)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">const Color redColor = Color::CreateFromRGBAFloat(1, 0, 0, 1);
+Gizmo::SetColor(redColor);
+</code></pre>
+<hr />
+<h3 id="drawline"><a class="header" href="#drawline">DrawLine</a></h3>
+<p>Draw a simple line from A to B</p>
+<pre><code class="language-cpp">DrawLine(const Vector3&amp; a, const Vector3&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Gizmo::DrawLine(Vector3(0,0,0), Vector3(1,1,1));
+</code></pre>
+<hr />
+<h3 id="drawbillboard"><a class="header" href="#drawbillboard">DrawBillboard</a></h3>
+<p>Draw a billboard sprite</p>
+<pre><code class="language-cpp">DrawBillboard(
+    const Vector3&amp; position, 
+    const Vector2&amp; scale, 
+    const std::shared_ptr&lt;Texture&gt;&amp; texture, 
+    const Color&amp; color)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Gizmo::DrawBillboard(
+    GetTransform()-&gt;GetPosition(),
+    Vector2(0.2f),
+    EditorIcons::GetIcon(IconName::Icon_Audio_Source),
+    Color::CreateFromRGBAFloat(1, 1, 1, 1));
+</code></pre>
+<hr />
+<h3 id="drawsphere"><a class="header" href="#drawsphere">DrawSphere</a></h3>
+<p>Draw a wired sphere</p>
+<pre><code class="language-cpp">DrawSphere(
+    const Vector3&amp; position, 
+    const Quaternion&amp; rotation, 
+    const float radius)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Gizmo::DrawSphere(
+    GetTransform()-&gt;GetPosition(), 
+    GetTransform()-&gt;GetRotation(), 
+    2.0f);
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;

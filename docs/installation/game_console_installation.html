@@ -29,6 +29,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -234,22 +235,26 @@
 
 </style>
 <h1 id="game-console-support"><a class="header" href="#game-console-support">Game console support</a></h1>
+<p>Docker Desktop is needed to compile PSP, PS3 and PsVita games.<br>
+The main reason is most SDKs are only working on Linux. Docker is a simple way to install Linux and every SDK and needed tools to compile your game even if your system is running Windows.</p>
+<p>Virtualization shoud be enabled in the bios. Click here to see <a href="https://stackoverflow.com/questions/49005791/how-to-check-if-intel-virtualization-is-enabled-without-going-to-bios-in-windows">how to check if virtualization is enabled on my system.</a></p>
+<p>The SDKs alone take around 8GB, and Docker will also install a Linux image (this won't affect your Windows system). Please make sure you have at least 20-30GB of free disk space available.</p>
+<p>If you are already using Docker, Xenity Engine won't affect your existing images/containers.</p>
 <h2 id="docker-setup"><a class="header" href="#docker-setup">Docker Setup</a></h2>
-<p>Docker Desktop is needed to compile PSP, PS3 and PsVita games.<br></p>
-<p>You have to:</p>
+<p>To be able to compile on game consoles you have to:</p>
 <ul>
 <li>Download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>,</li>
-<li>Finish the docker install in Xenity. For this go in the Docker Configuration menu (<code>Window -&gt; Docker Configuration</code>), and follow the instructions.</li>
+<li>Finish the docker install in Xenity. For this, go to the <a href="../manual/editor_ui/docker_configuration.html">Docker Configuration menu</a> (<code>Window -&gt; Docker Configuration</code>), and follow the instructions.</li>
 </ul>
 <p>The process can take several minutes especially if you have a slow computer or a slow internet connection. (The editor will freeze, do not close it).</p>
-<p>If anything goes wrong during the installation, check in Docker Desktop if an Image called <code>xenity_x_x_x</code> (<code>x_x_x</code> is the engine version).<br>
-If there is any, delete it and retry the installation from the editor.</p>
+<p>If anything goes wrong during the installation, check in Docker Desktop if an Image called <code>xenity_x_x_x</code> (<code>x_x_x</code> is a version).<br>
+If there is an image, delete it and retry the installation from the editor.</p>
 <h2 id="build-and-run"><a class="header" href="#build-and-run">Build and run</a></h2>
 <p>A build and run option is supported for the PSP to launch the game on an emulator after the build.<br></p>
 <p>You have to:</p>
 <ul>
 <li>Install the <a href="https://www.ppsspp.org/">PPSSPP Emulator</a>.<br></li>
-<li>Set <code>PPSSPP location</code> in the <code>Engine Settings</code> menu if your installation location is different.<br>.</li>
+<li>Set <code>PPSSPP location</code> in the <code>Engine Settings</code> menu if your installation location is different.<br></li>
 </ul>
 
                     </main>

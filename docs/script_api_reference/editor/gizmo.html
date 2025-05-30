@@ -29,6 +29,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -234,6 +235,57 @@
 
 </style>
 <h1 id="gizmo"><a class="header" href="#gizmo">Gizmo</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;editor/rendering/gizmo.h&gt;
+</code></pre>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="setcolor"><a class="header" href="#setcolor">SetColor</a></h3>
+<p>Set Gizmo draw color (does not affect sprites)</p>
+<pre><code class="language-cpp">SetColor(const Color&amp; newColor)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">const Color redColor = Color::CreateFromRGBAFloat(1, 0, 0, 1);
+Gizmo::SetColor(redColor);
+</code></pre>
+<hr />
+<h3 id="drawline"><a class="header" href="#drawline">DrawLine</a></h3>
+<p>Draw a simple line from A to B</p>
+<pre><code class="language-cpp">DrawLine(const Vector3&amp; a, const Vector3&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Gizmo::DrawLine(Vector3(0,0,0), Vector3(1,1,1));
+</code></pre>
+<hr />
+<h3 id="drawbillboard"><a class="header" href="#drawbillboard">DrawBillboard</a></h3>
+<p>Draw a billboard sprite</p>
+<pre><code class="language-cpp">DrawBillboard(
+    const Vector3&amp; position, 
+    const Vector2&amp; scale, 
+    const std::shared_ptr&lt;Texture&gt;&amp; texture, 
+    const Color&amp; color)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Gizmo::DrawBillboard(
+    GetTransform()-&gt;GetPosition(),
+    Vector2(0.2f),
+    EditorIcons::GetIcon(IconName::Icon_Audio_Source),
+    Color::CreateFromRGBAFloat(1, 1, 1, 1));
+</code></pre>
+<hr />
+<h3 id="drawsphere"><a class="header" href="#drawsphere">DrawSphere</a></h3>
+<p>Draw a wired sphere</p>
+<pre><code class="language-cpp">DrawSphere(
+    const Vector3&amp; position, 
+    const Quaternion&amp; rotation, 
+    const float radius)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Gizmo::DrawSphere(
+    GetTransform()-&gt;GetPosition(), 
+    GetTransform()-&gt;GetRotation(), 
+    2.0f);
+</code></pre>
 
                     </main>
 

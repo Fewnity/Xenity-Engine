@@ -9,8 +9,8 @@
 - [Game project samples](./game_project_samples/game_project_samples.md)
 
 - [Manual](./manual/manual.md)
-    - [Project Manager](./manual/project_manager.md)
     - [The editor UI](./manual/editor_ui/editor_ui.md)
+        - [Project Manager](./manual/editor_ui/project_manager.md)
         - [The hierarchy](./manual/editor_ui/hierarchy.md)
         - [The inspector](./manual/editor_ui/inspector.md)
         - [The file explorer](./manual/editor_ui/file_explorer.md)

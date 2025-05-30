@@ -3,6 +3,7 @@
 Here is a presentation of every menu of the editor.<br>
 Click on link to get more details.
 
+The [project manager](./project_manager.md) window displays all the projects made with Xenity Engine.<br>
 The [hierarchy](./hierarchy.md) window displays all GameObjects of the scene.<br>
 The [inspector](./inspector.md) window displays all Components a the selected GameObject.<br>
 The [file explorer](./file_explorer.md) window displays all files of your project.<br>

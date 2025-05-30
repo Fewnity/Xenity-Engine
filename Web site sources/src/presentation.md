@@ -2,6 +2,8 @@
 
 Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows.
 
+[GitHub page here!](https://github.com/Fewnity/Xenity-Engine)
+
 ![image](images/editor_screenshot.png)
 
 ### Supported platforms:<br>
