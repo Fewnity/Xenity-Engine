@@ -22,11 +22,11 @@ RUN sudo apt install -y wget tar
 
 # Download pspdev
 #RUN cd /usr/local && wget https://github.com/pspdev/pspdev/releases/download/v20230818/pspdev-ubuntu-latest.tar.gz
-#RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/pspdev-ubuntu-latest.tar.gz
-RUN cd /usr/local && wget https://github.com/pspdev/pspdev/releases/download/latest/pspdev-ubuntu-latest-x86_64.tar.gz
+RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/pspdev-ubuntu-latest.tar.gz
+#RUN cd /usr/local && wget https://github.com/pspdev/pspdev/releases/download/latest/pspdev-ubuntu-latest-x86_64.tar.gz
 # Extract files
-#RUN cd /usr/local && tar -xvzf pspdev-ubuntu-latest.tar.gz && rm pspdev-ubuntu-latest.tar.gz
-RUN cd /usr/local && tar -xvzf pspdev-ubuntu-latest-x86_64.tar.gz && rm pspdev-ubuntu-latest-x86_64.tar.gz
+RUN cd /usr/local && tar -xvzf pspdev-ubuntu-latest.tar.gz && rm pspdev-ubuntu-latest.tar.gz
+#RUN cd /usr/local && tar -xvzf pspdev-ubuntu-latest-x86_64.tar.gz && rm pspdev-ubuntu-latest-x86_64.tar.gz
 
 # Add env variables
 RUN echo "export PSPDEV=/usr/local/pspdev" >> /root/.bashrc
@@ -37,9 +37,9 @@ RUN echo "export PATH=\$PATH:\$PSPDEV/bin" >> /root/.bashrc
 # RUN cd /home/vdpm/ && ./bootstrap-vitasdk.sh
 
 # Download vitasdk
-RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/vitasdk-ubuntu-latest9.tar.gz
+RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/vitasdk-ubuntu-latest.tar.gz
 # Extract files
-RUN cd /usr/local && tar -xvzf vitasdk-ubuntu-latest9.tar.gz && rm vitasdk-ubuntu-latest9.tar.gz
+RUN cd /usr/local && tar -xvzf vitasdk-ubuntu-latest.tar.gz && rm vitasdk-ubuntu-latest.tar.gz
 
 RUN echo "export VITASDK=/usr/local/vitasdk" >> /root/.bashrc
 RUN echo "export PATH=\$VITASDK/bin:\$PATH" >> /root/.bashrc
@@ -47,9 +47,9 @@ RUN echo "export PATH=\$VITASDK/bin:\$PATH" >> /root/.bashrc
 # --------------------------- INSTALL PS3 SDK
 
 # Download ps3dev
-RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/ps3dev-ubuntu-latest3.tar.gz
+RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/ps3dev-ubuntu-latest.tar.gz
 # Extract files
-RUN cd /usr/local && tar -xvzf ps3dev-ubuntu-latest3.tar.gz && rm ps3dev-ubuntu-latest3.tar.gz
+RUN cd /usr/local && tar -xvzf ps3dev-ubuntu-latest.tar.gz && rm ps3dev-ubuntu-latest.tar.gz
 
 # Download PSL1GHT
 RUN cd /usr/local && wget https://github.com/Fewnity/Xenity-Engine-SDK/releases/download/v1/PSL1GHT.tar.gz
