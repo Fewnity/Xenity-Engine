@@ -235,16 +235,105 @@
 
 </style>
 <h1 id="object-management"><a class="header" href="#object-management">Object management</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/tools/gameplay_utility.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to manage Objects (GameObject and Components).<br>
+You can Instantiate, Check and Destroy Objects.</p>
+<h2 id="methods"><a class="header" href="#methods">Methods</a></h2>
+<hr />
+<h3 id="isvalid"><a class="header" href="#isvalid">IsValid</a></h3>
+<p>Check if a GameObject or a Component is valid to use.<br>
+If an object is waiting to be destroyed, the object is not valid anymore.<br>
+Only takes Component, GameObject and Transform.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>pointer</code>:  Pointer to the object to check</li>
+</ul>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+bool IsValid(const std::shared_ptr&lt;T&gt;&amp; pointer)
+bool IsValid(const std::weak_ptr&lt;T&gt;&amp; pointer)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("MyGO");
+
+if(IsValid(myGameObject))
+{
+    // This object is valid
+}
+
+Destroy(myGameObject);
+
+if(IsValid(myGameObject))
+{
+    // This object is not valid anymore, this if won't be executed
+}
+
+</code></pre>
+<hr />
+<h3 id="instantiate"><a class="header" href="#instantiate">Instantiate</a></h3>
+<p>Create a new GameObject from another
+(Not very recommended, can be buggy, use prefabs instead)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>gameObject</code>:  GameObject to duplicate</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; Instantiate(const std::shared_ptr&lt;GameObject&gt;&amp; gameObject)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("MyGO");
+
+std::shared_ptr&lt;GameObject&gt; myGameObject2 = Instantiate(myGameObject);
+</code></pre>
+<hr />
+<h3 id="instantiate-1"><a class="header" href="#instantiate-1">Instantiate</a></h3>
+<p>Create a new GameObject from a prefab</p>
+<p>Parameters:</p>
+<ul>
+<li><code>prefab</code>:  Prefab to instanciate</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; Instantiate(const std::shared_ptr&lt;Prefab&gt;&amp; prefab)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = Instantiate(myPrefab);
+</code></pre>
+<hr />
+<h3 id="destroy"><a class="header" href="#destroy">Destroy</a></h3>
+<p>Destroy a GameObject or component</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>The pointer won't be null right after the Destroy call.<br>
+Do not use the object after calling Destroy.<br>
+Objects are fully destroy after the begin of the next frame.</p>
+</div>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  Object to destroy</li>
+</ul>
+<pre><code class="language-cpp">void Destroy(const std::shared_ptr&lt;Component&gt;&amp; component) 
+void Destroy(const std::shared_ptr&lt;GameObject&gt;&amp; gameObject);
+void Destroy(const std::weak_ptr&lt;Component&gt;&amp; component) 
+void Destroy(const std::weak_ptr&lt;GameObject&gt;&amp; gameObject);
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("MyGO");
+
+Destroy(myGameObject);
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/utils/endian_utils/endian_utils.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/noise/noise.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/gameobject/gameobject.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/physics/physics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +343,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/utils/endian_utils/endian_utils.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/noise/noise.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/gameobject/gameobject.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/physics/physics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

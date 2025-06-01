@@ -9,7 +9,7 @@
 - [Game project samples](./game_project_samples/game_project_samples.md)
 
 - [Manual](./manual/manual.md)
-    - [The editor UI](./manual/editor_ui/editor_ui.md)
+    - [The editor UI](./manual/editor_ui/editor_ui.md) <!-- Menus list -->
         - [Project Manager](./manual/editor_ui/project_manager.md)
         - [The hierarchy](./manual/editor_ui/hierarchy.md)
         - [The inspector](./manual/editor_ui/inspector.md)
@@ -26,8 +26,11 @@
         - [Dev kit control](./manual/editor_ui/dev_kit_control.md)
 
 - [Scripting API reference](./script_api_reference/scripting_api_reference.md)
+    - [Preprocessors](./script_api_reference/preprocessors.md)
     - [Editor](./script_api_reference/editor/editor.md)
         - [Gizmo](./script_api_reference/editor/gizmo.md)
+        - [EditorIcons](./script_api_reference/editor/editor_icons/editor_icons.md)
+            - [IconName Enum](./script_api_reference/editor/editor_icons/icon_name.md)
     - [Engine](./script_api_reference/engine/engine.md)
 
         - [Application](./script_api_reference/engine/application/application.md)
@@ -45,6 +48,7 @@
             - [Texture](./script_api_reference/engine/assets/texture/texture.md)
 
         - [Color](./script_api_reference/engine/color/color.md)
+            - [RGBA](./script_api_reference/engine/color/rgba.md)
 
         - [Components](./script_api_reference/engine/components/components.md)  <!-- Components list -->
             - [Component](./script_api_reference/engine/components/component/component.md)
@@ -56,7 +60,6 @@
             - [Canvas](./script_api_reference/engine/components/canvas/canvas.md)
             - [FpsCounter](./script_api_reference/engine/components/fps_counter/fps_counter.md)
             - [Light](./script_api_reference/engine/components/light/light.md)
-                - [SetIntensity](./script_api_reference/engine/components/light/set_intensity.md)
             - [Lod](./script_api_reference/engine/components/lod/lod.md)
             - [MeshRenderer](./script_api_reference/engine/components/mesh_renderer/mesh_renderer.md)
             - [ParticleSystem](./script_api_reference/engine/components/particle_system/particle_system.md)
@@ -75,12 +78,14 @@
 
         - [FileSystem](./script_api_reference/engine/file_system/file_system.md)
             - [File](./script_api_reference/engine/file_system/file.md)
-            - [FileReference](./script_api_reference/engine/file_system/file_reference.md)
+                - [FileMode Enum](./script_api_reference/engine/file_system/file_mode_enum.md)
             - [Directory](./script_api_reference/engine/file_system/directory.md)
+            - [CopyFileResult Enum](./script_api_reference/engine/file_system/copy_file_result_enum.md)
+
+        - [GameObject](./script_api_reference/engine/gameobject/gameobject.md)
 
         - [Inputs](./script_api_reference/engine/inputs/inputs.md)
             - [InputSystem](./script_api_reference/engine/inputs/input_system.md)
-            - [Input](./script_api_reference/engine/inputs/input.md)
             - [Touch](./script_api_reference/engine/inputs/touch.md)
             - [KeyCode Enum](./script_api_reference/engine/inputs/key_code_enum.md)
 
@@ -97,15 +102,17 @@
 
         - [Noise](./script_api_reference/engine/noise/noise.md)
 
+        - [Object management](./script_api_reference/engine/object_management/object_management.md)
+
         - [Physics](./script_api_reference/engine/physics/physics.md)
             - [Collider](./script_api_reference/engine/physics/collider.md)
-            - [CollisionEvent](./script_api_reference/engine/physics/collision_e_vent.md)
-            - [Raycast](./script_api_reference/engine/physics/raycast.md)
+            - [CollisionEvent](./script_api_reference/engine/physics/collision_event.md)
+            - [Raycast](./script_api_reference/engine/physics/raycast/raycast.md)
+                - [RaycastHit](./script_api_reference/engine/physics/raycast/raycast_hit.md)
 
-        - [Reflection](./script_api_reference/engine/reflection/reflection.md)
+        - [Reflective](./script_api_reference/engine/reflection/reflective.md)
+        - [SceneManager](./script_api_reference/engine/scene_manager/scene_manager.md)
         - [Screen](./script_api_reference/engine/screen/screen.md)
-        - [ScreenCapture](./script_api_reference/engine/screen_capture/screen_capture.md)
-
         - [Time](./script_api_reference/engine/time/time.md)
 
         - [UI Rendering](./script_api_reference/engine/ui_rendering/ui_rendering.md)
@@ -113,10 +120,7 @@
             - [VerticalAlignment Enum](./script_api_reference/engine/ui_rendering/vertical_alignment_enum.md)
 
         - [Utils](./script_api_reference/engine/utils/utils.md)
-            - [Endian Utils](./script_api_reference/engine/utils/endian_utils/endian_utils.md)
-
-        - [Object management](./script_api_reference/engine/object_management/object_management.md)
-        - [GameObject](./script_api_reference/engine/gameobject/gameobject.md)
+            - [EndianUtils](./script_api_reference/engine/utils/endian_utils/endian_utils.md)
 
 - [How to compile the editor](./how_to_compile_editor.md)
 

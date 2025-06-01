@@ -235,7 +235,41 @@
 
 </style>
 <h1 id="datetime"><a class="header" href="#datetime">DateTime</a></h1>
-
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/time/date_time.h&gt;
+</code></pre>
+<p>This class represents an instant in time.</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="getnow"><a class="header" href="#getnow">GetNow</a></h3>
+<p>Get the current date and time</p>
+<pre><code class="language-cpp">DateTime GetNow()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">DateTime currentDateTime = DateTime::GetNow();
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
+<p>Get a string representation of the date and time in the format: "hour:minute:second day/month/year"</p>
+<pre><code class="language-cpp">std::string ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">DateTime currentDateTime = DateTime::GetNow();
+Debug::Print(currentDateTime.ToString());
+// Prints: "12:49:53 31/5/2025"
+</code></pre>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>second</td><td>uint32_t</td><td>Number of seconds</td></tr>
+<tr><td>minute</td><td>uint32_t</td><td>Number of minutes</td></tr>
+<tr><td>hour</td><td>uint32_t</td><td>Number of hours</td></tr>
+<tr><td>day</td><td>uint32_t</td><td>Number of days</td></tr>
+<tr><td>month</td><td>uint32_t</td><td>Number of months</td></tr>
+<tr><td>year</td><td>uint32_t</td><td>Number of years</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

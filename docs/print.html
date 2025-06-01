@@ -273,6 +273,8 @@ Animations</li>
 2D Physics</li>
 <li><input disabled="" type="checkbox" checked=""/>
 C++ Hot Reloading</li>
+<li><input disabled="" type="checkbox"/>
+C++ Plugins (Started but not finished)</li>
 </ul>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
@@ -354,14 +356,33 @@ C++ Hot Reloading</li>
 
 </style>
 <h1 id="limitations"><a class="header" href="#limitations">Limitations</a></h1>
-<p>Lighting does not work great on PsVita and PS3.</p>
+<h2 id="for-users"><a class="header" href="#for-users">For users</a></h2>
+<h3 id="lighting"><a class="header" href="#lighting">Lighting</a></h3>
+<p>Lighting does not work great on PsVita and PS3. A shader variant system could fix this.</p>
 <ul>
 <li>Performances are not great</li>
 <li>Lights on PS3 are limited by 1 on each type</li>
 </ul>
+<p>Objects with a big scale will cause lags if they are moving (Problem caused the light world partitionner).</p>
+<h3 id="audio"><a class="header" href="#audio">Audio</a></h3>
 <p>Audio works "fine" with 44100Hz but on PS3 you need to use 48000Hz audio or the audio will sound weird.</p>
+<h3 id="rendering"><a class="header" href="#rendering">Rendering</a></h3>
 <p>The engine is mono thread, so performances are not great with lot of objects.</p>
-<p>Objects with a big scale will cause lags if they are moving (Problem caused the light world partitionner)</p>
+<p>There is not split screen support.</p>
+<h3 id="networking"><a class="header" href="#networking">Networking</a></h3>
+<p>Network sockets get data only every frame. (Limitation easy to fix).<br>
+There is no way to know if a socket has been closed or not.</p>
+<h3 id="reflection"><a class="header" href="#reflection">Reflection</a></h3>
+<p>The reflection does not support many types.</p>
+<h3 id="physics"><a class="header" href="#physics">Physics</a></h3>
+<p>There is no layer system. So no system to disable collisions between some colliders.</p>
+<h2 id="for-xenity-maintainers"><a class="header" href="#for-xenity-maintainers">For Xenity maintainers</a></h2>
+<h3 id="rendering-1"><a class="header" href="#rendering-1">Rendering</a></h3>
+<p>The graphics API interface is OpenGL like, so it's harder to add an new API that is different from OpenGL.</p>
+<h3 id="reflection-1"><a class="header" href="#reflection-1">Reflection</a></h3>
+<p>The reflection is a little bit hard to maintain.</p>
+<h3 id="other"><a class="header" href="#other">Other</a></h3>
+<p>The overuse of "friend class" is a problem in the engine in general. It's used to hide internal functions to the user.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2022,7 +2043,112 @@ If you want to leave the game you can reset the dev kit.</p>
 }
 
 </style>
-<h1 id="editor"><a class="header" href="#editor">Editor</a></h1>
+<h1 id="preprocessors"><a class="header" href="#preprocessors">Preprocessors</a></h1>
+<p>A list of preprocessors can be used in your code.
+A preprocessor can be used to change your code at compile time.</p>
+<p>Sample:</p>
+<pre><code class="language-cpp">void MyFunction()
+{
+#if defined(EDITOR)
+    Debug::Print("Running in the editor!");
+#else
+
+#if defined(__PSP__)
+    Debug::Print("Running on PSP!");
+#elif defined(__vita__)
+    Debug::Print("Running on PSP!");
+#else
+    Debug::Print("Running on something else!");
+#endif
+
+#endif
+}
+</code></pre>
+<h2 id="platforms"><a class="header" href="#platforms">Platforms</a></h2>
+<ul>
+<li><code>__PSP__</code> is defined when compiling for PlayStation Portable</li>
+<li><code>__vita__</code> is defined when compiling for PlayStation Vita</li>
+<li><code>__PS3__</code> is defined when compiling for PlayStation 3</li>
+<li><code>_WIN32</code> &amp; <code>_WIN64</code> is defined when compiling for Windows</li>
+<li><code>__LINUX__</code> is defined when compiling for Linux</li>
+</ul>
+<h2 id="editor"><a class="header" href="#editor">Editor</a></h2>
+<ul>
+<li><code>EDITOR</code> is defined when compiling to play in the editor</li>
+</ul>
+<h2 id="debug"><a class="header" href="#debug">Debug</a></h2>
+<ul>
+<li><code>DEBUG</code> is defined when compiling in debug mode</li>
+<li><code>USE_PROFILER</code> is defined when compiling with the profiler enabled</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="editor-1"><a class="header" href="#editor-1">Editor</a></h1>
 <p>Editor functions and classes can't be used in game builds. You can use them only in the editor.</p>
 <ul>
 <li><a href="script_api_reference/editor/./gizmo.html">Gizmo</a>: Class used to rendering shapes in the editor.</li>
@@ -2098,11 +2224,53 @@ If you want to leave the game you can reset the dev kit.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;editor/rendering/gizmo.h&gt;
 </code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>This class is used to draw debug shapes or sprites.</p>
+<p>Gizmos can be renderer in <code>OnDrawGizmos</code> and <code>OnDrawGizmosSelected</code> events.<br></p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>Do not create/delete/modify GameObjects or Components in these functions.<br>
+Do not call Gizmo functions outsize the events.</p>
+</div>
+<h3 id="how-to-use-gizmos-events"><a class="header" href="#how-to-use-gizmos-events">How to use Gizmos events:</a></h3>
+<p>Override functions you want to use:</p>
+<pre><code class="language-cpp">class MyComponent : public Component
+{
+public:
+    ...
+private:
+    void OnDrawGizmos() override;
+    void OnDrawGizmosSelected() override;
+}
+</code></pre>
+<p>Then implement the functions:</p>
+<pre><code class="language-cpp">void MyComponent::OnDrawGizmos()
+{
+#if defined(EDITOR)
+    Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
+#endif
+}
+
+void MyComponent::OnDrawGizmosSelected()
+{
+#if defined(EDITOR)
+    Gizmo::DrawLine(Vector3(1, 1, 1), Vector3(0, 0, 0));
+#endif
+}
+</code></pre>
+<p>The use of <code>#if defined(EDITOR)</code> is needed because the <code>Gizmo</code> class is not visible in game builds.</p>
 <h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
 <hr />
 <h3 id="setcolor"><a class="header" href="#setcolor">SetColor</a></h3>
 <p>Set Gizmo draw color (does not affect sprites)</p>
-<pre><code class="language-cpp">SetColor(const Color&amp; newColor)
+<p>Parameters:</p>
+<ul>
+<li><code>newColor</code>: New color to use</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; newColor)
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">const Color redColor = Color::CreateFromRGBAFloat(1, 0, 0, 1);
@@ -2111,15 +2279,27 @@ Gizmo::SetColor(redColor);
 <hr />
 <h3 id="drawline"><a class="header" href="#drawline">DrawLine</a></h3>
 <p>Draw a simple line from A to B</p>
-<pre><code class="language-cpp">DrawLine(const Vector3&amp; a, const Vector3&amp; b)
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: Start point</li>
+<li><code>b</code>: End point</li>
+</ul>
+<pre><code class="language-cpp">void DrawLine(const Vector3&amp; a, const Vector3&amp; b)
 </code></pre>
 <p>Code sample:</p>
-<pre><code class="language-cpp">Gizmo::DrawLine(Vector3(0,0,0), Vector3(1,1,1));
+<pre><code class="language-cpp">Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
 </code></pre>
 <hr />
 <h3 id="drawbillboard"><a class="header" href="#drawbillboard">DrawBillboard</a></h3>
 <p>Draw a billboard sprite</p>
-<pre><code class="language-cpp">DrawBillboard(
+<p>Parameters:</p>
+<ul>
+<li><code>position</code>: Position of the sprite</li>
+<li><code>scale</code>: Scale of the sprite</li>
+<li><code>texture</code>: Texture to draw</li>
+<li><code>color</code>: Color of the sprite</li>
+</ul>
+<pre><code class="language-cpp">void DrawBillboard(
     const Vector3&amp; position, 
     const Vector2&amp; scale, 
     const std::shared_ptr&lt;Texture&gt;&amp; texture, 
@@ -2130,12 +2310,18 @@ Gizmo::SetColor(redColor);
     GetTransform()-&gt;GetPosition(),
     Vector2(0.2f),
     EditorIcons::GetIcon(IconName::Icon_Audio_Source),
-    Color::CreateFromRGBAFloat(1, 1, 1, 1));
+    Color::CreateFromRGBAFloat(1, 1, 1, 0.5f));
 </code></pre>
 <hr />
 <h3 id="drawsphere"><a class="header" href="#drawsphere">DrawSphere</a></h3>
 <p>Draw a wired sphere</p>
-<pre><code class="language-cpp">DrawSphere(
+<p>Parameters:</p>
+<ul>
+<li><code>position</code>: Position of the sphere</li>
+<li><code>rotation</code>: Rotation of the sphere</li>
+<li><code>radius</code>: Radius of the sphere</li>
+</ul>
+<pre><code class="language-cpp">void DrawSphere(
     const Vector3&amp; position, 
     const Quaternion&amp; rotation, 
     const float radius)
@@ -2147,6 +2333,215 @@ Gizmo::SetColor(redColor);
     2.0f);
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="editoricons"><a class="header" href="#editoricons">EditorIcons</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;editor/ui/editor_icons.h&gt;
+</code></pre>
+<h2 id="description-1"><a class="header" href="#description-1">Description</a></h2>
+<p>Class used to get icon textures of the editor.<br>
+Can be used for Gizmo.</p>
+<h2 id="static-methods-1"><a class="header" href="#static-methods-1">Static methods</a></h2>
+<hr />
+<h3 id="geticons"><a class="header" href="#geticons">GetIcons</a></h3>
+<p>Get the list of all editor icons</p>
+<pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; GetIcons()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; icons = EditorIcons::GetIcons();
+
+const std::shared_ptr&lt;Texture&gt;&amp; cameraIcon = icons[IconName::Icon_Camera];
+</code></pre>
+<hr />
+<h3 id="geticon"><a class="header" href="#geticon">GetIcon</a></h3>
+<p>Get an icon by its name enum</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: Text to send</li>
+</ul>
+<pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; GetIcons(IconName iconName)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; cameraIcon = EditorIcons::GetIcon(IconName::Icon_Camera);
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="iconname-enum"><a class="header" href="#iconname-enum">IconName Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;editor/ui/editor_icons.h&gt;
+</code></pre>
+<h2 id="description-2"><a class="header" href="#description-2">Description</a></h2>
+<p>Enum that list every icons used in the editor.<br>
+Not available in game builds.</p>
+<h2 id="values-1"><a class="header" href="#values-1">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th></tr></thead><tbody>
+<tr><td>Icon_Folder</td></tr>
+<tr><td>Icon_File</td></tr>
+<tr><td>Icon_Scene</td></tr>
+<tr><td>Icon_Image</td></tr>
+<tr><td>Icon_Mesh</td></tr>
+<tr><td>Icon_Code</td></tr>
+<tr><td>Icon_Header</td></tr>
+<tr><td>Icon_Audio</td></tr>
+<tr><td>Icon_Sky</td></tr>
+<tr><td>Icon_Font</td></tr>
+<tr><td>Icon_Audio_Source</td></tr>
+<tr><td>Icon_Point_Light</td></tr>
+<tr><td>Icon_Sun_Light</td></tr>
+<tr><td>Icon_Spot_Light</td></tr>
+<tr><td>Icon_Camera</td></tr>
+<tr><td>Icon_Material</td></tr>
+<tr><td>Icon_Shader</td></tr>
+<tr><td>Icon_Play</td></tr>
+<tr><td>Icon_Pause</td></tr>
+<tr><td>Icon_Stop</td></tr>
+<tr><td>Icon_Camera_Move</td></tr>
+<tr><td>Icon_Move</td></tr>
+<tr><td>Icon_Rotate</td></tr>
+<tr><td>Icon_Scale</td></tr>
+<tr><td>Icon_Grid</td></tr>
+<tr><td>Icon_Question</td></tr>
+<tr><td>Icon_Platform_Windows</td></tr>
+<tr><td>Icon_Platform_Linux</td></tr>
+<tr><td>Icon_Platform_PSP</td></tr>
+<tr><td>Icon_Platform_PSVITA</td></tr>
+<tr><td>Icon_Platform_PS2</td></tr>
+<tr><td>Icon_Platform_PS3</td></tr>
+<tr><td>Icon_Platform_PS4</td></tr>
+<tr><td>Icon_Count</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -2282,6 +2677,110 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="application"><a class="header" href="#application">Application</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/application.h&gt;
+</code></pre>
+<h2 id="static-methods-2"><a class="header" href="#static-methods-2">Static methods</a></h2>
+<hr />
+<h3 id="openurl"><a class="header" href="#openurl">OpenURL</a></h3>
+<p>Opens the link in a web browser (Only for Windows)</p>
+<pre><code class="language-cpp">void OpenURL(const std::string&amp; url)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Application::OpenURL("https://google.com");
+</code></pre>
+<hr />
+<h3 id="quit"><a class="header" href="#quit">Quit</a></h3>
+<p>Quits the application</p>
+<pre><code class="language-cpp">void Quit()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Application::Quit();
+</code></pre>
+<hr />
+<h3 id="getplatform"><a class="header" href="#getplatform">GetPlatform</a></h3>
+<p>Returns the current platform the application is running on</p>
+<pre><code class="language-cpp">Platform GetPlatform()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if(Application::GetPlatform() == Platform::P_PSP)
+{
+    Debug::Print("Running on PSP!");
+}
+</code></pre>
+<hr />
+<h3 id="getxenityversion"><a class="header" href="#getxenityversion">GetXenityVersion</a></h3>
+<p>Returns the current version of Xenity Engine</p>
+<pre><code class="language-cpp">std::string GetXenityVersion()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if(Application::GetXenityVersion() == "1.0.0")
+{
+    // Special behavior for a specific version of the engine
+}
+else
+{
+    // ...
+}
+</code></pre>
+<hr />
+<h3 id="getgamename"><a class="header" href="#getgamename">GetGameName</a></h3>
+<p>Returns the name of the game</p>
+<pre><code class="language-cpp">std::string GetGameName()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print("Game name: " + Application::GetGameName());
+</code></pre>
+<hr />
+<h3 id="getcompanyname"><a class="header" href="#getcompanyname">GetCompanyName</a></h3>
+<p>Returns the name of the company</p>
+<pre><code class="language-cpp">std::string GetCompanyName()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print("Company name: " + Application::GetCompanyName());
+</code></pre>
+<hr />
+<h3 id="isineditor"><a class="header" href="#isineditor">IsInEditor</a></h3>
+<p>Returns if the application is running in the editor</p>
+<pre><code class="language-cpp">bool IsInEditor()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if(Application::IsInEditor())
+{
+    Debug::Print("Running in editor!");
+}
+else
+{
+    Debug::Print("Not running in editor!");
+}
+
+// For something at compile time
+#if defined(EDITOR)
+    Debug::Print("Running in editor!");
+#else
+    Debug::Print("Not running in editor!");
+#endif
+</code></pre>
+<hr />
+<h3 id="getgamedatafolder"><a class="header" href="#getgamedatafolder">GetGameDataFolder</a></h3>
+<p>Return the game folder (folder where you can write data)</p>
+<pre><code class="language-cpp">bool GetGameDataFolder()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::string fileName = Application::GetGameDataFolder() + "my_file.txt";
+std::shared_ptr&lt;File&gt; myFile = FileSystem::MakeFile(fileName);
+bool isOpened = myFile-&gt;Open(FileMode::WriteCreateFile);
+</code></pre>
+<hr />
+<h3 id="getgamedatafolder-1"><a class="header" href="#getgamedatafolder-1">GetGameDataFolder</a></h3>
+<p>Returns the game folder (folder where the game is located, may be read-only)</p>
+<pre><code class="language-cpp">bool GetGameFolder()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::string fileName = Application::GetGameFolder() + "my_file.txt";
+std::shared_ptr&lt;File&gt; myFile = FileSystem::MakeFile(fileName);
+bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -3098,7 +3597,259 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="color"><a class="header" href="#color">Color</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/color/color.h&gt;
+</code></pre>
+<h2 id="description-3"><a class="header" href="#description-3">Description</a></h2>
+<p>This class stores informations about a color.</p>
+<h2 id="static-methods-3"><a class="header" href="#static-methods-3">Static methods</a></h2>
+<hr />
+<h3 id="createfromrgb"><a class="header" href="#createfromrgb">CreateFromRGB</a></h3>
+<p>Create a color from 3 uint8_t (alpha = 255)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>r</code>: Red level [0;255]</li>
+<li><code>g</code>: Green level [0;255]</li>
+<li><code>b</code>: Blue level [0;255]</li>
+</ul>
+<pre><code class="language-cpp">Color CreateFromRGB(uint8_t r, uint8_t g, uint8_t b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color red = Color::CreateFromRGB(255, 0, 0);
+</code></pre>
+<hr />
+<h3 id="createfromrgba"><a class="header" href="#createfromrgba">CreateFromRGBA</a></h3>
+<p>Create a color from 4 uint8_t</p>
+<p>Parameters:</p>
+<ul>
+<li><code>r</code>: Red level [0;255]</li>
+<li><code>g</code>: Green level [0;255]</li>
+<li><code>b</code>: Blue level [0;255]</li>
+<li><code>a</code>: Alpha level [0;255]</li>
+</ul>
+<pre><code class="language-cpp">Color CreateFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBA(255, 0, 0, 128);
+</code></pre>
+<hr />
+<h3 id="createfromrgbfloat"><a class="header" href="#createfromrgbfloat">CreateFromRGBFloat</a></h3>
+<p>Create a color from 3 floats (alpha = 1)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>r</code>: Red level [0.0f;1.0f]</li>
+<li><code>g</code>: Green level [0.0f;1.0f]</li>
+<li><code>b</code>: Blue level [0.0f;1.0f]</li>
+</ul>
+<pre><code class="language-cpp">Color CreateFromRGBFloat(float r, float g, float b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color red = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f);
+</code></pre>
+<hr />
+<h3 id="createfromrgbfloat-1"><a class="header" href="#createfromrgbfloat-1">CreateFromRGBFloat</a></h3>
+<p>Create a color from 4 floats</p>
+<p>Parameters:</p>
+<ul>
+<li><code>r</code>: Red level [0.0f;1.0f]</li>
+<li><code>g</code>: Green level [0.0f;1.0f]</li>
+<li><code>b</code>: Blue level [0.0f;1.0f]</li>
+<li><code>a</code>: Alpha level [0.0f;1.0f]</li>
+</ul>
+<pre><code class="language-cpp">Color CreateFromRGBFloat(float r, float g, float b, float a)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f, 0.5f);
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="setfromrgba"><a class="header" href="#setfromrgba">SetFromRGBA</a></h3>
+<p>Set color from 4 uint8_t</p>
+<p>Parameters:</p>
+<ul>
+<li><code>r</code>: Red level [0;255]</li>
+<li><code>g</code>: Green level [0;255]</li>
+<li><code>b</code>: Blue level [0;255]</li>
+<li><code>a</code>: Alpha level [0;255]</li>
+</ul>
+<pre><code class="language-cpp">Color SetFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color myColor = Color();
+myColor.SetFromRGBA(255, 0, 0, 128);
+myColor.SetFromRGBA(255, 255, 255, 255);
+</code></pre>
+<hr />
+<h3 id="setfromrgbafloat"><a class="header" href="#setfromrgbafloat">SetFromRGBAFloat</a></h3>
+<p>Set color from 4 float</p>
+<p>Parameters:</p>
+<ul>
+<li><code>r</code>: Red level [0.0f;1.0f]</li>
+<li><code>g</code>: Green level [0.0f;1.0f]</li>
+<li><code>b</code>: Blue level [0.0f;1.0f]</li>
+<li><code>a</code>: Alpha level [0.0f;1.0f]</li>
+</ul>
+<pre><code class="language-cpp">Color SetFromRGBAFloat(float r, float g, float b, float a)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color myColor = Color();
+myColor.SetFromRGBAFloat(1.0f, 0, 0, 0.5f);
+myColor.SetFromRGBAFloat(1.0f, 1.0f, 1.0f, 1.0f);
+</code></pre>
+<hr />
+<h3 id="getrgba"><a class="header" href="#getrgba">GetRGBA</a></h3>
+<p>Get RGBA</p>
+<pre><code class="language-cpp">const RGBA&amp; GetRGBA() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color red = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f);
+RGBA rgba = red.GetRGBA();
+const RGBA&amp; rgbaRef = red.GetRGBA(); // Avoid a copy
+</code></pre>
+<hr />
+<h3 id="getunsignedintrgba"><a class="header" href="#getunsignedintrgba">GetUnsignedIntRGBA</a></h3>
+<p>Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA)</p>
+<pre><code class="language-cpp">unsigned int GetUnsignedIntRGBA() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color myColor = Color::CreateFromRGBAFloat(1.0f, 0.6f, 0.3f, 0.1f);
+unsigned int rgba = myColor.GetUnsignedIntRGBA(); // 0xff994c19
+</code></pre>
+<hr />
+<h3 id="getunsignedintrgba-1"><a class="header" href="#getunsignedintrgba-1">GetUnsignedIntRGBA</a></h3>
+<p>Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR)</p>
+<pre><code class="language-cpp">unsigned int GetUnsignedIntABGR() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color myColor = Color::CreateFromRGBAFloat(1.0f, 0.6f, 0.3f, 0.1f);
+unsigned int abgr = myColor.GetUnsignedIntABGR(); // 0x194c99ff
+</code></pre>
+<hr />
+<h3 id="getunsignedintargb"><a class="header" href="#getunsignedintargb">GetUnsignedIntARGB</a></h3>
+<p>Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB)</p>
+<pre><code class="language-cpp">unsigned int GetUnsignedIntARGB() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color myColor = Color::CreateFromRGBAFloat(1.0f, 0.6f, 0.3f, 0.1f);
+unsigned int argb = myColor.GetUnsignedIntARGB(); // 0x19ff994c
+</code></pre>
+<hr />
+<h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
+<p>Return a string representation of the color</p>
+<pre><code class="language-cpp">std::string ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Color myColor = Color::CreateFromRGBAFloat(1.0f, 0.6f, 0.3f, 0.1f);
+Debug::Print(myColor.ToString());
+// Prints: "{R:1 G:0.6 B:0.3 A:0.1 | RGBA Hex:#ff994c19 | ARGB Hex:#19ff994c | ABGR Hex:#194c99ff}"
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="rgba"><a class="header" href="#rgba">RGBA</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/color/color.h&gt;
+</code></pre>
+<h2 id="description-4"><a class="header" href="#description-4">Description</a></h2>
+<p>This class stores informations about a color.</p>
+<h2 id="constructors"><a class="header" href="#constructors">Constructors</a></h2>
+<hr />
+<h3 id="rgba-1"><a class="header" href="#rgba-1">RGBA</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>r</code>: Red level [0.0f;1.0f]</li>
+<li><code>g</code>: Green level [0.0f;1.0f]</li>
+<li><code>b</code>: Blue level [0.0f;1.0f]</li>
+<li><code>a</code>: Alpha level [0.0f;1.0f]</li>
+</ul>
+<pre><code class="language-cpp">constexpr RGBA(float r, float g, float b, float a)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">RGBA myRGBA = RGBA(1.0f, 0.6f, 0.3f, 0.1f);
+</code></pre>
+<h2 id="public-methods-1"><a class="header" href="#public-methods-1">Public methods</a></h2>
+<hr />
+<h3 id="tovector4"><a class="header" href="#tovector4">ToVector4</a></h3>
+<p>Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha</p>
+<pre><code class="language-cpp">Vector4 ToVector4() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">RGBA myRGBA = RGBA(1.0f, 0.6f, 0.3f, 0.1f);
+Vector4 rgbaAsVector4 = myRGBA.ToVector4();
+</code></pre>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>r</td><td><code>float</code></td><td>Red information [0.0f;1.0f]</td></tr>
+<tr><td>g</td><td><code>float</code></td><td>Green information [0.0f;1.0f]</td></tr>
+<tr><td>b</td><td><code>float</code></td><td>Blue information [0.0f;1.0f]</td></tr>
+<tr><td>a</td><td><code>float</code></td><td>Alpha information [0.0f;1.0f]</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -3778,74 +4529,6 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="light"><a class="header" href="#light">Light</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="setintensity"><a class="header" href="#setintensity">SetIntensity</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -4594,7 +5277,41 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="datetime"><a class="header" href="#datetime">DateTime</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/time/date_time.h&gt;
+</code></pre>
+<p>This class represents an instant in time.</p>
+<h2 id="static-methods-4"><a class="header" href="#static-methods-4">Static methods</a></h2>
+<hr />
+<h3 id="getnow"><a class="header" href="#getnow">GetNow</a></h3>
+<p>Get the current date and time</p>
+<pre><code class="language-cpp">DateTime GetNow()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">DateTime currentDateTime = DateTime::GetNow();
+</code></pre>
+<h2 id="public-methods-2"><a class="header" href="#public-methods-2">Public methods</a></h2>
+<hr />
+<h3 id="tostring-1"><a class="header" href="#tostring-1">ToString</a></h3>
+<p>Get a string representation of the date and time in the format: "hour:minute:second day/month/year"</p>
+<pre><code class="language-cpp">std::string ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">DateTime currentDateTime = DateTime::GetNow();
+Debug::Print(currentDateTime.ToString());
+// Prints: "12:49:53 31/5/2025"
+</code></pre>
+<h2 id="variables-1"><a class="header" href="#variables-1">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>second</td><td>uint32_t</td><td>Number of seconds</td></tr>
+<tr><td>minute</td><td>uint32_t</td><td>Number of minutes</td></tr>
+<tr><td>hour</td><td>uint32_t</td><td>Number of hours</td></tr>
+<tr><td>day</td><td>uint32_t</td><td>Number of days</td></tr>
+<tr><td>month</td><td>uint32_t</td><td>Number of months</td></tr>
+<tr><td>year</td><td>uint32_t</td><td>Number of years</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -4661,7 +5378,77 @@ Gizmo::SetColor(redColor);
 }
 
 </style>
-<h1 id="debug"><a class="header" href="#debug">Debug</a></h1>
+<h1 id="debug-1"><a class="header" href="#debug-1">Debug</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/debug/debug.h&gt;
+</code></pre>
+<h2 id="description-5"><a class="header" href="#description-5">Description</a></h2>
+<p>Class used to print text in the console and in file or remotely to a server (Server part is removed for now)</p>
+<p>You can find logs in the <code>xenity_engine_debug.txt</code> file.<br>
+The file will be created in the same folder of the executable file.<br>
+For PsVita the file will be created in <code>ux0:data/xenity_engine/</code>.</p>
+<h2 id="static-methods-5"><a class="header" href="#static-methods-5">Static methods</a></h2>
+<hr />
+<h3 id="print"><a class="header" href="#print">Print</a></h3>
+<p>Print a text</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: Text to print</li>
+<li><code>hideInEditorConsole</code>: If true, the text will not be printed in the editor's console</li>
+</ul>
+<pre><code class="language-cpp">void Print(const std::string&amp; text, bool hideInEditorConsole = false)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print("Hello World!"); // Printed in both console and file
+
+Debug::Print("Hello file!", true); // Only printed in the file
+</code></pre>
+<hr />
+<h3 id="printwarning"><a class="header" href="#printwarning">PrintWarning</a></h3>
+<p>Print a warning</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: Text to print</li>
+<li><code>hideInEditorConsole</code>: If true, the text will not be printed in the editor's console</li>
+</ul>
+<pre><code class="language-cpp">void PrintWarning(const std::string&amp; text, bool hideInEditorConsole = false)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::PrintWarning("I'm a warning.");
+
+// Prints: "[WARNING] I'm a warning."
+</code></pre>
+<hr />
+<h3 id="printerror"><a class="header" href="#printerror">PrintError</a></h3>
+<p>Print an error</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: Text to print</li>
+<li><code>hideInEditorConsole</code>: If true, the text will not be printed in the editor's console</li>
+</ul>
+<pre><code class="language-cpp">void PrintError(const std::string&amp; text, bool hideInEditorConsole = false)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::PrintError("You can't do that!");
+
+// Prints: "[ERROR] You can't do that!"
+</code></pre>
+<hr />
+<h3 id="getondebuglogevent"><a class="header" href="#getondebuglogevent">GetOnDebugLogEvent</a></h3>
+<p>Get the event when a debug message is printed</p>
+<pre><code class="language-cpp">Event&lt;const std::string&amp;, DebugType&gt;&amp; GetOnDebugLogEvent()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void OnLog(const std::string&amp; text, DebugType debugType)
+{
+    // ...
+}
+
+Debug::GetOnDebugLogEvent().Bind(&amp;OnLog);
+Debug::PrintWarning("I'm a warning");
+Debug::GetOnDebugLogEvent().Unbind(&amp;OnLog);
+// OnLog will be called with "I'm a warning" and DebugType::Warning as parameters
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -4798,6 +5585,162 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="event"><a class="header" href="#event">Event</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/event_system/event_system.h&gt;
+</code></pre>
+<h2 id="description-6"><a class="header" href="#description-6">Description</a></h2>
+<p>This class gives the possibility to bind a function to an event.<br>
+When a event object is destroyed, all bound functions are unbound.</p>
+<p>This class is using templates.</p>
+<pre><code class="language-cpp">template&lt;typename... Args&gt;
+class Event
+</code></pre>
+<p>Event without argument:</p>
+<pre><code class="language-cpp">Event&lt;&gt; myEvent;
+</code></pre>
+<p>Event with arguments:</p>
+<pre><code class="language-cpp">Event&lt;int, const std::string&amp;&gt; myEvent;
+</code></pre>
+<h2 id="public-methods-3"><a class="header" href="#public-methods-3">Public methods</a></h2>
+<hr />
+<h3 id="bind"><a class="header" href="#bind">Bind</a></h3>
+<p>Bind a simple function</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>:  Pointer to the function to bind</li>
+</ul>
+<pre><code class="language-cpp">void Bind(void(*function)(Args...))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string&amp; b) { }
+
+class MyClass
+{
+public:
+    static void MyStaticFunction(int a, const std::string&amp; b) { }
+};
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+myEvent.Bind(&amp;MyClass::MyStaticFunction);
+</code></pre>
+<hr />
+<h3 id="bind-1"><a class="header" href="#bind-1">Bind</a></h3>
+<p>Bind a function linked to an object</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>:  Pointer to the function to bind</li>
+<li><code>obj</code>:  Pointer to the object</li>
+</ul>
+<pre><code class="language-cpp">template&lt;typename ObjType&gt;
+void Bind(void(ObjType::* function)(Args...), ObjType* obj)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class MyClass
+{
+public:
+    void MyFunction(int a, const std::string&amp; b) { }
+};
+
+MyClass myClassInstance;
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyClass::MyFunction, &amp;myClassInstance);
+</code></pre>
+<hr />
+<h3 id="unbind"><a class="header" href="#unbind">Unbind</a></h3>
+<p>Unbind a simple function</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>:  Pointer to the function to unbind</li>
+</ul>
+<pre><code class="language-cpp">void Unbind(void(*function)(Args...))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string&amp; b) { }
+
+class MyClass
+{
+public:
+    static void MyStaticFunction(int a, const std::string&amp; b) { }
+};
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+myEvent.Bind(&amp;MyClass::MyStaticFunction);
+//...
+myEvent.Unbind(&amp;MyFunction);
+myEvent.Unbind(&amp;MyClass::MyStaticFunction);
+</code></pre>
+<hr />
+<h3 id="unbind-1"><a class="header" href="#unbind-1">Unbind</a></h3>
+<p>Unbind a function linked to an object</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>:  Pointer to the function to unbind</li>
+<li><code>obj</code>:  Pointer to the object</li>
+</ul>
+<pre><code class="language-cpp">template&lt;typename ObjType&gt;
+void Unbind(void(ObjType::* function)(Args...), ObjType* obj)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class MyClass
+{
+public:
+    void MyFunction(int a, const std::string&amp; b) { }
+};
+
+MyClass myClassInstance;
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyClass::MyFunction, &amp;myClassInstance);
+//...
+myEvent.Unbind(&amp;MyClass::MyFunction, &amp;myClassInstance);
+</code></pre>
+<hr />
+<h3 id="unbindall"><a class="header" href="#unbindall">UnbindAll</a></h3>
+<p>Unbind all bound function</p>
+<pre><code class="language-cpp">void UnbindAll()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string b) { }
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+//...
+myEvent.UnbindAll();
+</code></pre>
+<hr />
+<h3 id="trigger"><a class="header" href="#trigger">Trigger</a></h3>
+<p>Call all bound functions</p>
+<p>Parameters:</p>
+<ul>
+<li><code>args</code>:  All arguments to send</li>
+</ul>
+<pre><code class="language-cpp">void Trigger(Args... args)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string b) { }
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+myEvent.Trigger(1, "Hello World!");
+</code></pre>
+<hr />
+<h3 id="getboundfunctioncount"><a class="header" href="#getboundfunctioncount">GetBoundFunctionCount</a></h3>
+<p>Get the number of listener</p>
+<pre><code class="language-cpp">size_t GetBoundFunctionCount()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string b) { }
+void MyFunction2(int a, const std::string b) { }
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+myEvent.Bind(&amp;MyFunction2);
+
+size_t count = myEvent.GetBoundFunctionCount(); // count = 2
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -4866,6 +5809,133 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="filesystem"><a class="header" href="#filesystem">FileSystem</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
+</code></pre>
+<h2 id="description-7"><a class="header" href="#description-7">Description</a></h2>
+<p>This class provides methods to manipulate files and directories.</p>
+<h2 id="static-methods-6"><a class="header" href="#static-methods-6">Static methods</a></h2>
+<hr />
+<h3 id="createfolder"><a class="header" href="#createfolder">CreateFolder</a></h3>
+<p>Create a directory.<br>
+Create parents directories if they do not exist.
+Returns true on success.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Path of the folder to create</li>
+</ul>
+<pre><code class="language-cpp">bool CreateFolder(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">FileSystem::CreateFolder("C:/my_folder/");
+</code></pre>
+<hr />
+<h3 id="delete"><a class="header" href="#delete">Delete</a></h3>
+<p>Delete a file or a directory.<br></p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Path of file or folder</li>
+</ul>
+<pre><code class="language-cpp">void Delete(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">FileSystem::Delete("C:/my_folder/my_file.txt");
+FileSystem::Delete("C:/my_folder/");
+</code></pre>
+<hr />
+<h3 id="rename"><a class="header" href="#rename">Rename</a></h3>
+<p>Rename a file or a directory (Not currently supported on PSP and PS3).<br>
+Returns true on success.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: File path to rename</li>
+<li><code>newPath</code>: New file path (should be in the same directory)</li>
+</ul>
+<pre><code class="language-cpp">bool Rename(const std::string&amp; path, const std::string&amp; newPath)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">FileSystem::Rename(
+    "C:/my_folder/my_file.txt", 
+    "C:/my_folder/my_renamed_file.txt");
+</code></pre>
+<hr />
+<h3 id="copyfile"><a class="header" href="#copyfile">CopyFile</a></h3>
+<p>Copy a file to a new path (Not currently supported on PS3).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: File path to copy</li>
+<li><code>newPath</code>: File destination path</li>
+<li><code>replace</code>: If true, replace the file if it already exists</li>
+</ul>
+<pre><code class="language-cpp">CopyFileResult CopyFile(const std::string&amp; path, const std::string&amp; newPath, bool replace)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">CopyFileResult result = FileSystem::CopyFile(
+    "C:/my_folder/my_file.txt", 
+    "C:/my_folder/my_copied_file.txt"
+    false); // Result is Success
+
+// Do it again, this time the result will be "FileAlreadyExists"
+CopyFileResult result = FileSystem::CopyFile(
+    "C:/my_folder/my_file.txt", 
+    "C:/my_folder/my_copied_file.txt"
+    false);
+</code></pre>
+<hr />
+<h3 id="makefile"><a class="header" href="#makefile">MakeFile</a></h3>
+<p>Create a File object from a path (Do not create the file on the system).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: File path (Relative or absolute)</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; MakeFile(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+if(file-&gt;Open(FileMode::WriteCreateFile))
+{
+    // File created thanks to the WriteCreateFile option 
+}
+</code></pre>
+<hr />
+<h3 id="makedirectory"><a class="header" href="#makedirectory">MakeDirectory</a></h3>
+<p>Create a Directory object from a path (Do not create the directory on the system).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Directory path (Relative or absolute)</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; MakeDirectory(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; directory = FileSystem::MakeDirectory("C:/my_folder/");
+</code></pre>
+<hr />
+<h3 id="convertwindowspathtobasicpath"><a class="header" href="#convertwindowspathtobasicpath">ConvertWindowsPathToBasicPath</a></h3>
+<p>Converts all backslashes ('\') to forward slashes ('/') in the given path.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Path to convert</li>
+</ul>
+<pre><code class="language-cpp">std::string ConvertWindowsPathToBasicPath(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print(FileSystem::ConvertWindowsPathToBasicPath("C:\\my_folder\\"));
+// Prints "C:/my_folder/"
+</code></pre>
+<hr />
+<h3 id="convertbasicpathtowindowspath"><a class="header" href="#convertbasicpathtowindowspath">ConvertBasicPathToWindowsPath</a></h3>
+<p>Converts all forward slashes ('/') to backslashes ('\') in the given path.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Path to convert</li>
+</ul>
+<pre><code class="language-cpp">std::string ConvertBasicPathToWindowsPath(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print(FileSystem::ConvertBasicPathToWindowsPath("C:/my_folder/"));
+// Prints "C:\my_folder\"
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -4934,6 +6004,188 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="file"><a class="header" href="#file">File</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
+</code></pre>
+<h2 id="description-8"><a class="header" href="#description-8">Description</a></h2>
+<p>Class to manage a file (Create, open, read, write)</p>
+<h2 id="public-methods-4"><a class="header" href="#public-methods-4">Public methods</a></h2>
+<hr />
+<h3 id="open"><a class="header" href="#open">Open</a></h3>
+<p>Open the file.<br>
+Return true if the file is opened successfully.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fileMode</code>: The mode to open the file</li>
+</ul>
+<pre><code class="language-cpp">bool Open(FileMode fileMode)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+}
+</code></pre>
+<hr />
+<h3 id="checkifexist"><a class="header" href="#checkifexist">CheckIfExist</a></h3>
+<p>Check if the file exists.<br>
+Return true if the file exists.</p>
+<pre><code class="language-cpp">bool CheckIfExist()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+if(file-&gt;CheckIfExist())
+{
+}
+</code></pre>
+<hr />
+<h3 id="close"><a class="header" href="#close">Close</a></h3>
+<p>Close file.</p>
+<pre><code class="language-cpp">bool Close()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+    // ...
+    file-&gt;Close();
+}
+</code></pre>
+<hr />
+<h3 id="write-string"><a class="header" href="#write-string">Write (String)</a></h3>
+<p>Write string data to the file.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>data</code>: The data to write</li>
+</ul>
+<pre><code class="language-cpp">void Write(const std::string&amp; data)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.txt");
+
+if(file-&gt;Open(FileMode::WriteCreateFile))
+{
+    // ...
+    file-&gt;Write("Hello World!");
+}
+</code></pre>
+<hr />
+<h3 id="write-binary"><a class="header" href="#write-binary">Write (Binary)</a></h3>
+<p>Write binary data to the file.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>data</code>: The data to write</li>
+<li><code>size</code>: The size of the data in byte</li>
+</ul>
+<pre><code class="language-cpp">void Write(const unsigned char* data, size_t size)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.bin");
+
+
+if(file-&gt;Open(FileMode::WriteCreateFile))
+{
+    uint32_t value = 44;
+    // ...
+    file-&gt;Write(&amp;value, sizeof(uint32_t));
+}
+</code></pre>
+<hr />
+<h3 id="readall"><a class="header" href="#readall">ReadAll</a></h3>
+<p>Read all the content of the file as a string.</p>
+<pre><code class="language-cpp">std::string ReadAll()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.txt");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+    std::string content = file-&gt;ReadAll();
+}
+</code></pre>
+<hr />
+<h3 id="readallbinary"><a class="header" href="#readallbinary">ReadAllBinary</a></h3>
+<p>Read all the content of the file as a binary (Need to free the pointer after)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>size</code>: Output: The size of the binary in byte</li>
+</ul>
+<pre><code class="language-cpp">unsigned char* ReadAllBinary(size_t&amp; size)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.bin");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+    size_t size = 0;
+    unsigned char* content = file-&gt;ReadAllBinary(size);
+    // ...
+    free(content);
+}
+</code></pre>
+<hr />
+<h3 id="readbinary"><a class="header" href="#readbinary">ReadBinary</a></h3>
+<p>Read a part of the content of the file as a binary (Need to free the pointer after)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>offset</code>: Read offset in byte</li>
+<li><code>size</code>: The size to read in byte</li>
+</ul>
+<pre><code class="language-cpp">unsigned char* ReadBinary(size_t offset, size_t size)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.bin");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+    unsigned char* content = file-&gt;ReadBinary(4, 30);
+    // ...
+    free(content);
+}
+</code></pre>
+<hr />
+<h3 id="getpath"><a class="header" href="#getpath">GetPath</a></h3>
+<p>Get file path.</p>
+<pre><code class="language-cpp">const std::string&amp; GetPath() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+std::string filePath = file-&gt;GetPath(); // = C:/my_folder/my_file.txt
+</code></pre>
+<hr />
+<h3 id="getfolderpath"><a class="header" href="#getfolderpath">GetFolderPath</a></h3>
+<p>Get file folder path.</p>
+<pre><code class="language-cpp">std::string GetFolderPath() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+std::string filePath = file-&gt;GetFolderPath(); // = C:/my_folder/
+</code></pre>
+<hr />
+<h3 id="getfilename"><a class="header" href="#getfilename">GetFileName</a></h3>
+<p>Get file name</p>
+<pre><code class="language-cpp">const std::string&amp; GetFileName() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+std::string filePath = file-&gt;GetFileName(); // = my_file
+</code></pre>
+<hr />
+<h3 id="getfileextension"><a class="header" href="#getfileextension">GetFileExtension</a></h3>
+<p>Get file extension (dot included)</p>
+<pre><code class="language-cpp">const std::string&amp; GetFileExtension() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+std::string filePath = file-&gt;GetFileExtension(); // = .txt
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -5001,8 +6253,20 @@ Gizmo::SetColor(redColor);
 }
 
 </style>
-<h1 id="filereference"><a class="header" href="#filereference">FileReference</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<h1 id="filemode-enum"><a class="header" href="#filemode-enum">FileMode Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
+</code></pre>
+<h2 id="description-9"><a class="header" href="#description-9">Description</a></h2>
+<p>Enum that list every modes to open a file.</p>
+<h2 id="values-2"><a class="header" href="#values-2">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>ReadOnly</td><td>Only read calls are allowed</td></tr>
+<tr><td>WriteOnly</td><td>Only write calls are allowed</td></tr>
+<tr><td>WriteCreateFile</td><td>Only read calls are allowed and the file is created if it does not exist</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -5070,6 +6334,201 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="directory"><a class="header" href="#directory">Directory</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/file_system/directory.h&gt;
+</code></pre>
+<h2 id="description-10"><a class="header" href="#description-10">Description</a></h2>
+<p>Class to manage a directory (Get all files of a folder)</p>
+<h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>subdirectories</td><td><code>std::vector&lt;std::shared_ptr&lt;Directory&gt;&gt;</code></td><td>List of sub directories (filled with GetAllFiles)</td></tr>
+<tr><td>files</td><td><code>std::vector&lt;std::shared_ptr&lt;File&gt;&gt;</code></td><td>List of files (filled with GetAllFiles)</td></tr>
+</tbody></table>
+</div>
+<h2 id="public-methods-5"><a class="header" href="#public-methods-5">Public methods</a></h2>
+<hr />
+<h3 id="getallfiles"><a class="header" href="#getallfiles">GetAllFiles</a></h3>
+<p>Get all the files of the directory (can be very slow and not currently supported on PS3).<br></p>
+<p>Parameters:</p>
+<ul>
+<li><code>recursive</code>: If true, get all the files of the subdirectories</li>
+</ul>
+<pre><code class="language-cpp">std::vector&lt;std::shared_ptr&lt;File&gt;&gt; GetAllFiles(bool recursive)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; directory = FileSystem::MakeDirectory("C:/my_folder/");
+
+std::vector&lt;std::shared_ptr&lt;File&gt;&gt; files = directory-&gt;GetAllFiles(true);
+</code></pre>
+<hr />
+<h3 id="checkifexist-1"><a class="header" href="#checkifexist-1">CheckIfExist</a></h3>
+<p>Check if the directory exists.</p>
+<pre><code class="language-cpp">bool CheckIfExist() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; directory = FileSystem::MakeDirectory("C:/my_folder/");
+
+bool directoryExists = directory-&gt;CheckIfExist();
+</code></pre>
+<hr />
+<h3 id="getpath-1"><a class="header" href="#getpath-1">GetPath</a></h3>
+<p>Get directory path.</p>
+<pre><code class="language-cpp">const std::string&amp; GetPath() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; directory = FileSystem::MakeDirectory("C:/my_folder/");
+
+const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="copyfileresult-enum"><a class="header" href="#copyfileresult-enum">CopyFileResult Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
+</code></pre>
+<h2 id="description-11"><a class="header" href="#description-11">Description</a></h2>
+<p>Enum to list every different results of a file copy call.</p>
+<h2 id="values-3"><a class="header" href="#values-3">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>Success</td><td>File copied successfully.</td></tr>
+<tr><td>Failed</td><td>Failed to copy the file.</td></tr>
+<tr><td>FileAlreadyExists</td><td>The file already exists. Enable the replace option.</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="gameobject"><a class="header" href="#gameobject">GameObject</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -5206,74 +6665,171 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="inputsystem"><a class="header" href="#inputsystem">InputSystem</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
+</code></pre>
+<h2 id="description-12"><a class="header" href="#description-12">Description</a></h2>
+<p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse)</p>
+<h2 id="macros"><a class="header" href="#macros">Macros</a></h2>
+<p><code>PLAYER_1</code> value: 0<br>
+<code>PLAYER_2</code> value: 1<br>
+<code>PLAYER_3</code> value: 2<br>
+<code>PLAYER_4</code> value: 3<br>
+<code>PLAYER_5</code> value: 4<br>
+<code>PLAYER_6</code> value: 5<br>
+<code>PLAYER_7</code> value: 6<br>
+<code>PLAYER_8</code> value: 7</p>
+<h2 id="static-variables"><a class="header" href="#static-variables">Static variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>mousePosition</td><td><code>Vector2</code></td><td>Position of the mouse in pixels</td></tr>
+<tr><td>mouseSpeed</td><td><code>Vector2</code></td><td>Speed of the mouse (affected by the window resolution)</td></tr>
+<tr><td>mouseSpeedRaw</td><td><code>Vector2</code></td><td>Raw speed of the mouse</td></tr>
+<tr><td>mouseWheel</td><td><code>float</code></td><td>Speed of the mouse wheel</td></tr>
+</tbody></table>
+</div>
+<h2 id="static-methods-7"><a class="header" href="#static-methods-7">Static methods</a></h2>
+<hr />
+<h3 id="getkeydown"><a class="header" href="#getkeydown">GetKeyDown</a></h3>
+<p>Return true if the key has just been pressed</p>
+<p>Parameters:</p>
+<ul>
+<li><code>keyCode</code>: Key code to check</li>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">bool GetKeyDown(const KeyCode keyCode, const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if (InputSystem::GetKeyDown(KeyCode::A))
+{
+    Debug::Print("A key pressed");
 }
 
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
+if (InputSystem::GetKeyDown(KeyCode::CIRCLE), PLAYER_1)
+{
+    Debug::Print("CIRCLE button pressed");
+}
+</code></pre>
+<hr />
+<h3 id="getkey"><a class="header" href="#getkey">GetKey</a></h3>
+<p>Return true if the key is held</p>
+<p>Parameters:</p>
+<ul>
+<li><code>keyCode</code>: Key code to check</li>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">bool GetKey(const KeyCode keyCode, const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if (InputSystem::GetKey(KeyCode::A))
+{
+    Debug::Print("A key held");
 }
 
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
+if (InputSystem::GetKey(KeyCode::CIRCLE), PLAYER_1)
+{
+    Debug::Print("CIRCLE button held");
+}
+</code></pre>
+<hr />
+<h3 id="getkeyup"><a class="header" href="#getkeyup">GetKeyUp</a></h3>
+<p>Return true if the key has just been released</p>
+<p>Parameters:</p>
+<ul>
+<li><code>keyCode</code>: Key code to check</li>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">bool GetKeyUp(const KeyCode keyCode, const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if (InputSystem::GetKeyUp(KeyCode::A))
+{
+    Debug::Print("A key released");
 }
 
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
+if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
+{
+    Debug::Print("CIRCLE button released");
 }
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
+</code></pre>
+<hr />
+<h3 id="getleftjoystick"><a class="header" href="#getleftjoystick">GetLeftJoystick</a></h3>
+<p>Get left joystick value, values between -1.0f and 1.0f</p>
+<p>Parameters:</p>
+<ul>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">Vector2 GetLeftJoystick(const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 left = InputSystem::GetLeftJoystick(PLAYER_1);
+</code></pre>
+<hr />
+<h3 id="getrightjoystick"><a class="header" href="#getrightjoystick">GetRightJoystick</a></h3>
+<p>Get right joystick value, values between -1.0f and 1.0f</p>
+<p>Parameters:</p>
+<ul>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">Vector2 GetRightJoystick(const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 right = InputSystem::GetRightJoystick(PLAYER_1);
+</code></pre>
+<hr />
+<h3 id="gettouchscreencount"><a class="header" href="#gettouchscreencount">GetTouchScreenCount</a></h3>
+<p>Get how many touch screens the device has</p>
+<pre><code class="language-cpp">int GetTouchScreenCount()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int touchScreenCount = InputSystem::GetTouchScreenCount(); // = 2 on PsVita
+</code></pre>
+<hr />
+<h3 id="gettouchcount"><a class="header" href="#gettouchcount">GetTouchCount</a></h3>
+<p>Get how many touch inputs the screen has</p>
+<p>Parameters:</p>
+<ul>
+<li><code>screenIndex</code>: Screen index</li>
+</ul>
+<pre><code class="language-cpp">int GetTouchCount(const int screenIndex)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int touchCount = InputSystem::GetTouchCount(0);
+</code></pre>
+<hr />
+<h3 id="gettouch"><a class="header" href="#gettouch">GetTouch</a></h3>
+<p>Get touch data</p>
+<p>Parameters:</p>
+<ul>
+<li><code>touchIndex</code>: Touch index</li>
+<li><code>screenIndex</code>: Screen index</li>
+</ul>
+<pre><code class="language-cpp">Touch GetTouch(const int touchIndex, const int screenIndex)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int screenIndex = 0;
+int touchCount = InputSystem::GetTouchCount(screenIndex);
+if (touchCount &gt;= 1)
+{
+    Touch touch = InputSystem::GetTouch(1, screenIndex);
 }
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="input"><a class="header" href="#input">Input</a></h1>
+</code></pre>
+<hr />
+<h3 id="hidemouse"><a class="header" href="#hidemouse">HideMouse</a></h3>
+<p>Hide mouse</p>
+<pre><code class="language-cpp">void HideMouse()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">InputSystem::HideMouse();
+</code></pre>
+<hr />
+<h3 id="showmouse"><a class="header" href="#showmouse">ShowMouse</a></h3>
+<p>Show mouse</p>
+<pre><code class="language-cpp">void ShowMouse()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">InputSystem::ShowMouse();
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -5342,7 +6898,19 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="touch"><a class="header" href="#touch">Touch</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
+</code></pre>
+<h2 id="description-13"><a class="header" href="#description-13">Description</a></h2>
+<p>This class stores informations of finger on a touchscreen.</p>
+<h2 id="variables-3"><a class="header" href="#variables-3">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>position</td><td><code>Vector2Int</code></td><td>Actual position in pixel of the finger</td></tr>
+<tr><td>startPosition</td><td><code>Vector2Int</code></td><td>Start position in pixel of the finger</td></tr>
+<tr><td>fingerId</td><td><code>int</code></td><td>Id of the finger</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -5410,7 +6978,127 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="keycode-enum"><a class="header" href="#keycode-enum">KeyCode Enum</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
+</code></pre>
+<h2 id="description-14"><a class="header" href="#description-14">Description</a></h2>
+<p>Enum that list every keys of a keyboard and buttons of a controller.</p>
+<h2 id="values-4"><a class="header" href="#values-4">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody>
+<tr><td>EMPTY</td><td>-1</td></tr>
+<tr><td>RETURN</td><td>0</td></tr>
+<tr><td>ESCAPE</td><td>1</td></tr>
+<tr><td>BACKSPACE</td><td>2</td></tr>
+<tr><td>TAB</td><td>3</td></tr>
+<tr><td>SPACE</td><td>4</td></tr>
+<tr><td>EXCLAIM</td><td>5</td></tr>
+<tr><td>QUOTEDBL</td><td>6</td></tr>
+<tr><td>HASH</td><td>7</td></tr>
+<tr><td>PERCENT</td><td>8</td></tr>
+<tr><td>DOLLAR</td><td>9</td></tr>
+<tr><td>AMPERSAND</td><td>10</td></tr>
+<tr><td>QUOTE</td><td>11</td></tr>
+<tr><td>LEFTPAREN</td><td>12</td></tr>
+<tr><td>RIGHTPAREN</td><td>13</td></tr>
+<tr><td>ASTERISK</td><td>14</td></tr>
+<tr><td>PLUS</td><td>15</td></tr>
+<tr><td>COMMA</td><td>16</td></tr>
+<tr><td>MINUS</td><td>17</td></tr>
+<tr><td>PERIOD</td><td>18</td></tr>
+<tr><td>SLASH</td><td>19</td></tr>
+<tr><td>NUM_0</td><td>20</td></tr>
+<tr><td>NUM_1</td><td>21</td></tr>
+<tr><td>NUM_2</td><td>22</td></tr>
+<tr><td>NUM_3</td><td>23</td></tr>
+<tr><td>NUM_4</td><td>24</td></tr>
+<tr><td>NUM_5</td><td>25</td></tr>
+<tr><td>NUM_6</td><td>26</td></tr>
+<tr><td>NUM_7</td><td>27</td></tr>
+<tr><td>NUM_8</td><td>28</td></tr>
+<tr><td>NUM_9</td><td>29</td></tr>
+<tr><td>COLON</td><td>30</td></tr>
+<tr><td>SEMICOLON</td><td>31</td></tr>
+<tr><td>LESS</td><td>32</td></tr>
+<tr><td>EQUALS</td><td>33</td></tr>
+<tr><td>GREATER</td><td>34</td></tr>
+<tr><td>QUESTION</td><td>35</td></tr>
+<tr><td>AT</td><td>36</td></tr>
+<tr><td>LEFTBRACKET</td><td>37</td></tr>
+<tr><td>BACKSLASH</td><td>38</td></tr>
+<tr><td>RIGHTBRACKET</td><td>39</td></tr>
+<tr><td>CARET</td><td>40</td></tr>
+<tr><td>UNDERSCORE</td><td>41</td></tr>
+<tr><td>BACKQUOTE</td><td>42</td></tr>
+<tr><td>A</td><td>43</td></tr>
+<tr><td>B</td><td>44</td></tr>
+<tr><td>C</td><td>45</td></tr>
+<tr><td>D</td><td>46</td></tr>
+<tr><td>E</td><td>47</td></tr>
+<tr><td>F</td><td>48</td></tr>
+<tr><td>G</td><td>49</td></tr>
+<tr><td>H</td><td>50</td></tr>
+<tr><td>I</td><td>51</td></tr>
+<tr><td>J</td><td>52</td></tr>
+<tr><td>K</td><td>53</td></tr>
+<tr><td>L</td><td>54</td></tr>
+<tr><td>M</td><td>55</td></tr>
+<tr><td>N</td><td>56</td></tr>
+<tr><td>O</td><td>57</td></tr>
+<tr><td>P</td><td>58</td></tr>
+<tr><td>Q</td><td>59</td></tr>
+<tr><td>R</td><td>60</td></tr>
+<tr><td>S</td><td>61</td></tr>
+<tr><td>T</td><td>62</td></tr>
+<tr><td>U</td><td>63</td></tr>
+<tr><td>V</td><td>64</td></tr>
+<tr><td>W</td><td>65</td></tr>
+<tr><td>X</td><td>66</td></tr>
+<tr><td>Y</td><td>67</td></tr>
+<tr><td>Z</td><td>68</td></tr>
+<tr><td>CAPSLOCK</td><td>69</td></tr>
+<tr><td>F1</td><td>70</td></tr>
+<tr><td>F2</td><td>71</td></tr>
+<tr><td>F3</td><td>72</td></tr>
+<tr><td>F4</td><td>73</td></tr>
+<tr><td>F5</td><td>74</td></tr>
+<tr><td>F6</td><td>75</td></tr>
+<tr><td>F7</td><td>76</td></tr>
+<tr><td>F8</td><td>77</td></tr>
+<tr><td>F9</td><td>78</td></tr>
+<tr><td>F10</td><td>79</td></tr>
+<tr><td>F11</td><td>80</td></tr>
+<tr><td>F12</td><td>81</td></tr>
+<tr><td>RIGHT</td><td>82</td></tr>
+<tr><td>LEFT</td><td>83</td></tr>
+<tr><td>DOWN</td><td>84</td></tr>
+<tr><td>UP</td><td>85</td></tr>
+<tr><td>MOUSE_LEFT</td><td>86</td></tr>
+<tr><td>MOUSE_RIGHT</td><td>87</td></tr>
+<tr><td>LEFT_CONTROL</td><td>88</td></tr>
+<tr><td>RIGHT_CONTROL</td><td>89</td></tr>
+<tr><td>LEFT_ALT</td><td>90</td></tr>
+<tr><td>RIGHT_ALT</td><td>91</td></tr>
+<tr><td>CROSS</td><td>92</td></tr>
+<tr><td>CIRCLE</td><td>93</td></tr>
+<tr><td>SQUARE</td><td>94</td></tr>
+<tr><td>TRIANGLE</td><td>95</td></tr>
+<tr><td>START</td><td>96</td></tr>
+<tr><td>SELECT</td><td>97</td></tr>
+<tr><td>LTRIGGER1</td><td>98</td></tr>
+<tr><td>RTRIGGER1</td><td>99</td></tr>
+<tr><td>DEL</td><td>100</td></tr>
+<tr><td>MOUSE_MIDDLE</td><td>101</td></tr>
+<tr><td>LEFT_SHIFT</td><td>102</td></tr>
+<tr><td>RIGHT_SHIFT</td><td>103</td></tr>
+<tr><td>DPAD_LEFT</td><td>104</td></tr>
+<tr><td>DPAD_RIGHT</td><td>105</td></tr>
+<tr><td>DPAD_UP</td><td>106</td></tr>
+<tr><td>DPAD_DOWN</td><td>107</td></tr>
+<tr><td>L_JOYSTICK_CLICK</td><td>108</td></tr>
+<tr><td>R_JOYSTICK_CLICK</td><td>109</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -5954,6 +7642,43 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="networkmanager"><a class="header" href="#networkmanager">NetworkManager</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
+</code></pre>
+<h2 id="description-15"><a class="header" href="#description-15">Description</a></h2>
+<p>Class to create sockets and to manage networking settings.</p>
+<h2 id="static-methods-8"><a class="header" href="#static-methods-8">Static methods</a></h2>
+<hr />
+<h3 id="createsocket"><a class="header" href="#createsocket">CreateSocket</a></h3>
+<p>Create a socket.<br>
+Returns nullptr if the socket creation has failed.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>address</code>: IP address</li>
+<li><code>port</code>: Port number</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;Socket&gt; CreateSocket(const std::string&amp; address, int port)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+// Check if the socket has been created
+if(socket)
+{
+    // ...
+}
+</code></pre>
+<hr />
+<h3 id="createsocket-1"><a class="header" href="#createsocket-1">CreateSocket</a></h3>
+<p>Show the network setup menu for the PSP.<br>
+This function will only work on the PSP platform.</p>
+<p>To make networking working on PSP, the user has to manually connect to a wifi.<br>
+For this, a menu of the PSP OS ask to the user to setup a network connection.</p>
+<pre><code class="language-cpp">void ShowPSPNetworkSetupMenu()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">NetworkManager::ShowPSPNetworkSetupMenu();
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6022,6 +7747,84 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="socket"><a class="header" href="#socket">Socket</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
+</code></pre>
+<h2 id="description-16"><a class="header" href="#description-16">Description</a></h2>
+<p>Class to send and received data to/from a server.<br>
+Created with the NetworkManager class.<br>
+The socket will be closed when the object is destroyed.</p>
+<h2 id="public-methods-6"><a class="header" href="#public-methods-6">Public methods</a></h2>
+<hr />
+<h3 id="senddata-string"><a class="header" href="#senddata-string">SendData (string)</a></h3>
+<p>Send data as a string to the server</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: Text to send</li>
+</ul>
+<pre><code class="language-cpp">void SendData(const std::string&amp; text)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+if(socket)
+{
+    socket-&gt;SendData("Hello World!");
+}
+</code></pre>
+<hr />
+<h3 id="senddata-binary"><a class="header" href="#senddata-binary">SendData (binary)</a></h3>
+<p>Send binary data to the server</p>
+<p>Parameters:</p>
+<ul>
+<li><code>data</code>: Pointer to the data to send</li>
+<li><code>size</code>: Size on byte to send</li>
+</ul>
+<pre><code class="language-cpp">void SendData(const char* data, int size)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+
+struct MyStruct
+{
+    int value0 = 1;
+    int value1 = 2;
+};
+
+MyStruct myStruct = MyStruct();
+if(socket)
+{
+    socket-&gt;SendData(reinterpret_cast&lt;char*&gt;(&amp;myStruct), sizeof(MyStruct));
+}
+</code></pre>
+<hr />
+<h3 id="close-1"><a class="header" href="#close-1">Close</a></h3>
+<p>Send data as a string to the server</p>
+<pre><code class="language-cpp">void Close()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+if(socket)
+{
+    socket-&gt;SendData("Hello World!");
+    socket-&gt;Close();
+}
+</code></pre>
+<hr />
+<h3 id="getincommingdata"><a class="header" href="#getincommingdata">GetIncommingData</a></h3>
+<p>Return recieved data since the last GetIncommingData call (updated every frame)</p>
+<pre><code class="language-cpp">std::string GetIncommingData()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+if(socket)
+{
+    std::string data = socket-&gt;GetIncommingData();
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6090,6 +7893,66 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="noise"><a class="header" href="#noise">Noise</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/noise/noise.h&gt;
+</code></pre>
+<h2 id="description-17"><a class="header" href="#description-17">Description</a></h2>
+<p>Class to generate 1D, 2D, 3D and 4D Perlin noise</p>
+<h2 id="static-methods-9"><a class="header" href="#static-methods-9">Static methods</a></h2>
+<hr />
+<h3 id="noise1d"><a class="header" href="#noise1d">Noise1D</a></h3>
+<p>Get 1D Perlin noise</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  The x coordinate</li>
+</ul>
+<pre><code class="language-cpp">float Noise1D(float x)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = Noise::Noise1D(0.5f);
+</code></pre>
+<hr />
+<h3 id="noise2d"><a class="header" href="#noise2d">Noise2D</a></h3>
+<p>Get 2D Perlin noise</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  The x coordinate</li>
+<li><code>y</code>:  The y coordinate</li>
+</ul>
+<pre><code class="language-cpp">float Noise2D(float x, float y)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = Noise::Noise2D(0.5f, 0.1f);
+</code></pre>
+<hr />
+<h3 id="noise3d"><a class="header" href="#noise3d">Noise3D</a></h3>
+<p>Get 3D Perlin noise</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  The x coordinate</li>
+<li><code>y</code>:  The y coordinate</li>
+<li><code>z</code>:  The z coordinate</li>
+</ul>
+<pre><code class="language-cpp">float Noise3D(float x, float y, float z)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = Noise::Noise3D(0.5f, 0.1f, 0.3f);
+</code></pre>
+<hr />
+<h3 id="noise4d"><a class="header" href="#noise4d">Noise4D</a></h3>
+<p>Get 4D Perlin noise</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  The x coordinate</li>
+<li><code>y</code>:  The y coordinate</li>
+<li><code>z</code>:  The z coordinate</li>
+<li><code>w</code>:  The w coordinate</li>
+</ul>
+<pre><code class="language-cpp">float Noise4D(float x, float y, float z, float w)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = Noise::Noise4D(0.5f, 0.1f, 0.3f, 0.8f);
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6157,7 +8020,164 @@ Gizmo::SetColor(redColor);
 }
 
 </style>
-<h1 id="physics"><a class="header" href="#physics">Physics</a></h1>
+<h1 id="object-management"><a class="header" href="#object-management">Object management</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/tools/gameplay_utility.h&gt;
+</code></pre>
+<h2 id="description-18"><a class="header" href="#description-18">Description</a></h2>
+<p>Class to manage Objects (GameObject and Components).<br>
+You can Instantiate, Check and Destroy Objects.</p>
+<h2 id="methods"><a class="header" href="#methods">Methods</a></h2>
+<hr />
+<h3 id="isvalid"><a class="header" href="#isvalid">IsValid</a></h3>
+<p>Check if a GameObject or a Component is valid to use.<br>
+If an object is waiting to be destroyed, the object is not valid anymore.<br>
+Only takes Component, GameObject and Transform.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>pointer</code>:  Pointer to the object to check</li>
+</ul>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+bool IsValid(const std::shared_ptr&lt;T&gt;&amp; pointer)
+bool IsValid(const std::weak_ptr&lt;T&gt;&amp; pointer)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("MyGO");
+
+if(IsValid(myGameObject))
+{
+    // This object is valid
+}
+
+Destroy(myGameObject);
+
+if(IsValid(myGameObject))
+{
+    // This object is not valid anymore, this if won't be executed
+}
+
+</code></pre>
+<hr />
+<h3 id="instantiate"><a class="header" href="#instantiate">Instantiate</a></h3>
+<p>Create a new GameObject from another
+(Not very recommended, can be buggy, use prefabs instead)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>gameObject</code>:  GameObject to duplicate</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; Instantiate(const std::shared_ptr&lt;GameObject&gt;&amp; gameObject)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("MyGO");
+
+std::shared_ptr&lt;GameObject&gt; myGameObject2 = Instantiate(myGameObject);
+</code></pre>
+<hr />
+<h3 id="instantiate-1"><a class="header" href="#instantiate-1">Instantiate</a></h3>
+<p>Create a new GameObject from a prefab</p>
+<p>Parameters:</p>
+<ul>
+<li><code>prefab</code>:  Prefab to instanciate</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; Instantiate(const std::shared_ptr&lt;Prefab&gt;&amp; prefab)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = Instantiate(myPrefab);
+</code></pre>
+<hr />
+<h3 id="destroy"><a class="header" href="#destroy">Destroy</a></h3>
+<p>Destroy a GameObject or component</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>The pointer won't be null right after the Destroy call.<br>
+Do not use the object after calling Destroy.<br>
+Objects are fully destroy after the begin of the next frame.</p>
+</div>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  Object to destroy</li>
+</ul>
+<pre><code class="language-cpp">void Destroy(const std::shared_ptr&lt;Component&gt;&amp; component) 
+void Destroy(const std::shared_ptr&lt;GameObject&gt;&amp; gameObject);
+void Destroy(const std::weak_ptr&lt;Component&gt;&amp; component) 
+void Destroy(const std::weak_ptr&lt;GameObject&gt;&amp; gameObject);
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("MyGO");
+
+Destroy(myGameObject);
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="physics-1"><a class="header" href="#physics-1">Physics</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6226,6 +8246,60 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="collider"><a class="header" href="#collider">Collider</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/physics/collider.h&gt;
+</code></pre>
+<h2 id="description-19"><a class="header" href="#description-19">Description</a></h2>
+<p>Parent class of collider components. (BoxCollider, SphereCollider...)</p>
+<p>Function of Collider can be used on every colllider component.</p>
+<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
+<hr />
+<h3 id="setistrigger"><a class="header" href="#setistrigger">SetIsTrigger</a></h3>
+<p>Set if the collider is a trigger or not.<br>
+A trigger collider will not collide with other colliders, but will still generate collision events.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isTrigger</code>: New isTrigger value</li>
+</ul>
+<pre><code class="language-cpp">void SetIsTrigger(bool isTrigger)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;BoxColldier&gt; boxCollider = GetGameObject()-&gt;AddComponent&lt;BoxColldier&gt;(); 
+boxCollider-&gt;SetIsTrigger(true);
+</code></pre>
+<hr />
+<h3 id="istrigger"><a class="header" href="#istrigger">IsTrigger</a></h3>
+<p>Check if the collider is a trigger or not.</p>
+<pre><code class="language-cpp">bool IsTrigger() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;BoxColldier&gt; boxCollider = GetGameObject()-&gt;AddComponent&lt;BoxColldier&gt;(); 
+boxCollider-&gt;SetIsTrigger(true);
+bool isTrigger = boxCollider-&gt;IsTrigger(); // = true
+</code></pre>
+<hr />
+<h3 id="setgeneratecollisionevents"><a class="header" href="#setgeneratecollisionevents">SetGenerateCollisionEvents</a></h3>
+<p>Set if the collider should generate collision events or not.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>generateCollisionEvents</code>: New generateCollisionEvents value</li>
+</ul>
+<pre><code class="language-cpp">void SetGenerateCollisionEvents(bool generateCollisionEvents)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;BoxColldier&gt; boxCollider = GetGameObject()-&gt;AddComponent&lt;BoxColldier&gt;(); 
+boxCollider-&gt;SetGenerateCollisionEvents(true);
+</code></pre>
+<hr />
+<h3 id="getgeneratecollisionevents"><a class="header" href="#getgeneratecollisionevents">GetGenerateCollisionEvents</a></h3>
+<p>Check if the collider should generate collision events or not.</p>
+<pre><code class="language-cpp">bool GetGenerateCollisionEvents() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;BoxColldier&gt; boxCollider = GetGameObject()-&gt;AddComponent&lt;BoxColldier&gt;(); 
+boxCollider-&gt;SetGenerateCollisionEvents(true);
+bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // = true
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6294,7 +8368,18 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="collisionevent"><a class="header" href="#collisionevent">CollisionEvent</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/physics/collision_event.h&gt;
+</code></pre>
+<h2 id="description-20"><a class="header" href="#description-20">Description</a></h2>
+<p>This class stores informations of a collision between two colliders</p>
+<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>collider</td><td><code>Collider*</code></td><td>Collider A</td></tr>
+<tr><td>otherCollider</td><td><code>Collider*</code></td><td>Collider B</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -6362,6 +8447,39 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="raycast"><a class="header" href="#raycast">Raycast</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
+</code></pre>
+<h2 id="description-21"><a class="header" href="#description-21">Description</a></h2>
+<p>Class to check collisions with a ray.</p>
+<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
+<hr />
+<h3 id="check"><a class="header" href="#check">Check</a></h3>
+<p>Check if a ray hits a collider.<br>
+Return true if the raycast has hit a collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>startPosition</code>: The start position of the ray</li>
+<li><code>direction</code>: The direction of the ray</li>
+<li><code>maxDistance</code>: The max distance of the ray</li>
+<li><code>raycastHit</code>: The raycastHit struct that will be filled with the hit information</li>
+</ul>
+<pre><code class="language-cpp">bool Check(const Vector3&amp; startPosition, const Vector3&amp; direction, const float maxDistance, RaycastHit&amp; raycastHit)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Check under the player
+RaycastHit hit;
+bool hasHit = Raycast::Check(
+    raycastPointTransform-&gt;GetPosition(), 
+    Vector3(0, -1, 0), 
+    0.1f, 
+    hit);
+
+if (hasHit &amp;&amp; hit.hitCollider.lock())
+{
+    // There is something under the player
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6429,7 +8547,265 @@ Gizmo::SetColor(redColor);
 }
 
 </style>
-<h1 id="reflection"><a class="header" href="#reflection">Reflection</a></h1>
+<h1 id="raycasthit"><a class="header" href="#raycasthit">RaycastHit</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
+</code></pre>
+<h2 id="description-22"><a class="header" href="#description-22">Description</a></h2>
+<p>This class stores informations of a racyast hit.</p>
+<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>hitGameObject</td><td><code>std::weak_ptr&lt;GameObject&gt;</code></td><td>Pointer of the GameObject hit by the ray</td></tr>
+<tr><td>hitCollider</td><td><code>std::weak_ptr&lt;Collider&gt;</code></td><td>Pointer of the Collider hit by the ray</td></tr>
+<tr><td>hitPosition</td><td><code>Vector3</code></td><td>World position of the hit</td></tr>
+<tr><td>distance</td><td><code>float</code></td><td>Distance between the start position and the hit position</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="reflective"><a class="header" href="#reflective">Reflective</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/reflection/reflection.h&gt;
+</code></pre>
+<h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
+<p>Class to inherit if you want to access child's variables to fill variables from json or save them to json.<br>
+It's used to see variables of a class in the <a href="script_api_reference/engine/reflection/../../../manual/editor_ui/inspector.html">Inspector</a>.</p>
+<p>GameObject, Transform and Component implement this class.</p>
+<p>The GetReflectiveData function is very important and is mandatory to implement in every class that implement Reflective.</p>
+<h2 id="typedef"><a class="header" href="#typedef">Typedef</a></h2>
+<pre><code class="language-cpp">ReflectiveData = std::vector&lt;ReflectiveEntry&gt;
+</code></pre>
+<h2 id="macros-1"><a class="header" href="#macros-1">Macros</a></h2>
+<p>Macros have been added to simplify the usage of the reflection system.</p>
+<p><code>BEGIN_REFLECTION();</code> is used at the beginning of the GetReflectiveData function to prepare the reflection.</p>
+<p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
+<p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
+<p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
+<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
+<hr />
+<h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
+<p>Get all child class variables references (Needs to be implemented)</p>
+<pre><code class="language-cpp">virtual ReflectiveData GetReflectiveData() = 0
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class MyComponent : public Reflective
+{
+public:
+    ReflectiveData GetReflectiveData() override;
+
+public:
+    float publicVariable = 0;
+private:
+    float m_privateVariable = 1;
+};
+
+ReflectiveData MyComponent::GetReflectiveData()
+{
+	BEGIN_REFLECTION();
+	ADD_VARIABLE(publicVariable, true);
+     // false is used to hide the variable from the Inspector view
+	ADD_VARIABLE(m_privateVariable, false);
+	END_REFLECTION();
+}
+</code></pre>
+<hr />
+<h3 id="onreflectionupdated"><a class="header" href="#onreflectionupdated">OnReflectionUpdated</a></h3>
+<p>Called when one or more variables have been updated by the inspector or by the scene manager</p>
+<pre><code class="language-cpp">virtual void OnReflectionUpdated()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class MyComponent : public Reflective
+{
+public:
+    ReflectiveData GetReflectiveData() override;
+    void OnReflectionUpdated() override;
+
+public:
+    float publicVariable = 0;
+private:
+    float m_privateVariable = 1;
+};
+
+ReflectiveData MyComponent::GetReflectiveData()
+{
+    //...
+}
+
+void MyComponent::OnReflectionUpdated()
+{
+    Debug::Print("One or more variables have been updated!");
+}
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="scenemanager"><a class="header" href="#scenemanager">SceneManager</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/scene_manager/scene_manager.h&gt;
+</code></pre>
+<h2 id="description-24"><a class="header" href="#description-24">Description</a></h2>
+<p>Class to load scenes</p>
+<h2 id="static-methods-10"><a class="header" href="#static-methods-10">Static methods</a></h2>
+<hr />
+<h3 id="loadscene"><a class="header" href="#loadscene">LoadScene</a></h3>
+<p>Load a scene</p>
+<p>Parameters:</p>
+<ul>
+<li><code>scene</code>: Scene to load</li>
+</ul>
+<pre><code class="language-cpp">void LoadScene(const std::shared_ptr&lt;Scene&gt;&amp; scene)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Scene&gt; sceneToLoad; // Filled variable
+
+SceneManager::LoadScene(sceneToLoad);
+</code></pre>
+<hr />
+<h3 id="reloadscene"><a class="header" href="#reloadscene">ReloadScene</a></h3>
+<p>Reload the current scene</p>
+<pre><code class="language-cpp">void ReloadScene()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">SceneManager::ReloadScene();
+</code></pre>
+<hr />
+<h3 id="getopenedscene"><a class="header" href="#getopenedscene">GetOpenedScene</a></h3>
+<p>Get opened scene</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Scene&gt;&amp; GetOpenedScene()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Scene&gt; currentScene = SceneManager::GetOpenedScene();
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6498,74 +8874,64 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="screen"><a class="header" href="#screen">Screen</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/ui/screen.h&gt;
+</code></pre>
+<h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
+<p>Class to get informations and to interact with the screen</p>
+<h2 id="static-methods-11"><a class="header" href="#static-methods-11">Static methods</a></h2>
+<hr />
+<h3 id="getwidth"><a class="header" href="#getwidth">GetWidth</a></h3>
+<p>Get the width of the screen in pixels</p>
+<pre><code class="language-cpp">int GetWidth()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int width = Screen::GetWidth();
+</code></pre>
+<hr />
+<h3 id="getheight"><a class="header" href="#getheight">GetHeight</a></h3>
+<p>Get the height of the screen in pixels</p>
+<pre><code class="language-cpp">int GetHeight()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int height = Screen::GetHeight();
+</code></pre>
+<hr />
+<h3 id="setfullscreen"><a class="header" href="#setfullscreen">SetFullScreen</a></h3>
+<p>Set if the window should be in fullscreen mode
+Only for Windows and Linux, no effect on other platforms
+Does not affect the editor window</p>
+<p>Parameters:</p>
+<ul>
+<li><code>useFullScreenMode</code>: True to enable fullscreen, false to disable</li>
+</ul>
+<pre><code class="language-cpp">void SetFullScreen(bool useFullScreenMode)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Screen::SetFullScreen(true);
+</code></pre>
+<hr />
+<h3 id="setvsync"><a class="header" href="#setvsync">SetVSync</a></h3>
+<p>Set if the window should use VSync (May cause graphical glitch on PSP)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>useVSync</code>: True to enable VSync, false to disable</li>
+</ul>
+<pre><code class="language-cpp">void SetVSync(bool useVSync)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Screen::SetVSync(true);
+</code></pre>
+<hr />
+<h3 id="isvsyncenabled"><a class="header" href="#isvsyncenabled">IsVSyncEnabled</a></h3>
+<p>Get if VSync is enabled</p>
+<pre><code class="language-cpp">bool IsVSyncEnabled()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Screen::SetVSync(true);
 
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="screencapture"><a class="header" href="#screencapture">ScreenCapture</a></h1>
+bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6634,6 +9000,86 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="time"><a class="header" href="#time">Time</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/time/time.h&gt;
+</code></pre>
+<h2 id="description-26"><a class="header" href="#description-26">Description</a></h2>
+<p>Class to get time informations (Delta time, elapsed time).</p>
+<p>Values are updated every frame.</p>
+<h2 id="static-methods-12"><a class="header" href="#static-methods-12">Static methods</a></h2>
+<hr />
+<h3 id="gettime"><a class="header" href="#gettime">GetTime</a></h3>
+<p>Get total scaled elapsed time.<br>
+Start at 0 when the game starts.</p>
+<pre><code class="language-cpp">float GetTime()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float timeA = Time::GetTime(); // = 0.0f
+Time::SetTimeScale(0.5f);
+
+// 2 seconds later...
+
+float timeB = Time::GetTime(); // = 4.0f
+</code></pre>
+<hr />
+<h3 id="getunscaledtime"><a class="header" href="#getunscaledtime">GetUnscaledTime</a></h3>
+<p>Get total unscaled elapsed time (not affected by time scale).<br>
+Start at 0 when the game starts.<br></p>
+<pre><code class="language-cpp">float GetUnscaledTime()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float timeA = Time::GetUnscaledTime(); // = 0.0f
+Time::SetTimeScale(0.5f);
+
+// 2 seconds later...
+
+float timeB = Time::GetUnscaledTime(); // = 2.0f
+</code></pre>
+<hr />
+<h3 id="getdeltatime"><a class="header" href="#getdeltatime">GetDeltaTime</a></h3>
+<p>Get scaled delta time, which is the time elapsed since the last frame * time scale.</p>
+<pre><code class="language-cpp">float GetDeltaTime()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Game running at 60 fps with a time scale of 1.0f
+float timeA = Time::GetDeltaTime(); // = 0.0166f
+
+// Game running at 60 fps with a time scale of 0.5f
+float timeA = Time::GetDeltaTime(); // = 0.0333f
+</code></pre>
+<hr />
+<h3 id="getunscaleddeltatime"><a class="header" href="#getunscaleddeltatime">GetUnscaledDeltaTime</a></h3>
+<p>Get unscaled delta time which is the time elapsed since the last frame (not affected by time scale).</p>
+<pre><code class="language-cpp">float GetUnscaledDeltaTime()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Game running at 60 fps with a time scale of 1.0f
+float timeA = Time::GetUnscaledDeltaTime(); // = 0.0166f
+
+// Game running at 60 fps with a time scale of 0.5f
+float timeA = Time::GetUnscaledDeltaTime(); // = 0.0166f
+</code></pre>
+<hr />
+<h3 id="gettimescale"><a class="header" href="#gettimescale">GetTimeScale</a></h3>
+<p>Get time scale (Speed of the game).</p>
+<pre><code class="language-cpp">float GetTimeScale()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Time::SetTimeScale(0.4f);
+float timeScale = Time::GetTimeScale(); // = 0.4f
+</code></pre>
+<hr />
+<h3 id="settimescale"><a class="header" href="#settimescale">SetTimeScale</a></h3>
+<p>Get time scale (Speed of the game).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>timeScale</code>: Time scale (minium 0)</li>
+</ul>
+<pre><code class="language-cpp">void SetTimeScale(float timeScale)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Time::SetTimeScale(0.4f);
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6770,7 +9216,19 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="horizontalalignment-enum"><a class="header" href="#horizontalalignment-enum">HorizontalAlignment Enum</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
+</code></pre>
+<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
+<p>Enum to horizontally align text with text rendering components.</p>
+<h2 id="values-5"><a class="header" href="#values-5">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>Left</td><td>Put the text on the left of the pivot</td></tr>
+<tr><td>Center</td><td>Put the text at the center of the pivot</td></tr>
+<tr><td>Right</td><td>Put the text on the right of the pivot</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -6838,7 +9296,19 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="verticalalignment-enum"><a class="header" href="#verticalalignment-enum">VerticalAlignment Enum</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
+</code></pre>
+<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
+<p>Enum to vertically align text with text rendering components.</p>
+<h2 id="values-6"><a class="header" href="#values-6">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>Top</td><td>Put the text on the top of the pivot</td></tr>
+<tr><td>Center</td><td>Put the text at the center of the pivot</td></tr>
+<tr><td>Bottom</td><td>Put the text on the bottom of the pivot</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -6973,143 +9443,40 @@ Gizmo::SetColor(redColor);
 }
 
 </style>
-<h1 id="endian-utils"><a class="header" href="#endian-utils">Endian Utils</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="object-management"><a class="header" href="#object-management">Object management</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="gameobject"><a class="header" href="#gameobject">GameObject</a></h1>
+<h1 id="endianutils"><a class="header" href="#endianutils">EndianUtils</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/tools/endian_utils.h&gt;
+</code></pre>
+<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
+<p>Utility class for endian conversion.<br>
+Usefull when using binary data on different platforms.</p>
+<h2 id="static-methods-13"><a class="header" href="#static-methods-13">Static methods</a></h2>
+<hr />
+<h3 id="isbigendian"><a class="header" href="#isbigendian">IsBigEndian</a></h3>
+<p>Checks if the system is big-endian.
+For examples PC use little-endian, but PlayStation 3 use big-endian.</p>
+<pre><code class="language-cpp">bool IsBigEndian()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// True on PlayStation 3
+// False on most PC, PSP and PsVita
+bool isBigEndian = EndianUtils::IsBigEndian();
+</code></pre>
+<hr />
+<h3 id="swapendian"><a class="header" href="#swapendian">SwapEndian</a></h3>
+<p>Converts an type from little-endian to big-endian or vice versa.<br>
+Only use simple types like int32_t, uint16_t, etc. Do not use this for complex types like structs or classes.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Value to swap endian to</li>
+</ul>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+T SwapEndian(T value)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">uint32_t value = 123;
+uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7201,8 +9568,9 @@ Gizmo::SetColor(redColor);
 <li>Copy <code>Roboto Regular.ttf</code>, into the new folder,</li>
 <li>Copy <code>public_engine_assets</code>, <code>engine_assets</code>, <code>vscodeSample</code>, <code>psvita_images</code>, <code>psp_images</code>, <code>icons</code>, into the new folder,</li>
 <li>Copy <code>Source</code>, <code>include</code>, <code>vscodeSample</code>, <code>psvita_images</code>, <code>psp_images</code>, <code>icons</code>, into the new folder,</li>
-<li>Copy <code>main.cpp</code>, into the new folder,</li>
+<li>Copy <code>main.cpp</code>, into the new folder</li>
 </ul>
+<p>Done!</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7271,10 +9639,13 @@ Gizmo::SetColor(redColor);
 
 </style>
 <h1 id="credits"><a class="header" href="#credits">Credits</a></h1>
-<p>Creator: <a href="https://github.com/Fewnity/">Fewnity</a></p>
-<p>Contributors:<br>
-<a href="https://github.com/CyrilArtFX">CyrilArtFX</a><br>
+<h2 id="creator"><a class="header" href="#creator">Creator:</a></h2>
+<p><a href="https://github.com/Fewnity/">Fewnity</a></p>
+<h2 id="contributors"><a class="header" href="#contributors">Contributors:<br></a></h2>
+<p><a href="https://github.com/CyrilArtFX">CyrilArtFX</a><br>
 <a href="https://github.com/arkaht">arkaht</a><br></p>
+<h2 id="icons-not-fully-updated"><a class="header" href="#icons-not-fully-updated">Icons (not fully updated):</a></h2>
+<p><a href="https://www.flaticon.com/free-icon/question_471664?term=question">Question free icon designed by Freepik</a></p>
 
                     </main>
 

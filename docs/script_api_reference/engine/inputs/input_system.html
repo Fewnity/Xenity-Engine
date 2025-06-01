@@ -235,6 +235,171 @@
 
 </style>
 <h1 id="inputsystem"><a class="header" href="#inputsystem">InputSystem</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse)</p>
+<h2 id="macros"><a class="header" href="#macros">Macros</a></h2>
+<p><code>PLAYER_1</code> value: 0<br>
+<code>PLAYER_2</code> value: 1<br>
+<code>PLAYER_3</code> value: 2<br>
+<code>PLAYER_4</code> value: 3<br>
+<code>PLAYER_5</code> value: 4<br>
+<code>PLAYER_6</code> value: 5<br>
+<code>PLAYER_7</code> value: 6<br>
+<code>PLAYER_8</code> value: 7</p>
+<h2 id="static-variables"><a class="header" href="#static-variables">Static variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>mousePosition</td><td><code>Vector2</code></td><td>Position of the mouse in pixels</td></tr>
+<tr><td>mouseSpeed</td><td><code>Vector2</code></td><td>Speed of the mouse (affected by the window resolution)</td></tr>
+<tr><td>mouseSpeedRaw</td><td><code>Vector2</code></td><td>Raw speed of the mouse</td></tr>
+<tr><td>mouseWheel</td><td><code>float</code></td><td>Speed of the mouse wheel</td></tr>
+</tbody></table>
+</div>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="getkeydown"><a class="header" href="#getkeydown">GetKeyDown</a></h3>
+<p>Return true if the key has just been pressed</p>
+<p>Parameters:</p>
+<ul>
+<li><code>keyCode</code>: Key code to check</li>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">bool GetKeyDown(const KeyCode keyCode, const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if (InputSystem::GetKeyDown(KeyCode::A))
+{
+    Debug::Print("A key pressed");
+}
+
+if (InputSystem::GetKeyDown(KeyCode::CIRCLE), PLAYER_1)
+{
+    Debug::Print("CIRCLE button pressed");
+}
+</code></pre>
+<hr />
+<h3 id="getkey"><a class="header" href="#getkey">GetKey</a></h3>
+<p>Return true if the key is held</p>
+<p>Parameters:</p>
+<ul>
+<li><code>keyCode</code>: Key code to check</li>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">bool GetKey(const KeyCode keyCode, const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if (InputSystem::GetKey(KeyCode::A))
+{
+    Debug::Print("A key held");
+}
+
+if (InputSystem::GetKey(KeyCode::CIRCLE), PLAYER_1)
+{
+    Debug::Print("CIRCLE button held");
+}
+</code></pre>
+<hr />
+<h3 id="getkeyup"><a class="header" href="#getkeyup">GetKeyUp</a></h3>
+<p>Return true if the key has just been released</p>
+<p>Parameters:</p>
+<ul>
+<li><code>keyCode</code>: Key code to check</li>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">bool GetKeyUp(const KeyCode keyCode, const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if (InputSystem::GetKeyUp(KeyCode::A))
+{
+    Debug::Print("A key released");
+}
+
+if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
+{
+    Debug::Print("CIRCLE button released");
+}
+</code></pre>
+<hr />
+<h3 id="getleftjoystick"><a class="header" href="#getleftjoystick">GetLeftJoystick</a></h3>
+<p>Get left joystick value, values between -1.0f and 1.0f</p>
+<p>Parameters:</p>
+<ul>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">Vector2 GetLeftJoystick(const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 left = InputSystem::GetLeftJoystick(PLAYER_1);
+</code></pre>
+<hr />
+<h3 id="getrightjoystick"><a class="header" href="#getrightjoystick">GetRightJoystick</a></h3>
+<p>Get right joystick value, values between -1.0f and 1.0f</p>
+<p>Parameters:</p>
+<ul>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">Vector2 GetRightJoystick(const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 right = InputSystem::GetRightJoystick(PLAYER_1);
+</code></pre>
+<hr />
+<h3 id="gettouchscreencount"><a class="header" href="#gettouchscreencount">GetTouchScreenCount</a></h3>
+<p>Get how many touch screens the device has</p>
+<pre><code class="language-cpp">int GetTouchScreenCount()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int touchScreenCount = InputSystem::GetTouchScreenCount(); // = 2 on PsVita
+</code></pre>
+<hr />
+<h3 id="gettouchcount"><a class="header" href="#gettouchcount">GetTouchCount</a></h3>
+<p>Get how many touch inputs the screen has</p>
+<p>Parameters:</p>
+<ul>
+<li><code>screenIndex</code>: Screen index</li>
+</ul>
+<pre><code class="language-cpp">int GetTouchCount(const int screenIndex)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int touchCount = InputSystem::GetTouchCount(0);
+</code></pre>
+<hr />
+<h3 id="gettouch"><a class="header" href="#gettouch">GetTouch</a></h3>
+<p>Get touch data</p>
+<p>Parameters:</p>
+<ul>
+<li><code>touchIndex</code>: Touch index</li>
+<li><code>screenIndex</code>: Screen index</li>
+</ul>
+<pre><code class="language-cpp">Touch GetTouch(const int touchIndex, const int screenIndex)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int screenIndex = 0;
+int touchCount = InputSystem::GetTouchCount(screenIndex);
+if (touchCount &gt;= 1)
+{
+    Touch touch = InputSystem::GetTouch(1, screenIndex);
+}
+</code></pre>
+<hr />
+<h3 id="hidemouse"><a class="header" href="#hidemouse">HideMouse</a></h3>
+<p>Hide mouse</p>
+<pre><code class="language-cpp">void HideMouse()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">InputSystem::HideMouse();
+</code></pre>
+<hr />
+<h3 id="showmouse"><a class="header" href="#showmouse">ShowMouse</a></h3>
+<p>Show mouse</p>
+<pre><code class="language-cpp">void ShowMouse()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">InputSystem::ShowMouse();
+</code></pre>
 
                     </main>
 
@@ -244,7 +409,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/inputs/input.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/inputs/touch.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,7 +423,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/inputs/input.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/inputs/touch.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

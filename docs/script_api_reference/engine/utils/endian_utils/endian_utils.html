@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Endian Utils - Xenity Engine</title>
+        <title>EndianUtils - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,7 +234,40 @@
 }
 
 </style>
-<h1 id="endian-utils"><a class="header" href="#endian-utils">Endian Utils</a></h1>
+<h1 id="endianutils"><a class="header" href="#endianutils">EndianUtils</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/tools/endian_utils.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Utility class for endian conversion.<br>
+Usefull when using binary data on different platforms.</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="isbigendian"><a class="header" href="#isbigendian">IsBigEndian</a></h3>
+<p>Checks if the system is big-endian.
+For examples PC use little-endian, but PlayStation 3 use big-endian.</p>
+<pre><code class="language-cpp">bool IsBigEndian()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// True on PlayStation 3
+// False on most PC, PSP and PsVita
+bool isBigEndian = EndianUtils::IsBigEndian();
+</code></pre>
+<hr />
+<h3 id="swapendian"><a class="header" href="#swapendian">SwapEndian</a></h3>
+<p>Converts an type from little-endian to big-endian or vice versa.<br>
+Only use simple types like int32_t, uint16_t, etc. Do not use this for complex types like structs or classes.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Value to swap endian to</li>
+</ul>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+T SwapEndian(T value)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">uint32_t value = 123;
+uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
+</code></pre>
 
                     </main>
 
@@ -244,7 +277,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../../script_api_reference/engine/object_management/object_management.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../../how_to_compile_editor.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,7 +291,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../../script_api_reference/engine/object_management/object_management.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../../how_to_compile_editor.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

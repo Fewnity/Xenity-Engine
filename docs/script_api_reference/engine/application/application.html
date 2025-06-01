@@ -235,6 +235,110 @@
 
 </style>
 <h1 id="application"><a class="header" href="#application">Application</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/application.h&gt;
+</code></pre>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="openurl"><a class="header" href="#openurl">OpenURL</a></h3>
+<p>Opens the link in a web browser (Only for Windows)</p>
+<pre><code class="language-cpp">void OpenURL(const std::string&amp; url)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Application::OpenURL("https://google.com");
+</code></pre>
+<hr />
+<h3 id="quit"><a class="header" href="#quit">Quit</a></h3>
+<p>Quits the application</p>
+<pre><code class="language-cpp">void Quit()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Application::Quit();
+</code></pre>
+<hr />
+<h3 id="getplatform"><a class="header" href="#getplatform">GetPlatform</a></h3>
+<p>Returns the current platform the application is running on</p>
+<pre><code class="language-cpp">Platform GetPlatform()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if(Application::GetPlatform() == Platform::P_PSP)
+{
+    Debug::Print("Running on PSP!");
+}
+</code></pre>
+<hr />
+<h3 id="getxenityversion"><a class="header" href="#getxenityversion">GetXenityVersion</a></h3>
+<p>Returns the current version of Xenity Engine</p>
+<pre><code class="language-cpp">std::string GetXenityVersion()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if(Application::GetXenityVersion() == "1.0.0")
+{
+    // Special behavior for a specific version of the engine
+}
+else
+{
+    // ...
+}
+</code></pre>
+<hr />
+<h3 id="getgamename"><a class="header" href="#getgamename">GetGameName</a></h3>
+<p>Returns the name of the game</p>
+<pre><code class="language-cpp">std::string GetGameName()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print("Game name: " + Application::GetGameName());
+</code></pre>
+<hr />
+<h3 id="getcompanyname"><a class="header" href="#getcompanyname">GetCompanyName</a></h3>
+<p>Returns the name of the company</p>
+<pre><code class="language-cpp">std::string GetCompanyName()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print("Company name: " + Application::GetCompanyName());
+</code></pre>
+<hr />
+<h3 id="isineditor"><a class="header" href="#isineditor">IsInEditor</a></h3>
+<p>Returns if the application is running in the editor</p>
+<pre><code class="language-cpp">bool IsInEditor()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">if(Application::IsInEditor())
+{
+    Debug::Print("Running in editor!");
+}
+else
+{
+    Debug::Print("Not running in editor!");
+}
+
+// For something at compile time
+#if defined(EDITOR)
+    Debug::Print("Running in editor!");
+#else
+    Debug::Print("Not running in editor!");
+#endif
+</code></pre>
+<hr />
+<h3 id="getgamedatafolder"><a class="header" href="#getgamedatafolder">GetGameDataFolder</a></h3>
+<p>Return the game folder (folder where you can write data)</p>
+<pre><code class="language-cpp">bool GetGameDataFolder()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::string fileName = Application::GetGameDataFolder() + "my_file.txt";
+std::shared_ptr&lt;File&gt; myFile = FileSystem::MakeFile(fileName);
+bool isOpened = myFile-&gt;Open(FileMode::WriteCreateFile);
+</code></pre>
+<hr />
+<h3 id="getgamedatafolder-1"><a class="header" href="#getgamedatafolder-1">GetGameDataFolder</a></h3>
+<p>Returns the game folder (folder where the game is located, may be read-only)</p>
+<pre><code class="language-cpp">bool GetGameFolder()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::string fileName = Application::GetGameFolder() + "my_file.txt";
+std::shared_ptr&lt;File&gt; myFile = FileSystem::MakeFile(fileName);
+bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
+</code></pre>
 
                     </main>
 

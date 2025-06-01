@@ -235,16 +235,63 @@
 
 </style>
 <h1 id="directory"><a class="header" href="#directory">Directory</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/file_system/directory.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to manage a directory (Get all files of a folder)</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>subdirectories</td><td><code>std::vector&lt;std::shared_ptr&lt;Directory&gt;&gt;</code></td><td>List of sub directories (filled with GetAllFiles)</td></tr>
+<tr><td>files</td><td><code>std::vector&lt;std::shared_ptr&lt;File&gt;&gt;</code></td><td>List of files (filled with GetAllFiles)</td></tr>
+</tbody></table>
+</div>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="getallfiles"><a class="header" href="#getallfiles">GetAllFiles</a></h3>
+<p>Get all the files of the directory (can be very slow and not currently supported on PS3).<br></p>
+<p>Parameters:</p>
+<ul>
+<li><code>recursive</code>: If true, get all the files of the subdirectories</li>
+</ul>
+<pre><code class="language-cpp">std::vector&lt;std::shared_ptr&lt;File&gt;&gt; GetAllFiles(bool recursive)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; directory = FileSystem::MakeDirectory("C:/my_folder/");
+
+std::vector&lt;std::shared_ptr&lt;File&gt;&gt; files = directory-&gt;GetAllFiles(true);
+</code></pre>
+<hr />
+<h3 id="checkifexist"><a class="header" href="#checkifexist">CheckIfExist</a></h3>
+<p>Check if the directory exists.</p>
+<pre><code class="language-cpp">bool CheckIfExist() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; directory = FileSystem::MakeDirectory("C:/my_folder/");
+
+bool directoryExists = directory-&gt;CheckIfExist();
+</code></pre>
+<hr />
+<h3 id="getpath"><a class="header" href="#getpath">GetPath</a></h3>
+<p>Get directory path.</p>
+<pre><code class="language-cpp">const std::string&amp; GetPath() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; directory = FileSystem::MakeDirectory("C:/my_folder/");
+
+const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/file_system/file_reference.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/file_system/file_mode_enum.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/inputs/inputs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/file_system/copy_file_result_enum.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +301,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/file_system/file_reference.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/file_system/file_mode_enum.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/inputs/inputs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/file_system/copy_file_result_enum.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

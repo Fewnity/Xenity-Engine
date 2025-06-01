@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Reflection - Xenity Engine</title>
+        <title>SceneManager - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,13 +234,49 @@
 }
 
 </style>
-<h1 id="reflection"><a class="header" href="#reflection">Reflection</a></h1>
+<h1 id="scenemanager"><a class="header" href="#scenemanager">SceneManager</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/scene_manager/scene_manager.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to load scenes</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="loadscene"><a class="header" href="#loadscene">LoadScene</a></h3>
+<p>Load a scene</p>
+<p>Parameters:</p>
+<ul>
+<li><code>scene</code>: Scene to load</li>
+</ul>
+<pre><code class="language-cpp">void LoadScene(const std::shared_ptr&lt;Scene&gt;&amp; scene)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Scene&gt; sceneToLoad; // Filled variable
+
+SceneManager::LoadScene(sceneToLoad);
+</code></pre>
+<hr />
+<h3 id="reloadscene"><a class="header" href="#reloadscene">ReloadScene</a></h3>
+<p>Reload the current scene</p>
+<pre><code class="language-cpp">void ReloadScene()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">SceneManager::ReloadScene();
+</code></pre>
+<hr />
+<h3 id="getopenedscene"><a class="header" href="#getopenedscene">GetOpenedScene</a></h3>
+<p>Get opened scene</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Scene&gt;&amp; GetOpenedScene()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Scene&gt; currentScene = SceneManager::GetOpenedScene();
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/physics/raycast.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/reflection/reflective.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -254,7 +290,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/physics/raycast.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/reflection/reflective.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 

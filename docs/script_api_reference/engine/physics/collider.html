@@ -235,6 +235,60 @@
 
 </style>
 <h1 id="collider"><a class="header" href="#collider">Collider</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/physics/collider.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Parent class of collider components. (BoxCollider, SphereCollider...)</p>
+<p>Function of Collider can be used on every colllider component.</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="setistrigger"><a class="header" href="#setistrigger">SetIsTrigger</a></h3>
+<p>Set if the collider is a trigger or not.<br>
+A trigger collider will not collide with other colliders, but will still generate collision events.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isTrigger</code>: New isTrigger value</li>
+</ul>
+<pre><code class="language-cpp">void SetIsTrigger(bool isTrigger)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;BoxColldier&gt; boxCollider = GetGameObject()-&gt;AddComponent&lt;BoxColldier&gt;(); 
+boxCollider-&gt;SetIsTrigger(true);
+</code></pre>
+<hr />
+<h3 id="istrigger"><a class="header" href="#istrigger">IsTrigger</a></h3>
+<p>Check if the collider is a trigger or not.</p>
+<pre><code class="language-cpp">bool IsTrigger() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;BoxColldier&gt; boxCollider = GetGameObject()-&gt;AddComponent&lt;BoxColldier&gt;(); 
+boxCollider-&gt;SetIsTrigger(true);
+bool isTrigger = boxCollider-&gt;IsTrigger(); // = true
+</code></pre>
+<hr />
+<h3 id="setgeneratecollisionevents"><a class="header" href="#setgeneratecollisionevents">SetGenerateCollisionEvents</a></h3>
+<p>Set if the collider should generate collision events or not.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>generateCollisionEvents</code>: New generateCollisionEvents value</li>
+</ul>
+<pre><code class="language-cpp">void SetGenerateCollisionEvents(bool generateCollisionEvents)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;BoxColldier&gt; boxCollider = GetGameObject()-&gt;AddComponent&lt;BoxColldier&gt;(); 
+boxCollider-&gt;SetGenerateCollisionEvents(true);
+</code></pre>
+<hr />
+<h3 id="getgeneratecollisionevents"><a class="header" href="#getgeneratecollisionevents">GetGenerateCollisionEvents</a></h3>
+<p>Check if the collider should generate collision events or not.</p>
+<pre><code class="language-cpp">bool GetGenerateCollisionEvents() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;BoxColldier&gt; boxCollider = GetGameObject()-&gt;AddComponent&lt;BoxColldier&gt;(); 
+boxCollider-&gt;SetGenerateCollisionEvents(true);
+bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // = true
+</code></pre>
 
                     </main>
 
@@ -244,7 +298,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/physics/collision_e_vent.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/physics/collision_event.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,7 +312,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/physics/collision_e_vent.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/physics/collision_event.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

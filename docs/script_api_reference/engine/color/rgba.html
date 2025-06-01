@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>CollisionEvent - Xenity Engine</title>
+        <title>RGBA - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,17 +234,55 @@
 }
 
 </style>
-<h1 id="collisionevent"><a class="header" href="#collisionevent">CollisionEvent</a></h1>
-
+<h1 id="rgba"><a class="header" href="#rgba">RGBA</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/color/color.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>This class stores informations about a color.</p>
+<h2 id="constructors"><a class="header" href="#constructors">Constructors</a></h2>
+<hr />
+<h3 id="rgba-1"><a class="header" href="#rgba-1">RGBA</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>r</code>: Red level [0.0f;1.0f]</li>
+<li><code>g</code>: Green level [0.0f;1.0f]</li>
+<li><code>b</code>: Blue level [0.0f;1.0f]</li>
+<li><code>a</code>: Alpha level [0.0f;1.0f]</li>
+</ul>
+<pre><code class="language-cpp">constexpr RGBA(float r, float g, float b, float a)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">RGBA myRGBA = RGBA(1.0f, 0.6f, 0.3f, 0.1f);
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="tovector4"><a class="header" href="#tovector4">ToVector4</a></h3>
+<p>Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha</p>
+<pre><code class="language-cpp">Vector4 ToVector4() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">RGBA myRGBA = RGBA(1.0f, 0.6f, 0.3f, 0.1f);
+Vector4 rgbaAsVector4 = myRGBA.ToVector4();
+</code></pre>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>r</td><td><code>float</code></td><td>Red information [0.0f;1.0f]</td></tr>
+<tr><td>g</td><td><code>float</code></td><td>Green information [0.0f;1.0f]</td></tr>
+<tr><td>b</td><td><code>float</code></td><td>Blue information [0.0f;1.0f]</td></tr>
+<tr><td>a</td><td><code>float</code></td><td>Alpha information [0.0f;1.0f]</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/physics/collider.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/color/color.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/physics/raycast.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/components/components.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +292,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/physics/collider.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/color/color.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/physics/raycast.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/components/components.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

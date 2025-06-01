@@ -31,6 +31,7 @@ Features:
 - [X] 3D Physics
 - [ ] 2D Physics
 - [X] C++ Hot Reloading
+- [ ] C++ Plugins (Started but not finished)
 
 > [!WARNING]
 > The engine is not perfect. So you may encounter problems during game development like:

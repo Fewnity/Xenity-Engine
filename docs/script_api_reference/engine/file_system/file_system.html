@@ -235,6 +235,133 @@
 
 </style>
 <h1 id="filesystem"><a class="header" href="#filesystem">FileSystem</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>This class provides methods to manipulate files and directories.</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="createfolder"><a class="header" href="#createfolder">CreateFolder</a></h3>
+<p>Create a directory.<br>
+Create parents directories if they do not exist.
+Returns true on success.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Path of the folder to create</li>
+</ul>
+<pre><code class="language-cpp">bool CreateFolder(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">FileSystem::CreateFolder("C:/my_folder/");
+</code></pre>
+<hr />
+<h3 id="delete"><a class="header" href="#delete">Delete</a></h3>
+<p>Delete a file or a directory.<br></p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Path of file or folder</li>
+</ul>
+<pre><code class="language-cpp">void Delete(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">FileSystem::Delete("C:/my_folder/my_file.txt");
+FileSystem::Delete("C:/my_folder/");
+</code></pre>
+<hr />
+<h3 id="rename"><a class="header" href="#rename">Rename</a></h3>
+<p>Rename a file or a directory (Not currently supported on PSP and PS3).<br>
+Returns true on success.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: File path to rename</li>
+<li><code>newPath</code>: New file path (should be in the same directory)</li>
+</ul>
+<pre><code class="language-cpp">bool Rename(const std::string&amp; path, const std::string&amp; newPath)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">FileSystem::Rename(
+    "C:/my_folder/my_file.txt", 
+    "C:/my_folder/my_renamed_file.txt");
+</code></pre>
+<hr />
+<h3 id="copyfile"><a class="header" href="#copyfile">CopyFile</a></h3>
+<p>Copy a file to a new path (Not currently supported on PS3).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: File path to copy</li>
+<li><code>newPath</code>: File destination path</li>
+<li><code>replace</code>: If true, replace the file if it already exists</li>
+</ul>
+<pre><code class="language-cpp">CopyFileResult CopyFile(const std::string&amp; path, const std::string&amp; newPath, bool replace)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">CopyFileResult result = FileSystem::CopyFile(
+    "C:/my_folder/my_file.txt", 
+    "C:/my_folder/my_copied_file.txt"
+    false); // Result is Success
+
+// Do it again, this time the result will be "FileAlreadyExists"
+CopyFileResult result = FileSystem::CopyFile(
+    "C:/my_folder/my_file.txt", 
+    "C:/my_folder/my_copied_file.txt"
+    false);
+</code></pre>
+<hr />
+<h3 id="makefile"><a class="header" href="#makefile">MakeFile</a></h3>
+<p>Create a File object from a path (Do not create the file on the system).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: File path (Relative or absolute)</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; MakeFile(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+if(file-&gt;Open(FileMode::WriteCreateFile))
+{
+    // File created thanks to the WriteCreateFile option 
+}
+</code></pre>
+<hr />
+<h3 id="makedirectory"><a class="header" href="#makedirectory">MakeDirectory</a></h3>
+<p>Create a Directory object from a path (Do not create the directory on the system).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Directory path (Relative or absolute)</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; MakeDirectory(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Directory&gt; directory = FileSystem::MakeDirectory("C:/my_folder/");
+</code></pre>
+<hr />
+<h3 id="convertwindowspathtobasicpath"><a class="header" href="#convertwindowspathtobasicpath">ConvertWindowsPathToBasicPath</a></h3>
+<p>Converts all backslashes ('\') to forward slashes ('/') in the given path.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Path to convert</li>
+</ul>
+<pre><code class="language-cpp">std::string ConvertWindowsPathToBasicPath(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print(FileSystem::ConvertWindowsPathToBasicPath("C:\\my_folder\\"));
+// Prints "C:/my_folder/"
+</code></pre>
+<hr />
+<h3 id="convertbasicpathtowindowspath"><a class="header" href="#convertbasicpathtowindowspath">ConvertBasicPathToWindowsPath</a></h3>
+<p>Converts all forward slashes ('/') to backslashes ('\') in the given path.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>path</code>: Path to convert</li>
+</ul>
+<pre><code class="language-cpp">std::string ConvertBasicPathToWindowsPath(const std::string&amp; path)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Debug::Print(FileSystem::ConvertBasicPathToWindowsPath("C:/my_folder/"));
+// Prints "C:\my_folder\"
+</code></pre>
 
                     </main>
 

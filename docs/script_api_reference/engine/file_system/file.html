@@ -235,6 +235,188 @@
 
 </style>
 <h1 id="file"><a class="header" href="#file">File</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to manage a file (Create, open, read, write)</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="open"><a class="header" href="#open">Open</a></h3>
+<p>Open the file.<br>
+Return true if the file is opened successfully.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fileMode</code>: The mode to open the file</li>
+</ul>
+<pre><code class="language-cpp">bool Open(FileMode fileMode)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+}
+</code></pre>
+<hr />
+<h3 id="checkifexist"><a class="header" href="#checkifexist">CheckIfExist</a></h3>
+<p>Check if the file exists.<br>
+Return true if the file exists.</p>
+<pre><code class="language-cpp">bool CheckIfExist()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+if(file-&gt;CheckIfExist())
+{
+}
+</code></pre>
+<hr />
+<h3 id="close"><a class="header" href="#close">Close</a></h3>
+<p>Close file.</p>
+<pre><code class="language-cpp">bool Close()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+    // ...
+    file-&gt;Close();
+}
+</code></pre>
+<hr />
+<h3 id="write-string"><a class="header" href="#write-string">Write (String)</a></h3>
+<p>Write string data to the file.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>data</code>: The data to write</li>
+</ul>
+<pre><code class="language-cpp">void Write(const std::string&amp; data)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.txt");
+
+if(file-&gt;Open(FileMode::WriteCreateFile))
+{
+    // ...
+    file-&gt;Write("Hello World!");
+}
+</code></pre>
+<hr />
+<h3 id="write-binary"><a class="header" href="#write-binary">Write (Binary)</a></h3>
+<p>Write binary data to the file.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>data</code>: The data to write</li>
+<li><code>size</code>: The size of the data in byte</li>
+</ul>
+<pre><code class="language-cpp">void Write(const unsigned char* data, size_t size)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.bin");
+
+
+if(file-&gt;Open(FileMode::WriteCreateFile))
+{
+    uint32_t value = 44;
+    // ...
+    file-&gt;Write(&amp;value, sizeof(uint32_t));
+}
+</code></pre>
+<hr />
+<h3 id="readall"><a class="header" href="#readall">ReadAll</a></h3>
+<p>Read all the content of the file as a string.</p>
+<pre><code class="language-cpp">std::string ReadAll()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.txt");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+    std::string content = file-&gt;ReadAll();
+}
+</code></pre>
+<hr />
+<h3 id="readallbinary"><a class="header" href="#readallbinary">ReadAllBinary</a></h3>
+<p>Read all the content of the file as a binary (Need to free the pointer after)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>size</code>: Output: The size of the binary in byte</li>
+</ul>
+<pre><code class="language-cpp">unsigned char* ReadAllBinary(size_t&amp; size)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.bin");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+    size_t size = 0;
+    unsigned char* content = file-&gt;ReadAllBinary(size);
+    // ...
+    free(content);
+}
+</code></pre>
+<hr />
+<h3 id="readbinary"><a class="header" href="#readbinary">ReadBinary</a></h3>
+<p>Read a part of the content of the file as a binary (Need to free the pointer after)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>offset</code>: Read offset in byte</li>
+<li><code>size</code>: The size to read in byte</li>
+</ul>
+<pre><code class="language-cpp">unsigned char* ReadBinary(size_t offset, size_t size)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("my_file.bin");
+
+if(file-&gt;Open(FileMode::ReadOnly))
+{
+    unsigned char* content = file-&gt;ReadBinary(4, 30);
+    // ...
+    free(content);
+}
+</code></pre>
+<hr />
+<h3 id="getpath"><a class="header" href="#getpath">GetPath</a></h3>
+<p>Get file path.</p>
+<pre><code class="language-cpp">const std::string&amp; GetPath() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+std::string filePath = file-&gt;GetPath(); // = C:/my_folder/my_file.txt
+</code></pre>
+<hr />
+<h3 id="getfolderpath"><a class="header" href="#getfolderpath">GetFolderPath</a></h3>
+<p>Get file folder path.</p>
+<pre><code class="language-cpp">std::string GetFolderPath() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+std::string filePath = file-&gt;GetFolderPath(); // = C:/my_folder/
+</code></pre>
+<hr />
+<h3 id="getfilename"><a class="header" href="#getfilename">GetFileName</a></h3>
+<p>Get file name</p>
+<pre><code class="language-cpp">const std::string&amp; GetFileName() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+std::string filePath = file-&gt;GetFileName(); // = my_file
+</code></pre>
+<hr />
+<h3 id="getfileextension"><a class="header" href="#getfileextension">GetFileExtension</a></h3>
+<p>Get file extension (dot included)</p>
+<pre><code class="language-cpp">const std::string&amp; GetFileExtension() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;File&gt; file = FileSystem::MakeFile("C:/my_folder/my_file.txt");
+
+std::string filePath = file-&gt;GetFileExtension(); // = .txt
+</code></pre>
 
                     </main>
 
@@ -244,7 +426,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/file_system/file_reference.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/file_system/file_mode_enum.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,7 +440,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/file_system/file_reference.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/file_system/file_mode_enum.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

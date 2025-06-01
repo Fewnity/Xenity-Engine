@@ -24,4 +24,6 @@ To make a shipping build:
 - Copy `Roboto Regular.ttf`, into the new folder,
 - Copy `public_engine_assets`, `engine_assets`, `vscodeSample`, `psvita_images`, `psp_images`, `icons`, into the new folder,
 - Copy `Source`, `include`, `vscodeSample`, `psvita_images`, `psp_images`, `icons`, into the new folder,
-- Copy `main.cpp`, into the new folder,
+- Copy `main.cpp`, into the new folder
+
+Done!

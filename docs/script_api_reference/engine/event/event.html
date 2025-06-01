@@ -235,6 +235,162 @@
 
 </style>
 <h1 id="event"><a class="header" href="#event">Event</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/event_system/event_system.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>This class gives the possibility to bind a function to an event.<br>
+When a event object is destroyed, all bound functions are unbound.</p>
+<p>This class is using templates.</p>
+<pre><code class="language-cpp">template&lt;typename... Args&gt;
+class Event
+</code></pre>
+<p>Event without argument:</p>
+<pre><code class="language-cpp">Event&lt;&gt; myEvent;
+</code></pre>
+<p>Event with arguments:</p>
+<pre><code class="language-cpp">Event&lt;int, const std::string&amp;&gt; myEvent;
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="bind"><a class="header" href="#bind">Bind</a></h3>
+<p>Bind a simple function</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>:  Pointer to the function to bind</li>
+</ul>
+<pre><code class="language-cpp">void Bind(void(*function)(Args...))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string&amp; b) { }
+
+class MyClass
+{
+public:
+    static void MyStaticFunction(int a, const std::string&amp; b) { }
+};
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+myEvent.Bind(&amp;MyClass::MyStaticFunction);
+</code></pre>
+<hr />
+<h3 id="bind-1"><a class="header" href="#bind-1">Bind</a></h3>
+<p>Bind a function linked to an object</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>:  Pointer to the function to bind</li>
+<li><code>obj</code>:  Pointer to the object</li>
+</ul>
+<pre><code class="language-cpp">template&lt;typename ObjType&gt;
+void Bind(void(ObjType::* function)(Args...), ObjType* obj)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class MyClass
+{
+public:
+    void MyFunction(int a, const std::string&amp; b) { }
+};
+
+MyClass myClassInstance;
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyClass::MyFunction, &amp;myClassInstance);
+</code></pre>
+<hr />
+<h3 id="unbind"><a class="header" href="#unbind">Unbind</a></h3>
+<p>Unbind a simple function</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>:  Pointer to the function to unbind</li>
+</ul>
+<pre><code class="language-cpp">void Unbind(void(*function)(Args...))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string&amp; b) { }
+
+class MyClass
+{
+public:
+    static void MyStaticFunction(int a, const std::string&amp; b) { }
+};
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+myEvent.Bind(&amp;MyClass::MyStaticFunction);
+//...
+myEvent.Unbind(&amp;MyFunction);
+myEvent.Unbind(&amp;MyClass::MyStaticFunction);
+</code></pre>
+<hr />
+<h3 id="unbind-1"><a class="header" href="#unbind-1">Unbind</a></h3>
+<p>Unbind a function linked to an object</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>:  Pointer to the function to unbind</li>
+<li><code>obj</code>:  Pointer to the object</li>
+</ul>
+<pre><code class="language-cpp">template&lt;typename ObjType&gt;
+void Unbind(void(ObjType::* function)(Args...), ObjType* obj)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class MyClass
+{
+public:
+    void MyFunction(int a, const std::string&amp; b) { }
+};
+
+MyClass myClassInstance;
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyClass::MyFunction, &amp;myClassInstance);
+//...
+myEvent.Unbind(&amp;MyClass::MyFunction, &amp;myClassInstance);
+</code></pre>
+<hr />
+<h3 id="unbindall"><a class="header" href="#unbindall">UnbindAll</a></h3>
+<p>Unbind all bound function</p>
+<pre><code class="language-cpp">void UnbindAll()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string b) { }
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+//...
+myEvent.UnbindAll();
+</code></pre>
+<hr />
+<h3 id="trigger"><a class="header" href="#trigger">Trigger</a></h3>
+<p>Call all bound functions</p>
+<p>Parameters:</p>
+<ul>
+<li><code>args</code>:  All arguments to send</li>
+</ul>
+<pre><code class="language-cpp">void Trigger(Args... args)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string b) { }
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+myEvent.Trigger(1, "Hello World!");
+</code></pre>
+<hr />
+<h3 id="getboundfunctioncount"><a class="header" href="#getboundfunctioncount">GetBoundFunctionCount</a></h3>
+<p>Get the number of listener</p>
+<pre><code class="language-cpp">size_t GetBoundFunctionCount()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">void MyFunction(int a, const std::string b) { }
+void MyFunction2(int a, const std::string b) { }
+
+Event&lt;int, const std::string&amp;&gt; myEvent;
+myEvent.Bind(&amp;MyFunction);
+myEvent.Bind(&amp;MyFunction2);
+
+size_t count = myEvent.GetBoundFunctionCount(); // count = 2
+</code></pre>
 
                     </main>
 

@@ -235,16 +235,74 @@
 
 </style>
 <h1 id="screen"><a class="header" href="#screen">Screen</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/ui/screen.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to get informations and to interact with the screen</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="getwidth"><a class="header" href="#getwidth">GetWidth</a></h3>
+<p>Get the width of the screen in pixels</p>
+<pre><code class="language-cpp">int GetWidth()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int width = Screen::GetWidth();
+</code></pre>
+<hr />
+<h3 id="getheight"><a class="header" href="#getheight">GetHeight</a></h3>
+<p>Get the height of the screen in pixels</p>
+<pre><code class="language-cpp">int GetHeight()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">int height = Screen::GetHeight();
+</code></pre>
+<hr />
+<h3 id="setfullscreen"><a class="header" href="#setfullscreen">SetFullScreen</a></h3>
+<p>Set if the window should be in fullscreen mode
+Only for Windows and Linux, no effect on other platforms
+Does not affect the editor window</p>
+<p>Parameters:</p>
+<ul>
+<li><code>useFullScreenMode</code>: True to enable fullscreen, false to disable</li>
+</ul>
+<pre><code class="language-cpp">void SetFullScreen(bool useFullScreenMode)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Screen::SetFullScreen(true);
+</code></pre>
+<hr />
+<h3 id="setvsync"><a class="header" href="#setvsync">SetVSync</a></h3>
+<p>Set if the window should use VSync (May cause graphical glitch on PSP)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>useVSync</code>: True to enable VSync, false to disable</li>
+</ul>
+<pre><code class="language-cpp">void SetVSync(bool useVSync)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Screen::SetVSync(true);
+</code></pre>
+<hr />
+<h3 id="isvsyncenabled"><a class="header" href="#isvsyncenabled">IsVSyncEnabled</a></h3>
+<p>Get if VSync is enabled</p>
+<pre><code class="language-cpp">bool IsVSyncEnabled()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Screen::SetVSync(true);
+
+bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/reflection/reflection.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/scene_manager/scene_manager.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/screen_capture/screen_capture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/time/time.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +312,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/reflection/reflection.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/scene_manager/scene_manager.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/screen_capture/screen_capture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/time/time.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

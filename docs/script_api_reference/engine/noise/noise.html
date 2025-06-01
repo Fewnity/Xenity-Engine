@@ -235,6 +235,66 @@
 
 </style>
 <h1 id="noise"><a class="header" href="#noise">Noise</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/noise/noise.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to generate 1D, 2D, 3D and 4D Perlin noise</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="noise1d"><a class="header" href="#noise1d">Noise1D</a></h3>
+<p>Get 1D Perlin noise</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  The x coordinate</li>
+</ul>
+<pre><code class="language-cpp">float Noise1D(float x)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = Noise::Noise1D(0.5f);
+</code></pre>
+<hr />
+<h3 id="noise2d"><a class="header" href="#noise2d">Noise2D</a></h3>
+<p>Get 2D Perlin noise</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  The x coordinate</li>
+<li><code>y</code>:  The y coordinate</li>
+</ul>
+<pre><code class="language-cpp">float Noise2D(float x, float y)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = Noise::Noise2D(0.5f, 0.1f);
+</code></pre>
+<hr />
+<h3 id="noise3d"><a class="header" href="#noise3d">Noise3D</a></h3>
+<p>Get 3D Perlin noise</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  The x coordinate</li>
+<li><code>y</code>:  The y coordinate</li>
+<li><code>z</code>:  The z coordinate</li>
+</ul>
+<pre><code class="language-cpp">float Noise3D(float x, float y, float z)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = Noise::Noise3D(0.5f, 0.1f, 0.3f);
+</code></pre>
+<hr />
+<h3 id="noise4d"><a class="header" href="#noise4d">Noise4D</a></h3>
+<p>Get 4D Perlin noise</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>:  The x coordinate</li>
+<li><code>y</code>:  The y coordinate</li>
+<li><code>z</code>:  The z coordinate</li>
+<li><code>w</code>:  The w coordinate</li>
+</ul>
+<pre><code class="language-cpp">float Noise4D(float x, float y, float z, float w)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = Noise::Noise4D(0.5f, 0.1f, 0.3f, 0.8f);
+</code></pre>
 
                     </main>
 
@@ -244,7 +304,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/physics/physics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/object_management/object_management.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,7 +318,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/physics/physics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/object_management/object_management.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

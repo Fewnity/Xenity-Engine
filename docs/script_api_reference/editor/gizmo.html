@@ -238,11 +238,53 @@
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;editor/rendering/gizmo.h&gt;
 </code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>This class is used to draw debug shapes or sprites.</p>
+<p>Gizmos can be renderer in <code>OnDrawGizmos</code> and <code>OnDrawGizmosSelected</code> events.<br></p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>Do not create/delete/modify GameObjects or Components in these functions.<br>
+Do not call Gizmo functions outsize the events.</p>
+</div>
+<h3 id="how-to-use-gizmos-events"><a class="header" href="#how-to-use-gizmos-events">How to use Gizmos events:</a></h3>
+<p>Override functions you want to use:</p>
+<pre><code class="language-cpp">class MyComponent : public Component
+{
+public:
+    ...
+private:
+    void OnDrawGizmos() override;
+    void OnDrawGizmosSelected() override;
+}
+</code></pre>
+<p>Then implement the functions:</p>
+<pre><code class="language-cpp">void MyComponent::OnDrawGizmos()
+{
+#if defined(EDITOR)
+    Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
+#endif
+}
+
+void MyComponent::OnDrawGizmosSelected()
+{
+#if defined(EDITOR)
+    Gizmo::DrawLine(Vector3(1, 1, 1), Vector3(0, 0, 0));
+#endif
+}
+</code></pre>
+<p>The use of <code>#if defined(EDITOR)</code> is needed because the <code>Gizmo</code> class is not visible in game builds.</p>
 <h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
 <hr />
 <h3 id="setcolor"><a class="header" href="#setcolor">SetColor</a></h3>
 <p>Set Gizmo draw color (does not affect sprites)</p>
-<pre><code class="language-cpp">SetColor(const Color&amp; newColor)
+<p>Parameters:</p>
+<ul>
+<li><code>newColor</code>: New color to use</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; newColor)
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">const Color redColor = Color::CreateFromRGBAFloat(1, 0, 0, 1);
@@ -251,15 +293,27 @@ Gizmo::SetColor(redColor);
 <hr />
 <h3 id="drawline"><a class="header" href="#drawline">DrawLine</a></h3>
 <p>Draw a simple line from A to B</p>
-<pre><code class="language-cpp">DrawLine(const Vector3&amp; a, const Vector3&amp; b)
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: Start point</li>
+<li><code>b</code>: End point</li>
+</ul>
+<pre><code class="language-cpp">void DrawLine(const Vector3&amp; a, const Vector3&amp; b)
 </code></pre>
 <p>Code sample:</p>
-<pre><code class="language-cpp">Gizmo::DrawLine(Vector3(0,0,0), Vector3(1,1,1));
+<pre><code class="language-cpp">Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
 </code></pre>
 <hr />
 <h3 id="drawbillboard"><a class="header" href="#drawbillboard">DrawBillboard</a></h3>
 <p>Draw a billboard sprite</p>
-<pre><code class="language-cpp">DrawBillboard(
+<p>Parameters:</p>
+<ul>
+<li><code>position</code>: Position of the sprite</li>
+<li><code>scale</code>: Scale of the sprite</li>
+<li><code>texture</code>: Texture to draw</li>
+<li><code>color</code>: Color of the sprite</li>
+</ul>
+<pre><code class="language-cpp">void DrawBillboard(
     const Vector3&amp; position, 
     const Vector2&amp; scale, 
     const std::shared_ptr&lt;Texture&gt;&amp; texture, 
@@ -270,12 +324,18 @@ Gizmo::SetColor(redColor);
     GetTransform()-&gt;GetPosition(),
     Vector2(0.2f),
     EditorIcons::GetIcon(IconName::Icon_Audio_Source),
-    Color::CreateFromRGBAFloat(1, 1, 1, 1));
+    Color::CreateFromRGBAFloat(1, 1, 1, 0.5f));
 </code></pre>
 <hr />
 <h3 id="drawsphere"><a class="header" href="#drawsphere">DrawSphere</a></h3>
 <p>Draw a wired sphere</p>
-<pre><code class="language-cpp">DrawSphere(
+<p>Parameters:</p>
+<ul>
+<li><code>position</code>: Position of the sphere</li>
+<li><code>rotation</code>: Rotation of the sphere</li>
+<li><code>radius</code>: Radius of the sphere</li>
+</ul>
+<pre><code class="language-cpp">void DrawSphere(
     const Vector3&amp; position, 
     const Quaternion&amp; rotation, 
     const float radius)
@@ -295,7 +355,7 @@ Gizmo::SetColor(redColor);
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../script_api_reference/engine/engine.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../script_api_reference/editor/editor_icons/editor_icons.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -309,7 +369,7 @@ Gizmo::SetColor(redColor);
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../script_api_reference/engine/engine.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../script_api_reference/editor/editor_icons/editor_icons.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

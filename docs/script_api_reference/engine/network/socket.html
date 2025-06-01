@@ -235,6 +235,84 @@
 
 </style>
 <h1 id="socket"><a class="header" href="#socket">Socket</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to send and received data to/from a server.<br>
+Created with the NetworkManager class.<br>
+The socket will be closed when the object is destroyed.</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="senddata-string"><a class="header" href="#senddata-string">SendData (string)</a></h3>
+<p>Send data as a string to the server</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: Text to send</li>
+</ul>
+<pre><code class="language-cpp">void SendData(const std::string&amp; text)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+if(socket)
+{
+    socket-&gt;SendData("Hello World!");
+}
+</code></pre>
+<hr />
+<h3 id="senddata-binary"><a class="header" href="#senddata-binary">SendData (binary)</a></h3>
+<p>Send binary data to the server</p>
+<p>Parameters:</p>
+<ul>
+<li><code>data</code>: Pointer to the data to send</li>
+<li><code>size</code>: Size on byte to send</li>
+</ul>
+<pre><code class="language-cpp">void SendData(const char* data, int size)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+
+struct MyStruct
+{
+    int value0 = 1;
+    int value1 = 2;
+};
+
+MyStruct myStruct = MyStruct();
+if(socket)
+{
+    socket-&gt;SendData(reinterpret_cast&lt;char*&gt;(&amp;myStruct), sizeof(MyStruct));
+}
+</code></pre>
+<hr />
+<h3 id="close"><a class="header" href="#close">Close</a></h3>
+<p>Send data as a string to the server</p>
+<pre><code class="language-cpp">void Close()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+if(socket)
+{
+    socket-&gt;SendData("Hello World!");
+    socket-&gt;Close();
+}
+</code></pre>
+<hr />
+<h3 id="getincommingdata"><a class="header" href="#getincommingdata">GetIncommingData</a></h3>
+<p>Return recieved data since the last GetIncommingData call (updated every frame)</p>
+<pre><code class="language-cpp">std::string GetIncommingData()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+if(socket)
+{
+    std::string data = socket-&gt;GetIncommingData();
+}
+</code></pre>
 
                     </main>
 

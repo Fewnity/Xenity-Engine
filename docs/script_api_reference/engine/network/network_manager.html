@@ -235,6 +235,43 @@
 
 </style>
 <h1 id="networkmanager"><a class="header" href="#networkmanager">NetworkManager</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class to create sockets and to manage networking settings.</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="createsocket"><a class="header" href="#createsocket">CreateSocket</a></h3>
+<p>Create a socket.<br>
+Returns nullptr if the socket creation has failed.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>address</code>: IP address</li>
+<li><code>port</code>: Port number</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;Socket&gt; CreateSocket(const std::string&amp; address, int port)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">// Fake ip
+std::shared_ptr&lt;Socket&gt; socket = NetworkManager::CreateSocket("192.168.1.10", 6004);
+// Check if the socket has been created
+if(socket)
+{
+    // ...
+}
+</code></pre>
+<hr />
+<h3 id="createsocket-1"><a class="header" href="#createsocket-1">CreateSocket</a></h3>
+<p>Show the network setup menu for the PSP.<br>
+This function will only work on the PSP platform.</p>
+<p>To make networking working on PSP, the user has to manually connect to a wifi.<br>
+For this, a menu of the PSP OS ask to the user to setup a network connection.</p>
+<pre><code class="language-cpp">void ShowPSPNetworkSetupMenu()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">NetworkManager::ShowPSPNetworkSetupMenu();
+</code></pre>
 
                     </main>
 

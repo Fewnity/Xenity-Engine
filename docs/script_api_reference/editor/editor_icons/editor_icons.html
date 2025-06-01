@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>ScreenCapture - Xenity Engine</title>
+        <title>EditorIcons - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,17 +234,46 @@
 }
 
 </style>
-<h1 id="screencapture"><a class="header" href="#screencapture">ScreenCapture</a></h1>
+<h1 id="editoricons"><a class="header" href="#editoricons">EditorIcons</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;editor/ui/editor_icons.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class used to get icon textures of the editor.<br>
+Can be used for Gizmo.</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="geticons"><a class="header" href="#geticons">GetIcons</a></h3>
+<p>Get the list of all editor icons</p>
+<pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; GetIcons()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; icons = EditorIcons::GetIcons();
+
+const std::shared_ptr&lt;Texture&gt;&amp; cameraIcon = icons[IconName::Icon_Camera];
+</code></pre>
+<hr />
+<h3 id="geticon"><a class="header" href="#geticon">GetIcon</a></h3>
+<p>Get an icon by its name enum</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: Text to send</li>
+</ul>
+<pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; GetIcons(IconName iconName)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; cameraIcon = EditorIcons::GetIcon(IconName::Icon_Camera);
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/screen/screen.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/editor/gizmo.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/time/time.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/editor/editor_icons/icon_name.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +283,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/screen/screen.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/editor/gizmo.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/time/time.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/editor/editor_icons/icon_name.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
