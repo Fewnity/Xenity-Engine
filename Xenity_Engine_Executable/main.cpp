@@ -20,13 +20,20 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 // SYS_PROCESS_PARAM(1001, 0x100000); // Crash on real PS3, why?
 #endif
 
-//------------------------------- Link to the documentation: https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc
+//------------------------------- Link to the documentation: https://fewnity.github.io/Xenity-Engine/script_api_reference/scripting_api_reference.html
 
 // For the Alpha Release
 /*
 --- Needed
 Rework the documentation
 Add unit tests for modify commands and Awake/Start/Update/
+Create a math folder to move math.h, vectors and quaternion
+Add help link on components in the inspector
+Add new website link to the documentation
+Rework the Screen::MakeScreenshot to be able to use in game loop
+Improve socket Update
+GetFolderPath does not work with relative path
+GetFileName does not work with relative path
 
 Fix PSP sleep mode when networking is enabled
 
