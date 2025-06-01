@@ -50,5 +50,5 @@ void LightingMenu::Draw()
 void LightingMenu::OnValueChanged()
 {
 	ProjectManager::SaveProjectSettings();
-	SceneManager::SetSceneModified(true);
+	SceneManager::SetIsSceneDirty(true);
 }

@@ -163,7 +163,6 @@ struct Touch
 	Vector2Int position = Vector2Int(0);
 	Vector2Int startPosition = Vector2Int(0);
 	int fingerId = -1;
-	float force = 0;
 };
 
 /**
@@ -176,8 +175,9 @@ public:
 	/**
 	* @brief Return true if the key has just been pressed
 	* @param Key code to check
+	* @param controllerIndex Controller index (0-7)
 	*/
-	[[nodiscard]] static inline bool GetKeyDown(const KeyCode keyCode, const int controllerIndex = 0)
+	[[nodiscard]] static bool GetKeyDown(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
@@ -197,8 +197,9 @@ public:
 	/**
 	* @brief Return true if the key is held
 	* @param Key code to check
+	* @param controllerIndex Controller index (0-7) (for buttons)
 	*/
-	[[nodiscard]] static inline bool GetKey(const KeyCode keyCode, const int controllerIndex = 0)
+	[[nodiscard]] static bool GetKey(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
@@ -218,8 +219,9 @@ public:
 	/**
 	* @brief Return true if the key has just been released
 	* @param Key code to check
+	* @param controllerIndex Controller index (0-7) (for buttons)
 	*/
-	[[nodiscard]] static inline bool GetKeyUp(const KeyCode keyCode, const int controllerIndex = 0)
+	[[nodiscard]] static bool GetKeyUp(const KeyCode keyCode, const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
 		if (s_blockGameInput)
@@ -236,6 +238,10 @@ public:
 		return s_inputs[controllerIndex][(int)keyCode].released;
 	}
 
+	/**
+	* @brief Get left joystick value,  values between -1.0f and 1.0f
+	* @param controllerIndex Controller index (0-7)
+	*/
 	[[nodiscard]] static Vector2 GetLeftJoystick(const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
@@ -253,6 +259,10 @@ public:
 		return leftJoystick[controllerIndex];
 	}
 
+	/**
+	* @brief Get right joystick value,  values between -1.0f and 1.0f
+	* @param controllerIndex Controller index (0-7)
+	*/
 	[[nodiscard]] static Vector2 GetRightJoystick(const int controllerIndex = 0)
 	{
 #if defined(EDITOR)
@@ -345,7 +355,7 @@ private:
 	/**
 	* @brief Set inputs state
 	*/
-	static inline void SetInput(const bool pressed, const KeyCode keyCode, const int controllerIndex)
+	static void SetInput(const bool pressed, const KeyCode keyCode, const int controllerIndex)
 	{
 		if (pressed)
 			SetInputPressed(keyCode, controllerIndex);
@@ -356,7 +366,7 @@ private:
 	/**
 	* @brief Set an input as pressed
 	*/
-	static inline void SetInputPressed(const KeyCode keyCode, const int controllerIndex)
+	static void SetInputPressed(const KeyCode keyCode, const int controllerIndex)
 	{
 		if (!s_inputs[controllerIndex][(int)keyCode].held)
 		{
@@ -368,7 +378,7 @@ private:
 	/**
 	* @brief Set an input as released
 	*/
-	static inline void SetInputReleased(const KeyCode keyCode, const int controllerIndex)
+	static void SetInputReleased(const KeyCode keyCode, const int controllerIndex)
 	{
 		s_inputs[controllerIndex][(int)keyCode].released = true;
 		s_inputs[controllerIndex][(int)keyCode].held = false;
@@ -377,7 +387,7 @@ private:
 	/**
 	* @brief Set an input states to false
 	*/
-	static inline void SetInputInactive(const KeyCode keyCode, const int controllerIndex)
+	static void SetInputInactive(const KeyCode keyCode, const int controllerIndex)
 	{
 		s_inputs[controllerIndex][(int)keyCode].pressed = false;
 		s_inputs[controllerIndex][(int)keyCode].released = false;

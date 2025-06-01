@@ -277,10 +277,10 @@ void ProjectManager::CreateVisualStudioSettings()
 			}
 
 			// Create vscode folder
-			FileSystem::s_fileSystem->CreateFolder(assetFolderPath + ".vscode/");
+			FileSystem::CreateFolder(assetFolderPath + ".vscode/");
 
 			const std::string filePath = assetFolderPath + ".vscode/c_cpp_properties.json";
-			FileSystem::s_fileSystem->Delete(filePath);
+			FileSystem::Delete(filePath);
 
 			// Create the vscode settings file
 			const std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
@@ -382,12 +382,12 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 	XASSERT(!name.empty(), "[ProjectManager::CreateProject] name is empty");
 	XASSERT(!folderPath.empty(), "[ProjectManager::CreateProject] folderPath is empty");
 
-	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/");
-	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/temp/");
-	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/additional_assets/");
-	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/assets/");
-	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/assets/Scripts/");
-	FileSystem::s_fileSystem->CreateFolder(folderPath + name + "/assets/Scenes/");
+	FileSystem::CreateFolder(folderPath + name + "/");
+	FileSystem::CreateFolder(folderPath + name + "/temp/");
+	FileSystem::CreateFolder(folderPath + name + "/additional_assets/");
+	FileSystem::CreateFolder(folderPath + name + "/assets/");
+	FileSystem::CreateFolder(folderPath + name + "/assets/Scripts/");
+	FileSystem::CreateFolder(folderPath + name + "/assets/Scenes/");
 
 	// Create default scene
 	const std::shared_ptr<Scene> sceneRef = std::dynamic_pointer_cast<Scene>(CreateFileReference(folderPath + name + "/assets/Scenes/MainScene.xen", UniqueId::GenerateUniqueId(true), FileType::File_Scene));
@@ -567,8 +567,8 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	{
 		return ProjectLoadingErrors::NoAssetFolder;
 	}
-	FileSystem::s_fileSystem->CreateFolder(projectFolderPath + "/temp/");
-	FileSystem::s_fileSystem->CreateFolder(projectFolderPath + "/additional_assets/");
+	FileSystem::CreateFolder(projectFolderPath + "/temp/");
+	FileSystem::CreateFolder(projectFolderPath + "/additional_assets/");
 #endif
 
 	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "/additional_assets/");
@@ -581,7 +581,7 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	SaveProjectSettings(); // Save to update the file if the engine version has changed
 #endif
 #if defined(__vita__)
-	FileSystem::s_fileSystem->CreateFolder(Application::GetGameDataFolder());
+	FileSystem::CreateFolder(Application::GetGameDataFolder());
 #endif
 	CreateGame();
 
@@ -624,7 +624,7 @@ void ProjectManager::UnloadProject()
 	Editor::SetSelectedGameObject(nullptr);
 	Editor::SetSelectedFileReference(nullptr);
 
-	SceneManager::SetSceneModified(false);
+	SceneManager::SetIsSceneDirty(false);
 	SceneManager::SetOpenedScene(nullptr);
 	SceneManager::ClearScene();
 	SceneManager::CreateEmptyScene();
@@ -934,7 +934,7 @@ void ProjectManager::SaveProjectSettings(const std::string& folderPath)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	const std::string path = folderPath + PROJECT_SETTINGS_FILE_NAME;
-	FileSystem::s_fileSystem->Delete(path);
+	FileSystem::Delete(path);
 	json projectData;
 
 	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(projectSettings.GetReflectiveData());
@@ -966,7 +966,7 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 	if (!file || (!fileReference.m_isMetaDirty && exists))
 		return;
 
-	FileSystem::s_fileSystem->Delete(file->GetPath() + META_EXTENSION);
+	FileSystem::Delete(file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference.m_fileId;
 	metaData["MetaVersion"] = metaVersion;
@@ -1052,7 +1052,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 		j[i]["name"] = projects[i].name;
 		j[i]["path"] = projects[i].path;
 	}
-	FileSystem::s_fileSystem->Delete(PROJECTS_LIST_FILE);
+	FileSystem::Delete(PROJECTS_LIST_FILE);
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
 	if (file->Open(FileMode::WriteCreateFile))
 	{

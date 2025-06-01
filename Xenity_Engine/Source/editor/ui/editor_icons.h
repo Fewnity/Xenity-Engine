@@ -33,6 +33,7 @@ enum class IconName
 	Icon_Rotate,
 	Icon_Scale,
 	Icon_Grid,
+	Icon_Question,
 	Icon_Platform_Windows,
 	Icon_Platform_Linux,
 	Icon_Platform_PSP,
@@ -43,15 +44,28 @@ enum class IconName
 	Icon_Count, // Last item
 };
 
+/*
+* @brief Class to manage editor icons
+*/
 class EditorIcons
 {
 public:
+	/**
+	* @brief Get the list of all editor icons
+	*/
 	static const std::vector<std::shared_ptr<Texture>>& GetIcons();
+	
+	/**
+	* @brief Get an icon by its name enum
+	*/
 	static const std::shared_ptr<Texture>& GetIcon(IconName iconName);
 
 private:
 	friend class EditorUI;
 
+	/**
+	* @brief Load all editor icons
+	*/
 	static void Init();
 
 	/**

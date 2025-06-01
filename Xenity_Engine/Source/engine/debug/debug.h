@@ -11,16 +11,10 @@
 
 #include <engine/api.h>
 #include <engine/event_system/event_system.h>
+#include "debug_type.h"
 
 class Socket;
 class File;
-
-enum class DebugType 
-{
-	Log,
-	Warning,
-	Error,
-};
 
 struct DebugHistory
 {
@@ -30,7 +24,7 @@ struct DebugHistory
 };
 
 /**
- * @brief Used to print text in a console/file or remotely to a server
+ * @brief Used to print text in the console and in file or remotely to a server
  */
 class API Debug
 {
@@ -44,13 +38,6 @@ public:
 	static void Print(const std::string& text, bool hideInEditorConsole = false);
 
 	/**
-	* @brief Print an error
-	* @param text Text to print
-	* @param hideInEditorConsole If true, the text will not be printed in the editor's console
-	*/
-	static void PrintError(const std::string& text, bool hideInEditorConsole = false);
-
-	/**
 	* @brief Print a warning
 	* @param text Text to print
 	* @param hideInEditorConsole If true, the text will not be printed in the editor's console
@@ -58,13 +45,19 @@ public:
 	static void PrintWarning(const std::string& text, bool hideInEditorConsole = false);
 
 	/**
+	* @brief Print an error
+	* @param text Text to print
+	* @param hideInEditorConsole If true, the text will not be printed in the editor's console
+	*/
+	static void PrintError(const std::string& text, bool hideInEditorConsole = false);
+
+	/**
 	* @brief Get the event when a debug message is printed
 	*/
-	[[nodiscard]] static Event<>& GetOnDebugLogEvent()
+	[[nodiscard]] static Event<const std::string&, DebugType>& GetOnDebugLogEvent()
 	{
 		return s_onDebugLogEvent;
 	}
-
 
 private:
 	friend class BottomBarMenu;
@@ -133,7 +126,7 @@ private:
 	*/
 	static void PrintInFile(const std::string& text);
 
-	static Event<> s_onDebugLogEvent;
+	static Event<const std::string&, DebugType> s_onDebugLogEvent;
 	static std::string s_debugText;
 	static std::shared_ptr<Socket> s_socket;
 	static float s_sendProfilerCooldown;

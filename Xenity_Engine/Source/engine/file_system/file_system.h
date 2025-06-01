@@ -20,54 +20,74 @@ class File;
 
 enum class CopyFileResult
 {
-	Success,
-	Failed,
-	FileAlreadyExists,
+	Success, // File copied successfully.
+	Failed, // Failed to copy the file.
+	FileAlreadyExists, // The file already exists.Enable the replace option.
 };
 
+/**
+* @brief File system API
+* @brief This class provides methods to manipulate files and directories.
+*/
 class API FileSystem
 {
 public:
-	static FileSystem* s_fileSystem;
 
 	/**
 	* @brief Create a directory
 	* @param path Directory path
 	* @return True if success
 	*/
-	bool CreateFolder(const std::string& path);
+	static bool CreateFolder(const std::string& path);
 
 	/**
-	* @brief Delete a file
+	* @brief Delete a file or a directory
 	* @param path File path
 	*/
-	void Delete(const std::string& path);
+	static void Delete(const std::string& path);
 
 	/**
-	* @brief Get all files of a directory and fill it
-	* @param directory Directory to fill
+	* @brief Rename a file or a directory (Not currently supported on PSP and PS3)
+	* @param path File path to rename
+	* @param newPath New file path (should be in the same directory)
 	*/
-	void FillDirectory(const std::shared_ptr <Directory>& directory, bool recursive);
-
-	bool Rename(const std::string& path, const std::string& newPath);
-
-	CopyFileResult CopyFile(const std::string& path, const std::string& newPath, bool replace);
+	static bool Rename(const std::string& path, const std::string& newPath);
 
 	/**
-	 * @brief [Internal] ?
+	* @brief Copy a file to a new path
+	* @param path File path to copy
+	* @param newPath New file path
+	* @param replace If true, replace the file if it already exists
+	*/
+	static CopyFileResult CopyFile(const std::string& path, const std::string& newPath, bool replace);
+
+	/**
+	 * @brief Create a File object from a path (Do not create the file on the system)
 	 */
 	[[nodiscard]] static std::shared_ptr<File> MakeFile(const std::string& path);
 
+	/**
+	 * @brief Create a Directory object from a path (Do not create the directory on the system)
+	 */
+	[[nodiscard]] static std::shared_ptr<Directory> MakeDirectory(const std::string& path);
+
+	/**
+	* @brief Converts all backslashes ('\\') to forward slashes ('/') in the given path.
+	*/
 	[[nodiscard]] static std::string ConvertWindowsPathToBasicPath(const std::string& path);
 
+	/**
+	* @brief Converts all forward slashes ('/') to backslashes ('\\') in the given path.
+	*/
 	[[nodiscard]] static std::string ConvertBasicPathToWindowsPath(const std::string& path);
 
 private:
 	friend class Engine;
+	friend class Directory;
 
 	/**
 	* @brief [Internal] Init file system
 	* @return 0 if success
 	*/
-	[[nodiscard]] int InitFileSystem();
+	[[nodiscard]] static int InitFileSystem();
 };

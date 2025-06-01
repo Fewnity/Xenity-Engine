@@ -41,7 +41,7 @@ TestResult DeleteComponentCommandTest::Start(std::string& errorOut)
 
 			EXPECT_NULL(newGameObject->GetComponent<AudioSource>(), "Failed to remove Light component");
 
-			EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+			EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 		}
 		audioSource.reset();
 
@@ -56,7 +56,7 @@ TestResult DeleteComponentCommandTest::Start(std::string& errorOut)
 
 			EXPECT_EQUALS(audioSource->GetUniqueId(), lightId, "Recreated component has the wrong id");
 
-			EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+			EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 
 			EXPECT_FALSE(audioSource->IsEnabled(), "Component should be disabled");
 		}
@@ -68,7 +68,7 @@ TestResult DeleteComponentCommandTest::Start(std::string& errorOut)
 
 			EXPECT_NULL(newGameObject->GetComponent<AudioSource>(), "Failed to remove Light component");
 
-			EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+			EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 		}
 
 		deleteComponentCommand.Undo();
@@ -83,7 +83,7 @@ TestResult DeleteComponentCommandTest::Start(std::string& errorOut)
 
 			EXPECT_EQUALS(audioSource->GetUniqueId(), lightId, "Recreated component has the wrong id");
 
-			EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+			EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 
 			EXPECT_FALSE(audioSource->IsEnabled(), "Component should be disabled");
 		}
@@ -94,7 +94,7 @@ TestResult DeleteComponentCommandTest::Start(std::string& errorOut)
 	GameplayManager::RemoveDestroyedComponents();
 	newGameObject.reset();
 
-	SceneManager::SetSceneModified(false);
+	SceneManager::SetIsSceneDirty(false);
 
 	END_TEST();
 }
@@ -128,7 +128,7 @@ TestResult DeleteGameObjectCommandTest::Start(std::string& errorOut)
 
 			EXPECT_NULL(newGameObject, "Failed to execute the command");
 
-			EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+			EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 		}
 
 
@@ -143,7 +143,7 @@ TestResult DeleteGameObjectCommandTest::Start(std::string& errorOut)
 			EXPECT_NOT_NULL(audioSource, "Failed to recreate gameobject's component");
 			EXPECT_EQUALS(audioSource->GetUniqueId(), audioSourceId, "Recreated component has the wrong id");
 
-			EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+			EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 		}
 
 		deleteGameObjectCommand.Redo();
@@ -155,7 +155,7 @@ TestResult DeleteGameObjectCommandTest::Start(std::string& errorOut)
 
 			EXPECT_NULL(newGameObject, "Failed to execute the command");
 
-			EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+			EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 		}
 
 		deleteGameObjectCommand.Undo();
@@ -169,7 +169,7 @@ TestResult DeleteGameObjectCommandTest::Start(std::string& errorOut)
 			EXPECT_NOT_NULL(audioSource, "Failed to recreate gameobject's component");
 			EXPECT_EQUALS(audioSource->GetUniqueId(), audioSourceId, "Recreated component has the wrong id");
 
-			EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+			EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 		}
 	}
 
@@ -178,7 +178,7 @@ TestResult DeleteGameObjectCommandTest::Start(std::string& errorOut)
 	GameplayManager::RemoveDestroyedComponents();
 	newGameObject.reset();
 
-	SceneManager::SetSceneModified(false);
+	SceneManager::SetIsSceneDirty(false);
 
 	END_TEST();
 }

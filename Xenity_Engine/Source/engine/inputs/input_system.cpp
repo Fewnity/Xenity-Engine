@@ -400,14 +400,12 @@ void InputSystem::Read()
 			Touch newTouch = Touch();
 			newTouch.fingerId = touchRaw.fingerId;
 			newTouch.position = Vector2Int(touchRaw.position.x, touchRaw.position.y);
-			newTouch.force = 0; // Not implemented
 			screen->touches.push_back(newTouch);
 			screen->updated.push_back(true);
 		}
 		else // If the input is held, update it
 		{
 			screen->touches[foundInputIndex].position = Vector2Int(touchRaw.position.x, touchRaw.position.y);
-			screen->touches[foundInputIndex].force = 0; // Not implemented
 		}
 	}
 

@@ -39,7 +39,7 @@ CreateProjectMenu::CreateProjectMenu()
 		std::string stringDocPath(wStringDocPath.begin(), wStringDocPath.end()); //and convert to string.
 		projectParentDir = stringDocPath + "\\Xenity_Projects\\";
 		// Create the directory if not found
-		const bool folderCreateResult = FileSystem::s_fileSystem->CreateFolder(projectParentDir);
+		const bool folderCreateResult = FileSystem::CreateFolder(projectParentDir);
 		if (!folderCreateResult) 
 		{
 			projectParentDir.clear();

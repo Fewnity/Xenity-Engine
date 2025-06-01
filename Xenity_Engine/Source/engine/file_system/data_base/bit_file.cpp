@@ -11,7 +11,7 @@ bool BitFile::Create(const std::string& path)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	FileSystem::s_fileSystem->Delete(path);
+	FileSystem::Delete(path);
 	m_file = FileSystem::MakeFile(path);
 	const bool openResult = m_file->Open(FileMode::WriteCreateFile);
 	XCHECK(openResult, "[BitFile::Create] Failed to create bit file: " + m_file->GetPath());

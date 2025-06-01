@@ -832,12 +832,12 @@ void Editor::StartFolderCopy(const std::string& path, const std::string& newPath
 		if (!file.is_regular_file())
 		{
 			const std::string newFolderPath = newPath + file.path().filename().string() + '\\';
-			FileSystem::s_fileSystem->CreateFolder(newFolderPath);
+			FileSystem::CreateFolder(newFolderPath);
 			StartFolderCopy(file.path().string() + '\\', newFolderPath);
 		}
 		else
 		{
-			FileSystem::s_fileSystem->CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
+			FileSystem::CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
 		}
 	}
 }
@@ -968,18 +968,18 @@ void Editor::OnDragAndDropFileFinished()
 
 			if (isDirectory)
 			{
-				FileSystem::s_fileSystem->CreateFolder(newPath + '\\');
+				FileSystem::CreateFolder(newPath + '\\');
 				StartFolderCopy(dragdropEntries[dragIndex] + '\\', newPath + '\\');
 			}
 			else
 			{
-				const CopyFileResult copyResult = FileSystem::s_fileSystem->CopyFile(path, newPath, false);
+				const CopyFileResult copyResult = FileSystem::CopyFile(path, newPath, false);
 				if (copyResult == CopyFileResult::FileAlreadyExists)
 				{
 					DialogResult result = EditorUI::OpenDialog("File copy error", "This file already exists in this location.\nDo you want to replace it?", DialogType::Dialog_Type_YES_NO_CANCEL);
 					if (result == DialogResult::Dialog_YES)
 					{
-						FileSystem::s_fileSystem->CopyFile(path, newPath, true);
+						FileSystem::CopyFile(path, newPath, true);
 					}
 				}
 			}

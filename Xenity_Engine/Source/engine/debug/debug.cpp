@@ -34,7 +34,7 @@ float Debug::s_sendProfilerCooldown = 0;
 float Debug::s_sendProfilerDelay = 0.2f;
 std::vector<DebugHistory> Debug::s_debugMessageHistory;
 
-Event<> Debug::s_onDebugLogEvent;
+Event<const std::string&, DebugType> Debug::s_onDebugLogEvent;
 size_t Debug::s_lastDebugMessageHistoryIndex = -1;
 MyMutex* debugMutex = nullptr;
 
@@ -63,7 +63,7 @@ void Debug::PrintError(const std::string& text, bool hideInEditorConsole)
 	PrintInFile(textWithoutColor);
 	if (!hideInEditorConsole)
 		s_debugText += textWithoutColor;
-	s_onDebugLogEvent.Trigger();
+	s_onDebugLogEvent.Trigger(text, DebugType::Error);
 	debugMutex->Unlock();
 }
 
@@ -92,7 +92,7 @@ void Debug::PrintWarning(const std::string& text, bool hideInEditorConsole)
 	PrintInFile(textWithoutColor);
 	if (!hideInEditorConsole)
 		s_debugText += textWithoutColor;
-	s_onDebugLogEvent.Trigger();
+	s_onDebugLogEvent.Trigger(text, DebugType::Warning);
 	debugMutex->Unlock();
 }
 
@@ -121,7 +121,7 @@ void Debug::Print(const std::string& text, bool hideInEditorConsole)
 	PrintInFile(finalText);
 	if (!hideInEditorConsole)
 		s_debugText += finalText; // Disable because cause crashes, why? Maybe thread?
-	s_onDebugLogEvent.Trigger();
+	s_onDebugLogEvent.Trigger(text, DebugType::Log);
 	debugMutex->Unlock();
 }
 
@@ -262,7 +262,7 @@ int Debug::Init()
 #if defined(__vita__)
 	fileName = Application::GetGameDataFolder() + fileName;
 #endif
-	FileSystem::s_fileSystem->Delete(fileName);
+	FileSystem::Delete(fileName);
 
 	s_file = FileSystem::MakeFile(fileName);
 

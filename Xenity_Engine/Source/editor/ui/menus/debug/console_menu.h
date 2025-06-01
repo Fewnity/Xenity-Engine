@@ -7,6 +7,7 @@
 #pragma once
 
 #include <editor/ui/menus/menu.h>
+#include <engine/debug/debug_type.h>
 
 class Socket;
 
@@ -18,7 +19,7 @@ public:
 	void Draw() override;
 
 private:
-	void OnNewDebug();
+	void OnNewDebug(const std::string& text, DebugType debugType);
 	void OnPlay();
 	bool consoleMode = false;
 	bool showLogs = true;

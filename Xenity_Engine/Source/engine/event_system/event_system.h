@@ -34,25 +34,12 @@ public:
 	}
 
 	/**
-	* @brief Call all binded functions
-	* 
-	* @param param: All parameters to send
-	*/
-	void Trigger(Args... param)
-	{
-		for (size_t i = 0; i < m_functionCount; i++)
-		{
-			m_functionsInfosList[i].m_function(param...);
-		}
-	}
-
-	/**
 	* @brief Bind a simple function
 	* @brief |
 	* @brief Example:
 	* @brief Bind(&MyFunction);
 	* @brief Bind(&MyClass::MyFunction); (static function)
-	* 
+	*
 	* @param function: Pointer to the function to bind
 	*/
 	void Bind(void(*function)(Args...))
@@ -75,7 +62,7 @@ public:
 	* @brief |
 	* @brief Example:
 	* @brief Bind(&MyClass::MyFunction, ptrToMyObject) (non-static function)
-	* 
+	*
 	* @param function: Pointer to the function to bind
 	* @param obj: Pointer to the object
 	*/
@@ -99,7 +86,7 @@ public:
 
 	/**
 	* @brief Unbind a simple function
-	* 
+	*
 	* @param function: Pointer to the function to unbind
 	*/
 	void Unbind(void(*function)(Args...))
@@ -117,7 +104,7 @@ public:
 
 	/**
 	* @brief Unbind a function linked to an object
-	* 
+	*
 	* @param function: Pointer to the function to unbind
 	* @param obj: Pointer to the object
 	*/
@@ -138,18 +125,31 @@ public:
 	}
 
 	/**
-	* @brief Unbind all binded function
+	* @brief Unbind all bound function
 	*/
-	inline void UnbindAll()
+	void UnbindAll()
 	{
 		m_functionCount = 0;
 		m_functionsInfosList.clear();
 	}
 
 	/**
+	* @brief Call all bound functions
+	* 
+	* @param param: All arguments to send
+	*/
+	void Trigger(Args... args)
+	{
+		for (size_t i = 0; i < m_functionCount; i++)
+		{
+			m_functionsInfosList[i].m_function(args...);
+		}
+	}
+
+	/**
 	* @brief Get the number of listener
 	*/
-	[[nodiscard]] inline size_t GetBindedFunctionCount()
+	[[nodiscard]] size_t GetBoundFunctionCount()
 	{
 		return m_functionCount;
 	}
@@ -169,7 +169,7 @@ private:
 		const size_t funcIndex = FindExistingFunction(functionAddress, objectAddress);
 		if (funcIndex == s_invalidIndex)
 		{
-			BindedFunctionInfo newFunc;
+			BoundFunctionInfo newFunc;
 			newFunc.m_function = callableFunction;
 			newFunc.m_funcAddress = functionAddress;
 			newFunc.m_objectAddress = objectAddress;
@@ -207,7 +207,7 @@ private:
 	{
 		for (size_t i = 0; i < m_functionCount; i++)
 		{
-			const BindedFunctionInfo& info = m_functionsInfosList[i];
+			const BoundFunctionInfo& info = m_functionsInfosList[i];
 			if (functionAddress == info.m_funcAddress && objectAddress == info.m_objectAddress)
 			{
 				return i;
@@ -261,14 +261,14 @@ private:
 	/**
 	* Store data about the listener
 	*/
-	struct BindedFunctionInfo
+	struct BoundFunctionInfo
 	{
 		size_t m_objectAddress = 0;
 		size_t m_funcAddress = 0;
 		std::function<void(Args...)> m_function;
 	};
 
-	std::vector<BindedFunctionInfo> m_functionsInfosList;
+	std::vector<BoundFunctionInfo> m_functionsInfosList;
 	size_t m_functionCount = 0;
 	static constexpr size_t s_invalidIndex = -1;
 };

@@ -848,7 +848,7 @@ void SceneMenu::Draw()
 							meshRenderer->SetMaterial(AssetManager::standardMaterial, i);
 						}
 						Editor::SetSelectedGameObject(newGameObject);
-						SceneManager::SetSceneModified(true);
+						SceneManager::SetIsSceneDirty(true);
 						draggedMeshGameObject = newGameObject;
 					}
 					else 
@@ -863,7 +863,7 @@ void SceneMenu::Draw()
 							{
 								newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
 								Editor::SetSelectedGameObject(newGameObject);
-								SceneManager::SetSceneModified(true);
+								SceneManager::SetIsSceneDirty(true);
 								draggedMeshGameObject = newGameObject;
 							}
 							else 

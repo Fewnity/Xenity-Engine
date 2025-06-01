@@ -15,11 +15,11 @@
 #include <engine/api.h>
 #include <engine/unique_id/unique_id.h>
 
-enum class FileMode 
+enum class FileMode
 {
 	ReadOnly,
 	WriteOnly,
-	WriteCreateFile,
+	WriteCreateFile, // Create the file if it does not exist
 };
 
 /**
@@ -34,6 +34,24 @@ public:
 	File& operator=(const File&) = delete;
 
 	~File() = default;
+
+	/**
+	* @brief Open the file
+	* @param fileMode The mode to open the file
+	* @return True if the file is opened successfully
+	*/
+	[[nodiscard]] virtual bool Open(FileMode fileMode) { return false; };
+
+	/**
+	* @brief Check if the file exists
+	* @return True if the file exists
+	*/
+	[[nodiscard]] virtual bool CheckIfExist() { return false; };
+
+	/**
+	* @brief Close file
+	*/
+	virtual void Close() {};
 
 	/**
 	* @brief Write string data to the file
@@ -69,24 +87,6 @@ public:
 	[[nodiscard]] virtual unsigned char* ReadBinary(size_t offset, size_t size) { return nullptr; };
 
 	/**
-	* @brief Check if the file exists
-	* @return True if the file exists
-	*/
-	[[nodiscard]] virtual bool CheckIfExist() { return false; };
-
-	/**
-	* @brief Open the file
-	* @param fileMode The mode to open the file
-	* @return True if the file is opened successfully
-	*/
-	[[nodiscard]] virtual bool Open(FileMode fileMode) { return false; };
-
-	/**
-	* @brief Close file
-	*/
-	virtual void Close() {};
-
-	/**
 	* @brief Get file path
 	*/
 	[[nodiscard]] inline const std::string& GetPath() const
@@ -95,7 +95,7 @@ public:
 	}
 
 	/**
-	* @brief Get file's folder path
+	* @brief Get file folder path
 	*/
 	[[nodiscard]] std::string GetFolderPath() const;
 

@@ -31,7 +31,7 @@ TestResult AddComponentCommandTest::Start(std::string& errorOut)
 
 		EXPECT_NOT_NULL(newGameObject->GetComponent<Light>(), "Failed to add Light component");
 
-		EXPECT_TRUE(SceneManager::GetSceneModified(), "The scene is not dirty");
+		EXPECT_TRUE(SceneManager::IsSceneDirty(), "The scene is not dirty");
 
 		addComponentCommand.Undo();
 
@@ -84,7 +84,7 @@ TestResult AddComponentCommandTest::Start(std::string& errorOut)
 	GameplayManager::RemoveDestroyedComponents();
 	newGameObject.reset();
 
-	SceneManager::SetSceneModified(false);
+	SceneManager::SetIsSceneDirty(false);
 
 	END_TEST();
 }
@@ -144,7 +144,7 @@ TestResult CreateEmptyGameObjectCommandTest::Start(std::string& errorOut)
 
 	command.Undo();
 
-	SceneManager::SetSceneModified(false);
+	SceneManager::SetIsSceneDirty(false);
 
 	END_TEST();
 }
@@ -237,7 +237,7 @@ TestResult CreateChildGameObjectCommandTest::Start(std::string& errorOut)
 	Destroy(parent);
 	Destroy(parent2);
 	GameplayManager::RemoveDestroyedGameObjects();
-	SceneManager::SetSceneModified(false);
+	SceneManager::SetIsSceneDirty(false);
 
 	END_TEST();
 }
@@ -328,7 +328,7 @@ TestResult CreateParentGameObjectCommandTest::Start(std::string& errorOut)
 	Destroy(gameObject0);
 	Destroy(gameObject1);
 	GameplayManager::RemoveDestroyedGameObjects();
-	SceneManager::SetSceneModified(false);
+	SceneManager::SetIsSceneDirty(false);
 
 	END_TEST();
 }

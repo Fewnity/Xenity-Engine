@@ -7,6 +7,7 @@
 #include "about_menu.h"
 
 #include <imgui/imgui.h>
+#include <editor/editor.h>
 
 void AboutMenu::Init()
 {
@@ -23,6 +24,11 @@ void AboutMenu::Draw()
 
 		ImGui::Text("Version: 0.1");
 		ImGui::Text("Made by Fewnity with love <3");
+
+		if(ImGui::Button("Credits"))
+		{
+			Editor::OpenLinkInWebBrowser("https://fewnity.github.io/Xenity-Engine/credits.html");
+		}
 
 		CalculateWindowValues();
 	}

@@ -61,7 +61,7 @@ void FileDataBase::SaveToFile(const std::string& path)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	FileSystem::s_fileSystem->Delete(path);
+	FileSystem::Delete(path);
 
 	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool openResult = file->Open(FileMode::WriteCreateFile);

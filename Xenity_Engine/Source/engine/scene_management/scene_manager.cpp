@@ -46,7 +46,7 @@ std::vector<std::shared_ptr<GameObject>> SceneManager::tempGameobjects;
 std::vector<std::shared_ptr<Component>> SceneManager::tempComponents;
 #if defined(EDITOR)
 
-void SceneManager::SetSceneModified(bool value)
+void SceneManager::SetIsSceneDirty(bool value)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -171,7 +171,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		// If there is no error, save the file
 		if (!path.empty())
 		{
-			FileSystem::s_fileSystem->Delete(path);
+			FileSystem::Delete(path);
 			const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 			if (file->Open(FileMode::WriteCreateFile))
 			{
@@ -182,7 +182,7 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 				file->Write(jsonData);
 				file->Close();
 				ProjectManager::RefreshProjectDirectory();
-				SetSceneModified(false);
+				SetIsSceneDirty(false);
 			}
 			else
 			{
@@ -579,7 +579,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 	LoadScene(data);
 	s_openedScene = scene;
 #if defined(EDITOR)
-	SetSceneModified(false);
+	SetIsSceneDirty(false);
 #endif
 }
 

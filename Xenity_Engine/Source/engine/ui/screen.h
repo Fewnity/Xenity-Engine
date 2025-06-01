@@ -7,15 +7,11 @@
 #pragma once
 
 #include <engine/api.h>
+#include <string>
 
 class API Screen
 {
 public:
-
-	/**
-	* @brief Get the height of the screen in pixels
-	*/
-	[[nodiscard]] static inline int GetHeight() { return s_height; }
 
 	/**
 	* @brief Get the width of the screen in pixels
@@ -23,17 +19,23 @@ public:
 	[[nodiscard]] static inline int GetWidth() { return s_width; }
 
 	/**
+	* @brief Get the height of the screen in pixels
+	*/
+	[[nodiscard]] static inline int GetHeight() { return s_height; }
+
+	/**
 	* @brief Set if the window should be in fullscreen mode
-	* @brief Only for Windows, no effect on other platforms
+	* @brief Only for Windows and Linux, no effect on other platforms
+	* @brief Does not affect the editor window
 	* @param useFullScreenMode True to enable fullscreen, false to disable
 	*/
 	static void SetFullScreen(bool useFullScreenMode);
 
 	/**
-	* @brief Set if the window should use VSync
-	* @param isVSync True to enable VSync, false to disable
+	* @brief Set if the window should use VSync (May cause graphical glitch on PSP)
+	* @param useVSync True to enable VSync, false to disable
 	*/
-	static void SetVSync(bool isVSync);
+	static void SetVSync(bool useVSync);
 
 	/**
 	* @brief Get if VSync is enabled
@@ -41,8 +43,17 @@ public:
 	*/
 	[[nodiscard]] static bool IsVSyncEnabled();
 
+
 private:
+
 	friend class Window;
+	/**
+	* @brief Make a screenshot of the game (.png)
+	* @brief (Note: on PSP/PsVita, plugins overlays are also captured)
+	*
+	* @param fileName The name of the file to save the screenshot (without the extension)
+	*/
+	static bool MakeScreenshot(const std::string& fileName);
 
 	static int s_height;
 	static int s_width;

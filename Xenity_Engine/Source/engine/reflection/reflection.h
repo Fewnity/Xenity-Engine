@@ -114,7 +114,7 @@ public:
 	[[nodiscard]] virtual ReflectiveData GetReflectiveData() = 0;
 
 	/**
-	* @brief Called when a variable is updated
+	* @brief Called when one or more variables have been updated by the inspector or by the scene manager
 	*/
 	virtual void OnReflectionUpdated() {};
 

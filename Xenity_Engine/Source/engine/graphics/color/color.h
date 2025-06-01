@@ -41,15 +41,24 @@ class API Color : public Reflective
 {
 public:
 	/**
-	* @brief Create color from ints
+	* @brief Create a color from 3 uint8_t (alpha = 255)
 	* @param r Red level [0;255]
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
 	*/
-	[[nodiscard]] static Color CreateFromRGB(int r, int g, int b);
+	[[nodiscard]] static Color CreateFromRGB(uint8_t r, uint8_t g, uint8_t b);
 
 	/**
-	* @brief Create color from floats
+	* @brief Create a color from 4 uint8_t
+	* @param r Red level [0;255]
+	* @param g Green level [0;255]
+	* @param b Blue level [0;255]
+	* @param a Alpha level [0;255]
+	*/
+	[[nodiscard]] static Color CreateFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+
+	/**
+	* @brief Create a color from 3 floats (alpha = 1)
 	* @param r Red level [0.0f;1.0f]
 	* @param g Green level [0.0f;1.0f]
 	* @param b Blue level [0.0f;1.0f]
@@ -57,16 +66,7 @@ public:
 	[[nodiscard]] static Color CreateFromRGBFloat(float r, float g, float b);
 
 	/**
-	* @brief Create color with alpha information from ints
-	* @param r Red level [0;255]
-	* @param g Green level [0;255]
-	* @param b Blue level [0;255]
-	* @param a Alpha level [0;255]
-	*/
-	[[nodiscard]] static Color CreateFromRGBA(int r, int g, int b, int a);
-
-	/**
-	* @brief Create color from floats
+	* @brief Create a color from 4 floats
 	* @param r Red level [0.0f;1.0f]
 	* @param g Green level [0.0f;1.0f]
 	* @param b Blue level [0.0f;1.0f]
@@ -75,16 +75,16 @@ public:
 	[[nodiscard]] static Color CreateFromRGBAFloat(float r, float g, float b, float a);
 
 	/**
-	* @brief Set color with alpha information from ints
+	* @brief Set color from 4 uint8_t
 	* @param r Red level [0;255]
 	* @param g Green level [0;255]
 	* @param b Blue level [0;255]
 	* @param a Alpha level [0;255]
 	*/
-	void SetFromRGBA(int r, int g, int b, int a);
+	void SetFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
 	/**
-	* @brief Set color from with alpha information floats
+	* @brief Set color from 4 float
 	* @param r Red level [0;1]
 	* @param g Green level [0;1]
 	* @param b Blue level [0;1]
@@ -101,7 +101,7 @@ public:
 	}
 
 	/**
-	* @brief Get RGBA value as an unsigned int
+	* @brief Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA)
 	*/
 	[[nodiscard]] unsigned int GetUnsignedIntRGBA() const
 	{
@@ -109,7 +109,7 @@ public:
 	}
 
 	/**
-	* @brief Get ABGR value as an unsigned int
+	* @brief Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR)
 	*/
 	[[nodiscard]] unsigned int GetUnsignedIntABGR() const
 	{
@@ -117,7 +117,7 @@ public:
 	}
 
 	/**
-	* @brief Get ABGR value as an unsigned int
+	* @brief Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB)
 	*/
 	[[nodiscard]] unsigned int GetUnsignedIntARGB() const
 	{

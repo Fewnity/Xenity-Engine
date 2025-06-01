@@ -153,7 +153,7 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 			{
 				ReflectionUtils::JsonToReflectiveData(valueToSet, foundComponent->GetReflectiveData());
 				foundComponent->OnReflectionUpdated();
-				SceneManager::SetSceneModified(true);
+				SceneManager::SetIsSceneDirty(true);
 				hasBeenSet = true;
 			}
 		}
@@ -164,7 +164,7 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 			{
 				ReflectionUtils::JsonToReflectiveData(valueToSet, foundGameObject->GetReflectiveData());
 				foundGameObject->OnReflectionUpdated();
-				SceneManager::SetSceneModified(true);
+				SceneManager::SetIsSceneDirty(true);
 				hasBeenSet = true;
 			}
 		}
@@ -259,7 +259,7 @@ inline void InspectorChangeValueCommand<U, T>::SetValue(T valueToSet, bool isUnd
 			{
 				*valuePtr = valueToSet;
 				foundComponent->OnReflectionUpdated();
-				SceneManager::SetSceneModified(true);
+				SceneManager::SetIsSceneDirty(true);
 				hasBeenSet = true;
 			}
 		}
@@ -270,7 +270,7 @@ inline void InspectorChangeValueCommand<U, T>::SetValue(T valueToSet, bool isUnd
 			{
 				*valuePtr = valueToSet;
 				foundGameObject->OnReflectionUpdated();
-				SceneManager::SetSceneModified(true);
+				SceneManager::SetIsSceneDirty(true);
 				hasBeenSet = true;
 			}
 		}
@@ -330,7 +330,7 @@ inline void InspectorItemSetActiveCommand<T>::ApplyValue(bool valueToSet)
 		{
 			foundComponent->SetIsEnabled(valueToSet);
 			foundComponent->OnReflectionUpdated();
-			SceneManager::SetSceneModified(true);
+			SceneManager::SetIsSceneDirty(true);
 		}
 	}
 	else if constexpr (std::is_base_of<T, GameObject>())
@@ -340,7 +340,7 @@ inline void InspectorItemSetActiveCommand<T>::ApplyValue(bool valueToSet)
 		{
 			foundGameObject->SetActive(valueToSet);
 			foundGameObject->OnReflectionUpdated();
-			SceneManager::SetSceneModified(true);
+			SceneManager::SetIsSceneDirty(true);
 		}
 	}
 	else
@@ -398,7 +398,7 @@ inline void InspectorItemSetStaticCommand<T>::ApplyValue(bool valueToSet)
 		{
 			foundGameObject->m_isStatic = valueToSet;
 			foundGameObject->OnReflectionUpdated();
-			SceneManager::SetSceneModified(true);
+			SceneManager::SetIsSceneDirty(true);
 		}
 	}
 	else
@@ -513,7 +513,7 @@ inline void InspectorSetComponentDataCommand<T>::Execute()
 	{
 		ReflectionUtils::JsonToReflectiveData(componentData, componentToUpdate->GetReflectiveData());
 		componentToUpdate->OnReflectionUpdated();
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -525,7 +525,7 @@ inline void InspectorSetComponentDataCommand<T>::Undo()
 	{
 		ReflectionUtils::JsonToReflectiveData(oldComponentData, componentToUpdate->GetReflectiveData());
 		componentToUpdate->OnReflectionUpdated();
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 

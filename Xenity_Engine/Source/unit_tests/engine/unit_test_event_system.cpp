@@ -27,15 +27,15 @@ TestResult EventSystemTest::Start(std::string& errorOut)
 	Event<int&> myEvent;
 
 	// ----------------- Constructor test
-	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 0, "Bad Event Constructor (GetBindedFunctionCount)");
+	EXPECT_EQUALS(myEvent.GetBoundFunctionCount(), 0, "Bad Event Constructor (GetBoundFunctionCount)");
 
 	// ----------------- Bind static function test
 	myEvent.Bind(&EventSystemTest::EventFunction);
-	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 1, "Bad Event Bind (GetBindedFunctionCount)");
+	EXPECT_EQUALS(myEvent.GetBoundFunctionCount(), 1, "Bad Event Bind (GetBoundFunctionCount)");
 
 	// Try to bind twice the same function, should not bind it twice
 	myEvent.Bind(&EventSystemTest::EventFunction);
-	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 1, "Bad Event Bind (GetBindedFunctionCount), binded twice");
+	EXPECT_EQUALS(myEvent.GetBoundFunctionCount(), 1, "Bad Event Bind (GetBoundFunctionCount), binded twice");
 
 	myEvent.Trigger(eventValue); //1
 	myEvent.Trigger(eventValue); //2
@@ -45,23 +45,23 @@ TestResult EventSystemTest::Start(std::string& errorOut)
 
 	myEvent.Unbind(&EventSystemTest::EventFunction);
 
-	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 0, "Bad Event UnBind (GetBindedFunctionCount)");
+	EXPECT_EQUALS(myEvent.GetBoundFunctionCount(), 0, "Bad Event UnBind (GetBoundFunctionCount)");
 
 	// Try to unbind a function that is not binded, should not do anything
 	myEvent.Unbind(&EventSystemTest::EventFunction);
 
-	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 0, "Bad Event UnBind (GetBindedFunctionCount), unbinded twice");
+	EXPECT_EQUALS(myEvent.GetBoundFunctionCount(), 0, "Bad Event UnBind (GetBoundFunctionCount), unbinded twice");
 
 	// ----------------- Bind object function test
 
 	myEvent.Bind(&EventSystemTest::EventObjectFunction, this);
 
-	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 1, "Bad Event Bind Object Function (GetBindedFunctionCount)");
+	EXPECT_EQUALS(myEvent.GetBoundFunctionCount(), 1, "Bad Event Bind Object Function (GetBoundFunctionCount)");
 
 	// Try to bind twice the same function, should not bind it twice
 	myEvent.Bind(&EventSystemTest::EventObjectFunction, this);
 
-	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 1, "Bad Event Bind Object Function (GetBindedFunctionCount), binded twice");
+	EXPECT_EQUALS(myEvent.GetBoundFunctionCount(), 1, "Bad Event Bind Object Function (GetBoundFunctionCount), binded twice");
 
 	myEvent.Trigger(eventValue); // 6
 	myEvent.Trigger(eventValue); // 12
@@ -72,7 +72,7 @@ TestResult EventSystemTest::Start(std::string& errorOut)
 
 	myEvent.UnbindAll();
 
-	EXPECT_EQUALS(myEvent.GetBindedFunctionCount(), 0, "Bad Event UnbindAll (GetBindedFunctionCount)");
+	EXPECT_EQUALS(myEvent.GetBoundFunctionCount(), 0, "Bad Event UnbindAll (GetBoundFunctionCount)");
 
 	myEvent.Trigger(eventValue); // 12
 

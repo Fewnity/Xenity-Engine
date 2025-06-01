@@ -27,7 +27,7 @@ void ConsoleMenu::Init()
 	GameplayManager::GetOnPlayEvent().Bind(&ConsoleMenu::OnPlay, this);
 }
 
-void ConsoleMenu::OnNewDebug()
+void ConsoleMenu::OnNewDebug(const std::string& text, DebugType debugType)
 {
 	needUpdateScrool = 1;
 }

@@ -45,29 +45,25 @@ public:
 	/**
 	* @brief Get opened scene
 	*/
-	[[nodiscard]] API static inline const std::shared_ptr<Scene>& GetOpenedScene()
+	[[nodiscard]] API static const std::shared_ptr<Scene>& GetOpenedScene()
 	{
 		return s_openedScene;
 	}
 
 #if defined(EDITOR)
 	/**
-	 * @brief Get if the scene has been modified
+	 * @brief [Internal & Editor only] Get if the scene has been modified
 	 */
-	[[nodiscard]] API static inline bool GetSceneModified()
+	[[nodiscard]] API static inline bool IsSceneDirty()
 	{
 		return s_sceneModified;
 	}
 
 	/**
-	 * @brief [Internal]
+	 * @brief [Internal & Editor only] Set if the scene has been modified
 	 */
-	API static void SetSceneModified(bool value);
+	API static void SetIsSceneDirty(bool value);
 #endif
-
-	static std::unordered_map<uint64_t, uint64_t> idRedirection;
-	static std::vector<std::shared_ptr<GameObject>> tempGameobjects;
-	static std::vector<std::shared_ptr<Component>> tempComponents;
 
 
 private:
@@ -87,6 +83,9 @@ private:
 	API static std::shared_ptr<GameObject> FindGameObjectByIdAdvanced(const uint64_t id, bool searchInTempList);
 	API static std::shared_ptr<Component> FindComponentByIdAdvanced(const uint64_t id, bool searchInTempList);
 
+	static std::unordered_map<uint64_t, uint64_t> idRedirection;
+	static std::vector<std::shared_ptr<GameObject>> tempGameobjects;
+	static std::vector<std::shared_ptr<Component>> tempComponents;
 	/**
 	* @brief [Internal] Create gameobjects and component from json data
 	* @param jsonData Json data

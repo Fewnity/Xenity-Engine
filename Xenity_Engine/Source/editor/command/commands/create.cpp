@@ -30,7 +30,7 @@ void InspectorAddComponentCommand::Execute()
 			{
 				componentId = newComponent->GetUniqueId();
 			}
-			SceneManager::SetSceneModified(true);
+			SceneManager::SetIsSceneDirty(true);
 		}
 		else
 		{
@@ -48,7 +48,7 @@ void InspectorAddComponentCommand::Undo()
 		if (oldComponent)
 		{
 			Destroy(oldComponent);
-			SceneManager::SetSceneModified(true);
+			SceneManager::SetIsSceneDirty(true);
 		}
 	}
 }
@@ -150,7 +150,7 @@ void InspectorCreateGameObjectCommand::Execute()
 				Editor::AddSelectedGameObject(createdGameObject);
 		}
 		Editor::SetSelectedFileReference(nullptr);
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -189,7 +189,7 @@ void InspectorCreateGameObjectCommand::Undo()
 		}
 
 		if (done)
-			SceneManager::SetSceneModified(true);
+			SceneManager::SetIsSceneDirty(true);
 	}
 }
 

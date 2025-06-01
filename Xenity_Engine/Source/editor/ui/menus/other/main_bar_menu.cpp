@@ -533,7 +533,7 @@ void MainBarMenu::Draw()
 	{
 		if (ImGui::MenuItem("Documentation"))
 		{
-			Editor::OpenLinkInWebBrowser("https://github.com/Fewnity/Xenity-Engine/tree/crossplatform/Doc");
+			Editor::OpenLinkInWebBrowser("https://fewnity.github.io/Xenity-Engine/script_api_reference/scripting_api_reference.html");
 		}
 		if (ImGui::MenuItem("Project's GitHub"))
 		{

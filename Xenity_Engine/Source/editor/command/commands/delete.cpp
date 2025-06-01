@@ -90,7 +90,7 @@ void InspectorDeleteGameObjectCommand::Execute()
 	if (gameObjectToDestroy)
 	{
 		Destroy(gameObjectToDestroy);
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -108,7 +108,7 @@ void InspectorDeleteGameObjectCommand::Undo()
 	ReflectionUtils::JsonToReflectiveData(gameObjectData, gameObject->GetReflectiveData());
 	gameObject->OnReflectionUpdated();
 	gameObject->SetUniqueId(gameObjectId);
-	SceneManager::SetSceneModified(true);*/
+	SceneManager::SetIsSceneDirty(true);*/
 }
 
 //----------------------------------------------------------------------------

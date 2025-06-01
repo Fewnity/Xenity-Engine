@@ -58,6 +58,9 @@ void EditorIcons::Init()
 	LoadEditorIcon(IconName::Icon_Platform_PS2, "icons/platform_ps2.png");
 	LoadEditorIcon(IconName::Icon_Platform_PS3, "icons/platform_ps3.png");
 	LoadEditorIcon(IconName::Icon_Platform_PS4, "icons/platform_ps4.png");
+
+	// Other icons
+	LoadEditorIcon(IconName::Icon_Question, "icons/question.png");
 }
 
 void EditorIcons::LoadEditorIcon(IconName iconName, const std::string& path)
@@ -71,5 +74,6 @@ void EditorIcons::LoadEditorIcon(IconName iconName, const std::string& path)
 	loadOptions.platform = Application::GetPlatform();
 	loadOptions.threaded = true;
 	fileIcon->LoadFileReference(loadOptions);
+
 	icons[(int)iconName] = std::move(fileIcon);
 }

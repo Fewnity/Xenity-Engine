@@ -29,7 +29,7 @@ public:
 	~Directory();
 
 	/**
-	* @brief Get all the files of the directory (can be very slow)
+	* @brief Get all the files of the directory (can be very slow and not currently supported on PS3)
 	* @param recursive If true, get all the files of the subdirectories
 	*/
 	std::vector<std::shared_ptr<File>> GetAllFiles(bool recursive);
@@ -45,11 +45,17 @@ public:
 	/**
 	* @brief Get directory path
 	*/
-	[[nodiscard]] inline const std::string& GetPath() const
+	[[nodiscard]] const std::string& GetPath() const
 	{
 		return m_path;
 	}
 
 private:
 	std::string m_path = "";
+
+	/**
+	* @brief Get all files of a directory and fill it
+	* @param directory Directory to fill
+	*/
+	static void FillDirectory(Directory& directory, bool recursive);
 };

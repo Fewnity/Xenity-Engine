@@ -43,7 +43,7 @@ void Color::OnReflectionUpdated()
 	Color::UpdateUnsignedInts();
 }
 
-Color Color::CreateFromRGB(int r, int g, int b)
+Color Color::CreateFromRGB(uint8_t r, uint8_t g, uint8_t b)
 {
 	Color color = Color();
 	color.SetFromRGBA(r, g, b, 255);
@@ -57,7 +57,7 @@ Color Color::CreateFromRGBFloat(float r, float g, float b)
 	return color;
 }
 
-Color Color::CreateFromRGBA(int r, int g, int b, int a)
+Color Color::CreateFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
 	Color color = Color();
 	color.SetFromRGBA(r, g, b, a);
@@ -71,7 +71,7 @@ Color Color::CreateFromRGBAFloat(float r, float g, float b, float a)
 	return color;
 }
 
-void Color::SetFromRGBA(int r, int g, int b, int a)
+void Color::SetFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
 	m_rgba.r = Math::Clamp(r / 255.0f, 0, 1);
 	m_rgba.g = Math::Clamp(g / 255.0f, 0, 1);

@@ -635,7 +635,7 @@ inline bool ReflectionUtils::JsonToFile(const nlohmann::ordered_json& data, std:
 	XASSERT(file != nullptr, "[ReflectionUtils::JsonToFile] file is nullptr");
 
 	bool ok = false;
-	FileSystem::s_fileSystem->Delete(file->GetPath());
+	FileSystem::Delete(file->GetPath());
 	if (file->Open(FileMode::WriteCreateFile))
 	{
 		file->Write(data.dump(0));

@@ -17,39 +17,41 @@ public:
 
 	/**
 	* @brief Get total scaled elapsed time
+	* @brief Start at 0 when the game starts
 	*/
-	[[nodiscard]] static inline float GetTime()
+	[[nodiscard]] static float GetTime()
 	{
 		return s_time;
 	}
 
 	/**
-	* @brief Get total unscaled elapsed time
+	* @brief Get total unscaled elapsed time (not affected by time scale)
+	* @brief Start at 0 when the game starts
 	*/
-	[[nodiscard]] static inline float GetUnscaledTime()
+	[[nodiscard]] static float GetUnscaledTime()
 	{
 		return s_unscaledTime;
 	}
 
 	/**
-	* @brief Get scaled delta time
+	* @brief Get scaled delta time, which is the time elapsed since the last frame * time scale
 	*/
-	[[nodiscard]] static inline float GetDeltaTime()
+	[[nodiscard]] static float GetDeltaTime()
 	{
 		return s_deltaTime;
 	}
 	/**
-	* @brief Get unscaled delta time
+	* @brief Get unscaled delta time which is the time elapsed since the last frame (not affected by time scale)
 	*/
-	[[nodiscard]] static inline float GetUnscaledDeltaTime()
+	[[nodiscard]] static float GetUnscaledDeltaTime()
 	{
 		return s_unscaledDeltaTime;
 	}
 
 	/**
-	* @brief Get time scale
+	* @brief Get time scale (Speed of the game)
 	*/
-	[[nodiscard]] static inline float GetTimeScale()
+	[[nodiscard]] static float GetTimeScale()
 	{
 		return s_timeScale;
 	}
@@ -58,7 +60,7 @@ public:
 	* @brief Set time scale
 	* @param timeScale Time scale (minium 0)
 	*/
-	static void SetTimeScale(float _timeScale);
+	static void SetTimeScale(float timeScale);
 
 private:
 	friend class Engine;
@@ -68,6 +70,10 @@ private:
 	* @brief [Internal] Init time system
 	*/
 	static void Init();
+
+	/**
+	* [Internal] Set time values to 0
+	*/
 	static void Reset();
 
 	/**

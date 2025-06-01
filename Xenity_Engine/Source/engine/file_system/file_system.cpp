@@ -43,155 +43,11 @@
 #include "file_ps3.h"
 #include "file_default.h"
 
-FileSystem* FileSystem::s_fileSystem = nullptr;
-
 #pragma region File
 
 #pragma endregion
 
 #pragma region Directory
-
-void FileSystem::FillDirectory(const std::shared_ptr<Directory>& directory, bool recursive)
-{
-	XASSERT(directory != nullptr, "[FileSystem::FillDirectory] directory is nullptr");
-
-	directory->files.clear();
-	directory->subdirectories.clear();
-	if (!directory->CheckIfExist())
-	{
-		return;
-	}
-#if defined(__PSP__)
-	DIR* dir = opendir(directory->GetPath().c_str());
-	if (dir == NULL)
-	{
-		return;
-	}
-	struct dirent* ent;
-	while ((ent = readdir(dir)) != NULL)
-	{
-		std::string found = ent->d_name;
-		/*if (found == "." || found == "..")
-			continue;*/
-		if (found[0] == '.')
-			continue;
-
-		std::string fullPath = directory->GetPath() + found;
-		struct stat statbuf;
-		if (stat(fullPath.c_str(), &statbuf) == -1)
-		{
-			continue;
-		}
-
-		if (S_ISREG(statbuf.st_mode)) // If the entry is a file
-		{
-			std::shared_ptr<File> newFile = FileSystem::MakeFile(fullPath);
-			directory->files.push_back(newFile);
-		}
-		else if (S_ISDIR(statbuf.st_mode)) // If the entry is a folder
-		{
-			std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(fullPath + "/");
-			if (recursive)
-				newDirectory->GetAllFiles(true);
-			directory->subdirectories.push_back(newDirectory);
-		}
-	}
-	closedir(dir);
-#elif defined(_EE)
-	Debug::Print("FillDirectory", true);
-	std::string fullPath = directory->GetPath();
-	int fd = fileXioDopen(directory->GetPath().c_str());
-	if (fd >= 0)
-	{
-		iox_dirent_t dirent;
-		int t = 0;
-
-		std::vector<std::string> newDirs;
-
-		while ((t = fileXioDread(fd, &dirent)) != 0)
-		{
-			// Debug::Print(std::to_string(dirent.stat.mode) + " " + std::string(dirent.name));
-			if (std::string(dirent.name) == "." || std::string(dirent.name) == "..")
-				continue;
-
-			if (dirent.stat.mode == 8198 || dirent.stat.mode == 8199)
-			{
-				std::string path = directory->GetPath().substr(5) + std::string(dirent.name);
-				// std::string path = directory->GetPath().substr(6) + std::string(dirent.name);
-				//   path = path.substr(6);
-				//   Debug::Print("IsFile " + path);
-				std::shared_ptr<File> newFile = FileSystem::MakeFile(path);
-				directory->files.push_back(newFile);
-			}
-			else if (dirent.stat.mode == 4103)
-			{
-				std::string path = directory->GetPath().substr(5) + std::string(dirent.name);
-				// std::string path = directory->GetPath().substr(6) + std::string(dirent.name);
-				newDirs.push_back(path);
-				// Debug::Print("IsFolder " + path);
-				//  path = path.substr(6);
-
-				// std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(path + "\\");
-				// if (recursive)
-				// 	newDirectory->GetAllFiles(true);
-				// directory->subdirectories.push_back(newDirectory);
-			}
-		}
-		fileXioDclose(fd);
-
-		int c = newDirs.size();
-		for (int i = 0; i < c; i++)
-		{
-			std::shared_ptr<Directory> newDirectory = std::make_shared<Directory>(newDirs[i] + "/");
-			if (recursive)
-				newDirectory->GetAllFiles(true);
-			directory->subdirectories.push_back(newDirectory);
-		}
-	}
-#elif defined(__PS3__)
-#else
-	for (const auto& file : std::filesystem::directory_iterator(directory->GetPath()))
-	{
-		if (file.is_directory())
-		{
-			std::shared_ptr<Directory> newDirectory = nullptr;
-			try
-			{
-				std::string path = file.path().string();
-
-#if defined(_EE)
-				path = path.substr(5);
-				// path = path.substr(6);
-#endif
-				newDirectory = std::make_shared<Directory>(path + "/");
-				if (recursive)
-					newDirectory->GetAllFiles(true);
-				directory->subdirectories.push_back(newDirectory);
-			}
-			catch (const std::exception&)
-			{
-			}
-		}
-		else if (file.is_regular_file())
-		{
-			std::shared_ptr<File> newFile = nullptr;
-			try
-			{
-				std::string path = file.path().string();
-#if defined(_EE)
-				path = path.substr(5);
-				// path = path.substr(6);
-#endif
-				newFile = FileSystem::MakeFile(path);
-				directory->files.push_back(newFile);
-			}
-			catch (const std::exception&)
-			{
-			}
-		}
-	}
-#endif
-}
 
 bool FileSystem::Rename(const std::string& path, const std::string& newPath)
 {
@@ -222,25 +78,21 @@ CopyFileResult FileSystem::CopyFile(const std::string& path, const std::string& 
 #if !defined(__PS3__)
 	try
 	{
+		std::filesystem::copy_options option = std::filesystem::copy_options::none;
 		if (!replace)
 		{
 			if (std::filesystem::exists(newPath))
 			{
 				result = CopyFileResult::FileAlreadyExists;
+				return result;
 			}
 		}
-
-		std::filesystem::copy_options option = std::filesystem::copy_options::none;
-
-		if (replace)
+		else
 		{
 			option |= std::filesystem::copy_options::overwrite_existing;
 		}
 
-		if (result == CopyFileResult::Success)
-		{
-			std::filesystem::copy_file(path, newPath, option);
-		}
+		std::filesystem::copy_file(path, newPath, option);
 	}
 	catch (const std::exception&)
 	{
@@ -284,6 +136,13 @@ std::shared_ptr<File> FileSystem::MakeFile(const std::string& path)
 //}
 
 	return file;
+}
+
+std::shared_ptr<Directory> FileSystem::MakeDirectory(const std::string& path)
+{
+	XASSERT(!path.empty(), "[FileSystem::MakeDirectory] path is empty");
+
+	return std::make_shared<Directory>(path);
 }
 
 std::string FileSystem::ConvertWindowsPathToBasicPath(const std::string& path)
@@ -358,7 +217,7 @@ bool FileSystem::CreateFolder(const std::string& path)
 
 	try
 	{
-		std::filesystem::create_directory(path);
+		std::filesystem::create_directories(path);
 	}
 	catch (const std::exception&)
 	{

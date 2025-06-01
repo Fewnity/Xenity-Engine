@@ -33,9 +33,14 @@ public:
 	~Socket();
 
 	/**
-	* @brief Send data
+	* @brief Send data as a string to the server
 	*/
 	void SendData(const std::string& text);
+
+	/**
+	* @brief Send binary data to the server
+	*/
+	void SendData(const char* data, int size);
 
 	/**
 	* @brief Close the socket
@@ -64,21 +69,30 @@ protected:
 	int m_socketId = -1;
 };
 
+/**
+* @brief Class to create sockets and to manage networking settings
+*/
 class API NetworkManager
 {
 public:
 	/**
 	* @brief Create a socket
+	* @bried Returns nullptr if the socket creation has failed
 	*/
 	[[nodiscard]] static std::shared_ptr<Socket> CreateSocket(const std::string& address, int port);
-	[[nodiscard]] static std::shared_ptr<Socket> GetClientSocket();
 
+	/**
+	* @brief Show the network setup menu for the PSP
+	* @brief This function will only work on the PSP platform.
+	*/
 	static void ShowPSPNetworkSetupMenu();
 
 private:
 	friend class Engine;
 	friend class Graphics;
 	friend class UpdateChecker;
+
+	[[nodiscard]] static std::shared_ptr<Socket> GetClientSocket();
 
 	/**
 	* @brief [Internal] Init network manager

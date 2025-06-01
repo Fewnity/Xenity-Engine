@@ -22,7 +22,7 @@ public:
 
 	/**
 	* @brief Set Gizmo draw color (does not affect sprites)
-	* @param newColor New color to set
+	* @param newColor New color to use
 	*/
 	static void SetColor(const Color& newColor);
 
@@ -35,18 +35,18 @@ public:
 
 	/**
 	* @brief Draw a billboard sprite
-	* @param position Position
-	* @param scale Scale
+	* @param position Position of the sprite
+	* @param scale Scale of the sprite
 	* @param texture Texture to draw
-	* @param color Color
+	* @param color Color of the sprite
 	*/
 	static void DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color);
 
 	/**
 	* @brief Draw a wired sphere
-	* @param position Position
-	* @param rotation Rotation
-	* @param raduis Radius
+	* @param position Position of the sphere
+	* @param rotation Rotation of the sphere
+	* @param raduis Radius of the sphere
 	*/
 	static void DrawSphere(const Vector3& position, const Quaternion& rotation, const float radius);
 

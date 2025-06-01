@@ -94,7 +94,7 @@ inline void InspectorDeleteComponentCommand::Execute()
 	if (componentToDestroy)
 	{
 		Destroy(componentToDestroy);
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -108,7 +108,7 @@ inline void InspectorDeleteComponentCommand::Undo()
 		component->SetIsEnabled(isEnabled);
 		component->SetUniqueId(componentId);
 		component->OnReflectionUpdated();
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 

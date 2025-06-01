@@ -165,8 +165,8 @@ void NetworkManager::Update()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	SCOPED_PROFILER("NetworkManager::Update", scopeBenchmark);
 
-	const int socketCount = (int)s_sockets.size();
-	for (int i = 0; i < socketCount; i++)
+	const size_t socketCount = s_sockets.size();
+	for (size_t i = 0; i < socketCount; i++)
 	{
 		s_sockets[i]->Update();
 	}
@@ -218,6 +218,17 @@ void Socket::SendData(const std::string& text)
 	const int infoLentgh = (int)text.size();
 #if !defined(_EE)
 	send(m_socketId, text.c_str(), infoLentgh, 0); // Send data to server
+#endif
+}
+
+void Socket::SendData(const char* data, int size)
+{
+	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+	if (m_socketId < 0 || data == nullptr || size <= 0)
+		return;
+
+#if !defined(_EE)
+	send(m_socketId, data, size, 0); // Send data to server
 #endif
 }
 

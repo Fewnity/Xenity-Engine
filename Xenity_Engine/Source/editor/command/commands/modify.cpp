@@ -24,7 +24,7 @@ void InspectorTransformSetPositionCommand::Execute()
 		else
 			foundGameObject->GetTransform()->SetPosition(newValue);
 
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -38,7 +38,7 @@ void InspectorTransformSetPositionCommand::Undo()
 		else
 			foundGameObject->GetTransform()->SetPosition(lastValue);
 
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -62,7 +62,7 @@ void InspectorTransformSetRotationCommand::Execute()
 			foundGameObject->GetTransform()->SetLocalRotation(newValue);
 		else
 			foundGameObject->GetTransform()->SetRotation(newValue);
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -75,7 +75,7 @@ void InspectorTransformSetRotationCommand::Undo()
 			foundGameObject->GetTransform()->SetLocalRotation(lastValue);
 		else
 			foundGameObject->GetTransform()->SetRotation(lastValue);
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -93,7 +93,7 @@ void InspectorTransformSetLocalScaleCommand::Execute()
 	if (foundGameObject)
 	{
 		foundGameObject->GetTransform()->SetLocalScale(newValue);
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -103,7 +103,7 @@ void InspectorTransformSetLocalScaleCommand::Undo()
 	if (foundGameObject)
 	{
 		foundGameObject->GetTransform()->SetLocalScale(lastValue);
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -126,7 +126,7 @@ void InspectorSetTransformDataCommand::Execute()
 		transformToUpdate->m_isTransformationMatrixDirty = true;
 		transformToUpdate->UpdateWorldValues();
 		transformToUpdate->OnReflectionUpdated();
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
@@ -140,6 +140,6 @@ void InspectorSetTransformDataCommand::Undo()
 		transformToUpdate->m_isTransformationMatrixDirty = true;
 		transformToUpdate->UpdateWorldValues();
 		transformToUpdate->OnReflectionUpdated();
-		SceneManager::SetSceneModified(true);
+		SceneManager::SetIsSceneDirty(true);
 	}
 }

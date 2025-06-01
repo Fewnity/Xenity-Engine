@@ -19,6 +19,11 @@ class API Collider : public Component
 {
 public:
 	~Collider();
+
+	/**
+	* @brief Set if the collider is a trigger or not.
+	* @brief A trigger collider will not collide with other colliders, but will still generate collision events.
+	*/
 	void SetIsTrigger(bool isTrigger)
 	{
 		m_isTrigger = isTrigger;
@@ -26,16 +31,25 @@ public:
 		OnTransformUpdated();
 	}
 
+	/**
+	* @brief Check if the collider is a trigger or not.
+	*/
 	[[nodiscard]] bool IsTrigger() const
 	{
 		return m_isTrigger;
 	}
 
+	/**
+	* @brief Set if the collider should generate collision events or not.
+	*/
 	void SetGenerateCollisionEvents(bool generateCollisionEvents)
 	{
 		m_generateCollisionEvents = generateCollisionEvents;
 	}
 
+	/**
+	* @brief Check if the collider should generate collision events or not.
+	*/
 	[[nodiscard]] bool GetGenerateCollisionEvents() const
 	{
 		return m_generateCollisionEvents;

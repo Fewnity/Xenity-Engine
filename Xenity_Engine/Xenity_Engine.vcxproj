@@ -512,7 +512,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\editor\ui\editor_icons.cpp" />
+    <ClCompile Include="Source\editor\ui\editor_icons.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\engine\game_elements\prefab.cpp" />
     <ClCompile Include="Source\editor\ui\menus\engine_control\dev_kit_control_menu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
@@ -521,7 +524,6 @@
     <ClCompile Include="Source\engine\engine_args.cpp" />
     <ClCompile Include="Source\engine\game_elements\component_manager.cpp" />
     <ClCompile Include="Source\engine\time\date_time.cpp" />
-    <ClCompile Include="Source\engine\graphics\screen_capture.cpp" />
     <ClCompile Include="Source\editor\compilation\compiler_cache.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
@@ -703,6 +705,7 @@
     <ClCompile Include="Source\engine\graphics\texture\texture_ps3.cpp" />
     <ClCompile Include="Source\engine\graphics\texture\texture_psp.cpp" />
     <ClInclude Include="Source\editor\ui\editor_icons.h" />
+    <ClInclude Include="Source\engine\debug\debug_type.h" />
     <ClInclude Include="Source\engine\physics\collision_event.h" />
     <ClCompile Include="Source\engine\physics\sphere_collider.cpp" />
     <ClCompile Include="Source\engine\vectors\quaternion.cpp" />
@@ -1117,8 +1120,16 @@
     <ClCompile Include="Source\engine\graphics\ui\text_mesh.cpp" />
     <ClCompile Include="Source\engine\graphics\2d_graphics\tile_map.cpp" />
     <ClCompile Include="Source\psp\video_hardware_dxtn.cpp" />
-    <ClCompile Include="Source\unit_tests\editor\unit_test_create_command.cpp" />
-    <ClCompile Include="Source\unit_tests\editor\unit_test_delete_command.cpp" />
+    <ClCompile Include="Source\unit_tests\editor\unit_test_create_command.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\unit_tests\editor\unit_test_delete_command.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\unit_tests\engine\unit_test_asset_manager.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_benchmark.cpp" />
     <ClCompile Include="Source\unit_tests\engine\unit_test_class_registry.cpp" />
@@ -1157,7 +1168,6 @@
     <ClInclude Include="Source\engine\engine_args.h" />
     <ClInclude Include="Source\engine\game_elements\component_manager.h" />
     <ClInclude Include="Source\engine\time\date_time.h" />
-    <ClInclude Include="Source\engine\graphics\screen_capture.h" />
     <ClInclude Include="Source\editor\compilation\compiler_cache.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>

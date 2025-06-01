@@ -165,7 +165,7 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 		{
 			fileData = cookedFile->ReadAllBinary(cookedFileSize);
 			cookedFile->Close();
-			FileSystem::s_fileSystem->Delete(exportPath);
+			FileSystem::Delete(exportPath);
 		}
 		else
 		{
@@ -192,7 +192,7 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 		delete[] fileData;
 		return;
 	}
-	FileSystem::s_fileSystem->Delete(exportPath + ".meta");
+	FileSystem::Delete(exportPath + ".meta");
 
 	XASSERT(metaSize != 0, "[Cooker::CookAssets] Wrong original meta file size");
 	XASSERT(cookedMetaFileSizeOut != 0, "[Cooker::CookAssets] Wrong cooked meta file size");

@@ -92,7 +92,6 @@
 // Physics
 #include <engine/physics/physics_manager.h>
 
-#include <engine/graphics/screen_capture.h>
 
 std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
 bool Engine::s_canUpdateAudio = false;
@@ -129,8 +128,7 @@ int Engine::Init(int argc, char* argv[])
 	SetMaxCpuSpeed();
 
 	//------------------------------------------ Init File System
-	FileSystem::s_fileSystem = new FileSystem();
-	const int fileSystemInitResult = FileSystem::s_fileSystem->InitFileSystem();
+	const int fileSystemInitResult = FileSystem::InitFileSystem();
 	if (fileSystemInitResult != 0)
 	{
 		return -1;
@@ -445,7 +443,7 @@ void Engine::Loop()
 
 					/*if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
 					{
-						ScreenCapture::MakeScreenshot("screenshot");
+						Screen::MakeScreenshot("screenshot");
 					}*/
 				}
 				else
@@ -468,7 +466,7 @@ void Engine::Loop()
 					// Limit frame rate to reduce CPU and GPU usage in the editor start page
 					if (Time::GetUnscaledDeltaTime() < 1 / 60.0f)
 					{
-						SDL_Delay((1 / 60.0f - Time::GetUnscaledDeltaTime()) * 1000);
+						SDL_Delay(static_cast<uint32_t>((1 / 60.0f - Time::GetUnscaledDeltaTime()) * 1000));
 					}
 #endif
 				}

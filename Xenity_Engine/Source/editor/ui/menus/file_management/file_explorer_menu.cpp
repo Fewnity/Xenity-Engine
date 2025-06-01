@@ -211,15 +211,15 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		if (dropFileInFolder)
 		{
 			const std::shared_ptr<File>& file = fileRef->m_file;
-			CopyFileResult copyResult = FileSystem::s_fileSystem->CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
+			CopyFileResult copyResult = FileSystem::CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
 			if (copyResult == CopyFileResult::Success)
 			{
-				copyResult = FileSystem::s_fileSystem->CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
+				copyResult = FileSystem::CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
 
 				if (copyResult == CopyFileResult::Success)
 				{
-					FileSystem::s_fileSystem->Delete(file->GetPath());
-					FileSystem::s_fileSystem->Delete(file->GetPath() + ".meta");
+					FileSystem::Delete(file->GetPath());
+					FileSystem::Delete(file->GetPath() + ".meta");
 				}
 			}
 
@@ -230,9 +230,9 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		if (dropFolderInFolder)
 		{
 			const std::string destinationPath = item.directory->path + directoryRef->GetFolderName() + "\\";
-			FileSystem::s_fileSystem->CreateFolder(destinationPath);
+			FileSystem::CreateFolder(destinationPath);
 			Editor::StartFolderCopy(directoryRef->path, destinationPath);
-			FileSystem::s_fileSystem->Delete(directoryRef->path);
+			FileSystem::Delete(directoryRef->path);
 			ProjectManager::RefreshProjectDirectory();
 		}
 	}
@@ -257,7 +257,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 		//--
 		createItem->AddItem("Folder", [&fileExplorerItem]()
 			{
-				FileSystem::s_fileSystem->CreateFolder(fileExplorerItem.directory->path + "\\new Folder");
+				FileSystem::CreateFolder(fileExplorerItem.directory->path + "\\new Folder");
 				ProjectManager::RefreshProjectDirectory();
 			});
 		createItem->AddItem("Scene", [this, &fileExplorerItem]()
@@ -343,8 +343,8 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 			{
 				if (fileExplorerItem.file)
 				{
-					FileSystem::s_fileSystem->Delete(fileExplorerItem.file->m_file->GetPath());
-					FileSystem::s_fileSystem->Delete(fileExplorerItem.file->m_file->GetPath() + ".meta");
+					FileSystem::Delete(fileExplorerItem.file->m_file->GetPath());
+					FileSystem::Delete(fileExplorerItem.file->m_file->GetPath() + ".meta");
 					FileHandler::RemoveOneFile();
 					if (Editor::GetSelectedFileReference() == fileExplorerItem.file)
 					{
@@ -353,7 +353,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				}
 				else if (fileExplorerItem.directory)
 				{
-					FileSystem::s_fileSystem->Delete(fileExplorerItem.directory->path);
+					FileSystem::Delete(fileExplorerItem.directory->path);
 				}
 				ProjectManager::RefreshProjectDirectory();
 			});
@@ -609,10 +609,10 @@ void FileExplorerMenu::Rename()
 		needUpdate = true;
 
 		std::shared_ptr<File> file = fileToRename->m_file;
-		const bool success = FileSystem::s_fileSystem->Rename(file->GetPath(), file->GetFolderPath() + renamingString + file->GetFileExtension());
+		const bool success = FileSystem::Rename(file->GetPath(), file->GetFolderPath() + renamingString + file->GetFileExtension());
 		if (success)
 		{
-			FileSystem::s_fileSystem->Rename(file->GetPath() + ".meta", file->GetFolderPath() + renamingString + file->GetFileExtension() + ".meta");
+			FileSystem::Rename(file->GetPath() + ".meta", file->GetFolderPath() + renamingString + file->GetFileExtension() + ".meta");
 			if (SceneManager::GetOpenedScene() == fileToRename)
 			{
 				needTitleRefresh = true;
@@ -632,7 +632,7 @@ void FileExplorerMenu::Rename()
 		const size_t lastSlash = parentPath.find_last_of('/', parentPath.size() - 2);
 		parentPath = parentPath.substr(0, lastSlash) + "/";
 
-		const bool success = FileSystem::s_fileSystem->Rename(directoryToRename->path, parentPath + renamingString + "/");
+		const bool success = FileSystem::Rename(directoryToRename->path, parentPath + renamingString + "/");
 	}
 
 	fileToRename.reset();

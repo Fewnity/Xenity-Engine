@@ -9,41 +9,41 @@
 #include <engine/api.h>
 
 /**
-* @brief Class to generator 1D/2D/3D/4D noise
+* @brief Class to generate 1D, 2D, 3D and 4D Perlin noise
 */
 class API Noise
 {
 public:
 
 	/**
-	* @brief Get 1D noise
+	* @brief Get 1D Perlin noise
 	* @param x The x coordinate
 	*/
-	[[nodiscard]] static float noise1D(float x);
+	[[nodiscard]] static float Noise1D(float x);
 
 	/**
-	* @brief Get 2D noise
+	* @brief Get 2D Perlin noise
 	* @param x The x coordinate
 	* @param y The y coordinate
 	*/
-	[[nodiscard]] static float noise2D(float x, float y);
+	[[nodiscard]] static float Noise2D(float x, float y);
 
 	/**
-	* @brief Get 3D noise
+	* @brief Get 3D Perlin noise
 	* @param x The x coordinate
 	* @param y The y coordinate
 	* @param z The z coordinate
 	*/
-	[[nodiscard]] static float noise3D(float x, float y, float z);
+	[[nodiscard]] static float Noise3D(float x, float y, float z);
 
 	/**
-	* @brief Get 4D noise
+	* @brief Get 4D Perlin noise
 	* @param x The x coordinate
 	* @param y The y coordinate
 	* @param z The z coordinate
 	* @param w The w coordinate
 	*/
-	[[nodiscard]] static float noise4D(float x, float y, float z, float w);
+	[[nodiscard]] static float Noise4D(float x, float y, float z, float w);
 
 private:
 

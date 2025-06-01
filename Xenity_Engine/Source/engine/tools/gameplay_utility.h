@@ -16,7 +16,9 @@
 class Prefab;
 
 /**
-* @brief Check if a GameObject or a Component is valid
+* @brief Check if a GameObject or a Component is valid to use
+* @brief If an object is waiting to be destroyed, the object is not valid to use
+* @brief Only takes Component, GameObject and Transform
 * @param pointer The pointer to check
 * @return True if the pointer is valid, false otherwise
 */
@@ -27,13 +29,16 @@ template <typename T>
 }
 
 /**
-* @brief Check of a GameObject or a Component is valid
+* @brief Check of a GameObject or a Component is valid to use
+* @brief If an object is waiting to be destroyed, the object is not valid to use
+* @brief Only takes Component, GameObject and Transform
 * @param pointer The pointer to check
 * @return True if the pointer is valid, false otherwise
 */
 template <typename T>
 [[nodiscard]] bool IsValid(const std::weak_ptr<T>& pointer)
 {
+	//TODO: This function is not very efficient, it should be optimized
 	bool valid = true;
 	if (const auto lockPointer = pointer.lock())
 	{
@@ -67,8 +72,9 @@ template <typename T>
 }
 
 /**
-* @brief Create a new GameObject from another
-* @param gameObject GameObject to instanciate
+* @brief Create a new GameObject from another 
+* @brief (Not very recommended, can be buggy, use prefabs instead)
+* @param gameObject GameObject to duplicate
 */
 API std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& gameObject);
 
@@ -79,7 +85,7 @@ API std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& g
 API std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<Prefab>& prefab);
 
 /**
-* @brief Destroy a gameObject
+* @brief Destroy a GameObject
 * @param gameObject GameObject to destroy
 */
 API void Destroy(const std::weak_ptr<GameObject>& gameObject);
@@ -96,7 +102,7 @@ Destroy(const std::weak_ptr<T>& weakComponent)
 }
 
 /**
-* @brief Destroy a gameObject
+* @brief Destroy a GameObject
 * @param gameObject GameObject to destroy
 */
 API void Destroy(const std::shared_ptr<GameObject>& gameObject);
