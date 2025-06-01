@@ -235,6 +235,107 @@
 
 </style>
 <h1 id="gameobject"><a class="header" href="#gameobject">GameObject</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/game_elements/gameobject.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>A GameObject is a class that contains some properties and a list of components.<br>
+Includes functions to create GameObjects.</p>
+<h2 id="global-methods"><a class="header" href="#global-methods">Global Methods</a></h2>
+<hr />
+<h3 id="creategameobject"><a class="header" href="#creategameobject">CreateGameObject</a></h3>
+<p>Create a GameObject with the default name</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; CreateGameObject()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject();
+Debug::Print(myGameObject-&gt;GetName()); // Prints "GameObject"
+</code></pre>
+<hr />
+<h3 id="creategameobject-1"><a class="header" href="#creategameobject-1">CreateGameObject</a></h3>
+<p>Create a GameObject</p>
+<p>Parameters:</p>
+<ul>
+<li><code>name</code>: Name of the GameObject</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; CreateGameObject(const std::string&amp; name)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("Player");
+Debug::Print(myGameObject-&gt;GetName()); // Prints "Player"
+</code></pre>
+<hr />
+<h3 id="findgameobjectbyname"><a class="header" href="#findgameobjectbyname">FindGameObjectByName</a></h3>
+<p>Find a GameObject with a name</p>
+<p>Parameters:</p>
+<ul>
+<li><code>name</code>: Name of the GameObject</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; FindGameObjectByName(const std::string&amp; name)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("Player");
+std::shared_ptr&lt;GameObject&gt; result = FindGameObjectByName("Player");
+if(myGameObject == result)
+{
+    Debug::Print("GameObject found!");
+}
+</code></pre>
+<hr />
+<h3 id="findgameobjectsbyname"><a class="header" href="#findgameobjectsbyname">FindGameObjectsByName</a></h3>
+<p>Find GameObjects with a name</p>
+<p>Parameters:</p>
+<ul>
+<li><code>name</code>: Name of the GameObject</li>
+</ul>
+<pre><code class="language-cpp">std::vector&lt;std::shared_ptr&lt;GameObject&gt;&gt; FindGameObjectsByName(const std::string&amp; name)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("Player");
+std::shared_ptr&lt;GameObject&gt; myGameObject2 = CreateGameObject("Player");
+std::vector&lt;std::shared_ptr&lt;GameObject&gt;&gt; results = FindGameObjectsByName("Player");
+if(results.size() == 2)
+{
+    Debug::Print("Players found!");
+}
+</code></pre>
+<hr />
+<h3 id="findgameobjectbyid"><a class="header" href="#findgameobjectbyid">FindGameObjectById</a></h3>
+<p>Find a GameObject with an id</p>
+<p>Parameters:</p>
+<ul>
+<li><code>id</code>: Unique id of the GameObject</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; FindGameObjectById(const uint64_t id)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("Player");
+std::shared_ptr&lt;GameObject&gt; result = FindGameObjectById(myGameObject-&gt;GetUniqueId());
+if(myGameObject == result)
+{
+    Debug::Print("GameObject found!");
+}
+</code></pre>
+<hr />
+<h3 id="findcomponentbyid"><a class="header" href="#findcomponentbyid">FindComponentById</a></h3>
+<p>Find a component with an id</p>
+<p>Parameters:</p>
+<ul>
+<li><code>id</code>: Unique id of the component</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; FindComponentById(const uint64_t id)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("Player");
+std::shared_ptr&lt;AudioSource&gt; myAudioSource = myGameObject-&gt;AddComponent&lt;AudioSource&gt;();
+std::shared_ptr&lt;Component&gt; result = FindComponentById(myAudioSource-&gt;GetUniqueId());
+if(myAudioSource == result)
+{
+    std::shared_ptr&lt;AudioSource&gt; resultAudioSource = std::dynamic_pointer_cast&lt;AudioSource&gt;(result);
+    Debug::Print("Component found!");
+}
+</code></pre>
+<h2 id="pubic-methods"><a class="header" href="#pubic-methods">Pubic Methods</a></h2>
 
                     </main>
 
