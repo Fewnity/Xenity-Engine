@@ -92,7 +92,6 @@
 // Physics
 #include <engine/physics/physics_manager.h>
 
-
 std::unique_ptr<Renderer> Engine::s_renderer = nullptr;
 bool Engine::s_canUpdateAudio = false;
 bool Engine::s_isRunning = true;
