@@ -33,7 +33,7 @@ class Transform;
 
 #if defined(EDITOR)
 /**
-* @brief Create a GameObject not visible in the hierarchy
+* @brief Create a GameObject not visible in the hierarchy [Internal use only]
 * @param name GameObject name
 * @return The created GameObject
 */
@@ -46,6 +46,13 @@ class Transform;
 * @return The found GameObject
 */
 [[nodiscard]] API std::shared_ptr<GameObject> FindGameObjectByName(const std::string& name);
+
+/**
+* @brief Find GameObjects with a name
+* @param name GameObjects name
+* @return The found GameObjects
+*/
+[[nodiscard]] API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string& name);
 
 /**
 * @brief Find a GameObject with an id
@@ -61,13 +68,6 @@ class Transform;
 */
 [[nodiscard]] API std::shared_ptr<Component> FindComponentById(const uint64_t id);
 
-/**
-* @brief Find GameObjects with a name
-* @param name GameObjects name
-* @return The found GameObjects
-*/
-[[nodiscard]] API std::vector<std::shared_ptr<GameObject>> FindGameObjectsByName(const std::string& name);
-
 class API GameObject : public Reflective, public UniqueId, public std::enable_shared_from_this<GameObject>
 {
 public:
@@ -79,12 +79,12 @@ public:
 
 	virtual ~GameObject();
 
-	[[nodiscard]]/*const*/ inline std::string & GetName()
+	[[nodiscard]] /*const*/ std::string & GetName()
 	{
 		return m_name;
 	}
 
-	inline void SetName(const std::string& name)
+	void SetName(const std::string& name)
 	{
 		this->m_name = name;
 	}
@@ -164,7 +164,7 @@ public:
 	/**
 	* @brief Get if the GameObject is marked as active
 	*/
-	[[nodiscard]] inline bool IsActive() const
+	[[nodiscard]] bool IsActive() const
 	{
 		return m_active;
 	}
@@ -172,7 +172,7 @@ public:
 	/**
 	* @brief Get if the GameObject is active based on his parents
 	*/
-	[[nodiscard]] inline bool IsLocalActive() const
+	[[nodiscard]] bool IsLocalActive() const
 	{
 		return m_localActive;
 	}
@@ -183,7 +183,7 @@ public:
 	*/
 	void SetActive(const bool active);
 
-	//[[nodiscard]] inline bool IsStatic() const
+	//[[nodiscard]] bool IsStatic() const
 	//{
 	//	return m_isStatic;
 	//}
@@ -191,7 +191,7 @@ public:
 	/**
 	* @brief Get children count
 	*/
-	[[nodiscard]] inline uint32_t GetChildrenCount() const
+	[[nodiscard]] uint32_t GetChildrenCount() const
 	{
 		return static_cast<uint32_t>(m_childCount);
 	}
@@ -199,7 +199,7 @@ public:
 	/**
 	* @brief Get component count
 	*/
-	[[nodiscard]] inline uint32_t GetComponentCount() const
+	[[nodiscard]] uint32_t GetComponentCount() const
 	{
 		return static_cast<uint32_t>(m_componentCount);
 	}
@@ -207,17 +207,17 @@ public:
 	/**
 	* @brief Get transform
 	*/
-	[[nodiscard]] inline const std::shared_ptr<Transform>& GetTransform() const
+	[[nodiscard]] const std::shared_ptr<Transform>& GetTransform() const
 	{
 		return m_transform;
 	}
 
-	[[nodiscard]] inline const std::weak_ptr<GameObject>& GetParent() const
+	[[nodiscard]] const std::weak_ptr<GameObject>& GetParent() const
 	{
 		return m_parent;
 	}
 
-	[[nodiscard]] inline const std::weak_ptr<GameObject>& GetChild(int index)
+	[[nodiscard]] const std::weak_ptr<GameObject>& GetChild(int index)
 	{
 		return m_children[index];
 	}
@@ -267,7 +267,7 @@ private:
 	/**
 	* Get a list of all children
 	*/
-	[[nodiscard]] inline std::vector<std::weak_ptr<GameObject>>& GetChildren()
+	[[nodiscard]] std::vector<std::weak_ptr<GameObject>>& GetChildren()
 	{
 		return m_children;
 	}
