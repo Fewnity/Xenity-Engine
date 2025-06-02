@@ -6630,6 +6630,106 @@ if(myAudioSource == result)
 }
 </code></pre>
 <h2 id="pubic-methods"><a class="header" href="#pubic-methods">Pubic Methods</a></h2>
+<hr />
+<h3 id="addchild"><a class="header" href="#addchild">AddChild</a></h3>
+<p>Add a child to the GameObject</p>
+<p>Parameters:</p>
+<ul>
+<li><code>gameObject</code>: Child to add</li>
+</ul>
+<pre><code class="language-cpp">void AddChild(const std::shared_ptr&lt;GameObject&gt;&amp; gameObject)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; myGameObject = CreateGameObject("Player");
+std::shared_ptr&lt;GameObject&gt; myChild = CreateGameObject("Gun");
+myGameObject-&gt;AddChild(myChild);
+</code></pre>
+<hr />
+<h3 id="setparent"><a class="header" href="#setparent">SetParent</a></h3>
+<p>Set GameObject's parent</p>
+<p>Parameters:</p>
+<ul>
+<li><code>gameObject</code>: New parent</li>
+</ul>
+<pre><code class="language-cpp">void SetParent(const std::shared_ptr&lt;GameObject&gt;&amp; gameObject)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; player0 = CreateGameObject("Player");
+std::shared_ptr&lt;GameObject&gt; player1 = CreateGameObject("Player");
+std::shared_ptr&lt;GameObject&gt; parent = CreateGameObject("Players");
+player0-&gt;SetParent(parent);
+player1-&gt;SetParent(parent);
+</code></pre>
+<hr />
+<h3 id="addcomponent"><a class="header" href="#addcomponent">AddComponent</a></h3>
+<p>Add a component</p>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+AddComponent()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;Light&gt; lightComp = gameObject-&gt;AddComponent&lt;Light&gt;();
+std::shared_ptr&lt;AudioSource&gt; audioSourceComp = gameObject-&gt;AddComponent&lt;AudioSource&gt;();
+</code></pre>
+<hr />
+<h3 id="getcomponent"><a class="header" href="#getcomponent">GetComponent</a></h3>
+<p>Get a component</p>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+GetComponent()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;Light&gt; lightComp = gameObject-&gt;AddComponent&lt;Light&gt;();
+std::shared_ptr&lt;Light&gt; comp = gameObject-&gt;GetComponent&lt;Light&gt;();
+</code></pre>
+<hr />
+<h3 id="getcomponents"><a class="header" href="#getcomponents">GetComponents</a></h3>
+<p>Get components</p>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+GetComponents()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;Light&gt; lightComp = gameObject-&gt;AddComponent&lt;Light&gt;();
+std::shared_ptr&lt;Light&gt; lightComp2 = gameObject-&gt;AddComponent&lt;Light&gt;();
+std::vector&lt;std::shared_ptr&lt;Light&gt;&gt; lightsComp = gameObject-&gt;GetComponents&lt;Light&gt;();
+</code></pre>
+<hr />
+<h3 id="isactive"><a class="header" href="#isactive">IsActive</a></h3>
+<p>Get if the GameObject is marked as active</p>
+<pre><code class="language-cpp">bool IsActive() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+gameObject-&gt;SetActive(false);
+bool isActive = gameObject-&gt;IsActive(); // = false
+
+//....
+
+std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child = CreateGameObject();
+child-&gt;SetParent(child);
+gameObject-&gt;SetActive(false);
+bool isActive = child-&gt;IsActive(); // = true
+</code></pre>
+<hr />
+<h3 id="islocalactive"><a class="header" href="#islocalactive">IsLocalActive</a></h3>
+<p>Get if the GameObject is active based on his parents active state</p>
+<pre><code class="language-cpp">bool IsLocalActive() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+gameObject-&gt;SetActive(false);
+bool isActive = gameObject-&gt;IsLocalActive(); // = false
+
+//....
+
+std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child = CreateGameObject();
+child-&gt;SetParent(child);
+gameObject-&gt;SetActive(false);
+bool isActive = child-&gt;IsLocalActive(); // = false
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
