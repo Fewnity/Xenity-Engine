@@ -143,8 +143,8 @@ public:
 	}
 
 	/**
-	* @brief Get a component
-	* @return The component
+	* @brief Get components
+	* @return A list of component
 	*/
 	template <typename T>
 	[[nodiscard]] std::enable_if_t<std::is_base_of<Component, T>::value, std::vector<std::shared_ptr<T>>>
@@ -170,7 +170,7 @@ public:
 	}
 
 	/**
-	* @brief Get if the GameObject is active based on his parents
+	* @brief Get if the GameObject is active based on his parents active state
 	*/
 	[[nodiscard]] bool IsLocalActive() const
 	{
