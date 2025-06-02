@@ -66,16 +66,16 @@ Vector3::Vector3(const float fillValue)
 
 Vector3::Vector3(const Vector2Int& vect)
 {
-	x = (float)vect.x;
-	y = (float)vect.y;
-	z = 0;
+	x = static_cast<float>(vect.x);
+	y = static_cast<float>(vect.y);
+	z = 0; // Default z value for Vector2Int to Vector3 conversion
 }
 
 Vector3::Vector3(const Vector2& vect)
 {
 	x = vect.x;
 	y = vect.y;
-	z = 0;
+	z = 0; // Default z value for Vector2 to Vector3 conversion
 }
 
 #pragma endregion

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector3.h>
 #include <glm/vec4.hpp>
 
 struct Sphere

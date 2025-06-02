@@ -18,7 +18,7 @@
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/transform.h>
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 #include <engine/graphics/color/color.h>
 #include <engine/audio/audio_clip.h>
 #include <engine/debug/debug.h>

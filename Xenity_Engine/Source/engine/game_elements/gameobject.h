@@ -212,13 +212,21 @@ public:
 		return m_transform;
 	}
 
+	/**
+	* @brief Get parent GameObject
+	*/
 	[[nodiscard]] const std::weak_ptr<GameObject>& GetParent() const
 	{
 		return m_parent;
 	}
 
-	[[nodiscard]] const std::weak_ptr<GameObject>& GetChild(int index)
+	/**
+	* @brief Get a child by index
+	* @param index Child index
+	*/
+	[[nodiscard]] std::weak_ptr<GameObject> GetChild(int index)
 	{
+		XASSERT(index >= 0 && index < m_childCount, "Invalid child index");
 		return m_children[index];
 	}
 

@@ -10,9 +10,9 @@
 #include <string>
 #include <memory>
 
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/vector4.h>
+#include <engine/math/vector2.h>
+#include <engine/math/vector3.h>
+#include <engine/math/vector4.h>
 #include <engine/graphics/color/color.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>

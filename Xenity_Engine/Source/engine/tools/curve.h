@@ -10,7 +10,7 @@
 #include <memory>
 
 #include <engine/api.h>
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector3.h>
 
 class Transform;
 class GameObject;

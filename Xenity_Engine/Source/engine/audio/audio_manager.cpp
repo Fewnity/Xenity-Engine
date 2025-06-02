@@ -267,6 +267,7 @@ int audio_thread(SceSize args, void* argp)
 		}
 		sceKernelDelayThread(2);
 	}
+	return 0;
 }
 #endif
 

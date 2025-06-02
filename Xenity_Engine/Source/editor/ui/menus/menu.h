@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 
 enum class MenuGroup
 {

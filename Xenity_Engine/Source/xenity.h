@@ -14,11 +14,11 @@
 #include <engine/game_elements/rect_transform.h>
 
 // Vectors
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector2_int.h>
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/vector4.h>
-#include <engine/vectors/quaternion.h>
+#include <engine/math/vector2.h>
+#include <engine/math/vector2_int.h>
+#include <engine/math/vector3.h>
+#include <engine/math/vector4.h>
+#include <engine/math/quaternion.h>
 
 // UI
 #include <engine/ui/screen.h>

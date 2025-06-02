@@ -9,6 +9,10 @@
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
 
+class Vector2Int;
+class Vector2;
+class Vector3;
+
 /*
 * @brief Contains 4D coordinates
 */
@@ -20,6 +24,25 @@ public:
 	Vector4();
 	explicit Vector4(const float x, const float y, const float z, const float w);
 	explicit Vector4(const float fillValue);
+	explicit Vector4(const Vector3& vect);
+	explicit Vector4(const Vector2& vect);
+	explicit Vector4(const Vector2Int& vect);
+
+	/**
+	* @brief Get the biggest value of the vector
+	*/
+	float Max() const
+	{
+		return std::max(std::max(std::max(x, y), z), w);
+	}
+
+	/**
+	* @brief Get the smallest value of the vector
+	*/
+	float Min() const
+	{
+		return std::min(std::min(std::min(x, y), z), w);
+	}
 
 	/**
 	* @brief Linearly interpolates between vectors

@@ -10,7 +10,7 @@
 #include <engine/api.h>
 
 #include <engine/graphics/iDrawable.h>
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector3.h>
 #include <engine/graphics/color/color.h>
 
 class Texture;

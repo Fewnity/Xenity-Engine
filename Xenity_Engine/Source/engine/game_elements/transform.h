@@ -10,8 +10,8 @@
 
 #include <engine/api.h>
 #include <engine/event_system/event_system.h>
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/quaternion.h>
+#include <engine/math/vector3.h>
+#include <engine/math/quaternion.h>
 #include <engine/constants.h>
 
 class GameObject;

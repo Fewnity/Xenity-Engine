@@ -8,7 +8,7 @@
 
 #include <editor/ui/menus/menu.h>
 
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 
 class GameMenu : public Menu
 {

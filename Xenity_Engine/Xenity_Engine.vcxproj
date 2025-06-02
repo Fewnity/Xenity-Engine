@@ -708,7 +708,7 @@
     <ClInclude Include="Source\engine\debug\debug_type.h" />
     <ClInclude Include="Source\engine\physics\collision_event.h" />
     <ClCompile Include="Source\engine\physics\sphere_collider.cpp" />
-    <ClCompile Include="Source\engine\vectors\quaternion.cpp" />
+    <ClCompile Include="Source\engine\math\quaternion.cpp" />
     <ClCompile Include="Source\engine\tools\scope_benchmark.cpp" />
     <ClCompile Include="Source\engine\file_system\data_base\bit_file.cpp" />
     <ClCompile Include="include\implot\implot.cpp" />
@@ -1108,10 +1108,10 @@
     <ClCompile Include="Source\engine\graphics\graphics.cpp" />
     <ClCompile Include="Source\gl.c" />
     <ClCompile Include="Source\engine\tools\math.cpp" />
-    <ClCompile Include="Source\engine\vectors\vector2.cpp" />
-    <ClCompile Include="Source\engine\vectors\vector2_int.cpp" />
-    <ClCompile Include="Source\engine\vectors\vector3.cpp" />
-    <ClCompile Include="Source\engine\vectors\vector4.cpp" />
+    <ClCompile Include="Source\engine\math\vector2.cpp" />
+    <ClCompile Include="Source\engine\math\vector2_int.cpp" />
+    <ClCompile Include="Source\engine\math\vector3.cpp" />
+    <ClCompile Include="Source\engine\math\vector4.cpp" />
     <ClCompile Include="Source\engine\ui\window.cpp" />
     <ClCompile Include="Source\engine\graphics\texture\texture.cpp" />
     <ClCompile Include="Source\engine\game_elements\transform.cpp" />
@@ -1455,7 +1455,7 @@
     <ClInclude Include="Source\engine\graphics\texture\texture_psp.h" />
     <ClInclude Include="Source\engine\physics\sphere_collider.h" />
     <ClInclude Include="Source\engine\project_management\project_errors.h" />
-    <ClInclude Include="Source\engine\vectors\quaternion.h" />
+    <ClInclude Include="Source\engine\math\quaternion.h" />
     <ClInclude Include="Source\engine\tools\scope_benchmark.h" />
     <ClInclude Include="Source\engine\file_system\data_base\bit_file.h" />
     <ClInclude Include="include\implot\implot.h" />
@@ -1849,10 +1849,10 @@
     <ClInclude Include="Source\engine\graphics\graphics.h" />
     <ClInclude Include="Source\engine\tools\math.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_alignments.h" />
-    <ClInclude Include="Source\engine\vectors\vector2.h" />
-    <ClInclude Include="Source\engine\vectors\vector2_int.h" />
-    <ClInclude Include="Source\engine\vectors\vector3.h" />
-    <ClInclude Include="Source\engine\vectors\vector4.h" />
+    <ClInclude Include="Source\engine\math\vector2.h" />
+    <ClInclude Include="Source\engine\math\vector2_int.h" />
+    <ClInclude Include="Source\engine\math\vector3.h" />
+    <ClInclude Include="Source\engine\math\vector4.h" />
     <ClInclude Include="Source\engine\ui\window.h" />
     <ClInclude Include="Source\engine\graphics\texture\texture.h" />
     <ClInclude Include="Source\engine\game_elements\transform.h" />

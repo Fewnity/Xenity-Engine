@@ -17,7 +17,7 @@
 
 #include <engine/api.h>
 #include <engine/graphics/color/color.h>
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector3.h>
 #include <engine/debug/debug.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/graphics/3d_graphics/sphere.h>

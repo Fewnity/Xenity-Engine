@@ -10,7 +10,7 @@
 
 #include <editor/editor.h>
 
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 
 void Menu::Focus()
 {

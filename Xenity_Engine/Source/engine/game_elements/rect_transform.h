@@ -7,7 +7,7 @@
 #pragma once
 
 #include <engine/component.h>
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 
 class Canvas;
 

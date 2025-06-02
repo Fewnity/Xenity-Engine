@@ -7,7 +7,7 @@
 #pragma once
 
 #include <engine/api.h>
-#include <engine/vectors/vector4.h>
+#include <engine/math/vector4.h>
 #include <engine/reflection/reflection.h>
 
 class API RGBA : public Reflective

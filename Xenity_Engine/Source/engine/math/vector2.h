@@ -23,8 +23,24 @@ public:
 	Vector2();
 	explicit Vector2(const float x, const float y);
 	explicit Vector2(const float fillValue);
-	Vector2(const Vector3& vect3);
-	Vector2(const Vector2Int& vect2Int);
+	Vector2(const Vector3& vect);
+	Vector2(const Vector2Int& vect);
+
+	/**
+	* @brief Get the biggest value of the vector
+	*/
+	float Max() const
+	{
+		return std::max(x, y);
+	}
+
+	/**
+	* @brief Get the smallest value of the vector
+	*/
+	float Min() const
+	{
+		return std::min(x, y);
+	}
 
 	/**
 	* @brief Distance between two vectors

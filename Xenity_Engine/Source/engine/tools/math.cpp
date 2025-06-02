@@ -12,9 +12,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/quaternion.h>
+#include <engine/math/vector3.h>
+#include <engine/math/vector2.h>
+#include <engine/math/quaternion.h>
 
 void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {

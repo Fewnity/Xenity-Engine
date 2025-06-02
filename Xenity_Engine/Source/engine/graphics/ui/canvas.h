@@ -8,7 +8,7 @@
 
 #include <engine/api.h>
 #include <engine/graphics/iDrawable.h>
-#include <engine/vectors/vector2_int.h>
+#include <engine/math/vector2_int.h>
 
 class API Canvas : public IDrawable
 {

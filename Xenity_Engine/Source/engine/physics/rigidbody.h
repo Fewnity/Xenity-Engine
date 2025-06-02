@@ -9,7 +9,7 @@
 
 #include <engine/api.h>
 #include <engine/component.h>
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector3.h>
 
 class BoxCollider;
 

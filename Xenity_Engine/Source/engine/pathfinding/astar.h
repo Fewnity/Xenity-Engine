@@ -9,7 +9,7 @@
 #include <vector>
 
 #include <engine/api.h>
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 
 /**
 * @brief Class used for path finding

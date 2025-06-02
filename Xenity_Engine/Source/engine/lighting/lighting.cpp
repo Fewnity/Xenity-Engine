@@ -19,7 +19,7 @@
 
 #include <engine/asset_management/asset_manager.h>
 #include <engine/game_elements/transform.h>
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 #include <engine/graphics/graphics.h>
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/engine.h>

@@ -15,8 +15,8 @@
 #include <engine/debug/debug.h>
 #include <engine/file_system/file.h>
 #include <engine/file_system/file_system.h>
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector2.h>
+#include <engine/math/vector3.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/asset_management/project_manager.h>
 

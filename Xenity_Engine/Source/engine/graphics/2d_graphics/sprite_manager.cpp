@@ -22,7 +22,7 @@
 #include <engine/graphics/camera.h>
 #include <engine/debug/debug.h>
 #include <engine/tools/profiler_benchmark.h>
-#include <engine/vectors/quaternion.h>
+#include <engine/math/quaternion.h>
 #include <engine/tools/math.h>
 
 std::shared_ptr <MeshData> SpriteManager::s_spriteMeshData = nullptr;

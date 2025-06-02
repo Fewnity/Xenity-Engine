@@ -8,7 +8,7 @@
 #include <memory>
 
 #include <engine/api.h>
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector3.h>
 #include <engine/event_system/event_system.h>
 #include "collider.h"
 

@@ -14,8 +14,8 @@
 #include <SDL3/SDL_events.h>
 #endif
 
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector2_int.h>
+#include <engine/math/vector2.h>
+#include <engine/math/vector2_int.h>
 #include <engine/constants.h>
 
 #define PLAYER_1 0

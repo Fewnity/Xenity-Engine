@@ -5,6 +5,8 @@
 // This file is part of Xenity Engine
 
 #include "vector2_int.h"
+#include "vector3.h"
+#include "vector2.h"
 
 #include <cmath>
 
@@ -34,6 +36,18 @@ Vector2Int::Vector2Int(const int fillValue)
 {
 	x = fillValue;
 	y = fillValue;
+}
+
+Vector2Int::Vector2Int(const Vector3& vect)
+{
+	x = static_cast<int>(vect.x);
+	y = static_cast<int>(vect.y);
+}
+
+Vector2Int::Vector2Int(const Vector2& vect)
+{
+	x = static_cast<int>(vect.x);
+	y = static_cast<int>(vect.y);
 }
 
 #pragma endregion

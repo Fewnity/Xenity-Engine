@@ -11,7 +11,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/debug/debug.h>
 #include <engine/tools/math.h>
-#include <engine/vectors/quaternion.h>
+#include <engine/math/quaternion.h>
 #include <engine/debug/stack_debug_object.h>
 
 #include "mesh_data.h"

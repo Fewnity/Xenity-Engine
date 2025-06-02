@@ -10,7 +10,7 @@
 
 #include <editor/ui/menus/menu.h>
 
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 #include <engine/graphics/2d_graphics/sprite_selection.h>
 
 class Texture;

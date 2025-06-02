@@ -13,6 +13,9 @@
 class Vector3;
 class Vector4;
 
+/**
+* @brief Class representing rotations in 3D space
+*/
 class API Quaternion : public Reflective
 {
 public:
@@ -27,30 +30,76 @@ public:
 
 	explicit Quaternion(const Vector4& vector);
 
-	[[nodiscard]] static Quaternion Inverse(const Quaternion& q);
+	/**
+	* @brief Returns a quaternion representing no rotation (identity quaternion)
+	*/
+	[[nodiscard]] static Quaternion Identity();
+
+	/**
+	* @brief Create a quaternion from Euler angles (in degrees)
+	*/
 	[[nodiscard]] static Quaternion Euler(const float x, const float y, const float z);
 
 	/**
+	* @brief Make a quaternion from an angle and axis
+	*/
+	[[nodiscard]] static Quaternion AngleAxis(float angle, const Vector3& axis);
+
+	/**
+	* @brief Get the inverse of the quaternion
+	*/
+	[[nodiscard]] static Quaternion Inverse(const Quaternion& q);
+
+	/**
 	* @brief Linearly interpolates between quaternions
+	* @param a First quaternion
+	* @param b Second quaternion
+	* @param t Interpolation factor (0.0 to 1.0)
 	*/
 	[[nodiscard]] static Quaternion Lerp(const Quaternion& a, const Quaternion& b, const float t);
+
+	/**
+	* @brief Get the dot product of two quaternions
+	*/
 	[[nodiscard]] static float Dot(const Quaternion& q1, const Quaternion& q2);
-	[[nodiscard]] static Quaternion AngleAxis(float angle, const Vector3& axis);
-	[[nodiscard]] static Quaternion Identity();
+
+	/**
+	* @brief Converts the quaternion to Euler angles (in degrees)
+	*/
 	[[nodiscard]] Vector3 ToEuler() const;
 
+	/**
+	* @brief Set the quaternion values (Normalizes the quaternion)
+	*/
 	void Set(const float x, const float y, const float z, const float w);
-	void Normalize();
-	Quaternion Normalized();
 
+	/**
+	* @brief Normalize the quaternion
+	*/
+	void Normalize();
+
+	/**
+	* @brief Returns a normalized copy of the quaternion
+	*/
+	Quaternion Normalized() const;
+
+	/*
+	* @brief Get the forward direction vector of the quaternion
+	*/
 	[[nodiscard]] Vector3 GetForward() const;
 
+	/*
+	* @brief Get the up direction vector of the quaternion
+	*/
 	[[nodiscard]] Vector3 GetUp() const;
 
+	/*
+	* @brief Get the right direction vector of the quaternion
+	*/
 	[[nodiscard]] Vector3 GetRight() const;
 
 	/**
-	* @brief Return a string representation of the quaternion
+	* @brief Return a string representation of the quaternion like "{x:0.0 y:0.0 z:0.0 w:1.0}"
 	*/
 	[[nodiscard]] std::string ToString() const;
 
@@ -87,7 +136,7 @@ inline void Quaternion::Normalize()
 	}
 }
 
-inline Quaternion Quaternion::Normalized()
+inline Quaternion Quaternion::Normalized() const
 {
 	Quaternion normalizedQuaternion = Quaternion(x, y, z, w);
 	normalizedQuaternion.Normalize();

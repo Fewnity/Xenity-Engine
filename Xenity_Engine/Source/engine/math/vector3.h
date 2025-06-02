@@ -47,11 +47,17 @@ public:
 	Vector3(const Vector2Int& vect);
 	Vector3(const Vector2& vect);
 
+	/**
+	* @brief Get the biggest value of the vector
+	*/
 	float Max() const
 	{
 		return std::max(std::max(x, y), z);
 	}
 
+	/**
+	* @brief Get the smallest value of the vector
+	*/
 	float Min() const
 	{
 		return std::min(std::min(x, y), z);
@@ -87,6 +93,9 @@ public:
 	*/
 	float Magnitude() const;
 
+	/**
+	* @brief Get the squared length of this vector
+	*/
 	float MagnitudeSquared() const;
 
 	/**

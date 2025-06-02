@@ -5,6 +5,9 @@
 // This file is part of Xenity Engine
 
 #include "vector4.h"
+#include "vector3.h"
+#include "vector2_int.h"
+#include "vector2.h"
 
 #include <cmath>
 #include <engine/assertions/assertions.h>
@@ -57,6 +60,30 @@ Vector4::Vector4(const float fillValue)
 	y = fillValue;
 	z = fillValue;
 	w = fillValue;
+}
+
+Vector4::Vector4(const Vector3& vect)
+{
+	x = vect.x;
+	y = vect.y;
+	z = vect.z;
+	w = 0; // Default w value for Vector3 to Vector4 conversion
+}
+
+Vector4::Vector4(const Vector2& vect)
+{
+	x = vect.x;
+	y = vect.y;
+	z = 0; // Default z value for Vector2 to Vector4 conversion
+	w = 0; // Default w value for Vector2 to Vector4 conversion
+}
+
+Vector4::Vector4(const Vector2Int& vect)
+{
+	x = static_cast<float>(vect.x);
+	y = static_cast<float>(vect.y);
+	z = 0; // Default z value for Vector2Int to Vector4 conversion
+	w = 0; // Default w value for Vector2Int to Vector4 conversion
 }
 
 #pragma endregion

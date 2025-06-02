@@ -11,7 +11,7 @@
 #include <memory>
 #include <glm/vec2.hpp>
 
-#include <engine/vectors/vector2.h>
+#include <engine/math/vector2.h>
 #include "text_alignments.h"
 
 class Texture;

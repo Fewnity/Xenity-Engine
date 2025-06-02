@@ -6,10 +6,10 @@
 
 #include "unit_test_manager.h"
 #include <engine/debug/debug.h>
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector2_int.h>
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/vector4.h>
+#include <engine/math/vector2.h>
+#include <engine/math/vector2_int.h>
+#include <engine/math/vector3.h>
+#include <engine/math/vector4.h>
 
 UnitTest::UnitTest(const std::string& _name) : name(_name)
 {

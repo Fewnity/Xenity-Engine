@@ -21,7 +21,7 @@
 #include <engine/lighting/lighting.h>
 #include <engine/graphics/texture/texture.h>
 #include <engine/graphics/texture/texture_ps3.h>
-#include <engine/vectors/vector2_int.h>
+#include <engine/math/vector2_int.h>
 
 class API RendererRSX : public Renderer
 {

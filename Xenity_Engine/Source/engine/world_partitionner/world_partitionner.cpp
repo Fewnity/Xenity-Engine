@@ -5,7 +5,7 @@
 #endif
 
 #include <engine/asset_management/asset_manager.h>
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector3.h>
 #include <engine/lighting/lighting.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>

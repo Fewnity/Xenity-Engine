@@ -25,7 +25,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
 #include <engine/time/time.h>
-#include <engine/vectors/quaternion.h>
+#include <engine/math/quaternion.h>
 #include <engine/engine.h>
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 #include <engine/debug/stack_debug_object.h>

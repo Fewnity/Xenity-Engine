@@ -20,8 +20,8 @@ enum class Side
 
 #include <editor/tool_mode.h>
 
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/quaternion.h>
+#include <engine/math/vector3.h>
+#include <engine/math/quaternion.h>
 
 class GameObject;
 class Camera;

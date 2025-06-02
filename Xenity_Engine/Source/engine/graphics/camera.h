@@ -10,9 +10,9 @@
 
 #include <engine/api.h>
 #include <engine/component.h>
-#include <engine/vectors/vector3.h>
-#include <engine/vectors/vector2.h>
-#include <engine/vectors/vector2_int.h>
+#include <engine/math/vector3.h>
+#include <engine/math/vector2.h>
+#include <engine/math/vector2_int.h>
 #include "camera_projection_types.h"
 
 struct Plane

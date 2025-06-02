@@ -12,7 +12,7 @@
 #include <engine/component.h>
 #include <engine/graphics/color/color.h>
 #include <engine/reflection/enum_utils.h>
-#include <engine/vectors/vector3.h>
+#include <engine/math/vector3.h>
 
 const float lightConstant = 1;
 

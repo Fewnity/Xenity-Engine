@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <engine/vectors/vector2_int.h>
+#include <engine/math/vector2_int.h>
 
 struct TouchRaw
 {

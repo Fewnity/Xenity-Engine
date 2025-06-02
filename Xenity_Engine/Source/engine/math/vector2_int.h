@@ -9,6 +9,9 @@
 #include <engine/api.h>
 #include <engine/reflection/reflection.h>
 
+class Vector3;
+class Vector2;
+
 /*
 * @brief Contains integer 2D coordinates 
 */
@@ -20,6 +23,8 @@ public:
 	Vector2Int();
 	explicit Vector2Int(const int x, const int y);
 	explicit Vector2Int(const int fillValue);
+	Vector2Int(const Vector3& vect);
+	Vector2Int(const Vector2& vect);
 
 	/**
 	* @brief Linearly interpolates between vectors
