@@ -254,7 +254,7 @@ class Event
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
 <h3 id="bind"><a class="header" href="#bind">Bind</a></h3>
-<p>Bind a simple function</p>
+<p>Bind a simple function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>function</code>:  Pointer to the function to bind</li>
@@ -276,7 +276,7 @@ myEvent.Bind(&amp;MyClass::MyStaticFunction);
 </code></pre>
 <hr />
 <h3 id="bind-1"><a class="header" href="#bind-1">Bind</a></h3>
-<p>Bind a function linked to an object</p>
+<p>Bind a function linked to an object.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>function</code>:  Pointer to the function to bind</li>
@@ -299,7 +299,7 @@ myEvent.Bind(&amp;MyClass::MyFunction, &amp;myClassInstance);
 </code></pre>
 <hr />
 <h3 id="unbind"><a class="header" href="#unbind">Unbind</a></h3>
-<p>Unbind a simple function</p>
+<p>Unbind a simple function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>function</code>:  Pointer to the function to unbind</li>
@@ -324,7 +324,7 @@ myEvent.Unbind(&amp;MyClass::MyStaticFunction);
 </code></pre>
 <hr />
 <h3 id="unbind-1"><a class="header" href="#unbind-1">Unbind</a></h3>
-<p>Unbind a function linked to an object</p>
+<p>Unbind a function linked to an object.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>function</code>:  Pointer to the function to unbind</li>
@@ -349,7 +349,7 @@ myEvent.Unbind(&amp;MyClass::MyFunction, &amp;myClassInstance);
 </code></pre>
 <hr />
 <h3 id="unbindall"><a class="header" href="#unbindall">UnbindAll</a></h3>
-<p>Unbind all bound function</p>
+<p>Unbind all bound function.</p>
 <pre><code class="language-cpp">void UnbindAll()
 </code></pre>
 <p>Code sample:</p>
@@ -362,7 +362,7 @@ myEvent.UnbindAll();
 </code></pre>
 <hr />
 <h3 id="trigger"><a class="header" href="#trigger">Trigger</a></h3>
-<p>Call all bound functions</p>
+<p>Call all bound functions.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>args</code>:  All arguments to send</li>
@@ -378,7 +378,7 @@ myEvent.Trigger(1, "Hello World!");
 </code></pre>
 <hr />
 <h3 id="getboundfunctioncount"><a class="header" href="#getboundfunctioncount">GetBoundFunctionCount</a></h3>
-<p>Get the number of listener</p>
+<p>Get the number of listener.</p>
 <pre><code class="language-cpp">size_t GetBoundFunctionCount()
 </code></pre>
 <p>Code sample:</p>

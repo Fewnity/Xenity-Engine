@@ -244,7 +244,7 @@ Can be used for Gizmo.</p>
 <h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
 <hr />
 <h3 id="geticons"><a class="header" href="#geticons">GetIcons</a></h3>
-<p>Get the list of all editor icons</p>
+<p>Get the list of all editor icons.</p>
 <pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; GetIcons()
 </code></pre>
 <p>Code sample:</p>
@@ -254,12 +254,12 @@ const std::shared_ptr&lt;Texture&gt;&amp; cameraIcon = icons[IconName::Icon_Came
 </code></pre>
 <hr />
 <h3 id="geticon"><a class="header" href="#geticon">GetIcon</a></h3>
-<p>Get an icon by its name enum</p>
+<p>Get an icon by its name enum.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>text</code>: Text to send</li>
+<li><code>iconName</code>: Icon name Enum</li>
 </ul>
-<pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; GetIcons(IconName iconName)
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetIcon(IconName iconName)
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; cameraIcon = EditorIcons::GetIcon(IconName::Icon_Camera);

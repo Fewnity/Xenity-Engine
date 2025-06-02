@@ -30,7 +30,7 @@ RGBA myRGBA = RGBA(1.0f, 0.6f, 0.3f, 0.1f);
 
 ---
 ### ToVector4
-Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha
+Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha.
 ```cpp
 Vector4 ToVector4() const
 ```

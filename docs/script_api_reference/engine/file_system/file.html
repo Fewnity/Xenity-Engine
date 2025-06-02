@@ -239,7 +239,7 @@
 <pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
-<p>Class to manage a file (Create, open, read, write)</p>
+<p>Class to manage a file (Create, open, read, write).</p>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
 <h3 id="open"><a class="header" href="#open">Open</a></h3>
@@ -339,7 +339,7 @@ if(file-&gt;Open(FileMode::ReadOnly))
 </code></pre>
 <hr />
 <h3 id="readallbinary"><a class="header" href="#readallbinary">ReadAllBinary</a></h3>
-<p>Read all the content of the file as a binary (Need to free the pointer after)</p>
+<p>Read all the content of the file as a binary (Need to free the pointer after).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>size</code>: Output: The size of the binary in byte</li>
@@ -359,7 +359,7 @@ if(file-&gt;Open(FileMode::ReadOnly))
 </code></pre>
 <hr />
 <h3 id="readbinary"><a class="header" href="#readbinary">ReadBinary</a></h3>
-<p>Read a part of the content of the file as a binary (Need to free the pointer after)</p>
+<p>Read a part of the content of the file as a binary (Need to free the pointer after).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>offset</code>: Read offset in byte</li>
@@ -399,7 +399,7 @@ std::string filePath = file-&gt;GetFolderPath(); // = C:/my_folder/
 </code></pre>
 <hr />
 <h3 id="getfilename"><a class="header" href="#getfilename">GetFileName</a></h3>
-<p>Get file name</p>
+<p>Get file name.</p>
 <pre><code class="language-cpp">const std::string&amp; GetFileName() const
 </code></pre>
 <p>Code sample:</p>
@@ -409,7 +409,7 @@ std::string filePath = file-&gt;GetFileName(); // = my_file
 </code></pre>
 <hr />
 <h3 id="getfileextension"><a class="header" href="#getfileextension">GetFileExtension</a></h3>
-<p>Get file extension (dot included)</p>
+<p>Get file extension (dot included).</p>
 <pre><code class="language-cpp">const std::string&amp; GetFileExtension() const
 </code></pre>
 <p>Code sample:</p>

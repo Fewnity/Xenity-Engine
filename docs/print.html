@@ -379,6 +379,7 @@ There is no way to know if a socket has been closed or not.</p>
 <h2 id="for-xenity-maintainers"><a class="header" href="#for-xenity-maintainers">For Xenity maintainers</a></h2>
 <h3 id="rendering-1"><a class="header" href="#rendering-1">Rendering</a></h3>
 <p>The graphics API interface is OpenGL like, so it's harder to add an new API that is different from OpenGL.</p>
+<p>On PSP there is a graphical bug and I'm not able to fix it, looks like it visible when disabling vsync but not sure.</p>
 <h3 id="reflection-1"><a class="header" href="#reflection-1">Reflection</a></h3>
 <p>The reflection is a little bit hard to maintain.</p>
 <h3 id="other"><a class="header" href="#other">Other</a></h3>
@@ -2265,7 +2266,7 @@ void MyComponent::OnDrawGizmosSelected()
 <h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
 <hr />
 <h3 id="setcolor"><a class="header" href="#setcolor">SetColor</a></h3>
-<p>Set Gizmo draw color (does not affect sprites)</p>
+<p>Set Gizmo draw color (does not affect sprites).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>newColor</code>: New color to use</li>
@@ -2278,7 +2279,7 @@ Gizmo::SetColor(redColor);
 </code></pre>
 <hr />
 <h3 id="drawline"><a class="header" href="#drawline">DrawLine</a></h3>
-<p>Draw a simple line from A to B</p>
+<p>Draw a simple line from A to B.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>a</code>: Start point</li>
@@ -2291,7 +2292,7 @@ Gizmo::SetColor(redColor);
 </code></pre>
 <hr />
 <h3 id="drawbillboard"><a class="header" href="#drawbillboard">DrawBillboard</a></h3>
-<p>Draw a billboard sprite</p>
+<p>Draw a billboard sprite.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>position</code>: Position of the sprite</li>
@@ -2314,7 +2315,7 @@ Gizmo::SetColor(redColor);
 </code></pre>
 <hr />
 <h3 id="drawsphere"><a class="header" href="#drawsphere">DrawSphere</a></h3>
-<p>Draw a wired sphere</p>
+<p>Draw a wired sphere.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>position</code>: Position of the sphere</li>
@@ -2409,7 +2410,7 @@ Can be used for Gizmo.</p>
 <h2 id="static-methods-1"><a class="header" href="#static-methods-1">Static methods</a></h2>
 <hr />
 <h3 id="geticons"><a class="header" href="#geticons">GetIcons</a></h3>
-<p>Get the list of all editor icons</p>
+<p>Get the list of all editor icons.</p>
 <pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; GetIcons()
 </code></pre>
 <p>Code sample:</p>
@@ -2419,12 +2420,12 @@ const std::shared_ptr&lt;Texture&gt;&amp; cameraIcon = icons[IconName::Icon_Came
 </code></pre>
 <hr />
 <h3 id="geticon"><a class="header" href="#geticon">GetIcon</a></h3>
-<p>Get an icon by its name enum</p>
+<p>Get an icon by its name enum.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>text</code>: Text to send</li>
+<li><code>iconName</code>: Icon name Enum</li>
 </ul>
-<pre><code class="language-cpp">const std::vector&lt;std::shared_ptr&lt;Texture&gt;&gt;&amp; GetIcons(IconName iconName)
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetIcon(IconName iconName)
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; cameraIcon = EditorIcons::GetIcon(IconName::Icon_Camera);
@@ -2683,7 +2684,7 @@ Not available in game builds.</p>
 <h2 id="static-methods-2"><a class="header" href="#static-methods-2">Static methods</a></h2>
 <hr />
 <h3 id="openurl"><a class="header" href="#openurl">OpenURL</a></h3>
-<p>Opens the link in a web browser (Only for Windows)</p>
+<p>Opens the link in a web browser (Only for Windows).</p>
 <pre><code class="language-cpp">void OpenURL(const std::string&amp; url)
 </code></pre>
 <p>Code sample:</p>
@@ -2691,7 +2692,7 @@ Not available in game builds.</p>
 </code></pre>
 <hr />
 <h3 id="quit"><a class="header" href="#quit">Quit</a></h3>
-<p>Quits the application</p>
+<p>Quits the application.</p>
 <pre><code class="language-cpp">void Quit()
 </code></pre>
 <p>Code sample:</p>
@@ -2699,7 +2700,7 @@ Not available in game builds.</p>
 </code></pre>
 <hr />
 <h3 id="getplatform"><a class="header" href="#getplatform">GetPlatform</a></h3>
-<p>Returns the current platform the application is running on</p>
+<p>Returns the current platform the application is running on.</p>
 <pre><code class="language-cpp">Platform GetPlatform()
 </code></pre>
 <p>Code sample:</p>
@@ -2710,7 +2711,7 @@ Not available in game builds.</p>
 </code></pre>
 <hr />
 <h3 id="getxenityversion"><a class="header" href="#getxenityversion">GetXenityVersion</a></h3>
-<p>Returns the current version of Xenity Engine</p>
+<p>Returns the current version of Xenity Engine.</p>
 <pre><code class="language-cpp">std::string GetXenityVersion()
 </code></pre>
 <p>Code sample:</p>
@@ -2725,7 +2726,7 @@ else
 </code></pre>
 <hr />
 <h3 id="getgamename"><a class="header" href="#getgamename">GetGameName</a></h3>
-<p>Returns the name of the game</p>
+<p>Returns the name of the game.</p>
 <pre><code class="language-cpp">std::string GetGameName()
 </code></pre>
 <p>Code sample:</p>
@@ -2733,7 +2734,7 @@ else
 </code></pre>
 <hr />
 <h3 id="getcompanyname"><a class="header" href="#getcompanyname">GetCompanyName</a></h3>
-<p>Returns the name of the company</p>
+<p>Returns the name of the company.</p>
 <pre><code class="language-cpp">std::string GetCompanyName()
 </code></pre>
 <p>Code sample:</p>
@@ -2741,7 +2742,7 @@ else
 </code></pre>
 <hr />
 <h3 id="isineditor"><a class="header" href="#isineditor">IsInEditor</a></h3>
-<p>Returns if the application is running in the editor</p>
+<p>Returns if the application is running in the editor.</p>
 <pre><code class="language-cpp">bool IsInEditor()
 </code></pre>
 <p>Code sample:</p>
@@ -2763,7 +2764,7 @@ else
 </code></pre>
 <hr />
 <h3 id="getgamedatafolder"><a class="header" href="#getgamedatafolder">GetGameDataFolder</a></h3>
-<p>Return the game folder (folder where you can write data)</p>
+<p>Return the game folder (folder where you can write data).</p>
 <pre><code class="language-cpp">bool GetGameDataFolder()
 </code></pre>
 <p>Code sample:</p>
@@ -2772,8 +2773,8 @@ std::shared_ptr&lt;File&gt; myFile = FileSystem::MakeFile(fileName);
 bool isOpened = myFile-&gt;Open(FileMode::WriteCreateFile);
 </code></pre>
 <hr />
-<h3 id="getgamedatafolder-1"><a class="header" href="#getgamedatafolder-1">GetGameDataFolder</a></h3>
-<p>Returns the game folder (folder where the game is located, may be read-only)</p>
+<h3 id="getgamefolder"><a class="header" href="#getgamefolder">GetGameFolder</a></h3>
+<p>Returns the game folder (folder where the game is located, may be read-only).</p>
 <pre><code class="language-cpp">bool GetGameFolder()
 </code></pre>
 <p>Code sample:</p>
@@ -3605,7 +3606,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <h2 id="static-methods-3"><a class="header" href="#static-methods-3">Static methods</a></h2>
 <hr />
 <h3 id="createfromrgb"><a class="header" href="#createfromrgb">CreateFromRGB</a></h3>
-<p>Create a color from 3 uint8_t (alpha = 255)</p>
+<p>Create a color from 3 uint8_t (alpha = 255).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0;255]</li>
@@ -3619,7 +3620,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 </code></pre>
 <hr />
 <h3 id="createfromrgba"><a class="header" href="#createfromrgba">CreateFromRGBA</a></h3>
-<p>Create a color from 4 uint8_t</p>
+<p>Create a color from 4 uint8_t.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0;255]</li>
@@ -3634,7 +3635,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 </code></pre>
 <hr />
 <h3 id="createfromrgbfloat"><a class="header" href="#createfromrgbfloat">CreateFromRGBFloat</a></h3>
-<p>Create a color from 3 floats (alpha = 1)</p>
+<p>Create a color from 3 floats (alpha = 1).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0.0f;1.0f]</li>
@@ -3647,8 +3648,8 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <pre><code class="language-cpp">Color red = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f);
 </code></pre>
 <hr />
-<h3 id="createfromrgbfloat-1"><a class="header" href="#createfromrgbfloat-1">CreateFromRGBFloat</a></h3>
-<p>Create a color from 4 floats</p>
+<h3 id="createfromrgbafloat"><a class="header" href="#createfromrgbafloat">CreateFromRGBAFloat</a></h3>
+<p>Create a color from 4 floats.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0.0f;1.0f]</li>
@@ -3656,15 +3657,15 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <li><code>b</code>: Blue level [0.0f;1.0f]</li>
 <li><code>a</code>: Alpha level [0.0f;1.0f]</li>
 </ul>
-<pre><code class="language-cpp">Color CreateFromRGBFloat(float r, float g, float b, float a)
+<pre><code class="language-cpp">Color CreateFromRGBAFloat(float r, float g, float b, float a)
 </code></pre>
 <p>Code sample:</p>
-<pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f, 0.5f);
+<pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBAFloat(1.0f, 0.0f, 0.0f, 0.5f);
 </code></pre>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
 <h3 id="setfromrgba"><a class="header" href="#setfromrgba">SetFromRGBA</a></h3>
-<p>Set color from 4 uint8_t</p>
+<p>Set color from 4 uint8_t.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0;255]</li>
@@ -3681,7 +3682,7 @@ myColor.SetFromRGBA(255, 255, 255, 255);
 </code></pre>
 <hr />
 <h3 id="setfromrgbafloat"><a class="header" href="#setfromrgbafloat">SetFromRGBAFloat</a></h3>
-<p>Set color from 4 float</p>
+<p>Set color from 4 float.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0.0f;1.0f]</li>
@@ -3698,7 +3699,7 @@ myColor.SetFromRGBAFloat(1.0f, 1.0f, 1.0f, 1.0f);
 </code></pre>
 <hr />
 <h3 id="getrgba"><a class="header" href="#getrgba">GetRGBA</a></h3>
-<p>Get RGBA</p>
+<p>Get RGBA.</p>
 <pre><code class="language-cpp">const RGBA&amp; GetRGBA() const
 </code></pre>
 <p>Code sample:</p>
@@ -3708,7 +3709,7 @@ const RGBA&amp; rgbaRef = red.GetRGBA(); // Avoid a copy
 </code></pre>
 <hr />
 <h3 id="getunsignedintrgba"><a class="header" href="#getunsignedintrgba">GetUnsignedIntRGBA</a></h3>
-<p>Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA)</p>
+<p>Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA).</p>
 <pre><code class="language-cpp">unsigned int GetUnsignedIntRGBA() const
 </code></pre>
 <p>Code sample:</p>
@@ -3716,8 +3717,8 @@ const RGBA&amp; rgbaRef = red.GetRGBA(); // Avoid a copy
 unsigned int rgba = myColor.GetUnsignedIntRGBA(); // 0xff994c19
 </code></pre>
 <hr />
-<h3 id="getunsignedintrgba-1"><a class="header" href="#getunsignedintrgba-1">GetUnsignedIntRGBA</a></h3>
-<p>Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR)</p>
+<h3 id="getunsignedintabgr"><a class="header" href="#getunsignedintabgr">GetUnsignedIntABGR</a></h3>
+<p>Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR).</p>
 <pre><code class="language-cpp">unsigned int GetUnsignedIntABGR() const
 </code></pre>
 <p>Code sample:</p>
@@ -3726,7 +3727,7 @@ unsigned int abgr = myColor.GetUnsignedIntABGR(); // 0x194c99ff
 </code></pre>
 <hr />
 <h3 id="getunsignedintargb"><a class="header" href="#getunsignedintargb">GetUnsignedIntARGB</a></h3>
-<p>Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB)</p>
+<p>Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB).</p>
 <pre><code class="language-cpp">unsigned int GetUnsignedIntARGB() const
 </code></pre>
 <p>Code sample:</p>
@@ -3735,7 +3736,7 @@ unsigned int argb = myColor.GetUnsignedIntARGB(); // 0x19ff994c
 </code></pre>
 <hr />
 <h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
-<p>Return a string representation of the color</p>
+<p>Return a string representation of the color.</p>
 <pre><code class="language-cpp">std::string ToString() const
 </code></pre>
 <p>Code sample:</p>
@@ -3834,7 +3835,7 @@ Debug::Print(myColor.ToString());
 <h2 id="public-methods-1"><a class="header" href="#public-methods-1">Public methods</a></h2>
 <hr />
 <h3 id="tovector4"><a class="header" href="#tovector4">ToVector4</a></h3>
-<p>Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha</p>
+<p>Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha.</p>
 <pre><code class="language-cpp">Vector4 ToVector4() const
 </code></pre>
 <p>Code sample:</p>
@@ -5284,7 +5285,7 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 <h2 id="static-methods-4"><a class="header" href="#static-methods-4">Static methods</a></h2>
 <hr />
 <h3 id="getnow"><a class="header" href="#getnow">GetNow</a></h3>
-<p>Get the current date and time</p>
+<p>Get the current date and time.</p>
 <pre><code class="language-cpp">DateTime GetNow()
 </code></pre>
 <p>Code sample:</p>
@@ -5293,7 +5294,7 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 <h2 id="public-methods-2"><a class="header" href="#public-methods-2">Public methods</a></h2>
 <hr />
 <h3 id="tostring-1"><a class="header" href="#tostring-1">ToString</a></h3>
-<p>Get a string representation of the date and time in the format: "hour:minute:second day/month/year"</p>
+<p>Get a string representation of the date and time in the format: "hour:minute:second day/month/year".</p>
 <pre><code class="language-cpp">std::string ToString() const
 </code></pre>
 <p>Code sample:</p>
@@ -5383,14 +5384,14 @@ Debug::Print(currentDateTime.ToString());
 <pre><code class="language-cpp">#include &lt;engine/debug/debug.h&gt;
 </code></pre>
 <h2 id="description-5"><a class="header" href="#description-5">Description</a></h2>
-<p>Class used to print text in the console and in file or remotely to a server (Server part is removed for now)</p>
+<p>Class used to print text in the console and in file or remotely to a server (Server part is removed for now).</p>
 <p>You can find logs in the <code>xenity_engine_debug.txt</code> file.<br>
 The file will be created in the same folder of the executable file.<br>
 For PsVita the file will be created in <code>ux0:data/xenity_engine/</code>.</p>
 <h2 id="static-methods-5"><a class="header" href="#static-methods-5">Static methods</a></h2>
 <hr />
 <h3 id="print"><a class="header" href="#print">Print</a></h3>
-<p>Print a text</p>
+<p>Print a text.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>text</code>: Text to print</li>
@@ -5405,7 +5406,7 @@ Debug::Print("Hello file!", true); // Only printed in the file
 </code></pre>
 <hr />
 <h3 id="printwarning"><a class="header" href="#printwarning">PrintWarning</a></h3>
-<p>Print a warning</p>
+<p>Print a warning.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>text</code>: Text to print</li>
@@ -5420,7 +5421,7 @@ Debug::Print("Hello file!", true); // Only printed in the file
 </code></pre>
 <hr />
 <h3 id="printerror"><a class="header" href="#printerror">PrintError</a></h3>
-<p>Print an error</p>
+<p>Print an error.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>text</code>: Text to print</li>
@@ -5435,7 +5436,7 @@ Debug::Print("Hello file!", true); // Only printed in the file
 </code></pre>
 <hr />
 <h3 id="getondebuglogevent"><a class="header" href="#getondebuglogevent">GetOnDebugLogEvent</a></h3>
-<p>Get the event when a debug message is printed</p>
+<p>Get the event when a debug message is printed.</p>
 <pre><code class="language-cpp">Event&lt;const std::string&amp;, DebugType&gt;&amp; GetOnDebugLogEvent()
 </code></pre>
 <p>Code sample:</p>
@@ -5604,7 +5605,7 @@ class Event
 <h2 id="public-methods-3"><a class="header" href="#public-methods-3">Public methods</a></h2>
 <hr />
 <h3 id="bind"><a class="header" href="#bind">Bind</a></h3>
-<p>Bind a simple function</p>
+<p>Bind a simple function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>function</code>:  Pointer to the function to bind</li>
@@ -5626,7 +5627,7 @@ myEvent.Bind(&amp;MyClass::MyStaticFunction);
 </code></pre>
 <hr />
 <h3 id="bind-1"><a class="header" href="#bind-1">Bind</a></h3>
-<p>Bind a function linked to an object</p>
+<p>Bind a function linked to an object.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>function</code>:  Pointer to the function to bind</li>
@@ -5649,7 +5650,7 @@ myEvent.Bind(&amp;MyClass::MyFunction, &amp;myClassInstance);
 </code></pre>
 <hr />
 <h3 id="unbind"><a class="header" href="#unbind">Unbind</a></h3>
-<p>Unbind a simple function</p>
+<p>Unbind a simple function.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>function</code>:  Pointer to the function to unbind</li>
@@ -5674,7 +5675,7 @@ myEvent.Unbind(&amp;MyClass::MyStaticFunction);
 </code></pre>
 <hr />
 <h3 id="unbind-1"><a class="header" href="#unbind-1">Unbind</a></h3>
-<p>Unbind a function linked to an object</p>
+<p>Unbind a function linked to an object.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>function</code>:  Pointer to the function to unbind</li>
@@ -5699,7 +5700,7 @@ myEvent.Unbind(&amp;MyClass::MyFunction, &amp;myClassInstance);
 </code></pre>
 <hr />
 <h3 id="unbindall"><a class="header" href="#unbindall">UnbindAll</a></h3>
-<p>Unbind all bound function</p>
+<p>Unbind all bound function.</p>
 <pre><code class="language-cpp">void UnbindAll()
 </code></pre>
 <p>Code sample:</p>
@@ -5712,7 +5713,7 @@ myEvent.UnbindAll();
 </code></pre>
 <hr />
 <h3 id="trigger"><a class="header" href="#trigger">Trigger</a></h3>
-<p>Call all bound functions</p>
+<p>Call all bound functions.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>args</code>:  All arguments to send</li>
@@ -5728,7 +5729,7 @@ myEvent.Trigger(1, "Hello World!");
 </code></pre>
 <hr />
 <h3 id="getboundfunctioncount"><a class="header" href="#getboundfunctioncount">GetBoundFunctionCount</a></h3>
-<p>Get the number of listener</p>
+<p>Get the number of listener.</p>
 <pre><code class="language-cpp">size_t GetBoundFunctionCount()
 </code></pre>
 <p>Code sample:</p>
@@ -6008,7 +6009,7 @@ if(file-&gt;Open(FileMode::WriteCreateFile))
 <pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
 </code></pre>
 <h2 id="description-8"><a class="header" href="#description-8">Description</a></h2>
-<p>Class to manage a file (Create, open, read, write)</p>
+<p>Class to manage a file (Create, open, read, write).</p>
 <h2 id="public-methods-4"><a class="header" href="#public-methods-4">Public methods</a></h2>
 <hr />
 <h3 id="open"><a class="header" href="#open">Open</a></h3>
@@ -6108,7 +6109,7 @@ if(file-&gt;Open(FileMode::ReadOnly))
 </code></pre>
 <hr />
 <h3 id="readallbinary"><a class="header" href="#readallbinary">ReadAllBinary</a></h3>
-<p>Read all the content of the file as a binary (Need to free the pointer after)</p>
+<p>Read all the content of the file as a binary (Need to free the pointer after).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>size</code>: Output: The size of the binary in byte</li>
@@ -6128,7 +6129,7 @@ if(file-&gt;Open(FileMode::ReadOnly))
 </code></pre>
 <hr />
 <h3 id="readbinary"><a class="header" href="#readbinary">ReadBinary</a></h3>
-<p>Read a part of the content of the file as a binary (Need to free the pointer after)</p>
+<p>Read a part of the content of the file as a binary (Need to free the pointer after).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>offset</code>: Read offset in byte</li>
@@ -6168,7 +6169,7 @@ std::string filePath = file-&gt;GetFolderPath(); // = C:/my_folder/
 </code></pre>
 <hr />
 <h3 id="getfilename"><a class="header" href="#getfilename">GetFileName</a></h3>
-<p>Get file name</p>
+<p>Get file name.</p>
 <pre><code class="language-cpp">const std::string&amp; GetFileName() const
 </code></pre>
 <p>Code sample:</p>
@@ -6178,7 +6179,7 @@ std::string filePath = file-&gt;GetFileName(); // = my_file
 </code></pre>
 <hr />
 <h3 id="getfileextension"><a class="header" href="#getfileextension">GetFileExtension</a></h3>
-<p>Get file extension (dot included)</p>
+<p>Get file extension (dot included).</p>
 <pre><code class="language-cpp">const std::string&amp; GetFileExtension() const
 </code></pre>
 <p>Code sample:</p>
@@ -6338,7 +6339,7 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 <pre><code class="language-cpp">#include &lt;engine/file_system/directory.h&gt;
 </code></pre>
 <h2 id="description-10"><a class="header" href="#description-10">Description</a></h2>
-<p>Class to manage a directory (Get all files of a folder)</p>
+<p>Class to manage a directory (Get all files of a folder).</p>
 <h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -6538,7 +6539,7 @@ Includes functions to create GameObjects.</p>
 <h2 id="global-methods"><a class="header" href="#global-methods">Global Methods</a></h2>
 <hr />
 <h3 id="creategameobject"><a class="header" href="#creategameobject">CreateGameObject</a></h3>
-<p>Create a GameObject with the default name</p>
+<p>Create a GameObject with the default name.</p>
 <pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; CreateGameObject()
 </code></pre>
 <p>Code sample:</p>
@@ -6547,7 +6548,7 @@ Debug::Print(myGameObject-&gt;GetName()); // Prints "GameObject"
 </code></pre>
 <hr />
 <h3 id="creategameobject-1"><a class="header" href="#creategameobject-1">CreateGameObject</a></h3>
-<p>Create a GameObject</p>
+<p>Create a GameObject.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>name</code>: Name of the GameObject</li>
@@ -6560,7 +6561,7 @@ Debug::Print(myGameObject-&gt;GetName()); // Prints "Player"
 </code></pre>
 <hr />
 <h3 id="findgameobjectbyname"><a class="header" href="#findgameobjectbyname">FindGameObjectByName</a></h3>
-<p>Find a GameObject with a name</p>
+<p>Find a GameObject with a name.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>name</code>: Name of the GameObject</li>
@@ -6577,7 +6578,7 @@ if(myGameObject == result)
 </code></pre>
 <hr />
 <h3 id="findgameobjectsbyname"><a class="header" href="#findgameobjectsbyname">FindGameObjectsByName</a></h3>
-<p>Find GameObjects with a name</p>
+<p>Find GameObjects with a name.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>name</code>: Name of the GameObject</li>
@@ -6595,7 +6596,7 @@ if(results.size() == 2)
 </code></pre>
 <hr />
 <h3 id="findgameobjectbyid"><a class="header" href="#findgameobjectbyid">FindGameObjectById</a></h3>
-<p>Find a GameObject with an id</p>
+<p>Find a GameObject with an id.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>id</code>: Unique id of the GameObject</li>
@@ -6612,7 +6613,7 @@ if(myGameObject == result)
 </code></pre>
 <hr />
 <h3 id="findcomponentbyid"><a class="header" href="#findcomponentbyid">FindComponentById</a></h3>
-<p>Find a component with an id</p>
+<p>Find a component with an id.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>id</code>: Unique id of the component</li>
@@ -6632,7 +6633,7 @@ if(myAudioSource == result)
 <h2 id="pubic-methods"><a class="header" href="#pubic-methods">Pubic Methods</a></h2>
 <hr />
 <h3 id="addchild"><a class="header" href="#addchild">AddChild</a></h3>
-<p>Add a child to the GameObject</p>
+<p>Add a child to the GameObject.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>gameObject</code>: Child to add</li>
@@ -6646,7 +6647,7 @@ myGameObject-&gt;AddChild(myChild);
 </code></pre>
 <hr />
 <h3 id="setparent"><a class="header" href="#setparent">SetParent</a></h3>
-<p>Set GameObject's parent</p>
+<p>Set GameObject's parent.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>gameObject</code>: New parent</li>
@@ -6662,7 +6663,8 @@ player1-&gt;SetParent(parent);
 </code></pre>
 <hr />
 <h3 id="addcomponent"><a class="header" href="#addcomponent">AddComponent</a></h3>
-<p>Add a component</p>
+<p>Add a component.<br>
+<code>T</code> is a component type</p>
 <pre><code class="language-cpp">template &lt;typename T&gt;
 AddComponent()
 </code></pre>
@@ -6673,7 +6675,8 @@ std::shared_ptr&lt;AudioSource&gt; audioSourceComp = gameObject-&gt;AddComponent
 </code></pre>
 <hr />
 <h3 id="getcomponent"><a class="header" href="#getcomponent">GetComponent</a></h3>
-<p>Get a component</p>
+<p>Get a component.<br>
+<code>T</code> is a component type</p>
 <pre><code class="language-cpp">template &lt;typename T&gt;
 GetComponent()
 </code></pre>
@@ -6684,7 +6687,8 @@ std::shared_ptr&lt;Light&gt; comp = gameObject-&gt;GetComponent&lt;Light&gt;();
 </code></pre>
 <hr />
 <h3 id="getcomponents"><a class="header" href="#getcomponents">GetComponents</a></h3>
-<p>Get components</p>
+<p>Get components.<br>
+<code>T</code> is a component type</p>
 <pre><code class="language-cpp">template &lt;typename T&gt;
 GetComponents()
 </code></pre>
@@ -6696,7 +6700,7 @@ std::vector&lt;std::shared_ptr&lt;Light&gt;&gt; lightsComp = gameObject-&gt;GetC
 </code></pre>
 <hr />
 <h3 id="isactive"><a class="header" href="#isactive">IsActive</a></h3>
-<p>Get if the GameObject is marked as active</p>
+<p>Get if the GameObject is marked as active.</p>
 <pre><code class="language-cpp">bool IsActive() const
 </code></pre>
 <p>Code sample:</p>
@@ -6714,7 +6718,7 @@ bool isActive = child-&gt;IsActive(); // = true
 </code></pre>
 <hr />
 <h3 id="islocalactive"><a class="header" href="#islocalactive">IsLocalActive</a></h3>
-<p>Get if the GameObject is active based on his parents active state</p>
+<p>Get if the GameObject is active based on his parents active state.</p>
 <pre><code class="language-cpp">bool IsLocalActive() const
 </code></pre>
 <p>Code sample:</p>
@@ -6729,6 +6733,99 @@ std::shared_ptr&lt;GameObject&gt; child = CreateGameObject();
 child-&gt;SetParent(child);
 gameObject-&gt;SetActive(false);
 bool isActive = child-&gt;IsLocalActive(); // = false
+</code></pre>
+<hr />
+<h3 id="setactive"><a class="header" href="#setactive">SetActive</a></h3>
+<p>Set GameObject as active or not.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>active</code>: Active value</li>
+</ul>
+<pre><code class="language-cpp">void SetActive(const bool active)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+gameObject-&gt;SetActive(false);
+bool isActive = gameObject-&gt;IsActive(); // = false
+</code></pre>
+<hr />
+<h3 id="getchildrencount"><a class="header" href="#getchildrencount">GetChildrenCount</a></h3>
+<p>Get children count.</p>
+<pre><code class="language-cpp">uint32_t GetChildrenCount() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child0 = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child1 = CreateGameObject();
+
+gameObject-&gt;AddChild(child0);
+gameObject-&gt;AddChild(child1);
+uint32_t count = gameObject-&gt;GetChildrenCount(); // = 2
+</code></pre>
+<hr />
+<h3 id="getcomponentcount"><a class="header" href="#getcomponentcount">GetComponentCount</a></h3>
+<p>Get component count.</p>
+<pre><code class="language-cpp">uint32_t GetComponentCount() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+gameObject-&gt;AddComponent&lt;Light&gt;();
+gameObject-&gt;AddComponent&lt;Light&gt;();
+gameObject-&gt;AddComponent&lt;Light&gt;();
+
+uint32_t count = gameObject-&gt;GetComponentCount(); // = 3
+</code></pre>
+<hr />
+<h3 id="gettransform"><a class="header" href="#gettransform">GetTransform</a></h3>
+<p>Get transform.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Transform&gt;&amp; GetTransform() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+const std::shared_ptr&lt;Transform&gt;&amp; transform = gameObject-&gt;GetTransform();
+</code></pre>
+<hr />
+<h3 id="getparent"><a class="header" href="#getparent">GetParent</a></h3>
+<p>Get parent GameObject.</p>
+<pre><code class="language-cpp">const std::weak_ptr&lt;GameObject&gt;&amp; GetParent() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+const std::weak_ptr&lt;GameObject&gt;&amp; parent = gameObject-&gt;GetParent();
+
+if(!parent.expired())
+{
+    Debug::Print("The gameobject does not have a parent");
+}
+else
+{
+    Debug::Print("The gameobject has a parent");
+}
+</code></pre>
+<hr />
+<h3 id="getchild"><a class="header" href="#getchild">GetChild</a></h3>
+<p>Get a child by index.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>index</code>: Child index</li>
+</ul>
+<pre><code class="language-cpp">std::weak_ptr&lt;GameObject&gt; GetChild(int index)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child0 = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child1 = CreateGameObject();
+
+gameObject-&gt;AddChild(child0);
+gameObject-&gt;AddChild(child1);
+
+std::weak_ptr&lt;GameObject&gt; weakChild1 = gameObject-&gt;GetChild(1);
+
+std::shared_ptr&lt;GameObject&gt; sharedChild1 = weakChild1.lock();
+if(sharedChild1)
+{
+    // Use child...
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -6870,7 +6967,7 @@ bool isActive = child-&gt;IsLocalActive(); // = false
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
 <h2 id="description-13"><a class="header" href="#description-13">Description</a></h2>
-<p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse)</p>
+<p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse).</p>
 <h2 id="macros"><a class="header" href="#macros">Macros</a></h2>
 <p><code>PLAYER_1</code> value: 0<br>
 <code>PLAYER_2</code> value: 1<br>
@@ -6892,7 +6989,7 @@ bool isActive = child-&gt;IsLocalActive(); // = false
 <h2 id="static-methods-7"><a class="header" href="#static-methods-7">Static methods</a></h2>
 <hr />
 <h3 id="getkeydown"><a class="header" href="#getkeydown">GetKeyDown</a></h3>
-<p>Return true if the key has just been pressed</p>
+<p>Return true if the key has just been pressed.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>keyCode</code>: Key code to check</li>
@@ -6913,7 +7010,7 @@ if (InputSystem::GetKeyDown(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="getkey"><a class="header" href="#getkey">GetKey</a></h3>
-<p>Return true if the key is held</p>
+<p>Return true if the key is held.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>keyCode</code>: Key code to check</li>
@@ -6934,7 +7031,7 @@ if (InputSystem::GetKey(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="getkeyup"><a class="header" href="#getkeyup">GetKeyUp</a></h3>
-<p>Return true if the key has just been released</p>
+<p>Return true if the key has just been released.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>keyCode</code>: Key code to check</li>
@@ -6955,7 +7052,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="getleftjoystick"><a class="header" href="#getleftjoystick">GetLeftJoystick</a></h3>
-<p>Get left joystick value, values between -1.0f and 1.0f</p>
+<p>Get left joystick value, values between -1.0f and 1.0f.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>controllerIndex</code>: Controller index (0-7)</li>
@@ -6967,7 +7064,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="getrightjoystick"><a class="header" href="#getrightjoystick">GetRightJoystick</a></h3>
-<p>Get right joystick value, values between -1.0f and 1.0f</p>
+<p>Get right joystick value, values between -1.0f and 1.0f.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>controllerIndex</code>: Controller index (0-7)</li>
@@ -6979,7 +7076,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="gettouchscreencount"><a class="header" href="#gettouchscreencount">GetTouchScreenCount</a></h3>
-<p>Get how many touch screens the device has</p>
+<p>Get how many touch screens the device has.</p>
 <pre><code class="language-cpp">int GetTouchScreenCount()
 </code></pre>
 <p>Code sample:</p>
@@ -6987,7 +7084,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="gettouchcount"><a class="header" href="#gettouchcount">GetTouchCount</a></h3>
-<p>Get how many touch inputs the screen has</p>
+<p>Get how many touch inputs the screen has.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>screenIndex</code>: Screen index</li>
@@ -6999,7 +7096,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="gettouch"><a class="header" href="#gettouch">GetTouch</a></h3>
-<p>Get touch data</p>
+<p>Get touch data.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>touchIndex</code>: Touch index</li>
@@ -7017,7 +7114,7 @@ if (touchCount &gt;= 1)
 </code></pre>
 <hr />
 <h3 id="hidemouse"><a class="header" href="#hidemouse">HideMouse</a></h3>
-<p>Hide mouse</p>
+<p>Hide mouse.</p>
 <pre><code class="language-cpp">void HideMouse()
 </code></pre>
 <p>Code sample:</p>
@@ -7025,7 +7122,7 @@ if (touchCount &gt;= 1)
 </code></pre>
 <hr />
 <h3 id="showmouse"><a class="header" href="#showmouse">ShowMouse</a></h3>
-<p>Show mouse</p>
+<p>Show mouse.</p>
 <pre><code class="language-cpp">void ShowMouse()
 </code></pre>
 <p>Code sample:</p>
@@ -7435,6 +7532,223 @@ if (touchCount &gt;= 1)
 
 </style>
 <h1 id="quaternion"><a class="header" href="#quaternion">Quaternion</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/math/quaternion.h&gt;
+</code></pre>
+<h2 id="description-16"><a class="header" href="#description-16">Description</a></h2>
+<p>Class representing rotations in 3D space</p>
+<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>x</td><td><code>float</code></td><td>The x component of the quaternion</td></tr>
+<tr><td>y</td><td><code>float</code></td><td>The y component of the quaternion</td></tr>
+<tr><td>z</td><td><code>float</code></td><td>The z component of the quaternion</td></tr>
+<tr><td>w</td><td><code>float</code></td><td>The w component of the quaternion</td></tr>
+</tbody></table>
+</div>
+<h2 id="constructors-1"><a class="header" href="#constructors-1">Constructors</a></h2>
+<h3 id="quaternion-1"><a class="header" href="#quaternion-1">Quaternion</a></h3>
+<pre><code class="language-cpp">Quaternion()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion();
+// Same as q = Quaternion::Identity();
+</code></pre>
+<h3 id="quaternion-xyzw"><a class="header" href="#quaternion-xyzw">Quaternion (X,Y,Z,W)</a></h3>
+<p>Normalized.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+<li><code>z</code>: Z value</li>
+<li><code>w</code>: W value</li>
+</ul>
+<pre><code class="language-cpp">Quaternion(float x, float y, float z, float w)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+</code></pre>
+<h3 id="quaternion-vector4"><a class="header" href="#quaternion-vector4">Quaternion (Vector4)</a></h3>
+<p>Normalized.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>vector</code>: X, Y, Z, W values</li>
+</ul>
+<pre><code class="language-cpp">Quaternion(const Vector4&amp; vector)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion(Vector4(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f));
+</code></pre>
+<h2 id="static-methods-8"><a class="header" href="#static-methods-8">Static methods</a></h2>
+<hr />
+<h3 id="identity"><a class="header" href="#identity">Identity</a></h3>
+<p>Returns a quaternion representing no rotation (identity quaternion).</p>
+<pre><code class="language-cpp">Quaternion Identity()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion identity = Quaternion::Identity();
+</code></pre>
+<hr />
+<h3 id="euler"><a class="header" href="#euler">Euler</a></h3>
+<p>Create a quaternion from Euler angles (in degrees).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X angle in degrees</li>
+<li><code>y</code>: Y angle in degrees</li>
+<li><code>z</code>: Z angle in degrees</li>
+</ul>
+<pre><code class="language-cpp">Quaternion Euler(const float x, const float y, const float z)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion::Euler(10, 20, 30);
+</code></pre>
+<hr />
+<h3 id="angleaxis"><a class="header" href="#angleaxis">AngleAxis</a></h3>
+<p>Make a quaternion from an angle and axis.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>angle</code>: angle in degrees</li>
+<li><code>axis</code>: Axis of the rotation</li>
+</ul>
+<pre><code class="language-cpp">Quaternion AngleAxis(float angle, const Vector3&amp; axis)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion::AngleAxis(10, Vector3(1, 0, 0));
+</code></pre>
+<hr />
+<h3 id="inverse"><a class="header" href="#inverse">Inverse</a></h3>
+<p>Get the inverse of the quaternion.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>q</code>: Quaternion to inverse</li>
+</ul>
+<pre><code class="language-cpp">Quaternion Inverse(const Quaternion&amp; q)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion::Euler(10, 20, 30);
+Quaternion inverseQ = Quaternion::Inverse(q);
+</code></pre>
+<hr />
+<h3 id="lerp"><a class="header" href="#lerp">Lerp</a></h3>
+<p>Linearly interpolates between quaternions.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First quaternion</li>
+<li><code>b</code>: Second quaternion</li>
+<li><code>t</code>: Interpolation factor (0.0f to 1.0f)</li>
+</ul>
+<pre><code class="language-cpp">Quaternion Lerp(const Quaternion&amp; a, const Quaternion&amp; b, const float t)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Euler(10, 20, 30);
+Quaternion b = Quaternion::Euler(90, 120, 10);
+Quaternion mix = Quaternion::Lerp(a, b, 0.5f); // Mix of A and B
+Quaternion lerp0 = Quaternion::Lerp(a, b, 0.0f); // Equals A
+Quaternion lerp1 = Quaternion::Lerp(a, b, 1.0f); // Equals B
+</code></pre>
+<hr />
+<h3 id="dot"><a class="header" href="#dot">Dot</a></h3>
+<p>Get the dot product of two quaternions.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>q1</code>: First quaternion</li>
+<li><code>q2</code>: Second quaternion</li>
+</ul>
+<pre><code class="language-cpp">float Dot(const Quaternion&amp; q1, const Quaternion&amp; q2)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Euler(10, 20, 30);
+Quaternion b = Quaternion::Euler(90, 120, 10);
+Quaternion result = Quaternion::Dot(a, b);
+</code></pre>
+<h2 id="public-methods-6"><a class="header" href="#public-methods-6">Public methods</a></h2>
+<hr />
+<h3 id="toeuler"><a class="header" href="#toeuler">ToEuler</a></h3>
+<p>Converts the quaternion to Euler angles (in degrees).</p>
+<pre><code class="language-cpp">Vector3 ToEuler() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Euler(10, 20, 30);
+Vector3 euler = a.ToEuler();
+</code></pre>
+<hr />
+<h3 id="set"><a class="header" href="#set">Set</a></h3>
+<p>Set the quaternion values (Normalizes the quaternion).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+<li><code>z</code>: Z value</li>
+<li><code>w</code>: W value</li>
+</ul>
+<pre><code class="language-cpp">void Set(const float x, const float y, const float z, const float w)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f * 2, 0.3493627f * 2, -0.4916947f * 2, -0.4068529f * 2);
+// a = (0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f)
+</code></pre>
+<hr />
+<h3 id="normalize"><a class="header" href="#normalize">Normalize</a></h3>
+<p>Normalize the quaternion.</p>
+<pre><code class="language-cpp">void Normalize()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+a.Normalize();
+</code></pre>
+<hr />
+<h3 id="normalized"><a class="header" href="#normalized">Normalized</a></h3>
+<p>Returns a normalized copy of the quaternion.</p>
+<pre><code class="language-cpp">Quaternion Normalized() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Quaternion normalizedA = a.Normalized();
+</code></pre>
+<hr />
+<h3 id="getforward"><a class="header" href="#getforward">GetForward</a></h3>
+<p>Get the forward direction vector of the quaternion.</p>
+<pre><code class="language-cpp">Vector3 GetForward() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Vector3 forward = a.GetForward();
+</code></pre>
+<hr />
+<h3 id="getup"><a class="header" href="#getup">GetUp</a></h3>
+<p>Get the up direction vector of the quaternion.</p>
+<pre><code class="language-cpp">Vector3 GetUp() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Vector3 up = a.GetUp();
+</code></pre>
+<hr />
+<h3 id="getright"><a class="header" href="#getright">GetRight</a></h3>
+<p>Get the right direction vector of the quaternion.</p>
+<pre><code class="language-cpp">Vector3 GetRight() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Vector3 right = a.GetRight();
+</code></pre>
+<hr />
+<h3 id="tostring-2"><a class="header" href="#tostring-2">ToString</a></h3>
+<p>Return a string representation of the quaternion like "{x:0.0 y:0.0 z:0.0 w:1.0}"</p>
+<pre><code class="language-cpp"> std::string ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Debug::Print(a.ToString());
+// Prints "{x:0.6860413 y:0.3493627 z:0.4916947 w:0.4068529}"
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7503,6 +7817,76 @@ if (touchCount &gt;= 1)
 
 </style>
 <h1 id="vector2"><a class="header" href="#vector2">Vector2</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/math/vector2.h&gt;
+</code></pre>
+<h2 id="description-17"><a class="header" href="#description-17">Description</a></h2>
+<p>Contains 2D coordinates.</p>
+<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
+<tr><td>y</td><td><code>float</code></td><td>The y component of the vector</td></tr>
+</tbody></table>
+</div>
+<h2 id="constructors-2"><a class="header" href="#constructors-2">Constructors</a></h2>
+<h3 id="vector2-1"><a class="header" href="#vector2-1">Vector2</a></h3>
+<p>Empty vector.</p>
+<pre><code class="language-cpp">Vector2()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2();
+// X = Y = 0.0f
+</code></pre>
+<h3 id="vector2-xy"><a class="header" href="#vector2-xy">Vector2 (X,Y)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+</ul>
+<pre><code class="language-cpp">Vector2(float x, float y)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+</code></pre>
+<h3 id="vector2-single-value"><a class="header" href="#vector2-single-value">Vector2 (Single value)</a></h3>
+<p>Fill the vector with a single value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fillValue</code>: Fill value</li>
+</ul>
+<pre><code class="language-cpp">Vector2(float fillValue)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f);
+// X = Y = 1.0f
+</code></pre>
+<h3 id="vector2-vector3"><a class="header" href="#vector2-vector3">Vector2 (Vector3)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 3D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector2(const Vector3&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec3 = Vector3(1.0f, 2.0f, 3.0f);
+Vector2 vec = Vector2(vec3);
+// X = 1.0f
+// Y = 2.0f
+</code></pre>
+<h3 id="vector2-vector2int"><a class="header" href="#vector2-vector2int">Vector2 (Vector2Int)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D integer vector</li>
+</ul>
+<pre><code class="language-cpp">Vector2(const Vector2Int&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec2int = Vector2Int(1, 2);
+Vector2 vec = Vector2(vec2int);
+// X = 1.0f
+// Y = 2.0f
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7571,6 +7955,76 @@ if (touchCount &gt;= 1)
 
 </style>
 <h1 id="vector2int"><a class="header" href="#vector2int">Vector2Int</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/math/vector2_int.h&gt;
+</code></pre>
+<h2 id="description-18"><a class="header" href="#description-18">Description</a></h2>
+<p>Contains integer 2D coordinates.</p>
+<h2 id="variables-6"><a class="header" href="#variables-6">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>x</td><td><code>int</code></td><td>The x component of the vector</td></tr>
+<tr><td>y</td><td><code>int</code></td><td>The y component of the vector</td></tr>
+</tbody></table>
+</div>
+<h2 id="constructors-3"><a class="header" href="#constructors-3">Constructors</a></h2>
+<h3 id="vector2int-1"><a class="header" href="#vector2int-1">Vector2Int</a></h3>
+<p>Empty vector.</p>
+<pre><code class="language-cpp">Vector2Int()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int();
+// X = Y = 0
+</code></pre>
+<h3 id="vector2int-xy"><a class="header" href="#vector2int-xy">Vector2Int (X,Y)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+</ul>
+<pre><code class="language-cpp">Vector2Int(int x, int y)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
+</code></pre>
+<h3 id="vector2int-single-value"><a class="header" href="#vector2int-single-value">Vector2Int (Single value)</a></h3>
+<p>Fill the vector with a single value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fillValue</code>: Fill value</li>
+</ul>
+<pre><code class="language-cpp">Vector2Int(int fillValue)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1);
+// X = Y = 1
+</code></pre>
+<h3 id="vector2int-vector3"><a class="header" href="#vector2int-vector3">Vector2Int (Vector3)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 3D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector2Int(const Vector3&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec3 = Vector3(1.0f, 2.0f, 3.0f);
+Vector2Int vec = Vector2Int(vec3);
+// X = 1
+// Y = 2
+</code></pre>
+<h3 id="vector2int-vector2"><a class="header" href="#vector2int-vector2">Vector2Int (Vector2)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector2Int(const Vector2&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec2 = Vector2(1.0f, 2.0f);
+Vector2Int vec = Vector2Int(vec2);
+// X = 1
+// Y = 2
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7639,6 +8093,80 @@ if (touchCount &gt;= 1)
 
 </style>
 <h1 id="vector3"><a class="header" href="#vector3">Vector3</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/math/vector3.h&gt;
+</code></pre>
+<h2 id="description-19"><a class="header" href="#description-19">Description</a></h2>
+<p>Contains 3D coordinates.</p>
+<h2 id="variables-7"><a class="header" href="#variables-7">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
+<tr><td>y</td><td><code>float</code></td><td>The y component of the vector</td></tr>
+<tr><td>z</td><td><code>float</code></td><td>The z component of the vector</td></tr>
+</tbody></table>
+</div>
+<h2 id="constructors-4"><a class="header" href="#constructors-4">Constructors</a></h2>
+<h3 id="vector3-1"><a class="header" href="#vector3-1">Vector3</a></h3>
+<p>Empty vector.</p>
+<pre><code class="language-cpp">Vector3()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3();
+// X = Y = Z = 0.0f
+</code></pre>
+<h3 id="vector3-xyz"><a class="header" href="#vector3-xyz">Vector3 (X,Y,Z)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+<li><code>z</code>: Z value</li>
+</ul>
+<pre><code class="language-cpp">Vector3(float x, float y, float z)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+</code></pre>
+<h3 id="vector3-single-value"><a class="header" href="#vector3-single-value">Vector3 (Single value)</a></h3>
+<p>Fill the vector with a single value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fillValue</code>: Fill value</li>
+</ul>
+<pre><code class="language-cpp">Vector3(float fillValue)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f);
+// X = Y = Z = 1.0f
+</code></pre>
+<h3 id="vector3-vector2"><a class="header" href="#vector3-vector2">Vector3 (Vector2)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector3(const Vector2&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec2 = Vector2(1.0f, 2.0f);
+Vector3 vec = Vector3(vec2);
+// X = 1.0f
+// Y = 2.0f
+// Z = 0.0f
+</code></pre>
+<h3 id="vector3-vector2int"><a class="header" href="#vector3-vector2int">Vector3 (Vector2Int)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D integer vector</li>
+</ul>
+<pre><code class="language-cpp">Vector3(const Vector2Int&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec2int = Vector2Int(1, 2);
+Vector3 vec = Vector3(vec2int);
+// X = 1.0f
+// Y = 2.0f
+// Z = 0.0f
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7707,6 +8235,99 @@ if (touchCount &gt;= 1)
 
 </style>
 <h1 id="vector4"><a class="header" href="#vector4">Vector4</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/math/vector4.h&gt;
+</code></pre>
+<h2 id="description-20"><a class="header" href="#description-20">Description</a></h2>
+<p>Contains 4D coordinates.</p>
+<h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
+<tr><td>y</td><td><code>float</code></td><td>The y component of the vector</td></tr>
+<tr><td>z</td><td><code>float</code></td><td>The z component of the vector</td></tr>
+<tr><td>w</td><td><code>float</code></td><td>The w component of the vector</td></tr>
+</tbody></table>
+</div>
+<h2 id="constructors-5"><a class="header" href="#constructors-5">Constructors</a></h2>
+<h3 id="vector4-1"><a class="header" href="#vector4-1">Vector4</a></h3>
+<p>Empty vector.</p>
+<pre><code class="language-cpp">Vector4()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4();
+// X = Y = Z = W = 0.0f
+</code></pre>
+<h3 id="vector4-xyzw"><a class="header" href="#vector4-xyzw">Vector4 (X,Y,Z,W)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+<li><code>z</code>: Z value</li>
+<li><code>w</code>: W value</li>
+</ul>
+<pre><code class="language-cpp">Vector4(float x, float y, float z,  float w)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+</code></pre>
+<h3 id="vector4-single-value"><a class="header" href="#vector4-single-value">Vector4 (Single value)</a></h3>
+<p>Fill the vector with a single value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fillValue</code>: Fill value</li>
+</ul>
+<pre><code class="language-cpp">Vector4(float fillValue)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f);
+// X = Y = Z = W = 1.0f
+</code></pre>
+<h3 id="vector4-vector3"><a class="header" href="#vector4-vector3">Vector4 (Vector3)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 3D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector4(const Vector3&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec3 = Vector3(1.0f, 2.0f, 3.0f);
+Vector4 vec = Vector4(vec3);
+// X = 1.0f
+// Y = 2.0f
+// Z = 3.0f
+// W = 0.0f
+</code></pre>
+<h3 id="vector4-vector2"><a class="header" href="#vector4-vector2">Vector4 (Vector2)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector4(const Vector2&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec2 = Vector2(1.0f, 2.0f);
+Vector4 vec = Vector4(vec2);
+// X = 1.0f
+// Y = 2.0f
+// Z = 0.0f
+// W = 0.0f
+</code></pre>
+<h3 id="vector4-vector2int"><a class="header" href="#vector4-vector2int">Vector4 (Vector2Int)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D integer vector</li>
+</ul>
+<pre><code class="language-cpp">Vector4(const Vector2Int&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec2int = Vector2Int(1, 2);
+Vector4 vec = Vector4(vec2int);
+// X = 1.0f
+// Y = 2.0f
+// Z = 0.0f
+// W = 0.0f
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7846,9 +8467,9 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
 </code></pre>
-<h2 id="description-16"><a class="header" href="#description-16">Description</a></h2>
+<h2 id="description-21"><a class="header" href="#description-21">Description</a></h2>
 <p>Class to create sockets and to manage networking settings.</p>
-<h2 id="static-methods-8"><a class="header" href="#static-methods-8">Static methods</a></h2>
+<h2 id="static-methods-9"><a class="header" href="#static-methods-9">Static methods</a></h2>
 <hr />
 <h3 id="createsocket"><a class="header" href="#createsocket">CreateSocket</a></h3>
 <p>Create a socket.<br>
@@ -7870,7 +8491,7 @@ if(socket)
 }
 </code></pre>
 <hr />
-<h3 id="createsocket-1"><a class="header" href="#createsocket-1">CreateSocket</a></h3>
+<h3 id="showpspnetworksetupmenu"><a class="header" href="#showpspnetworksetupmenu">ShowPSPNetworkSetupMenu</a></h3>
 <p>Show the network setup menu for the PSP.<br>
 This function will only work on the PSP platform.</p>
 <p>To make networking working on PSP, the user has to manually connect to a wifi.<br>
@@ -7951,14 +8572,14 @@ For this, a menu of the PSP OS ask to the user to setup a network connection.</p
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
 </code></pre>
-<h2 id="description-17"><a class="header" href="#description-17">Description</a></h2>
+<h2 id="description-22"><a class="header" href="#description-22">Description</a></h2>
 <p>Class to send and received data to/from a server.<br>
 Created with the NetworkManager class.<br>
 The socket will be closed when the object is destroyed.</p>
-<h2 id="public-methods-6"><a class="header" href="#public-methods-6">Public methods</a></h2>
+<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
 <hr />
 <h3 id="senddata-string"><a class="header" href="#senddata-string">SendData (string)</a></h3>
-<p>Send data as a string to the server</p>
+<p>Send data as a string to the server.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>text</code>: Text to send</li>
@@ -7975,7 +8596,7 @@ if(socket)
 </code></pre>
 <hr />
 <h3 id="senddata-binary"><a class="header" href="#senddata-binary">SendData (binary)</a></h3>
-<p>Send binary data to the server</p>
+<p>Send binary data to the server.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>data</code>: Pointer to the data to send</li>
@@ -8001,7 +8622,7 @@ if(socket)
 </code></pre>
 <hr />
 <h3 id="close-1"><a class="header" href="#close-1">Close</a></h3>
-<p>Send data as a string to the server</p>
+<p>Send data as a string to the server.</p>
 <pre><code class="language-cpp">void Close()
 </code></pre>
 <p>Code sample:</p>
@@ -8015,7 +8636,7 @@ if(socket)
 </code></pre>
 <hr />
 <h3 id="getincommingdata"><a class="header" href="#getincommingdata">GetIncommingData</a></h3>
-<p>Return recieved data since the last GetIncommingData call (updated every frame)</p>
+<p>Return recieved data since the last GetIncommingData call (updated every frame).</p>
 <pre><code class="language-cpp">std::string GetIncommingData()
 </code></pre>
 <p>Code sample:</p>
@@ -8097,12 +8718,12 @@ if(socket)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/noise/noise.h&gt;
 </code></pre>
-<h2 id="description-18"><a class="header" href="#description-18">Description</a></h2>
-<p>Class to generate 1D, 2D, 3D and 4D Perlin noise</p>
-<h2 id="static-methods-9"><a class="header" href="#static-methods-9">Static methods</a></h2>
+<h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
+<p>Class to generate 1D, 2D, 3D and 4D Perlin noise.</p>
+<h2 id="static-methods-10"><a class="header" href="#static-methods-10">Static methods</a></h2>
 <hr />
 <h3 id="noise1d"><a class="header" href="#noise1d">Noise1D</a></h3>
-<p>Get 1D Perlin noise</p>
+<p>Get 1D Perlin noise.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>x</code>:  The x coordinate</li>
@@ -8114,7 +8735,7 @@ if(socket)
 </code></pre>
 <hr />
 <h3 id="noise2d"><a class="header" href="#noise2d">Noise2D</a></h3>
-<p>Get 2D Perlin noise</p>
+<p>Get 2D Perlin noise.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>x</code>:  The x coordinate</li>
@@ -8127,7 +8748,7 @@ if(socket)
 </code></pre>
 <hr />
 <h3 id="noise3d"><a class="header" href="#noise3d">Noise3D</a></h3>
-<p>Get 3D Perlin noise</p>
+<p>Get 3D Perlin noise.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>x</code>:  The x coordinate</li>
@@ -8141,7 +8762,7 @@ if(socket)
 </code></pre>
 <hr />
 <h3 id="noise4d"><a class="header" href="#noise4d">Noise4D</a></h3>
-<p>Get 4D Perlin noise</p>
+<p>Get 4D Perlin noise.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>x</code>:  The x coordinate</li>
@@ -8225,7 +8846,7 @@ if(socket)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/gameplay_utility.h&gt;
 </code></pre>
-<h2 id="description-19"><a class="header" href="#description-19">Description</a></h2>
+<h2 id="description-24"><a class="header" href="#description-24">Description</a></h2>
 <p>Class to manage Objects (GameObject and Components).<br>
 You can Instantiate, Check and Destroy Objects.</p>
 <h2 id="methods"><a class="header" href="#methods">Methods</a></h2>
@@ -8259,9 +8880,9 @@ if(IsValid(myGameObject))
 
 </code></pre>
 <hr />
-<h3 id="instantiate"><a class="header" href="#instantiate">Instantiate</a></h3>
-<p>Create a new GameObject from another
-(Not very recommended, can be buggy, use prefabs instead)</p>
+<h3 id="instantiate-gameobject"><a class="header" href="#instantiate-gameobject">Instantiate (GameObject)</a></h3>
+<p>Create a new GameObject from another.<br>
+(Not very recommended, can be buggy, use prefabs instead).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>gameObject</code>:  GameObject to duplicate</li>
@@ -8274,8 +8895,8 @@ if(IsValid(myGameObject))
 std::shared_ptr&lt;GameObject&gt; myGameObject2 = Instantiate(myGameObject);
 </code></pre>
 <hr />
-<h3 id="instantiate-1"><a class="header" href="#instantiate-1">Instantiate</a></h3>
-<p>Create a new GameObject from a prefab</p>
+<h3 id="instantiate-prefab"><a class="header" href="#instantiate-prefab">Instantiate (Prefab)</a></h3>
+<p>Create a new GameObject from a prefab.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>prefab</code>:  Prefab to instanciate</li>
@@ -8287,7 +8908,7 @@ std::shared_ptr&lt;GameObject&gt; myGameObject2 = Instantiate(myGameObject);
 </code></pre>
 <hr />
 <h3 id="destroy"><a class="header" href="#destroy">Destroy</a></h3>
-<p>Destroy a GameObject or component</p>
+<p>Destroy a GameObject or component.</p>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -8299,7 +8920,7 @@ Objects are fully destroy after the begin of the next frame.</p>
 </div>
 <p>Parameters:</p>
 <ul>
-<li><code>x</code>:  Object to destroy</li>
+<li><code>component</code>/<code>gameObject</code>: component or GameObject to destroy</li>
 </ul>
 <pre><code class="language-cpp">void Destroy(const std::shared_ptr&lt;Component&gt;&amp; component) 
 void Destroy(const std::shared_ptr&lt;GameObject&gt;&amp; gameObject);
@@ -8450,10 +9071,10 @@ Destroy(myGameObject);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/collider.h&gt;
 </code></pre>
-<h2 id="description-20"><a class="header" href="#description-20">Description</a></h2>
-<p>Parent class of collider components. (BoxCollider, SphereCollider...)</p>
+<h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
+<p>Parent class of collider components (BoxCollider, SphereCollider...).</p>
 <p>Function of Collider can be used on every colllider component.</p>
-<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
+<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
 <hr />
 <h3 id="setistrigger"><a class="header" href="#setistrigger">SetIsTrigger</a></h3>
 <p>Set if the collider is a trigger or not.<br>
@@ -8572,9 +9193,9 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/collision_event.h&gt;
 </code></pre>
-<h2 id="description-21"><a class="header" href="#description-21">Description</a></h2>
+<h2 id="description-26"><a class="header" href="#description-26">Description</a></h2>
 <p>This class stores informations of a collision between two colliders</p>
-<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
+<h2 id="variables-9"><a class="header" href="#variables-9">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>collider</td><td><code>Collider*</code></td><td>Collider A</td></tr>
@@ -8651,9 +9272,9 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
-<h2 id="description-22"><a class="header" href="#description-22">Description</a></h2>
+<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
 <p>Class to check collisions with a ray.</p>
-<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
+<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
 <hr />
 <h3 id="check"><a class="header" href="#check">Check</a></h3>
 <p>Check if a ray hits a collider.<br>
@@ -8665,7 +9286,11 @@ Return true if the raycast has hit a collider.</p>
 <li><code>maxDistance</code>: The max distance of the ray</li>
 <li><code>raycastHit</code>: The raycastHit struct that will be filled with the hit information</li>
 </ul>
-<pre><code class="language-cpp">bool Check(const Vector3&amp; startPosition, const Vector3&amp; direction, const float maxDistance, RaycastHit&amp; raycastHit)
+<pre><code class="language-cpp">bool Check(
+    const Vector3&amp; startPosition, 
+    const Vector3&amp; direction, 
+    const float maxDistance, 
+    RaycastHit&amp; raycastHit)
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">// Check under the player
@@ -8752,9 +9377,9 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
-<h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
+<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
 <p>This class stores informations of a racyast hit.</p>
-<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
+<h2 id="variables-10"><a class="header" href="#variables-10">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>hitGameObject</td><td><code>std::weak_ptr&lt;GameObject&gt;</code></td><td>Pointer of the GameObject hit by the ray</td></tr>
@@ -8833,7 +9458,7 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/reflection/reflection.h&gt;
 </code></pre>
-<h2 id="description-24"><a class="header" href="#description-24">Description</a></h2>
+<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
 <p>Class to inherit if you want to access child's variables to fill variables from json or save them to json.<br>
 It's used to see variables of a class in the <a href="script_api_reference/engine/reflection/../../../manual/editor_ui/inspector.html">Inspector</a>.</p>
 <p>GameObject, Transform and Component implement this class.</p>
@@ -8847,10 +9472,10 @@ It's used to see variables of a class in the <a href="script_api_reference/engin
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
 <p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
 <p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
+<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
 <hr />
 <h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
-<p>Get all child class variables references (Needs to be implemented)</p>
+<p>Get all child class variables references (Needs to be implemented).</p>
 <pre><code class="language-cpp">virtual ReflectiveData GetReflectiveData() = 0
 </code></pre>
 <p>Code sample:</p>
@@ -8876,7 +9501,7 @@ ReflectiveData MyComponent::GetReflectiveData()
 </code></pre>
 <hr />
 <h3 id="onreflectionupdated"><a class="header" href="#onreflectionupdated">OnReflectionUpdated</a></h3>
-<p>Called when one or more variables have been updated by the inspector or by the scene manager</p>
+<p>Called when one or more variables have been updated by the inspector or by the scene manager.</p>
 <pre><code class="language-cpp">virtual void OnReflectionUpdated()
 </code></pre>
 <p>Code sample:</p>
@@ -8974,12 +9599,12 @@ void MyComponent::OnReflectionUpdated()
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/scene_manager/scene_manager.h&gt;
 </code></pre>
-<h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
-<p>Class to load scenes</p>
-<h2 id="static-methods-10"><a class="header" href="#static-methods-10">Static methods</a></h2>
+<h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
+<p>Class to load scenes.</p>
+<h2 id="static-methods-11"><a class="header" href="#static-methods-11">Static methods</a></h2>
 <hr />
 <h3 id="loadscene"><a class="header" href="#loadscene">LoadScene</a></h3>
-<p>Load a scene</p>
+<p>Load a scene.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>scene</code>: Scene to load</li>
@@ -8993,7 +9618,7 @@ SceneManager::LoadScene(sceneToLoad);
 </code></pre>
 <hr />
 <h3 id="reloadscene"><a class="header" href="#reloadscene">ReloadScene</a></h3>
-<p>Reload the current scene</p>
+<p>Reload the current scene.</p>
 <pre><code class="language-cpp">void ReloadScene()
 </code></pre>
 <p>Code sample:</p>
@@ -9001,7 +9626,7 @@ SceneManager::LoadScene(sceneToLoad);
 </code></pre>
 <hr />
 <h3 id="getopenedscene"><a class="header" href="#getopenedscene">GetOpenedScene</a></h3>
-<p>Get opened scene</p>
+<p>Get opened scene.</p>
 <pre><code class="language-cpp">const std::shared_ptr&lt;Scene&gt;&amp; GetOpenedScene()
 </code></pre>
 <p>Code sample:</p>
@@ -9078,12 +9703,12 @@ SceneManager::LoadScene(sceneToLoad);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/ui/screen.h&gt;
 </code></pre>
-<h2 id="description-26"><a class="header" href="#description-26">Description</a></h2>
-<p>Class to get informations and to interact with the screen</p>
-<h2 id="static-methods-11"><a class="header" href="#static-methods-11">Static methods</a></h2>
+<h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
+<p>Class to get informations and to interact with the screen.</p>
+<h2 id="static-methods-12"><a class="header" href="#static-methods-12">Static methods</a></h2>
 <hr />
 <h3 id="getwidth"><a class="header" href="#getwidth">GetWidth</a></h3>
-<p>Get the width of the screen in pixels</p>
+<p>Get the width of the screen in pixels.</p>
 <pre><code class="language-cpp">int GetWidth()
 </code></pre>
 <p>Code sample:</p>
@@ -9091,7 +9716,7 @@ SceneManager::LoadScene(sceneToLoad);
 </code></pre>
 <hr />
 <h3 id="getheight"><a class="header" href="#getheight">GetHeight</a></h3>
-<p>Get the height of the screen in pixels</p>
+<p>Get the height of the screen in pixels.</p>
 <pre><code class="language-cpp">int GetHeight()
 </code></pre>
 <p>Code sample:</p>
@@ -9099,9 +9724,9 @@ SceneManager::LoadScene(sceneToLoad);
 </code></pre>
 <hr />
 <h3 id="setfullscreen"><a class="header" href="#setfullscreen">SetFullScreen</a></h3>
-<p>Set if the window should be in fullscreen mode
-Only for Windows and Linux, no effect on other platforms
-Does not affect the editor window</p>
+<p>Set if the window should be in fullscreen mode.<br>
+Only for Windows and Linux, no effect on other platforms.<br>
+Does not affect the editor window.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>useFullScreenMode</code>: True to enable fullscreen, false to disable</li>
@@ -9113,7 +9738,7 @@ Does not affect the editor window</p>
 </code></pre>
 <hr />
 <h3 id="setvsync"><a class="header" href="#setvsync">SetVSync</a></h3>
-<p>Set if the window should use VSync (May cause graphical glitch on PSP)</p>
+<p>Set if the window should use VSync (May cause graphical glitch on PSP).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>useVSync</code>: True to enable VSync, false to disable</li>
@@ -9125,7 +9750,7 @@ Does not affect the editor window</p>
 </code></pre>
 <hr />
 <h3 id="isvsyncenabled"><a class="header" href="#isvsyncenabled">IsVSyncEnabled</a></h3>
-<p>Get if VSync is enabled</p>
+<p>Get if VSync is enabled.</p>
 <pre><code class="language-cpp">bool IsVSyncEnabled()
 </code></pre>
 <p>Code sample:</p>
@@ -9204,10 +9829,10 @@ bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/time/time.h&gt;
 </code></pre>
-<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
+<h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
 <p>Class to get time informations (Delta time, elapsed time).</p>
 <p>Values are updated every frame.</p>
-<h2 id="static-methods-12"><a class="header" href="#static-methods-12">Static methods</a></h2>
+<h2 id="static-methods-13"><a class="header" href="#static-methods-13">Static methods</a></h2>
 <hr />
 <h3 id="gettime"><a class="header" href="#gettime">GetTime</a></h3>
 <p>Get total scaled elapsed time.<br>
@@ -9420,7 +10045,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
+<h2 id="description-33"><a class="header" href="#description-33">Description</a></h2>
 <p>Enum to horizontally align text with text rendering components.</p>
 <h2 id="values-5"><a class="header" href="#values-5">Values</a></h2>
 <hr />
@@ -9500,7 +10125,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
+<h2 id="description-34"><a class="header" href="#description-34">Description</a></h2>
 <p>Enum to vertically align text with text rendering components.</p>
 <h2 id="values-6"><a class="header" href="#values-6">Values</a></h2>
 <hr />
@@ -9648,10 +10273,10 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/endian_utils.h&gt;
 </code></pre>
-<h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
+<h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
 <p>Utility class for endian conversion.<br>
 Usefull when using binary data on different platforms.</p>
-<h2 id="static-methods-13"><a class="header" href="#static-methods-13">Static methods</a></h2>
+<h2 id="static-methods-14"><a class="header" href="#static-methods-14">Static methods</a></h2>
 <hr />
 <h3 id="isbigendian"><a class="header" href="#isbigendian">IsBigEndian</a></h3>
 <p>Checks if the system is big-endian.

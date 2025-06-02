@@ -14,7 +14,7 @@ Can be used for Gizmo.
 
 ---
 ### GetIcons
-Get the list of all editor icons
+Get the list of all editor icons.
 ```cpp
 const std::vector<std::shared_ptr<Texture>>& GetIcons()
 ```
@@ -27,12 +27,12 @@ const std::shared_ptr<Texture>& cameraIcon = icons[IconName::Icon_Camera];
 
 ---
 ### GetIcon
-Get an icon by its name enum
+Get an icon by its name enum.
 
 Parameters:
-- `text`: Text to send
+- `iconName`: Icon name Enum
 ```cpp
-const std::vector<std::shared_ptr<Texture>>& GetIcons(IconName iconName)
+const std::shared_ptr<Texture>& GetIcon(IconName iconName)
 ```
 Code sample:
 ```cpp

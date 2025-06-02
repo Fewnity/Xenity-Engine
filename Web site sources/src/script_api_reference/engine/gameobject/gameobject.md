@@ -156,7 +156,8 @@ player1->SetParent(parent);
 
 ---
 ### AddComponent
-Add a component.
+Add a component.<br>
+`T` is a component type
 ```cpp
 template <typename T>
 AddComponent()
@@ -170,7 +171,8 @@ std::shared_ptr<AudioSource> audioSourceComp = gameObject->AddComponent<AudioSou
 
 ---
 ### GetComponent
-Get a component
+Get a component.<br>
+`T` is a component type
 ```cpp
 template <typename T>
 GetComponent()
@@ -184,7 +186,8 @@ std::shared_ptr<Light> comp = gameObject->GetComponent<Light>();
 
 ---
 ### GetComponents
-Get components
+Get components.<br>
+`T` is a component type
 ```cpp
 template <typename T>
 GetComponents()
@@ -268,6 +271,82 @@ std::shared_ptr<GameObject> child0 = CreateGameObject();
 std::shared_ptr<GameObject> child1 = CreateGameObject();
 
 gameObject->AddChild(child0);
-gameObject->GetChildrenCount(false);
-bool isActive = gameObject->IsActive(); // = false
+gameObject->AddChild(child1);
+uint32_t count = gameObject->GetChildrenCount(); // = 2
+```
+
+---
+### GetComponentCount
+Get component count.
+```cpp
+uint32_t GetComponentCount() const
+```
+Code sample:
+```cpp
+std::shared_ptr<GameObject> gameObject = CreateGameObject();
+gameObject->AddComponent<Light>();
+gameObject->AddComponent<Light>();
+gameObject->AddComponent<Light>();
+
+uint32_t count = gameObject->GetComponentCount(); // = 3
+```
+
+---
+### GetTransform
+Get transform.
+```cpp
+const std::shared_ptr<Transform>& GetTransform() const
+```
+Code sample:
+```cpp
+std::shared_ptr<GameObject> gameObject = CreateGameObject();
+const std::shared_ptr<Transform>& transform = gameObject->GetTransform();
+```
+
+---
+### GetParent
+Get parent GameObject.
+```cpp
+const std::weak_ptr<GameObject>& GetParent() const
+```
+Code sample:
+```cpp
+std::shared_ptr<GameObject> gameObject = CreateGameObject();
+const std::weak_ptr<GameObject>& parent = gameObject->GetParent();
+
+if(!parent.expired())
+{
+    Debug::Print("The gameobject does not have a parent");
+}
+else
+{
+    Debug::Print("The gameobject has a parent");
+}
+```
+
+---
+### GetChild
+Get a child by index.
+
+Parameters:
+- `index`: Child index
+```cpp
+std::weak_ptr<GameObject> GetChild(int index)
+```
+Code sample:
+```cpp
+std::shared_ptr<GameObject> gameObject = CreateGameObject();
+std::shared_ptr<GameObject> child0 = CreateGameObject();
+std::shared_ptr<GameObject> child1 = CreateGameObject();
+
+gameObject->AddChild(child0);
+gameObject->AddChild(child1);
+
+std::weak_ptr<GameObject> weakChild1 = gameObject->GetChild(1);
+
+std::shared_ptr<GameObject> sharedChild1 = weakChild1.lock();
+if(sharedChild1)
+{
+    // Use child...
+}
 ```

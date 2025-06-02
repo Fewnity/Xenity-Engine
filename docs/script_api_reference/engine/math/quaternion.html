@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Vector2Int - Xenity Engine</title>
+        <title>Quaternion - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../../../../favicon.svg">
-        <link rel="shortcut icon" href="../../../../favicon.png">
-        <link rel="stylesheet" href="../../../../css/variables.css">
-        <link rel="stylesheet" href="../../../../css/general.css">
-        <link rel="stylesheet" href="../../../../css/chrome.css">
-        <link rel="stylesheet" href="../../../../css/print.css" media="print">
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../../../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../../../../fonts/fonts.css">
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../../../../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../../../../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../../../../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="../../../../custom.css">
+        <link rel="stylesheet" href="../../../custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../../../../";
+            const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../../../toc.js"></script>
+        <script src="../../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -103,7 +103,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../../../../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -138,7 +138,7 @@
                     <h1 class="menu-title">Xenity Engine</h1>
 
                     <div class="right-buttons">
-                        <a href="../../../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -234,17 +234,234 @@
 }
 
 </style>
-<h1 id="vector2int"><a class="header" href="#vector2int">Vector2Int</a></h1>
+<h1 id="quaternion"><a class="header" href="#quaternion">Quaternion</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/math/quaternion.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class representing rotations in 3D space</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>x</td><td><code>float</code></td><td>The x component of the quaternion</td></tr>
+<tr><td>y</td><td><code>float</code></td><td>The y component of the quaternion</td></tr>
+<tr><td>z</td><td><code>float</code></td><td>The z component of the quaternion</td></tr>
+<tr><td>w</td><td><code>float</code></td><td>The w component of the quaternion</td></tr>
+</tbody></table>
+</div>
+<h2 id="constructors"><a class="header" href="#constructors">Constructors</a></h2>
+<h3 id="quaternion-1"><a class="header" href="#quaternion-1">Quaternion</a></h3>
+<pre><code class="language-cpp">Quaternion()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion();
+// Same as q = Quaternion::Identity();
+</code></pre>
+<h3 id="quaternion-xyzw"><a class="header" href="#quaternion-xyzw">Quaternion (X,Y,Z,W)</a></h3>
+<p>Normalized.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+<li><code>z</code>: Z value</li>
+<li><code>w</code>: W value</li>
+</ul>
+<pre><code class="language-cpp">Quaternion(float x, float y, float z, float w)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+</code></pre>
+<h3 id="quaternion-vector4"><a class="header" href="#quaternion-vector4">Quaternion (Vector4)</a></h3>
+<p>Normalized.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>vector</code>: X, Y, Z, W values</li>
+</ul>
+<pre><code class="language-cpp">Quaternion(const Vector4&amp; vector)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion(Vector4(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f));
+</code></pre>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="identity"><a class="header" href="#identity">Identity</a></h3>
+<p>Returns a quaternion representing no rotation (identity quaternion).</p>
+<pre><code class="language-cpp">Quaternion Identity()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion identity = Quaternion::Identity();
+</code></pre>
+<hr />
+<h3 id="euler"><a class="header" href="#euler">Euler</a></h3>
+<p>Create a quaternion from Euler angles (in degrees).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X angle in degrees</li>
+<li><code>y</code>: Y angle in degrees</li>
+<li><code>z</code>: Z angle in degrees</li>
+</ul>
+<pre><code class="language-cpp">Quaternion Euler(const float x, const float y, const float z)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion::Euler(10, 20, 30);
+</code></pre>
+<hr />
+<h3 id="angleaxis"><a class="header" href="#angleaxis">AngleAxis</a></h3>
+<p>Make a quaternion from an angle and axis.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>angle</code>: angle in degrees</li>
+<li><code>axis</code>: Axis of the rotation</li>
+</ul>
+<pre><code class="language-cpp">Quaternion AngleAxis(float angle, const Vector3&amp; axis)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion::AngleAxis(10, Vector3(1, 0, 0));
+</code></pre>
+<hr />
+<h3 id="inverse"><a class="header" href="#inverse">Inverse</a></h3>
+<p>Get the inverse of the quaternion.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>q</code>: Quaternion to inverse</li>
+</ul>
+<pre><code class="language-cpp">Quaternion Inverse(const Quaternion&amp; q)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion q = Quaternion::Euler(10, 20, 30);
+Quaternion inverseQ = Quaternion::Inverse(q);
+</code></pre>
+<hr />
+<h3 id="lerp"><a class="header" href="#lerp">Lerp</a></h3>
+<p>Linearly interpolates between quaternions.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First quaternion</li>
+<li><code>b</code>: Second quaternion</li>
+<li><code>t</code>: Interpolation factor (0.0f to 1.0f)</li>
+</ul>
+<pre><code class="language-cpp">Quaternion Lerp(const Quaternion&amp; a, const Quaternion&amp; b, const float t)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Euler(10, 20, 30);
+Quaternion b = Quaternion::Euler(90, 120, 10);
+Quaternion mix = Quaternion::Lerp(a, b, 0.5f); // Mix of A and B
+Quaternion lerp0 = Quaternion::Lerp(a, b, 0.0f); // Equals A
+Quaternion lerp1 = Quaternion::Lerp(a, b, 1.0f); // Equals B
+</code></pre>
+<hr />
+<h3 id="dot"><a class="header" href="#dot">Dot</a></h3>
+<p>Get the dot product of two quaternions.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>q1</code>: First quaternion</li>
+<li><code>q2</code>: Second quaternion</li>
+</ul>
+<pre><code class="language-cpp">float Dot(const Quaternion&amp; q1, const Quaternion&amp; q2)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Euler(10, 20, 30);
+Quaternion b = Quaternion::Euler(90, 120, 10);
+Quaternion result = Quaternion::Dot(a, b);
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="toeuler"><a class="header" href="#toeuler">ToEuler</a></h3>
+<p>Converts the quaternion to Euler angles (in degrees).</p>
+<pre><code class="language-cpp">Vector3 ToEuler() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Euler(10, 20, 30);
+Vector3 euler = a.ToEuler();
+</code></pre>
+<hr />
+<h3 id="set"><a class="header" href="#set">Set</a></h3>
+<p>Set the quaternion values (Normalizes the quaternion).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+<li><code>z</code>: Z value</li>
+<li><code>w</code>: W value</li>
+</ul>
+<pre><code class="language-cpp">void Set(const float x, const float y, const float z, const float w)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f * 2, 0.3493627f * 2, -0.4916947f * 2, -0.4068529f * 2);
+// a = (0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f)
+</code></pre>
+<hr />
+<h3 id="normalize"><a class="header" href="#normalize">Normalize</a></h3>
+<p>Normalize the quaternion.</p>
+<pre><code class="language-cpp">void Normalize()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+a.Normalize();
+</code></pre>
+<hr />
+<h3 id="normalized"><a class="header" href="#normalized">Normalized</a></h3>
+<p>Returns a normalized copy of the quaternion.</p>
+<pre><code class="language-cpp">Quaternion Normalized() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Quaternion normalizedA = a.Normalized();
+</code></pre>
+<hr />
+<h3 id="getforward"><a class="header" href="#getforward">GetForward</a></h3>
+<p>Get the forward direction vector of the quaternion.</p>
+<pre><code class="language-cpp">Vector3 GetForward() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Vector3 forward = a.GetForward();
+</code></pre>
+<hr />
+<h3 id="getup"><a class="header" href="#getup">GetUp</a></h3>
+<p>Get the up direction vector of the quaternion.</p>
+<pre><code class="language-cpp">Vector3 GetUp() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Vector3 up = a.GetUp();
+</code></pre>
+<hr />
+<h3 id="getright"><a class="header" href="#getright">GetRight</a></h3>
+<p>Get the right direction vector of the quaternion.</p>
+<pre><code class="language-cpp">Vector3 GetRight() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Vector3 right = a.GetRight();
+</code></pre>
+<hr />
+<h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
+<p>Return a string representation of the quaternion like "{x:0.0 y:0.0 z:0.0 w:1.0}"</p>
+<pre><code class="language-cpp"> std::string ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Quaternion a = Quaternion::Identity();
+a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
+Debug::Print(a.ToString());
+// Prints "{x:0.6860413 y:0.3493627 z:0.4916947 w:0.4068529}"
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../../script_api_reference/engine/math/vector2/vector2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/math/math.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../../script_api_reference/engine/math/vector3/vector3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/math/vector2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +471,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../../script_api_reference/engine/math/vector2/vector2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/math/math.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../../script_api_reference/engine/math/vector3/vector3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/math/vector2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -273,13 +490,13 @@
         </script>
 
 
-        <script src="../../../../elasticlunr.min.js"></script>
-        <script src="../../../../mark.min.js"></script>
-        <script src="../../../../searcher.js"></script>
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
 
-        <script src="../../../../clipboard.min.js"></script>
-        <script src="../../../../highlight.js"></script>
-        <script src="../../../../book.js"></script>
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
 
         <!-- Custom JS scripts -->
 

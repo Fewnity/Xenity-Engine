@@ -22,7 +22,11 @@ Parameters:
 - `maxDistance`: The max distance of the ray
 - `raycastHit`: The raycastHit struct that will be filled with the hit information
 ```cpp
-bool Check(const Vector3& startPosition, const Vector3& direction, const float maxDistance, RaycastHit& raycastHit)
+bool Check(
+    const Vector3& startPosition, 
+    const Vector3& direction, 
+    const float maxDistance, 
+    RaycastHit& raycastHit)
 ```
 Code sample:
 ```cpp

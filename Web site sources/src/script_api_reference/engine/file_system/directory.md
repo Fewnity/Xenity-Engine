@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Class to manage a directory (Get all files of a folder)
+Class to manage a directory (Get all files of a folder).
 
 ## Variables
 

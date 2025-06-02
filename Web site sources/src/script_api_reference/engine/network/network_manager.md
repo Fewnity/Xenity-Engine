@@ -34,7 +34,7 @@ if(socket)
 ```
 
 ---
-### CreateSocket
+### ShowPSPNetworkSetupMenu
 Show the network setup menu for the PSP.<br>
 This function will only work on the PSP platform.
 

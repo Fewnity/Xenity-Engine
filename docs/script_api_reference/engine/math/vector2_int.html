@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Vector3 - Xenity Engine</title>
+        <title>Vector2Int - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../../../../favicon.svg">
-        <link rel="shortcut icon" href="../../../../favicon.png">
-        <link rel="stylesheet" href="../../../../css/variables.css">
-        <link rel="stylesheet" href="../../../../css/general.css">
-        <link rel="stylesheet" href="../../../../css/chrome.css">
-        <link rel="stylesheet" href="../../../../css/print.css" media="print">
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../../../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../../../../fonts/fonts.css">
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../../../../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../../../../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../../../../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="../../../../custom.css">
+        <link rel="stylesheet" href="../../../custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../../../../";
+            const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../../../toc.js"></script>
+        <script src="../../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -103,7 +103,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../../../../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -138,7 +138,7 @@
                     <h1 class="menu-title">Xenity Engine</h1>
 
                     <div class="right-buttons">
-                        <a href="../../../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -234,17 +234,87 @@
 }
 
 </style>
-<h1 id="vector3"><a class="header" href="#vector3">Vector3</a></h1>
+<h1 id="vector2int"><a class="header" href="#vector2int">Vector2Int</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/math/vector2_int.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Contains integer 2D coordinates.</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>x</td><td><code>int</code></td><td>The x component of the vector</td></tr>
+<tr><td>y</td><td><code>int</code></td><td>The y component of the vector</td></tr>
+</tbody></table>
+</div>
+<h2 id="constructors"><a class="header" href="#constructors">Constructors</a></h2>
+<h3 id="vector2int-1"><a class="header" href="#vector2int-1">Vector2Int</a></h3>
+<p>Empty vector.</p>
+<pre><code class="language-cpp">Vector2Int()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int();
+// X = Y = 0
+</code></pre>
+<h3 id="vector2int-xy"><a class="header" href="#vector2int-xy">Vector2Int (X,Y)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+</ul>
+<pre><code class="language-cpp">Vector2Int(int x, int y)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
+</code></pre>
+<h3 id="vector2int-single-value"><a class="header" href="#vector2int-single-value">Vector2Int (Single value)</a></h3>
+<p>Fill the vector with a single value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fillValue</code>: Fill value</li>
+</ul>
+<pre><code class="language-cpp">Vector2Int(int fillValue)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1);
+// X = Y = 1
+</code></pre>
+<h3 id="vector2int-vector3"><a class="header" href="#vector2int-vector3">Vector2Int (Vector3)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 3D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector2Int(const Vector3&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec3 = Vector3(1.0f, 2.0f, 3.0f);
+Vector2Int vec = Vector2Int(vec3);
+// X = 1
+// Y = 2
+</code></pre>
+<h3 id="vector2int-vector2"><a class="header" href="#vector2int-vector2">Vector2Int (Vector2)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector2Int(const Vector2&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec2 = Vector2(1.0f, 2.0f);
+Vector2Int vec = Vector2Int(vec2);
+// X = 1
+// Y = 2
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../../script_api_reference/engine/math/vector2_int/vector2_int.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/math/vector2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../../script_api_reference/engine/math/vector4/vector4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/math/vector3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +324,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../../script_api_reference/engine/math/vector2_int/vector2_int.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/math/vector2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../../script_api_reference/engine/math/vector4/vector4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/math/vector3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -273,13 +343,13 @@
         </script>
 
 
-        <script src="../../../../elasticlunr.min.js"></script>
-        <script src="../../../../mark.min.js"></script>
-        <script src="../../../../searcher.js"></script>
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
 
-        <script src="../../../../clipboard.min.js"></script>
-        <script src="../../../../highlight.js"></script>
-        <script src="../../../../book.js"></script>
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
 
         <!-- Custom JS scripts -->
 

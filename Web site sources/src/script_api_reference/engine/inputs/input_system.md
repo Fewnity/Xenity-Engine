@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse)
+Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse).
 
 ## Macros
 
@@ -34,7 +34,7 @@ mouseWheel | `float` | Speed of the mouse wheel
 
 ---
 ### GetKeyDown
-Return true if the key has just been pressed
+Return true if the key has just been pressed.
 
 Parameters:
 - `keyCode`: Key code to check
@@ -57,7 +57,7 @@ if (InputSystem::GetKeyDown(KeyCode::CIRCLE), PLAYER_1)
 
 ---
 ### GetKey
-Return true if the key is held
+Return true if the key is held.
 
 Parameters:
 - `keyCode`: Key code to check
@@ -80,7 +80,7 @@ if (InputSystem::GetKey(KeyCode::CIRCLE), PLAYER_1)
 
 ---
 ### GetKeyUp
-Return true if the key has just been released
+Return true if the key has just been released.
 
 Parameters:
 - `keyCode`: Key code to check
@@ -103,7 +103,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 
 ---
 ### GetLeftJoystick
-Get left joystick value, values between -1.0f and 1.0f
+Get left joystick value, values between -1.0f and 1.0f.
 
 Parameters:
 - `controllerIndex`: Controller index (0-7)
@@ -117,7 +117,7 @@ Vector2 left = InputSystem::GetLeftJoystick(PLAYER_1);
 
 ---
 ### GetRightJoystick
-Get right joystick value, values between -1.0f and 1.0f
+Get right joystick value, values between -1.0f and 1.0f.
 
 Parameters:
 - `controllerIndex`: Controller index (0-7)
@@ -131,7 +131,7 @@ Vector2 right = InputSystem::GetRightJoystick(PLAYER_1);
 
 ---
 ### GetTouchScreenCount
-Get how many touch screens the device has
+Get how many touch screens the device has.
 ```cpp
 int GetTouchScreenCount()
 ```
@@ -142,7 +142,7 @@ int touchScreenCount = InputSystem::GetTouchScreenCount(); // = 2 on PsVita
 
 ---
 ### GetTouchCount
-Get how many touch inputs the screen has
+Get how many touch inputs the screen has.
 
 Parameters:
 - `screenIndex`: Screen index
@@ -156,7 +156,7 @@ int touchCount = InputSystem::GetTouchCount(0);
 
 ---
 ### GetTouch
-Get touch data
+Get touch data.
 
 Parameters:
 - `touchIndex`: Touch index
@@ -176,7 +176,7 @@ if (touchCount >= 1)
 
 ---
 ### HideMouse
-Hide mouse
+Hide mouse.
 ```cpp
 void HideMouse()
 ```
@@ -187,7 +187,7 @@ InputSystem::HideMouse();
 
 ---
 ### ShowMouse
-Show mouse
+Show mouse.
 ```cpp
 void ShowMouse()
 ```

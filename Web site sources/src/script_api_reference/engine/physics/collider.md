@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Parent class of collider components. (BoxCollider, SphereCollider...)
+Parent class of collider components (BoxCollider, SphereCollider...).
 
 Function of Collider can be used on every colllider component.
 

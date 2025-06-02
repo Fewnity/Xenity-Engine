@@ -243,7 +243,7 @@
 <h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
 <hr />
 <h3 id="createfromrgb"><a class="header" href="#createfromrgb">CreateFromRGB</a></h3>
-<p>Create a color from 3 uint8_t (alpha = 255)</p>
+<p>Create a color from 3 uint8_t (alpha = 255).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0;255]</li>
@@ -257,7 +257,7 @@
 </code></pre>
 <hr />
 <h3 id="createfromrgba"><a class="header" href="#createfromrgba">CreateFromRGBA</a></h3>
-<p>Create a color from 4 uint8_t</p>
+<p>Create a color from 4 uint8_t.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0;255]</li>
@@ -272,7 +272,7 @@
 </code></pre>
 <hr />
 <h3 id="createfromrgbfloat"><a class="header" href="#createfromrgbfloat">CreateFromRGBFloat</a></h3>
-<p>Create a color from 3 floats (alpha = 1)</p>
+<p>Create a color from 3 floats (alpha = 1).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0.0f;1.0f]</li>
@@ -285,8 +285,8 @@
 <pre><code class="language-cpp">Color red = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f);
 </code></pre>
 <hr />
-<h3 id="createfromrgbfloat-1"><a class="header" href="#createfromrgbfloat-1">CreateFromRGBFloat</a></h3>
-<p>Create a color from 4 floats</p>
+<h3 id="createfromrgbafloat"><a class="header" href="#createfromrgbafloat">CreateFromRGBAFloat</a></h3>
+<p>Create a color from 4 floats.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0.0f;1.0f]</li>
@@ -294,15 +294,15 @@
 <li><code>b</code>: Blue level [0.0f;1.0f]</li>
 <li><code>a</code>: Alpha level [0.0f;1.0f]</li>
 </ul>
-<pre><code class="language-cpp">Color CreateFromRGBFloat(float r, float g, float b, float a)
+<pre><code class="language-cpp">Color CreateFromRGBAFloat(float r, float g, float b, float a)
 </code></pre>
 <p>Code sample:</p>
-<pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f, 0.5f);
+<pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBAFloat(1.0f, 0.0f, 0.0f, 0.5f);
 </code></pre>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
 <h3 id="setfromrgba"><a class="header" href="#setfromrgba">SetFromRGBA</a></h3>
-<p>Set color from 4 uint8_t</p>
+<p>Set color from 4 uint8_t.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0;255]</li>
@@ -319,7 +319,7 @@ myColor.SetFromRGBA(255, 255, 255, 255);
 </code></pre>
 <hr />
 <h3 id="setfromrgbafloat"><a class="header" href="#setfromrgbafloat">SetFromRGBAFloat</a></h3>
-<p>Set color from 4 float</p>
+<p>Set color from 4 float.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>r</code>: Red level [0.0f;1.0f]</li>
@@ -336,7 +336,7 @@ myColor.SetFromRGBAFloat(1.0f, 1.0f, 1.0f, 1.0f);
 </code></pre>
 <hr />
 <h3 id="getrgba"><a class="header" href="#getrgba">GetRGBA</a></h3>
-<p>Get RGBA</p>
+<p>Get RGBA.</p>
 <pre><code class="language-cpp">const RGBA&amp; GetRGBA() const
 </code></pre>
 <p>Code sample:</p>
@@ -346,7 +346,7 @@ const RGBA&amp; rgbaRef = red.GetRGBA(); // Avoid a copy
 </code></pre>
 <hr />
 <h3 id="getunsignedintrgba"><a class="header" href="#getunsignedintrgba">GetUnsignedIntRGBA</a></h3>
-<p>Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA)</p>
+<p>Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA).</p>
 <pre><code class="language-cpp">unsigned int GetUnsignedIntRGBA() const
 </code></pre>
 <p>Code sample:</p>
@@ -354,8 +354,8 @@ const RGBA&amp; rgbaRef = red.GetRGBA(); // Avoid a copy
 unsigned int rgba = myColor.GetUnsignedIntRGBA(); // 0xff994c19
 </code></pre>
 <hr />
-<h3 id="getunsignedintrgba-1"><a class="header" href="#getunsignedintrgba-1">GetUnsignedIntRGBA</a></h3>
-<p>Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR)</p>
+<h3 id="getunsignedintabgr"><a class="header" href="#getunsignedintabgr">GetUnsignedIntABGR</a></h3>
+<p>Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR).</p>
 <pre><code class="language-cpp">unsigned int GetUnsignedIntABGR() const
 </code></pre>
 <p>Code sample:</p>
@@ -364,7 +364,7 @@ unsigned int abgr = myColor.GetUnsignedIntABGR(); // 0x194c99ff
 </code></pre>
 <hr />
 <h3 id="getunsignedintargb"><a class="header" href="#getunsignedintargb">GetUnsignedIntARGB</a></h3>
-<p>Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB)</p>
+<p>Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB).</p>
 <pre><code class="language-cpp">unsigned int GetUnsignedIntARGB() const
 </code></pre>
 <p>Code sample:</p>
@@ -373,7 +373,7 @@ unsigned int argb = myColor.GetUnsignedIntARGB(); // 0x19ff994c
 </code></pre>
 <hr />
 <h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
-<p>Return a string representation of the color</p>
+<p>Return a string representation of the color.</p>
 <pre><code class="language-cpp">std::string ToString() const
 </code></pre>
 <p>Code sample:</p>

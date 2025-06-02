@@ -9,7 +9,7 @@ Add this in your code:
 
 ---
 ### OpenURL
-Opens the link in a web browser (Only for Windows)
+Opens the link in a web browser (Only for Windows).
 ```cpp
 void OpenURL(const std::string& url)
 ```
@@ -20,7 +20,7 @@ Application::OpenURL("https://google.com");
 
 ---
 ### Quit
-Quits the application
+Quits the application.
 ```cpp
 void Quit()
 ```
@@ -31,7 +31,7 @@ Application::Quit();
 
 ---
 ### GetPlatform
-Returns the current platform the application is running on
+Returns the current platform the application is running on.
 ```cpp
 Platform GetPlatform()
 ```
@@ -45,7 +45,7 @@ if(Application::GetPlatform() == Platform::P_PSP)
 
 ---
 ### GetXenityVersion
-Returns the current version of Xenity Engine
+Returns the current version of Xenity Engine.
 ```cpp
 std::string GetXenityVersion()
 ```
@@ -63,7 +63,7 @@ else
 
 ---
 ### GetGameName
-Returns the name of the game
+Returns the name of the game.
 ```cpp
 std::string GetGameName()
 ```
@@ -74,7 +74,7 @@ Debug::Print("Game name: " + Application::GetGameName());
 
 ---
 ### GetCompanyName
-Returns the name of the company
+Returns the name of the company.
 ```cpp
 std::string GetCompanyName()
 ```
@@ -85,7 +85,7 @@ Debug::Print("Company name: " + Application::GetCompanyName());
 
 ---
 ### IsInEditor
-Returns if the application is running in the editor
+Returns if the application is running in the editor.
 ```cpp
 bool IsInEditor()
 ```
@@ -110,7 +110,7 @@ else
 
 ---
 ### GetGameDataFolder
-Return the game folder (folder where you can write data)
+Return the game folder (folder where you can write data).
 ```cpp
 bool GetGameDataFolder()
 ```
@@ -122,8 +122,8 @@ bool isOpened = myFile->Open(FileMode::WriteCreateFile);
 ```
 
 ---
-### GetGameDataFolder
-Returns the game folder (folder where the game is located, may be read-only)
+### GetGameFolder
+Returns the game folder (folder where the game is located, may be read-only).
 ```cpp
 bool GetGameFolder()
 ```

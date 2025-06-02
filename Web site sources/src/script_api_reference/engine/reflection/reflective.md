@@ -35,7 +35,7 @@ Macros have been added to simplify the usage of the reflection system.
 
 ---
 ### GetReflectiveData
-Get all child class variables references (Needs to be implemented)
+Get all child class variables references (Needs to be implemented).
 ```cpp
 virtual ReflectiveData GetReflectiveData() = 0
 ```
@@ -64,7 +64,7 @@ ReflectiveData MyComponent::GetReflectiveData()
 
 ---
 ### OnReflectionUpdated
-Called when one or more variables have been updated by the inspector or by the scene manager
+Called when one or more variables have been updated by the inspector or by the scene manager.
 ```cpp
 virtual void OnReflectionUpdated()
 ```

@@ -244,7 +244,7 @@ Includes functions to create GameObjects.</p>
 <h2 id="global-methods"><a class="header" href="#global-methods">Global Methods</a></h2>
 <hr />
 <h3 id="creategameobject"><a class="header" href="#creategameobject">CreateGameObject</a></h3>
-<p>Create a GameObject with the default name</p>
+<p>Create a GameObject with the default name.</p>
 <pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; CreateGameObject()
 </code></pre>
 <p>Code sample:</p>
@@ -253,7 +253,7 @@ Debug::Print(myGameObject-&gt;GetName()); // Prints "GameObject"
 </code></pre>
 <hr />
 <h3 id="creategameobject-1"><a class="header" href="#creategameobject-1">CreateGameObject</a></h3>
-<p>Create a GameObject</p>
+<p>Create a GameObject.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>name</code>: Name of the GameObject</li>
@@ -266,7 +266,7 @@ Debug::Print(myGameObject-&gt;GetName()); // Prints "Player"
 </code></pre>
 <hr />
 <h3 id="findgameobjectbyname"><a class="header" href="#findgameobjectbyname">FindGameObjectByName</a></h3>
-<p>Find a GameObject with a name</p>
+<p>Find a GameObject with a name.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>name</code>: Name of the GameObject</li>
@@ -283,7 +283,7 @@ if(myGameObject == result)
 </code></pre>
 <hr />
 <h3 id="findgameobjectsbyname"><a class="header" href="#findgameobjectsbyname">FindGameObjectsByName</a></h3>
-<p>Find GameObjects with a name</p>
+<p>Find GameObjects with a name.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>name</code>: Name of the GameObject</li>
@@ -301,7 +301,7 @@ if(results.size() == 2)
 </code></pre>
 <hr />
 <h3 id="findgameobjectbyid"><a class="header" href="#findgameobjectbyid">FindGameObjectById</a></h3>
-<p>Find a GameObject with an id</p>
+<p>Find a GameObject with an id.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>id</code>: Unique id of the GameObject</li>
@@ -318,7 +318,7 @@ if(myGameObject == result)
 </code></pre>
 <hr />
 <h3 id="findcomponentbyid"><a class="header" href="#findcomponentbyid">FindComponentById</a></h3>
-<p>Find a component with an id</p>
+<p>Find a component with an id.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>id</code>: Unique id of the component</li>
@@ -338,7 +338,7 @@ if(myAudioSource == result)
 <h2 id="pubic-methods"><a class="header" href="#pubic-methods">Pubic Methods</a></h2>
 <hr />
 <h3 id="addchild"><a class="header" href="#addchild">AddChild</a></h3>
-<p>Add a child to the GameObject</p>
+<p>Add a child to the GameObject.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>gameObject</code>: Child to add</li>
@@ -352,7 +352,7 @@ myGameObject-&gt;AddChild(myChild);
 </code></pre>
 <hr />
 <h3 id="setparent"><a class="header" href="#setparent">SetParent</a></h3>
-<p>Set GameObject's parent</p>
+<p>Set GameObject's parent.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>gameObject</code>: New parent</li>
@@ -368,7 +368,8 @@ player1-&gt;SetParent(parent);
 </code></pre>
 <hr />
 <h3 id="addcomponent"><a class="header" href="#addcomponent">AddComponent</a></h3>
-<p>Add a component</p>
+<p>Add a component.<br>
+<code>T</code> is a component type</p>
 <pre><code class="language-cpp">template &lt;typename T&gt;
 AddComponent()
 </code></pre>
@@ -379,7 +380,8 @@ std::shared_ptr&lt;AudioSource&gt; audioSourceComp = gameObject-&gt;AddComponent
 </code></pre>
 <hr />
 <h3 id="getcomponent"><a class="header" href="#getcomponent">GetComponent</a></h3>
-<p>Get a component</p>
+<p>Get a component.<br>
+<code>T</code> is a component type</p>
 <pre><code class="language-cpp">template &lt;typename T&gt;
 GetComponent()
 </code></pre>
@@ -390,7 +392,8 @@ std::shared_ptr&lt;Light&gt; comp = gameObject-&gt;GetComponent&lt;Light&gt;();
 </code></pre>
 <hr />
 <h3 id="getcomponents"><a class="header" href="#getcomponents">GetComponents</a></h3>
-<p>Get components</p>
+<p>Get components.<br>
+<code>T</code> is a component type</p>
 <pre><code class="language-cpp">template &lt;typename T&gt;
 GetComponents()
 </code></pre>
@@ -402,7 +405,7 @@ std::vector&lt;std::shared_ptr&lt;Light&gt;&gt; lightsComp = gameObject-&gt;GetC
 </code></pre>
 <hr />
 <h3 id="isactive"><a class="header" href="#isactive">IsActive</a></h3>
-<p>Get if the GameObject is marked as active</p>
+<p>Get if the GameObject is marked as active.</p>
 <pre><code class="language-cpp">bool IsActive() const
 </code></pre>
 <p>Code sample:</p>
@@ -420,7 +423,7 @@ bool isActive = child-&gt;IsActive(); // = true
 </code></pre>
 <hr />
 <h3 id="islocalactive"><a class="header" href="#islocalactive">IsLocalActive</a></h3>
-<p>Get if the GameObject is active based on his parents active state</p>
+<p>Get if the GameObject is active based on his parents active state.</p>
 <pre><code class="language-cpp">bool IsLocalActive() const
 </code></pre>
 <p>Code sample:</p>
@@ -435,6 +438,99 @@ std::shared_ptr&lt;GameObject&gt; child = CreateGameObject();
 child-&gt;SetParent(child);
 gameObject-&gt;SetActive(false);
 bool isActive = child-&gt;IsLocalActive(); // = false
+</code></pre>
+<hr />
+<h3 id="setactive"><a class="header" href="#setactive">SetActive</a></h3>
+<p>Set GameObject as active or not.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>active</code>: Active value</li>
+</ul>
+<pre><code class="language-cpp">void SetActive(const bool active)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+gameObject-&gt;SetActive(false);
+bool isActive = gameObject-&gt;IsActive(); // = false
+</code></pre>
+<hr />
+<h3 id="getchildrencount"><a class="header" href="#getchildrencount">GetChildrenCount</a></h3>
+<p>Get children count.</p>
+<pre><code class="language-cpp">uint32_t GetChildrenCount() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child0 = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child1 = CreateGameObject();
+
+gameObject-&gt;AddChild(child0);
+gameObject-&gt;AddChild(child1);
+uint32_t count = gameObject-&gt;GetChildrenCount(); // = 2
+</code></pre>
+<hr />
+<h3 id="getcomponentcount"><a class="header" href="#getcomponentcount">GetComponentCount</a></h3>
+<p>Get component count.</p>
+<pre><code class="language-cpp">uint32_t GetComponentCount() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+gameObject-&gt;AddComponent&lt;Light&gt;();
+gameObject-&gt;AddComponent&lt;Light&gt;();
+gameObject-&gt;AddComponent&lt;Light&gt;();
+
+uint32_t count = gameObject-&gt;GetComponentCount(); // = 3
+</code></pre>
+<hr />
+<h3 id="gettransform"><a class="header" href="#gettransform">GetTransform</a></h3>
+<p>Get transform.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Transform&gt;&amp; GetTransform() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+const std::shared_ptr&lt;Transform&gt;&amp; transform = gameObject-&gt;GetTransform();
+</code></pre>
+<hr />
+<h3 id="getparent"><a class="header" href="#getparent">GetParent</a></h3>
+<p>Get parent GameObject.</p>
+<pre><code class="language-cpp">const std::weak_ptr&lt;GameObject&gt;&amp; GetParent() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+const std::weak_ptr&lt;GameObject&gt;&amp; parent = gameObject-&gt;GetParent();
+
+if(!parent.expired())
+{
+    Debug::Print("The gameobject does not have a parent");
+}
+else
+{
+    Debug::Print("The gameobject has a parent");
+}
+</code></pre>
+<hr />
+<h3 id="getchild"><a class="header" href="#getchild">GetChild</a></h3>
+<p>Get a child by index.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>index</code>: Child index</li>
+</ul>
+<pre><code class="language-cpp">std::weak_ptr&lt;GameObject&gt; GetChild(int index)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; gameObject = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child0 = CreateGameObject();
+std::shared_ptr&lt;GameObject&gt; child1 = CreateGameObject();
+
+gameObject-&gt;AddChild(child0);
+gameObject-&gt;AddChild(child1);
+
+std::weak_ptr&lt;GameObject&gt; weakChild1 = gameObject-&gt;GetChild(1);
+
+std::shared_ptr&lt;GameObject&gt; sharedChild1 = weakChild1.lock();
+if(sharedChild1)
+{
+    // Use child...
+}
 </code></pre>
 
                     </main>

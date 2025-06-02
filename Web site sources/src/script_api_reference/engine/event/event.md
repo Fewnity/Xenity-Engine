@@ -31,7 +31,7 @@ Event<int, const std::string&> myEvent;
 
 ---
 ### Bind
-Bind a simple function
+Bind a simple function.
 
 Parameters:
 - `function`:  Pointer to the function to bind
@@ -55,7 +55,7 @@ myEvent.Bind(&MyClass::MyStaticFunction);
 
 ---
 ### Bind
-Bind a function linked to an object
+Bind a function linked to an object.
 
 Parameters:
 - `function`:  Pointer to the function to bind
@@ -80,7 +80,7 @@ myEvent.Bind(&MyClass::MyFunction, &myClassInstance);
 
 ---
 ### Unbind
-Unbind a simple function
+Unbind a simple function.
 
 Parameters:
 - `function`:  Pointer to the function to unbind
@@ -107,7 +107,7 @@ myEvent.Unbind(&MyClass::MyStaticFunction);
 
 ---
 ### Unbind
-Unbind a function linked to an object
+Unbind a function linked to an object.
 
 Parameters:
 - `function`:  Pointer to the function to unbind
@@ -134,7 +134,7 @@ myEvent.Unbind(&MyClass::MyFunction, &myClassInstance);
 
 ---
 ### UnbindAll
-Unbind all bound function
+Unbind all bound function.
 ```cpp
 void UnbindAll()
 ```
@@ -150,7 +150,7 @@ myEvent.UnbindAll();
 
 ---
 ### Trigger
-Call all bound functions
+Call all bound functions.
 
 Parameters:
 - `args`:  All arguments to send
@@ -168,7 +168,7 @@ myEvent.Trigger(1, "Hello World!");
 
 ---
 ### GetBoundFunctionCount
-Get the number of listener
+Get the number of listener.
 ```cpp
 size_t GetBoundFunctionCount()
 ```

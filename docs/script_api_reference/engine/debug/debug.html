@@ -239,14 +239,14 @@
 <pre><code class="language-cpp">#include &lt;engine/debug/debug.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
-<p>Class used to print text in the console and in file or remotely to a server (Server part is removed for now)</p>
+<p>Class used to print text in the console and in file or remotely to a server (Server part is removed for now).</p>
 <p>You can find logs in the <code>xenity_engine_debug.txt</code> file.<br>
 The file will be created in the same folder of the executable file.<br>
 For PsVita the file will be created in <code>ux0:data/xenity_engine/</code>.</p>
 <h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
 <hr />
 <h3 id="print"><a class="header" href="#print">Print</a></h3>
-<p>Print a text</p>
+<p>Print a text.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>text</code>: Text to print</li>
@@ -261,7 +261,7 @@ Debug::Print("Hello file!", true); // Only printed in the file
 </code></pre>
 <hr />
 <h3 id="printwarning"><a class="header" href="#printwarning">PrintWarning</a></h3>
-<p>Print a warning</p>
+<p>Print a warning.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>text</code>: Text to print</li>
@@ -276,7 +276,7 @@ Debug::Print("Hello file!", true); // Only printed in the file
 </code></pre>
 <hr />
 <h3 id="printerror"><a class="header" href="#printerror">PrintError</a></h3>
-<p>Print an error</p>
+<p>Print an error.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>text</code>: Text to print</li>
@@ -291,7 +291,7 @@ Debug::Print("Hello file!", true); // Only printed in the file
 </code></pre>
 <hr />
 <h3 id="getondebuglogevent"><a class="header" href="#getondebuglogevent">GetOnDebugLogEvent</a></h3>
-<p>Get the event when a debug message is printed</p>
+<p>Get the event when a debug message is printed.</p>
 <pre><code class="language-cpp">Event&lt;const std::string&amp;, DebugType&gt;&amp; GetOnDebugLogEvent()
 </code></pre>
 <p>Code sample:</p>

@@ -90,11 +90,11 @@
             - [KeyCode Enum](./script_api_reference/engine/inputs/key_code_enum.md)
 
         - [Math](./script_api_reference/engine/math/math.md)
-            - [Quaternion](./script_api_reference/engine/math/quaternion/quaternion.md)
-            - [Vector2](./script_api_reference/engine/math/vector2/vector2.md)
-            - [Vector2Int](./script_api_reference/engine/math/vector2_int/vector2_int.md)
-            - [Vector3](./script_api_reference/engine/math/vector3/vector3.md)
-            - [Vector4](./script_api_reference/engine/math/vector4/vector4.md)
+            - [Quaternion](./script_api_reference/engine/math/quaternion.md)
+            - [Vector2](./script_api_reference/engine/math/vector2.md)
+            - [Vector2Int](./script_api_reference/engine/math/vector2_int.md)
+            - [Vector3](./script_api_reference/engine/math/vector3.md)
+            - [Vector4](./script_api_reference/engine/math/vector4.md)
 
         - [Network](./script_api_reference/engine/network/network.md)
             - [NetworkManager](./script_api_reference/engine/network/network_manager.md)

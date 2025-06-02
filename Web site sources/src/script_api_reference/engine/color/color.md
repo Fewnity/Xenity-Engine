@@ -13,7 +13,7 @@ This class stores informations about a color.
 
 ---
 ### CreateFromRGB
-Create a color from 3 uint8_t (alpha = 255)
+Create a color from 3 uint8_t (alpha = 255).
 
 Parameters:
 - `r`: Red level [0;255]
@@ -29,7 +29,7 @@ Color red = Color::CreateFromRGB(255, 0, 0);
 
 ---
 ### CreateFromRGBA
-Create a color from 4 uint8_t
+Create a color from 4 uint8_t.
 
 Parameters:
 - `r`: Red level [0;255]
@@ -46,7 +46,7 @@ Color semiTransparentRed = Color::CreateFromRGBA(255, 0, 0, 128);
 
 ---
 ### CreateFromRGBFloat
-Create a color from 3 floats (alpha = 1)
+Create a color from 3 floats (alpha = 1).
 
 Parameters:
 - `r`: Red level [0.0f;1.0f]
@@ -61,8 +61,8 @@ Color red = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f);
 ```
 
 ---
-### CreateFromRGBFloat
-Create a color from 4 floats
+### CreateFromRGBAFloat
+Create a color from 4 floats.
 
 Parameters:
 - `r`: Red level [0.0f;1.0f]
@@ -70,18 +70,18 @@ Parameters:
 - `b`: Blue level [0.0f;1.0f]
 - `a`: Alpha level [0.0f;1.0f]
 ```cpp
-Color CreateFromRGBFloat(float r, float g, float b, float a)
+Color CreateFromRGBAFloat(float r, float g, float b, float a)
 ```
 Code sample:
 ```cpp
-Color semiTransparentRed = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f, 0.5f);
+Color semiTransparentRed = Color::CreateFromRGBAFloat(1.0f, 0.0f, 0.0f, 0.5f);
 ```
 
 ## Public methods
 
 ---
 ### SetFromRGBA
-Set color from 4 uint8_t
+Set color from 4 uint8_t.
 
 Parameters:
 - `r`: Red level [0;255]
@@ -100,7 +100,7 @@ myColor.SetFromRGBA(255, 255, 255, 255);
 
 ---
 ### SetFromRGBAFloat
-Set color from 4 float
+Set color from 4 float.
 
 Parameters:
 - `r`: Red level [0.0f;1.0f]
@@ -119,7 +119,7 @@ myColor.SetFromRGBAFloat(1.0f, 1.0f, 1.0f, 1.0f);
 
 ---
 ### GetRGBA
-Get RGBA
+Get RGBA.
 ```cpp
 const RGBA& GetRGBA() const
 ```
@@ -132,7 +132,7 @@ const RGBA& rgbaRef = red.GetRGBA(); // Avoid a copy
 
 ---
 ### GetUnsignedIntRGBA
-Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA)
+Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA).
 ```cpp
 unsigned int GetUnsignedIntRGBA() const
 ```
@@ -143,8 +143,8 @@ unsigned int rgba = myColor.GetUnsignedIntRGBA(); // 0xff994c19
 ```
 
 ---
-### GetUnsignedIntRGBA
-Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR)
+### GetUnsignedIntABGR
+Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR).
 ```cpp
 unsigned int GetUnsignedIntABGR() const
 ```
@@ -156,7 +156,7 @@ unsigned int abgr = myColor.GetUnsignedIntABGR(); // 0x194c99ff
 
 ---
 ### GetUnsignedIntARGB
-Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB)
+Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB).
 ```cpp
 unsigned int GetUnsignedIntARGB() const
 ```
@@ -168,7 +168,7 @@ unsigned int argb = myColor.GetUnsignedIntARGB(); // 0x19ff994c
 
 ---
 ### ToString
-Return a string representation of the color
+Return a string representation of the color.
 ```cpp
 std::string ToString() const
 ```

@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Class used to print text in the console and in file or remotely to a server (Server part is removed for now)
+Class used to print text in the console and in file or remotely to a server (Server part is removed for now).
 
 You can find logs in the `xenity_engine_debug.txt` file.<br>
 The file will be created in the same folder of the executable file.<br>
@@ -17,7 +17,7 @@ For PsVita the file will be created in `ux0:data/xenity_engine/`.
 
 ---
 ### Print
-Print a text
+Print a text.
 
 Parameters:
 - `text`: Text to print
@@ -34,7 +34,7 @@ Debug::Print("Hello file!", true); // Only printed in the file
 
 ---
 ### PrintWarning
-Print a warning
+Print a warning.
 
 Parameters:
 - `text`: Text to print
@@ -51,7 +51,7 @@ Debug::PrintWarning("I'm a warning.");
 
 ---
 ### PrintError
-Print an error
+Print an error.
 
 Parameters:
 - `text`: Text to print
@@ -68,7 +68,7 @@ Debug::PrintError("You can't do that!");
 
 ---
 ### GetOnDebugLogEvent
-Get the event when a debug message is printed
+Get the event when a debug message is printed.
 ```cpp
 Event<const std::string&, DebugType>& GetOnDebugLogEvent()
 ```

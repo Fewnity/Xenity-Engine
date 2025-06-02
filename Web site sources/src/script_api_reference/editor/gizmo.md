@@ -51,7 +51,7 @@ The use of `#if defined(EDITOR)` is needed because the `Gizmo` class is not visi
 
 ---
 ### SetColor 
-Set Gizmo draw color (does not affect sprites)
+Set Gizmo draw color (does not affect sprites).
 
 Parameters:
 - `newColor`: New color to use
@@ -66,7 +66,7 @@ Gizmo::SetColor(redColor);
 
 ---
 ### DrawLine 
-Draw a simple line from A to B
+Draw a simple line from A to B.
 
 Parameters:
 - `a`: Start point
@@ -81,7 +81,7 @@ Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
 
 ---
 ### DrawBillboard 
-Draw a billboard sprite
+Draw a billboard sprite.
 
 Parameters:
 - `position`: Position of the sprite
@@ -106,7 +106,7 @@ Gizmo::DrawBillboard(
 
 ---
 ### DrawSphere 
-Draw a wired sphere
+Draw a wired sphere.
 
 Parameters:
 - `position`: Position of the sphere

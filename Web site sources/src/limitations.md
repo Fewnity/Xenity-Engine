@@ -39,6 +39,8 @@ There is no layer system. So no system to disable collisions between some collid
 
 The graphics API interface is OpenGL like, so it's harder to add an new API that is different from OpenGL.
 
+On PSP there is a graphical bug and I'm not able to fix it, looks like it visible when disabling vsync but not sure.
+
 ### Reflection
 
 The reflection is a little bit hard to maintain.

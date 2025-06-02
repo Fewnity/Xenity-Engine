@@ -11,7 +11,7 @@ This class represents an instant in time.
 
 ---
 ### GetNow
-Get the current date and time
+Get the current date and time.
 ```cpp
 DateTime GetNow()
 ```
@@ -24,7 +24,7 @@ DateTime currentDateTime = DateTime::GetNow();
 
 ---
 ### ToString
-Get a string representation of the date and time in the format: "hour:minute:second day/month/year"
+Get a string representation of the date and time in the format: "hour:minute:second day/month/year".
 ```cpp
 std::string ToString() const
 ```

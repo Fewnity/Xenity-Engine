@@ -272,9 +272,9 @@ if(IsValid(myGameObject))
 
 </code></pre>
 <hr />
-<h3 id="instantiate"><a class="header" href="#instantiate">Instantiate</a></h3>
-<p>Create a new GameObject from another
-(Not very recommended, can be buggy, use prefabs instead)</p>
+<h3 id="instantiate-gameobject"><a class="header" href="#instantiate-gameobject">Instantiate (GameObject)</a></h3>
+<p>Create a new GameObject from another.<br>
+(Not very recommended, can be buggy, use prefabs instead).</p>
 <p>Parameters:</p>
 <ul>
 <li><code>gameObject</code>:  GameObject to duplicate</li>
@@ -287,8 +287,8 @@ if(IsValid(myGameObject))
 std::shared_ptr&lt;GameObject&gt; myGameObject2 = Instantiate(myGameObject);
 </code></pre>
 <hr />
-<h3 id="instantiate-1"><a class="header" href="#instantiate-1">Instantiate</a></h3>
-<p>Create a new GameObject from a prefab</p>
+<h3 id="instantiate-prefab"><a class="header" href="#instantiate-prefab">Instantiate (Prefab)</a></h3>
+<p>Create a new GameObject from a prefab.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>prefab</code>:  Prefab to instanciate</li>
@@ -300,7 +300,7 @@ std::shared_ptr&lt;GameObject&gt; myGameObject2 = Instantiate(myGameObject);
 </code></pre>
 <hr />
 <h3 id="destroy"><a class="header" href="#destroy">Destroy</a></h3>
-<p>Destroy a GameObject or component</p>
+<p>Destroy a GameObject or component.</p>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -312,7 +312,7 @@ Objects are fully destroy after the begin of the next frame.</p>
 </div>
 <p>Parameters:</p>
 <ul>
-<li><code>x</code>:  Object to destroy</li>
+<li><code>component</code>/<code>gameObject</code>: component or GameObject to destroy</li>
 </ul>
 <pre><code class="language-cpp">void Destroy(const std::shared_ptr&lt;Component&gt;&amp; component) 
 void Destroy(const std::shared_ptr&lt;GameObject&gt;&amp; gameObject);

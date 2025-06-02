@@ -44,9 +44,9 @@ if(IsValid(myGameObject))
 ```
 
 ---
-### Instantiate
-Create a new GameObject from another
-(Not very recommended, can be buggy, use prefabs instead)
+### Instantiate (GameObject)
+Create a new GameObject from another.<br>
+(Not very recommended, can be buggy, use prefabs instead).
 
 Parameters:
 - `gameObject`:  GameObject to duplicate
@@ -61,8 +61,8 @@ std::shared_ptr<GameObject> myGameObject2 = Instantiate(myGameObject);
 ```
 
 ---
-### Instantiate
-Create a new GameObject from a prefab
+### Instantiate (Prefab)
+Create a new GameObject from a prefab.
 
 Parameters:
 - `prefab`:  Prefab to instanciate
@@ -76,14 +76,14 @@ std::shared_ptr<GameObject> myGameObject = Instantiate(myPrefab);
 
 ---
 ### Destroy
-Destroy a GameObject or component
+Destroy a GameObject or component.
 > [!WARNING]
 > The pointer won't be null right after the Destroy call.<br>
 > Do not use the object after calling Destroy.<br>
 > Objects are fully destroy after the begin of the next frame.
 
 Parameters:
-- `x`:  Object to destroy
+- `component`/`gameObject`: component or GameObject to destroy
 ```cpp
 void Destroy(const std::shared_ptr<Component>& component) 
 void Destroy(const std::shared_ptr<GameObject>& gameObject);

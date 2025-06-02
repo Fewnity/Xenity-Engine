@@ -7,13 +7,13 @@ Add this in your code:
 
 ## Description
 
-Class to load scenes
+Class to load scenes.
 
 ## Static methods
 
 ---
 ### LoadScene
-Load a scene
+Load a scene.
 
 Parameters:
 - `scene`: Scene to load
@@ -29,7 +29,7 @@ SceneManager::LoadScene(sceneToLoad);
 
 ---
 ### ReloadScene
-Reload the current scene
+Reload the current scene.
 ```cpp
 void ReloadScene()
 ```
@@ -40,7 +40,7 @@ SceneManager::ReloadScene();
 
 ---
 ### GetOpenedScene
-Get opened scene
+Get opened scene.
 ```cpp
 const std::shared_ptr<Scene>& GetOpenedScene()
 ```

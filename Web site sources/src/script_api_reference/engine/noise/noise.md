@@ -7,13 +7,13 @@ Add this in your code:
 
 ## Description
 
-Class to generate 1D, 2D, 3D and 4D Perlin noise
+Class to generate 1D, 2D, 3D and 4D Perlin noise.
 
 ## Static methods
 
 ---
 ### Noise1D
-Get 1D Perlin noise
+Get 1D Perlin noise.
 
 Parameters:
 - `x`:  The x coordinate
@@ -27,7 +27,7 @@ float value = Noise::Noise1D(0.5f);
 
 ---
 ### Noise2D
-Get 2D Perlin noise
+Get 2D Perlin noise.
 
 Parameters:
 - `x`:  The x coordinate
@@ -42,7 +42,7 @@ float value = Noise::Noise2D(0.5f, 0.1f);
 
 ---
 ### Noise3D
-Get 3D Perlin noise
+Get 3D Perlin noise.
 
 Parameters:
 - `x`:  The x coordinate
@@ -58,7 +58,7 @@ float value = Noise::Noise3D(0.5f, 0.1f, 0.3f);
 
 ---
 ### Noise4D
-Get 4D Perlin noise
+Get 4D Perlin noise.
 
 Parameters:
 - `x`:  The x coordinate

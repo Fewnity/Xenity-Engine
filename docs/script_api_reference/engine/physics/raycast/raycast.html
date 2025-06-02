@@ -252,7 +252,11 @@ Return true if the raycast has hit a collider.</p>
 <li><code>maxDistance</code>: The max distance of the ray</li>
 <li><code>raycastHit</code>: The raycastHit struct that will be filled with the hit information</li>
 </ul>
-<pre><code class="language-cpp">bool Check(const Vector3&amp; startPosition, const Vector3&amp; direction, const float maxDistance, RaycastHit&amp; raycastHit)
+<pre><code class="language-cpp">bool Check(
+    const Vector3&amp; startPosition, 
+    const Vector3&amp; direction, 
+    const float maxDistance, 
+    RaycastHit&amp; raycastHit)
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">// Check under the player

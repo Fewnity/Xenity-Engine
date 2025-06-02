@@ -15,7 +15,7 @@ The socket will be closed when the object is destroyed.
 
 ---
 ### SendData (string)
-Send data as a string to the server
+Send data as a string to the server.
 
 Parameters:
 - `text`: Text to send
@@ -34,7 +34,7 @@ if(socket)
 
 ---
 ### SendData (binary)
-Send binary data to the server
+Send binary data to the server.
 
 Parameters:
 - `data`: Pointer to the data to send
@@ -62,7 +62,7 @@ if(socket)
 
 ---
 ### Close
-Send data as a string to the server
+Send data as a string to the server.
 ```cpp
 void Close()
 ```
@@ -79,7 +79,7 @@ if(socket)
 
 ---
 ### GetIncommingData
-Return recieved data since the last GetIncommingData call (updated every frame)
+Return recieved data since the last GetIncommingData call (updated every frame).
 ```cpp
 std::string GetIncommingData()
 ```

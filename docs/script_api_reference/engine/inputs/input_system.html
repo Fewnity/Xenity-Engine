@@ -239,7 +239,7 @@
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
-<p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse)</p>
+<p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse).</p>
 <h2 id="macros"><a class="header" href="#macros">Macros</a></h2>
 <p><code>PLAYER_1</code> value: 0<br>
 <code>PLAYER_2</code> value: 1<br>
@@ -261,7 +261,7 @@
 <h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
 <hr />
 <h3 id="getkeydown"><a class="header" href="#getkeydown">GetKeyDown</a></h3>
-<p>Return true if the key has just been pressed</p>
+<p>Return true if the key has just been pressed.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>keyCode</code>: Key code to check</li>
@@ -282,7 +282,7 @@ if (InputSystem::GetKeyDown(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="getkey"><a class="header" href="#getkey">GetKey</a></h3>
-<p>Return true if the key is held</p>
+<p>Return true if the key is held.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>keyCode</code>: Key code to check</li>
@@ -303,7 +303,7 @@ if (InputSystem::GetKey(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="getkeyup"><a class="header" href="#getkeyup">GetKeyUp</a></h3>
-<p>Return true if the key has just been released</p>
+<p>Return true if the key has just been released.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>keyCode</code>: Key code to check</li>
@@ -324,7 +324,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="getleftjoystick"><a class="header" href="#getleftjoystick">GetLeftJoystick</a></h3>
-<p>Get left joystick value, values between -1.0f and 1.0f</p>
+<p>Get left joystick value, values between -1.0f and 1.0f.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>controllerIndex</code>: Controller index (0-7)</li>
@@ -336,7 +336,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="getrightjoystick"><a class="header" href="#getrightjoystick">GetRightJoystick</a></h3>
-<p>Get right joystick value, values between -1.0f and 1.0f</p>
+<p>Get right joystick value, values between -1.0f and 1.0f.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>controllerIndex</code>: Controller index (0-7)</li>
@@ -348,7 +348,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="gettouchscreencount"><a class="header" href="#gettouchscreencount">GetTouchScreenCount</a></h3>
-<p>Get how many touch screens the device has</p>
+<p>Get how many touch screens the device has.</p>
 <pre><code class="language-cpp">int GetTouchScreenCount()
 </code></pre>
 <p>Code sample:</p>
@@ -356,7 +356,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="gettouchcount"><a class="header" href="#gettouchcount">GetTouchCount</a></h3>
-<p>Get how many touch inputs the screen has</p>
+<p>Get how many touch inputs the screen has.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>screenIndex</code>: Screen index</li>
@@ -368,7 +368,7 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 </code></pre>
 <hr />
 <h3 id="gettouch"><a class="header" href="#gettouch">GetTouch</a></h3>
-<p>Get touch data</p>
+<p>Get touch data.</p>
 <p>Parameters:</p>
 <ul>
 <li><code>touchIndex</code>: Touch index</li>
@@ -386,7 +386,7 @@ if (touchCount &gt;= 1)
 </code></pre>
 <hr />
 <h3 id="hidemouse"><a class="header" href="#hidemouse">HideMouse</a></h3>
-<p>Hide mouse</p>
+<p>Hide mouse.</p>
 <pre><code class="language-cpp">void HideMouse()
 </code></pre>
 <p>Code sample:</p>
@@ -394,7 +394,7 @@ if (touchCount &gt;= 1)
 </code></pre>
 <hr />
 <h3 id="showmouse"><a class="header" href="#showmouse">ShowMouse</a></h3>
-<p>Show mouse</p>
+<p>Show mouse.</p>
 <pre><code class="language-cpp">void ShowMouse()
 </code></pre>
 <p>Code sample:</p>

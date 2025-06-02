@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Vector2 - Xenity Engine</title>
+        <title>Vector4 - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../../../../favicon.svg">
-        <link rel="shortcut icon" href="../../../../favicon.png">
-        <link rel="stylesheet" href="../../../../css/variables.css">
-        <link rel="stylesheet" href="../../../../css/general.css">
-        <link rel="stylesheet" href="../../../../css/chrome.css">
-        <link rel="stylesheet" href="../../../../css/print.css" media="print">
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../../../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../../../../fonts/fonts.css">
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../../../../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../../../../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../../../../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="../../../../custom.css">
+        <link rel="stylesheet" href="../../../custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../../../../";
+            const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../../../toc.js"></script>
+        <script src="../../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -103,7 +103,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../../../../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -138,7 +138,7 @@
                     <h1 class="menu-title">Xenity Engine</h1>
 
                     <div class="right-buttons">
-                        <a href="../../../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -234,17 +234,110 @@
 }
 
 </style>
-<h1 id="vector2"><a class="header" href="#vector2">Vector2</a></h1>
+<h1 id="vector4"><a class="header" href="#vector4">Vector4</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/math/vector4.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Contains 4D coordinates.</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
+<tr><td>y</td><td><code>float</code></td><td>The y component of the vector</td></tr>
+<tr><td>z</td><td><code>float</code></td><td>The z component of the vector</td></tr>
+<tr><td>w</td><td><code>float</code></td><td>The w component of the vector</td></tr>
+</tbody></table>
+</div>
+<h2 id="constructors"><a class="header" href="#constructors">Constructors</a></h2>
+<h3 id="vector4-1"><a class="header" href="#vector4-1">Vector4</a></h3>
+<p>Empty vector.</p>
+<pre><code class="language-cpp">Vector4()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4();
+// X = Y = Z = W = 0.0f
+</code></pre>
+<h3 id="vector4-xyzw"><a class="header" href="#vector4-xyzw">Vector4 (X,Y,Z,W)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X value</li>
+<li><code>y</code>: Y value</li>
+<li><code>z</code>: Z value</li>
+<li><code>w</code>: W value</li>
+</ul>
+<pre><code class="language-cpp">Vector4(float x, float y, float z,  float w)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+</code></pre>
+<h3 id="vector4-single-value"><a class="header" href="#vector4-single-value">Vector4 (Single value)</a></h3>
+<p>Fill the vector with a single value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fillValue</code>: Fill value</li>
+</ul>
+<pre><code class="language-cpp">Vector4(float fillValue)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f);
+// X = Y = Z = W = 1.0f
+</code></pre>
+<h3 id="vector4-vector3"><a class="header" href="#vector4-vector3">Vector4 (Vector3)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 3D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector4(const Vector3&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec3 = Vector3(1.0f, 2.0f, 3.0f);
+Vector4 vec = Vector4(vec3);
+// X = 1.0f
+// Y = 2.0f
+// Z = 3.0f
+// W = 0.0f
+</code></pre>
+<h3 id="vector4-vector2"><a class="header" href="#vector4-vector2">Vector4 (Vector2)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D vector</li>
+</ul>
+<pre><code class="language-cpp">Vector4(const Vector2&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec2 = Vector2(1.0f, 2.0f);
+Vector4 vec = Vector4(vec2);
+// X = 1.0f
+// Y = 2.0f
+// Z = 0.0f
+// W = 0.0f
+</code></pre>
+<h3 id="vector4-vector2int"><a class="header" href="#vector4-vector2int">Vector4 (Vector2Int)</a></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>vect</code>: 2D integer vector</li>
+</ul>
+<pre><code class="language-cpp">Vector4(const Vector2Int&amp; vect)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec2int = Vector2Int(1, 2);
+Vector4 vec = Vector4(vec2int);
+// X = 1.0f
+// Y = 2.0f
+// Z = 0.0f
+// W = 0.0f
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../../script_api_reference/engine/math/quaternion/quaternion.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/math/vector3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../../script_api_reference/engine/math/vector2_int/vector2_int.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/network/network.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +347,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../../script_api_reference/engine/math/quaternion/quaternion.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/math/vector3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../../script_api_reference/engine/math/vector2_int/vector2_int.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/network/network.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -273,13 +366,13 @@
         </script>
 
 
-        <script src="../../../../elasticlunr.min.js"></script>
-        <script src="../../../../mark.min.js"></script>
-        <script src="../../../../searcher.js"></script>
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
 
-        <script src="../../../../clipboard.min.js"></script>
-        <script src="../../../../highlight.js"></script>
-        <script src="../../../../book.js"></script>
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
 
         <!-- Custom JS scripts -->
 

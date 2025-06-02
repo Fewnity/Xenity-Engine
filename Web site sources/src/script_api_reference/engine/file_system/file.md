@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Class to manage a file (Create, open, read, write)
+Class to manage a file (Create, open, read, write).
 
 ## Public methods
 
@@ -125,7 +125,7 @@ if(file->Open(FileMode::ReadOnly))
 
 ---
 ### ReadAllBinary
-Read all the content of the file as a binary (Need to free the pointer after)
+Read all the content of the file as a binary (Need to free the pointer after).
 
 Parameters:
 - `size`: Output: The size of the binary in byte
@@ -147,7 +147,7 @@ if(file->Open(FileMode::ReadOnly))
 
 ---
 ### ReadBinary
-Read a part of the content of the file as a binary (Need to free the pointer after)
+Read a part of the content of the file as a binary (Need to free the pointer after).
 
 Parameters:
 - `offset`: Read offset in byte
@@ -195,7 +195,7 @@ std::string filePath = file->GetFolderPath(); // = C:/my_folder/
 
 ---
 ### GetFileName
-Get file name
+Get file name.
 ```cpp
 const std::string& GetFileName() const
 ```
@@ -208,7 +208,7 @@ std::string filePath = file->GetFileName(); // = my_file
 
 ---
 ### GetFileExtension
-Get file extension (dot included)
+Get file extension (dot included).
 ```cpp
 const std::string& GetFileExtension() const
 ```
