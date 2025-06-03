@@ -29,6 +29,11 @@ public:
 	explicit Vector4(const Vector2Int& vect);
 
 	/**
+	* @brief Linearly interpolates between vectors
+	*/
+	static Vector4 Lerp(const Vector4& a, const Vector4& b, const float t);
+
+	/**
 	* @brief Get the biggest value of the vector
 	*/
 	float Max() const
@@ -45,11 +50,6 @@ public:
 	}
 
 	/**
-	* @brief Linearly interpolates between vectors
-	*/
-	static Vector4 Lerp(const Vector4& a, const Vector4& b, const float t);
-
-	/**
 	* @brief Get this vector with a magnitude of 1 (Do not change vector values)
 	*/
 	Vector4 Normalized() const;
@@ -63,6 +63,11 @@ public:
 	* @brief Get the length of this vector
 	*/
 	float Magnitude() const;
+
+	/**
+	* @brief Get the squared length of this vector
+	*/
+	float SquaredMagnitude() const;
 
 	/**
 	* @brief Return True is the vector has invalid values (NaN or Inf)
@@ -88,6 +93,11 @@ inline Vector4 operator+(const Vector4& left, const Vector4& right)
 inline Vector4 operator-(const Vector4& left, const Vector4& right)
 {
 	return Vector4{ left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w };
+}
+
+inline Vector4 operator-(const Vector4& vec)
+{
+	return Vector4{ -vec.x, -vec.y, -vec.z, -vec.w };
 }
 
 inline Vector4 operator*(const float value, const Vector4& vec)

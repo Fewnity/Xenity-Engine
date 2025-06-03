@@ -81,7 +81,7 @@ void BoxCollider::OnTransformUpdated()
 		const Transform& transform = *GetTransform();
 
 		const glm::mat4x4& matrix = transform.GetTransformationMatrix();
-		const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
+		const Vector3 newPos = Vector3(matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1));
 
 		m_bulletCollisionObject->setWorldTransform(btTransform(
 			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
@@ -142,7 +142,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 	else
 	{
 		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-		const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
+		const Vector3 newPos = Vector3(matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1));
 
 		const Quaternion& rot = GetTransform()->GetRotation();
 
@@ -177,15 +177,15 @@ void BoxCollider::OnDrawGizmosSelected()
 	Gizmo::SetColor(lineColor);
 
 	const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-	Vector3 bottom0 = matrix * glm::vec4(-m_min.x, m_min.y, m_min.z, 1);
-	Vector3 bottom1 = matrix * glm::vec4(-m_min.x, m_min.y, m_max.z, 1);
-	Vector3 bottom2 = matrix * glm::vec4(-m_max.x, m_min.y, m_min.z, 1);
-	Vector3 bottom3 = matrix * glm::vec4(-m_max.x, m_min.y, m_max.z, 1);
+	Vector3 bottom0 = Vector3(matrix * glm::vec4(-m_min.x, m_min.y, m_min.z, 1));
+	Vector3 bottom1 = Vector3(matrix * glm::vec4(-m_min.x, m_min.y, m_max.z, 1));
+	Vector3 bottom2 = Vector3(matrix * glm::vec4(-m_max.x, m_min.y, m_min.z, 1));
+	Vector3 bottom3 = Vector3(matrix * glm::vec4(-m_max.x, m_min.y, m_max.z, 1));
 
-	Vector3 top0 = matrix * glm::vec4(-m_min.x, m_max.y, m_min.z, 1);
-	Vector3 top1 = matrix * glm::vec4(-m_min.x, m_max.y, m_max.z, 1);
-	Vector3 top2 = matrix * glm::vec4(-m_max.x, m_max.y, m_min.z, 1);
-	Vector3 top3 = matrix * glm::vec4(-m_max.x, m_max.y, m_max.z, 1);
+	Vector3 top0 = Vector3(matrix * glm::vec4(-m_min.x, m_max.y, m_min.z, 1));
+	Vector3 top1 = Vector3(matrix * glm::vec4(-m_min.x, m_max.y, m_max.z, 1));
+	Vector3 top2 = Vector3(matrix * glm::vec4(-m_max.x, m_max.y, m_min.z, 1));
+	Vector3 top3 = Vector3(matrix * glm::vec4(-m_max.x, m_max.y, m_max.z, 1));
 
 	bottom0.x = -bottom0.x;
 	bottom1.x = -bottom1.x;

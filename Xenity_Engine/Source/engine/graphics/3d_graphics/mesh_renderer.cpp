@@ -83,7 +83,7 @@ void MeshRenderer::OnDrawGizmosSelected()
 	return;
 
 #if defined(EDITOR)
-	Gizmo::DrawSphere(m_boundingSphere.position, Quaternion::Identity(), m_boundingSphere.radius);
+	Gizmo::DrawSphere(Vector3(m_boundingSphere.position), Quaternion::Identity(), m_boundingSphere.radius);
 
 	const Color meshLineColor = Color::CreateFromRGBAFloat(0, 0, 1, 1);
 

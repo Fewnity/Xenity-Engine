@@ -54,7 +54,12 @@ Vector2Int::Vector2Int(const Vector2& vect)
 
 float Vector2Int::Magnitude() const
 {
-	return sqrtf(powf((float)x, 2) + powf((float)y, 2));
+	return sqrtf(static_cast<float>(x * x + y * y));
+}
+
+float Vector2Int::SquaredMagnitude() const
+{
+	return static_cast<float>(x * x + y * y);
 }
 
 float Vector2Int::Distance(const Vector2Int& a, const Vector2Int& b)

@@ -110,7 +110,12 @@ Vector4 Vector4::Normalize()
 
 float Vector4::Magnitude() const
 {
-	return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2) + powf(this->w, 2));
+	return sqrtf(x * x + y * y + z * z + w * w);
+}
+
+float Vector4::SquaredMagnitude() const
+{
+	return x * x + y * y + z * z + w * w;
 }
 
 Vector4 Vector4::Lerp(const Vector4& a, const Vector4& b, const float t)

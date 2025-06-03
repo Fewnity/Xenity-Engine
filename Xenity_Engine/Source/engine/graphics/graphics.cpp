@@ -785,15 +785,15 @@ void Graphics::DrawSelectedItemBoundingBox()
 			const Vector3& max = meshRenderer->GetMeshData()->GetMaxBoundingBox();
 
 			const glm::mat4x4& matrix = selectedGO->GetTransform()->GetTransformationMatrix();
-			const Vector3 bottom0 = matrix * glm::vec4(min.x, min.y, min.z, 1);
-			const Vector3 bottom1 = matrix * glm::vec4(min.x, min.y, max.z, 1);
-			const Vector3 bottom2 = matrix * glm::vec4(max.x, min.y, min.z, 1);
-			const Vector3 bottom3 = matrix * glm::vec4(max.x, min.y, max.z, 1);
+			const Vector3 bottom0 = Vector3(matrix * glm::vec4(min.x, min.y, min.z, 1));
+			const Vector3 bottom1 = Vector3(matrix * glm::vec4(min.x, min.y, max.z, 1));
+			const Vector3 bottom2 = Vector3(matrix * glm::vec4(max.x, min.y, min.z, 1));
+			const Vector3 bottom3 = Vector3(matrix * glm::vec4(max.x, min.y, max.z, 1));
 
-			const Vector3 top0 = matrix * glm::vec4(min.x, max.y, min.z, 1);
-			const Vector3 top1 = matrix * glm::vec4(min.x, max.y, max.z, 1);
-			const Vector3 top2 = matrix * glm::vec4(max.x, max.y, min.z, 1);
-			const Vector3 top3 = matrix * glm::vec4(max.x, max.y, max.z, 1);
+			const Vector3 top0 = Vector3(matrix * glm::vec4(min.x, max.y, min.z, 1));
+			const Vector3 top1 = Vector3(matrix * glm::vec4(min.x, max.y, max.z, 1));
+			const Vector3 top2 = Vector3(matrix * glm::vec4(max.x, max.y, min.z, 1));
+			const Vector3 top3 = Vector3(matrix * glm::vec4(max.x, max.y, max.z, 1));
 
 			Engine::GetRenderer().DrawLine(bottom0, bottom1, color, renderSettings);
 			Engine::GetRenderer().DrawLine(bottom1, bottom3, color, renderSettings);

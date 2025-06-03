@@ -23,18 +23,39 @@ public:
 	Vector2Int();
 	explicit Vector2Int(const int x, const int y);
 	explicit Vector2Int(const int fillValue);
-	Vector2Int(const Vector3& vect);
-	Vector2Int(const Vector2& vect);
+	explicit Vector2Int(const Vector3& vect);
+	explicit Vector2Int(const Vector2& vect);
 
 	/**
-	* @brief Linearly interpolates between vectors
+	* @brief Distance between two vectors
 	*/
 	static float Distance(const Vector2Int& a, const Vector2Int& b);
+
+	/**
+	* @brief Get the biggest value of the vector
+	*/
+	int Max() const
+	{
+		return std::max(x, y);
+	}
+
+	/**
+	* @brief Get the smallest value of the vector
+	*/
+	int Min() const
+	{
+		return std::min(x, y);
+	}
 
 	/**
 	* @brief Get the length of this vector
 	*/
 	float Magnitude() const;
+
+	/**
+	* @brief Get the squared length of this vector
+	*/
+	float SquaredMagnitude() const;
 
 	/**
 	* @brief Return a string representation of the vector
@@ -54,6 +75,11 @@ inline Vector2Int operator+(const Vector2Int& left, const Vector2Int& right)
 inline Vector2Int operator-(const Vector2Int& left, const Vector2Int& right)
 {
 	return Vector2Int{ (int)(left.x - right.x), (int)(left.y - right.y) };
+}
+
+inline Vector2Int operator-(const Vector2Int& vec)
+{
+	return Vector2Int{ -vec.x, -vec.y };
 }
 
 inline Vector2Int operator*(const float value, const Vector2Int& vec)

@@ -226,8 +226,8 @@ std::vector<SceneMenu::HitGameObjectInfo> SceneMenu::CheckBoundingBoxesOnClick(C
 		{
 			const Vector3& min = meshRenderer->GetMeshData()->GetMinBoundingBox();
 			const Vector3& max = meshRenderer->GetMeshData()->GetMaxBoundingBox();
-			Vector3 transformedMin = selectedGO->GetTransform()->GetTransformationMatrix() * glm::vec4(min.x, min.y, min.z, 1);
-			Vector3 transformedMax = selectedGO->GetTransform()->GetTransformationMatrix() * glm::vec4(max.x, max.y, max.z, 1);
+			Vector3 transformedMin = Vector3(selectedGO->GetTransform()->GetTransformationMatrix() * glm::vec4(min.x, min.y, min.z, 1));
+			Vector3 transformedMax = Vector3(selectedGO->GetTransform()->GetTransformationMatrix() * glm::vec4(max.x, max.y, max.z, 1));
 			transformedMin.x = -transformedMin.x;
 			transformedMax.x = -transformedMax.x;
 
@@ -271,7 +271,7 @@ void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormal
 	const glm::vec3 mousePositionGLM = glm::vec3(startAvailableSize.x - mousePosition.x, startAvailableSize.y - (windowSize.y - mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
-	worldCoords = glm::unProject(mousePositionGLM, cameraModelMatrix, camera.GetProjection(), glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y));
+	worldCoords = Vector3(glm::unProject(mousePositionGLM, cameraModelMatrix, camera.GetProjection(), glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y)));
 
 	// Normalise direction if needed
 	mouseWorldDir = worldCoords;

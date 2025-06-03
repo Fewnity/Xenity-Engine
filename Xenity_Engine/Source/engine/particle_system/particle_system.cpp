@@ -167,16 +167,16 @@ void ParticleSystem::OnDrawGizmosSelected()
 		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
 
 		// Bottom vertex
-		Vector3 v1 = matrix * (glm::vec4(-m_boxSize.x, -m_boxSize.y, -m_boxSize.z, 2) / 2.0f);
-		Vector3 v2 = matrix * (glm::vec4(-m_boxSize.x, -m_boxSize.y, m_boxSize.z, 2) / 2.0f);
-		Vector3 v3 = matrix * (glm::vec4(m_boxSize.x, -m_boxSize.y, -m_boxSize.z, 2) / 2.0f);
-		Vector3 v4 = matrix * (glm::vec4(m_boxSize.x, -m_boxSize.y, m_boxSize.z, 2) / 2.0f);
+		Vector3 v1 = Vector3(matrix * (glm::vec4(-m_boxSize.x, -m_boxSize.y, -m_boxSize.z, 2) / 2.0f));
+		Vector3 v2 = Vector3(matrix * (glm::vec4(-m_boxSize.x, -m_boxSize.y, m_boxSize.z, 2) / 2.0f));
+		Vector3 v3 = Vector3(matrix * (glm::vec4(m_boxSize.x, -m_boxSize.y, -m_boxSize.z, 2) / 2.0f));
+		Vector3 v4 = Vector3(matrix * (glm::vec4(m_boxSize.x, -m_boxSize.y, m_boxSize.z, 2) / 2.0f));
 
 		// Top vertex
-		Vector3 v5 = matrix * (glm::vec4(-m_boxSize.x, m_boxSize.y, -m_boxSize.z, 2) / 2.0f);
-		Vector3 v6 = matrix * (glm::vec4(-m_boxSize.x, m_boxSize.y, m_boxSize.z, 2) / 2.0f);
-		Vector3 v7 = matrix * (glm::vec4(m_boxSize.x, m_boxSize.y, -m_boxSize.z, 2) / 2.0f);
-		Vector3 v8 = matrix * (glm::vec4(m_boxSize.x, m_boxSize.y, m_boxSize.z, 2) / 2.0f);
+		Vector3 v5 = Vector3(matrix * (glm::vec4(-m_boxSize.x, m_boxSize.y, -m_boxSize.z, 2) / 2.0f));
+		Vector3 v6 = Vector3(matrix * (glm::vec4(-m_boxSize.x, m_boxSize.y, m_boxSize.z, 2) / 2.0f));
+		Vector3 v7 = Vector3(matrix * (glm::vec4(m_boxSize.x, m_boxSize.y, -m_boxSize.z, 2) / 2.0f));
+		Vector3 v8 = Vector3(matrix * (glm::vec4(m_boxSize.x, m_boxSize.y, m_boxSize.z, 2) / 2.0f));
 
 		v1.x = -v1.x;
 		v2.x = -v2.x;
@@ -239,11 +239,11 @@ void ParticleSystem::ResetParticle(Particle& particle, bool setIsDead)
 		// Fix particle speed
 		direction *= glm::vec3(scale.x, scale.y, scale.z);
 		// Apply the object rotation to the direction
-		particle.direction = glmObjectRotation * direction;
+		particle.direction = Vector3(glmObjectRotation * direction);
 	}
 	else
 	{
-		particle.direction = direction;
+		particle.direction = Vector3(direction);
 	}
 	if (m_randomRotation)
 	{

@@ -81,7 +81,12 @@ Vector2 Vector2::Normalize()
 
 float Vector2::Magnitude() const
 {
-	return sqrtf(powf(x, 2) + powf(y, 2));
+	return sqrtf(x * x + y * y);
+}
+
+float Vector2::SquaredMagnitude() const
+{
+	return x * x + y * y;
 }
 
 float Vector2::Distance(const Vector2& a, const Vector2& b)

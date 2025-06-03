@@ -41,11 +41,36 @@ public:
 		XASSERT(!std::isinf(y), "y is Inf");
 		XASSERT(!std::isinf(z), "z is Inf");
 	}
-	Vector3(const glm::vec3& glmVec3);
-	Vector3(const glm::vec4& glmVec4);
+	explicit Vector3(const glm::vec3& glmVec3);
+	explicit Vector3(const glm::vec4& glmVec4);
 	explicit Vector3(const float fillValue);
-	Vector3(const Vector2Int& vect);
-	Vector3(const Vector2& vect);
+	explicit Vector3(const Vector2Int& vect);
+	explicit Vector3(const Vector2& vect);
+
+	/**
+	* @brief Get the look rotation in degrees between two vectors
+	*/
+	static Vector3 LookAt(const Vector3& from, const Vector3& to);
+
+	/**
+	* @brief Distance between two vectors
+	*/
+	static float Distance(const Vector3& a, const Vector3& b);
+
+	/**
+	* @brief Linearly interpolates between vectors
+	*/
+	static Vector3 Lerp(const Vector3& a, const Vector3& b, const float t);
+
+	/**
+	* @brief Get the dot product of two vectors
+	*/
+	static float Dot(const Vector3& a, const Vector3& b);
+
+	/**
+	* @brief Get the cross product of two vectors
+	*/
+	static Vector3 Cross(const Vector3& a, const Vector3& b);
 
 	/**
 	* @brief Get the biggest value of the vector
@@ -64,27 +89,12 @@ public:
 	}
 
 	/**
-	* @brief Get the look rotation in degrees between two vectors
-	*/
-	static Vector3 LookAt(const Vector3& from, const Vector3& to);
-
-	/**
-	* @brief Distance between two vectors
-	*/
-	static float Distance(const Vector3& a, const Vector3& b);
-
-	/**
-	* @brief Linearly interpolates between vectors
-	*/
-	static Vector3 Lerp(const Vector3& a, const Vector3& b, const float t);
-
-	/**
-	* @brief Get this vector with a magnitude of 1 (Do not change vector values)
+	* @brief Get a copy of this vector with a magnitude of 1 (Does not change vector values)
 	*/
 	Vector3 Normalized() const;
 
 	/**
-	* @brief Makes this vector have a magnitude of 1 (Change vector values)
+	* @brief Makes this vector have a magnitude of 1 (Changes vector values)
 	*/
 	Vector3 Normalize();
 
@@ -96,15 +106,15 @@ public:
 	/**
 	* @brief Get the squared length of this vector
 	*/
-	float MagnitudeSquared() const;
+	float SquaredMagnitude() const;
 
 	/**
-	* @brief Get the dot product of this vector
+	* @brief Get the dot product of this vector with another vector
 	*/
 	float Dot(const Vector3& v) const;
 
 	/**
-	* @brief Get the cross product of this vector and another
+	* @brief Get the cross product of this vector with another vector
 	*/
 	Vector3 Cross(const Vector3& v) const;
 
@@ -112,16 +122,6 @@ public:
 	* @brief Return True is the vector has invalid values (NaN or Inf)
 	*/
 	bool HasInvalidValues() const;
-
-	/**
-	* @brief Get the dot product of two vectors
-	*/
-	static float Dot(const Vector3& a, const Vector3& b);
-
-	/**
-	* @brief Get the cross product of two vectors
-	*/
-	static Vector3 Cross(const Vector3& a, const Vector3& b);
 	
 	/**
 	* @brief Return a string representation of the vector
@@ -156,7 +156,7 @@ inline Vector3 operator-(const Vector3& vec)
 	return Vector3{ -vec.x, -vec.y, -vec.z };
 }
 
-inline Vector3 operator*(float value, const Vector3& vec)
+inline Vector3 operator*(const float value, const Vector3& vec)
 {
 	return Vector3{ vec.x * value, vec.y * value, vec.z * value };
 }
@@ -171,7 +171,7 @@ inline Vector3 operator*(const Vector3& vec, const float value)
 	return Vector3{ vec.x * value, vec.y * value, vec.z * value };
 }
 
-inline Vector3 operator/(float value, const Vector3& vec)
+inline Vector3 operator/(const float value, const Vector3& vec)
 {
 	return Vector3{ vec.x / value, vec.y / value, vec.z / value };
 }

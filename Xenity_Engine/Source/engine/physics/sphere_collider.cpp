@@ -83,7 +83,7 @@ void SphereCollider::OnDrawGizmosSelected()
 
 	const float maxScale = GetTransform()->GetScale().Max();
 	const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-	const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
+	const Vector3 newPos = Vector3(matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1));
 
 	Gizmo::DrawSphere(Vector3(-newPos.x, newPos.y, newPos.z), GetTransformRaw()->GetRotation(), m_size / 2 * maxScale);
 #endif
@@ -122,7 +122,7 @@ void SphereCollider::CreateCollision(bool forceCreation)
 	else
 	{
 		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-		const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, -m_offset.z, 1);
+		const Vector3 newPos = Vector3(matrix * glm::vec4(-m_offset.x, m_offset.y, -m_offset.z, 1));
 
 		const Quaternion& rot = GetTransform()->GetRotation();
 
@@ -174,7 +174,7 @@ void SphereCollider::OnTransformUpdated()
 		const Transform& transform = *GetTransform();
 
 		const glm::mat4x4& matrix = transform.GetTransformationMatrix();
-		const Vector3 newPos = matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1);
+		const Vector3 newPos = Vector3(matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1));
 
 		m_bulletCollisionObject->setWorldTransform(btTransform(
 			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),

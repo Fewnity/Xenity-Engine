@@ -23,8 +23,18 @@ public:
 	Vector2();
 	explicit Vector2(const float x, const float y);
 	explicit Vector2(const float fillValue);
-	Vector2(const Vector3& vect);
-	Vector2(const Vector2Int& vect);
+	explicit Vector2(const Vector3& vect);
+	explicit Vector2(const Vector2Int& vect);
+
+	/**
+	* @brief Distance between two vectors
+	*/
+	static float Distance(const Vector2& a, const Vector2& b);
+
+	/**
+	* @brief Linearly interpolates between vectors
+	*/
+	static Vector2 Lerp(const Vector2& a, const Vector2& b, const float t);
 
 	/**
 	* @brief Get the biggest value of the vector
@@ -43,16 +53,6 @@ public:
 	}
 
 	/**
-	* @brief Distance between two vectors
-	*/
-	static float Distance(const Vector2& a, const Vector2& b);
-
-	/**
-	* @brief Linearly interpolates between vectors
-	*/
-	static Vector2 Lerp(const Vector2& a, const Vector2& b, const float t);
-
-	/**
 	* @brief Get this vector with a magnitude of 1 (Do not change vector values)
 	*/
 	Vector2 Normalized() const;
@@ -66,6 +66,11 @@ public:
 	* @brief Get the length of this vector
 	*/
 	float Magnitude() const;
+
+	/**
+	* @brief Get the squared length of this vector
+	*/
+	float SquaredMagnitude() const;
 
 	/**
 	* @brief Return True is the vector has invalid values (NaN or Inf)
@@ -90,6 +95,11 @@ inline Vector2 operator+(const Vector2& left, const Vector2& right)
 inline Vector2 operator-(const Vector2& left, const Vector2& right)
 {
 	return Vector2{ left.x - right.x, left.y - right.y };
+}
+
+inline Vector2 operator-(const Vector2& vec)
+{
+	return Vector2{ -vec.x, -vec.y };
 }
 
 inline Vector2 operator*(const float value, const Vector2& vec)
