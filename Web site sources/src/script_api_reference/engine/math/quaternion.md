@@ -267,3 +267,12 @@ a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
 Debug::Print(a.ToString());
 // Prints "{x:0.6860413 y:0.3493627 z:0.4916947 w:0.4068529}"
 ```
+
+## Operators
+
+```cpp
+Quaternion operator*(const Quaternion& left, const Quaternion& right)
+Vector3 operator*(const Quaternion& left, const Vector3& right) // From vector3.h
+bool operator==(const Quaternion& left, const Quaternion& right)
+bool operator!=(const Quaternion& left, const Quaternion& right)
+```

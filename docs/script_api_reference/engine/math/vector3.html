@@ -309,6 +309,193 @@ Vector3 vec = Vector3(vec2int);
 // Y = 2.0f
 // Z = 0.0f
 </code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<h3 id="max"><a class="header" href="#max">Max</a></h3>
+<p>Get the biggest value of the vector.</p>
+<pre><code class="language-cpp">float Max()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 3.0f, 2.0f);
+float maxValue = vec.Max(); // = 3.0f
+</code></pre>
+<h3 id="min"><a class="header" href="#min">Min</a></h3>
+<p>Get the smallest value of the vector.</p>
+<pre><code class="language-cpp">float Min()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 3.0f, 2.0f);
+float maxValue = vec.Min(); // = 1.0f
+</code></pre>
+<h3 id="normalized"><a class="header" href="#normalized">Normalized</a></h3>
+<p>Get a copy of this vector with a magnitude of 1 (Does not change vector values).</p>
+<pre><code class="language-cpp">Vector3 Normalized() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 normalizedVec = vec.Normalized();
+</code></pre>
+<h3 id="normalize"><a class="header" href="#normalize">Normalize</a></h3>
+<p>Makes this vector have a magnitude of 1 (Changes vector values).</p>
+<pre><code class="language-cpp">Vector3 Normalize()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 1.0f, 3.0f);
+vec.Normalize();
+</code></pre>
+<h3 id="magnitude"><a class="header" href="#magnitude">Magnitude</a></h3>
+<p>Get the length of this vector.</p>
+<pre><code class="language-cpp">float Magnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+float magnitude vec.Magnitude();
+</code></pre>
+<h3 id="squaredmagnitude"><a class="header" href="#squaredmagnitude">SquaredMagnitude</a></h3>
+<p>Get the squared length of this vector.</p>
+<pre><code class="language-cpp">float SquaredMagnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+float squaredMagnitude vec.SquaredMagnitude();
+</code></pre>
+<h3 id="dot"><a class="header" href="#dot">Dot</a></h3>
+<p>Get the dot product of this vector with another vector.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>v</code>: Other vector</li>
+</ul>
+<pre><code class="language-cpp">float Dot(const Vector3&amp; v) const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 vec2 = Vector3(2.0f, 2.0f, 4.0f);
+float dotResult vec.Dot(vec2);
+</code></pre>
+<h3 id="cross"><a class="header" href="#cross">Cross</a></h3>
+<p>Get the cross product of this vector with another vector.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>v</code>: Other vector</li>
+</ul>
+<pre><code class="language-cpp">Vector3 Cross(const Vector3&amp; v) const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 vec2 = Vector3(2.0f, 2.0f, 4.0f);
+Vector3 crossResult vec.Cross(vec2);
+</code></pre>
+<h3 id="hasinvalidvalues"><a class="header" href="#hasinvalidvalues">HasInvalidValues</a></h3>
+<p>Return True is the vector has invalid values (NaN or Inf).</p>
+<pre><code class="language-cpp">bool HasInvalidValues() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity(), 3.0f); // This will raise an assert in debug to avoid using nan or inf values
+bool valid = vec-&gt;HasInvalidValues();
+</code></pre>
+<h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
+<p>Return a string representation of the vector like "{x:1.0, y:2.0, z:3.0}"</p>
+<pre><code class="language-cpp">bool ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Debug::Print(vec-&gt;ToString()); // Prints "{x:1.0, y:2.0, z:3.0}"
+</code></pre>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<h3 id="dot-1"><a class="header" href="#dot-1">Dot</a></h3>
+<p>Get the dot product of two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Sedond vector</li>
+</ul>
+<pre><code class="language-cpp">float Dot(const Vector3&amp; a, const Vector3&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 vec2 = Vector3(2.0f, 2.0f, 4.0f);
+float dotResult Vector3::Dot(vec, vec2);
+</code></pre>
+<h3 id="cross-1"><a class="header" href="#cross-1">Cross</a></h3>
+<p>Get the cross product of two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Sedond vector</li>
+</ul>
+<pre><code class="language-cpp">Vector3 Cross(const Vector3&amp; a, const Vector3&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 vec2 = Vector3(2.0f, 2.0f, 4.0f);
+Vector3 crossResult Vector3::Cross(vec, vec2);
+</code></pre>
+<h3 id="lerp"><a class="header" href="#lerp">Lerp</a></h3>
+<p>Linearly interpolates between vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+<li><code>t</code>: Interpolation factor (0.0f to 1.0f)</li>
+</ul>
+<pre><code class="language-cpp">Vector3 Lerp(const Vector3&amp; a, const Vector3&amp; b, const float t)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 a = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 b = Vector3(2.0f, 2.0f, 4.0f);
+Vector3 mix = Vector3::Lerp(a, b, 0.5f); // Mix of A and B
+Vector3 lerp0 = Vector3::Lerp(a, b, 0.0f); // Equals A
+Vector3 lerp1 = Vector3::Lerp(a, b, 1.0f); // Equals B
+</code></pre>
+<h3 id="distance"><a class="header" href="#distance">Distance</a></h3>
+<p>Distance between two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+</ul>
+<pre><code class="language-cpp">float Distance(const Vector3&amp; a, const Vector3&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 a = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 b = Vector3(2.0f, 2.0f, 4.0f);
+float distance = Vector3::Distance(a, b);
+</code></pre>
+<h3 id="lookat"><a class="header" href="#lookat">LookAt</a></h3>
+<p>Get the look rotation in degrees between two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>from</code>: First vector</li>
+<li><code>to</code>: Target position</li>
+</ul>
+<pre><code class="language-cpp">Vector3 LookAt(const Vector3&amp; from, const Vector3&amp; to)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 from = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 to = Vector3(2.0f, 2.0f, 4.0f);
+Vector3 rotation = Vector3::LookAt(a, b);
+</code></pre>
+<h2 id="operators"><a class="header" href="#operators">Operators</a></h2>
+<pre><code class="language-cpp">Vector3 operator+(const Vector3&amp; left, const Vector3&amp; right)
+Vector3 operator-(const Vector3&amp; left, const Vector3&amp; right)
+Vector3 operator-(const Vector3&amp; vec)
+Vector3 operator*(const float value, const Vector3&amp; vec)
+Vector3 operator*(const Vector3&amp; left, const Vector3&amp; right)
+Vector3 operator*(const Vector3&amp; vec, const float value)
+Vector3 operator*(const Quaternion&amp; left, const Vector3&amp; right)
+Vector3 operator/(const float value, const Vector3&amp; vec)
+Vector3 operator/(const Vector3&amp; vec, const float value)
+Vector3 operator/(const Vector3&amp; left, const Vector3&amp; right)
+Vector3&amp; operator+=(Vector3&amp; vec, const float value)
+Vector3&amp; operator-=(Vector3&amp; vec, const float value)
+Vector3&amp; operator*=(Vector3&amp; vec, const float value)
+Vector3&amp; operator/=(Vector3&amp; vec, const float value)
+Vector3&amp; operator+=(Vector3&amp; vec, const Vector3&amp; vecRight)
+Vector3&amp; operator-=(Vector3&amp; vec, const Vector3&amp; vecRight)
+Vector3&amp; operator*=(Vector3&amp; vec, const Vector3&amp; vecRight)
+Vector3&amp; operator/=(Vector3&amp; vec, const Vector3&amp; vecRight)
+bool operator==(const Vector3&amp; left, const Vector3&amp; right)
+bool operator!=(const Vector3&amp; left, const Vector3&amp; right)
+</code></pre>
 
                     </main>
 

@@ -305,6 +305,124 @@ Vector2 vec = Vector2(vec2int);
 // X = 1.0f
 // Y = 2.0f
 </code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<h3 id="max"><a class="header" href="#max">Max</a></h3>
+<p>Get the biggest value of the vector.</p>
+<pre><code class="language-cpp">float Max()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 3.0f);
+float maxValue = vec.Max(); // = 3.0f
+</code></pre>
+<h3 id="min"><a class="header" href="#min">Min</a></h3>
+<p>Get the smallest value of the vector.</p>
+<pre><code class="language-cpp">float Min()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 3.0f);
+float maxValue = vec.Min(); // = 1.0f
+</code></pre>
+<h3 id="normalized"><a class="header" href="#normalized">Normalized</a></h3>
+<p>Get a copy of this vector with a magnitude of 1 (Does not change vector values).</p>
+<pre><code class="language-cpp">Vector2 Normalized() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+Vector2 normalizedVec = vec.Normalized();
+</code></pre>
+<h3 id="normalize"><a class="header" href="#normalize">Normalize</a></h3>
+<p>Makes this vector have a magnitude of 1 (Changes vector values).</p>
+<pre><code class="language-cpp">Vector2 Normalize()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+vec.Normalize();
+</code></pre>
+<h3 id="magnitude"><a class="header" href="#magnitude">Magnitude</a></h3>
+<p>Get the length of this vector.</p>
+<pre><code class="language-cpp">float Magnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+float magnitude vec.Magnitude();
+</code></pre>
+<h3 id="squaredmagnitude"><a class="header" href="#squaredmagnitude">SquaredMagnitude</a></h3>
+<p>Get the squared length of this vector.</p>
+<pre><code class="language-cpp">float SquaredMagnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+float squaredMagnitude vec.SquaredMagnitude();
+</code></pre>
+<h3 id="hasinvalidvalues"><a class="header" href="#hasinvalidvalues">HasInvalidValues</a></h3>
+<p>Return True is the vector has invalid values (NaN or Inf).</p>
+<pre><code class="language-cpp">bool HasInvalidValues() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity()); // This will raise an assert in debug to avoid using nan or inf values
+bool valid = vec-&gt;HasInvalidValues();
+</code></pre>
+<h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
+<p>Return a string representation of the vector like "{x:1.0, y:2.0}"</p>
+<pre><code class="language-cpp">bool ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+Debug::Print(vec-&gt;ToString()); // Prints "{x:1.0, y:2.0}"
+</code></pre>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<h3 id="lerp"><a class="header" href="#lerp">Lerp</a></h3>
+<p>Linearly interpolates between vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+<li><code>t</code>: Interpolation factor (0.0f to 1.0f)</li>
+</ul>
+<pre><code class="language-cpp">Vector2 Lerp(const Vector2&amp; a, const Vector2&amp; b, const float t)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 a = Vector2(1.0f, 3.0f);
+Vector2 b = Vector2(2.0f, 2.0f);
+Vector2 mix = Vector2::Lerp(a, b, 0.5f); // Mix of A and B
+Vector2 lerp0 = Vector2::Lerp(a, b, 0.0f); // Equals A
+Vector2 lerp1 = Vector2::Lerp(a, b, 1.0f); // Equals B
+</code></pre>
+<h3 id="distance"><a class="header" href="#distance">Distance</a></h3>
+<p>Distance between two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+</ul>
+<pre><code class="language-cpp">float Distance(const Vector2&amp; a, const Vector2&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 a = Vector2Int(1.0f, 3.0f);
+Vector2 b = Vector2Int(2.0f, 2.0f);
+float distance = Vector2::Distance(a, b);
+</code></pre>
+<h2 id="operators"><a class="header" href="#operators">Operators</a></h2>
+<pre><code class="language-cpp">Vector2 operator+(const Vector2&amp; left, const Vector2&amp; right)
+Vector2 operator-(const Vector2&amp; left, const Vector2&amp; right)
+Vector2 operator-(const Vector2&amp; vec)
+Vector2 operator*(const float value, const Vector2&amp; vec)
+Vector2 operator*(const Vector2&amp; left, const Vector2&amp; right)
+Vector2 operator*(const Vector2&amp; vec, const float value)
+Vector2 operator/(const float value, const Vector2&amp; vec)
+Vector2 operator/(const Vector2&amp; vec, const float value)
+Vector2 operator/(const Vector2&amp; left, const Vector2&amp; right)
+Vector2&amp; operator+=(Vector2&amp; vec, const float value)
+Vector2&amp; operator-=(Vector2&amp; vec, const float value)
+Vector2&amp; operator*=(Vector2&amp; vec, const float value)
+Vector2&amp; operator/=(Vector2&amp; vec, const float value)
+Vector2&amp; operator+=(Vector2&amp; vec, const Vector2&amp; vecRight)
+Vector2&amp; operator-=(Vector2&amp; vec, const Vector2&amp; vecRight)
+Vector2&amp; operator*=(Vector2&amp; vec, const Vector2&amp; vecRight)
+Vector2&amp; operator/=(Vector2&amp; vec, const Vector2&amp; vecRight)
+bool operator==(const Vector2&amp; left, const Vector2&amp; right)
+bool operator!=(const Vector2&amp; left, const Vector2&amp; right)
+</code></pre>
 
                     </main>
 

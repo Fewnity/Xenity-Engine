@@ -5,6 +5,7 @@ Xenity Engine is a crossplatform game engine based on GameObjects and Components
 [GitHub page here!](https://github.com/Fewnity/Xenity-Engine)
 
 ![image](images/editor_screenshot.png)
+_It's pink but you can change the color!_
 
 ### Supported platforms:<br>
 ✔️ Supported<br>
@@ -38,3 +39,5 @@ Features:
 > - Deleting Meta files will have repercussions on your project. Variables that reference the files will be emptied.
 > - Duplicating a meta file will cause problems, each meta file has a unique file id in it.
 > - Audio works "fine" with 44100Hz but on PS3 you need to use 48000Hz audio.
+
+You can see all limitations [here](./limitations.md).

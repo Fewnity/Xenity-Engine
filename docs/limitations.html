@@ -235,12 +235,17 @@
 
 </style>
 <h1 id="limitations"><a class="header" href="#limitations">Limitations</a></h1>
+<p>Here is a list of every limitations of the game engine. These can be limitations for the user or for the game engine developpers.</p>
 <h2 id="for-users"><a class="header" href="#for-users">For users</a></h2>
+<h3 id="editor-ui"><a class="header" href="#editor-ui">Editor UI</a></h3>
+<p>Multi selection is not supported.</p>
+<h3 id="in-game-ui"><a class="header" href="#in-game-ui">In game UI</a></h3>
+<p>There is no image and button component.</p>
 <h3 id="lighting"><a class="header" href="#lighting">Lighting</a></h3>
 <p>Lighting does not work great on PsVita and PS3. A shader variant system could fix this.</p>
 <ul>
-<li>Performances are not great</li>
-<li>Lights on PS3 are limited by 1 on each type</li>
+<li>Performances are not great,</li>
+<li>Lights on PS3 are limited by 1 on each type.</li>
 </ul>
 <p>Objects with a big scale will cause lags if they are moving (Problem caused the light world partitionner).</p>
 <h3 id="audio"><a class="header" href="#audio">Audio</a></h3>
@@ -248,13 +253,16 @@
 <h3 id="rendering"><a class="header" href="#rendering">Rendering</a></h3>
 <p>The engine is mono thread, so performances are not great with lot of objects.</p>
 <p>There is not split screen support.</p>
+<h3 id="2d"><a class="header" href="#2d">2D</a></h3>
+<p>2D performances are not great.</p>
 <h3 id="networking"><a class="header" href="#networking">Networking</a></h3>
-<p>Network sockets get data only every frame. (Limitation easy to fix).<br>
-There is no way to know if a socket has been closed or not.</p>
+<p>Network sockets get data only every frame. (Limitation easy to fix).</p>
+<p>There is no way to know if a socket has been closed or not.</p>
 <h3 id="reflection"><a class="header" href="#reflection">Reflection</a></h3>
 <p>The reflection does not support many types.</p>
 <h3 id="physics"><a class="header" href="#physics">Physics</a></h3>
 <p>There is no layer system. So no system to disable collisions between some colliders.</p>
+<p>There is no 2D physics system.</p>
 <h2 id="for-xenity-maintainers"><a class="header" href="#for-xenity-maintainers">For Xenity maintainers</a></h2>
 <h3 id="rendering-1"><a class="header" href="#rendering-1">Rendering</a></h3>
 <p>The graphics API interface is OpenGL like, so it's harder to add an new API that is different from OpenGL.</p>

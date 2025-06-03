@@ -238,7 +238,8 @@
 <h1 id="presentation-of-xenity-engine"><a class="header" href="#presentation-of-xenity-engine">Presentation of Xenity Engine</a></h1>
 <p>Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows.</p>
 <p><a href="https://github.com/Fewnity/Xenity-Engine">GitHub page here!</a></p>
-<p><img src="images/editor_screenshot.png" alt="image" /></p>
+<p><img src="images/editor_screenshot.png" alt="image" />
+<em>It's pink but you can change the color!</em></p>
 <h3 id="supported-platforms"><a class="header" href="#supported-platforms">Supported platforms:<br></a></h3>
 <p>✔️ Supported<br>
 🚧 Work In Progress<br>
@@ -288,6 +289,7 @@ C++ Plugins (Started but not finished)</li>
 <li>Audio works "fine" with 44100Hz but on PS3 you need to use 48000Hz audio.</li>
 </ul>
 </div>
+<p>You can see all limitations <a href="./limitations.html">here</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -356,12 +358,17 @@ C++ Plugins (Started but not finished)</li>
 
 </style>
 <h1 id="limitations"><a class="header" href="#limitations">Limitations</a></h1>
+<p>Here is a list of every limitations of the game engine. These can be limitations for the user or for the game engine developpers.</p>
 <h2 id="for-users"><a class="header" href="#for-users">For users</a></h2>
+<h3 id="editor-ui"><a class="header" href="#editor-ui">Editor UI</a></h3>
+<p>Multi selection is not supported.</p>
+<h3 id="in-game-ui"><a class="header" href="#in-game-ui">In game UI</a></h3>
+<p>There is no image and button component.</p>
 <h3 id="lighting"><a class="header" href="#lighting">Lighting</a></h3>
 <p>Lighting does not work great on PsVita and PS3. A shader variant system could fix this.</p>
 <ul>
-<li>Performances are not great</li>
-<li>Lights on PS3 are limited by 1 on each type</li>
+<li>Performances are not great,</li>
+<li>Lights on PS3 are limited by 1 on each type.</li>
 </ul>
 <p>Objects with a big scale will cause lags if they are moving (Problem caused the light world partitionner).</p>
 <h3 id="audio"><a class="header" href="#audio">Audio</a></h3>
@@ -369,13 +376,16 @@ C++ Plugins (Started but not finished)</li>
 <h3 id="rendering"><a class="header" href="#rendering">Rendering</a></h3>
 <p>The engine is mono thread, so performances are not great with lot of objects.</p>
 <p>There is not split screen support.</p>
+<h3 id="2d"><a class="header" href="#2d">2D</a></h3>
+<p>2D performances are not great.</p>
 <h3 id="networking"><a class="header" href="#networking">Networking</a></h3>
-<p>Network sockets get data only every frame. (Limitation easy to fix).<br>
-There is no way to know if a socket has been closed or not.</p>
+<p>Network sockets get data only every frame. (Limitation easy to fix).</p>
+<p>There is no way to know if a socket has been closed or not.</p>
 <h3 id="reflection"><a class="header" href="#reflection">Reflection</a></h3>
 <p>The reflection does not support many types.</p>
 <h3 id="physics"><a class="header" href="#physics">Physics</a></h3>
 <p>There is no layer system. So no system to disable collisions between some colliders.</p>
+<p>There is no 2D physics system.</p>
 <h2 id="for-xenity-maintainers"><a class="header" href="#for-xenity-maintainers">For Xenity maintainers</a></h2>
 <h3 id="rendering-1"><a class="header" href="#rendering-1">Rendering</a></h3>
 <p>The graphics API interface is OpenGL like, so it's harder to add an new API that is different from OpenGL.</p>
@@ -7749,6 +7759,12 @@ a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
 Debug::Print(a.ToString());
 // Prints "{x:0.6860413 y:0.3493627 z:0.4916947 w:0.4068529}"
 </code></pre>
+<h2 id="operators"><a class="header" href="#operators">Operators</a></h2>
+<pre><code class="language-cpp">Quaternion operator*(const Quaternion&amp; left, const Quaternion&amp; right)
+Vector3 operator*(const Quaternion&amp; left, const Vector3&amp; right) // From vector3.h
+bool operator==(const Quaternion&amp; left, const Quaternion&amp; right)
+bool operator!=(const Quaternion&amp; left, const Quaternion&amp; right)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7887,6 +7903,124 @@ Vector2 vec = Vector2(vec2int);
 // X = 1.0f
 // Y = 2.0f
 </code></pre>
+<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
+<h3 id="max"><a class="header" href="#max">Max</a></h3>
+<p>Get the biggest value of the vector.</p>
+<pre><code class="language-cpp">float Max()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 3.0f);
+float maxValue = vec.Max(); // = 3.0f
+</code></pre>
+<h3 id="min"><a class="header" href="#min">Min</a></h3>
+<p>Get the smallest value of the vector.</p>
+<pre><code class="language-cpp">float Min()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 3.0f);
+float maxValue = vec.Min(); // = 1.0f
+</code></pre>
+<h3 id="normalized-1"><a class="header" href="#normalized-1">Normalized</a></h3>
+<p>Get a copy of this vector with a magnitude of 1 (Does not change vector values).</p>
+<pre><code class="language-cpp">Vector2 Normalized() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+Vector2 normalizedVec = vec.Normalized();
+</code></pre>
+<h3 id="normalize-1"><a class="header" href="#normalize-1">Normalize</a></h3>
+<p>Makes this vector have a magnitude of 1 (Changes vector values).</p>
+<pre><code class="language-cpp">Vector2 Normalize()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+vec.Normalize();
+</code></pre>
+<h3 id="magnitude"><a class="header" href="#magnitude">Magnitude</a></h3>
+<p>Get the length of this vector.</p>
+<pre><code class="language-cpp">float Magnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+float magnitude vec.Magnitude();
+</code></pre>
+<h3 id="squaredmagnitude"><a class="header" href="#squaredmagnitude">SquaredMagnitude</a></h3>
+<p>Get the squared length of this vector.</p>
+<pre><code class="language-cpp">float SquaredMagnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+float squaredMagnitude vec.SquaredMagnitude();
+</code></pre>
+<h3 id="hasinvalidvalues"><a class="header" href="#hasinvalidvalues">HasInvalidValues</a></h3>
+<p>Return True is the vector has invalid values (NaN or Inf).</p>
+<pre><code class="language-cpp">bool HasInvalidValues() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity()); // This will raise an assert in debug to avoid using nan or inf values
+bool valid = vec-&gt;HasInvalidValues();
+</code></pre>
+<h3 id="tostring-3"><a class="header" href="#tostring-3">ToString</a></h3>
+<p>Return a string representation of the vector like "{x:1.0, y:2.0}"</p>
+<pre><code class="language-cpp">bool ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
+Debug::Print(vec-&gt;ToString()); // Prints "{x:1.0, y:2.0}"
+</code></pre>
+<h2 id="static-methods-9"><a class="header" href="#static-methods-9">Static methods</a></h2>
+<h3 id="lerp-1"><a class="header" href="#lerp-1">Lerp</a></h3>
+<p>Linearly interpolates between vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+<li><code>t</code>: Interpolation factor (0.0f to 1.0f)</li>
+</ul>
+<pre><code class="language-cpp">Vector2 Lerp(const Vector2&amp; a, const Vector2&amp; b, const float t)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 a = Vector2(1.0f, 3.0f);
+Vector2 b = Vector2(2.0f, 2.0f);
+Vector2 mix = Vector2::Lerp(a, b, 0.5f); // Mix of A and B
+Vector2 lerp0 = Vector2::Lerp(a, b, 0.0f); // Equals A
+Vector2 lerp1 = Vector2::Lerp(a, b, 1.0f); // Equals B
+</code></pre>
+<h3 id="distance"><a class="header" href="#distance">Distance</a></h3>
+<p>Distance between two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+</ul>
+<pre><code class="language-cpp">float Distance(const Vector2&amp; a, const Vector2&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2 a = Vector2Int(1.0f, 3.0f);
+Vector2 b = Vector2Int(2.0f, 2.0f);
+float distance = Vector2::Distance(a, b);
+</code></pre>
+<h2 id="operators-1"><a class="header" href="#operators-1">Operators</a></h2>
+<pre><code class="language-cpp">Vector2 operator+(const Vector2&amp; left, const Vector2&amp; right)
+Vector2 operator-(const Vector2&amp; left, const Vector2&amp; right)
+Vector2 operator-(const Vector2&amp; vec)
+Vector2 operator*(const float value, const Vector2&amp; vec)
+Vector2 operator*(const Vector2&amp; left, const Vector2&amp; right)
+Vector2 operator*(const Vector2&amp; vec, const float value)
+Vector2 operator/(const float value, const Vector2&amp; vec)
+Vector2 operator/(const Vector2&amp; vec, const float value)
+Vector2 operator/(const Vector2&amp; left, const Vector2&amp; right)
+Vector2&amp; operator+=(Vector2&amp; vec, const float value)
+Vector2&amp; operator-=(Vector2&amp; vec, const float value)
+Vector2&amp; operator*=(Vector2&amp; vec, const float value)
+Vector2&amp; operator/=(Vector2&amp; vec, const float value)
+Vector2&amp; operator+=(Vector2&amp; vec, const Vector2&amp; vecRight)
+Vector2&amp; operator-=(Vector2&amp; vec, const Vector2&amp; vecRight)
+Vector2&amp; operator*=(Vector2&amp; vec, const Vector2&amp; vecRight)
+Vector2&amp; operator/=(Vector2&amp; vec, const Vector2&amp; vecRight)
+bool operator==(const Vector2&amp; left, const Vector2&amp; right)
+bool operator!=(const Vector2&amp; left, const Vector2&amp; right)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -8024,6 +8158,99 @@ Vector2Int vec = Vector2Int(vec3);
 Vector2Int vec = Vector2Int(vec2);
 // X = 1
 // Y = 2
+</code></pre>
+<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
+<h3 id="max-1"><a class="header" href="#max-1">Max</a></h3>
+<p>Get the biggest value of the vector.</p>
+<pre><code class="language-cpp">float Max()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 3);
+float maxValue = vec.Max(); // = 3.0f
+</code></pre>
+<h3 id="min-1"><a class="header" href="#min-1">Min</a></h3>
+<p>Get the smallest value of the vector.</p>
+<pre><code class="language-cpp">float Min()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 3);
+float maxValue = vec.Min(); // = 1.0f
+</code></pre>
+<h3 id="normalized-2"><a class="header" href="#normalized-2">Normalized</a></h3>
+<p>Get a copy of this vector with a magnitude of 1 (Does not change vector values).</p>
+<pre><code class="language-cpp">Vector2Int Normalized() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
+Vector2Int normalizedVec = vec.Normalized();
+</code></pre>
+<h3 id="normalize-2"><a class="header" href="#normalize-2">Normalize</a></h3>
+<p>Makes this vector have a magnitude of 1 (Changes vector values).</p>
+<pre><code class="language-cpp">Vector2Int Normalize()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
+vec.Normalize();
+</code></pre>
+<h3 id="magnitude-1"><a class="header" href="#magnitude-1">Magnitude</a></h3>
+<p>Get the length of this vector.</p>
+<pre><code class="language-cpp">float Magnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
+float magnitude vec.Magnitude();
+</code></pre>
+<h3 id="squaredmagnitude-1"><a class="header" href="#squaredmagnitude-1">SquaredMagnitude</a></h3>
+<p>Get the squared length of this vector.</p>
+<pre><code class="language-cpp">float SquaredMagnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
+float squaredMagnitude vec.SquaredMagnitude();
+</code></pre>
+<h3 id="tostring-4"><a class="header" href="#tostring-4">ToString</a></h3>
+<p>Return a string representation of the vector like "{x:1, y:2}"</p>
+<pre><code class="language-cpp">bool ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
+Debug::Print(vec-&gt;ToString()); // Prints "{x:1, y:2}"
+</code></pre>
+<h2 id="static-methods-10"><a class="header" href="#static-methods-10">Static methods</a></h2>
+<h3 id="distance-1"><a class="header" href="#distance-1">Distance</a></h3>
+<p>Distance between two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+</ul>
+<pre><code class="language-cpp">float Distance(const Vector2Int&amp; a, const Vector2Int&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector2Int a = Vector2Int(1, 3);
+Vector2Int b = Vector2Int(2, 2);
+float distance = Vector2Int::Distance(a, b);
+</code></pre>
+<h2 id="operators-2"><a class="header" href="#operators-2">Operators</a></h2>
+<pre><code class="language-cpp">Vector2Int operator+(const Vector2Int&amp; left, const Vector2Int&amp; right)
+Vector2Int operator-(const Vector2Int&amp; left, const Vector2Int&amp; right)
+Vector2Int operator-(const Vector2Int&amp; vec)
+Vector2Int operator*(const float value, const Vector2Int&amp; vec)
+Vector2Int operator*(const Vector2Int&amp; left, const Vector2Int&amp; right)
+Vector2Int operator*(const Vector2Int&amp; vec, const float value)
+Vector2Int operator/(const float value, const Vector2Int&amp; vec)
+Vector2Int operator/(const Vector2Int&amp; vec, const float value)
+Vector2Int operator/(const Vector2Int&amp; left, const Vector2Int&amp; right)
+Vector2Int&amp; operator+=(Vector2Int&amp; vec, const float value)
+Vector2Int&amp; operator-=(Vector2Int&amp; vec, const float value)
+Vector2Int&amp; operator*=(Vector2Int&amp; vec, const float value)
+Vector2Int&amp; operator/=(Vector2Int&amp; vec, const float value)
+Vector2Int&amp; operator+=(Vector2Int&amp; vec, const Vector2Int&amp; vecRight)
+Vector2Int&amp; operator-=(Vector2Int&amp; vec, const Vector2Int&amp; vecRight)
+Vector2Int&amp; operator*=(Vector2Int&amp; vec, const Vector2Int&amp; vecRight)
+Vector2Int&amp; operator/=(Vector2Int&amp; vec, const Vector2Int&amp; vecRight)
+bool operator==(const Vector2Int&amp; left, const Vector2Int&amp; right)
+bool operator!=(const Vector2Int&amp; left, const Vector2Int&amp; right)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -8166,6 +8393,193 @@ Vector3 vec = Vector3(vec2int);
 // X = 1.0f
 // Y = 2.0f
 // Z = 0.0f
+</code></pre>
+<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
+<h3 id="max-2"><a class="header" href="#max-2">Max</a></h3>
+<p>Get the biggest value of the vector.</p>
+<pre><code class="language-cpp">float Max()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 3.0f, 2.0f);
+float maxValue = vec.Max(); // = 3.0f
+</code></pre>
+<h3 id="min-2"><a class="header" href="#min-2">Min</a></h3>
+<p>Get the smallest value of the vector.</p>
+<pre><code class="language-cpp">float Min()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 3.0f, 2.0f);
+float maxValue = vec.Min(); // = 1.0f
+</code></pre>
+<h3 id="normalized-3"><a class="header" href="#normalized-3">Normalized</a></h3>
+<p>Get a copy of this vector with a magnitude of 1 (Does not change vector values).</p>
+<pre><code class="language-cpp">Vector3 Normalized() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 normalizedVec = vec.Normalized();
+</code></pre>
+<h3 id="normalize-3"><a class="header" href="#normalize-3">Normalize</a></h3>
+<p>Makes this vector have a magnitude of 1 (Changes vector values).</p>
+<pre><code class="language-cpp">Vector3 Normalize()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 1.0f, 3.0f);
+vec.Normalize();
+</code></pre>
+<h3 id="magnitude-2"><a class="header" href="#magnitude-2">Magnitude</a></h3>
+<p>Get the length of this vector.</p>
+<pre><code class="language-cpp">float Magnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+float magnitude vec.Magnitude();
+</code></pre>
+<h3 id="squaredmagnitude-2"><a class="header" href="#squaredmagnitude-2">SquaredMagnitude</a></h3>
+<p>Get the squared length of this vector.</p>
+<pre><code class="language-cpp">float SquaredMagnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+float squaredMagnitude vec.SquaredMagnitude();
+</code></pre>
+<h3 id="dot-1"><a class="header" href="#dot-1">Dot</a></h3>
+<p>Get the dot product of this vector with another vector.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>v</code>: Other vector</li>
+</ul>
+<pre><code class="language-cpp">float Dot(const Vector3&amp; v) const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 vec2 = Vector3(2.0f, 2.0f, 4.0f);
+float dotResult vec.Dot(vec2);
+</code></pre>
+<h3 id="cross"><a class="header" href="#cross">Cross</a></h3>
+<p>Get the cross product of this vector with another vector.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>v</code>: Other vector</li>
+</ul>
+<pre><code class="language-cpp">Vector3 Cross(const Vector3&amp; v) const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 vec2 = Vector3(2.0f, 2.0f, 4.0f);
+Vector3 crossResult vec.Cross(vec2);
+</code></pre>
+<h3 id="hasinvalidvalues-1"><a class="header" href="#hasinvalidvalues-1">HasInvalidValues</a></h3>
+<p>Return True is the vector has invalid values (NaN or Inf).</p>
+<pre><code class="language-cpp">bool HasInvalidValues() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity(), 3.0f); // This will raise an assert in debug to avoid using nan or inf values
+bool valid = vec-&gt;HasInvalidValues();
+</code></pre>
+<h3 id="tostring-5"><a class="header" href="#tostring-5">ToString</a></h3>
+<p>Return a string representation of the vector like "{x:1.0, y:2.0, z:3.0}"</p>
+<pre><code class="language-cpp">bool ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Debug::Print(vec-&gt;ToString()); // Prints "{x:1.0, y:2.0, z:3.0}"
+</code></pre>
+<h2 id="static-methods-11"><a class="header" href="#static-methods-11">Static methods</a></h2>
+<h3 id="dot-2"><a class="header" href="#dot-2">Dot</a></h3>
+<p>Get the dot product of two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Sedond vector</li>
+</ul>
+<pre><code class="language-cpp">float Dot(const Vector3&amp; a, const Vector3&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 vec2 = Vector3(2.0f, 2.0f, 4.0f);
+float dotResult Vector3::Dot(vec, vec2);
+</code></pre>
+<h3 id="cross-1"><a class="header" href="#cross-1">Cross</a></h3>
+<p>Get the cross product of two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Sedond vector</li>
+</ul>
+<pre><code class="language-cpp">Vector3 Cross(const Vector3&amp; a, const Vector3&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 vec2 = Vector3(2.0f, 2.0f, 4.0f);
+Vector3 crossResult Vector3::Cross(vec, vec2);
+</code></pre>
+<h3 id="lerp-2"><a class="header" href="#lerp-2">Lerp</a></h3>
+<p>Linearly interpolates between vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+<li><code>t</code>: Interpolation factor (0.0f to 1.0f)</li>
+</ul>
+<pre><code class="language-cpp">Vector3 Lerp(const Vector3&amp; a, const Vector3&amp; b, const float t)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 a = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 b = Vector3(2.0f, 2.0f, 4.0f);
+Vector3 mix = Vector3::Lerp(a, b, 0.5f); // Mix of A and B
+Vector3 lerp0 = Vector3::Lerp(a, b, 0.0f); // Equals A
+Vector3 lerp1 = Vector3::Lerp(a, b, 1.0f); // Equals B
+</code></pre>
+<h3 id="distance-2"><a class="header" href="#distance-2">Distance</a></h3>
+<p>Distance between two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+</ul>
+<pre><code class="language-cpp">float Distance(const Vector3&amp; a, const Vector3&amp; b)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 a = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 b = Vector3(2.0f, 2.0f, 4.0f);
+float distance = Vector3::Distance(a, b);
+</code></pre>
+<h3 id="lookat"><a class="header" href="#lookat">LookAt</a></h3>
+<p>Get the look rotation in degrees between two vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>from</code>: First vector</li>
+<li><code>to</code>: Target position</li>
+</ul>
+<pre><code class="language-cpp">Vector3 LookAt(const Vector3&amp; from, const Vector3&amp; to)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector3 from = Vector3(1.0f, 2.0f, 3.0f);
+Vector3 to = Vector3(2.0f, 2.0f, 4.0f);
+Vector3 rotation = Vector3::LookAt(a, b);
+</code></pre>
+<h2 id="operators-3"><a class="header" href="#operators-3">Operators</a></h2>
+<pre><code class="language-cpp">Vector3 operator+(const Vector3&amp; left, const Vector3&amp; right)
+Vector3 operator-(const Vector3&amp; left, const Vector3&amp; right)
+Vector3 operator-(const Vector3&amp; vec)
+Vector3 operator*(const float value, const Vector3&amp; vec)
+Vector3 operator*(const Vector3&amp; left, const Vector3&amp; right)
+Vector3 operator*(const Vector3&amp; vec, const float value)
+Vector3 operator*(const Quaternion&amp; left, const Vector3&amp; right)
+Vector3 operator/(const float value, const Vector3&amp; vec)
+Vector3 operator/(const Vector3&amp; vec, const float value)
+Vector3 operator/(const Vector3&amp; left, const Vector3&amp; right)
+Vector3&amp; operator+=(Vector3&amp; vec, const float value)
+Vector3&amp; operator-=(Vector3&amp; vec, const float value)
+Vector3&amp; operator*=(Vector3&amp; vec, const float value)
+Vector3&amp; operator/=(Vector3&amp; vec, const float value)
+Vector3&amp; operator+=(Vector3&amp; vec, const Vector3&amp; vecRight)
+Vector3&amp; operator-=(Vector3&amp; vec, const Vector3&amp; vecRight)
+Vector3&amp; operator*=(Vector3&amp; vec, const Vector3&amp; vecRight)
+Vector3&amp; operator/=(Vector3&amp; vec, const Vector3&amp; vecRight)
+bool operator==(const Vector3&amp; left, const Vector3&amp; right)
+bool operator!=(const Vector3&amp; left, const Vector3&amp; right)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -8328,6 +8742,110 @@ Vector4 vec = Vector4(vec2int);
 // Z = 0.0f
 // W = 0.0f
 </code></pre>
+<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
+<h3 id="max-3"><a class="header" href="#max-3">Max</a></h3>
+<p>Get the biggest value of the vector.</p>
+<pre><code class="language-cpp">float Max()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 3.0f, 4.0f, 2.0f);
+float maxValue = vec.Max(); // = 4.0f
+</code></pre>
+<h3 id="min-3"><a class="header" href="#min-3">Min</a></h3>
+<p>Get the smallest value of the vector.</p>
+<pre><code class="language-cpp">float Min()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 3.0f, 4.0f, 2.0f);
+float maxValue = vec.Min(); // = 1.0f
+</code></pre>
+<h3 id="normalized-4"><a class="header" href="#normalized-4">Normalized</a></h3>
+<p>Get a copy of this vector with a magnitude of 1 (Does not change vector values).</p>
+<pre><code class="language-cpp">Vector4 Normalized() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+Vector4 normalizedVec = vec.Normalized();
+</code></pre>
+<h3 id="normalize-4"><a class="header" href="#normalize-4">Normalize</a></h3>
+<p>Makes this vector have a magnitude of 1 (Changes vector values).</p>
+<pre><code class="language-cpp">Vector4 Normalize()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+vec.Normalize();
+</code></pre>
+<h3 id="magnitude-3"><a class="header" href="#magnitude-3">Magnitude</a></h3>
+<p>Get the length of this vector.</p>
+<pre><code class="language-cpp">float Magnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+float magnitude vec.Magnitude();
+</code></pre>
+<h3 id="squaredmagnitude-3"><a class="header" href="#squaredmagnitude-3">SquaredMagnitude</a></h3>
+<p>Get the squared length of this vector.</p>
+<pre><code class="language-cpp">float SquaredMagnitude() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+float squaredMagnitude vec.SquaredMagnitude();
+</code></pre>
+<h3 id="hasinvalidvalues-2"><a class="header" href="#hasinvalidvalues-2">HasInvalidValues</a></h3>
+<p>Return True is the vector has invalid values (NaN or Inf).</p>
+<pre><code class="language-cpp">bool HasInvalidValues() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity(), 3.0f, 4.0f); // This will raise an assert in debug to avoid using nan or inf values
+bool valid = vec-&gt;HasInvalidValues();
+</code></pre>
+<h3 id="tostring-6"><a class="header" href="#tostring-6">ToString</a></h3>
+<p>Return a string representation of the vector like "{x:1.0, y:2.0, z:3.0, w:4.0}"</p>
+<pre><code class="language-cpp">bool ToString() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
+Debug::Print(vec-&gt;ToString()); // Prints "{x:1.0, y:2.0, z:3.0, w:4.0}"
+</code></pre>
+<h2 id="static-methods-12"><a class="header" href="#static-methods-12">Static methods</a></h2>
+<h3 id="lerp-3"><a class="header" href="#lerp-3">Lerp</a></h3>
+<p>Linearly interpolates between vectors.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>a</code>: First vector</li>
+<li><code>b</code>: Second vector</li>
+<li><code>t</code>: Interpolation factor (0.0f to 1.0f)</li>
+</ul>
+<pre><code class="language-cpp">Vector4 Lerp(const Vector4&amp; a, const Vector4&amp; b, const float t)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 a = Vector4(1.0f, 3.0f, 2.0f, 6.0f);
+Vector4 b = Vector4(2.0f, 2.0f, 4.0f, 1.0f);
+Vector4 mix = Vector4::Lerp(a, b, 0.5f); // Mix of A and B
+Vector4 lerp0 = Vector4::Lerp(a, b, 0.0f); // Equals A
+Vector4 lerp1 = Vector4::Lerp(a, b, 1.0f); // Equals B
+</code></pre>
+<h2 id="operators-4"><a class="header" href="#operators-4">Operators</a></h2>
+<pre><code class="language-cpp">Vector4 operator+(const Vector4&amp; left, const Vector4&amp; right)
+Vector4 operator-(const Vector4&amp; left, const Vector4&amp; right)
+Vector4 operator-(const Vector4&amp; vec)
+Vector4 operator*(const float value, const Vector4&amp; vec)
+Vector4 operator*(const Vector4&amp; left, const Vector4&amp; right)
+Vector4 operator*(const Vector4&amp; vec, const float value)
+Vector4 operator/(const float value, const Vector4&amp; vec)
+Vector4 operator/(const Vector4&amp; vec, const float value)
+Vector4 operator/(const Vector4&amp; left, const Vector4&amp; right)
+Vector4&amp; operator+=(Vector4&amp; vec, const float value)
+Vector4&amp; operator-=(Vector4&amp; vec, const float value)
+Vector4&amp; operator*=(Vector4&amp; vec, const float value)
+Vector4&amp; operator/=(Vector4&amp; vec, const float value)
+Vector4&amp; operator+=(Vector4&amp; vec, const Vector4&amp; vecRight)
+Vector4&amp; operator-=(Vector4&amp; vec, const Vector4&amp; vecRight)
+Vector4&amp; operator*=(Vector4&amp; vec, const Vector4&amp; vecRight)
+Vector4&amp; operator/=(Vector4&amp; vec, const Vector4&amp; vecRight)
+bool operator==(const Vector4&amp; left, const Vector4&amp; right)
+bool operator!=(const Vector4&amp; left, const Vector4&amp; right)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -8469,7 +8987,7 @@ Vector4 vec = Vector4(vec2int);
 </code></pre>
 <h2 id="description-21"><a class="header" href="#description-21">Description</a></h2>
 <p>Class to create sockets and to manage networking settings.</p>
-<h2 id="static-methods-9"><a class="header" href="#static-methods-9">Static methods</a></h2>
+<h2 id="static-methods-13"><a class="header" href="#static-methods-13">Static methods</a></h2>
 <hr />
 <h3 id="createsocket"><a class="header" href="#createsocket">CreateSocket</a></h3>
 <p>Create a socket.<br>
@@ -8576,7 +9094,7 @@ For this, a menu of the PSP OS ask to the user to setup a network connection.</p
 <p>Class to send and received data to/from a server.<br>
 Created with the NetworkManager class.<br>
 The socket will be closed when the object is destroyed.</p>
-<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
+<h2 id="public-methods-11"><a class="header" href="#public-methods-11">Public methods</a></h2>
 <hr />
 <h3 id="senddata-string"><a class="header" href="#senddata-string">SendData (string)</a></h3>
 <p>Send data as a string to the server.</p>
@@ -8720,7 +9238,7 @@ if(socket)
 </code></pre>
 <h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
 <p>Class to generate 1D, 2D, 3D and 4D Perlin noise.</p>
-<h2 id="static-methods-10"><a class="header" href="#static-methods-10">Static methods</a></h2>
+<h2 id="static-methods-14"><a class="header" href="#static-methods-14">Static methods</a></h2>
 <hr />
 <h3 id="noise1d"><a class="header" href="#noise1d">Noise1D</a></h3>
 <p>Get 1D Perlin noise.</p>
@@ -9074,7 +9592,7 @@ Destroy(myGameObject);
 <h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
 <p>Parent class of collider components (BoxCollider, SphereCollider...).</p>
 <p>Function of Collider can be used on every colllider component.</p>
-<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
+<h2 id="public-methods-12"><a class="header" href="#public-methods-12">Public methods</a></h2>
 <hr />
 <h3 id="setistrigger"><a class="header" href="#setistrigger">SetIsTrigger</a></h3>
 <p>Set if the collider is a trigger or not.<br>
@@ -9274,7 +9792,7 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 </code></pre>
 <h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
 <p>Class to check collisions with a ray.</p>
-<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
+<h2 id="public-methods-13"><a class="header" href="#public-methods-13">Public methods</a></h2>
 <hr />
 <h3 id="check"><a class="header" href="#check">Check</a></h3>
 <p>Check if a ray hits a collider.<br>
@@ -9472,7 +9990,7 @@ It's used to see variables of a class in the <a href="script_api_reference/engin
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
 <p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
 <p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
+<h2 id="public-methods-14"><a class="header" href="#public-methods-14">Public methods</a></h2>
 <hr />
 <h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
 <p>Get all child class variables references (Needs to be implemented).</p>
@@ -9601,7 +10119,7 @@ void MyComponent::OnReflectionUpdated()
 </code></pre>
 <h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
 <p>Class to load scenes.</p>
-<h2 id="static-methods-11"><a class="header" href="#static-methods-11">Static methods</a></h2>
+<h2 id="static-methods-15"><a class="header" href="#static-methods-15">Static methods</a></h2>
 <hr />
 <h3 id="loadscene"><a class="header" href="#loadscene">LoadScene</a></h3>
 <p>Load a scene.</p>
@@ -9705,7 +10223,7 @@ SceneManager::LoadScene(sceneToLoad);
 </code></pre>
 <h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
 <p>Class to get informations and to interact with the screen.</p>
-<h2 id="static-methods-12"><a class="header" href="#static-methods-12">Static methods</a></h2>
+<h2 id="static-methods-16"><a class="header" href="#static-methods-16">Static methods</a></h2>
 <hr />
 <h3 id="getwidth"><a class="header" href="#getwidth">GetWidth</a></h3>
 <p>Get the width of the screen in pixels.</p>
@@ -9832,7 +10350,7 @@ bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
 <h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
 <p>Class to get time informations (Delta time, elapsed time).</p>
 <p>Values are updated every frame.</p>
-<h2 id="static-methods-13"><a class="header" href="#static-methods-13">Static methods</a></h2>
+<h2 id="static-methods-17"><a class="header" href="#static-methods-17">Static methods</a></h2>
 <hr />
 <h3 id="gettime"><a class="header" href="#gettime">GetTime</a></h3>
 <p>Get total scaled elapsed time.<br>
@@ -10276,7 +10794,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
 <p>Utility class for endian conversion.<br>
 Usefull when using binary data on different platforms.</p>
-<h2 id="static-methods-14"><a class="header" href="#static-methods-14">Static methods</a></h2>
+<h2 id="static-methods-18"><a class="header" href="#static-methods-18">Static methods</a></h2>
 <hr />
 <h3 id="isbigendian"><a class="header" href="#isbigendian">IsBigEndian</a></h3>
 <p>Checks if the system is big-endian.
