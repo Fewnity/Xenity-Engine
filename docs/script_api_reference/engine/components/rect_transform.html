@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Color - Xenity Engine</title>
+        <title>RectTransform - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,163 +234,17 @@
 }
 
 </style>
-<h1 id="color"><a class="header" href="#color">Color</a></h1>
-<p>Add this in your code:</p>
-<pre><code class="language-cpp">#include &lt;engine/graphics/color/color.h&gt;
-</code></pre>
-<h2 id="description"><a class="header" href="#description">Description</a></h2>
-<p>This class stores informations about a color.</p>
-<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
-<hr />
-<h3 id="createfromrgb"><a class="header" href="#createfromrgb">CreateFromRGB</a></h3>
-<p>Create a color from 3 uint8_t (alpha = 255).</p>
-<p>Parameters:</p>
-<ul>
-<li><code>r</code>: Red level [0;255]</li>
-<li><code>g</code>: Green level [0;255]</li>
-<li><code>b</code>: Blue level [0;255]</li>
-</ul>
-<pre><code class="language-cpp">Color CreateFromRGB(uint8_t r, uint8_t g, uint8_t b)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color red = Color::CreateFromRGB(255, 0, 0);
-</code></pre>
-<hr />
-<h3 id="createfromrgba"><a class="header" href="#createfromrgba">CreateFromRGBA</a></h3>
-<p>Create a color from 4 uint8_t.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>r</code>: Red level [0;255]</li>
-<li><code>g</code>: Green level [0;255]</li>
-<li><code>b</code>: Blue level [0;255]</li>
-<li><code>a</code>: Alpha level [0;255]</li>
-</ul>
-<pre><code class="language-cpp">Color CreateFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBA(255, 0, 0, 128);
-</code></pre>
-<hr />
-<h3 id="createfromrgbfloat"><a class="header" href="#createfromrgbfloat">CreateFromRGBFloat</a></h3>
-<p>Create a color from 3 floats (alpha = 1).</p>
-<p>Parameters:</p>
-<ul>
-<li><code>r</code>: Red level [0.0f;1.0f]</li>
-<li><code>g</code>: Green level [0.0f;1.0f]</li>
-<li><code>b</code>: Blue level [0.0f;1.0f]</li>
-</ul>
-<pre><code class="language-cpp">Color CreateFromRGBFloat(float r, float g, float b)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color red = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f);
-</code></pre>
-<hr />
-<h3 id="createfromrgbafloat"><a class="header" href="#createfromrgbafloat">CreateFromRGBAFloat</a></h3>
-<p>Create a color from 4 floats.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>r</code>: Red level [0.0f;1.0f]</li>
-<li><code>g</code>: Green level [0.0f;1.0f]</li>
-<li><code>b</code>: Blue level [0.0f;1.0f]</li>
-<li><code>a</code>: Alpha level [0.0f;1.0f]</li>
-</ul>
-<pre><code class="language-cpp">Color CreateFromRGBAFloat(float r, float g, float b, float a)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBAFloat(1.0f, 0.0f, 0.0f, 0.5f);
-</code></pre>
-<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
-<hr />
-<h3 id="setfromrgba"><a class="header" href="#setfromrgba">SetFromRGBA</a></h3>
-<p>Set color from 4 uint8_t.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>r</code>: Red level [0;255]</li>
-<li><code>g</code>: Green level [0;255]</li>
-<li><code>b</code>: Blue level [0;255]</li>
-<li><code>a</code>: Alpha level [0;255]</li>
-</ul>
-<pre><code class="language-cpp">Color SetFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color myColor = Color();
-myColor.SetFromRGBA(255, 0, 0, 128);
-myColor.SetFromRGBA(255, 255, 255, 255);
-</code></pre>
-<hr />
-<h3 id="setfromrgbafloat"><a class="header" href="#setfromrgbafloat">SetFromRGBAFloat</a></h3>
-<p>Set color from 4 float.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>r</code>: Red level [0.0f;1.0f]</li>
-<li><code>g</code>: Green level [0.0f;1.0f]</li>
-<li><code>b</code>: Blue level [0.0f;1.0f]</li>
-<li><code>a</code>: Alpha level [0.0f;1.0f]</li>
-</ul>
-<pre><code class="language-cpp">Color SetFromRGBAFloat(float r, float g, float b, float a)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color myColor = Color();
-myColor.SetFromRGBAFloat(1.0f, 0, 0, 0.5f);
-myColor.SetFromRGBAFloat(1.0f, 1.0f, 1.0f, 1.0f);
-</code></pre>
-<hr />
-<h3 id="getrgba"><a class="header" href="#getrgba">GetRGBA</a></h3>
-<p>Get RGBA.</p>
-<pre><code class="language-cpp">const RGBA&amp; GetRGBA() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color red = Color::CreateFromRGBFloat(1.0f, 0.0f, 0.0f);
-RGBA rgba = red.GetRGBA();
-const RGBA&amp; rgbaRef = red.GetRGBA(); // Avoid a copy
-</code></pre>
-<hr />
-<h3 id="getunsignedintrgba"><a class="header" href="#getunsignedintrgba">GetUnsignedIntRGBA</a></h3>
-<p>Get RGBA values as an unsigned int in the format RGBA (0xRRGGBBAA).</p>
-<pre><code class="language-cpp">unsigned int GetUnsignedIntRGBA() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color myColor = Color::CreateFromRGBAFloat(1.0f, 0.6f, 0.3f, 0.1f);
-unsigned int rgba = myColor.GetUnsignedIntRGBA(); // 0xff994c19
-</code></pre>
-<hr />
-<h3 id="getunsignedintabgr"><a class="header" href="#getunsignedintabgr">GetUnsignedIntABGR</a></h3>
-<p>Get RGBA values as an unsigned int in the format ABGR (0xAABBGGRR).</p>
-<pre><code class="language-cpp">unsigned int GetUnsignedIntABGR() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color myColor = Color::CreateFromRGBAFloat(1.0f, 0.6f, 0.3f, 0.1f);
-unsigned int abgr = myColor.GetUnsignedIntABGR(); // 0x194c99ff
-</code></pre>
-<hr />
-<h3 id="getunsignedintargb"><a class="header" href="#getunsignedintargb">GetUnsignedIntARGB</a></h3>
-<p>Get RGBA values as an unsigned int in the format ARGB (0xAARRGGBB).</p>
-<pre><code class="language-cpp">unsigned int GetUnsignedIntARGB() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color myColor = Color::CreateFromRGBAFloat(1.0f, 0.6f, 0.3f, 0.1f);
-unsigned int argb = myColor.GetUnsignedIntARGB(); // 0x19ff994c
-</code></pre>
-<hr />
-<h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
-<p>Return a string representation of the color.</p>
-<pre><code class="language-cpp">std::string ToString() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">Color myColor = Color::CreateFromRGBAFloat(1.0f, 0.6f, 0.3f, 0.1f);
-Debug::Print(myColor.ToString());
-// Prints: "{R:1 G:0.6 B:0.3 A:0.1 | RGBA Hex:#ff994c19 | ARGB Hex:#19ff994c | ABGR Hex:#194c99ff}"
-</code></pre>
+<h1 id="recttransform"><a class="header" href="#recttransform">RectTransform</a></h1>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/assets/texture.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/components/particle_system.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/color/rgba.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/components/rigidbody.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -400,11 +254,11 @@ Debug::Print(myColor.ToString());
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/assets/texture.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/components/particle_system.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/color/rgba.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/components/rigidbody.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

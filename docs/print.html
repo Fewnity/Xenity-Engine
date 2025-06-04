@@ -3996,6 +3996,82 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 
 </style>
 <h1 id="component"><a class="header" href="#component">Component</a></h1>
+<p>The component class gives you a list of function that you can override in your components.</p>
+<h2 id="virtual-methods"><a class="header" href="#virtual-methods">Virtual methods</a></h2>
+<hr />
+<h3 id="awake"><a class="header" href="#awake">Awake</a></h3>
+<p>This function is called once before Start() at the creation of the component.</p>
+<p>The engine calls the function when:</p>
+<ul>
+<li>The parent GameObject is active when a scene just loaded</li>
+<li>The parent GameObject goes from inactive to active</li>
+</ul>
+<p>The parent GameObject and the component should be enabled.</p>
+<pre><code class="language-cpp">virtual void Awake()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+    void Awake() override
+    {
+        Debug::Print("Awake called!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="start"><a class="header" href="#start">Start</a></h3>
+<p>This function is called once after Awake() at the creation of the component.</p>
+<p>The engine calls the function when:</p>
+<ul>
+<li>The parent GameObject is active when a scene just loaded</li>
+<li>The parent GameObject goes from inactive to active</li>
+</ul>
+<p>The parent GameObject and the component should be enabled.</p>
+<pre><code class="language-cpp">virtual void Awake()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+    void Start() override
+    {
+        Debug::Print("Start called!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="update"><a class="header" href="#update">Update</a></h3>
+<p>This function called every frame.</p>
+<p>The parent GameObject and the component should be enabled.</p>
+<pre><code class="language-cpp">virtual void Awake()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+    void Update() override
+    {
+        Debug::Print("Update called!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="oncomponentattached"><a class="header" href="#oncomponentattached">OnComponentAttached</a></h3>
+<p>This function called when a component is attached to a component.<br>
+It's usefull when you need to setup the component before the Awake being called with an access to the parent GameObject.<br>
+This function is called even if the GameObject or the component are disabled compared to the Awake method.<br>
+In the constructor of your component if the component you can't get a reference to the parent GameObject.</p>
+<pre><code class="language-cpp">virtual void Awake()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+    void OnTransformPositionUpdated();
+
+    void OnComponentAttached() override
+    {
+        GetTransformRaw()-&gt;GetOnTransformUpdated().Bind(&amp;MyComponent::OnTransformPositionUpdated, this);
+    }
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
