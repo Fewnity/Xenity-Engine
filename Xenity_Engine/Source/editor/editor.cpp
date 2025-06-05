@@ -729,7 +729,7 @@ std::shared_ptr <ProjectDirectory> Editor::GetCurrentProjectDirectory()
 	return currentProjectDirectory;
 }
 
-std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData)
+std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData, bool refreshProject)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -782,7 +782,10 @@ std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileTyp
 		newFile->Close();
 	}
 
-	ProjectManager::RefreshProjectDirectory();
+	if (refreshProject)
+	{
+		ProjectManager::RefreshProjectDirectory();
+	}
 
 	return newFile;
 }

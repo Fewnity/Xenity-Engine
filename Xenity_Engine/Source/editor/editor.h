@@ -90,7 +90,7 @@ public:
 	* @param fillWithDefaultData Fill the file with default data
 	* @return The created file
 	*/
-	[[nodiscard]] static std::shared_ptr<File> CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData);
+	[[nodiscard]] static std::shared_ptr<File> CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData, bool refreshProject = true);
 
 	/**
 	* @brief Open a file in the file explorer of the OS
