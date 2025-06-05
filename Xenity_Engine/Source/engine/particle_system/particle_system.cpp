@@ -500,7 +500,7 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 		command.subMesh = m_mesh->m_subMeshes[0].get();
 	command.transform = GetTransform().get();
 	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
-	if (m_material->GetRenderingMode() == MaterialRenderingModes::Opaque || m_material->GetRenderingMode() == MaterialRenderingModes::Cutout)
+	if (m_material->GetRenderingMode() == MaterialRenderingMode::Opaque || m_material->GetRenderingMode() == MaterialRenderingMode::Cutout)
 	{
 		RenderQueue& renderQueue = renderBatch.renderQueues[m_material->GetFileId()];
 		renderQueue.commands.push_back(command);

@@ -58,6 +58,7 @@ public:
 	[[nodiscard]] const std::vector<std::shared_ptr<Component>>& GetComponents() const { return shared_components; }
 
 protected:
+	bool IsComponentLocalActive(const std::shared_ptr<Component>& component);
 	std::vector<std::shared_ptr<Component>> shared_components;
 	std::vector<std::shared_ptr<Component>> componentsToInit;
 	size_t m_maxComponentCount;
@@ -198,7 +199,7 @@ public:
 		for (size_t i = 0; i < componentsToInitCount; i++)
 		{
 			const std::shared_ptr<Component>& component = componentsToInit[i];
-			if (!component->m_initiated && component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
+			if (!component->m_initiated &&IsComponentLocalActive(component) && component->IsEnabled())
 			{
 				component->m_initiated = true;
 				component->Start();
@@ -221,7 +222,7 @@ public:
 
 			for (const std::shared_ptr<Component>& component : shared_components)
 			{
-				if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
+				if (IsComponentLocalActive(component) && component->IsEnabled())
 				{
 #if defined(_WIN32) || defined(_WIN64)
 					lastUpdatedComponent = component;

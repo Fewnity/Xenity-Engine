@@ -92,7 +92,7 @@ int RendererGU::Init()
 	Window::SetResolution(PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 
 	lastSettings.invertFaces = false;
-	lastSettings.renderingMode = MaterialRenderingModes::Opaque;
+	lastSettings.renderingMode = MaterialRenderingMode::Opaque;
 	lastSettings.useDepth = true;
 	lastSettings.useLighting = false;
 	lastSettings.useTexture = true;
@@ -273,12 +273,12 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 
 	if (lastSettings.renderingMode != settings.renderingMode)
 	{
-		if (settings.renderingMode == MaterialRenderingModes::Opaque)
+		if (settings.renderingMode == MaterialRenderingMode::Opaque)
 		{
 			sceGuDisable(GU_BLEND);
 			sceGuDisable(GU_ALPHA_TEST);
 		}
-		else if (settings.renderingMode == MaterialRenderingModes::Cutout)
+		else if (settings.renderingMode == MaterialRenderingMode::Cutout)
 		{
 			sceGuDisable(GU_BLEND);
 			sceGuEnable(GU_ALPHA_TEST);
@@ -310,7 +310,7 @@ void RendererGU::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& m
 	}
 
 	// glDepthMask needs GL_FALSE here, pspsdk is doing this wrong, may change in a sdk update
-	if (settings.renderingMode == MaterialRenderingModes::Transparent || settings.max_depth)
+	if (settings.renderingMode == MaterialRenderingMode::Transparent || settings.max_depth)
 	{
 		sceGuDepthMask(GU_TRUE);
 	}

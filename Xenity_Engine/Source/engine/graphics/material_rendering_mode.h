@@ -8,4 +8,4 @@
 
 #include <engine/reflection/enum_utils.h>
 
-ENUM(MaterialRenderingModes, Opaque, Cutout, Transparent);
+ENUM(MaterialRenderingMode, Opaque, Cutout, Transparent);

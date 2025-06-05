@@ -16,7 +16,7 @@
 #include <engine/graphics/color/color.h>
 #include <engine/file_system/file_reference.h>
 #include <engine/reflection/reflection.h>
-#include <engine/graphics/material_rendering_modes.h>
+#include <engine/graphics/material_rendering_mode.h>
 #include "iDrawableTypes.h"
 
 class Texture;
@@ -39,77 +39,119 @@ public:
 	void SetAttribute(const char* attribute, const Vector4& value);
 	void SetAttribute(const char* attribute, const float value);
 	void SetAttribute(const char* attribute, const int value);
-	//void SetAttribute(const char* attribut, Texture* value);
 
-	inline void SetShader(const std::shared_ptr<Shader>& _shader)
+	/**
+	* @brief Set the material shader
+	*/
+	void SetShader(const std::shared_ptr<Shader>& shader)
 	{
-		m_shader = _shader;
+		m_shader = shader;
 		m_updated = false;
 	}
 
-	inline void SetTexture(const std::shared_ptr<Texture>& _texture)
+	/**
+	* @brief Set the material texture
+	*/
+	void SetTexture(const std::shared_ptr<Texture>& texture)
 	{
-		m_texture = _texture;
+		m_texture = texture;
 	}
 
-	inline void SetUseLighting(const bool _useLighting)
+	/**
+	* @brief Set the if the material uses lighting
+	* @brief Disable this only on Unlit shaders
+	*/
+	void SetUseLighting(const bool useLighting)
 	{
-		m_useLighting = _useLighting;
+		m_useLighting = useLighting;
 	}
 
-	inline void SetOffset(const Vector2& _offset)
+	/**
+	* @brief Set the texture offset
+	*/
+	void SetOffset(const Vector2& offset)
 	{
-		t_offset = _offset;
+		t_offset = offset;
 	}
 
-	inline void SetTiling(const Vector2& _tiling)
+	/**
+	* @brief Set the texture tiling
+	*/
+	void SetTiling(const Vector2& tiling)
 	{
-		t_tiling = _tiling;
+		t_tiling = tiling;
 	}
 
-	[[nodiscard]] inline const std::shared_ptr<Shader>& GetShader() const
+	/**
+	* @brief Get the shader of the material
+	*/
+	[[nodiscard]] const std::shared_ptr<Shader>& GetShader() const
 	{
 		return m_shader;
 	}
 
-	[[nodiscard]] inline const std::shared_ptr<Texture>& GetTexture() const
+	/**
+	* @brief Get the texture of the material
+	*/
+	[[nodiscard]] const std::shared_ptr<Texture>& GetTexture() const
 	{
 		return m_texture;
 	}
 
-	[[nodiscard]] inline bool GetUseLighting() const
+	/**
+	* @brief Get if the material uses lighting
+	*/
+	[[nodiscard]] bool GetUseLighting() const
 	{
 		return m_useLighting;
 	}
 
-	[[nodiscard]] MaterialRenderingModes GetRenderingMode() const
+	/**
+	* @brief Get the rendering mode of the material
+	*/
+	[[nodiscard]] MaterialRenderingMode GetRenderingMode() const
 	{
 		return m_renderingMode;
 	}
 
-	[[nodiscard]] inline const Vector2& GetOffset() const
+	/**
+	* @brief Get the texture offset of the material
+	*/
+	[[nodiscard]] const Vector2& GetOffset() const
 	{
 		return t_offset;
 	}
 
-	[[nodiscard]] inline const Vector2& GetTiling() const
+	/**
+	* @brief Get the texture tiling of the material
+	*/
+	[[nodiscard]] const Vector2& GetTiling() const
 	{
 		return t_tiling;
 	}
 
-	[[nodiscard]] inline const Color& GetColor() const
+	/**
+	* @brief Get the color of the material
+	*/
+	[[nodiscard]] const Color& GetColor() const
 	{
 		return m_color;
 	}
 
-	inline void SetColor(const Color& _color)
+	/**
+	* @brief Set the color of the material
+	*/
+	void SetColor(const Color& color)
 	{
-		m_color = _color;
+		m_color = color;
 	}
 
-	void SetAlphaCutoff(float _alphaCutoff)
+	/**
+	* @brief Set the alpha cutoff of the material
+	*/
+	void SetAlphaCutoff(float alphaCutoff)
 	{
-		m_alphaCutoff = _alphaCutoff;
+		m_alphaCutoff = alphaCutoff;
 		if (m_alphaCutoff < 0.0f)
 		{
 			m_alphaCutoff = 0.0f;
@@ -120,6 +162,9 @@ public:
 		}
 	}
 
+	/**
+	* @brief Get the alpha cutoff of the material
+	*/
 	[[nodiscard]] float GetAlphaCutoff() const
 	{
 		return m_alphaCutoff;
@@ -147,7 +192,6 @@ protected:
 	void Update();
 
 	Camera* m_lastUsedCamera = nullptr;
-	//std::unordered_map <const char *, Texture*> uniformsTextures;
 	std::unordered_map <const char*, Vector2> m_uniformsVector2;
 	std::unordered_map <const char*, Vector3> m_uniformsVector3;
 	std::unordered_map <const char*, Vector4> m_uniformsVector4;
@@ -160,7 +204,7 @@ protected:
 	Vector2 t_offset = Vector2(0,0);
 	Vector2 t_tiling = Vector2(1, 1);
 	IDrawableTypes m_lastUpdatedType = IDrawableTypes::Draw_3D;
-	MaterialRenderingModes m_renderingMode = MaterialRenderingModes::Opaque;
+	MaterialRenderingMode m_renderingMode = MaterialRenderingMode::Opaque;
 	float m_alphaCutoff = 0.5f;
 	bool m_updated = false;
 	bool m_useLighting = false; // Defines if the material uses lighting or not in fixed pipeline mode (PSP)

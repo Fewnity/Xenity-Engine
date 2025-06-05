@@ -380,7 +380,7 @@ int RendererRSX::Init()
 void RendererRSX::Setup()
 {
 	lastSettings.invertFaces = false;
-	lastSettings.renderingMode = MaterialRenderingModes::Opaque;
+	lastSettings.renderingMode = MaterialRenderingMode::Opaque;
 	lastSettings.useDepth = true;
 	lastSettings.useLighting = false;
 	lastSettings.useTexture = true;
@@ -590,12 +590,12 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 
 	if (lastSettings.renderingMode != settings.renderingMode)
 	{
-		if (settings.renderingMode == MaterialRenderingModes::Opaque)
+		if (settings.renderingMode == MaterialRenderingMode::Opaque)
 		{
 			rsxSetBlendEnable(context, GCM_FALSE);
 			rsxSetAlphaTestEnable(context, GCM_FALSE);
 		}
-		else if (settings.renderingMode == MaterialRenderingModes::Cutout)
+		else if (settings.renderingMode == MaterialRenderingMode::Cutout)
 		{
 			rsxSetBlendEnable(context, GCM_FALSE);
 			rsxSetAlphaTestEnable(context, GCM_TRUE);
@@ -609,7 +609,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 		}
 	}
 
-	if (settings.renderingMode == MaterialRenderingModes::Transparent || settings.max_depth)
+	if (settings.renderingMode == MaterialRenderingMode::Transparent || settings.max_depth)
 	{
 		rsxSetDepthWriteEnable(context, GCM_FALSE);
 	}

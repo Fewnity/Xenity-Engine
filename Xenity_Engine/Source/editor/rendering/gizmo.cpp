@@ -47,7 +47,7 @@ void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 	}
 
 	RenderingSettings renderSettings = RenderingSettings();
-	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
+	renderSettings.renderingMode = MaterialRenderingMode::Transparent;
 	renderSettings.useDepth = false;
 	renderSettings.useLighting = false;
 	renderSettings.useTexture = false;

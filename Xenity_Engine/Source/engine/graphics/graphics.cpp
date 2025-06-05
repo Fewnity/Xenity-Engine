@@ -667,7 +667,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 
 		RenderingSettings renderSettings = RenderingSettings();
 		renderSettings.invertFaces = false;
-		renderSettings.renderingMode = MaterialRenderingModes::Opaque;
+		renderSettings.renderingMode = MaterialRenderingMode::Opaque;
 		renderSettings.useDepth = true;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
@@ -776,7 +776,7 @@ void Graphics::DrawSelectedItemBoundingBox()
 			const Color color = Color::CreateFromRGBAFloat(0.0f, 1.0f, 1.0f, 1.0f);
 
 			RenderingSettings renderSettings = RenderingSettings();
-			renderSettings.renderingMode = MaterialRenderingModes::Transparent;
+			renderSettings.renderingMode = MaterialRenderingMode::Transparent;
 			renderSettings.useDepth = true;
 			renderSettings.useLighting = false;
 			renderSettings.useTexture = false;
@@ -866,7 +866,7 @@ void Graphics::DrawEditorGrid(const Vector3& cameraPosition, int gridAxis)
 	const Color color = Color::CreateFromRGBAFloat(0.7f, 0.7f, 0.7f, 0.2f * s_gridAlphaMultiplier);
 
 	RenderingSettings renderSettings = RenderingSettings();
-	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
+	renderSettings.renderingMode = MaterialRenderingMode::Transparent;
 	renderSettings.useDepth = true;
 	renderSettings.useLighting = false;
 	renderSettings.useTexture = false;
@@ -948,7 +948,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 
 		RenderingSettings renderSettings = RenderingSettings();
 		renderSettings.invertFaces = false;
-		renderSettings.renderingMode = MaterialRenderingModes::Opaque;
+		renderSettings.renderingMode = MaterialRenderingMode::Opaque;
 		renderSettings.useDepth = true;
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;

@@ -35,7 +35,7 @@ public:
 	Filter filter = Filter::Bilinear;
 	WrapMode wrapMode = WrapMode::Repeat;
 	bool useMipMap = false;
-	int mipmaplevelCount = 0;
+	//int mipmaplevelCount = 0;
 	int pixelPerUnit = 100;
 
 	ReflectiveData GetReflectiveData() override
@@ -43,7 +43,7 @@ public:
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
 		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
-		Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
+		//Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
 		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
 		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
 		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
@@ -72,7 +72,7 @@ public:
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
 		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
-		Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
+		//Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
 		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
 		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
 		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
@@ -92,7 +92,7 @@ public:
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
 		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
-		Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
+		//Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
 		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
 		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
 		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
@@ -255,10 +255,10 @@ protected:
 	* @brief [Internal] Get mipmap level count
 	* @return 0 if mipmapping is not used
 	*/
-	[[nodiscard]] inline int GetMipmaplevelCount() const
+	/*[[nodiscard]] inline int GetMipmaplevelCount() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->mipmaplevelCount;
-	}
+	}*/
 
 	[[nodiscard]] inline TextureResolutions GetCookResolution() const
 	{

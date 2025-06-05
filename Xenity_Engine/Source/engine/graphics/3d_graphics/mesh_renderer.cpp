@@ -66,7 +66,7 @@ void MeshRenderer::OnDrawGizmosSelected()
 	renderSettings.useDepth = true;
 	renderSettings.useTexture = false;
 	renderSettings.useLighting = false;
-	renderSettings.renderingMode = MaterialRenderingModes::Transparent;
+	renderSettings.renderingMode = MaterialRenderingMode::Transparent;
 	renderSettings.wireframe = true;
 
 	const uint32_t subMeshCount = m_meshData->m_subMeshCount;
@@ -213,7 +213,7 @@ void MeshRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 		command.subMesh = m_meshData->m_subMeshes[i].get();
 		command.transform = GetTransformRaw();
 		command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
-		if (material->GetRenderingMode() == MaterialRenderingModes::Opaque || material->GetRenderingMode() == MaterialRenderingModes::Cutout)
+		if (material->GetRenderingMode() == MaterialRenderingMode::Opaque || material->GetRenderingMode() == MaterialRenderingMode::Cutout)
 		{
 #if defined(ENABLE_OVERDRAW_OPTIMIZATION)
 			renderBatch.opaqueMeshCommands.push_back(command);

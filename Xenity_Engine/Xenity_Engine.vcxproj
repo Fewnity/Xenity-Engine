@@ -1445,7 +1445,7 @@
     <ClInclude Include="include\bullet\vectormath\sse\vec_aos.h" />
     <ClInclude Include="include\bullet\vectormath\vmInclude.h" />
     <ClInclude Include="Source\engine\graphics\3d_graphics\sphere.h" />
-    <ClInclude Include="Source\engine\graphics\material_rendering_modes.h" />
+    <ClInclude Include="Source\engine\graphics\material_rendering_mode.h" />
     <ClInclude Include="Source\engine\graphics\renderer\renderer_rsx.h" />
     <ClInclude Include="Source\engine\graphics\shader\shader_null.h" />
     <ClInclude Include="Source\engine\graphics\shader\shader_opengl.h" />

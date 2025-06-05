@@ -18,7 +18,7 @@
 #include <engine/graphics/shader/shader.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/lighting/lighting.h>
-#include <engine/graphics/material_rendering_modes.h>
+#include <engine/graphics/material_rendering_mode.h>
 
 class Color;
 class Vector4;
@@ -31,7 +31,7 @@ struct LightsIndices;
 
 struct RenderingSettings
 {
-	MaterialRenderingModes renderingMode = MaterialRenderingModes::Opaque;
+	MaterialRenderingMode renderingMode = MaterialRenderingMode::Opaque;
 	bool useDepth = false;
 	bool invertFaces = false;
 	bool useTexture = true;

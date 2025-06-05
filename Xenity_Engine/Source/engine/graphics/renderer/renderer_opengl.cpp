@@ -105,7 +105,7 @@ void RendererOpengl::Setup()
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
 	lastSettings.invertFaces = false;
-	lastSettings.renderingMode = MaterialRenderingModes::Opaque;
+	lastSettings.renderingMode = MaterialRenderingMode::Opaque;
 	lastSettings.useDepth = true;
 	lastSettings.useLighting = false;
 	lastSettings.useTexture = true;
@@ -336,12 +336,12 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 
 	if (lastSettings.renderingMode != settings.renderingMode)
 	{
-		if (settings.renderingMode == MaterialRenderingModes::Opaque)
+		if (settings.renderingMode == MaterialRenderingMode::Opaque)
 		{
 			glDisable(GL_BLEND);
 			glDisable(GL_ALPHA_TEST);
 		}
-		else if (settings.renderingMode == MaterialRenderingModes::Cutout)
+		else if (settings.renderingMode == MaterialRenderingMode::Cutout)
 		{
 			glDisable(GL_BLEND);
 			glEnable(GL_ALPHA_TEST);
@@ -379,7 +379,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 		}
 	}
 
-	if (settings.renderingMode == MaterialRenderingModes::Transparent || settings.max_depth)
+	if (settings.renderingMode == MaterialRenderingMode::Transparent || settings.max_depth)
 	{
 		glDepthMask(GL_FALSE);
 	}
@@ -542,7 +542,7 @@ void RendererOpengl::DrawLine(const Vector3& a, const Vector3& b, const Color& c
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 
-	lastSettings.renderingMode = MaterialRenderingModes::Transparent;
+	lastSettings.renderingMode = MaterialRenderingMode::Transparent;
 	lastSettings.useDepth = settings.useDepth;
 	lastSettings.useLighting = false;
 	lastSettings.useTexture = false;

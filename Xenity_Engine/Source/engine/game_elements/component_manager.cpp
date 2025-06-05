@@ -15,3 +15,8 @@ bool ComponentManager::GetCompnentDisabledLoop(size_t typeId)
 	XASSERT(false, "[ComponentManager::GetCompnentDisabledLoop] ClassInfo not found");
 	return false;
 }
+
+bool BaseComponentList::IsComponentLocalActive(const std::shared_ptr<Component>& component)
+{
+	return component->GetGameObjectRaw()->IsLocalActive();
+}
