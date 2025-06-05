@@ -276,11 +276,11 @@ void InputSystem::Read(const SDL_Event& event)
 			xSpeedRaw = static_cast<int>(event.motion.xrel);
 			ySpeedRaw = static_cast<int>(-event.motion.yrel);
 		}
-		mouseSpeed.x = xSpeed;
-		mouseSpeed.y = ySpeed;
+		mouseSpeed.x += xSpeed;
+		mouseSpeed.y += ySpeed;
 
-		mouseSpeedRaw.x = static_cast<float>(xSpeedRaw);
-		mouseSpeedRaw.y = static_cast<float>(ySpeedRaw);
+		mouseSpeedRaw.x += static_cast<float>(xSpeedRaw);
+		mouseSpeedRaw.y += static_cast<float>(ySpeedRaw);
 
 		break;
 	}
@@ -358,7 +358,7 @@ void InputSystem::Read(const SDL_Event& event)
 	}
 
 	case SDL_EVENT_MOUSE_WHEEL:
-		mouseWheel = event.wheel.y;
+		mouseWheel += event.wheel.y;
 		break;
 	}
 
