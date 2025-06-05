@@ -114,27 +114,21 @@ uint64_t ProjectManager::ReadFileId(const File& file)
 #endif
 	const std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaFilePath);
 
-	if (!metaFile->CheckIfExist()) // If there is not meta for this file
+	if (metaFile->Open(FileMode::ReadOnly))
 	{
-	}
-	else // Or read meta file
-	{
-		if (metaFile->Open(FileMode::ReadOnly))
+		const std::string jsonString = metaFile->ReadAll();
+		metaFile->Close();
+		if (!jsonString.empty())
 		{
-			const std::string jsonString = metaFile->ReadAll();
-			metaFile->Close();
-			if (!jsonString.empty())
+			json data;
+			try
 			{
-				json data;
-				try
-				{
-					data = json::parse(jsonString);
-					id = data["id"];
-				}
-				catch (const std::exception&)
-				{
-					Debug::PrintError("[ProjectManager::FindAllProjectFiles] Meta file corrupted! File:" + metaFile->GetPath(), true);
-				}
+				data = json::parse(jsonString);
+				id = data["id"];
+			}
+			catch (const std::exception&)
+			{
+				Debug::PrintError("[ProjectManager::FindAllProjectFiles] Meta file corrupted! File:" + metaFile->GetPath(), true);
 			}
 		}
 	}
@@ -1366,45 +1360,45 @@ void ProjectManager::CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFi
 	std::atomic<size_t> file_index(0);
 
 	auto lamba = [&usedIds, &fileWithoutMeta, &mutex, &file_index, &compatibleFiles, &fileWithoutMetaCount, compatibleFilesCount]()
-	{
-		while (true) 
 		{
-			size_t index = file_index.fetch_add(1);
-
-			if (index >= compatibleFilesCount) 
-				break;
-
-			mutex.lock();
-			const std::shared_ptr<File>& file = compatibleFiles[index].fileAndId.file;
-			mutex.unlock();
-
-			const uint64_t fileId = ReadFileId(*file);
-
-			mutex.lock();
-			loadedFilesCount++;
-			if (fileId == -1)
+			while (true)
 			{
-				fileWithoutMeta.push_back(&compatibleFiles[index]);
-				fileWithoutMetaCount++;
-			}
-			else
-			{
-				if (!compatibleFiles[index].isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
+				size_t index = file_index.fetch_add(1);
+
+				if (index >= compatibleFilesCount)
+					break;
+
+				mutex.lock();
+				const std::shared_ptr<File>& file = compatibleFiles[index].fileAndId.file;
+				mutex.unlock();
+
+				const uint64_t fileId = ReadFileId(*file);
+
+				mutex.lock();
+				loadedFilesCount++;
+				if (fileId == -1)
 				{
-					Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
 					fileWithoutMeta.push_back(&compatibleFiles[index]);
 					fileWithoutMetaCount++;
-					mutex.unlock();
-					continue;
 				}
+				else
+				{
+					if (!compatibleFiles[index].isEngineAsset && (usedIds[fileId] == true || fileId <= UniqueId::reservedFileId))
+					{
+						Debug::PrintError("[ProjectManager::FindAllProjectFiles] Id already used by another file! Id: " + std::to_string(fileId) + ", File:" + file->GetPath() + ".meta", true);
+						fileWithoutMeta.push_back(&compatibleFiles[index]);
+						fileWithoutMetaCount++;
+						mutex.unlock();
+						continue;
+					}
 
-				usedIds[fileId] = true;
+					usedIds[fileId] = true;
 
-				compatibleFiles[index].fileAndId.id = fileId;
+					compatibleFiles[index].fileAndId.id = fileId;
+				}
+				mutex.unlock();
 			}
-			mutex.unlock();
-		}
-	};
+		};
 
 	for (unsigned int i = 0; i < coreCount; ++i)
 	{
