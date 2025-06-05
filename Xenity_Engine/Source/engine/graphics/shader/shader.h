@@ -51,6 +51,10 @@ struct alignas(16) LightsIndices
 class Shader : public FileReference
 {
 public:
+	Shader();
+	~Shader();
+
+protected:
 	enum class ShaderType
 	{
 		Vertex_Shader,
@@ -59,17 +63,6 @@ public:
 		Tessellation_Evaluation_Shader,
 	};
 
-	Shader();
-	~Shader();
-
-	std::string GetShaderCode(ShaderType type, Platform platform) const;
-
-	std::shared_ptr<Shader> GetShared()
-	{
-		return std::dynamic_pointer_cast<Shader>(shared_from_this());
-	}
-
-protected:
 	class PointLightVariableNames
 	{
 	public:
@@ -116,6 +109,8 @@ protected:
 
 	virtual void CreateShader(Shader::ShaderType type) = 0;
 
+	std::string GetShaderCode(ShaderType type, Platform platform) const;
+
 	[[nodiscard]] std::string GetShaderCode(const std::string& fullShaderCode, ShaderType type, Platform platform) const;
 	[[nodiscard]] std::string ReadShader() const;
 
@@ -139,6 +134,7 @@ protected:
 	friend class Material;
 	friend class Graphics;
 	friend class RendererOpengl;
+	friend class Cooker;
 	friend class RendererRSX;
 	friend class RendererGU;
 	friend class RendererGsKit;

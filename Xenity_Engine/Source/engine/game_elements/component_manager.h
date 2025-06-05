@@ -198,7 +198,7 @@ public:
 		for (size_t i = 0; i < componentsToInitCount; i++)
 		{
 			const std::shared_ptr<Component>& component = componentsToInit[i];
-			if (!component->m_initiated && component->IsLocalActive() && component->IsEnabled())
+			if (!component->m_initiated && component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 			{
 				component->m_initiated = true;
 				component->Start();
@@ -221,7 +221,7 @@ public:
 
 			for (const std::shared_ptr<Component>& component : shared_components)
 			{
-				if (component->IsLocalActive() && component->IsEnabled())
+				if (component->GetGameObjectRaw()->IsLocalActive() && component->IsEnabled())
 				{
 #if defined(_WIN32) || defined(_WIN64)
 					lastUpdatedComponent = component;

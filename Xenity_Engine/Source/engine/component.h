@@ -52,12 +52,12 @@ public:
 	virtual void OnComponentAttached() {};
 
 	/**
-	* @brief Called when the component is enabled
+	* @brief Called when the component is disabled
 	*/
 	virtual void OnDisabled() {};
 
 	/**
-	* @brief Called when the component is disabled
+	* @brief Called when the component is enabled
 	*/
 	virtual void OnEnabled() {};
 
@@ -80,12 +80,7 @@ public:
 	}
 
 	/**
-	* @brief Get if the component is active based on gameobject state
-	*/
-	[[nodiscard]] bool IsLocalActive() const;
-
-	/**
-	* @brief Enable or disable the component*
+	* @brief Enable or disable the component
 	* @param isEnabled: true to enable, false to disable
 	*/
 	void SetIsEnabled(bool isEnabled);
@@ -100,7 +95,7 @@ public:
 	}
 	
 	/**
-	* @brief Get component's GameObject raw pointer for faster access
+	* @brief Get component's GameObject raw pointer for faster access (Not safe, use with caution)
 	*/
 	[[nodiscard]] inline GameObject* GetGameObjectRaw() const
 	{
@@ -118,7 +113,7 @@ public:
 	}
 
 	/**
-	* @brief Get component's Transform raw pointer for faster access
+	* @brief Get component's Transform raw pointer for faster access (Not safe, use with caution)
 	*/
 	[[nodiscard]] inline Transform* GetTransformRaw() const
 	{
@@ -166,16 +161,38 @@ private:
 
 protected:
 	/**
-	* @brief [Internal] Remove references of this component for some specific cases
+	* @brief [Internal] Remove references of this component for some specific cases, should not be used by the user
 	*/
 	virtual void RemoveReferences() {};
 
+	/**
+	* @brief Function called when a collision has just occured with another collider
+	*/
 	virtual void OnCollisionEnter(CollisionEvent info) {};
+
+	/**
+	* @brief Function called every frame if a collider of the GameObject is still colliding with another collider
+	*/
 	virtual void OnCollisionStay(CollisionEvent info) {};
+
+	/**
+	* @brief Function called when the collision has ended
+	*/
 	virtual void OnCollisionExit(CollisionEvent info) {};
 
+	/**
+	* @brief Function called when a collider of the GameObject just entered a trigger collider
+	*/
 	virtual void OnTriggerEnter(CollisionEvent info) {};
+
+	/**
+	* @brief Function called when a collider of the GameObject is still in a trigger collider
+	*/
 	virtual void OnTriggerStay(CollisionEvent info) {};
+
+	/**
+	* @brief Function called when a collider of the GameObject just leave a trigger collider
+	*/
 	virtual void OnTriggerExit(CollisionEvent info) {};
 
 	const std::string* m_componentName = nullptr;

@@ -84,11 +84,6 @@ void Component::SetGameObject(const std::shared_ptr<GameObject>& newGameObject)
 	OnComponentAttached();
 }
 
-bool Component::IsLocalActive() const
-{
-	return GetGameObjectRaw()->IsLocalActive();
-}
-
 void Component::SetIsEnabled(bool isEnabled)
 {
 	if (!m_canBeDisabled)
