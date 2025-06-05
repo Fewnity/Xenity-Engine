@@ -386,11 +386,12 @@ ValueInputState EditorUI::DrawReflectiveData(ReflectiveDataToDraw& reflectiveDat
 bool EditorUI::DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<Reflective*>> valuePtr)
 {
 	bool valueChanged = false;
-	const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+
+	const size_t vectorSize = valuePtr.get().size();
+	const std::string headerName = reflectiveDataToDraw.name + " (" + std::to_string(vectorSize) + ") " + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+	
 	if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
-		const size_t vectorSize = valuePtr.get().size();
-
 		const std::string tempName = reflectiveDataToDraw.name;
 		reflectiveDataToDraw.name = "";
 		ReflectiveEntry temp = reflectiveDataToDraw.currentEntry;

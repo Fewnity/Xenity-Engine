@@ -496,11 +496,13 @@ public:
 	{
 		bool listChangedTemp = false;
 
-		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+		const size_t vectorSize = valuePtr.get().size();
+		const std::string headerName = reflectiveDataToDraw.name + " (" + std::to_string(vectorSize) + ") " + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
 			const ClassRegistry::FileClassInfo* classInfo = ClassRegistry::GetFileClassInfoById(reflectiveDataToDraw.currentEntry.typeId);
-			const size_t vectorSize = valuePtr.get().size();
+
 			const std::string tempName = reflectiveDataToDraw.name;
 			reflectiveDataToDraw.name = "";
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
@@ -547,10 +549,12 @@ public:
 	static bool DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<std::weak_ptr<T>>> valuePtr)
 	{
 		bool valueChangedTemp = false;
-		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+
+		const size_t vectorSize = valuePtr.get().size();
+		const std::string headerName = reflectiveDataToDraw.name + " (" + std::to_string(vectorSize) + ") " + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+		
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed)) 
 		{
-			const size_t vectorSize = valuePtr.get().size();
 			const std::string tempName = reflectiveDataToDraw.name;
 			reflectiveDataToDraw.name = "";
 			for (size_t vectorI = 0; vectorI < vectorSize; vectorI++)
@@ -611,11 +615,13 @@ public:
 		static DrawVector(ReflectiveDataToDraw& reflectiveDataToDraw, const std::string& className, const std::reference_wrapper<std::vector<T>> valuePtr)
 	{
 		bool valueChangedTemp = false;
-		const std::string headerName = reflectiveDataToDraw.name + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+
+		const size_t vectorSize = valuePtr.get().size();
+		const std::string headerName = reflectiveDataToDraw.name + " (" + std::to_string(vectorSize) + ") " + "##ListHeader" + std::to_string((uint64_t)&valuePtr.get());
+
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 		{
 			std::vector<T>& valueRef = valuePtr.get();
-			const size_t vectorSize = valueRef.size();
 
 			const std::string tempName = reflectiveDataToDraw.name;
 			reflectiveDataToDraw.name = "";
