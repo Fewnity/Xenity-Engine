@@ -105,9 +105,11 @@ struct TextureConstructorParams
 {
 	unsigned int width = 0;
 	unsigned int height = 0;
-	bool hasAlpha = false;
+	bool hasAlpha = true;
 	Filter filter = Filter::Bilinear;
 	WrapMode wrapMode = WrapMode::Repeat;
+	PSPTextureType pspTextureType = PSPTextureType::RGBA_5650;
+	PS3TextureType ps3TextureType = PS3TextureType::ARGB_0565;
 };
 
 /**

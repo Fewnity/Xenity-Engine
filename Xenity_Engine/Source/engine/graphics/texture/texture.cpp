@@ -73,12 +73,12 @@ std::shared_ptr<Texture> Texture::CreateTexture(const TextureConstructorParams& 
 	newTexture->SetSize(params.width, params.width);
 	newTexture->SetChannelCount(params.hasAlpha ? 4 : 3);
 #if defined(__PSP__)
-	reinterpret_cast<TextureSettingsPSP*>(newTexture->m_settings[AssetPlatform::AP_PSP].get())->type = PSPTextureType::RGBA_4444;
+	reinterpret_cast<TextureSettingsPSP*>(newTexture->m_settings[AssetPlatform::AP_PSP].get())->type = params.pspTextureType;
 #elif defined(__PS3__)
-	reinterpret_cast<TextureSettingsPS3*>(newTexture->m_settings[AssetPlatform::AP_PS3].get())->type = PS3TextureType::ARGB_4444;
+	reinterpret_cast<TextureSettingsPS3*>(newTexture->m_settings[AssetPlatform::AP_PS3].get())->type = params.ps3TextureType;
 #endif
-	newTexture->SetFilter(Filter::Bilinear);
-	newTexture->SetWrapMode(WrapMode::ClampToEdge);
+	newTexture->SetFilter(params.filter);
+	newTexture->SetWrapMode(params.wrapMode);
 
 	return newTexture;
 }
