@@ -461,7 +461,7 @@ void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo,
 	const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.fileAndId.file);
 	const std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(fileRef);
 
-	TextureResolutions textureResolution = texture->m_settings[settings.assetPlatform]->resolution;
+	TextureResolution textureResolution = texture->m_settings[settings.assetPlatform]->resolution;
 	int width, height, channels;
 	unsigned char* imageData = nullptr;
 

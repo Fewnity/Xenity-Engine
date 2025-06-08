@@ -59,7 +59,6 @@ int TextureDefault::GetWrapModeEnum(WrapMode wrapMode) const
 	switch (wrapMode)
 	{
 	case WrapMode::ClampToEdge:
-	case WrapMode::ClampToBorder:
 		mode = GL_CLAMP_TO_EDGE;
 //#if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
 //#else
@@ -69,22 +68,6 @@ int TextureDefault::GetWrapModeEnum(WrapMode wrapMode) const
 	case WrapMode::Repeat:
 		mode = GL_REPEAT;
 		break;
-
-		// case WrapMode::ClampToEdge:
-		// 	mode = GL_CLAMP_TO_EDGE;
-		// 	break;
-		// case WrapMode::ClampToBorder:
-		// 	mode = GL_CLAMP_TO_BORDER;
-		// 	break;
-		// case WrapMode::MirroredRepeat:
-		// 	mode = GL_MIRRORED_REPEAT;
-		// 	break;
-		// case WrapMode::Repeat:
-		// 	mode = GL_REPEAT;
-		// 	break;
-		// case WrapMode::MirrorClampToEdge:
-		// 	mode = GL_MIRROR_CLAMP_TO_EDGE;
-		// 	break;
 	}
 	return mode;
 }

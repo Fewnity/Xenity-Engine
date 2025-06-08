@@ -409,7 +409,7 @@ void Engine::Loop()
 
 					// Update all components
 #if defined(EDITOR)
-				// Catch game's code error to prevent the editor to crash
+					// Catch game's code error to prevent the editor to crash
 					const bool tryResult = CrashHandler::CallInTry(GameplayManager::UpdateComponents);
 					if (tryResult)
 					{

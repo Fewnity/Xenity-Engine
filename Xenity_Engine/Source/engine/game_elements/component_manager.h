@@ -10,7 +10,7 @@
 #include <engine/event_system/event_system.h>
 #include <engine/debug/performance.h>
 
-class BaseComponentList
+class API BaseComponentList
 {
 public:
 	/**

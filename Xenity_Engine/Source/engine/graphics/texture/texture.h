@@ -22,16 +22,16 @@
 #include <engine/application.h>
 
 ENUM(Filter, Point, Bilinear);
-ENUM(AnisotropicLevel, X0, X2, X4, X8, X16);
-ENUM(TextureResolutions, R_64x64 = 64, R_128x128 = 128, R_256x256 = 256, R_512x512 = 512, R_1024x1024 = 1024, R_2048x2048 = 2048);
-ENUM(WrapMode, ClampToEdge, ClampToBorder, MirroredRepeat, Repeat, MirrorClampToEdge);
+//ENUM(AnisotropicLevel, X0, X2, X4, X8, X16); // Not used for now, but could be useful later
+ENUM(TextureResolution, R_64x64 = 64, R_128x128 = 128, R_256x256 = 256, R_512x512 = 512, R_1024x1024 = 1024, R_2048x2048 = 2048);
+ENUM(WrapMode, ClampToEdge, Repeat);
 ENUM(PSPTextureType, RGBA_8888, RGBA_5551, RGBA_5650, RGBA_4444);
 ENUM(PS3TextureType, ARGB_8888, ARGB_1555, ARGB_0565, ARGB_4444);
 
 class TextureSettings : public Reflective
 {
 public:
-	TextureResolutions resolution = TextureResolutions::R_2048x2048;
+	TextureResolution resolution = TextureResolution::R_2048x2048;
 	Filter filter = Filter::Bilinear;
 	WrapMode wrapMode = WrapMode::Repeat;
 	bool useMipMap = false;
@@ -120,19 +120,16 @@ class API Texture : public FileReference
 public:
 	Texture();
 
+	/**
+	* @brief Dynamically create a texture
+	*/
 	[[nodiscard]] static std::shared_ptr<Texture> CreateTexture(const TextureConstructorParams& params);
-
-	inline void SetSize(int width, int height)
-	{
-		this->m_width = width;
-		this->height = height;
-	}
 
 	/**
 	 * @brief Set texture filter
 	 * @param filter Filter
 	 */
-	inline void SetFilter(const Filter filter)
+	void SetFilter(const Filter filter)
 	{
 		m_settings.at(Application::GetAssetPlatform())->filter = filter;
 	}
@@ -141,7 +138,7 @@ public:
 	 * @brief Set texture wrap mode
 	 * @param mode Wrap mode
 	 */
-	inline void SetWrapMode(const WrapMode mode)
+	void SetWrapMode(const WrapMode mode)
 	{
 		m_settings.at(Application::GetAssetPlatform())->wrapMode = mode;
 	}
@@ -149,7 +146,7 @@ public:
 	/**
 	 * @brief Get texture width
 	 */
-	[[nodiscard]] inline int GetWidth() const
+	[[nodiscard]] int GetWidth() const
 	{
 		return m_width;
 	}
@@ -157,7 +154,7 @@ public:
 	/**
 	 * @brief Get texture height
 	 */
-	[[nodiscard]] inline int GetHeight() const
+	[[nodiscard]] int GetHeight() const
 	{
 		return height;
 	}
@@ -166,7 +163,7 @@ public:
 	 * @brief Set texture pixel per unit
 	 * @param value Pixel per unit
 	 */
-	inline void SetPixelPerUnit(int value)
+	void SetPixelPerUnit(int value)
 	{
 		m_settings.at(Application::GetAssetPlatform())->pixelPerUnit = value;
 	}
@@ -174,7 +171,7 @@ public:
 	/**
 	 * @brief Get texture pixel per unit
 	 */
-	[[nodiscard]] inline int GetPixelPerUnit() const
+	[[nodiscard]] int GetPixelPerUnit() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->pixelPerUnit;
 	}
@@ -182,7 +179,7 @@ public:
 	/**
 	 * @brief Get if the texture is using mipmap
 	 */
-	[[nodiscard]] inline bool GetUseMipmap() const
+	[[nodiscard]] bool GetUseMipmap() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->useMipMap;
 	}
@@ -190,7 +187,7 @@ public:
 	/**
 	 * @brief Get texture filter
 	 */
-	[[nodiscard]] inline Filter GetFilter() const
+	[[nodiscard]] Filter GetFilter() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->filter;
 	}
@@ -198,7 +195,7 @@ public:
 	/**
 	 * @brief Get texture wrap mode
 	 */
-	[[nodiscard]] inline WrapMode GetWrapMode() const
+	[[nodiscard]] WrapMode GetWrapMode() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->wrapMode;
 	}
@@ -232,15 +229,21 @@ protected:
 	friend class Cooker;
 	friend class EditorIcons;
 
+	void SetSize(int width, int height)
+	{
+		this->m_width = width;
+		this->height = height;
+	}
+
 	/**
 	* @brief Get texture channel count
 	*/
-	[[nodiscard]] inline int GetChannelCount() const
+	[[nodiscard]] int GetChannelCount() const
 	{
 		return nrChannels;
 	}
 
-	inline void SetChannelCount(int channelCount)
+	void SetChannelCount(int channelCount)
 	{
 		this->nrChannels = channelCount;
 	}
@@ -248,7 +251,7 @@ protected:
 	/**
 	 * @brief Return if the texture is valid
 	 */
-	[[nodiscard]] inline bool IsValid() const
+	[[nodiscard]] bool IsValid() const
 	{
 		return isValid;
 	}
@@ -257,12 +260,12 @@ protected:
 	* @brief [Internal] Get mipmap level count
 	* @return 0 if mipmapping is not used
 	*/
-	/*[[nodiscard]] inline int GetMipmaplevelCount() const
+	/*[[nodiscard]] int GetMipmaplevelCount() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->mipmaplevelCount;
 	}*/
 
-	[[nodiscard]] inline TextureResolutions GetCookResolution() const
+	[[nodiscard]] TextureResolution GetCookResolution() const
 	{
 		return m_settings.at(Application::GetAssetPlatform())->resolution;
 	}
@@ -270,7 +273,7 @@ protected:
 	/**
 	 * @brief [Internal]
 	 */
-	[[nodiscard]] inline std::shared_ptr<Texture> GetThisShared()
+	[[nodiscard]] std::shared_ptr<Texture> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<Texture>(shared_from_this());
 	}
@@ -312,7 +315,7 @@ protected:
 	int m_originalWidth = 0, m_originalHeight = 0;
 
 #if defined(EDITOR)
-	TextureResolutions previousResolution = TextureResolutions::R_2048x2048;
+	TextureResolution previousResolution = TextureResolution::R_2048x2048;
 #endif
 	bool isValid = false;
 };

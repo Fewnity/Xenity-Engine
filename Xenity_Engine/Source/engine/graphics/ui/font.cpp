@@ -192,18 +192,17 @@ bool Font::CreateFont(Font& font)
 		}
 	}
 
-	std::shared_ptr<Texture> newAtlas = Texture::MakeTexture();
-	newAtlas->SetSize(atlasSize, atlasSize);
-	newAtlas->SetChannelCount(channelCount);
-#if defined(__PSP__)
-	reinterpret_cast<TextureSettingsPSP*>(newAtlas->m_settings[AssetPlatform::AP_PSP].get())->type = PSPTextureType::RGBA_4444;
-#elif defined(__PS3__)
-	reinterpret_cast<TextureSettingsPS3*>(newAtlas->m_settings[AssetPlatform::AP_PS3].get())->type = PS3TextureType::ARGB_4444;
-#endif
+	TextureConstructorParams params;
+	params.width = atlasSize;
+	params.height = atlasSize;
+	params.filter = Filter::Bilinear;
+	params.wrapMode = WrapMode::ClampToEdge;
+	params.pspTextureType = PSPTextureType::RGBA_4444;
+	params.ps3TextureType = PS3TextureType::ARGB_4444;
+
+	std::shared_ptr<Texture> newAtlas = Texture::CreateTexture(params);
 	newAtlas->SetData(atlas);
-	newAtlas->SetFilter(Filter::Bilinear);
-	newAtlas->SetWrapMode(WrapMode::ClampToEdge);
-	newAtlas->m_fileStatus = FileStatus::FileStatus_Loaded;
+
 	font.fontAtlas = newAtlas;
 
 	free(atlas);
