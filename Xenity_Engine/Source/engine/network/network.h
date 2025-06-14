@@ -52,6 +52,7 @@ public:
 	*/
 	[[nodiscard]] std::string GetIncommingData()
 	{
+		Update();
 		const std::string data = m_incommingData;
 		m_incommingData.clear();
 		return data;
