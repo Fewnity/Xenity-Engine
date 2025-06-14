@@ -39,7 +39,7 @@
 #include "material.h"
 #include "skybox.h"
 #include "camera.h"
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/audio/audio_source.h>
@@ -749,7 +749,7 @@ void Graphics::DrawSubMesh(const Vector3& position, const Quaternion& rotation, 
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	const glm::mat4 transformationMatrix = Math::CreateModelMatrix(position, rotation, scale);
+	const glm::mat4 transformationMatrix = InternalMath::CreateModelMatrix(position, rotation, scale);
 	const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transformationMatrix)));
 	const glm::mat4 MVP = Graphics::usedCamera->m_viewProjectionMatrix * transformationMatrix;
 

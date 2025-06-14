@@ -9,7 +9,8 @@
 #include <glm/ext/quaternion_float.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
+#include <engine/math/math.h>
 #include "vector3.h"
 #include "vector4.h"
 

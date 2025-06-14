@@ -14,9 +14,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-//#define _USE_MATH_DEFINES
-//#include <cmath>
-
 #if defined(EDITOR)
 #include <editor/rendering/gizmo.h>
 #include <editor/ui/editor_ui.h>

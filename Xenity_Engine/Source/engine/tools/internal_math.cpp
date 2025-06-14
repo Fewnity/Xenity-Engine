@@ -4,7 +4,7 @@
 //
 // This file is part of Xenity Engine
 
-#include "math.h"
+#include "internal_math.h"
 
 #if defined(__PSP__)
 #include <pspgum.h>
@@ -15,8 +15,9 @@
 #include <engine/math/vector3.h>
 #include <engine/math/vector2.h>
 #include <engine/math/quaternion.h>
+#include <engine/math/math.h>
 
-void Math::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
+void InternalMath::MultiplyMatrices(const float* A, const float* B, float* result, int rA, int cA, int rB, int cB)
 {
 	if (cA != rB)
 	{
@@ -39,7 +40,7 @@ void Math::MultiplyMatrices(const float* A, const float* B, float* result, int r
 	}
 }
 
-glm::mat4 Math::CreateModelMatrix(const Vector3& position, const Vector3& rotation, const Vector3& scale)
+glm::mat4 InternalMath::CreateModelMatrix(const Vector3& position, const Vector3& rotation, const Vector3& scale)
 {
 	glm::mat4 transformationMatrix;
 #if defined(__PSP__)
@@ -74,7 +75,7 @@ if (rotation.z != 0)
 	return transformationMatrix;
 }
 
-glm::mat4 Math::CreateModelMatrix(const Vector3& position, const Quaternion& rotation, const Vector3& scale)
+glm::mat4 InternalMath::CreateModelMatrix(const Vector3& position, const Quaternion& rotation, const Vector3& scale)
 {
 	glm::mat4 transformationMatrix;
 #if defined(__PSN__NO)
@@ -101,7 +102,7 @@ glm::mat4 Math::CreateModelMatrix(const Vector3& position, const Quaternion& rot
 	return transformationMatrix;
 }
 
-unsigned int Math::nextPow2(const unsigned int value)
+unsigned int InternalMath::NextPow2(const unsigned int value)
 {
 	unsigned int poweroftwo = 1;
 	while (poweroftwo < value)
@@ -111,7 +112,7 @@ unsigned int Math::nextPow2(const unsigned int value)
 	return poweroftwo;
 }
 
-glm::mat4 Math::MultiplyMatrices(const glm::mat4& matA, const glm::mat4& matB)
+glm::mat4 InternalMath::MultiplyMatrices(const glm::mat4& matA, const glm::mat4& matB)
 {
 	glm::mat4 newMat;
 #if defined(__PSP__)
@@ -122,7 +123,7 @@ glm::mat4 Math::MultiplyMatrices(const glm::mat4& matA, const glm::mat4& matB)
 	return newMat;
 }
 
-unsigned int Math::previousPow2(const unsigned int value)
+unsigned int InternalMath::PreviousPow2(const unsigned int value)
 {
 	unsigned int poweroftwo = 1;
 	unsigned int lastPower = poweroftwo;
@@ -134,7 +135,7 @@ unsigned int Math::previousPow2(const unsigned int value)
 	return lastPower;
 }
 
-Vector3 Math::Get3DDirectionFromAngles(const float angleA, const float angleB)
+Vector3 InternalMath::Get3DDirectionFromAngles(const float angleA, const float angleB)
 {
 	Vector3 direction = Vector3();
 	const float TempS = angleA / 180.0f * Math::PI;
@@ -151,7 +152,7 @@ Vector3 Math::Get3DDirectionFromAngles(const float angleA, const float angleB)
 	return direction;
 }
 
-Vector2 Math::Get2DDirectionFromAngle(const float angleA)
+Vector2 InternalMath::Get2DDirectionFromAngle(const float angleA)
 {
 	Vector2 direction = Vector2();
 	const float TempS = angleA / 180.0f * Math::PI;
@@ -162,22 +163,4 @@ Vector2 Math::Get2DDirectionFromAngle(const float angleA)
 	direction.x = cosTempS;
 	direction.y = -SinTempS;
 	return direction;
-}
-
-float Math::Lerp(float a, float b, float t)
-{
-	return a + t * (b - a);
-}
-
-float Math::Clamp(float value, float min, float max)
-{
-	if (value < min)
-	{
-		value = min;
-	}
-	else if (value > max)
-	{
-		value = max;
-	}
-	return value;
 }

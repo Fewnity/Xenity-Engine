@@ -24,7 +24,7 @@
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/asset_management/asset_manager.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/debug.h>
 #include <engine/graphics/graphics.h>

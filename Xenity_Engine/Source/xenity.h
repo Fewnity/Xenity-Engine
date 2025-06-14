@@ -26,7 +26,7 @@
 // Tools
 #include <engine/tools/benchmark.h>
 #include <engine/tools/curve.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/tools/shape_spawner.h>
 

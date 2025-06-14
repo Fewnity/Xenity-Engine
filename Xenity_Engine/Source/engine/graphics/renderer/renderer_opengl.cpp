@@ -32,7 +32,7 @@
 #include <engine/debug/performance.h>
 #include <engine/graphics/texture/texture.h>
 
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/graphics/texture/texture_default.h>
 
 

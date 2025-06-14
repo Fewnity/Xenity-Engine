@@ -25,7 +25,7 @@
 #include <engine/debug/debug.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/file_system/async_file_loading.h>
 #include <engine/debug/memory_tracker.h>
 #include <engine/asset_management/project_manager.h>
@@ -356,8 +356,8 @@ void TexturePSP::SetData(const unsigned char* texData)
 	// type = GU_PSM_DXT1;
 
 	// Get pow2 size
-	pW = Math::nextPow2(m_width);
-	pH = Math::nextPow2(height);
+	pW = InternalMath::NextPow2(m_width);
+	pH = InternalMath::NextPow2(height);
 
 	SetTextureLevel(0, texData);
 	if (GetUseMipmap())

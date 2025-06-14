@@ -9,7 +9,7 @@
 #include <math.h>
 #include <sstream>
 
-#include <engine/tools/math.h>
+#include <engine/math/math.h>
 #include <engine/debug/stack_debug_object.h>
 
 std::string Color::ToString() const

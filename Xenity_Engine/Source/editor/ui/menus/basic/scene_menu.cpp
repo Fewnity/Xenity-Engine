@@ -19,11 +19,12 @@
 #include <engine/game_elements/rect_transform.h>
 #include <engine/time/time.h>
 #include <engine/engine_settings.h>
+#include <engine/math/math.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/asset_management/asset_manager.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/graphics/texture/texture_default.h>
 #include <engine/game_elements/prefab.h>
 #include <editor/ui/editor_icons.h>

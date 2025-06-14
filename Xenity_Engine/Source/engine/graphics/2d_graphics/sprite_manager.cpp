@@ -23,7 +23,7 @@
 #include <engine/debug/debug.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/math/quaternion.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 
 std::shared_ptr <MeshData> SpriteManager::s_spriteMeshData = nullptr;
 std::shared_ptr <MeshData> SpriteManager::s_spriteMeshDataWithNormals = nullptr;
@@ -150,7 +150,7 @@ void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotati
 	const float w = texture->GetWidth() * scaleCoef;
 	const float h = texture->GetHeight() * scaleCoef;
 
-	const glm::mat4 matrix = glm::scale(Math::CreateModelMatrix(position, rotation, scale), glm::vec3(w, h, 1));
+	const glm::mat4 matrix = glm::scale(InternalMath::CreateModelMatrix(position, rotation, scale), glm::vec3(w, h, 1));
 	glm::mat4 mvp;
 	if constexpr (!s_UseOpenGLFixedFunctions)
 	{

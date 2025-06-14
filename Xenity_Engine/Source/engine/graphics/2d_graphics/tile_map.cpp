@@ -8,15 +8,10 @@
 
 #include "tile_map.h"
 
-#define _USE_MATH_DEFINES
-#if defined(__PSP__) || defined(__vita__)
-#undef __STRICT_ANSI__
-#endif
-#include <math.h>
 #include <malloc.h>
 
 #include <engine/graphics/graphics.h>
-#include <engine/graphics/texture.h>
+#include <engine/graphics/texture/texture.h>
 #include <engine/graphics/camera.h>
 #include <engine/graphics/3d_graphics/mesh_manager.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
@@ -146,8 +141,8 @@ void Tilemap::FillChunks()
 				MeshData* mesh = chunks[(size_t)xChunk + (size_t)yChunk * chunkCount]->meshes[(size_t)tile->textureId - 1];
 				std::unique_ptr<MeshData::SubMesh>& subMesh = mesh->m_subMeshes[0];
 
-				int indiceOff = subMesh->index_count;
-				int verticeOff = subMesh->vertice_count;
+				int indiceOff = subMesh->m_index_count;
+				int verticeOff = subMesh->m_vertice_count;
 
 				float unitCoef = 100.0f / textures[tile->textureId]->GetPixelPerUnit();
 				float w = textures[tile->textureId]->GetWidth() * unitCoef;
@@ -157,33 +152,32 @@ void Tilemap::FillChunks()
 				if (!useIndices)
 				{
 					// Create tile with vertices only
-					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff, 0);
-					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 1 + verticeOff, 0);
-					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 2 + verticeOff, 0);
+					subMesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff);
+					subMesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 1 + verticeOff);
+					subMesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 2 + verticeOff);
 
-					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff, 0);
-					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 4 + verticeOff, 0);
-					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 5 + verticeOff, 0);
+					subMesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff);
+					subMesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 4 + verticeOff);
+					subMesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 5 + verticeOff);
 
-					subMesh->vertice_count += 6;
+					subMesh->m_vertice_count += 6;
 				}
 				else
 				{
 					// Create tile with vertices and indices
+					mesh->GetSubMesh(0)->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff);
+					mesh->GetSubMesh(0)->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 1 + verticeOff);
+					mesh->GetSubMesh(0)->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 2 + verticeOff);
+					mesh->GetSubMesh(0)->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff);
 
-					mesh->AddVertex(1.0f, 1.0f, -spriteSize.x - x, -spriteSize.y + y, 0.0f, 0 + verticeOff, 0);
-					mesh->AddVertex(0.0f, 1.0f, spriteSize.x - x, -spriteSize.y + y, 0.0f, 1 + verticeOff, 0);
-					mesh->AddVertex(0.0f, 0.0f, spriteSize.x - x, spriteSize.y + y, 0.0f, 2 + verticeOff, 0);
-					mesh->AddVertex(1.0f, 0.0f, -spriteSize.x - x, spriteSize.y + y, 0.0f, 3 + verticeOff, 0);
-
-					subMesh->indices[0 + indiceOff] = 0 + verticeOff;
-					subMesh->indices[1 + indiceOff] = 2 + verticeOff;
-					subMesh->indices[2 + indiceOff] = 1 + verticeOff;
-					subMesh->indices[3 + indiceOff] = 2 + verticeOff;
-					subMesh->indices[4 + indiceOff] = 0 + verticeOff;
-					subMesh->indices[5 + indiceOff] = 3 + verticeOff;
-					subMesh->index_count += 6;
-					subMesh->vertice_count += 4;
+					subMesh->SetIndex(0 + indiceOff, 0 + verticeOff);
+					subMesh->SetIndex(1 + indiceOff, 2 + verticeOff);
+					subMesh->SetIndex(2 + indiceOff, 1 + verticeOff);
+					subMesh->SetIndex(3 + indiceOff, 2 + verticeOff);
+					subMesh->SetIndex(4 + indiceOff, 0 + verticeOff);
+					subMesh->SetIndex(5 + indiceOff, 3 + verticeOff);
+					subMesh->m_index_count += 6;
+					subMesh->m_vertice_count += 4;
 				}
 			}
 		}
@@ -243,10 +237,15 @@ void Tilemap::CreateChunksMeshes()
 			// Create new meshes
 			for (int i = 0; i < textureSize; i++)
 			{
-				MeshData* mesh = new MeshData(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, false, false, true);
-				mesh->m_subMeshes[0]->index_count = 0;
-				mesh->m_subMeshes[0]->vertice_count = 0;
-				mesh->m_hasIndices = useIndices;
+				MeshData* mesh = new MeshData();
+				VertexDescriptor vertexDescriptor = VertexDescriptor();
+				vertexDescriptor.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
+				vertexDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
+
+				mesh->CreateSubMesh(verticesPerTile * chunkSize * chunkSize, indicesPerTile * chunkSize * chunkSize, vertexDescriptor);
+				mesh->m_subMeshes[0]->m_index_count = 0;
+				mesh->m_subMeshes[0]->m_vertice_count = 0;
+
 				mesh->unifiedColor = color;
 				chunk->meshes.push_back(mesh);
 			}

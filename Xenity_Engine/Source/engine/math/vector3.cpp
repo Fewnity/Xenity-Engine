@@ -6,7 +6,8 @@
 
 #include <cmath>
 
-#include <engine/tools/math.h>
+#include <engine/math/math.h>
+#include <engine/tools/internal_math.h>
 #include "vector3.h"
 #include "vector2_int.h"
 #include "vector2.h"

@@ -10,7 +10,7 @@
 #include <engine/file_system/file_system.h>
 #include <engine/game_elements/transform.h>
 #include <engine/debug/debug.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/math/quaternion.h>
 #include <engine/debug/stack_debug_object.h>
 
@@ -41,7 +41,7 @@ std::shared_ptr <MeshData> MeshManager::LoadMesh(const std::string& path)
 
 //void MeshManager::DrawMesh(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings)
 //{
-//	const glm::mat4 matrix = Math::CreateModelMatrix(position, rotation, scale);
+//	const glm::mat4 matrix = InternalMath::CreateModelMatrix(position, rotation, scale);
 //	Graphics::DrawSubMesh(subMesh, material, renderSettings, matrix, false);
 //}
 

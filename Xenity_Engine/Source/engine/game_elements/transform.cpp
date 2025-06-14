@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include "gameobject.h"
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
@@ -362,7 +362,7 @@ void Transform::UpdateWorldPosition()
 
 	//Create the matrix which store the new child's world position (wihtout parent's world position added)
 	float posAfterRotation[3];
-	Math::MultiplyMatrices(scaledLocalPos, parentTransform->rotationMatrix, posAfterRotation, 1, 3, 3, 3);
+	InternalMath::MultiplyMatrices(scaledLocalPos, parentTransform->rotationMatrix, posAfterRotation, 1, 3, 3, 3);
 
 	//Set new child position (with parent's world position added)
 	m_position = Vector3(posAfterRotation[0] + parentPosition.x, (-posAfterRotation[1] + parentPosition.y), (-posAfterRotation[2] + parentPosition.z));

@@ -64,12 +64,12 @@ void UnitTestManager::StartAllTests()
 		TryTest(eventSystemTest);
 	}
 
-	//------------------------------------------------------------------ Test Math
+	//------------------------------------------------------------------ Test InternalMath
 	{
-		MathBasicTest mathBasicTest = MathBasicTest("Math Basics");
+		MathBasicTest mathBasicTest = MathBasicTest("InternalMath Basics");
 		TryTest(mathBasicTest);
 
-		MathMatrixTest mathMatrixTest = MathMatrixTest("Math Matrice");
+		MathMatrixTest mathMatrixTest = MathMatrixTest("InternalMath Matrice");
 		TryTest(mathMatrixTest);
 	}
 

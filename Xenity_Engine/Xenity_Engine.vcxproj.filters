@@ -21,7 +21,7 @@
     <ClCompile Include="Source\engine\graphics\2d_graphics\sprite_manager.cpp" />
     <ClCompile Include="Source\engine\debug\debug.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\text_mesh.cpp" />
-    <ClCompile Include="Source\engine\tools\math.cpp" />
+    <ClCompile Include="Source\engine\tools\internal_math.cpp" />
     <ClCompile Include="Source\engine\tools\curve.cpp" />
     <ClCompile Include="Source\engine\tools\shape_spawner.cpp" />
     <ClCompile Include="Source\engine\tools\benchmark.cpp" />
@@ -353,6 +353,7 @@
     <ClCompile Include="Source\engine\engine_args.cpp" />
     <ClCompile Include="Source\engine\game_elements\prefab.cpp" />
     <ClCompile Include="Source\editor\ui\editor_icons.cpp" />
+    <ClCompile Include="Source\engine\math\math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -375,7 +376,7 @@
     <ClInclude Include="Source\engine\graphics\2d_graphics\sprite_manager.h" />
     <ClInclude Include="Source\engine\debug\debug.h" />
     <ClInclude Include="Source\engine\graphics\ui\text_mesh.h" />
-    <ClInclude Include="Source\engine\tools\math.h" />
+    <ClInclude Include="Source\engine\tools\internal_math.h" />
     <ClInclude Include="Source\engine\tools\curve.h" />
     <ClInclude Include="Source\engine\tools\shape_spawner.h" />
     <ClInclude Include="Source\engine\tools\benchmark.h" />
@@ -817,6 +818,7 @@
     <ClInclude Include="Source\engine\physics\collision_event.h" />
     <ClInclude Include="Source\editor\ui\editor_icons.h" />
     <ClInclude Include="Source\engine\debug\debug_type.h" />
+    <ClInclude Include="Source\engine\math\math.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

@@ -17,7 +17,8 @@
 #include <engine/engine.h>
 #include <engine/game_elements/transform.h>
 #include <engine/asset_management/asset_manager.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
+#include <engine/math/math.h>
 #include <engine/debug/stack_debug_object.h>
 
 Color Gizmo::color;

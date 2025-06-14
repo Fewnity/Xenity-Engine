@@ -20,7 +20,7 @@
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/debug/stack_debug_object.h>
 
 #include "rigidbody.h"

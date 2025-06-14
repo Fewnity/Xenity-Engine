@@ -14,7 +14,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/tools/benchmark.h>
 #include <engine/debug/performance.h>
 #include <engine/debug/stack_debug_object.h>

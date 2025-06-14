@@ -135,7 +135,7 @@ public:
 
 #pragma endregion
 
-#pragma region Math
+#pragma region InternalMath
 
 MAKE_TEST(MathBasic);
 MAKE_TEST(MathMatrix);

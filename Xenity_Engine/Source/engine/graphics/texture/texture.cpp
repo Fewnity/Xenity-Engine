@@ -38,7 +38,7 @@
 #include <engine/debug/debug.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/file_system/file.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/file_system/async_file_loading.h>
 #include <engine/debug/memory_tracker.h>
 #include <engine/asset_management/project_manager.h>

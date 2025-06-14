@@ -21,12 +21,13 @@
 #include <engine/graphics/texture/texture.h>
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
-#include <engine/tools/math.h>
+#include <engine/tools/internal_math.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
 #include <engine/time/time.h>
 #include <engine/math/quaternion.h>
 #include <engine/engine.h>
+#include <engine/math/math.h>
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/debug/performance.h>
@@ -262,11 +263,11 @@ void ParticleSystem::ResetParticle(Particle& particle, bool setIsDead)
 	if (m_worldSimulation)
 	{
 		const glm::mat4& transMat = GetTransformRaw()->GetTransformationMatrix();
-		particle.matrix = Math::MultiplyMatrices(transMat, Math::CreateModelMatrix(particle.position, rotation, Vector3(1)));
+		particle.matrix = InternalMath::MultiplyMatrices(transMat, InternalMath::CreateModelMatrix(particle.position, rotation, Vector3(1)));
 	}
 	else
 	{
-		particle.matrix = Math::CreateModelMatrix(particle.position, rotation, Vector3(1));
+		particle.matrix = InternalMath::CreateModelMatrix(particle.position, rotation, Vector3(1));
 	}
 
 	particle.scale = scaleOverLifeTimeFunction(0);
@@ -356,7 +357,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 
 		if (!m_worldSimulation)
 		{
-			newMat = Math::MultiplyMatrices(transMat, newMat);
+			newMat = InternalMath::MultiplyMatrices(transMat, newMat);
 		}
 		if (m_isBillboard)
 		{

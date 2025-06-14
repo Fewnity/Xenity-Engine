@@ -17,13 +17,11 @@ class Quaternion;
 
 
 /**
-* @brief Math class for basics operations
+* @brief InternalMath class for basics operations
 */
-class API Math
+class API InternalMath
 {
 public:
-
-	static constexpr float PI = 3.14159265359f;
 
 	/**
 	* @brief Multiply two matrices
@@ -55,7 +53,7 @@ public:
 	* @brief Ex Value = 128; returns -> 128
 	* @param value Start value
 	*/
-	[[nodiscard]] static unsigned int nextPow2(const unsigned int value);
+	[[nodiscard]] static unsigned int NextPow2(const unsigned int value);
 
 	/**
 	* @brief Get the previous power of 2 of the given value (if the value is not itself a power of two)
@@ -63,7 +61,7 @@ public:
 	* @brief Ex Value = 128; returns -> 128
 	* @param value Start value
 	*/
-	[[nodiscard]] static unsigned int previousPow2(const unsigned int value);
+	[[nodiscard]] static unsigned int PreviousPow2(const unsigned int value);
 
 	/**
 	* @brief Get a normalised 3D direction from two angles
@@ -77,20 +75,4 @@ public:
 	* @param angle
 	*/
 	[[nodiscard]] static Vector2 Get2DDirectionFromAngle(const float angle);
-
-	/**
-	* @brief Linearly interpolates between a and b by t
-	* @param a Start value
-	* @param b End value
-	* @param t [0,1]
-	*/
-	[[nodiscard]] static float Lerp(float a, float b, float t);
-
-	/**
-	* @brief Restrict a number between two other numbers
-	* @param value Value to clamp
-	* @param min Minimum
-	* @param mac Maximum
-	*/
-	[[nodiscard]] static float Clamp(float value, float min, float max);
 };
