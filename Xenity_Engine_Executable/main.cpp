@@ -27,18 +27,11 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 --- Needed
 Rework the documentation
 Add unit tests for modify commands and Awake/Start/Update/
-Create a math folder to move math.h, vectors and quaternion
-Add help link on components in the inspector
-Add new website link to the documentation
 Rework the Screen::MakeScreenshot to be able to use in game loop
-Improve socket Update
-GetFolderPath does not work with relative path
-GetFileName does not work with relative path
 
 Fix PSP sleep mode when networking is enabled
 
 To make lighting usable on PS3:
-- Try to make directional lighting in the vertex shader
 - Try to detect light per draw to use with sphere test (filter light first by camera frustum)
 
 --- Can be done for the next release
