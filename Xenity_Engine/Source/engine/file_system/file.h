@@ -95,7 +95,7 @@ public:
 	}
 
 	/**
-	* @brief Get file folder path
+	* @brief Get file folder path (does not include the full folder path if the file has been opened from a relative path)
 	*/
 	[[nodiscard]] std::string GetFolderPath() const;
 

@@ -67,20 +67,26 @@ std::string File::GetFolderPath() const
 	if (m_path.size() == 0)
 		return "";
 
-	int lastSlashPos = (int)m_path.find_last_of('\\');
+	size_t lastSlashPos = m_path.find_last_of('\\');
 	if (lastSlashPos == -1)
 	{
-		lastSlashPos = (int)m_path.find_last_of('/');
-		if (lastSlashPos == -1)
-		lastSlashPos = 0;
+		lastSlashPos = m_path.find_last_of('/');
 	}
 
+	if (lastSlashPos != -1)
+	{
+		lastSlashPos++; // Include the slash in the folder path
+	}
+	else 
+	{
+		return ""; // No folder path, return empty string
+	}
 
 #if defined(_EE)
-	const std::string fileName = path.substr(5, lastSlashPos + 1);
+	const std::string fileName = path.substr(5, lastSlashPos);
 	// std::string fileName = path.substr(6, lastSlashPos + 1);
 #else
-	const std::string fileName = m_path.substr(0, lastSlashPos + 1);
+	const std::string fileName = m_path.substr(0, lastSlashPos);
 #endif
 
 	return fileName;
