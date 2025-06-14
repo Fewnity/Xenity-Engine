@@ -180,7 +180,7 @@ void ProjectManager::FindAllProjectFiles()
 	projectFilesIds.clear();
 
 	std::vector<FileInfo> compatibleFiles = GetCompatibleFiles();
-	totalFilesCount = compatibleFiles.size();
+	totalFilesCount = static_cast<int>(compatibleFiles.size());
 	loadedFilesCount = 0;
 	CheckAndGenerateFileIds(compatibleFiles);
 
