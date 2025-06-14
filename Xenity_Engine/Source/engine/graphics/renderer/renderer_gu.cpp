@@ -583,32 +583,11 @@ int RendererGU::GetWrapModeEnum(WrapMode wrapMode)
 	switch (wrapMode)
 	{
 	case WrapMode::ClampToEdge:
-	case WrapMode::ClampToBorder:
-#if defined(_WIN32) || defined(_WIN64)
-		mode = GU_CLAMP_TO_EDGE;
-#else
 		mode = GU_CLAMP;
-#endif
 		break;
 	case WrapMode::Repeat:
 		mode = GU_REPEAT;
 		break;
-
-		// case WrapMode::ClampToEdge:
-		// 	mode = GU_CLAMP_TO_EDGE;
-		// 	break;
-		// case WrapMode::ClampToBorder:
-		// 	mode = GU_CLAMP_TO_BORDER;
-		// 	break;
-		// case WrapMode::MirroredRepeat:
-		// 	mode = GU_MIRRORED_REPEAT;
-		// 	break;
-		// case WrapMode::Repeat:
-		// 	mode = GU_REPEAT;
-		// 	break;
-		// case WrapMode::MirrorClampToEdge:
-		// 	mode = GU_MIRROR_CLAMP_TO_EDGE;
-		// 	break;
 	}
 	return mode;
 }

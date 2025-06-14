@@ -365,7 +365,6 @@ void TexturePSP::SetData(const unsigned char* texData)
 		SetTextureLevel(1, texData);
 		// SetTextureLevel(2, texData);
 		// SetTextureLevel(3, texData);
-		m_settings[Application::GetAssetPlatform()]->mipmaplevelCount = 1;
 	}
 
 	isValid = true;
@@ -403,7 +402,12 @@ void TexturePSP::Bind() const
 {
 	PSPTextureType type = GetSettings().type;
 
-	sceGuTexMode(TypeToGUPSM(type), GetMipmaplevelCount(), 0, 1);
+	int mipmapCount = 0;
+	if (GetUseMipmap())
+	{
+		mipmapCount = 1;
+	}
+	sceGuTexMode(TypeToGUPSM(type), mipmapCount, 0, 1);
 	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
 	// Set mipmap behavior
 	if (GetUseMipmap())
@@ -464,7 +468,6 @@ int TexturePSP::GetWrapModeEnum(WrapMode wrapMode) const
 	switch (wrapMode)
 	{
 	case WrapMode::ClampToEdge:
-	case WrapMode::ClampToBorder:
 		mode = GU_CLAMP;
 		break;
 

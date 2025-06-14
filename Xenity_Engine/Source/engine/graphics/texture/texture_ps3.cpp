@@ -291,7 +291,6 @@ int TexturePS3::GetWrapModeEnum(WrapMode wrapMode) const
 	switch (wrapMode)
 	{
 	case WrapMode::ClampToEdge:
-	case WrapMode::ClampToBorder:
 		mode = GCM_TEXTURE_CLAMP_TO_EDGE;
 		break;
 	case WrapMode::Repeat:
