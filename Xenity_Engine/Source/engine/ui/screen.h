@@ -43,10 +43,6 @@ public:
 	*/
 	[[nodiscard]] static bool IsVSyncEnabled();
 
-
-private:
-
-	friend class Window;
 	/**
 	* @brief Make a screenshot of the game (.png)
 	* @brief (Note: on PSP/PsVita, plugins overlays are also captured)
@@ -54,6 +50,10 @@ private:
 	* @param fileName The name of the file to save the screenshot (without the extension)
 	*/
 	static bool MakeScreenshot(const std::string& fileName);
+
+private:
+
+	friend class Window;
 
 	static int s_height;
 	static int s_width;
