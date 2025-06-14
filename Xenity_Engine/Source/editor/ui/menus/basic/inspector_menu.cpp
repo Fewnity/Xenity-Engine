@@ -26,6 +26,7 @@
 #include <engine/engine.h>
 #include <engine/debug/debug.h>
 #include <engine/application.h>
+#include <editor/ui/editor_icons.h>
 
 using json = nlohmann::json;
 
@@ -701,10 +702,12 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 			texture = EditorUI::componentsIcons["Default"];
 		}
 
+		float headerWidth = 0;
 		float headerHeight = 0;
 		const std::string headerName = "##ComponentHeader" + std::to_string(comp->GetUniqueId());
 		if (ImGui::CollapsingHeader(headerName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowOverlap))
 		{
+			headerWidth = ImGui::GetItemRectSize().x;
 			headerHeight = ImGui::GetItemRectSize().y;
 			CheckOpenRightClickPopup(*comp, componentCount, i, "RightClick" + std::to_string(comp->GetUniqueId()));
 			if (!comp->m_waitingForDestroy)
@@ -757,6 +760,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 		}
 		else
 		{
+			headerWidth = ImGui::GetItemRectSize().x;
 			headerHeight = ImGui::GetItemRectSize().y;
 		}
 
@@ -791,6 +795,32 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 		{
 			texture->Bind();
 			ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(headerHeight - 2, headerHeight - 2));
+		}
+
+		if (headerWidth >= 200)
+		{
+			ImGui::SetCursorPosX(headerWidth - headerHeight+1);
+			ImGui::SetCursorPosY(cursorY + 0);
+			texture = EditorIcons::GetIcon(IconName::Icon_Question);
+			if (texture)
+			{
+				texture->Bind();
+
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1f, 0.2f, 0.3f, 0.5f));
+
+				const ClassRegistry::ClassInfo* classInfo = ClassRegistry::GetClassInfoById(typeid(*comp).hash_code());
+				if (classInfo && !classInfo->docLink.empty())
+				{
+					if (ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(headerHeight - 5, headerHeight - 5)))
+					{
+						Application::OpenURL(classInfo->docLink);
+					}
+				}
+
+				ImGui::PopStyleColor(3);
+			}
 		}
 
 		ImGui::SetCursorPosX(lastCursorX);

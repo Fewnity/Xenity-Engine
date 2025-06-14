@@ -26,7 +26,7 @@ class Component;
 // maxCount is the maximum number of components of this type that can be used in a scene
 #define REGISTER_COMPONENT(component, disableUpdateLoop) ClassRegistry::AddComponentClass<component>(#component, 100, disableUpdateLoop)
 #define REGISTER_INVISIBLE_COMPONENT(component, disableUpdateLoop) ClassRegistry::AddComponentClass<component>(#component, 100, disableUpdateLoop, false)
-
+#define REGISTER_COMPONENT_DOC_LINK(component, link) ClassRegistry::GetClassInfo<component>()->docLink = std::string(link);
 #define REGISTER_FILE(fileClass, fileType) AddFileClass<fileClass>(#fileClass, fileType)
 
 
@@ -43,6 +43,7 @@ public:
 	struct ClassInfo
 	{
 		std::string name = "";
+		mutable std::string docLink = "";
 		uint64_t typeId = 0;
 		size_t maxCount = 0;
 		bool disableUpdateLoop = false;

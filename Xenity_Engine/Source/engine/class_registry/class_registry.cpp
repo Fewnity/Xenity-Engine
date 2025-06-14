@@ -163,6 +163,27 @@ void ClassRegistry::RegisterEngineComponents()
 #if defined(DEBUG)
 	REGISTER_COMPONENT(TestComponent, false);
 #endif
+
+	REGISTER_COMPONENT_DOC_LINK(Light, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
+	REGISTER_COMPONENT_DOC_LINK(Camera, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/camera.html");
+	REGISTER_COMPONENT_DOC_LINK(TextRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/text_renderer.html");
+	REGISTER_COMPONENT_DOC_LINK(Canvas, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/canvas.html");
+	REGISTER_COMPONENT_DOC_LINK(RectTransform, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/rect_transform.html");
+	REGISTER_COMPONENT_DOC_LINK(TextMesh, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/text_mesh.html");
+	REGISTER_COMPONENT_DOC_LINK(MeshRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/mesh_renderer.html");
+	//REGISTER_COMPONENT_DOC_LINK(Tilemap, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
+	REGISTER_COMPONENT_DOC_LINK(SpriteRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/sprite_renderer.html");
+	REGISTER_COMPONENT_DOC_LINK(BillboardRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/billboard_renderer.html");
+	//REGISTER_COMPONENT_DOC_LINK(LineRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
+	REGISTER_COMPONENT_DOC_LINK(AudioSource, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/audio_source.html");
+	REGISTER_COMPONENT_DOC_LINK(ParticleSystem, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/particle_system.html");
+	REGISTER_COMPONENT_DOC_LINK(RigidBody, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/rigidbody.html");
+	REGISTER_COMPONENT_DOC_LINK(BoxCollider, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/box_collider.html");
+	REGISTER_COMPONENT_DOC_LINK(SphereCollider, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/sphere_collider.html");
+	REGISTER_COMPONENT_DOC_LINK(Lod, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/lod.html");
+	REGISTER_COMPONENT_DOC_LINK(FpsCounter, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/fps_counter.html");
+	//REGISTER_COMPONENT_DOC_LINK(TestComponent, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
+
 	REGISTER_INVISIBLE_COMPONENT(MissingScript, true);
 }
 
