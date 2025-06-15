@@ -153,6 +153,9 @@ void UnitTestManager::StartAllTests()
 
 		DeleteGameObjectCommandTest deleteGameObjectCommandTest = DeleteGameObjectCommandTest("Delete GameObject Command");
 		TryTest(deleteGameObjectCommandTest);
+
+		ModifyReflectiveCommandTest modifyReflectiveCommandTest = ModifyReflectiveCommandTest("Modify Reflective Command");
+		TryTest(modifyReflectiveCommandTest);
 	}
 #endif
 

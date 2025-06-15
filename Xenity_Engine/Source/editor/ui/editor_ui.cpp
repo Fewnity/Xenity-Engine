@@ -241,7 +241,7 @@ void EditorUI::DrawTextCentered(const std::string& text)
 ReflectiveDataToDraw EditorUI::CreateReflectiveDataToDraw(AssetPlatform platform)
 {
 	ReflectiveDataToDraw reflectiveDataToDraw;
-	reflectiveDataToDraw.ownerType = -1;
+	reflectiveDataToDraw.ownerType = ReflectiveDataToDraw::OwnerTypeEnum::None;
 	reflectiveDataToDraw.platform = platform;
 	return reflectiveDataToDraw;
 }

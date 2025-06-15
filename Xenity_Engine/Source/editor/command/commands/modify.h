@@ -38,7 +38,7 @@ private:
 	void FindValueToChange(ReflectiveDataToDraw& reflectiveDataToDraw, nlohmann::json& jsonToChange, int currentIndex);
 
 	uint64_t targetId = 0;
-	int ownerType = -1;
+	ReflectiveDataToDraw::OwnerTypeEnum ownerType = ReflectiveDataToDraw::OwnerTypeEnum::None;
 	std::string variableName;
 	T* valuePtr;
 	ReflectiveEntry reflectiveEntry;
@@ -103,6 +103,8 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 	{
 		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveDataToDraw.currentEntry);
 	}
+	Debug::Print("lastValue2" + lastValue2.dump(3));
+	Debug::Print("newValue2" + newValue2.dump(3));
 
 	// Remove all other variables from the json
 	//int itemCount = temp.items().begin().key().size();
@@ -129,10 +131,11 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 template<typename T>
 inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valueToSet, bool isUndo)
 {
+	Debug::Print("SetValue" + valueToSet.dump(3));
 	bool hasBeenSet = false;
 	if (targetId != 0)
 	{
-		if (ownerType == 0)
+		if (ownerType == ReflectiveDataToDraw::OwnerTypeEnum::FileReference)
 		{
 			std::shared_ptr<FileReference> foundFileRef = ProjectManager::GetFileReferenceById(targetId);
 			if (foundFileRef)
@@ -146,7 +149,7 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 				hasBeenSet = true;
 			}
 		}
-		else if (ownerType == 2)
+		else if (ownerType == ReflectiveDataToDraw::OwnerTypeEnum::Component)
 		{
 			std::shared_ptr<Component> foundComponent = FindComponentById(targetId);
 			if (foundComponent)
@@ -157,7 +160,7 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 				hasBeenSet = true;
 			}
 		}
-		else if (ownerType == 1)
+		else if (ownerType == ReflectiveDataToDraw::OwnerTypeEnum::GameObject)
 		{
 			std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
 			if (foundGameObject)

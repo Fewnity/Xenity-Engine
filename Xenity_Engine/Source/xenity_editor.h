@@ -8,8 +8,8 @@
 
 //Editor UI
 #if defined(EDITOR)
-#include <editor/ui/editor_ui.h>
-#include <editor/editor.h>
+//#include <editor/ui/editor_ui.h>
+//#include <editor/editor.h>
 #include <editor/rendering/gizmo.h>
 #include <engine/engine.h>
 #endif

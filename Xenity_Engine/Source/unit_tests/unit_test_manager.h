@@ -220,4 +220,11 @@ MAKE_TEST(DeleteGameObjectCommand);
 
 #pragma endregion
 
+#pragma region Delete Commands
+
+MAKE_TEST(ModifyReflectiveCommand);
+
+#pragma endregion
+
+
 #pragma endregion // Editor

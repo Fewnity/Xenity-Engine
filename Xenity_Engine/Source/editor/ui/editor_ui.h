@@ -296,6 +296,11 @@ public:
 		//else if constexpr (std::is_same<T, uint64_t>())
 
 		valueRef = value;
+		const bool isActivated = ImGui::IsItemActivated();
+		if (isActivated)
+		{
+			returnValue = ValueInputState::ON_OPEN;
+		}
 
 		const bool hasApplied = ImGui::IsItemDeactivatedAfterEdit();
 		if (hasApplied)
@@ -327,6 +332,12 @@ public:
 
 		valueRef = value;
 
+		const bool isActivated = ImGui::IsItemActivated();
+		if (isActivated)
+		{
+			returnValue = ValueInputState::ON_OPEN;
+		}
+
 		const bool hasApplied = ImGui::IsItemDeactivatedAfterEdit();
 		if (hasApplied)
 			returnValue = ValueInputState::APPLIED;
@@ -345,17 +356,17 @@ public:
 		reflectiveDataToDraw.platform = platform;
 		if constexpr (std::is_base_of<T, FileReference>())
 		{
-			reflectiveDataToDraw.ownerType = 0;
+			reflectiveDataToDraw.ownerType = ReflectiveDataToDraw::OwnerTypeEnum::FileReference;
 			reflectiveDataToDraw.ownerUniqueId = owner.m_fileId;
 		}
 		else if constexpr (std::is_base_of<T, GameObject>())
 		{
-			reflectiveDataToDraw.ownerType = 1;
+			reflectiveDataToDraw.ownerType = ReflectiveDataToDraw::OwnerTypeEnum::GameObject;
 			reflectiveDataToDraw.ownerUniqueId = owner.GetUniqueId();
 		}
 		else if constexpr (std::is_base_of<T, Component>())
 		{
-			reflectiveDataToDraw.ownerType = 2;
+			reflectiveDataToDraw.ownerType = ReflectiveDataToDraw::OwnerTypeEnum::Component;
 			reflectiveDataToDraw.ownerUniqueId = owner.GetUniqueId();
 		}
 
@@ -750,6 +761,7 @@ private:
 	{
 		ValueInputState state = ValueInputState::NO_CHANGE;
 		T newValue = valuePtr.get();
+		static T newValue2;
 		if (!reflectiveDataToDraw.currentEntry.isEnum)
 		{
 			if(reflectiveDataToDraw.currentEntry.isSlider)
@@ -760,8 +772,24 @@ private:
 		else if constexpr (std::is_same<int, T>())
 			state = DrawEnum(reflectiveDataToDraw.name, newValue, reflectiveDataToDraw.currentEntry.typeId);
 
-		if (state != ValueInputState::NO_CHANGE)
-			reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), valuePtr.get(), newValue);
+		if (state == ValueInputState::ON_OPEN)
+		{
+			newValue2 = valuePtr.get();
+		}
+		else 
+		{
+			if (state == ValueInputState::CHANGED)
+			{
+				reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), valuePtr.get(), newValue);
+			}
+			else if (state == ValueInputState::APPLIED)
+			{
+				reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), newValue2, newValue);
+			}
+		}
+
+		//if (state != ValueInputState::NO_CHANGE)
+			/*reflectiveDataToDraw.command = std::make_shared<ReflectiveChangeValueCommand<T>>(reflectiveDataToDraw, &valuePtr.get(), valuePtr.get(), newValue);*/
 
 		return state;
 	}

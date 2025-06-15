@@ -354,6 +354,7 @@
     <ClCompile Include="Source\engine\game_elements\prefab.cpp" />
     <ClCompile Include="Source\editor\ui\editor_icons.cpp" />
     <ClCompile Include="Source\engine\math\math.cpp" />
+    <ClCompile Include="Source\unit_tests\editor\unit_test_modify_command.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />

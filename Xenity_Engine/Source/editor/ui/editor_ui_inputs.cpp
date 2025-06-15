@@ -99,6 +99,12 @@ ValueInputState EditorUI::DrawEnum(const std::string& inputName, int& newValue, 
 		ImGui::EndCombo();
 	}
 
+	const bool isActivated = ImGui::IsItemActivated();
+	if (isActivated)
+	{
+		state = ValueInputState::ON_OPEN;
+	}
+
 	newValue = value;
 	if (value != oldValue)
 		state = ValueInputState::APPLIED;

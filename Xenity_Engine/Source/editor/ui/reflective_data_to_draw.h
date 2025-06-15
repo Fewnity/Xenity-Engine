@@ -11,13 +11,21 @@ class Command;
 
 struct ReflectiveDataToDraw
 {
+	enum class OwnerTypeEnum
+	{
+		None = -1,
+		FileReference = 0,
+		GameObject = 1,
+		Component = 2
+	};
+
 	std::vector<ReflectiveEntry> entryStack;
 	std::vector<ReflectiveData> reflectiveDataStack;
 	ReflectiveEntry currentEntry;
 	std::string name;
 	std::shared_ptr<Command> command;
 	uint64_t ownerUniqueId = 0;
-	int ownerType = -1; // -1 no parent, 0 FileReference, 1 GameObject, 2 Component
+	OwnerTypeEnum ownerType = OwnerTypeEnum::None; // The owner type is used to find the object that this data belongs to later on from the ownerUniqueId.
 	bool isMeta = false;
 	AssetPlatform platform = AssetPlatform::AP_Standalone;
 };
