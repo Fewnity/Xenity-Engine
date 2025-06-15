@@ -34,6 +34,8 @@ Features:
 - [X] C++ Hot Reloading
 - [ ] C++ Plugins (Started but not finished)
 
+Made in C++ 17.
+
 > [!WARNING]
 > The engine is not perfect. So you may encounter problems during game development like:
 > - Deleting Meta files will have repercussions on your project. Variables that reference the files will be emptied.
