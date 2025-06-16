@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Material - Xenity Engine</title>
+        <title>PS3TextureType Enum - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,208 +234,30 @@
 }
 
 </style>
-<h1 id="material"><a class="header" href="#material">Material</a></h1>
+<h1 id="ps3texturetype-enum"><a class="header" href="#ps3texturetype-enum">PS3TextureType Enum</a></h1>
 <p>Add this in your code:</p>
-<pre><code class="language-cpp">#include &lt;engine/graphics/material.h&gt;
+<pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
-<p>Handles the visual appearance of rendered objects, including shaders and textures.<br>
-The Material class allows you to configure how an object should look when drawn on screen.</p>
-<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<p>Enum that specifies the pixel format used for textures on the PS3, defining how color data is stored.</p>
+<h2 id="values"><a class="header" href="#values">Values</a></h2>
 <hr />
-<h3 id="setattribute"><a class="header" href="#setattribute">SetAttribute</a></h3>
-<p>Set a value to an attribute in the shader when this material is used.</p>
-<p>To use only when you are using custom shaders.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>attribute</code>: Attribute name</li>
-<li><code>value</code>: New attribute value</li>
-</ul>
-<pre><code class="language-cpp">void SetAttribute(const char* attribute, const Vector2&amp; value)
-void SetAttribute(const char* attribute, const Vector3&amp; value)
-void SetAttribute(const char* attribute, const Vector4&amp; value)
-void SetAttribute(const char* attribute, const float value)
-void SetAttribute(const char* attribute, const int value)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-material-&gt;SetAttribute("MyAttribute", Vector3(1, 0.5f, 1));
-</code></pre>
-<hr />
-<h3 id="setshader"><a class="header" href="#setshader">SetShader</a></h3>
-<p>Set the material shader.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>shader</code>: Shader to use</li>
-</ul>
-<pre><code class="language-cpp">void SetShader(const std::shared_ptr&lt;Shader&gt;&amp; shader)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-std::shared_ptr&lt;Shader&gt; shader; // Filled variable
-material-&gt;SetShader(shader);
-</code></pre>
-<hr />
-<h3 id="settexture"><a class="header" href="#settexture">SetTexture</a></h3>
-<p>Set the material texture.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>texture</code>: Texture to use</li>
-</ul>
-<pre><code class="language-cpp">void SetTexture(const std::shared_ptr&lt;Texture&gt;&amp; texture)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-std::shared_ptr&lt;Texture&gt; texture; // Filled variable
-material-&gt;SetTexture(texture);
-</code></pre>
-<hr />
-<h3 id="setuselighting"><a class="header" href="#setuselighting">SetUseLighting</a></h3>
-<p>Set the if the material uses lighting. Disable this only on Unlit shaders.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>useLighting</code>: Does the material uses lighting?</li>
-</ul>
-<pre><code class="language-cpp">void SetUseLighting(const bool useLighting)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-material-&gt;SetUseLighting(true);
-</code></pre>
-<hr />
-<h3 id="setoffset"><a class="header" href="#setoffset">SetOffset</a></h3>
-<p>Set the texture offset.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>offset</code>: Offset of the texture</li>
-</ul>
-<pre><code class="language-cpp">void SetOffset(const Vector2&amp; offset)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-material-&gt;SetOffset(Vector2(0.5f, 0.5f));
-</code></pre>
-<hr />
-<h3 id="settiling"><a class="header" href="#settiling">SetTiling</a></h3>
-<p>Set the texture tiling.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>tiling</code>: Offset of the texture</li>
-</ul>
-<pre><code class="language-cpp">void SetTiling(const Vector2&amp; tiling)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-material-&gt;SetOffset(Vector2(2.0f, 2.0f));
-</code></pre>
-<hr />
-<h3 id="getshader"><a class="header" href="#getshader">GetShader</a></h3>
-<p>Get the shader of the material.</p>
-<pre><code class="language-cpp"> const std::shared_ptr&lt;Shader&gt;&amp; GetShader() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-std::shared_ptr&lt;Shader&gt; shader = material-&gt;GetShader();
-</code></pre>
-<hr />
-<h3 id="gettexture"><a class="header" href="#gettexture">GetTexture</a></h3>
-<p>Get the texture of the material.</p>
-<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetTexture() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-std::shared_ptr&lt;Texture&gt; texture = material-&gt;GetTexture();
-</code></pre>
-<hr />
-<h3 id="getuselighting"><a class="header" href="#getuselighting">GetUseLighting</a></h3>
-<p>Get if the material uses lighting.</p>
-<pre><code class="language-cpp">bool GetUseLighting() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-bool isUsingLighting = material-&gt;GetUseLighting();
-</code></pre>
-<hr />
-<h3 id="getrenderingmode"><a class="header" href="#getrenderingmode">GetRenderingMode</a></h3>
-<p>Get the rendering mode of the material.</p>
-<pre><code class="language-cpp">MaterialRenderingMode GetRenderingMode() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-MaterialRenderingMode mode = material-&gt;GetRenderingMode();
-</code></pre>
-<hr />
-<h3 id="getoffset"><a class="header" href="#getoffset">GetOffset</a></h3>
-<p>Get the texture offset of the material.</p>
-<pre><code class="language-cpp">const Vector2&amp; GetOffset() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-const Vector2&amp; offset = material-&gt;GetOffset();
-</code></pre>
-<hr />
-<h3 id="gettiling"><a class="header" href="#gettiling">GetTiling</a></h3>
-<p>Get the texture tiling of the material.</p>
-<pre><code class="language-cpp">const Vector2&amp; GetTiling() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-const Vector2&amp; tiling = material-&gt;GetTiling();
-</code></pre>
-<hr />
-<h3 id="getcolor"><a class="header" href="#getcolor">GetColor</a></h3>
-<p>Get the color of the material.</p>
-<pre><code class="language-cpp">const Color&amp; GetColor() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-const Color&amp; color = material-&gt;GetColor();
-</code></pre>
-<hr />
-<h3 id="setcolor"><a class="header" href="#setcolor">SetColor</a></h3>
-<p>Set the color of the material.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>color</code>: Color of the material</li>
-</ul>
-<pre><code class="language-cpp">void SetColor(const Color&amp; color)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-material-&gt;SetColor(Color::CreateFromRGBAFloat(1, 0.5f, 0.5f, 1));
-</code></pre>
-<hr />
-<h3 id="setalphacutoff"><a class="header" href="#setalphacutoff">SetAlphaCutoff</a></h3>
-<p>Set the alpha cutoff of the material.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>alphaCutoff</code>: New alpha cutoff value [0.0f;1.0f]</li>
-</ul>
-<pre><code class="language-cpp">void SetAlphaCutoff(float alphaCutoff)
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-material-&gt;SetAlphaCutoff(0.5f);
-</code></pre>
-<hr />
-<h3 id="getalphacutoff"><a class="header" href="#getalphacutoff">GetAlphaCutoff</a></h3>
-<p>Get the alpha cutoff of the material.</p>
-<pre><code class="language-cpp">float GetAlphaCutoff() const
-</code></pre>
-<p>Code sample:</p>
-<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-float alphaCutoff = material-&gt;GetAlphaCutoff();
-</code></pre>
-
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>ARGB_8888</td><td>Stores 8 bits per channel, offering full 32-bit color with high precision for each component</td></tr>
+<tr><td>ARGB_1555</td><td>Uses 5 bits for red, green, and blue, and 1 bit for alpha, providing a compact 16-bit format with limited transparency support</td></tr>
+<tr><td>ARGB_0565</td><td>Allocates 5 bits for red, 6 for green, and 5 for blue, with no alpha channel, optimizing color depth over transparency</td></tr>
+<tr><td>ARGB_4444</td><td>Provides 4 bits per channel, balancing color and transparency in a compact 16-bit format</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/assets/icon.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/assets/psp_texture_type_enum.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/assets/material_rendering_mode_enum.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/color/color.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -445,11 +267,11 @@ float alphaCutoff = material-&gt;GetAlphaCutoff();
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/assets/icon.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/assets/psp_texture_type_enum.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/assets/material_rendering_mode_enum.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/color/color.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

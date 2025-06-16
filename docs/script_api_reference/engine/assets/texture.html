@@ -235,6 +235,188 @@
 
 </style>
 <h1 id="texture"><a class="header" href="#texture">Texture</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/texture/texture.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Asset that stores an image.</p>
+<p>A texture can be created dynamically.</p>
+<h2 id="general-settings"><a class="header" href="#general-settings">General settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Resolution</td><td>Enum</td><td>Max texture solution</td></tr>
+<tr><td>Filter</td><td>Enum</td><td>Texture filter</td></tr>
+<tr><td>WrapMode</td><td>Enum</td><td>Texture wrap mode</td></tr>
+<tr><td>UseMipMap</td><td>CheckBox</td><td>If enabled, smaller versions of the texture will be generated. Improves rendering but consumes more memory (Not working on PS3).</td></tr>
+<tr><td>PixelPerUnit</td><td>Number</td><td>Number of pixel per world unit (Used for sprites).</td></tr>
+</tbody></table>
+</div>
+<h2 id="psp-additional-settings"><a class="header" href="#psp-additional-settings">PSP additional settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Type</td><td>Enum</td><td>Type of compression</td></tr>
+<tr><td>TryPutInVram</td><td>CheckBox</td><td>If true, the texture will try to be stored in video ram instead of ram. (video ram is faster than ram but way smaller)</td></tr>
+</tbody></table>
+</div>
+<h2 id="ps3-additional-settings"><a class="header" href="#ps3-additional-settings">PS3 additional settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Type</td><td>Enum</td><td>Type of compression</td></tr>
+</tbody></table>
+</div>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="createtexture"><a class="header" href="#createtexture">CreateTexture</a></h3>
+<p>Dynamically create a texture.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>params</code>: Parameters for the texture creation</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; CreateTexture(const TextureConstructorParams&amp; params)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">TextureConstructorParams params;
+params.width = 128;
+params.height = 128;
+params.filter = Filter::Bilinear;
+params.wrapMode = WrapMode::Repeat;
+params.pspTextureType = PSPTextureType::RGBA_4444;
+params.ps3TextureType = PS3TextureType::ARGB_4444;
+params.hasAlpha = true;
+
+std::shared_ptr&lt;Texture&gt; newTexture = Texture::CreateTexture(params);
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="setfilter"><a class="header" href="#setfilter">SetFilter</a></h3>
+<p>Set texture filter.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>filter</code>: Filtering mode</li>
+</ul>
+<pre><code class="language-cpp">void SetFilter(const Filter filter)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+texture-&gt;SetFilter(Filter::Point);
+texture-&gt;SetFilter(Filter::Bilinear);
+</code></pre>
+<hr />
+<h3 id="setwrapmode"><a class="header" href="#setwrapmode">SetWrapMode</a></h3>
+<p>Set texture wrap mode.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>mode</code>: Wraping mode</li>
+</ul>
+<pre><code class="language-cpp">void SetWrapMode(const WrapMode mode)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+texture-&gt;SetWrapMode(WrapMode::Point);
+texture-&gt;SetWrapMode(WrapMode::Bilinear);
+</code></pre>
+<hr />
+<h3 id="getwidth"><a class="header" href="#getwidth">GetWidth</a></h3>
+<p>Get texture width.</p>
+<pre><code class="language-cpp">int GetWidth() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+int width = texture-&gt;GetWidth();
+</code></pre>
+<hr />
+<h3 id="getheight"><a class="header" href="#getheight">GetHeight</a></h3>
+<p>Get texture height.</p>
+<pre><code class="language-cpp">int GetHeight() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+int height = texture-&gt;GetHeight();
+</code></pre>
+<hr />
+<h3 id="setpixelperunit"><a class="header" href="#setpixelperunit">SetPixelPerUnit</a></h3>
+<p>Set texture pixel per unit.</p>
+<pre><code class="language-cpp">void SetPixelPerUnit(int value)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+texture-&gt;SetPixelPerUnit(100);
+</code></pre>
+<hr />
+<h3 id="getpixelperunit"><a class="header" href="#getpixelperunit">GetPixelPerUnit</a></h3>
+<p>Get texture pixel per unit.</p>
+<pre><code class="language-cpp">int GetPixelPerUnit() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+int pixelPerUnit = texture-&gt;GetPixelPerUnit();
+</code></pre>
+<hr />
+<h3 id="getusemipmap"><a class="header" href="#getusemipmap">GetUseMipmap</a></h3>
+<p>Get if the texture is using mipmap.</p>
+<pre><code class="language-cpp">bool GetUseMipmap() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+bool useMipMap = texture-&gt;GetUseMipmap();
+</code></pre>
+<hr />
+<h3 id="getwrapmode"><a class="header" href="#getwrapmode">GetWrapMode</a></h3>
+<p>Get texture wrap mode.</p>
+<pre><code class="language-cpp">WrapMode GetWrapMode() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+WrapMode wrapMode = texture-&gt;GetWrapMode();
+</code></pre>
+<hr />
+<h3 id="setdata"><a class="header" href="#setdata">SetData</a></h3>
+<p>Set texture data.<br>
+Can be called multiple times.</p>
+<pre><code class="language-cpp">virtual void SetData(const unsigned char* data) = 0
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">size_t width = 128;
+size_t height = 128;
+unsigned char* rawData = new unsigned char[width * height * 4];
+
+struct Pixel
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+};
+
+// Create a noise texture
+for (size_t y = 0; y &lt; height; y++)
+{
+    for (size_t x = 0; x &lt; width; x++)
+    {
+        Pixel&amp; pixel = reinterpret_cast&lt;Pixel*&gt;(rawData)[x + (y * width)];
+        pixel.r = rand() % 255;
+        pixel.g = rand() % 255;
+        pixel.b = rand() % 255;
+        pixel.a = 255;
+    }
+}
+
+TextureConstructorParams params;
+params.width = width;
+params.height = height;
+params.filter = Filter::Bilinear;
+params.wrapMode = WrapMode::Repeat;
+params.pspTextureType = PSPTextureType::RGBA_4444;
+params.ps3TextureType = PS3TextureType::ARGB_4444;
+params.hasAlpha = true;
+
+std::shared_ptr&lt;Material&gt; material; // Filled variable
+std::shared_ptr&lt;Texture&gt; newTexture = Texture::CreateTexture(params);
+newTexture-&gt;SetData(rawData);
+material-&gt;SetTexture(newTexture);
+
+delete[] rawData;
+</code></pre>
 
                     </main>
 
@@ -244,7 +426,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/color/color.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/assets/filter_enum.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,7 +440,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/color/color.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/assets/filter_enum.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

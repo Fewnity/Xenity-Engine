@@ -235,16 +235,58 @@
 
 </style>
 <h1 id="meshdata"><a class="header" href="#meshdata">MeshData</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/skybox.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Asset that stores all the data of a mesh.</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="createmeshdata"><a class="header" href="#createmeshdata">CreateMeshData</a></h3>
+<p>Dynamically create a mesh.</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; CreateMeshData()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; newMesh = MeshData::CreateMeshData();
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="getminboundingbox"><a class="header" href="#getminboundingbox">GetMinBoundingBox</a></h3>
+<p>Get the minimum position of the bounding box. (Box including all submeshes).</p>
+<pre><code class="language-cpp">const Vector3&amp; GetMinBoundingBox() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; meshData; // Filled variable
+const Vector3&amp; minPos = meshData-&gt;GetMinBoundingBox();
+</code></pre>
+<hr />
+<h3 id="getmaxboundingbox"><a class="header" href="#getmaxboundingbox">GetMaxBoundingBox</a></h3>
+<p>Get the maximum position of the bounding box. (Box including all submeshes).</p>
+<pre><code class="language-cpp">const Vector3&amp; GetMaxBoundingBox() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; meshData; // Filled variable
+const Vector3&amp; maxPos = meshData-&gt;GetMaxBoundingBox();
+</code></pre>
+<hr />
+<h3 id="getboundingsphere"><a class="header" href="#getboundingsphere">GetBoundingSphere</a></h3>
+<p>Get mesh bounding sphere. (Sphere including all submeshes).</p>
+<pre><code class="language-cpp">const Sphere&amp; GetBoundingSphere() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; meshData; // Filled variable
+const Sphere&amp; meshSphere = meshData-&gt;GetBoundingSphere();
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/assets/material.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/assets/material_rendering_mode_enum.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/assets/prefab.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/assets/sub_mesh.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -254,11 +296,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/assets/material.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/assets/material_rendering_mode_enum.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/assets/prefab.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/assets/sub_mesh.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

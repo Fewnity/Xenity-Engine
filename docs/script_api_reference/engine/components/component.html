@@ -235,7 +235,17 @@
 
 </style>
 <h1 id="component"><a class="header" href="#component">Component</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/component.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
 <p>The component class gives you a list of function that you can override in your components.</p>
+<h2 id="protected-variables"><a class="header" href="#protected-variables">Protected variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>m_componentName</td><td><code>const std::string*</code></td><td>Pointer to the component name</td></tr>
+</tbody></table>
+</div>
 <h2 id="virtual-methods"><a class="header" href="#virtual-methods">Virtual methods</a></h2>
 <hr />
 <h3 id="awake"><a class="header" href="#awake">Awake</a></h3>
@@ -251,6 +261,7 @@
 <p>Code sample:</p>
 <pre><code class="language-cpp">class API MyComponent : public Component
 {
+public:
     void Awake() override
     {
         Debug::Print("Awake called!");
@@ -266,11 +277,12 @@
 <li>The parent GameObject goes from inactive to active</li>
 </ul>
 <p>The parent GameObject and the component should be enabled.</p>
-<pre><code class="language-cpp">virtual void Awake()
+<pre><code class="language-cpp">virtual void Start()
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">class API MyComponent : public Component
 {
+public:
     void Start() override
     {
         Debug::Print("Start called!");
@@ -281,11 +293,12 @@
 <h3 id="update"><a class="header" href="#update">Update</a></h3>
 <p>This function called every frame.</p>
 <p>The parent GameObject and the component should be enabled.</p>
-<pre><code class="language-cpp">virtual void Awake()
+<pre><code class="language-cpp">virtual void Update()
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">class API MyComponent : public Component
 {
+public:
     void Update() override
     {
         Debug::Print("Update called!");
@@ -298,11 +311,12 @@
 It's usefull when you need to setup the component before the Awake being called with an access to the parent GameObject.<br>
 This function is called even if the GameObject or the component are disabled compared to the Awake method.<br>
 In the constructor of your component if the component you can't get a reference to the parent GameObject.</p>
-<pre><code class="language-cpp">virtual void Awake()
+<pre><code class="language-cpp">virtual void OnComponentAttached()
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">class API MyComponent : public Component
 {
+public:
     void OnTransformPositionUpdated();
 
     void OnComponentAttached() override
@@ -310,6 +324,270 @@ In the constructor of your component if the component you can't get a reference 
         GetTransformRaw()-&gt;GetOnTransformUpdated().Bind(&amp;MyComponent::OnTransformPositionUpdated, this);
     }
 }
+</code></pre>
+<hr />
+<h3 id="ondisabled"><a class="header" href="#ondisabled">OnDisabled</a></h3>
+<p>This function called when a component is disabled.</p>
+<pre><code class="language-cpp">virtual void OnDisabled()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnDisabled() override
+    {
+        Debug::Print("Component disabled!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="onenabled"><a class="header" href="#onenabled">OnEnabled</a></h3>
+<p>This function called when a component is enabled.</p>
+<pre><code class="language-cpp">virtual void OnEnabled()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnEnabled() override
+    {
+        Debug::Print("Component enabled!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ondrawgizmos"><a class="header" href="#ondrawgizmos">OnDrawGizmos</a></h3>
+<p>Called each frame to draw gizmos.</p>
+<p>The parent GameObject and the component should be enabled.</p>
+<pre><code class="language-cpp">virtual void OnDrawGizmos()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnDrawGizmos() override
+    {
+#if defined(EDITOR)
+        Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
+#endif
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ondrawgizmosselected"><a class="header" href="#ondrawgizmosselected">OnDrawGizmosSelected</a></h3>
+<p>Called each frame to draw gizmos if the object is selected.</p>
+<p>The parent GameObject and the component should be enabled.</p>
+<pre><code class="language-cpp">virtual void OnDrawGizmosSelected()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnDrawGizmosSelected() override
+    {
+#if defined(EDITOR)
+        Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
+#endif
+    }
+}
+</code></pre>
+<hr />
+<h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
+<p>Return a string representation of the component.</p>
+<pre><code class="language-cpp">virtual std::string ToString()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    std::string ToString() override
+    {
+        return "{" + *m_componentName + ", Value: " + std::to_string(value) + "}";
+    }
+
+private:
+    int value = 2;
+}
+</code></pre>
+<hr />
+<h3 id="oncollisionenter"><a class="header" href="#oncollisionenter">OnCollisionEnter</a></h3>
+<p>Function called when a collision has just occured with another collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnCollisionEnter(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnCollisionEnter(CollisionEvent info) override
+    {
+        Debug::Print("I just hit something!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="oncollisionstay"><a class="header" href="#oncollisionstay">OnCollisionStay</a></h3>
+<p>Function called every frame if a collider of the GameObject is still colliding with another collider.</p>
+<pre><code class="language-cpp">virtual void OnCollisionStay(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnCollisionStay(CollisionEvent info) override
+    {
+        Debug::Print("I'm still colliding with something!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="oncollisionexit"><a class="header" href="#oncollisionexit">OnCollisionExit</a></h3>
+<p>Function called when the collision has ended.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnCollisionExit(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnCollisionExit(CollisionEvent info) override
+    {
+        Debug::Print("I'm not colliding with something anymore!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ontriggerenter"><a class="header" href="#ontriggerenter">OnTriggerEnter</a></h3>
+<p>Function called when a collider of the GameObject just entered a trigger collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnTriggerEnter(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnTriggerEnter(CollisionEvent info) override
+    {
+        Debug::Print("I just entered in a trigger!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ontriggerstay"><a class="header" href="#ontriggerstay">OnTriggerStay</a></h3>
+<p>Function called when a collider of the GameObject is still in a trigger collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnTriggerStay(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnTriggerStay(CollisionEvent info) override
+    {
+        Debug::Print("I'm still in a trigger!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ontriggerexit"><a class="header" href="#ontriggerexit">OnTriggerExit</a></h3>
+<p>Function called when a collider of the GameObject just leave a trigger collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnTriggerExit(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnTriggerExit(CollisionEvent info) override
+    {
+        Debug::Print("I'm not in a trigger anymore!");
+    }
+}
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="isenabled"><a class="header" href="#isenabled">IsEnabled</a></h3>
+<p>Get if the component is enabled.</p>
+<pre><code class="language-cpp">bool IsEnabled() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+component-&gt;SetIsEnabled(false);
+bool isEnabled = component-&gt;IsEnabled(); // = false
+</code></pre>
+<hr />
+<h3 id="setisenabled"><a class="header" href="#setisenabled">SetIsEnabled</a></h3>
+<p>Enable or disable the component.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isEnabled</code>: true to enable, false to disable</li>
+</ul>
+<pre><code class="language-cpp">void SetIsEnabled(bool isEnabled)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+component-&gt;SetIsEnabled(false);
+bool isEnabled = component-&gt;IsLocalActive(); // = false
+</code></pre>
+<hr />
+<h3 id="getgameobject"><a class="header" href="#getgameobject">GetGameObject</a></h3>
+<p>Get component's GameObject.</p>
+<pre><code class="language-cpp">std::shared_ptr &lt;GameObject&gt; GetGameObject() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+std::shared_ptr&lt;GameObject&gt; gameObject = component-&gt;GetGameObject();
+</code></pre>
+<hr />
+<h3 id="getgameobjectraw"><a class="header" href="#getgameobjectraw">GetGameObjectRaw</a></h3>
+<p>Get component's GameObject raw pointer for faster access (Not safe, use with caution).</p>
+<pre><code class="language-cpp">GameObject* GetGameObjectRaw() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+GameObject* gameObject = component-&gt;GetGameObjectRaw();
+</code></pre>
+<hr />
+<h3 id="gettransform"><a class="header" href="#gettransform">GetTransform</a></h3>
+<p>Get component's Transform.</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Transform&gt; GetTransform() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+std::shared_ptr&lt;Transform&gt; transform = component-&gt;GetTransform();
+</code></pre>
+<hr />
+<h3 id="gettransformraw"><a class="header" href="#gettransformraw">GetTransformRaw</a></h3>
+<p>Get component's Transform raw pointer for faster access (Not safe, use with caution).</p>
+<pre><code class="language-cpp">Transform* GetTransformRaw() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+Transform* transform = component-&gt;GetTransformRaw();
+</code></pre>
+<hr />
+<h3 id="getcomponentname"><a class="header" href="#getcomponentname">GetComponentName</a></h3>
+<p>Get component's name.</p>
+<pre><code class="language-cpp">const std::string&amp; GetComponentName() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+const std::string&amp; name = component-&gt;GetComponentName();
 </code></pre>
 
                     </main>

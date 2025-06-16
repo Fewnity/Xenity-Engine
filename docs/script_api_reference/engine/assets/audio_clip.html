@@ -235,7 +235,18 @@
 
 </style>
 <h1 id="audioclip"><a class="header" href="#audioclip">AudioClip</a></h1>
-
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/audio/audio_clip.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Asset that stores audio like a sound effect or a music.</p>
+<p>Used by <a href="../components/audio_source.html">Audio Source</a>.</p>
+<h2 id="settings"><a class="header" href="#settings">Settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Loaded In Memory</td><td>CheckBox</td><td>Defines if the audio should be fully loaded in memory.<br>When enabled, it's faster to play the audio but consumes a lot of memory.<br>Recommended for sound effects but not for musics.</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

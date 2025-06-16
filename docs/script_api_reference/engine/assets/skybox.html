@@ -235,7 +235,23 @@
 
 </style>
 <h1 id="skybox"><a class="header" href="#skybox">SkyBox</a></h1>
-
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/skybox.h&gt;
+</code></pre>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Asset that references all textures that compose a skybox.</p>
+<p>Can be used in the <a href="../../../manual/editor_ui/lighting_settigs.html">Lighting Settigs</a> menu.</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>front</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Front skybox texture</td></tr>
+<tr><td>back</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Back skybox texture</td></tr>
+<tr><td>up</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Up skybox texture</td></tr>
+<tr><td>down</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Down skybox texture</td></tr>
+<tr><td>left</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Left skybox texture</td></tr>
+<tr><td>right</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Right skybox texture</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

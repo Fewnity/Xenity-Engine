@@ -277,6 +277,7 @@ C++ Hot Reloading</li>
 <li><input disabled="" type="checkbox"/>
 C++ Plugins (Started but not finished)</li>
 </ul>
+<p>Made in C++ 17.</p>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -2928,7 +2929,18 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="audioclip"><a class="header" href="#audioclip">AudioClip</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/audio/audio_clip.h&gt;
+</code></pre>
+<h2 id="description-3"><a class="header" href="#description-3">Description</a></h2>
+<p>Asset that stores audio like a sound effect or a music.</p>
+<p>Used by <a href="script_api_reference/engine/assets/../components/audio_source.html">Audio Source</a>.</p>
+<h2 id="settings"><a class="header" href="#settings">Settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Loaded In Memory</td><td>CheckBox</td><td>Defines if the audio should be fully loaded in memory.<br>When enabled, it's faster to play the audio but consumes a lot of memory.<br>Recommended for sound effects but not for musics.</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -2996,6 +3008,12 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="font"><a class="header" href="#font">Font</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/ui/font.h&gt;
+</code></pre>
+<h2 id="description-4"><a class="header" href="#description-4">Description</a></h2>
+<p>Asset that stores a text font.</p>
+<p>Used by <a href="script_api_reference/engine/assets/../components/text_renderer.html">TextRenderer</a> and by <a href="script_api_reference/engine/assets/../components/text_mesh.mdx.html">TextMesh</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -3064,6 +3082,12 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="icon"><a class="header" href="#icon">Icon</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/ui/icon.h&gt;
+</code></pre>
+<h2 id="description-5"><a class="header" href="#description-5">Description</a></h2>
+<p>Asset that stores an icon.</p>
+<p>Used in the <a href="script_api_reference/engine/assets/../../../manual/editor_ui/build_settings.html">Build Settings</a> menu.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -3132,6 +3156,197 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="material"><a class="header" href="#material">Material</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/material.h&gt;
+</code></pre>
+<h2 id="description-6"><a class="header" href="#description-6">Description</a></h2>
+<p>Handles the visual appearance of rendered objects, including shaders and textures.<br>
+The Material class allows you to configure how an object should look when drawn on screen.</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="setattribute"><a class="header" href="#setattribute">SetAttribute</a></h3>
+<p>Set a value to an attribute in the shader when this material is used.</p>
+<p>To use only when you are using custom shaders.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>attribute</code>: Attribute name</li>
+<li><code>value</code>: New attribute value</li>
+</ul>
+<pre><code class="language-cpp">void SetAttribute(const char* attribute, const Vector2&amp; value)
+void SetAttribute(const char* attribute, const Vector3&amp; value)
+void SetAttribute(const char* attribute, const Vector4&amp; value)
+void SetAttribute(const char* attribute, const float value)
+void SetAttribute(const char* attribute, const int value)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+material-&gt;SetAttribute("MyAttribute", Vector3(1, 0.5f, 1));
+</code></pre>
+<hr />
+<h3 id="setshader"><a class="header" href="#setshader">SetShader</a></h3>
+<p>Set the material shader.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>shader</code>: Shader to use</li>
+</ul>
+<pre><code class="language-cpp">void SetShader(const std::shared_ptr&lt;Shader&gt;&amp; shader)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+std::shared_ptr&lt;Shader&gt; shader; // Filled variable
+material-&gt;SetShader(shader);
+</code></pre>
+<hr />
+<h3 id="settexture"><a class="header" href="#settexture">SetTexture</a></h3>
+<p>Set the material texture.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>texture</code>: Texture to use</li>
+</ul>
+<pre><code class="language-cpp">void SetTexture(const std::shared_ptr&lt;Texture&gt;&amp; texture)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+material-&gt;SetTexture(texture);
+</code></pre>
+<hr />
+<h3 id="setuselighting"><a class="header" href="#setuselighting">SetUseLighting</a></h3>
+<p>Set the if the material uses lighting. Disable this only on Unlit shaders.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>useLighting</code>: Does the material uses lighting?</li>
+</ul>
+<pre><code class="language-cpp">void SetUseLighting(const bool useLighting)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+material-&gt;SetUseLighting(true);
+</code></pre>
+<hr />
+<h3 id="setoffset"><a class="header" href="#setoffset">SetOffset</a></h3>
+<p>Set the texture offset.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>offset</code>: Offset of the texture</li>
+</ul>
+<pre><code class="language-cpp">void SetOffset(const Vector2&amp; offset)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+material-&gt;SetOffset(Vector2(0.5f, 0.5f));
+</code></pre>
+<hr />
+<h3 id="settiling"><a class="header" href="#settiling">SetTiling</a></h3>
+<p>Set the texture tiling.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>tiling</code>: Offset of the texture</li>
+</ul>
+<pre><code class="language-cpp">void SetTiling(const Vector2&amp; tiling)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+material-&gt;SetOffset(Vector2(2.0f, 2.0f));
+</code></pre>
+<hr />
+<h3 id="getshader"><a class="header" href="#getshader">GetShader</a></h3>
+<p>Get the shader of the material.</p>
+<pre><code class="language-cpp"> const std::shared_ptr&lt;Shader&gt;&amp; GetShader() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+std::shared_ptr&lt;Shader&gt; shader = material-&gt;GetShader();
+</code></pre>
+<hr />
+<h3 id="gettexture"><a class="header" href="#gettexture">GetTexture</a></h3>
+<p>Get the texture of the material.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetTexture() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+std::shared_ptr&lt;Texture&gt; texture = material-&gt;GetTexture();
+</code></pre>
+<hr />
+<h3 id="getuselighting"><a class="header" href="#getuselighting">GetUseLighting</a></h3>
+<p>Get if the material uses lighting.</p>
+<pre><code class="language-cpp">bool GetUseLighting() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+bool isUsingLighting = material-&gt;GetUseLighting();
+</code></pre>
+<hr />
+<h3 id="getrenderingmode"><a class="header" href="#getrenderingmode">GetRenderingMode</a></h3>
+<p>Get the rendering mode of the material.</p>
+<pre><code class="language-cpp">MaterialRenderingMode GetRenderingMode() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+MaterialRenderingMode mode = material-&gt;GetRenderingMode();
+</code></pre>
+<hr />
+<h3 id="getoffset"><a class="header" href="#getoffset">GetOffset</a></h3>
+<p>Get the texture offset of the material.</p>
+<pre><code class="language-cpp">const Vector2&amp; GetOffset() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+const Vector2&amp; offset = material-&gt;GetOffset();
+</code></pre>
+<hr />
+<h3 id="gettiling"><a class="header" href="#gettiling">GetTiling</a></h3>
+<p>Get the texture tiling of the material.</p>
+<pre><code class="language-cpp">const Vector2&amp; GetTiling() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+const Vector2&amp; tiling = material-&gt;GetTiling();
+</code></pre>
+<hr />
+<h3 id="getcolor"><a class="header" href="#getcolor">GetColor</a></h3>
+<p>Get the color of the material.</p>
+<pre><code class="language-cpp">const Color&amp; GetColor() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+const Color&amp; color = material-&gt;GetColor();
+</code></pre>
+<hr />
+<h3 id="setcolor-1"><a class="header" href="#setcolor-1">SetColor</a></h3>
+<p>Set the color of the material.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Color of the material</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; color)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+material-&gt;SetColor(Color::CreateFromRGBAFloat(1, 0.5f, 0.5f, 1));
+</code></pre>
+<hr />
+<h3 id="setalphacutoff"><a class="header" href="#setalphacutoff">SetAlphaCutoff</a></h3>
+<p>Set the alpha cutoff of the material.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>alphaCutoff</code>: New alpha cutoff value [0.0f;1.0f]</li>
+</ul>
+<pre><code class="language-cpp">void SetAlphaCutoff(float alphaCutoff)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+material-&gt;SetAlphaCutoff(0.5f);
+</code></pre>
+<hr />
+<h3 id="getalphacutoff"><a class="header" href="#getalphacutoff">GetAlphaCutoff</a></h3>
+<p>Get the alpha cutoff of the material.</p>
+<pre><code class="language-cpp">float GetAlphaCutoff() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
+float alphaCutoff = material-&gt;GetAlphaCutoff();
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -3199,7 +3414,197 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 }
 
 </style>
+<h1 id="materialrenderingmode-enum"><a class="header" href="#materialrenderingmode-enum">MaterialRenderingMode Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/material_rendering_mode.h&gt;
+</code></pre>
+<h2 id="description-7"><a class="header" href="#description-7">Description</a></h2>
+<p>Enum to define how an object is drawn.</p>
+<h2 id="values-2"><a class="header" href="#values-2">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>Opaque</td><td>The default value, is suitable for rendering opaque objects</td></tr>
+<tr><td>Cutout</td><td>Allows you to render objects with either fully transparent or fully opaque areas</td></tr>
+<tr><td>Transparent</td><td>Allows you to render transparent objects such as glass, clear plastics, etc</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="meshdata"><a class="header" href="#meshdata">MeshData</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/skybox.h&gt;
+</code></pre>
+<h2 id="description-8"><a class="header" href="#description-8">Description</a></h2>
+<p>Asset that stores all the data of a mesh.</p>
+<h2 id="static-methods-3"><a class="header" href="#static-methods-3">Static methods</a></h2>
+<hr />
+<h3 id="createmeshdata"><a class="header" href="#createmeshdata">CreateMeshData</a></h3>
+<p>Dynamically create a mesh.</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; CreateMeshData()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; newMesh = MeshData::CreateMeshData();
+</code></pre>
+<h2 id="public-methods-1"><a class="header" href="#public-methods-1">Public methods</a></h2>
+<hr />
+<h3 id="getminboundingbox"><a class="header" href="#getminboundingbox">GetMinBoundingBox</a></h3>
+<p>Get the minimum position of the bounding box. (Box including all submeshes).</p>
+<pre><code class="language-cpp">const Vector3&amp; GetMinBoundingBox() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; meshData; // Filled variable
+const Vector3&amp; minPos = meshData-&gt;GetMinBoundingBox();
+</code></pre>
+<hr />
+<h3 id="getmaxboundingbox"><a class="header" href="#getmaxboundingbox">GetMaxBoundingBox</a></h3>
+<p>Get the maximum position of the bounding box. (Box including all submeshes).</p>
+<pre><code class="language-cpp">const Vector3&amp; GetMaxBoundingBox() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; meshData; // Filled variable
+const Vector3&amp; maxPos = meshData-&gt;GetMaxBoundingBox();
+</code></pre>
+<hr />
+<h3 id="getboundingsphere"><a class="header" href="#getboundingsphere">GetBoundingSphere</a></h3>
+<p>Get mesh bounding sphere. (Sphere including all submeshes).</p>
+<pre><code class="language-cpp">const Sphere&amp; GetBoundingSphere() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; meshData; // Filled variable
+const Sphere&amp; meshSphere = meshData-&gt;GetBoundingSphere();
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="submesh"><a class="header" href="#submesh">SubMesh</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -3268,6 +3673,13 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="prefab"><a class="header" href="#prefab">Prefab</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/game_elements/prefab.h&gt;
+</code></pre>
+<h2 id="description-9"><a class="header" href="#description-9">Description</a></h2>
+<p>A prefab stores GameObjects and Components.</p>
+<p>A prefab is created when dragging a GameObject from the Hierarchy to the File Explorer.<br>
+Then you can recreate the GameObject by dragging the prefab from the File Explorer to the Scene tab.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -3336,6 +3748,13 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="scene"><a class="header" href="#scene">Scene</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/scene_management/scene.h&gt;
+</code></pre>
+<h2 id="description-10"><a class="header" href="#description-10">Description</a></h2>
+<p>Asset that represents a game world. A scene stores a list of GameObject and Components.</p>
+<p>A scene should a least contains a camera.</p>
+<p>It can be used in the <a href="script_api_reference/engine/assets/../../../manual/editor_ui/project_settings.html">Project Settings</a> menu and by the <a href="script_api_reference/engine/assets/../scene_manager/scene_manager.html">SceneManager</a> class.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -3404,6 +3823,12 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="shader"><a class="header" href="#shader">Shader</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/shader/shader.h&gt;
+</code></pre>
+<h2 id="description-11"><a class="header" href="#description-11">Description</a></h2>
+<p>Asset that stores shader code.</p>
+<p>Not used on PSP.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -3472,7 +3897,23 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="skybox"><a class="header" href="#skybox">SkyBox</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/skybox.h&gt;
+</code></pre>
+<h2 id="description-12"><a class="header" href="#description-12">Description</a></h2>
+<p>Asset that references all textures that compose a skybox.</p>
+<p>Can be used in the <a href="script_api_reference/engine/assets/../../../manual/editor_ui/lighting_settigs.html">Lighting Settigs</a> menu.</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>front</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Front skybox texture</td></tr>
+<tr><td>back</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Back skybox texture</td></tr>
+<tr><td>up</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Up skybox texture</td></tr>
+<tr><td>down</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Down skybox texture</td></tr>
+<tr><td>left</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Left skybox texture</td></tr>
+<tr><td>right</td><td><code>std::shared_ptr&lt;Texture&gt;</code></td><td>Right skybox texture</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -3540,7 +3981,592 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="texture"><a class="header" href="#texture">Texture</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/texture/texture.h&gt;
+</code></pre>
+<h2 id="description-13"><a class="header" href="#description-13">Description</a></h2>
+<p>Asset that stores an image.</p>
+<p>A texture can be created dynamically.</p>
+<h2 id="general-settings"><a class="header" href="#general-settings">General settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Resolution</td><td>Enum</td><td>Max texture solution</td></tr>
+<tr><td>Filter</td><td>Enum</td><td>Texture filter</td></tr>
+<tr><td>WrapMode</td><td>Enum</td><td>Texture wrap mode</td></tr>
+<tr><td>UseMipMap</td><td>CheckBox</td><td>If enabled, smaller versions of the texture will be generated. Improves rendering but consumes more memory (Not working on PS3).</td></tr>
+<tr><td>PixelPerUnit</td><td>Number</td><td>Number of pixel per world unit (Used for sprites).</td></tr>
+</tbody></table>
+</div>
+<h2 id="psp-additional-settings"><a class="header" href="#psp-additional-settings">PSP additional settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Type</td><td>Enum</td><td>Type of compression</td></tr>
+<tr><td>TryPutInVram</td><td>CheckBox</td><td>If true, the texture will try to be stored in video ram instead of ram. (video ram is faster than ram but way smaller)</td></tr>
+</tbody></table>
+</div>
+<h2 id="ps3-additional-settings"><a class="header" href="#ps3-additional-settings">PS3 additional settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Type</td><td>Enum</td><td>Type of compression</td></tr>
+</tbody></table>
+</div>
+<h2 id="static-methods-4"><a class="header" href="#static-methods-4">Static methods</a></h2>
+<hr />
+<h3 id="createtexture"><a class="header" href="#createtexture">CreateTexture</a></h3>
+<p>Dynamically create a texture.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>params</code>: Parameters for the texture creation</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; CreateTexture(const TextureConstructorParams&amp; params)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">TextureConstructorParams params;
+params.width = 128;
+params.height = 128;
+params.filter = Filter::Bilinear;
+params.wrapMode = WrapMode::Repeat;
+params.pspTextureType = PSPTextureType::RGBA_4444;
+params.ps3TextureType = PS3TextureType::ARGB_4444;
+params.hasAlpha = true;
+
+std::shared_ptr&lt;Texture&gt; newTexture = Texture::CreateTexture(params);
+</code></pre>
+<h2 id="public-methods-2"><a class="header" href="#public-methods-2">Public methods</a></h2>
+<hr />
+<h3 id="setfilter"><a class="header" href="#setfilter">SetFilter</a></h3>
+<p>Set texture filter.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>filter</code>: Filtering mode</li>
+</ul>
+<pre><code class="language-cpp">void SetFilter(const Filter filter)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+texture-&gt;SetFilter(Filter::Point);
+texture-&gt;SetFilter(Filter::Bilinear);
+</code></pre>
+<hr />
+<h3 id="setwrapmode"><a class="header" href="#setwrapmode">SetWrapMode</a></h3>
+<p>Set texture wrap mode.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>mode</code>: Wraping mode</li>
+</ul>
+<pre><code class="language-cpp">void SetWrapMode(const WrapMode mode)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+texture-&gt;SetWrapMode(WrapMode::Point);
+texture-&gt;SetWrapMode(WrapMode::Bilinear);
+</code></pre>
+<hr />
+<h3 id="getwidth"><a class="header" href="#getwidth">GetWidth</a></h3>
+<p>Get texture width.</p>
+<pre><code class="language-cpp">int GetWidth() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+int width = texture-&gt;GetWidth();
+</code></pre>
+<hr />
+<h3 id="getheight"><a class="header" href="#getheight">GetHeight</a></h3>
+<p>Get texture height.</p>
+<pre><code class="language-cpp">int GetHeight() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+int height = texture-&gt;GetHeight();
+</code></pre>
+<hr />
+<h3 id="setpixelperunit"><a class="header" href="#setpixelperunit">SetPixelPerUnit</a></h3>
+<p>Set texture pixel per unit.</p>
+<pre><code class="language-cpp">void SetPixelPerUnit(int value)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+texture-&gt;SetPixelPerUnit(100);
+</code></pre>
+<hr />
+<h3 id="getpixelperunit"><a class="header" href="#getpixelperunit">GetPixelPerUnit</a></h3>
+<p>Get texture pixel per unit.</p>
+<pre><code class="language-cpp">int GetPixelPerUnit() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+int pixelPerUnit = texture-&gt;GetPixelPerUnit();
+</code></pre>
+<hr />
+<h3 id="getusemipmap"><a class="header" href="#getusemipmap">GetUseMipmap</a></h3>
+<p>Get if the texture is using mipmap.</p>
+<pre><code class="language-cpp">bool GetUseMipmap() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+bool useMipMap = texture-&gt;GetUseMipmap();
+</code></pre>
+<hr />
+<h3 id="getwrapmode"><a class="header" href="#getwrapmode">GetWrapMode</a></h3>
+<p>Get texture wrap mode.</p>
+<pre><code class="language-cpp">WrapMode GetWrapMode() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Texture&gt; texture; // Filled variable
+WrapMode wrapMode = texture-&gt;GetWrapMode();
+</code></pre>
+<hr />
+<h3 id="setdata"><a class="header" href="#setdata">SetData</a></h3>
+<p>Set texture data.<br>
+Can be called multiple times.</p>
+<pre><code class="language-cpp">virtual void SetData(const unsigned char* data) = 0
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">size_t width = 128;
+size_t height = 128;
+unsigned char* rawData = new unsigned char[width * height * 4];
+
+struct Pixel
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+};
+
+// Create a noise texture
+for (size_t y = 0; y &lt; height; y++)
+{
+    for (size_t x = 0; x &lt; width; x++)
+    {
+        Pixel&amp; pixel = reinterpret_cast&lt;Pixel*&gt;(rawData)[x + (y * width)];
+        pixel.r = rand() % 255;
+        pixel.g = rand() % 255;
+        pixel.b = rand() % 255;
+        pixel.a = 255;
+    }
+}
+
+TextureConstructorParams params;
+params.width = width;
+params.height = height;
+params.filter = Filter::Bilinear;
+params.wrapMode = WrapMode::Repeat;
+params.pspTextureType = PSPTextureType::RGBA_4444;
+params.ps3TextureType = PS3TextureType::ARGB_4444;
+params.hasAlpha = true;
+
+std::shared_ptr&lt;Material&gt; material; // Filled variable
+std::shared_ptr&lt;Texture&gt; newTexture = Texture::CreateTexture(params);
+newTexture-&gt;SetData(rawData);
+material-&gt;SetTexture(newTexture);
+
+delete[] rawData;
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="filter-enum"><a class="header" href="#filter-enum">Filter Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
+</code></pre>
+<h2 id="description-14"><a class="header" href="#description-14">Description</a></h2>
+<p>Enum to define how a texture should be filtered.</p>
+<h2 id="values-3"><a class="header" href="#values-3">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>Point</td><td>Point filtering selects the nearest texel without interpolation, giving a sharp, pixelated look</td></tr>
+<tr><td>Bilinear</td><td>Bilinear filtering smooths textures by interpolating between the four nearest texels, resulting in a softer, more blended appearance</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="textureresolution-enum"><a class="header" href="#textureresolution-enum">TextureResolution Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
+</code></pre>
+<h2 id="description-15"><a class="header" href="#description-15">Description</a></h2>
+<p>Enum to set the maximum resolution of the texture.</p>
+<h2 id="values-4"><a class="header" href="#values-4">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>R_64x64</td><td>Max resolution to 64x64</td></tr>
+<tr><td>R_128x128</td><td>Max resolution to 128x128</td></tr>
+<tr><td>R_256x256</td><td>Max resolution to 256x256</td></tr>
+<tr><td>R_512x512</td><td>Max resolution to 512x512</td></tr>
+<tr><td>R_1024x1024</td><td>Max resolution to 1024x1024</td></tr>
+<tr><td>R_2048x2048</td><td>Max resolution to 2048x2048</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="wrapmode-enum"><a class="header" href="#wrapmode-enum">WrapMode Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
+</code></pre>
+<h2 id="description-16"><a class="header" href="#description-16">Description</a></h2>
+<p>Enum that defines how texture coordinates outside the [0, 1] range are handled when sampling a texture.</p>
+<h2 id="values-5"><a class="header" href="#values-5">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>ClampToEdge</td><td>Clamps texture coordinates to the nearest edge, causing the texture’s edge pixels to stretch</td></tr>
+<tr><td>Repeat</td><td>Wraps texture coordinates around, repeating the texture pattern infinitely</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="psptexturetype-enum"><a class="header" href="#psptexturetype-enum">PSPTextureType Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
+</code></pre>
+<h2 id="description-17"><a class="header" href="#description-17">Description</a></h2>
+<p>Enum that specifies the pixel format used for textures on the PSP, defining how color data is stored.</p>
+<h2 id="values-6"><a class="header" href="#values-6">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>RGBA_8888</td><td>Stores 8 bits per channel, offering full 32-bit color with high precision for each component</td></tr>
+<tr><td>RGBA_5551</td><td>Uses 5 bits for red, green, and blue, and 1 bit for alpha, providing a compact 16-bit format with limited transparency support</td></tr>
+<tr><td>RGBA_5650</td><td>Allocates 5 bits for red, 6 for green, and 5 for blue, with no alpha channel, optimizing color depth over transparency</td></tr>
+<tr><td>RGBA_4444</td><td>Provides 4 bits per channel, balancing color and transparency in a compact 16-bit format</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="ps3texturetype-enum"><a class="header" href="#ps3texturetype-enum">PS3TextureType Enum</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
+</code></pre>
+<h2 id="description-18"><a class="header" href="#description-18">Description</a></h2>
+<p>Enum that specifies the pixel format used for textures on the PS3, defining how color data is stored.</p>
+<h2 id="values-7"><a class="header" href="#values-7">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>ARGB_8888</td><td>Stores 8 bits per channel, offering full 32-bit color with high precision for each component</td></tr>
+<tr><td>ARGB_1555</td><td>Uses 5 bits for red, green, and blue, and 1 bit for alpha, providing a compact 16-bit format with limited transparency support</td></tr>
+<tr><td>ARGB_0565</td><td>Allocates 5 bits for red, 6 for green, and 5 for blue, with no alpha channel, optimizing color depth over transparency</td></tr>
+<tr><td>ARGB_4444</td><td>Provides 4 bits per channel, balancing color and transparency in a compact 16-bit format</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -3611,9 +4637,9 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/color/color.h&gt;
 </code></pre>
-<h2 id="description-3"><a class="header" href="#description-3">Description</a></h2>
+<h2 id="description-19"><a class="header" href="#description-19">Description</a></h2>
 <p>This class stores informations about a color.</p>
-<h2 id="static-methods-3"><a class="header" href="#static-methods-3">Static methods</a></h2>
+<h2 id="static-methods-5"><a class="header" href="#static-methods-5">Static methods</a></h2>
 <hr />
 <h3 id="createfromrgb"><a class="header" href="#createfromrgb">CreateFromRGB</a></h3>
 <p>Create a color from 3 uint8_t (alpha = 255).</p>
@@ -3672,7 +4698,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <p>Code sample:</p>
 <pre><code class="language-cpp">Color semiTransparentRed = Color::CreateFromRGBAFloat(1.0f, 0.0f, 0.0f, 0.5f);
 </code></pre>
-<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<h2 id="public-methods-3"><a class="header" href="#public-methods-3">Public methods</a></h2>
 <hr />
 <h3 id="setfromrgba"><a class="header" href="#setfromrgba">SetFromRGBA</a></h3>
 <p>Set color from 4 uint8_t.</p>
@@ -3825,7 +4851,7 @@ Debug::Print(myColor.ToString());
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/color/color.h&gt;
 </code></pre>
-<h2 id="description-4"><a class="header" href="#description-4">Description</a></h2>
+<h2 id="description-20"><a class="header" href="#description-20">Description</a></h2>
 <p>This class stores informations about a color.</p>
 <h2 id="constructors"><a class="header" href="#constructors">Constructors</a></h2>
 <hr />
@@ -3842,7 +4868,7 @@ Debug::Print(myColor.ToString());
 <p>Code sample:</p>
 <pre><code class="language-cpp">RGBA myRGBA = RGBA(1.0f, 0.6f, 0.3f, 0.1f);
 </code></pre>
-<h2 id="public-methods-1"><a class="header" href="#public-methods-1">Public methods</a></h2>
+<h2 id="public-methods-4"><a class="header" href="#public-methods-4">Public methods</a></h2>
 <hr />
 <h3 id="tovector4"><a class="header" href="#tovector4">ToVector4</a></h3>
 <p>Get RGBA as a Vector4 [0.0f;1.0f] x = red, y = green, z = blue, w = alpha.</p>
@@ -3852,7 +4878,7 @@ Debug::Print(myColor.ToString());
 <pre><code class="language-cpp">RGBA myRGBA = RGBA(1.0f, 0.6f, 0.3f, 0.1f);
 Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 </code></pre>
-<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<h2 id="variables-1"><a class="header" href="#variables-1">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>r</td><td><code>float</code></td><td>Red information [0.0f;1.0f]</td></tr>
@@ -3996,7 +5022,17 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 
 </style>
 <h1 id="component"><a class="header" href="#component">Component</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/component.h&gt;
+</code></pre>
+<h2 id="description-21"><a class="header" href="#description-21">Description</a></h2>
 <p>The component class gives you a list of function that you can override in your components.</p>
+<h2 id="protected-variables"><a class="header" href="#protected-variables">Protected variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>m_componentName</td><td><code>const std::string*</code></td><td>Pointer to the component name</td></tr>
+</tbody></table>
+</div>
 <h2 id="virtual-methods"><a class="header" href="#virtual-methods">Virtual methods</a></h2>
 <hr />
 <h3 id="awake"><a class="header" href="#awake">Awake</a></h3>
@@ -4012,6 +5048,7 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 <p>Code sample:</p>
 <pre><code class="language-cpp">class API MyComponent : public Component
 {
+public:
     void Awake() override
     {
         Debug::Print("Awake called!");
@@ -4027,11 +5064,12 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 <li>The parent GameObject goes from inactive to active</li>
 </ul>
 <p>The parent GameObject and the component should be enabled.</p>
-<pre><code class="language-cpp">virtual void Awake()
+<pre><code class="language-cpp">virtual void Start()
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">class API MyComponent : public Component
 {
+public:
     void Start() override
     {
         Debug::Print("Start called!");
@@ -4042,11 +5080,12 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 <h3 id="update"><a class="header" href="#update">Update</a></h3>
 <p>This function called every frame.</p>
 <p>The parent GameObject and the component should be enabled.</p>
-<pre><code class="language-cpp">virtual void Awake()
+<pre><code class="language-cpp">virtual void Update()
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">class API MyComponent : public Component
 {
+public:
     void Update() override
     {
         Debug::Print("Update called!");
@@ -4059,11 +5098,12 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 It's usefull when you need to setup the component before the Awake being called with an access to the parent GameObject.<br>
 This function is called even if the GameObject or the component are disabled compared to the Awake method.<br>
 In the constructor of your component if the component you can't get a reference to the parent GameObject.</p>
-<pre><code class="language-cpp">virtual void Awake()
+<pre><code class="language-cpp">virtual void OnComponentAttached()
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">class API MyComponent : public Component
 {
+public:
     void OnTransformPositionUpdated();
 
     void OnComponentAttached() override
@@ -4071,6 +5111,270 @@ In the constructor of your component if the component you can't get a reference 
         GetTransformRaw()-&gt;GetOnTransformUpdated().Bind(&amp;MyComponent::OnTransformPositionUpdated, this);
     }
 }
+</code></pre>
+<hr />
+<h3 id="ondisabled"><a class="header" href="#ondisabled">OnDisabled</a></h3>
+<p>This function called when a component is disabled.</p>
+<pre><code class="language-cpp">virtual void OnDisabled()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnDisabled() override
+    {
+        Debug::Print("Component disabled!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="onenabled"><a class="header" href="#onenabled">OnEnabled</a></h3>
+<p>This function called when a component is enabled.</p>
+<pre><code class="language-cpp">virtual void OnEnabled()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnEnabled() override
+    {
+        Debug::Print("Component enabled!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ondrawgizmos"><a class="header" href="#ondrawgizmos">OnDrawGizmos</a></h3>
+<p>Called each frame to draw gizmos.</p>
+<p>The parent GameObject and the component should be enabled.</p>
+<pre><code class="language-cpp">virtual void OnDrawGizmos()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnDrawGizmos() override
+    {
+#if defined(EDITOR)
+        Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
+#endif
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ondrawgizmosselected"><a class="header" href="#ondrawgizmosselected">OnDrawGizmosSelected</a></h3>
+<p>Called each frame to draw gizmos if the object is selected.</p>
+<p>The parent GameObject and the component should be enabled.</p>
+<pre><code class="language-cpp">virtual void OnDrawGizmosSelected()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnDrawGizmosSelected() override
+    {
+#if defined(EDITOR)
+        Gizmo::DrawLine(Vector3(0, 0, 0), Vector3(1, 1, 1));
+#endif
+    }
+}
+</code></pre>
+<hr />
+<h3 id="tostring-1"><a class="header" href="#tostring-1">ToString</a></h3>
+<p>Return a string representation of the component.</p>
+<pre><code class="language-cpp">virtual std::string ToString()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    std::string ToString() override
+    {
+        return "{" + *m_componentName + ", Value: " + std::to_string(value) + "}";
+    }
+
+private:
+    int value = 2;
+}
+</code></pre>
+<hr />
+<h3 id="oncollisionenter"><a class="header" href="#oncollisionenter">OnCollisionEnter</a></h3>
+<p>Function called when a collision has just occured with another collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnCollisionEnter(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnCollisionEnter(CollisionEvent info) override
+    {
+        Debug::Print("I just hit something!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="oncollisionstay"><a class="header" href="#oncollisionstay">OnCollisionStay</a></h3>
+<p>Function called every frame if a collider of the GameObject is still colliding with another collider.</p>
+<pre><code class="language-cpp">virtual void OnCollisionStay(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnCollisionStay(CollisionEvent info) override
+    {
+        Debug::Print("I'm still colliding with something!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="oncollisionexit"><a class="header" href="#oncollisionexit">OnCollisionExit</a></h3>
+<p>Function called when the collision has ended.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnCollisionExit(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnCollisionExit(CollisionEvent info) override
+    {
+        Debug::Print("I'm not colliding with something anymore!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ontriggerenter"><a class="header" href="#ontriggerenter">OnTriggerEnter</a></h3>
+<p>Function called when a collider of the GameObject just entered a trigger collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnTriggerEnter(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnTriggerEnter(CollisionEvent info) override
+    {
+        Debug::Print("I just entered in a trigger!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ontriggerstay"><a class="header" href="#ontriggerstay">OnTriggerStay</a></h3>
+<p>Function called when a collider of the GameObject is still in a trigger collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnTriggerStay(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnTriggerStay(CollisionEvent info) override
+    {
+        Debug::Print("I'm still in a trigger!");
+    }
+}
+</code></pre>
+<hr />
+<h3 id="ontriggerexit"><a class="header" href="#ontriggerexit">OnTriggerExit</a></h3>
+<p>Function called when a collider of the GameObject just leave a trigger collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
+<pre><code class="language-cpp">virtual void OnTriggerExit(CollisionEvent info)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class API MyComponent : public Component
+{
+public:
+    void OnTriggerExit(CollisionEvent info) override
+    {
+        Debug::Print("I'm not in a trigger anymore!");
+    }
+}
+</code></pre>
+<h2 id="public-methods-5"><a class="header" href="#public-methods-5">Public methods</a></h2>
+<hr />
+<h3 id="isenabled"><a class="header" href="#isenabled">IsEnabled</a></h3>
+<p>Get if the component is enabled.</p>
+<pre><code class="language-cpp">bool IsEnabled() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+component-&gt;SetIsEnabled(false);
+bool isEnabled = component-&gt;IsEnabled(); // = false
+</code></pre>
+<hr />
+<h3 id="setisenabled"><a class="header" href="#setisenabled">SetIsEnabled</a></h3>
+<p>Enable or disable the component.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isEnabled</code>: true to enable, false to disable</li>
+</ul>
+<pre><code class="language-cpp">void SetIsEnabled(bool isEnabled)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+component-&gt;SetIsEnabled(false);
+bool isEnabled = component-&gt;IsLocalActive(); // = false
+</code></pre>
+<hr />
+<h3 id="getgameobject"><a class="header" href="#getgameobject">GetGameObject</a></h3>
+<p>Get component's GameObject.</p>
+<pre><code class="language-cpp">std::shared_ptr &lt;GameObject&gt; GetGameObject() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+std::shared_ptr&lt;GameObject&gt; gameObject = component-&gt;GetGameObject();
+</code></pre>
+<hr />
+<h3 id="getgameobjectraw"><a class="header" href="#getgameobjectraw">GetGameObjectRaw</a></h3>
+<p>Get component's GameObject raw pointer for faster access (Not safe, use with caution).</p>
+<pre><code class="language-cpp">GameObject* GetGameObjectRaw() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+GameObject* gameObject = component-&gt;GetGameObjectRaw();
+</code></pre>
+<hr />
+<h3 id="gettransform"><a class="header" href="#gettransform">GetTransform</a></h3>
+<p>Get component's Transform.</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Transform&gt; GetTransform() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+std::shared_ptr&lt;Transform&gt; transform = component-&gt;GetTransform();
+</code></pre>
+<hr />
+<h3 id="gettransformraw"><a class="header" href="#gettransformraw">GetTransformRaw</a></h3>
+<p>Get component's Transform raw pointer for faster access (Not safe, use with caution).</p>
+<pre><code class="language-cpp">Transform* GetTransformRaw() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+Transform* transform = component-&gt;GetTransformRaw();
+</code></pre>
+<hr />
+<h3 id="getcomponentname"><a class="header" href="#getcomponentname">GetComponentName</a></h3>
+<p>Get component's name.</p>
+<pre><code class="language-cpp">const std::string&amp; GetComponentName() const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;Component&gt; component; // Filled variable
+const std::string&amp; name = component-&gt;GetComponentName();
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -5368,7 +6672,7 @@ In the constructor of your component if the component you can't get a reference 
 <pre><code class="language-cpp">#include &lt;engine/time/date_time.h&gt;
 </code></pre>
 <p>This class represents an instant in time.</p>
-<h2 id="static-methods-4"><a class="header" href="#static-methods-4">Static methods</a></h2>
+<h2 id="static-methods-6"><a class="header" href="#static-methods-6">Static methods</a></h2>
 <hr />
 <h3 id="getnow"><a class="header" href="#getnow">GetNow</a></h3>
 <p>Get the current date and time.</p>
@@ -5377,9 +6681,9 @@ In the constructor of your component if the component you can't get a reference 
 <p>Code sample:</p>
 <pre><code class="language-cpp">DateTime currentDateTime = DateTime::GetNow();
 </code></pre>
-<h2 id="public-methods-2"><a class="header" href="#public-methods-2">Public methods</a></h2>
+<h2 id="public-methods-6"><a class="header" href="#public-methods-6">Public methods</a></h2>
 <hr />
-<h3 id="tostring-1"><a class="header" href="#tostring-1">ToString</a></h3>
+<h3 id="tostring-2"><a class="header" href="#tostring-2">ToString</a></h3>
 <p>Get a string representation of the date and time in the format: "hour:minute:second day/month/year".</p>
 <pre><code class="language-cpp">std::string ToString() const
 </code></pre>
@@ -5388,7 +6692,7 @@ In the constructor of your component if the component you can't get a reference 
 Debug::Print(currentDateTime.ToString());
 // Prints: "12:49:53 31/5/2025"
 </code></pre>
-<h2 id="variables-1"><a class="header" href="#variables-1">Variables</a></h2>
+<h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>second</td><td>uint32_t</td><td>Number of seconds</td></tr>
@@ -5469,12 +6773,12 @@ Debug::Print(currentDateTime.ToString());
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/debug/debug.h&gt;
 </code></pre>
-<h2 id="description-5"><a class="header" href="#description-5">Description</a></h2>
+<h2 id="description-22"><a class="header" href="#description-22">Description</a></h2>
 <p>Class used to print text in the console and in file or remotely to a server (Server part is removed for now).</p>
 <p>You can find logs in the <code>xenity_engine_debug.txt</code> file.<br>
 The file will be created in the same folder of the executable file.<br>
 For PsVita the file will be created in <code>ux0:data/xenity_engine/</code>.</p>
-<h2 id="static-methods-5"><a class="header" href="#static-methods-5">Static methods</a></h2>
+<h2 id="static-methods-7"><a class="header" href="#static-methods-7">Static methods</a></h2>
 <hr />
 <h3 id="print"><a class="header" href="#print">Print</a></h3>
 <p>Print a text.</p>
@@ -5675,7 +6979,7 @@ Debug::GetOnDebugLogEvent().Unbind(&amp;OnLog);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/event_system/event_system.h&gt;
 </code></pre>
-<h2 id="description-6"><a class="header" href="#description-6">Description</a></h2>
+<h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
 <p>This class gives the possibility to bind a function to an event.<br>
 When a event object is destroyed, all bound functions are unbound.</p>
 <p>This class is using templates.</p>
@@ -5688,7 +6992,7 @@ class Event
 <p>Event with arguments:</p>
 <pre><code class="language-cpp">Event&lt;int, const std::string&amp;&gt; myEvent;
 </code></pre>
-<h2 id="public-methods-3"><a class="header" href="#public-methods-3">Public methods</a></h2>
+<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
 <hr />
 <h3 id="bind"><a class="header" href="#bind">Bind</a></h3>
 <p>Bind a simple function.</p>
@@ -5899,9 +7203,9 @@ size_t count = myEvent.GetBoundFunctionCount(); // count = 2
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
 </code></pre>
-<h2 id="description-7"><a class="header" href="#description-7">Description</a></h2>
+<h2 id="description-24"><a class="header" href="#description-24">Description</a></h2>
 <p>This class provides methods to manipulate files and directories.</p>
-<h2 id="static-methods-6"><a class="header" href="#static-methods-6">Static methods</a></h2>
+<h2 id="static-methods-8"><a class="header" href="#static-methods-8">Static methods</a></h2>
 <hr />
 <h3 id="createfolder"><a class="header" href="#createfolder">CreateFolder</a></h3>
 <p>Create a directory.<br>
@@ -6094,9 +7398,9 @@ if(file-&gt;Open(FileMode::WriteCreateFile))
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
 </code></pre>
-<h2 id="description-8"><a class="header" href="#description-8">Description</a></h2>
+<h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
 <p>Class to manage a file (Create, open, read, write).</p>
-<h2 id="public-methods-4"><a class="header" href="#public-methods-4">Public methods</a></h2>
+<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
 <hr />
 <h3 id="open"><a class="header" href="#open">Open</a></h3>
 <p>Open the file.<br>
@@ -6344,9 +7648,9 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
 </code></pre>
-<h2 id="description-9"><a class="header" href="#description-9">Description</a></h2>
+<h2 id="description-26"><a class="header" href="#description-26">Description</a></h2>
 <p>Enum that list every modes to open a file.</p>
-<h2 id="values-2"><a class="header" href="#values-2">Values</a></h2>
+<h2 id="values-8"><a class="header" href="#values-8">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>ReadOnly</td><td>Only read calls are allowed</td></tr>
@@ -6424,16 +7728,16 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/directory.h&gt;
 </code></pre>
-<h2 id="description-10"><a class="header" href="#description-10">Description</a></h2>
+<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
 <p>Class to manage a directory (Get all files of a folder).</p>
-<h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
+<h2 id="variables-3"><a class="header" href="#variables-3">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>subdirectories</td><td><code>std::vector&lt;std::shared_ptr&lt;Directory&gt;&gt;</code></td><td>List of sub directories (filled with GetAllFiles)</td></tr>
 <tr><td>files</td><td><code>std::vector&lt;std::shared_ptr&lt;File&gt;&gt;</code></td><td>List of files (filled with GetAllFiles)</td></tr>
 </tbody></table>
 </div>
-<h2 id="public-methods-5"><a class="header" href="#public-methods-5">Public methods</a></h2>
+<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
 <hr />
 <h3 id="getallfiles"><a class="header" href="#getallfiles">GetAllFiles</a></h3>
 <p>Get all the files of the directory (can be very slow and not currently supported on PS3).<br></p>
@@ -6539,9 +7843,9 @@ const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
 </code></pre>
-<h2 id="description-11"><a class="header" href="#description-11">Description</a></h2>
+<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
 <p>Enum to list every different results of a file copy call.</p>
-<h2 id="values-3"><a class="header" href="#values-3">Values</a></h2>
+<h2 id="values-9"><a class="header" href="#values-9">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>Success</td><td>File copied successfully.</td></tr>
@@ -6619,7 +7923,7 @@ const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/gameobject.h&gt;
 </code></pre>
-<h2 id="description-12"><a class="header" href="#description-12">Description</a></h2>
+<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
 <p>A GameObject is a class that contains some properties and a list of components.<br>
 Includes functions to create GameObjects.</p>
 <h2 id="global-methods"><a class="header" href="#global-methods">Global Methods</a></h2>
@@ -6862,7 +8166,7 @@ gameObject-&gt;AddComponent&lt;Light&gt;();
 uint32_t count = gameObject-&gt;GetComponentCount(); // = 3
 </code></pre>
 <hr />
-<h3 id="gettransform"><a class="header" href="#gettransform">GetTransform</a></h3>
+<h3 id="gettransform-1"><a class="header" href="#gettransform-1">GetTransform</a></h3>
 <p>Get transform.</p>
 <pre><code class="language-cpp">const std::shared_ptr&lt;Transform&gt;&amp; GetTransform() const
 </code></pre>
@@ -7052,7 +8356,7 @@ if(sharedChild1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-13"><a class="header" href="#description-13">Description</a></h2>
+<h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
 <p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse).</p>
 <h2 id="macros"><a class="header" href="#macros">Macros</a></h2>
 <p><code>PLAYER_1</code> value: 0<br>
@@ -7072,7 +8376,7 @@ if(sharedChild1)
 <tr><td>mouseWheel</td><td><code>float</code></td><td>Speed of the mouse wheel</td></tr>
 </tbody></table>
 </div>
-<h2 id="static-methods-7"><a class="header" href="#static-methods-7">Static methods</a></h2>
+<h2 id="static-methods-9"><a class="header" href="#static-methods-9">Static methods</a></h2>
 <hr />
 <h3 id="getkeydown"><a class="header" href="#getkeydown">GetKeyDown</a></h3>
 <p>Return true if the key has just been pressed.</p>
@@ -7285,9 +8589,9 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-14"><a class="header" href="#description-14">Description</a></h2>
+<h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
 <p>This class stores informations of finger on a touchscreen.</p>
-<h2 id="variables-3"><a class="header" href="#variables-3">Variables</a></h2>
+<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>position</td><td><code>Vector2Int</code></td><td>Actual position in pixel of the finger</td></tr>
@@ -7365,9 +8669,9 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-15"><a class="header" href="#description-15">Description</a></h2>
+<h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
 <p>Enum that list every keys of a keyboard and buttons of a controller.</p>
-<h2 id="values-4"><a class="header" href="#values-4">Values</a></h2>
+<h2 id="values-10"><a class="header" href="#values-10">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody>
 <tr><td>EMPTY</td><td>-1</td></tr>
@@ -7621,9 +8925,9 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/quaternion.h&gt;
 </code></pre>
-<h2 id="description-16"><a class="header" href="#description-16">Description</a></h2>
+<h2 id="description-33"><a class="header" href="#description-33">Description</a></h2>
 <p>Class representing rotations in 3D space</p>
-<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
+<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the quaternion</td></tr>
@@ -7665,7 +8969,7 @@ if (touchCount &gt;= 1)
 <p>Code sample:</p>
 <pre><code class="language-cpp">Quaternion q = Quaternion(Vector4(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f));
 </code></pre>
-<h2 id="static-methods-8"><a class="header" href="#static-methods-8">Static methods</a></h2>
+<h2 id="static-methods-10"><a class="header" href="#static-methods-10">Static methods</a></h2>
 <hr />
 <h3 id="identity"><a class="header" href="#identity">Identity</a></h3>
 <p>Returns a quaternion representing no rotation (identity quaternion).</p>
@@ -7747,7 +9051,7 @@ Quaternion lerp1 = Quaternion::Lerp(a, b, 1.0f); // Equals B
 Quaternion b = Quaternion::Euler(90, 120, 10);
 Quaternion result = Quaternion::Dot(a, b);
 </code></pre>
-<h2 id="public-methods-6"><a class="header" href="#public-methods-6">Public methods</a></h2>
+<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
 <hr />
 <h3 id="toeuler"><a class="header" href="#toeuler">ToEuler</a></h3>
 <p>Converts the quaternion to Euler angles (in degrees).</p>
@@ -7825,7 +9129,7 @@ a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
 Vector3 right = a.GetRight();
 </code></pre>
 <hr />
-<h3 id="tostring-2"><a class="header" href="#tostring-2">ToString</a></h3>
+<h3 id="tostring-3"><a class="header" href="#tostring-3">ToString</a></h3>
 <p>Return a string representation of the quaternion like "{x:0.0 y:0.0 z:0.0 w:1.0}"</p>
 <pre><code class="language-cpp"> std::string ToString() const
 </code></pre>
@@ -7912,9 +9216,9 @@ bool operator!=(const Quaternion&amp; left, const Quaternion&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector2.h&gt;
 </code></pre>
-<h2 id="description-17"><a class="header" href="#description-17">Description</a></h2>
+<h2 id="description-34"><a class="header" href="#description-34">Description</a></h2>
 <p>Contains 2D coordinates.</p>
-<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
+<h2 id="variables-6"><a class="header" href="#variables-6">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -7979,7 +9283,7 @@ Vector2 vec = Vector2(vec2int);
 // X = 1.0f
 // Y = 2.0f
 </code></pre>
-<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
+<h2 id="public-methods-11"><a class="header" href="#public-methods-11">Public methods</a></h2>
 <h3 id="max"><a class="header" href="#max">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -8036,7 +9340,7 @@ float squaredMagnitude vec.SquaredMagnitude();
 <pre><code class="language-cpp">Vector2 vec = Vector2(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity()); // This will raise an assert in debug to avoid using nan or inf values
 bool valid = vec-&gt;HasInvalidValues();
 </code></pre>
-<h3 id="tostring-3"><a class="header" href="#tostring-3">ToString</a></h3>
+<h3 id="tostring-4"><a class="header" href="#tostring-4">ToString</a></h3>
 <p>Return a string representation of the vector like "{x:1.0, y:2.0}"</p>
 <pre><code class="language-cpp">bool ToString() const
 </code></pre>
@@ -8044,7 +9348,7 @@ bool valid = vec-&gt;HasInvalidValues();
 <pre><code class="language-cpp">Vector2 vec = Vector2(1.0f, 2.0f);
 Debug::Print(vec-&gt;ToString()); // Prints "{x:1.0, y:2.0}"
 </code></pre>
-<h2 id="static-methods-9"><a class="header" href="#static-methods-9">Static methods</a></h2>
+<h2 id="static-methods-11"><a class="header" href="#static-methods-11">Static methods</a></h2>
 <h3 id="lerp-1"><a class="header" href="#lerp-1">Lerp</a></h3>
 <p>Linearly interpolates between vectors.</p>
 <p>Parameters:</p>
@@ -8168,9 +9472,9 @@ bool operator!=(const Vector2&amp; left, const Vector2&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector2_int.h&gt;
 </code></pre>
-<h2 id="description-18"><a class="header" href="#description-18">Description</a></h2>
+<h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
 <p>Contains integer 2D coordinates.</p>
-<h2 id="variables-6"><a class="header" href="#variables-6">Variables</a></h2>
+<h2 id="variables-7"><a class="header" href="#variables-7">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>int</code></td><td>The x component of the vector</td></tr>
@@ -8235,7 +9539,7 @@ Vector2Int vec = Vector2Int(vec2);
 // X = 1
 // Y = 2
 </code></pre>
-<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
+<h2 id="public-methods-12"><a class="header" href="#public-methods-12">Public methods</a></h2>
 <h3 id="max-1"><a class="header" href="#max-1">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -8284,7 +9588,7 @@ float magnitude vec.Magnitude();
 <pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
 float squaredMagnitude vec.SquaredMagnitude();
 </code></pre>
-<h3 id="tostring-4"><a class="header" href="#tostring-4">ToString</a></h3>
+<h3 id="tostring-5"><a class="header" href="#tostring-5">ToString</a></h3>
 <p>Return a string representation of the vector like "{x:1, y:2}"</p>
 <pre><code class="language-cpp">bool ToString() const
 </code></pre>
@@ -8292,7 +9596,7 @@ float squaredMagnitude vec.SquaredMagnitude();
 <pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
 Debug::Print(vec-&gt;ToString()); // Prints "{x:1, y:2}"
 </code></pre>
-<h2 id="static-methods-10"><a class="header" href="#static-methods-10">Static methods</a></h2>
+<h2 id="static-methods-12"><a class="header" href="#static-methods-12">Static methods</a></h2>
 <h3 id="distance-1"><a class="header" href="#distance-1">Distance</a></h3>
 <p>Distance between two vectors.</p>
 <p>Parameters:</p>
@@ -8399,9 +9703,9 @@ bool operator!=(const Vector2Int&amp; left, const Vector2Int&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector3.h&gt;
 </code></pre>
-<h2 id="description-19"><a class="header" href="#description-19">Description</a></h2>
+<h2 id="description-36"><a class="header" href="#description-36">Description</a></h2>
 <p>Contains 3D coordinates.</p>
-<h2 id="variables-7"><a class="header" href="#variables-7">Variables</a></h2>
+<h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -8470,7 +9774,7 @@ Vector3 vec = Vector3(vec2int);
 // Y = 2.0f
 // Z = 0.0f
 </code></pre>
-<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
+<h2 id="public-methods-13"><a class="header" href="#public-methods-13">Public methods</a></h2>
 <h3 id="max-2"><a class="header" href="#max-2">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -8553,7 +9857,7 @@ Vector3 crossResult vec.Cross(vec2);
 <pre><code class="language-cpp">Vector3 vec = Vector3(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity(), 3.0f); // This will raise an assert in debug to avoid using nan or inf values
 bool valid = vec-&gt;HasInvalidValues();
 </code></pre>
-<h3 id="tostring-5"><a class="header" href="#tostring-5">ToString</a></h3>
+<h3 id="tostring-6"><a class="header" href="#tostring-6">ToString</a></h3>
 <p>Return a string representation of the vector like "{x:1.0, y:2.0, z:3.0}"</p>
 <pre><code class="language-cpp">bool ToString() const
 </code></pre>
@@ -8561,7 +9865,7 @@ bool valid = vec-&gt;HasInvalidValues();
 <pre><code class="language-cpp">Vector3 vec = Vector3(1.0f, 2.0f, 3.0f);
 Debug::Print(vec-&gt;ToString()); // Prints "{x:1.0, y:2.0, z:3.0}"
 </code></pre>
-<h2 id="static-methods-11"><a class="header" href="#static-methods-11">Static methods</a></h2>
+<h2 id="static-methods-13"><a class="header" href="#static-methods-13">Static methods</a></h2>
 <h3 id="dot-2"><a class="header" href="#dot-2">Dot</a></h3>
 <p>Get the dot product of two vectors.</p>
 <p>Parameters:</p>
@@ -8728,9 +10032,9 @@ bool operator!=(const Vector3&amp; left, const Vector3&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector4.h&gt;
 </code></pre>
-<h2 id="description-20"><a class="header" href="#description-20">Description</a></h2>
+<h2 id="description-37"><a class="header" href="#description-37">Description</a></h2>
 <p>Contains 4D coordinates.</p>
-<h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
+<h2 id="variables-9"><a class="header" href="#variables-9">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -8818,7 +10122,7 @@ Vector4 vec = Vector4(vec2int);
 // Z = 0.0f
 // W = 0.0f
 </code></pre>
-<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
+<h2 id="public-methods-14"><a class="header" href="#public-methods-14">Public methods</a></h2>
 <h3 id="max-3"><a class="header" href="#max-3">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -8875,7 +10179,7 @@ float squaredMagnitude vec.SquaredMagnitude();
 <pre><code class="language-cpp">Vector4 vec = Vector4(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity(), 3.0f, 4.0f); // This will raise an assert in debug to avoid using nan or inf values
 bool valid = vec-&gt;HasInvalidValues();
 </code></pre>
-<h3 id="tostring-6"><a class="header" href="#tostring-6">ToString</a></h3>
+<h3 id="tostring-7"><a class="header" href="#tostring-7">ToString</a></h3>
 <p>Return a string representation of the vector like "{x:1.0, y:2.0, z:3.0, w:4.0}"</p>
 <pre><code class="language-cpp">bool ToString() const
 </code></pre>
@@ -8883,7 +10187,7 @@ bool valid = vec-&gt;HasInvalidValues();
 <pre><code class="language-cpp">Vector4 vec = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
 Debug::Print(vec-&gt;ToString()); // Prints "{x:1.0, y:2.0, z:3.0, w:4.0}"
 </code></pre>
-<h2 id="static-methods-12"><a class="header" href="#static-methods-12">Static methods</a></h2>
+<h2 id="static-methods-14"><a class="header" href="#static-methods-14">Static methods</a></h2>
 <h3 id="lerp-3"><a class="header" href="#lerp-3">Lerp</a></h3>
 <p>Linearly interpolates between vectors.</p>
 <p>Parameters:</p>
@@ -9061,9 +10365,9 @@ bool operator!=(const Vector4&amp; left, const Vector4&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
 </code></pre>
-<h2 id="description-21"><a class="header" href="#description-21">Description</a></h2>
+<h2 id="description-38"><a class="header" href="#description-38">Description</a></h2>
 <p>Class to create sockets and to manage networking settings.</p>
-<h2 id="static-methods-13"><a class="header" href="#static-methods-13">Static methods</a></h2>
+<h2 id="static-methods-15"><a class="header" href="#static-methods-15">Static methods</a></h2>
 <hr />
 <h3 id="createsocket"><a class="header" href="#createsocket">CreateSocket</a></h3>
 <p>Create a socket.<br>
@@ -9166,11 +10470,11 @@ For this, a menu of the PSP OS ask to the user to setup a network connection.</p
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
 </code></pre>
-<h2 id="description-22"><a class="header" href="#description-22">Description</a></h2>
+<h2 id="description-39"><a class="header" href="#description-39">Description</a></h2>
 <p>Class to send and received data to/from a server.<br>
 Created with the NetworkManager class.<br>
 The socket will be closed when the object is destroyed.</p>
-<h2 id="public-methods-11"><a class="header" href="#public-methods-11">Public methods</a></h2>
+<h2 id="public-methods-15"><a class="header" href="#public-methods-15">Public methods</a></h2>
 <hr />
 <h3 id="senddata-string"><a class="header" href="#senddata-string">SendData (string)</a></h3>
 <p>Send data as a string to the server.</p>
@@ -9312,9 +10616,9 @@ if(socket)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/noise/noise.h&gt;
 </code></pre>
-<h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
+<h2 id="description-40"><a class="header" href="#description-40">Description</a></h2>
 <p>Class to generate 1D, 2D, 3D and 4D Perlin noise.</p>
-<h2 id="static-methods-14"><a class="header" href="#static-methods-14">Static methods</a></h2>
+<h2 id="static-methods-16"><a class="header" href="#static-methods-16">Static methods</a></h2>
 <hr />
 <h3 id="noise1d"><a class="header" href="#noise1d">Noise1D</a></h3>
 <p>Get 1D Perlin noise.</p>
@@ -9440,7 +10744,7 @@ if(socket)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/gameplay_utility.h&gt;
 </code></pre>
-<h2 id="description-24"><a class="header" href="#description-24">Description</a></h2>
+<h2 id="description-41"><a class="header" href="#description-41">Description</a></h2>
 <p>Class to manage Objects (GameObject and Components).<br>
 You can Instantiate, Check and Destroy Objects.</p>
 <h2 id="methods"><a class="header" href="#methods">Methods</a></h2>
@@ -9665,10 +10969,10 @@ Destroy(myGameObject);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/collider.h&gt;
 </code></pre>
-<h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
+<h2 id="description-42"><a class="header" href="#description-42">Description</a></h2>
 <p>Parent class of collider components (BoxCollider, SphereCollider...).</p>
 <p>Function of Collider can be used on every colllider component.</p>
-<h2 id="public-methods-12"><a class="header" href="#public-methods-12">Public methods</a></h2>
+<h2 id="public-methods-16"><a class="header" href="#public-methods-16">Public methods</a></h2>
 <hr />
 <h3 id="setistrigger"><a class="header" href="#setistrigger">SetIsTrigger</a></h3>
 <p>Set if the collider is a trigger or not.<br>
@@ -9787,9 +11091,9 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/collision_event.h&gt;
 </code></pre>
-<h2 id="description-26"><a class="header" href="#description-26">Description</a></h2>
+<h2 id="description-43"><a class="header" href="#description-43">Description</a></h2>
 <p>This class stores informations of a collision between two colliders</p>
-<h2 id="variables-9"><a class="header" href="#variables-9">Variables</a></h2>
+<h2 id="variables-10"><a class="header" href="#variables-10">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>collider</td><td><code>Collider*</code></td><td>Collider A</td></tr>
@@ -9866,9 +11170,9 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
-<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
+<h2 id="description-44"><a class="header" href="#description-44">Description</a></h2>
 <p>Class to check collisions with a ray.</p>
-<h2 id="public-methods-13"><a class="header" href="#public-methods-13">Public methods</a></h2>
+<h2 id="public-methods-17"><a class="header" href="#public-methods-17">Public methods</a></h2>
 <hr />
 <h3 id="check"><a class="header" href="#check">Check</a></h3>
 <p>Check if a ray hits a collider.<br>
@@ -9971,9 +11275,9 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
-<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
+<h2 id="description-45"><a class="header" href="#description-45">Description</a></h2>
 <p>This class stores informations of a racyast hit.</p>
-<h2 id="variables-10"><a class="header" href="#variables-10">Variables</a></h2>
+<h2 id="variables-11"><a class="header" href="#variables-11">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>hitGameObject</td><td><code>std::weak_ptr&lt;GameObject&gt;</code></td><td>Pointer of the GameObject hit by the ray</td></tr>
@@ -10052,7 +11356,7 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/reflection/reflection.h&gt;
 </code></pre>
-<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
+<h2 id="description-46"><a class="header" href="#description-46">Description</a></h2>
 <p>Class to inherit if you want to access child's variables to fill variables from json or save them to json.<br>
 It's used to see variables of a class in the <a href="script_api_reference/engine/reflection/../../../manual/editor_ui/inspector.html">Inspector</a>.</p>
 <p>GameObject, Transform and Component implement this class.</p>
@@ -10066,7 +11370,7 @@ It's used to see variables of a class in the <a href="script_api_reference/engin
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
 <p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
 <p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<h2 id="public-methods-14"><a class="header" href="#public-methods-14">Public methods</a></h2>
+<h2 id="public-methods-18"><a class="header" href="#public-methods-18">Public methods</a></h2>
 <hr />
 <h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
 <p>Get all child class variables references (Needs to be implemented).</p>
@@ -10193,9 +11497,9 @@ void MyComponent::OnReflectionUpdated()
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/scene_manager/scene_manager.h&gt;
 </code></pre>
-<h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
+<h2 id="description-47"><a class="header" href="#description-47">Description</a></h2>
 <p>Class to load scenes.</p>
-<h2 id="static-methods-15"><a class="header" href="#static-methods-15">Static methods</a></h2>
+<h2 id="static-methods-17"><a class="header" href="#static-methods-17">Static methods</a></h2>
 <hr />
 <h3 id="loadscene"><a class="header" href="#loadscene">LoadScene</a></h3>
 <p>Load a scene.</p>
@@ -10297,11 +11601,11 @@ SceneManager::LoadScene(sceneToLoad);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/ui/screen.h&gt;
 </code></pre>
-<h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
+<h2 id="description-48"><a class="header" href="#description-48">Description</a></h2>
 <p>Class to get informations and to interact with the screen.</p>
-<h2 id="static-methods-16"><a class="header" href="#static-methods-16">Static methods</a></h2>
+<h2 id="static-methods-18"><a class="header" href="#static-methods-18">Static methods</a></h2>
 <hr />
-<h3 id="getwidth"><a class="header" href="#getwidth">GetWidth</a></h3>
+<h3 id="getwidth-1"><a class="header" href="#getwidth-1">GetWidth</a></h3>
 <p>Get the width of the screen in pixels.</p>
 <pre><code class="language-cpp">int GetWidth()
 </code></pre>
@@ -10309,7 +11613,7 @@ SceneManager::LoadScene(sceneToLoad);
 <pre><code class="language-cpp">int width = Screen::GetWidth();
 </code></pre>
 <hr />
-<h3 id="getheight"><a class="header" href="#getheight">GetHeight</a></h3>
+<h3 id="getheight-1"><a class="header" href="#getheight-1">GetHeight</a></h3>
 <p>Get the height of the screen in pixels.</p>
 <pre><code class="language-cpp">int GetHeight()
 </code></pre>
@@ -10423,10 +11727,10 @@ bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/time/time.h&gt;
 </code></pre>
-<h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
+<h2 id="description-49"><a class="header" href="#description-49">Description</a></h2>
 <p>Class to get time informations (Delta time, elapsed time).</p>
 <p>Values are updated every frame.</p>
-<h2 id="static-methods-17"><a class="header" href="#static-methods-17">Static methods</a></h2>
+<h2 id="static-methods-19"><a class="header" href="#static-methods-19">Static methods</a></h2>
 <hr />
 <h3 id="gettime"><a class="header" href="#gettime">GetTime</a></h3>
 <p>Get total scaled elapsed time.<br>
@@ -10639,9 +11943,9 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-33"><a class="header" href="#description-33">Description</a></h2>
+<h2 id="description-50"><a class="header" href="#description-50">Description</a></h2>
 <p>Enum to horizontally align text with text rendering components.</p>
-<h2 id="values-5"><a class="header" href="#values-5">Values</a></h2>
+<h2 id="values-11"><a class="header" href="#values-11">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>Left</td><td>Put the text on the left of the pivot</td></tr>
@@ -10719,9 +12023,9 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-34"><a class="header" href="#description-34">Description</a></h2>
+<h2 id="description-51"><a class="header" href="#description-51">Description</a></h2>
 <p>Enum to vertically align text with text rendering components.</p>
-<h2 id="values-6"><a class="header" href="#values-6">Values</a></h2>
+<h2 id="values-12"><a class="header" href="#values-12">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>Top</td><td>Put the text on the top of the pivot</td></tr>
@@ -10867,10 +12171,10 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/endian_utils.h&gt;
 </code></pre>
-<h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
+<h2 id="description-52"><a class="header" href="#description-52">Description</a></h2>
 <p>Utility class for endian conversion.<br>
 Usefull when using binary data on different platforms.</p>
-<h2 id="static-methods-18"><a class="header" href="#static-methods-18">Static methods</a></h2>
+<h2 id="static-methods-20"><a class="header" href="#static-methods-20">Static methods</a></h2>
 <hr />
 <h3 id="isbigendian"><a class="header" href="#isbigendian">IsBigEndian</a></h3>
 <p>Checks if the system is big-endian.
