@@ -177,28 +177,28 @@ public:
 	MeshData();
 	~MeshData();
 
-	[[nodiscard]] static std::shared_ptr<MeshData> MakeMeshData();
+	[[nodiscard]] static std::shared_ptr<MeshData> CreateMeshData();
 
 	Color unifiedColor = Color::CreateFromRGBA(255, 255, 255, 255);
 
 	/**
-	* Get mesh min bounding box point
+	* @brief Get the minimum position of the bounding box. (Box including all submeshes).
 	*/
-	[[nodiscard]] inline const Vector3& GetMinBoundingBox()  const
+	[[nodiscard]] const Vector3& GetMinBoundingBox() const
 	{
 		return m_minBoundingBox;
 	}
 
 	/**
-	* Get mesh max bounding box point
+	* @brief Get the maximum position of the bounding box. (Box including all submeshes).
 	*/
-	[[nodiscard]] inline const Vector3& GetMaxBoundingBox()  const
+	[[nodiscard]] const Vector3& GetMaxBoundingBox() const
 	{
 		return m_maxBoundingBox;
 	}
 
 	/**
-	* Get mesh bounding sphere
+	* @brief Get mesh bounding sphere
 	*/
 	[[nodiscard]] const Sphere& GetBoundingSphere() const
 	{

@@ -81,7 +81,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	vertexDescriptorList.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
 
 
-	std::shared_ptr<MeshData> mesh = MeshData::MakeMeshData();
+	std::shared_ptr<MeshData> mesh = MeshData::CreateMeshData();
 	mesh->CreateSubMesh(6 * charCountToDraw, 6 * charCountToDraw, vertexDescriptorList);
 	mesh->unifiedColor = color;
 
