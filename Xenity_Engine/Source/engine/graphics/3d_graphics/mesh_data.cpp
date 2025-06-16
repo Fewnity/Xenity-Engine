@@ -37,7 +37,7 @@ MeshData::MeshData()
 {
 }
 
-std::shared_ptr<MeshData> MeshData::MakeMeshData()
+std::shared_ptr<MeshData> MeshData::CreateMeshData()
 {
 	std::shared_ptr<MeshData> newFileRef = std::make_shared<MeshData>();
 	return newFileRef;

@@ -113,7 +113,7 @@ void LineRenderer::DrawCommand(const RenderCommand& renderCommand)
 	const float fixedXWidth = width2 / 2.0f * dir.y;
 	const float fixedYWidth = width2 / 2.0f * dir.x;
 
-	m_meshData = MeshData::MakeMeshData(4, 6, false, false, true);
+	m_meshData = MeshData::CreateMeshData(4, 6, false, false, true);
 	m_meshData->AddVertex(1.0f, 1.0f, start.x - fixedXWidth, start.y - fixedYWidth, 0.0f, 0, 0);
 	m_meshData->AddVertex(0.0f, 0.0f, end.x - fixedXWidth, end.y - fixedYWidth, 0.0f, 1, 0);
 	m_meshData->AddVertex(1.0f, 0.0f, end.x + fixedXWidth, end.y + fixedYWidth, 0.0f, 2, 0);
