@@ -20,7 +20,6 @@ public:
 	Vector2 anchors = Vector2(0);
 	Vector2 position = Vector2(0);
 
-
 protected:
 	[[nodiscard]] ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;

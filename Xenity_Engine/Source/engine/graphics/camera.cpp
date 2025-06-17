@@ -158,11 +158,11 @@ ReflectiveData Camera::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_projectionType, "projectionType", true);
-	ReflectiveEntry& fovEntry = Reflective::AddVariable(reflectedVariables, m_fov, "fov", m_projectionType == ProjectionTypes::Perspective);
+	ReflectiveEntry& fovEntry = Reflective::AddVariable(reflectedVariables, m_fov, "fov", m_projectionType == ProjectionType::Perspective);
 	fovEntry.isSlider = true;
 	fovEntry.minSliderValue = 1;
 	fovEntry.maxSliderValue = 179;
-	Reflective::AddVariable(reflectedVariables, m_projectionSize, "projectionSize", m_projectionType == ProjectionTypes::Orthographic);
+	Reflective::AddVariable(reflectedVariables, m_projectionSize, "projectionSize", m_projectionType == ProjectionType::Orthographic);
 	Reflective::AddVariable(reflectedVariables, m_nearClippingPlane, "nearClippingPlane", true);
 	Reflective::AddVariable(reflectedVariables, m_farClippingPlane, "farClippingPlane", true);
 	Reflective::AddVariable(reflectedVariables, m_useMultisampling, "useMultisampling", true);
@@ -289,7 +289,7 @@ void Camera::UpdateProjection()
 
 	if constexpr (s_UseOpenGLFixedFunctions)
 	{
-		if (m_projectionType == ProjectionTypes::Perspective)
+		if (m_projectionType == ProjectionType::Perspective)
 		{
 			Engine::GetRenderer().SetProjection3D(m_fov, m_nearClippingPlane, m_farClippingPlane, m_aspect);
 		}
@@ -302,7 +302,7 @@ void Camera::UpdateProjection()
 	if (m_isProjectionDirty)
 	{
 		m_isProjectionDirty = false;
-		if (m_projectionType == ProjectionTypes::Perspective) // 3D projection
+		if (m_projectionType == ProjectionType::Perspective) // 3D projection
 		{
 			m_projection = glm::perspective(glm::radians(m_fov), m_aspect, m_nearClippingPlane, m_farClippingPlane);
 		}
@@ -380,7 +380,7 @@ void Camera::UpdateViewProjectionMatrix()
 	m_viewProjectionMatrix = GetProjection() * viewMatrix;
 }
 
-void Camera::SetProjectionType(const ProjectionTypes type)
+void Camera::SetProjectionType(const ProjectionType type)
 {
 	m_projectionType = type;
 	m_isProjectionDirty = true;

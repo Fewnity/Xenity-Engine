@@ -757,12 +757,12 @@ void SceneMenu::Switch2DMode(bool is2D)
 	mode2D = is2D;
 	if (mode2D)
 	{
-		weakCamera.lock()->SetProjectionType(ProjectionTypes::Orthographic);
+		weakCamera.lock()->SetProjectionType(ProjectionType::Orthographic);
 		gridAxis = 2;
 	}
 	else
 	{
-		weakCamera.lock()->SetProjectionType(ProjectionTypes::Perspective);
+		weakCamera.lock()->SetProjectionType(ProjectionType::Perspective);
 		gridAxis = 0;
 	}
 }

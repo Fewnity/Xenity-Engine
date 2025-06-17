@@ -20,6 +20,6 @@ public:
 	*/
 	[[nodiscard]] static bool LoadMesh(MeshData& mesh, const LoadingOptions& options);
 private:
-	static void AddVertex(MeshData& mesh, const LoadingOptions& options, const aiMesh* assimpMesh, size_t vertexIndex, size_t subMeshIndex, size_t vertexIndex2);
+	static void SetVertex(MeshData& mesh, const LoadingOptions& options, const aiMesh* assimpMesh, size_t vertexIndex, size_t subMeshIndex, size_t vertexIndex2);
 };
 

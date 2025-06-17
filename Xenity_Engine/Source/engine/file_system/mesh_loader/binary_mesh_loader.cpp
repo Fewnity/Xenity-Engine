@@ -60,15 +60,15 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 
 		for (size_t vertexDescIndex = 0; vertexDescIndex < vertexDescriptorListSize; vertexDescIndex++)
 		{
-			VertexElements vertexElement;
-			memcpy(&vertexElement, fileData, sizeof(VertexElements));
-			fileData += sizeof(VertexElements);
+			VertexElement vertexElement;
+			memcpy(&vertexElement, fileData, sizeof(VertexElement));
+			fileData += sizeof(VertexElement);
 
 #if defined(__PS3__)
 			vertexElement = EndianUtils::SwapEndian(vertexElement);
 #endif
 
-			vertexDescriptorList.AddVertexDescriptor(vertexElement);
+			vertexDescriptorList.AddVertexElement(vertexElement);
 		}
 
 		uint32_t vertice_count = 0;
@@ -103,27 +103,27 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #if defined(__PS3__)
 		for (int vertexIndex = 0; vertexIndex < vertice_count; vertexIndex++)
 		{
-			for (auto& element : vertexDescriptorList.m_vertexElementInfos)
+			for (auto& element : vertexDescriptorList.GetVertexElementList())
 			{
-				float* vertex = (float*)((char*)subMesh->m_data + element.offset + vertexIndex * vertexDescriptorList.m_vertexSize);
-				if (element.vertexElement == VertexElements::POSITION_32_BITS)
+				float* vertex = (float*)((char*)subMesh->m_data + element.offset + vertexIndex * vertexDescriptorList.GetVertexSize());
+				if (element.vertexElement == VertexElement::POSITION_32_BITS)
 				{
 					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
 					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
 					vertex[2] = EndianUtils::SwapEndian(vertex[2]);
 				}
-				else if (element.vertexElement == VertexElements::NORMAL_32_BITS)
+				else if (element.vertexElement == VertexElement::NORMAL_32_BITS)
 				{
 					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
 					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
 					vertex[2] = EndianUtils::SwapEndian(vertex[2]);
 				}
-				else if (element.vertexElement == VertexElements::UV_32_BITS)
+				else if (element.vertexElement == VertexElement::UV_32_BITS)
 				{
 					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
 					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
 				}
-				else if (element.vertexElement == VertexElements::COLOR_4_FLOATS)
+				else if (element.vertexElement == VertexElement::COLOR_4_FLOATS)
 				{
 					vertex[0] = EndianUtils::SwapEndian(vertex[0]);
 					vertex[1] = EndianUtils::SwapEndian(vertex[1]);
@@ -142,7 +142,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #if defined(__PS3__)
 			for (int indexIndex = 0; indexIndex < index_count; indexIndex++)
 			{
-				if (subMesh->isShortIndices)
+				if (subMesh->usesShortIndices)
 				{
 					unsigned short& index = ((unsigned short*)subMesh->GetIndices())[indexIndex];
 					index = EndianUtils::SwapEndian(index);

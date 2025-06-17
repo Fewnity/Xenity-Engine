@@ -387,7 +387,7 @@
     <ClInclude Include="Source\engine\graphics\ui\text_alignments.h" />
     <ClInclude Include="Source\engine\graphics\2d_graphics\tile_map.h" />
     <ClInclude Include="Source\engine\tools\profiler_benchmark.h" />
-    <ClInclude Include="Source\engine\graphics\camera_projection_types.h" />
+    <ClInclude Include="Source\engine\graphics\camera_projection_type.h" />
     <ClInclude Include="Source\engine\pathfinding\dijkstras.h" />
     <ClInclude Include="Source\engine\pathfinding\astar.h" />
     <ClInclude Include="Source\engine\graphics\iDrawableTypes.h" />

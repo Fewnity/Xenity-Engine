@@ -73,83 +73,83 @@ ReflectiveData MeshData::GetMetaReflectiveData([[maybe_unused]] AssetPlatform pl
  * @param z Z position
  * @param index Vertex index
  */
-void MeshData::SubMesh::AddVertex(float u, float v, const Color& color, float x, float y, float z, uint32_t vertexIndex)
+void MeshData::SubMesh::SetVertex(float u, float v, const Color& color, float x, float y, float z, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetVertex] vertexIndex out of bound");
 
-	AddUV(u, v, vertexIndex);
-	AddPosition(x, y, z, vertexIndex);
-	AddColor(color, vertexIndex);
+	SetUV(u, v, vertexIndex);
+	SetPosition(x, y, z, vertexIndex);
+	SetColor(color, vertexIndex);
 }
 
-void MeshData::SubMesh::AddVertex(float x, float y, float z, uint32_t vertexIndex)
+void MeshData::SubMesh::SetVertex(float x, float y, float z, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetVertex] vertexIndex out of bound");
 
-	AddPosition(x, y, z, vertexIndex);
+	SetPosition(x, y, z, vertexIndex);
 }
 
-void MeshData::SubMesh::AddVertex(float u, float v, float x, float y, float z, uint32_t vertexIndex)
+void MeshData::SubMesh::SetVertex(float u, float v, float x, float y, float z, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetVertex] vertexIndex out of bound");
 
-	AddUV(u, v, vertexIndex);
-	AddPosition(x, y, z, vertexIndex);
+	SetUV(u, v, vertexIndex);
+	SetPosition(x, y, z, vertexIndex);
 }
 
-void MeshData::SubMesh::AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex)
+void MeshData::SubMesh::SetVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetVertex] vertexIndex out of bound");
 
-	AddUV(u, v, vertexIndex);
-	AddNormal(nx, ny, nz, vertexIndex);
-	AddPosition(x, y, z, vertexIndex);
+	SetUV(u, v, vertexIndex);
+	SetNormal(nx, ny, nz, vertexIndex);
+	SetPosition(x, y, z, vertexIndex);
 }
 
-void MeshData::SubMesh::AddVertex(float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex)
+void MeshData::SubMesh::SetVertex(float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddVertex] vertexIndex out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetVertex] vertexIndex out of bound");
 
-	AddNormal(nx, ny, nz, vertexIndex);
-	AddPosition(x, y, z, vertexIndex);
+	SetNormal(nx, ny, nz, vertexIndex);
+	SetPosition(x, y, z, vertexIndex);
 }
 
-void MeshData::SubMesh::AddPosition(float x, float y, float z, uint32_t vertexIndex)
+void MeshData::SubMesh::SetPosition(float x, float y, float z, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddPosition] vertexIndex out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetPosition] vertexIndex out of bound");
 	
-	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.m_vertexSize) + m_vertexDescriptor.m_vertexElementInfos[m_vertexDescriptor.m_positionIndex].offset;
+	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.GetVertexSize()) + m_vertexDescriptor.GetVertexElementList()[m_vertexDescriptor.GetPositionIndex()].offset;
 	reinterpret_cast<float*>(vertexData)[0] = x;
 	reinterpret_cast<float*>(vertexData)[1] = y;
 	reinterpret_cast<float*>(vertexData)[2] = z;
 }
 
-void MeshData::SubMesh::AddNormal(float nx, float ny, float nz, uint32_t vertexIndex)
+void MeshData::SubMesh::SetNormal(float nx, float ny, float nz, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddNormal] vertexIndex out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetNormal] vertexIndex out of bound");
 
-	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.m_vertexSize) + m_vertexDescriptor.m_vertexElementInfos[m_vertexDescriptor.m_normalIndex].offset;
+	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.GetVertexSize()) + m_vertexDescriptor.GetVertexElementList()[m_vertexDescriptor.GetNormalIndex()].offset;
 	reinterpret_cast<float*>(vertexData)[0] = nx;
 	reinterpret_cast<float*>(vertexData)[1] = ny;
 	reinterpret_cast<float*>(vertexData)[2] = nz;
 }
 
-void MeshData::SubMesh::AddUV(float u, float v, uint32_t vertexIndex)
+void MeshData::SubMesh::SetUV(float u, float v, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddUV] Index out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetUV] Index out of bound");
 
-	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.m_vertexSize) + m_vertexDescriptor.m_vertexElementInfos[m_vertexDescriptor.m_uvIndex].offset;
+	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.GetVertexSize()) + m_vertexDescriptor.GetVertexElementList()[m_vertexDescriptor.GetUvIndex()].offset;
 	reinterpret_cast<float*>(vertexData)[0] = u;
 	reinterpret_cast<float*>(vertexData)[1] = v;
 }
 
-void MeshData::SubMesh::AddColor(const Color& color, uint32_t vertexIndex)
+void MeshData::SubMesh::SetColor(const Color& color, uint32_t vertexIndex)
 {
-	XASSERT(vertexIndex < m_vertice_count, "[MeshData::AddColor] Index out of bound");
+	XASSERT(vertexIndex < m_vertice_count, "[MeshData::SetColor] Index out of bound");
 
-	VertexElementInfo& colorElement = m_vertexDescriptor.m_vertexElementInfos[m_vertexDescriptor.m_colorIndex];
-	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.m_vertexSize) + colorElement.offset;
-	if (colorElement.vertexElement == VertexElements::COLOR_4_FLOATS)
+	const VertexElementInfo& colorElement = m_vertexDescriptor.GetVertexElementList()[m_vertexDescriptor.GetColorIndex()];
+	char* vertexData = ((char*)m_data) + (vertexIndex * m_vertexDescriptor.GetVertexSize()) + colorElement.offset;
+	if (colorElement.vertexElement == VertexElement::COLOR_4_FLOATS)
 	{
 		const Vector4 colorVector = color.GetRGBA().ToVector4();
 		reinterpret_cast<float*>(vertexData)[0] = colorVector.x;
@@ -157,7 +157,7 @@ void MeshData::SubMesh::AddColor(const Color& color, uint32_t vertexIndex)
 		reinterpret_cast<float*>(vertexData)[2] = colorVector.z;
 		reinterpret_cast<float*>(vertexData)[3] = colorVector.w;
 	}
-	else //if (colorElement.vertexElement == VertexElements::COLOR_32_BITS_UINT)
+	else //if (colorElement.vertexElement == VertexElement::COLOR_32_BITS_UINT)
 	{
 		reinterpret_cast<unsigned int*>(vertexData)[0] = color.GetUnsignedIntABGR();
 	}
@@ -180,7 +180,7 @@ void MeshData::ComputeBoundingBox()
 		for (uint32_t vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++)
 		{
 			Vector3 vert;
-			float* vertexPtr = (float*)((char*)subMesh->m_data + subMesh->m_vertexDescriptor.m_vertexElementInfos[subMesh->m_vertexDescriptor.m_positionIndex].offset + vertexIndex * subMesh->m_vertexDescriptor.m_vertexSize);
+			float* vertexPtr = (float*)((char*)subMesh->m_data + subMesh->m_vertexDescriptor.GetVertexElementList()[subMesh->m_vertexDescriptor.GetPositionIndex()].offset + vertexIndex * subMesh->m_vertexDescriptor.GetVertexSize());
 			vert.x = vertexPtr[0];
 			vert.y = vertexPtr[1];
 			vert.z = vertexPtr[2];
@@ -365,24 +365,24 @@ void MeshData::UpdatePS2Packets(int index, std::shared_ptr<Texture> texture)
 void MeshData::CreateSubMesh(uint32_t vcount, uint32_t index_count, const VertexDescriptor& vertexDescriptorList)
 {
 	XASSERT(vcount != 0 || index_count != 0, "[MeshData::CreateSubMesh] vcount and index_count are 0");
-	XASSERT(vertexDescriptorList.m_vertexSize != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList vertex size");
-	XASSERT(vertexDescriptorList.m_vertexElementInfos.size() != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList size");
+	XASSERT(vertexDescriptorList.GetVertexSize() != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList vertex size");
+	XASSERT(vertexDescriptorList.GetVertexElementList().size() != 0, "[MeshData::CreateSubMesh] Wrong vertexDescriptorList size");
 
 	std::unique_ptr<MeshData::SubMesh> newSubMesh = std::make_unique<MeshData::SubMesh>();
 	newSubMesh->m_vertexDescriptor = vertexDescriptorList;
 	newSubMesh->m_meshData = this;
 	if (index_count >= std::numeric_limits<unsigned short>::max())
 	{
-		newSubMesh->isShortIndices = false;
+		newSubMesh->usesShortIndices = false;
 	}
 	else
 	{
-		newSubMesh->isShortIndices = true;
+		newSubMesh->usesShortIndices = true;
 	}
 
 	if (index_count != 0)
 	{
-		const size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
+		const size_t indexSize = newSubMesh->usesShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
 		newSubMesh->m_indexMemSize = static_cast<uint32_t>(indexSize * index_count);
 #if defined(__PSP__)
 		newSubMesh->m_indices = memalign(16, newSubMesh->m_indexMemSize);
@@ -403,7 +403,7 @@ void MeshData::CreateSubMesh(uint32_t vcount, uint32_t index_count, const Vertex
 		}
 	}
 
-	newSubMesh->m_vertexMemSize = static_cast<uint32_t>(vertexDescriptorList.m_vertexSize * vcount);
+	newSubMesh->m_vertexMemSize = static_cast<uint32_t>(vertexDescriptorList.GetVertexSize() * vcount);
 
 	// Allocate memory for mesh data
 #if defined(__PSP__)
@@ -424,61 +424,61 @@ void MeshData::CreateSubMesh(uint32_t vcount, uint32_t index_count, const Vertex
 		newSubMesh->pspDrawParam |= GU_INDEX_16BIT;
 	}
 
-	if (vertexDescriptorList.m_uvIndex != -1)
+	if (vertexDescriptorList.GetUvIndex() != -1)
 	{
-		VertexElements uvElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_uvIndex);
-		if (uvElement == VertexElements::UV_32_BITS)
+		VertexElement uvElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.GetUvIndex());
+		if (uvElement == VertexElement::UV_32_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_TEXTURE_32BITF;
 		}
-		else if (uvElement == VertexElements::UV_16_BITS)
+		else if (uvElement == VertexElement::UV_16_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_TEXTURE_16BIT;
 		}
-		else if (uvElement == VertexElements::UV_8_BITS)
+		else if (uvElement == VertexElement::UV_8_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_TEXTURE_8BIT;
 		}
 	}
 
-	if (vertexDescriptorList.m_normalIndex != -1)
+	if (vertexDescriptorList.GetNormalIndex() != -1)
 	{
-		VertexElements normalElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_normalIndex);
-		if (normalElement == VertexElements::NORMAL_32_BITS)
+		VertexElement normalElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.GetNormalIndex());
+		if (normalElement == VertexElement::NORMAL_32_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_NORMAL_32BITF;
 		}
-		else if (normalElement == VertexElements::NORMAL_16_BITS)
+		else if (normalElement == VertexElement::NORMAL_16_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_NORMAL_16BIT;
 		}
-		else if (normalElement == VertexElements::NORMAL_8_BITS)
+		else if (normalElement == VertexElement::NORMAL_8_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_NORMAL_8BIT;
 		}
 	}
 
-	if (vertexDescriptorList.m_positionIndex != -1)
+	if (vertexDescriptorList.GetPositionIndex() != -1)
 	{
-		VertexElements positionElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_positionIndex);
-		if (positionElement == VertexElements::POSITION_32_BITS)
+		VertexElement positionElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.GetPositionIndex());
+		if (positionElement == VertexElement::POSITION_32_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_VERTEX_32BITF;
 		}
-		else if (positionElement == VertexElements::POSITION_16_BITS)
+		else if (positionElement == VertexElement::POSITION_16_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_VERTEX_16BIT;
 		}
-		else if (positionElement == VertexElements::POSITION_8_BITS)
+		else if (positionElement == VertexElement::POSITION_8_BITS)
 		{
 			newSubMesh->pspDrawParam |= GU_VERTEX_8BIT;
 		}
 	}
 
-	if (vertexDescriptorList.m_colorIndex != -1)
+	if (vertexDescriptorList.GetColorIndex() != -1)
 	{
-		VertexElements colorElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.m_colorIndex);
-		if (colorElement == VertexElements::COLOR_32_BITS_UINT) // Actually wrong
+		VertexElement colorElement = vertexDescriptorList.GetElementFromIndex(vertexDescriptorList.GetColorIndex());
+		if (colorElement == VertexElement::COLOR_32_BITS_UINT) // Actually wrong
 		{
 			newSubMesh->pspDrawParam |= GU_COLOR_8888;
 		}
@@ -533,7 +533,7 @@ void MeshData::CreateSubMesh(uint32_t vcount, uint32_t index_count, const Vertex
 	newSubMesh->m_vertice_count = static_cast<uint32_t>(vcount);
 
 #if defined(__PS3__)
-	if (newSubMesh->isShortIndices)
+	if (newSubMesh->usesShortIndices)
 	{
 		rsxAddressToOffset(&((unsigned short*)newSubMesh->m_indices)[0], &newSubMesh->indicesOffset);
 	}
@@ -542,20 +542,20 @@ void MeshData::CreateSubMesh(uint32_t vcount, uint32_t index_count, const Vertex
 		rsxAddressToOffset(&((unsigned int*)newSubMesh->m_indices)[0], &newSubMesh->indicesOffset);
 	}
 
-	rsxAddressToOffset((void*)((char*)newSubMesh->m_data + vertexDescriptorList.m_vertexElementInfos[vertexDescriptorList.m_positionIndex].offset), &newSubMesh->positionOffset);
-	if (vertexDescriptorList.m_uvIndex != -1)
+	rsxAddressToOffset((void*)((char*)newSubMesh->m_data + vertexDescriptorList.GetVertexElementList()[vertexDescriptorList.GetPositionIndex()].offset), &newSubMesh->positionOffset);
+	if (vertexDescriptorList.GetUvIndex() != -1)
 	{
-		rsxAddressToOffset((void*)((char*)newSubMesh->m_data + vertexDescriptorList.m_vertexElementInfos[vertexDescriptorList.m_uvIndex].offset), &newSubMesh->uvOffset);
+		rsxAddressToOffset((void*)((char*)newSubMesh->m_data + vertexDescriptorList.GetVertexElementList()[vertexDescriptorList.GetUvIndex()].offset), &newSubMesh->uvOffset);
 	}
 
-	if (vertexDescriptorList.m_normalIndex != -1)
+	if (vertexDescriptorList.GetNormalIndex() != -1)
 	{
-		rsxAddressToOffset((void*)((char*)newSubMesh->m_data + vertexDescriptorList.m_vertexElementInfos[vertexDescriptorList.m_normalIndex].offset), &newSubMesh->normalOffset);
+		rsxAddressToOffset((void*)((char*)newSubMesh->m_data + vertexDescriptorList.GetVertexElementList()[vertexDescriptorList.GetNormalIndex()].offset), &newSubMesh->normalOffset);
 	}
 
-	if (vertexDescriptorList.m_colorIndex != -1)
+	if (vertexDescriptorList.GetColorIndex() != -1)
 	{
-		rsxAddressToOffset((void*)((char*)newSubMesh->m_data + vertexDescriptorList.m_vertexElementInfos[vertexDescriptorList.m_colorIndex].offset), &newSubMesh->colorOffset);
+		rsxAddressToOffset((void*)((char*)newSubMesh->m_data + vertexDescriptorList.GetVertexElementList()[vertexDescriptorList.GetColorIndex()].offset), &newSubMesh->colorOffset);
 	}
 
 #endif

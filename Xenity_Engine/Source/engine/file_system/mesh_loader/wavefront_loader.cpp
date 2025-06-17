@@ -277,14 +277,14 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 //			stop = false;
 //			currentSubMeshPtr = nullptr;
 //
-//			VertexElements vertexDescriptor = VertexElements::POSITION_32_BITS;
+//			VertexElement vertexDescriptor = VertexElement::POSITION_32_BITS;
 //			if (!hasNoUv)
 //			{
-//				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::UV_32_BITS);
+//				vertexDescriptor = (VertexElement)((uint32_t)vertexDescriptor | (uint32_t)VertexElement::UV_32_BITS);
 //			}
 //			if (!hasNoNormals)
 //			{
-//				vertexDescriptor = (VertexElements)((uint32_t)vertexDescriptor | (uint32_t)VertexElements::NORMAL_32_BITS);
+//				vertexDescriptor = (VertexElement)((uint32_t)vertexDescriptor | (uint32_t)VertexElement::NORMAL_32_BITS);
 //			}
 //			mesh.SetVertexDescriptor(vertexDescriptor);
 //
@@ -335,13 +335,13 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 //					{
 //						if (!mesh.m_hasUv)
 //						{
-//							mesh.AddVertex(
+//							mesh.SetVertex(
 //								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
 //						}
 //						else
 //						{
 //							const Vector2& uv = tempTexturesCoords.at(textureIndex);
-//							mesh.AddVertex(
+//							mesh.SetVertex(
 //								uv.x, uv.y,
 //								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
 //						}
@@ -357,14 +357,14 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 //						const Vector3& normal = tempNormals.at(normalIndices);
 //						if (!mesh.m_hasUv)
 //						{
-//							mesh.AddVertex(
+//							mesh.SetVertex(
 //								normal.x, normal.y, normal.z,
 //								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
 //						}
 //						else
 //						{
 //							const Vector2& uv = tempTexturesCoords.at(textureIndex);
-//							mesh.AddVertex(
+//							mesh.SetVertex(
 //								uv.x, uv.y,
 //								normal.x, normal.y, normal.z,
 //								vertice.x, vertice.y, vertice.z, i, subMeshIndex);
@@ -373,7 +373,7 @@ bool WavefrontLoader::LoadFromRawData(MeshData& mesh)
 //					}
 //					if (mesh.m_hasIndices)
 //					{
-//						if (mesh.m_subMeshes[subMeshIndex]->isShortIndices)
+//						if (mesh.m_subMeshes[subMeshIndex]->usesShortIndices)
 //						{
 //							((unsigned short*)mesh.m_subMeshes[subMeshIndex]->indices)[i] = i;
 //						}

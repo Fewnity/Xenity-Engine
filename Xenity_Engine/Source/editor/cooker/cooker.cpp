@@ -254,17 +254,17 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 		bool needConvertVertexData = false;
 		if (settings.assetPlatform == AssetPlatform::AP_PSP)
 		{
-			for (const VertexElementInfo& vertexDescriptor : subMesh->m_vertexDescriptor.m_vertexElementInfos)
+			for (const VertexElementInfo& vertexDescriptor : subMesh->m_vertexDescriptor.GetVertexElementList())
 			{
 				// PSP does not support 4 floats color, convert it to a single 32 bits uint color
-				if ((vertexDescriptor.vertexElement & VertexElements::COLOR_4_FLOATS) == VertexElements::COLOR_4_FLOATS)
+				if ((vertexDescriptor.vertexElement & VertexElement::COLOR_4_FLOATS) == VertexElement::COLOR_4_FLOATS)
 				{
-					vertexDescriptorToWrite.AddVertexDescriptor(VertexElements::COLOR_32_BITS_UINT);
+					vertexDescriptorToWrite.AddVertexElement(VertexElement::COLOR_32_BITS_UINT);
 					needConvertVertexData = true;
 				}
 				else
 				{
-					vertexDescriptorToWrite.AddVertexDescriptor(vertexDescriptor.vertexElement);
+					vertexDescriptorToWrite.AddVertexElement(vertexDescriptor.vertexElement);
 				}
 			}
 		}
@@ -274,14 +274,14 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 		}
 
 		// Write vertex descriptor
-		uint32_t vertexDescriptorSize = static_cast<uint32_t>(vertexDescriptorToWrite.m_vertexElementInfos.size());
+		uint32_t vertexDescriptorSize = static_cast<uint32_t>(vertexDescriptorToWrite.GetVertexElementList().size());
 		meshFile.write((char*)&vertexDescriptorSize, sizeof(uint32_t));
-		for (const VertexElementInfo& vertexDescriptor : vertexDescriptorToWrite.m_vertexElementInfos)
+		for (const VertexElementInfo& vertexDescriptor : vertexDescriptorToWrite.GetVertexElementList())
 		{
-			meshFile.write((char*)&vertexDescriptor.vertexElement, sizeof(VertexElements));
+			meshFile.write((char*)&vertexDescriptor.vertexElement, sizeof(VertexElement));
 		}
 
-		const uint32_t newVertexMemSize = vertexDescriptorToWrite.m_vertexSize * subMesh->m_vertice_count;
+		const uint32_t newVertexMemSize = vertexDescriptorToWrite.GetVertexSize() * subMesh->m_vertice_count;
 		meshFile.write((char*)&subMesh->m_vertice_count, sizeof(uint32_t));
 		meshFile.write((char*)&subMesh->m_index_count, sizeof(uint32_t));
 		meshFile.write((char*)&newVertexMemSize, sizeof(uint32_t));
@@ -297,40 +297,40 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 			// Simply copy the data to the new buffer or convert it
 			for (uint32_t i = 0; i < subMesh->m_vertice_count; i++)
 			{
-				if (subMesh->m_vertexDescriptor.m_uvIndex != -1)
+				if (subMesh->m_vertexDescriptor.GetUvIndex() != -1)
 				{
-					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetUvOffset(),
-						(char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetUvOffset(),
-						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_uvIndex)));
+					memcpy(newMeshData + i * vertexDescriptorToWrite.GetVertexSize() + vertexDescriptorToWrite.GetUvOffset(),
+						(char*)subMesh->m_data + i * sourceVertexDescriptor.GetVertexSize() + sourceVertexDescriptor.GetUvOffset(),
+						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.GetUvIndex())));
 				}
-				if (subMesh->m_vertexDescriptor.m_colorIndex != -1)
+				if (subMesh->m_vertexDescriptor.GetColorIndex() != -1)
 				{
-					if (vertexDescriptorToWrite.GetElementFromIndex(vertexDescriptorToWrite.m_colorIndex) == VertexElements::COLOR_32_BITS_UINT)
+					if (vertexDescriptorToWrite.GetElementFromIndex(vertexDescriptorToWrite.GetColorIndex()) == VertexElement::COLOR_32_BITS_UINT)
 					{
-						const float* colorPtr = (float*)((char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetColorOffset());
+						const float* colorPtr = (float*)((char*)subMesh->m_data + i * sourceVertexDescriptor.GetVertexSize() + sourceVertexDescriptor.GetColorOffset());
 
 						const Color color = Color::CreateFromRGBAFloat(colorPtr[0], colorPtr[1], colorPtr[2], colorPtr[3]);
 
-						*(unsigned int*)(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetColorOffset()) = color.GetUnsignedIntABGR();
+						*(unsigned int*)(newMeshData + i * vertexDescriptorToWrite.GetVertexSize() + vertexDescriptorToWrite.GetColorOffset()) = color.GetUnsignedIntABGR();
 					}
 					else
 					{
-						memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetColorOffset(),
-							(char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetColorOffset(),
-							VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_colorIndex)));
+						memcpy(newMeshData + i * vertexDescriptorToWrite.GetVertexSize() + vertexDescriptorToWrite.GetColorOffset(),
+							(char*)subMesh->m_data + i * sourceVertexDescriptor.GetVertexSize() + sourceVertexDescriptor.GetColorOffset(),
+							VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.GetColorIndex())));
 					}
 				}
-				if (subMesh->m_vertexDescriptor.m_normalIndex != -1)
+				if (subMesh->m_vertexDescriptor.GetNormalIndex() != -1)
 				{
-					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetNormalOffset(),
-						(char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetNormalOffset(),
-						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_normalIndex)));
+					memcpy(newMeshData + i * vertexDescriptorToWrite.GetVertexSize() + vertexDescriptorToWrite.GetNormalOffset(),
+						(char*)subMesh->m_data + i * sourceVertexDescriptor.GetVertexSize() + sourceVertexDescriptor.GetNormalOffset(),
+						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.GetNormalIndex())));
 				}
-				if (subMesh->m_vertexDescriptor.m_positionIndex != -1)
+				if (subMesh->m_vertexDescriptor.GetPositionIndex() != -1)
 				{
-					memcpy(newMeshData + i * vertexDescriptorToWrite.m_vertexSize + vertexDescriptorToWrite.GetPositionOffset(),
-						(char*)subMesh->m_data + i * sourceVertexDescriptor.m_vertexSize + sourceVertexDescriptor.GetPositionOffset(),
-						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.m_positionIndex)));
+					memcpy(newMeshData + i * vertexDescriptorToWrite.GetVertexSize() + vertexDescriptorToWrite.GetPositionOffset(),
+						(char*)subMesh->m_data + i * sourceVertexDescriptor.GetVertexSize() + sourceVertexDescriptor.GetPositionOffset(),
+						VertexDescriptor::GetVertexElementSize(sourceVertexDescriptor.GetElementFromIndex(sourceVertexDescriptor.GetPositionIndex())));
 				}
 			}
 

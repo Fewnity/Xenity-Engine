@@ -4,7 +4,7 @@
 
 class TextRenderer;
 
-class FpsCounter : public Component
+class API FpsCounter : public Component
 {
 	bool showAverage = true;
 

@@ -8,4 +8,4 @@
 
 #include <engine/reflection/enum_utils.h>
 
-ENUM(ProjectionTypes, Perspective, Orthographic);
+ENUM(ProjectionType, Perspective, Orthographic);

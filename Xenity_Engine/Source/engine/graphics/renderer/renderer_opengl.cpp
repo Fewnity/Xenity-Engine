@@ -489,7 +489,7 @@ void RendererOpengl::DrawSubMesh(const MeshData::SubMesh& subMesh, const Materia
 	}
 	else
 	{
-		const int indiceMode = subMesh.isShortIndices ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+		const int indiceMode = subMesh.usesShortIndices ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
 		glDrawElements(primitiveType, subMesh.m_index_count, indiceMode, 0);
 	}
 
@@ -894,17 +894,17 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 		if (newSubMesh->EBO == 0)
 			newSubMesh->EBO = CreateBuffer();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newSubMesh->EBO);
-		size_t indexSize = newSubMesh->isShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
+		size_t indexSize = newSubMesh->usesShortIndices ? sizeof(unsigned short) : sizeof(unsigned int);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * newSubMesh->m_index_count, newSubMesh->GetIndices(), GL_STATIC_DRAW);
 
 		const VertexDescriptor& vertexDescriptorList = newSubMesh->m_vertexDescriptor;
-		int stride = vertexDescriptorList.m_vertexSize;
+		int stride = vertexDescriptorList.GetVertexSize();
 		if constexpr (s_UseOpenGLFixedFunctions)
 		{
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glVertexPointer(3, GL_FLOAT, stride, (void*)vertexDescriptorList.GetPositionOffset());
 
-			if (vertexDescriptorList.m_uvIndex != -1)
+			if (vertexDescriptorList.GetUvIndex() != -1)
 			{
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 				glTexCoordPointer(2, GL_FLOAT, stride, (void*)vertexDescriptorList.GetUvOffset());
@@ -914,7 +914,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 			}
 
-			if (vertexDescriptorList.m_normalIndex != -1)
+			if (vertexDescriptorList.GetNormalIndex() != -1)
 			{
 				glEnableClientState(GL_NORMAL_ARRAY);
 				glNormalPointer(GL_FLOAT, stride, (void*)vertexDescriptorList.GetNormalOffset());
@@ -924,7 +924,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 				glDisableClientState(GL_NORMAL_ARRAY);
 			}
 
-			if (vertexDescriptorList.m_colorIndex != -1)
+			if (vertexDescriptorList.GetColorIndex() != -1)
 			{
 				glEnableClientState(GL_COLOR_ARRAY);
 				glColorPointer(4, GL_FLOAT, stride, (void*)vertexDescriptorList.GetColorOffset());
@@ -939,7 +939,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 			glEnableVertexAttribArray(2);
 			glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetPositionOffset());
 
-			if (vertexDescriptorList.m_uvIndex != -1)
+			if (vertexDescriptorList.GetUvIndex() != -1)
 			{
 				glEnableVertexAttribArray(0);
 				glVertexAttribPointer(0, 2, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetUvOffset());
@@ -949,7 +949,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 				glDisableVertexAttribArray(0);
 			}
 
-			if (vertexDescriptorList.m_normalIndex != -1)
+			if (vertexDescriptorList.GetNormalIndex() != -1)
 			{
 				glEnableVertexAttribArray(1);
 				glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetNormalOffset());
@@ -959,7 +959,7 @@ void RendererOpengl::UploadMeshData(MeshData& meshData)
 				glDisableVertexAttribArray(1);
 			}
 
-			if (vertexDescriptorList.m_colorIndex != -1)
+			if (vertexDescriptorList.GetColorIndex() != -1)
 			{
 				glEnableVertexAttribArray(3);
 				glVertexAttribPointer(3, 4, GL_FLOAT, false, stride, (void*)vertexDescriptorList.GetColorOffset());

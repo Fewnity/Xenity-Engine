@@ -38,7 +38,7 @@ public:
 		~SubMesh();
 
 		/**
-		 * @brief Add a vertex to a submesh
+		 * @brief Set the data of a vertex
 		 * @param u U Axis texture coordinate
 		 * @param v V Axis texture coordinate
 		 * @param color Vertex color
@@ -48,20 +48,20 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float u, float v, const Color& color, float x, float y, float z, uint32_t vertexIndex);
+		void SetVertex(float u, float v, const Color& color, float x, float y, float z, uint32_t vertexIndex);
 
 		/**
-		 * @brief Add a vertex to a submesh
+		 * @brief Set the data of a vertex
 		 * @param x Vertex X position
 		 * @param y Vertex Y position
 		 * @param z Vertex Z position
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float x, float y, float z, uint32_t vertexIndex);
+		void SetVertex(float x, float y, float z, uint32_t vertexIndex);
 
 		/**
-		 * @brief Add a vertex to a submesh
+		 * @brief Set the data of a vertex
 		 * @param u U Axis texture coordinate
 		 * @param v V Axis texture coordinate
 		 * @param x Vertex X position
@@ -70,10 +70,10 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float u, float v, float x, float y, float z, uint32_t vertexIndex);
+		void SetVertex(float u, float v, float x, float y, float z, uint32_t vertexIndex);
 
 		/**
-		 * @brief Add a vertex to a submesh
+		 * @brief Set the data of a vertex
 		 * @param u U Axis texture coordinate
 		 * @param v V Axis texture coordinate
 		 * @param nx Normal X direction
@@ -85,10 +85,10 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex);
+		void SetVertex(float u, float v, float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex);
 
 		/**
-		 * @brief Add a vertex to a submesh
+		 * @brief Set the data of a vertex
 		 * @param nx Normal X direction
 		 * @param ny Normal Y direction
 		 * @param nz Normal Z direction
@@ -98,12 +98,27 @@ public:
 		 * @param index Vertex index
 		 * @param subMeshIndex Submesh index
 		 */
-		void AddVertex(float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex);
+		void SetVertex(float nx, float ny, float nz, float x, float y, float z, uint32_t vertexIndex);
 
-		void AddPosition(float x, float y, float z, uint32_t vertexIndex);
-		void AddNormal(float nx, float ny, float nz, uint32_t vertexIndex);
-		void AddUV(float u, float v, uint32_t vertexIndex);
-		void AddColor(const Color& color, uint32_t vertexIndex);
+		/**
+		* @brief Set the position of a vertex
+		*/
+		void SetPosition(float x, float y, float z, uint32_t vertexIndex);
+
+		/**
+		* @brief Set the normal of a vertex
+		*/
+		void SetNormal(float nx, float ny, float nz, uint32_t vertexIndex);
+
+		/**
+		* @brief Set the UV coordinates of a vertex
+		*/
+		void SetUV(float u, float v, uint32_t vertexIndex);
+
+		/**
+		* @brief Set the color of a vertex
+		*/
+		void SetColor(const Color& color, uint32_t vertexIndex);
 
 		/**
 		* @brief Set index value
@@ -115,7 +130,7 @@ public:
 			XASSERT(value < m_vertice_count, "Value is larger than vertex count");
 			XASSERT(index < m_index_count, "Value is larger than index count");
 
-			if(isShortIndices)
+			if(usesShortIndices)
 			{
 				((uint16_t*)m_indices)[index] = static_cast<uint16_t>(value);
 			}
@@ -125,6 +140,9 @@ public:
 			}
 		}
 
+		/**
+		* @brief Get indices data pointer
+		*/
 		[[nodiscard]] void* GetIndices() const
 		{
 			return m_indices;
@@ -170,7 +188,7 @@ public:
 #if defined(__PSP__)
 		bool isOnVram = true;
 #endif
-		bool isShortIndices = true;
+		bool usesShortIndices = true;
 		bool m_isQuad = false;
 	};
 
@@ -208,10 +226,10 @@ public:
 	/**
 	* @brief Alloc memory for a new submesh
 	*/
-	void CreateSubMesh(uint32_t vcount, uint32_t index_count, const VertexDescriptor& vertexDescriptorList);
+	void CreateSubMesh(uint32_t vertexCount, uint32_t indexCount, const VertexDescriptor& vertexDescriptorList);
 
 	/**
-	* @brief Get sub mesh pointer
+	* @brief Get submesh pointer
 	*/
 	[[nodiscard]] const std::unique_ptr<SubMesh>& GetSubMesh(size_t index)
 	{
@@ -219,6 +237,9 @@ public:
 		return m_subMeshes[index];
 	}
 
+	/**
+	* @brief Update the mesh after a modification on the submeshes
+	*/
 	void Update();
 
 protected:

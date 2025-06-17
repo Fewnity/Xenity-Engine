@@ -260,12 +260,12 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("2D Camera"))
 			{
 				std::shared_ptr<Camera> camera = CreateGameObjectWithComponent<Camera>("Camera");
-				camera->SetProjectionType(ProjectionTypes::Orthographic);
+				camera->SetProjectionType(ProjectionType::Orthographic);
 			}
 			if (ImGui::MenuItem("3D Camera"))
 			{
 				std::shared_ptr<Camera> camera = CreateGameObjectWithComponent<Camera>("Camera");
-				camera->SetProjectionType(ProjectionTypes::Perspective);
+				camera->SetProjectionType(ProjectionType::Perspective);
 			}
 			ImGui::EndMenu();
 		}

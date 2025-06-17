@@ -648,20 +648,20 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	// Set vertex array attributes
 	if(lastOffset != subMesh.positionOffset)
 	{
-		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, subMesh.positionOffset, vertexDescriptorList.m_vertexSize, 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
-		if (vertexDescriptorList.m_uvIndex != -1)
+		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, subMesh.positionOffset, vertexDescriptorList.GetVertexSize(), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+		if (vertexDescriptorList.GetUvIndex() != -1)
 		{
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, subMesh.uvOffset, vertexDescriptorList.m_vertexSize, 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_TEX0, 0, subMesh.uvOffset, vertexDescriptorList.GetVertexSize(), 2, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		}
 
-		if (vertexDescriptorList.m_normalIndex != -1)
+		if (vertexDescriptorList.GetNormalIndex() != -1)
 		{
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_NORMAL, 0, subMesh.normalOffset, vertexDescriptorList.m_vertexSize, 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_NORMAL, 0, subMesh.normalOffset, vertexDescriptorList.GetVertexSize(), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		}
 
-		if (vertexDescriptorList.m_colorIndex != -1)
+		if (vertexDescriptorList.GetColorIndex() != -1)
 		{
-			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_COLOR0, 0, subMesh.colorOffset, vertexDescriptorList.m_vertexSize, 4, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
+			rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_COLOR0, 0, subMesh.colorOffset, vertexDescriptorList.GetVertexSize(), 4, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		}
 		else 
 		{
@@ -697,7 +697,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	//	GCM_USER_CLIP_PLANE_DISABLE);
 
 	//rsxInvalidateVertexCache(context);
-	const int indiceMode = subMesh.isShortIndices ? GCM_INDEX_TYPE_16B : GCM_INDEX_TYPE_32B;
+	const int indiceMode = subMesh.usesShortIndices ? GCM_INDEX_TYPE_16B : GCM_INDEX_TYPE_32B;
 	rsxDrawIndexArray(context, GCM_TYPE_TRIANGLES, subMesh.indicesOffset, subMesh.m_index_count, indiceMode, GCM_LOCATION_RSX);
 	rsxSetDepthWriteEnable(context, GCM_TRUE);
 }

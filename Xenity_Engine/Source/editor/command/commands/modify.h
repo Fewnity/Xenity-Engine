@@ -103,8 +103,6 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 	{
 		ReflectionUtils::JsonToVariable(kv.value(), std::ref(*valuePtr), reflectiveDataToDraw.currentEntry);
 	}
-	Debug::Print("lastValue2" + lastValue2.dump(3));
-	Debug::Print("newValue2" + newValue2.dump(3));
 
 	// Remove all other variables from the json
 	//int itemCount = temp.items().begin().key().size();
@@ -131,7 +129,6 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 template<typename T>
 inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valueToSet, bool isUndo)
 {
-	Debug::Print("SetValue" + valueToSet.dump(3));
 	bool hasBeenSet = false;
 	if (targetId != 0)
 	{
@@ -179,11 +176,6 @@ inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valu
 	else
 	{
 		ReflectionUtils::JsonToVariable(valueToSet["Values"][variableName], std::ref(*valuePtr), reflectiveEntry);
-	}
-
-	if (hasBeenSet && isUndo)
-	{
-		Debug::Print("Undo value changed in Inspector");
 	}
 }
 
@@ -286,11 +278,6 @@ inline void InspectorChangeValueCommand<U, T>::SetValue(T valueToSet, bool isUnd
 	{
 		*valuePtr = valueToSet;
 		//hasBeenSet = true;
-	}
-
-	if (hasBeenSet && isUndo)
-	{
-		Debug::Print("Undo value changed in Inspector");
 	}
 }
 

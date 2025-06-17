@@ -13,7 +13,7 @@
 #include <engine/math/vector3.h>
 #include <engine/math/vector2.h>
 #include <engine/math/vector2_int.h>
-#include "camera_projection_types.h"
+#include "camera_projection_type.h"
 
 struct Plane
 {
@@ -179,7 +179,7 @@ public:
 	* @brief Set projection type
 	* @param type Projection type
 	*/
-	void SetProjectionType(const ProjectionTypes type);
+	void SetProjectionType(const ProjectionType type);
 
 	/**
 	* @brief Get projection matrix
@@ -192,7 +192,7 @@ public:
 	/**
 	* @brief Get projection type
 	*/
-	[[nodiscard]] ProjectionTypes GetProjectionType() const
+	[[nodiscard]] ProjectionType GetProjectionType() const
 	{
 		return m_projectionType;
 	}
@@ -332,7 +332,7 @@ protected:
 	float m_projectionSize = 5; // For 2D
 	float m_nearClippingPlane = 0.3f;
 	float m_farClippingPlane = 1000;
-	ProjectionTypes m_projectionType = ProjectionTypes::Perspective;
+	ProjectionType m_projectionType = ProjectionType::Perspective;
 
 	unsigned int m_depthframebuffer = -1;
 	bool m_needFrameBufferUpdate = true;

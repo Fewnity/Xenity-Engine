@@ -348,7 +348,7 @@ void Graphics::Draw()
 					s_currentMaterial = nullptr;
 				}
 
-				if (usedCamera->GetProjectionType() == ProjectionTypes::Perspective)
+				if (usedCamera->GetProjectionType() == ProjectionType::Perspective)
 				{
 					Engine::GetRenderer().SetProjection3D(usedCamera->GetFov(), usedCamera->GetNearClippingPlane(), usedCamera->GetFarClippingPlane(), usedCamera->GetAspectRatio());
 				}
@@ -938,7 +938,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 			selectedGoRot = Quaternion::Identity();
 
 		float dist = 1;
-		if (usedCamera->GetProjectionType() == ProjectionTypes::Perspective)
+		if (usedCamera->GetProjectionType() == ProjectionType::Perspective)
 			dist = Vector3::Distance(selectedGoPos, cameraPosition);
 		else
 			dist = usedCamera->GetProjectionSize() * 1.5f;

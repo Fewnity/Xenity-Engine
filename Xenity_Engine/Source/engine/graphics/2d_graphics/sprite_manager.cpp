@@ -37,15 +37,15 @@ void SpriteManager::Init()
 	// Create sprite mesh
 	s_spriteMeshData = MeshData::MakeMeshDataForFile();
 	VertexDescriptor spriteDescriptor;
-	spriteDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
-	spriteDescriptor.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
+	spriteDescriptor.AddVertexElement(VertexElement::UV_32_BITS);
+	spriteDescriptor.AddVertexElement(VertexElement::POSITION_32_BITS);
 	s_spriteMeshData->CreateSubMesh(4, 6, spriteDescriptor);
 
 	const std::unique_ptr<MeshData::SubMesh>& subMesh = s_spriteMeshData->m_subMeshes[0];
-	subMesh->AddVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0);
-	subMesh->AddVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1);
-	subMesh->AddVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2);
-	subMesh->AddVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3);
+	subMesh->SetVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0);
+	subMesh->SetVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1);
+	subMesh->SetVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2);
+	subMesh->SetVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3);
 
 	subMesh->SetIndex(0, 0);
 	subMesh->SetIndex(1, 2);
@@ -59,16 +59,16 @@ void SpriteManager::Init()
 	// Create sprite mesh with normals
 	s_spriteMeshDataWithNormals = MeshData::MakeMeshDataForFile();
 	VertexDescriptor withNormalsDescriptor;
-	withNormalsDescriptor.AddVertexDescriptor(VertexElements::UV_32_BITS);
-	withNormalsDescriptor.AddVertexDescriptor(VertexElements::NORMAL_32_BITS);
-	withNormalsDescriptor.AddVertexDescriptor(VertexElements::POSITION_32_BITS);
+	withNormalsDescriptor.AddVertexElement(VertexElement::UV_32_BITS);
+	withNormalsDescriptor.AddVertexElement(VertexElement::NORMAL_32_BITS);
+	withNormalsDescriptor.AddVertexElement(VertexElement::POSITION_32_BITS);
 	s_spriteMeshDataWithNormals->CreateSubMesh(4, 6, withNormalsDescriptor);
 
 	const std::unique_ptr<MeshData::SubMesh>& subMeshWithNormals = s_spriteMeshDataWithNormals->m_subMeshes[0];
-	subMeshWithNormals->AddVertex(1.0f, 1.0f, 0, 0, -1, -0.5f, -0.5f, 0.0f, 0);
-	subMeshWithNormals->AddVertex(0.0f, 1.0f, 0, 0, -1, 0.5f, -0.5f, 0.0f, 1);
-	subMeshWithNormals->AddVertex(0.0f, 0.0f, 0, 0, -1, 0.5f, 0.5f, 0.0f, 2);
-	subMeshWithNormals->AddVertex(1.0f, 0.0f, 0, 0, -1, -0.5f, 0.5f, 0.0f, 3);
+	subMeshWithNormals->SetVertex(1.0f, 1.0f, 0, 0, -1, -0.5f, -0.5f, 0.0f, 0);
+	subMeshWithNormals->SetVertex(0.0f, 1.0f, 0, 0, -1, 0.5f, -0.5f, 0.0f, 1);
+	subMeshWithNormals->SetVertex(0.0f, 0.0f, 0, 0, -1, 0.5f, 0.5f, 0.0f, 2);
+	subMeshWithNormals->SetVertex(1.0f, 0.0f, 0, 0, -1, -0.5f, 0.5f, 0.0f, 3);
 
 	subMeshWithNormals->SetIndex(0, 0);
 	subMeshWithNormals->SetIndex(1, 2);
