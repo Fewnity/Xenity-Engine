@@ -79,7 +79,7 @@ if(socket)
 
 ---
 ### GetIncommingData
-Return recieved data since the last GetIncommingData call (updated every frame).
+Return recieved data since the last GetIncommingData call.
 ```cpp
 std::string GetIncommingData()
 ```

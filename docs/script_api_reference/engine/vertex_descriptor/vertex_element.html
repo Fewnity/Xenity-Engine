@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>BillboardRenderer - Xenity Engine</title>
+        <title>VertexElement - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,21 +234,38 @@
 }
 
 </style>
-<h1 id="billboardrenderer"><a class="header" href="#billboardrenderer">BillboardRenderer</a></h1>
+<h1 id="vertexelement"><a class="header" href="#vertexelement">VertexElement</a></h1>
 <p>Add this in your code:</p>
-<pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/billboard_renderer.h&gt;
+<pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
-
+<p>Enum of all different vertex element types.</p>
+<h2 id="values"><a class="header" href="#values">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>NONE</td><td>Default value, no selected element</td></tr>
+<tr><td>POSITION_32_BITS</td><td>Float position</td></tr>
+<tr><td>POSITION_16_BITS</td><td>Short position, PSP only, Not tested, may not work</td></tr>
+<tr><td>POSITION_8_BITS</td><td>Byte position, PSP only, Not tested, may not work</td></tr>
+<tr><td>NORMAL_32_BITS</td><td>Float normal</td></tr>
+<tr><td>NORMAL_16_BITS</td><td>Short normal, PSP only, Not tested, may not work</td></tr>
+<tr><td>NORMAL_8_BITS</td><td>Byte normal, PSP only, Not tested, may not work</td></tr>
+<tr><td>UV_32_BITS</td><td>Float UV</td></tr>
+<tr><td>UV_16_BITS</td><td>Short UV, PSP only, Not tested, may not work</td></tr>
+<tr><td>UV_8_BITS</td><td>Byte UV, PSP only, Not tested, may not work</td></tr>
+<tr><td>COLOR_4_FLOATS</td><td>Float color</td></tr>
+<tr><td>COLOR_32_BITS_UINT</td><td>Unsigned int32 color, PSP only</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/components/audio_source.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/vertex_descriptor/vertex_descriptor.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/components/box_collider.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../how_to_compile_editor.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,11 +275,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/components/audio_source.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/vertex_descriptor/vertex_descriptor.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/components/box_collider.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../how_to_compile_editor.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

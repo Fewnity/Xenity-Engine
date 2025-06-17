@@ -236,7 +236,7 @@
 </style>
 <h1 id="meshdata"><a class="header" href="#meshdata">MeshData</a></h1>
 <p>Add this in your code:</p>
-<pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/skybox.h&gt;
+<pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/mesh_data.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
 <p>Asset that stores all the data of a mesh.</p>
@@ -276,6 +276,48 @@ const Vector3&amp; maxPos = meshData-&gt;GetMaxBoundingBox();
 <p>Code sample:</p>
 <pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; meshData; // Filled variable
 const Sphere&amp; meshSphere = meshData-&gt;GetBoundingSphere();
+</code></pre>
+<hr />
+<h3 id="createsubmesh"><a class="header" href="#createsubmesh">CreateSubMesh</a></h3>
+<p>Create a sub mesh and allocate memory for it.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>vertexCount</code>: The number of vertices allocated</li>
+<li><code>indexCount</code>: The number of indices allocated</li>
+<li><code>vertexDescriptorList</code>: The vertex data structure</li>
+</ul>
+<pre><code class="language-cpp">void CreateSubMesh(uint32_t verticeCount, uint32_t index_count, const VertexDescriptor&amp; vertexDescriptorList)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; newMesh = MeshData::CreateMeshData();
+
+VertexDescriptor descriptor;
+descriptor.AddVertexElement(VertexElements::UV_32_BITS);
+descriptor.AddVertexElement(VertexElements::POSITION_32_BITS);
+
+newMesh-&gt;CreateSubMesh(6,0, descriptor);
+</code></pre>
+<hr />
+<h3 id="getsubmesh"><a class="header" href="#getsubmesh">GetSubMesh</a></h3>
+<p>Get a submesh by index.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>index</code>: Index of the submesh</li>
+</ul>
+<pre><code class="language-cpp">const std::unique_ptr&lt;SubMesh&gt;&amp; GetSubMesh(size_t index)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;MeshData&gt; meshData; // Filled variable
+const std::unique_ptr&lt;SubMesh&gt;&amp; subMesh0 = meshData-&gt;GetSubMesh(0);
+const std::unique_ptr&lt;SubMesh&gt;&amp; subMesh2 = meshData-&gt;GetSubMesh(2);
+</code></pre>
+<hr />
+<h3 id="update"><a class="header" href="#update">Update</a></h3>
+<p>Update the mesh after a modification on the submeshes.</p>
+<pre><code class="language-cpp">void Update()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">
 </code></pre>
 
                     </main>

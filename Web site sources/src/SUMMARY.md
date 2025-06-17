@@ -63,7 +63,7 @@
             - [BillboardRenderer](./script_api_reference/engine/components/billboard_renderer.md)
             - [BoxCollider](./script_api_reference/engine/components/box_collider.md)
             - [Camera](./script_api_reference/engine/components/camera.md)
-                - [ProjectionTypes Enum](./script_api_reference/engine/components/projection_type_enum.md)
+                - [ProjectionType Enum](./script_api_reference/engine/components/projection_type_enum.md)
             - [Canvas](./script_api_reference/engine/components/canvas.md)
             - [FpsCounter](./script_api_reference/engine/components/fps_counter.md)
             - [Light](./script_api_reference/engine/components/light.md)
@@ -128,6 +128,9 @@
 
         - [Utils](./script_api_reference/engine/utils/utils.md)
             - [EndianUtils](./script_api_reference/engine/utils/endian_utils/endian_utils.md)
+
+        - [VertexDescriptor](./script_api_reference/engine/vertex_descriptor/vertex_descriptor.md)
+            - [VertexElement](./script_api_reference/engine/vertex_descriptor/vertex_element.md)
 
 - [How to compile the editor](./how_to_compile_editor.md)
 

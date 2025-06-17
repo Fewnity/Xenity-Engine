@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>BillboardRenderer - Xenity Engine</title>
+        <title>VertexDescriptor - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,21 +234,136 @@
 }
 
 </style>
-<h1 id="billboardrenderer"><a class="header" href="#billboardrenderer">BillboardRenderer</a></h1>
+<h1 id="vertexdescriptor"><a class="header" href="#vertexdescriptor">VertexDescriptor</a></h1>
 <p>Add this in your code:</p>
-<pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/billboard_renderer.h&gt;
+<pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class that store the data structure of a vertex.</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static methods</a></h2>
+<hr />
+<h3 id="getvertexelementsize"><a class="header" href="#getvertexelementsize">GetVertexElementSize</a></h3>
+<p>Get the size in bytes of a vertex element.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>vertexElement</code>: Vertex element to check</li>
+</ul>
+<pre><code class="language-cpp">uint16_t GetVertexElementSize(VertexElement vertexElement)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">uint16_t elementSize = VertexDescriptor::GetVertexElementSize(VertexElement::POSITION_32_BITS);
+</code></pre>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="addvertexelement"><a class="header" href="#addvertexelement">AddVertexElement</a></h3>
+<p>Add a vertex element to the descriptor.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>vertexElement</code>: Vertex element to add</li>
+</ul>
+<pre><code class="language-cpp">void AddVertexElement(VertexElement vertexElement)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">VertexDescriptor descriptor;
+descriptor.AddVertexElement(VertexElement::POSITION_32_BITS);
+</code></pre>
+<hr />
+<h3 id="getelementfromindex"><a class="header" href="#getelementfromindex">GetElementFromIndex</a></h3>
+<p>Add a vertex element to the descriptor.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>index</code>: Index of the vertex element to get</li>
+</ul>
+<pre><code class="language-cpp">VertexElement GetElementFromIndex(int32_t index) const
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">VertexDescriptor descriptor;
+descriptor.AddVertexElement(VertexElement::NORMAL_32_BITS);
+descriptor.AddVertexElement(VertexElement::POSITION_32_BITS);
+
+VertexElement normalElement = descriptor.GetElementFromIndex(0);
+VertexElement positionElement = descriptor.GetElementFromIndex(1);
+</code></pre>
+<hr />
+<h3 id="getoffsetfromindex"><a class="header" href="#getoffsetfromindex">GetOffsetFromIndex</a></h3>
+<p>Get the offset in memory of the vertex element from the index.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>index</code>: Index of the vertex element</li>
+</ul>
+<pre><code class="language-cpp">uint32_t GetOffsetFromIndex(int32_t index) const
+</code></pre>
+<hr />
+<h3 id="getpositionindex"><a class="header" href="#getpositionindex">GetPositionIndex</a></h3>
+<p>Get the index of the position vertex element.<br>
+Return -1 if there is no position vertex element.</p>
+<pre><code class="language-cpp">```cpp
+uint32_t GetPositionIndex() const
+</code></pre>
+<hr />
+<h3 id="getnormalindex"><a class="header" href="#getnormalindex">GetNormalIndex</a></h3>
+<p>Get the index of the normal vertex element.<br>
+Return -1 if there is no normal vertex element.</p>
+<pre><code class="language-cpp">```cpp
+uint32_t GetNormalIndex() const
+</code></pre>
+<hr />
+<h3 id="getuvindex"><a class="header" href="#getuvindex">GetUvIndex</a></h3>
+<p>Get the index of the UV vertex element.<br>
+Return -1 if there is no UV vertex element.</p>
+<pre><code class="language-cpp">```cpp
+uint32_t GetUvIndex() const
+</code></pre>
+<hr />
+<h3 id="getcolorindex"><a class="header" href="#getcolorindex">GetColorIndex</a></h3>
+<p>Get the index of the color vertex element.<br>
+Return -1 if there is no color vertex element.</p>
+<pre><code class="language-cpp">uint32_t GetColorIndex() const
+</code></pre>
+<hr />
+<h3 id="getpositionoffset"><a class="header" href="#getpositionoffset">GetPositionOffset</a></h3>
+<p>Get the offset in memory of the position vertex element.<br>
+Do not use if there is no position vertex element.</p>
+<pre><code class="language-cpp">uint32_t GetPositionOffset() const
+</code></pre>
+<hr />
+<h3 id="getnormaloffset"><a class="header" href="#getnormaloffset">GetNormalOffset</a></h3>
+<p>Get the offset in memory of the normal vertex element.<br>
+Do not use if there is no normal vertex element.</p>
+<pre><code class="language-cpp">uint32_t GetNormalOffset() const
+</code></pre>
+<hr />
+<h3 id="getuvoffset"><a class="header" href="#getuvoffset">GetUvOffset</a></h3>
+<p>Get the offset in memory of the UV vertex element.<br>
+Do not use if there is no UV vertex element.</p>
+<pre><code class="language-cpp">uint32_t GetUvOffset() const
+</code></pre>
+<hr />
+<h3 id="getcoloroffset"><a class="header" href="#getcoloroffset">GetColorOffset</a></h3>
+<p>Get the offset in memory of the color vertex element.<br>
+Do not use if there is no color vertex element.</p>
+<pre><code class="language-cpp">uint32_t GetColorOffset() const
+</code></pre>
+<hr />
+<h3 id="getvertexelementlist"><a class="header" href="#getvertexelementlist">GetVertexElementList</a></h3>
+<p>Get the list of all vertex elements.</p>
+<pre><code class="language-cpp">const std::vector&lt;VertexElementInfo&gt;&amp; GetVertexElementList() const
+</code></pre>
+<hr />
+<h3 id="getvertexsize"><a class="header" href="#getvertexsize">GetVertexSize</a></h3>
+<p>Get the size in byte of a vertex.</p>
+<pre><code class="language-cpp">uint16_t GetVertexSize() const
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/components/audio_source.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/utils/endian_utils/endian_utils.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/components/box_collider.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/vertex_descriptor/vertex_element.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,11 +373,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/components/audio_source.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/utils/endian_utils/endian_utils.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/components/box_collider.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/vertex_descriptor/vertex_element.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

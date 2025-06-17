@@ -28,7 +28,7 @@ Time::SetTimeScale(0.5f);
 
 // 2 seconds later...
 
-float timeB = Time::GetTime(); // = 4.0f
+float timeB = Time::GetTime(); // = 1.0f
 ```
 
 ---
@@ -62,7 +62,7 @@ Code sample:
 float timeA = Time::GetDeltaTime(); // = 0.0166f
 
 // Game running at 60 fps with a time scale of 0.5f
-float timeA = Time::GetDeltaTime(); // = 0.0333f
+float timeA = Time::GetDeltaTime(); // = 0.0083f
 ```
 
 ---

@@ -1,6 +1,6 @@
 # Presentation of Xenity Engine
 
-Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows.
+Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows. Made in C++ 17.
 
 [GitHub page here!](https://github.com/Fewnity/Xenity-Engine)
 
@@ -20,7 +20,7 @@ _It's pink but you can change the color!_
 ✔️ | PlayStation 3
 🚧 | Linux (The UI is a bit glitchy, missing audio and build system)
 
-Features:
+### Features:
 
 - [X] Basic 2D
 - [X] Basic 3D
@@ -34,8 +34,6 @@ Features:
 - [X] C++ Hot Reloading
 - [ ] C++ Plugins (Started but not finished)
 
-Made in C++ 17.
-
 > [!WARNING]
 > The engine is not perfect. So you may encounter problems during game development like:
 > - Deleting Meta files will have repercussions on your project. Variables that reference the files will be emptied.
@@ -43,3 +41,11 @@ Made in C++ 17.
 > - Audio works "fine" with 44100Hz but on PS3 you need to use 48000Hz audio.
 
 You can see all limitations [here](./limitations.md).
+
+### Contact:
+
+**Discord:** fewnity
+
+**Email:** fewnity@gmail.com
+
+**LinkedIn:** [https://www.linkedin.com/in/gregory-machefer-grimaud/](https://www.linkedin.com/in/gregory-machefer-grimaud/)
