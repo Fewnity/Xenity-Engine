@@ -239,6 +239,139 @@
 <pre><code class="language-cpp">#include &lt;engine/lighting/lighting.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component to produce light</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>color</td><td>Color</td><td>Color of the light</td></tr>
+</tbody></table>
+</div>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="setuppointlight"><a class="header" href="#setuppointlight">SetupPointLight</a></h3>
+<p>Setup the light as a point light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+<li><code>range</code>: Light Range (Greater or equals to 0)</li>
+</ul>
+<pre><code class="language-cpp">void SetupPointLight(const Color&amp; color, float intensity, const float range)
+</code></pre>
+<hr />
+<h3 id="setupdirectionallight"><a class="header" href="#setupdirectionallight">SetupDirectionalLight</a></h3>
+<p>Setup the light as a directional light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+</ul>
+<pre><code class="language-cpp">void SetupDirectionalLight(const Color&amp; color, float intensity)
+</code></pre>
+<hr />
+<h3 id="setupambientlight"><a class="header" href="#setupambientlight">SetupAmbientLight</a></h3>
+<p>Setup the light as an ambient light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+</ul>
+<pre><code class="language-cpp">void SetupAmbientLight(const Color&amp; color, const float intensity)
+</code></pre>
+<hr />
+<h3 id="setupspotlight"><a class="header" href="#setupspotlight">SetupSpotLight</a></h3>
+<p>Setup the light as a spot light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+<li><code>range</code>: Light Range (Greater or equals to 0)</li>
+<li><code>angle</code>: Spot angle [0;90]</li>
+</ul>
+<pre><code class="language-cpp">void SetupSpotLight(const Color&amp; color, const float intensity, const float range, const float angle)
+</code></pre>
+<hr />
+<h3 id="setupspotlight-1"><a class="header" href="#setupspotlight-1">SetupSpotLight</a></h3>
+<p>Setup the light as a spot light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+<li><code>range</code>: Light Range (Greater or equals to 0)</li>
+<li><code>angle</code>: Spot angle [0;90]</li>
+<li><code>smoothness</code>: Spot smoothness [0;1]</li>
+</ul>
+<pre><code class="language-cpp">void SetupSpotLight(const Color&amp; color, const float intensity, const float range, const float angle, const float smoothness)
+</code></pre>
+<hr />
+<h3 id="setupspotlight-2"><a class="header" href="#setupspotlight-2">SetupSpotLight</a></h3>
+<p>Set light range.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Light range (Greater or equals to 0)</li>
+</ul>
+<pre><code class="language-cpp">void SetRange(float value)
+</code></pre>
+<hr />
+<h3 id="setspotangle"><a class="header" href="#setspotangle">SetSpotAngle</a></h3>
+<p>Set spot angle.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Spot angle [0;90]</li>
+</ul>
+<pre><code class="language-cpp">void SetSpotAngle(float angle)
+</code></pre>
+<hr />
+<h3 id="setspotsmoothness"><a class="header" href="#setspotsmoothness">SetSpotSmoothness</a></h3>
+<p>Set spot smoothness.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Spot smoothness [0;1]</li>
+</ul>
+<pre><code class="language-cpp">void SetSpotSmoothness(float smoothness)
+</code></pre>
+<hr />
+<h3 id="gettype"><a class="header" href="#gettype">GetType</a></h3>
+<p>Get light type.</p>
+<pre><code class="language-cpp">LightType GetType() const
+</code></pre>
+<hr />
+<h3 id="gettype-1"><a class="header" href="#gettype-1">GetType</a></h3>
+<p>Set light type.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>type</code>: Light type</li>
+</ul>
+<pre><code class="language-cpp">void SetType(LightType type)
+</code></pre>
+<hr />
+<h3 id="getintensity"><a class="header" href="#getintensity">GetIntensity</a></h3>
+<p>Get light intensity.</p>
+<pre><code class="language-cpp">float GetIntensity() const
+</code></pre>
+<hr />
+<h3 id="setintensity"><a class="header" href="#setintensity">SetIntensity</a></h3>
+<p>Set light intensity.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>intensity</code>: Light intensity</li>
+</ul>
+<pre><code class="language-cpp">void SetIntensity(float intensity)
+</code></pre>
+<hr />
+<h3 id="getoldconsolecompatibility"><a class="header" href="#getoldconsolecompatibility">GetOldConsoleCompatibility</a></h3>
+<p>Get if the light should simulate lighting from old consoles (To get the same behavior as PSP)y.</p>
+<pre><code class="language-cpp">bool GetOldConsoleCompatibility() const
+</code></pre>
+<hr />
+<h3 id="setoldconsolecompatibility"><a class="header" href="#setoldconsolecompatibility">SetOldConsoleCompatibility</a></h3>
+<p>Set if the light should simulate lighting from old consoles (To get the same behavior as PSP).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: New value</li>
+</ul>
+<pre><code class="language-cpp">void SetOldConsoleCompatibility(bool value)
+</code></pre>
 
                     </main>
 

@@ -239,6 +239,85 @@
 <pre><code class="language-cpp">#include &lt;engine/audio/audio_source.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component to play audio clips.</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="play"><a class="header" href="#play">Play</a></h3>
+<p>Play audio.</p>
+<pre><code class="language-cpp">void Play()
+</code></pre>
+<hr />
+<h3 id="resume"><a class="header" href="#resume">Resume</a></h3>
+<p>Resume audio.</p>
+<pre><code class="language-cpp">void Resume()
+</code></pre>
+<hr />
+<h3 id="pause"><a class="header" href="#pause">Pause</a></h3>
+<p>Pause audio.</p>
+<pre><code class="language-cpp">void Pause()
+</code></pre>
+<hr />
+<h3 id="stop"><a class="header" href="#stop">Stop</a></h3>
+<p>Stop audio.</p>
+<pre><code class="language-cpp">void Stop()
+</code></pre>
+<hr />
+<h3 id="setvolume"><a class="header" href="#setvolume">SetVolume</a></h3>
+<p>Set volume.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>volume</code>: New volume value</li>
+</ul>
+<pre><code class="language-cpp">void SetVolume(float volume)
+</code></pre>
+<hr />
+<h3 id="setpanning"><a class="header" href="#setpanning">SetPanning</a></h3>
+<p>Set panning.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>panning</code>: New panning value</li>
+</ul>
+<pre><code class="language-cpp">void SetPanning(float panning)
+</code></pre>
+<hr />
+<h3 id="setpanning-1"><a class="header" href="#setpanning-1">SetPanning</a></h3>
+<p>Set is looping.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isLooping</code>: New is looping value</li>
+</ul>
+<pre><code class="language-cpp">void SetLoop(bool isLooping)
+</code></pre>
+<hr />
+<h3 id="getvolume"><a class="header" href="#getvolume">GetVolume</a></h3>
+<p>Get volume.</p>
+<pre><code class="language-cpp">float GetVolume() const
+</code></pre>
+<hr />
+<h3 id="getpanning"><a class="header" href="#getpanning">GetPanning</a></h3>
+<p>Get panning.</p>
+<pre><code class="language-cpp">float GetPanning() const
+</code></pre>
+<hr />
+<h3 id="isplaying"><a class="header" href="#isplaying">IsPlaying</a></h3>
+<p>Get is playing.</p>
+<pre><code class="language-cpp">bool IsPlaying() const
+</code></pre>
+<hr />
+<h3 id="islooping"><a class="header" href="#islooping">IsLooping</a></h3>
+<p>Get is looping.</p>
+<pre><code class="language-cpp">bool IsLooping() const
+</code></pre>
+<hr />
+<h3 id="getaudioclip"><a class="header" href="#getaudioclip">GetAudioClip</a></h3>
+<p>Get audio clip.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;AudioClip&gt;&amp; GetAudioClip()
+</code></pre>
+<hr />
+<h3 id="setaudioclip"><a class="header" href="#setaudioclip">SetAudioClip</a></h3>
+<p>Set audio clip.</p>
+<pre><code class="language-cpp">void SetAudioClip(const std::shared_ptr&lt;AudioClip&gt;&amp; audioClip)
+</code></pre>
 
                     </main>
 

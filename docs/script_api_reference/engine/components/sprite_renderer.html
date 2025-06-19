@@ -239,6 +239,50 @@
 <pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/sprite_renderer.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component that renders a sprite with a texture and material</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public Methods</a></h2>
+<hr />
+<h3 id="getcolor"><a class="header" href="#getcolor">GetColor</a></h3>
+<p>Get the color of the sprite.</p>
+<pre><code class="language-cpp">const Color&amp; GetColor() const
+</code></pre>
+<hr />
+<h3 id="setcolor"><a class="header" href="#setcolor">SetColor</a></h3>
+<p>Set the color of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: New color</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; color)
+</code></pre>
+<hr />
+<h3 id="getmaterial"><a class="header" href="#getmaterial">GetMaterial</a></h3>
+<p>Get the material of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Material&gt;&amp; GetMaterial() const
+</code></pre>
+<hr />
+<h3 id="setmaterial"><a class="header" href="#setmaterial">SetMaterial</a></h3>
+<p>Set the material of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>material</code>: New material</li>
+</ul>
+<pre><code class="language-cpp">void SetMaterial(const std::shared_ptr&lt;Material&gt;&amp; material)
+</code></pre>
+<hr />
+<h3 id="gettexture"><a class="header" href="#gettexture">GetTexture</a></h3>
+<p>Get the texture of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetTexture() const
+</code></pre>
+<hr />
+<h3 id="settexture"><a class="header" href="#settexture">SetTexture</a></h3>
+<p>Set the texture of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>texture</code>: New texture</li>
+</ul>
+<pre><code class="language-cpp">void SetTexture(const std::shared_ptr&lt;Texture&gt;&amp; texture)
+</code></pre>
 
                     </main>
 

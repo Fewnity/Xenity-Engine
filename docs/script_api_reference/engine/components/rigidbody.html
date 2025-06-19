@@ -239,6 +239,190 @@
 <pre><code class="language-cpp">#include &lt;engine/physics/rigidbody.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component to add physics to the GameObject</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public Methods</a></h2>
+<hr />
+<h3 id="getvelocity"><a class="header" href="#getvelocity">GetVelocity</a></h3>
+<p>Get the velocity.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetVelocity() const
+</code></pre>
+<hr />
+<h3 id="setvelocity"><a class="header" href="#setvelocity">SetVelocity</a></h3>
+<p>Set the velocity.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>velocity</code>: New velocity</li>
+</ul>
+<pre><code class="language-cpp">void SetVelocity(const Vector3&amp; velocity)
+</code></pre>
+<hr />
+<h3 id="gettorque"><a class="header" href="#gettorque">GetTorque</a></h3>
+<p>Get the torque applied to the rigidbody.</p>
+<pre><code class="language-cpp">Vector3 GetTorque() const
+</code></pre>
+<hr />
+<h3 id="applytorque"><a class="header" href="#applytorque">ApplyTorque</a></h3>
+<p>Apply torque.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>torque</code>: Torque to apply</li>
+</ul>
+<pre><code class="language-cpp">void ApplyTorque(const Vector3&amp; torque)
+</code></pre>
+<hr />
+<h3 id="getangularvelocity"><a class="header" href="#getangularvelocity">GetAngularVelocity</a></h3>
+<p>Get the angular velocity.</p>
+<pre><code class="language-cpp">Vector3 GetAngularVelocity() const
+</code></pre>
+<hr />
+<h3 id="setangularvelocity"><a class="header" href="#setangularvelocity">SetAngularVelocity</a></h3>
+<p>Set the angular velocity.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>angularVelocity</code>: Angular velocity to set</li>
+</ul>
+<pre><code class="language-cpp">void SetAngularVelocity(const Vector3&amp; angularVelocity)
+</code></pre>
+<hr />
+<h3 id="addangularvelocity"><a class="header" href="#addangularvelocity">AddAngularVelocity</a></h3>
+<p>Add angular velocity.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>angularVelocity</code>: Angular velocity to add</li>
+</ul>
+<pre><code class="language-cpp">void AddAngularVelocity(const Vector3&amp; angularVelocity)
+</code></pre>
+<hr />
+<h3 id="getdrag"><a class="header" href="#getdrag">GetDrag</a></h3>
+<p>Get the drag value.</p>
+<pre><code class="language-cpp">float GetDrag() const
+</code></pre>
+<hr />
+<h3 id="setdrag"><a class="header" href="#setdrag">SetDrag</a></h3>
+<p>Set the drag value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>drag</code>: Drag value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetDrag(float drag)
+</code></pre>
+<hr />
+<h3 id="getangulardrag"><a class="header" href="#getangulardrag">GetAngularDrag</a></h3>
+<p>Get the angular drag value.</p>
+<pre><code class="language-cpp">float GetAngularDrag() const
+</code></pre>
+<hr />
+<h3 id="setangulardrag"><a class="header" href="#setangulardrag">SetAngularDrag</a></h3>
+<p>Set the angular drag value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>angularDrag</code>: Angular drag value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetAngularDrag(float angularDrag)
+</code></pre>
+<hr />
+<h3 id="getbounce"><a class="header" href="#getbounce">GetBounce</a></h3>
+<p>Get the bounce value.</p>
+<pre><code class="language-cpp">float GetBounce() const
+</code></pre>
+<hr />
+<h3 id="setbounce"><a class="header" href="#setbounce">SetBounce</a></h3>
+<p>Set the bounce value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>bounce</code>: Bounce value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetBounce(float bounce)
+</code></pre>
+<hr />
+<h3 id="getgravitymultiplier"><a class="header" href="#getgravitymultiplier">GetGravityMultiplier</a></h3>
+<p>Get the gravity multiplier.</p>
+<pre><code class="language-cpp">float GetGravityMultiplier() const
+</code></pre>
+<hr />
+<h3 id="setgravitymultiplier"><a class="header" href="#setgravitymultiplier">SetGravityMultiplier</a></h3>
+<p>Set the gravity multiplier.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>gravityMultiplier</code>: Gravity multiplier value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetGravityMultiplier(float gravityMultiplier)
+</code></pre>
+<hr />
+<h3 id="isstatic"><a class="header" href="#isstatic">IsStatic</a></h3>
+<p>Get if the rigidbody is static.</p>
+<pre><code class="language-cpp">float IsStatic() const
+</code></pre>
+<hr />
+<h3 id="setisstatic"><a class="header" href="#setisstatic">SetIsStatic</a></h3>
+<p>Set if the rigidbody is static.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isStatic</code>: Is static value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetIsStatic(float isStatic)
+</code></pre>
+<hr />
+<h3 id="getmass"><a class="header" href="#getmass">GetMass</a></h3>
+<p>Get the mass of the rigidbody.</p>
+<pre><code class="language-cpp">float GetMass() const
+</code></pre>
+<hr />
+<h3 id="setmass"><a class="header" href="#setmass">SetMass</a></h3>
+<p>Set the mass of the rigidbody.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>mass</code>: Mass value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetMass(float mass)
+</code></pre>
+<hr />
+<h3 id="getfriction"><a class="header" href="#getfriction">GetFriction</a></h3>
+<p>Get the friction value.</p>
+<pre><code class="language-cpp">float GetFriction() const
+</code></pre>
+<hr />
+<h3 id="setfriction"><a class="header" href="#setfriction">SetFriction</a></h3>
+<p>Set the friction value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>friction</code>: Friction value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetFriction(float friction)
+</code></pre>
+<hr />
+<h3 id="activate"><a class="header" href="#activate">Activate</a></h3>
+<p>Activate the rigidbody (used to wake up the rigidbody if it was sleeping).</p>
+<pre><code class="language-cpp">void Activate()
+</code></pre>
+<hr />
+<h3 id="getlockedmovementaxis"><a class="header" href="#getlockedmovementaxis">GetLockedMovementAxis</a></h3>
+<p>Get locked movement axis.</p>
+<pre><code class="language-cpp">const LockedAxis&amp; GetLockedMovementAxis() const
+</code></pre>
+<hr />
+<h3 id="setlockedmovementaxis"><a class="header" href="#setlockedmovementaxis">SetLockedMovementAxis</a></h3>
+<p>Set locked movement axis.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>axis</code>: Axis to lock</li>
+</ul>
+<pre><code class="language-cpp">void SetLockedMovementAxis(LockedAxis axis)
+</code></pre>
+<hr />
+<h3 id="getlockedmovementaxis-1"><a class="header" href="#getlockedmovementaxis-1">GetLockedMovementAxis</a></h3>
+<p>Get locked rotation axis.</p>
+<pre><code class="language-cpp">const LockedAxis&amp; GetLockedRotationAxis() const
+</code></pre>
+<hr />
+<h3 id="setlockedmovementaxis-1"><a class="header" href="#setlockedmovementaxis-1">SetLockedMovementAxis</a></h3>
+<p>Set locked rotation axis.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>axis</code>: Axis to lock</li>
+</ul>
+<pre><code class="language-cpp">void SetLockedMovementAxis(LockedAxis axis)
+</code></pre>
 
                     </main>
 

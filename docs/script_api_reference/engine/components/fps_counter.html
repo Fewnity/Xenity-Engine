@@ -239,6 +239,28 @@
 <pre><code class="language-cpp">#include &lt;engine/tool/fps_counter.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component to display the FPS counter in the game</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>showAverage</td><td>bool</td><td>Should should average fps?</td></tr>
+</tbody></table>
+</div>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="gettextrenderer"><a class="header" href="#gettextrenderer">GetTextRenderer</a></h3>
+<p>Get the text renderer used for displaying the FPS.</p>
+<pre><code class="language-cpp">const std::weak_ptr&lt;TextRenderer&gt;&amp; GetTextRenderer()
+</code></pre>
+<hr />
+<h3 id="settextrenderer"><a class="header" href="#settextrenderer">SetTextRenderer</a></h3>
+<p>Set the text renderer to use for displaying the FPS.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>textRenderer</code>: True to enable Multisampling</li>
+</ul>
+<pre><code class="language-cpp">void SetTextRenderer(const std::shared_ptr&lt;TextRenderer&gt;&amp; textRenderer)
+</code></pre>
 
                     </main>
 

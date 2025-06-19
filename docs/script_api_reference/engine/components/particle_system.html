@@ -239,6 +239,104 @@
 <pre><code class="language-cpp">#include &lt;engine/particle_system/particle_system.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component to spawn particles</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="play"><a class="header" href="#play">Play</a></h3>
+<p>Emitte all particles when not in loop mode.</p>
+<pre><code class="language-cpp">void Play()
+</code></pre>
+<hr />
+<h3 id="resetparticles"><a class="header" href="#resetparticles">ResetParticles</a></h3>
+<p>Remove all particles and restart the emission.</p>
+<pre><code class="language-cpp">void ResetParticles()
+</code></pre>
+<hr />
+<h3 id="isemitting"><a class="header" href="#isemitting">IsEmitting</a></h3>
+<p>Get if the particle system is emitting particles.</p>
+<pre><code class="language-cpp">bool IsEmitting() const
+</code></pre>
+<hr />
+<h3 id="setisemitting"><a class="header" href="#setisemitting">SetIsEmitting</a></h3>
+<p>Set if the particle system is emitting particles.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isEmitting</code>: Light color</li>
+</ul>
+<pre><code class="language-cpp">void SetIsEmitting(bool isEmitting)
+</code></pre>
+<hr />
+<h3 id="getspawnrate"><a class="header" href="#getspawnrate">GetSpawnRate</a></h3>
+<p>Get the particle spawn rate.</p>
+<pre><code class="language-cpp">float GetSpawnRate() const
+</code></pre>
+<hr />
+<h3 id="setisemitting-1"><a class="header" href="#setisemitting-1">SetIsEmitting</a></h3>
+<p>Set the particle spawn rate.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>spawnRate</code>: Number of particules per seconds</li>
+</ul>
+<pre><code class="language-cpp">void SetSpawnRate(float spawnRate)
+</code></pre>
+<hr />
+<h3 id="setscaleoverlifetimefunction"><a class="header" href="#setscaleoverlifetimefunction">SetScaleOverLifeTimeFunction</a></h3>
+<p>Set you own function to set the global scale of the particle over its life time.<br>
+The function takes the life time ratio [0;1] and return the scale of the particle.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>: function The function to set, should be static (nullptr to use the default function)</li>
+</ul>
+<pre><code class="language-cpp">void SetScaleOverLifeTimeFunction(float (*function)(float))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float GetScaleOverLifeTime(float lifeTime)
+{
+	return std::sin(lifeTime * Math::PI); // Default function in every particle systems
+}
+
+std::shared_ptr&lt;ParticleSystem&gt; particleSystem;
+particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetScaleOverLifeTime);
+</code></pre>
+<hr />
+<h3 id="setspeedmultiplieroverlifetimefunction"><a class="header" href="#setspeedmultiplieroverlifetimefunction">SetSpeedMultiplierOverLifeTimeFunction</a></h3>
+<p>Set you own function to set the speed multiplier of the particle over its life time.<br>
+The function takes the life time ratio [0;1] and return the speed multiplier of the particle.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>: function The function to set, should be static (nullptr to use the default function)</li>
+</ul>
+<pre><code class="language-cpp">void SetSpeedMultiplierOverLifeTimeFunction(float (*function)(float))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float GetSpeedOverLifeTime(float lifeTime)
+{
+	return 1; // Default function in every particle systems
+}
+
+std::shared_ptr&lt;ParticleSystem&gt; particleSystem;
+particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetSpeedOverLifeTime);
+</code></pre>
+<hr />
+<h3 id="setcoloroverlifetimefunction"><a class="header" href="#setcoloroverlifetimefunction">SetColorOverLifeTimeFunction</a></h3>
+<p>Set you own function to set the color of the particle over its life time.<br>
+The function takes the life time ratio [0;1] and return the color of the particle.<br>
+x = red, y = green, z = blue, w = alpha (0 to 1).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>: function The function to set, should be static (nullptr to use the default function)</li>
+</ul>
+<pre><code class="language-cpp">void SetColorOverLifeTimeFunction(Vector4 (*function)(float))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 GetColorOverLifeTime(float lifeTime)
+{
+	return Vector4(1, 1, 1, std::sin(lifeTime * Math::PI)); // Default function in every particle systems
+}
+
+std::shared_ptr&lt;ParticleSystem&gt; particleSystem;
+particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
+</code></pre>
 
                     </main>
 

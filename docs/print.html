@@ -242,8 +242,7 @@
 <em>It's pink but you can change the color!</em></p>
 <h3 id="supported-platforms"><a class="header" href="#supported-platforms">Supported platforms:<br></a></h3>
 <p>✔️ Supported<br>
-🚧 Work In Progress<br>
-❌ Not Supported Yet<br></p>
+🚧 Work In Progress<br></p>
 <div class="table-wrapper"><table><thead><tr><th>Status</th><th>Platform</th></tr></thead><tbody>
 <tr><td>✔️</td><td>Windows</td></tr>
 <tr><td>✔️</td><td>PlayStation Portable</td></tr>
@@ -255,9 +254,9 @@
 <h3 id="features"><a class="header" href="#features">Features:</a></h3>
 <ul>
 <li><input disabled="" type="checkbox" checked=""/>
-Basic 2D</li>
+Basic 2D Rendering (Not great for 2D games)</li>
 <li><input disabled="" type="checkbox" checked=""/>
-Basic 3D</li>
+3D Rendering</li>
 <li><input disabled="" type="checkbox" checked=""/>
 2D Audio</li>
 <li><input disabled="" type="checkbox"/>
@@ -5479,6 +5478,10 @@ public:
 <hr />
 <h3 id="oncollisionstay"><a class="header" href="#oncollisionstay">OnCollisionStay</a></h3>
 <p>Function called every frame if a collider of the GameObject is still colliding with another collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>info</code>: Informations about the collision</li>
+</ul>
 <pre><code class="language-cpp">virtual void OnCollisionStay(CollisionEvent info)
 </code></pre>
 <p>Code sample:</p>
@@ -5709,6 +5712,85 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/audio/audio_source.h&gt;
 </code></pre>
 <h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
+<p>Component to play audio clips.</p>
+<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
+<hr />
+<h3 id="play"><a class="header" href="#play">Play</a></h3>
+<p>Play audio.</p>
+<pre><code class="language-cpp">void Play()
+</code></pre>
+<hr />
+<h3 id="resume"><a class="header" href="#resume">Resume</a></h3>
+<p>Resume audio.</p>
+<pre><code class="language-cpp">void Resume()
+</code></pre>
+<hr />
+<h3 id="pause"><a class="header" href="#pause">Pause</a></h3>
+<p>Pause audio.</p>
+<pre><code class="language-cpp">void Pause()
+</code></pre>
+<hr />
+<h3 id="stop"><a class="header" href="#stop">Stop</a></h3>
+<p>Stop audio.</p>
+<pre><code class="language-cpp">void Stop()
+</code></pre>
+<hr />
+<h3 id="setvolume"><a class="header" href="#setvolume">SetVolume</a></h3>
+<p>Set volume.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>volume</code>: New volume value</li>
+</ul>
+<pre><code class="language-cpp">void SetVolume(float volume)
+</code></pre>
+<hr />
+<h3 id="setpanning"><a class="header" href="#setpanning">SetPanning</a></h3>
+<p>Set panning.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>panning</code>: New panning value</li>
+</ul>
+<pre><code class="language-cpp">void SetPanning(float panning)
+</code></pre>
+<hr />
+<h3 id="setpanning-1"><a class="header" href="#setpanning-1">SetPanning</a></h3>
+<p>Set is looping.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isLooping</code>: New is looping value</li>
+</ul>
+<pre><code class="language-cpp">void SetLoop(bool isLooping)
+</code></pre>
+<hr />
+<h3 id="getvolume"><a class="header" href="#getvolume">GetVolume</a></h3>
+<p>Get volume.</p>
+<pre><code class="language-cpp">float GetVolume() const
+</code></pre>
+<hr />
+<h3 id="getpanning"><a class="header" href="#getpanning">GetPanning</a></h3>
+<p>Get panning.</p>
+<pre><code class="language-cpp">float GetPanning() const
+</code></pre>
+<hr />
+<h3 id="isplaying"><a class="header" href="#isplaying">IsPlaying</a></h3>
+<p>Get is playing.</p>
+<pre><code class="language-cpp">bool IsPlaying() const
+</code></pre>
+<hr />
+<h3 id="islooping"><a class="header" href="#islooping">IsLooping</a></h3>
+<p>Get is looping.</p>
+<pre><code class="language-cpp">bool IsLooping() const
+</code></pre>
+<hr />
+<h3 id="getaudioclip"><a class="header" href="#getaudioclip">GetAudioClip</a></h3>
+<p>Get audio clip.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;AudioClip&gt;&amp; GetAudioClip()
+</code></pre>
+<hr />
+<h3 id="setaudioclip"><a class="header" href="#setaudioclip">SetAudioClip</a></h3>
+<p>Set audio clip.</p>
+<pre><code class="language-cpp">void SetAudioClip(const std::shared_ptr&lt;AudioClip&gt;&amp; audioClip)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -5781,6 +5863,45 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/billboard_renderer.h&gt;
 </code></pre>
 <h2 id="description-24"><a class="header" href="#description-24">Description</a></h2>
+<p>Component to render a billboard sprite (2D sprite that always faces the camera).</p>
+<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
+<hr />
+<h3 id="setcolor-3"><a class="header" href="#setcolor-3">SetColor</a></h3>
+<p>Set the color of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>Color</code>: New sprite color</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; color)
+</code></pre>
+<hr />
+<h3 id="setmaterial"><a class="header" href="#setmaterial">SetMaterial</a></h3>
+<p>Set the material of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>material</code>: New sprite material</li>
+</ul>
+<pre><code class="language-cpp">void SetMaterial(const std::shared_ptr&lt;Material&gt;&amp; material)
+</code></pre>
+<hr />
+<h3 id="settexture-1"><a class="header" href="#settexture-1">SetTexture</a></h3>
+<p>Set the texture of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>texture</code>: New sprite texture</li>
+</ul>
+<pre><code class="language-cpp">void SetTexture(const std::shared_ptr&lt;Texture&gt;&amp; texture)
+</code></pre>
+<hr />
+<h3 id="getmaterial"><a class="header" href="#getmaterial">GetMaterial</a></h3>
+<p>Get the material of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Material&gt;&amp; GetMaterial()
+</code></pre>
+<hr />
+<h3 id="gettexture-1"><a class="header" href="#gettexture-1">GetTexture</a></h3>
+<p>Get the texture of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetTexture()
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -5853,6 +5974,41 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/physics/box_collider.h&gt;
 </code></pre>
 <h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
+<p>Component to add a cube-shaped collider to a GameObject.</p>
+<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
+<hr />
+<h3 id="setsize"><a class="header" href="#setsize">SetSize</a></h3>
+<p>Set the size of the box collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>size</code>: New size value</li>
+</ul>
+<pre><code class="language-cpp">void SetSize(const Vector3&amp; size)
+</code></pre>
+<hr />
+<h3 id="setoffset-1"><a class="header" href="#setoffset-1">SetOffset</a></h3>
+<p>Set the offset position of the box collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>offset</code>: New offset value</li>
+</ul>
+<pre><code class="language-cpp">void SetOffset(const Vector3&amp; offset)
+</code></pre>
+<hr />
+<h3 id="getsize"><a class="header" href="#getsize">GetSize</a></h3>
+<p>Get the size of the box collider.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetSize() const
+</code></pre>
+<hr />
+<h3 id="getoffset-1"><a class="header" href="#getoffset-1">GetOffset</a></h3>
+<p>Get the offset position of the box collider.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetOffset() const
+</code></pre>
+<hr />
+<h3 id="tostring-2"><a class="header" href="#tostring-2">ToString</a></h3>
+<p>Get the size and offset of the box collider in the form of a string.</p>
+<pre><code class="language-cpp">std::string ToString()
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -5925,6 +6081,133 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/graphics/camera.h&gt;
 </code></pre>
 <h2 id="description-26"><a class="header" href="#description-26">Description</a></h2>
+<p>Component for rendering the scene.</p>
+<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
+<hr />
+<h3 id="setfov"><a class="header" href="#setfov">SetFov</a></h3>
+<p>Set field of view (Perspective mode).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fov</code>: Field of view angle (in degrees)</li>
+</ul>
+<pre><code class="language-cpp">void SetFov(const float fov)
+</code></pre>
+<hr />
+<h3 id="getfov"><a class="header" href="#getfov">GetFov</a></h3>
+<p>Get field of view in degrees.</p>
+<pre><code class="language-cpp">float GetFov() const
+</code></pre>
+<hr />
+<h3 id="setprojectionsize"><a class="header" href="#setprojectionsize">SetProjectionSize</a></h3>
+<p>Set projection size (Orthographic mode).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Projection size</li>
+</ul>
+<pre><code class="language-cpp">void SetProjectionSize(const float value)
+</code></pre>
+<hr />
+<h3 id="getprojectionsize"><a class="header" href="#getprojectionsize">GetProjectionSize</a></h3>
+<p>Get projection size.</p>
+<pre><code class="language-cpp">float GetProjectionSize() const
+</code></pre>
+<hr />
+<h3 id="setnearclippingplane"><a class="header" href="#setnearclippingplane">SetNearClippingPlane</a></h3>
+<p>Set near clipping plane.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Near clipping plane</li>
+</ul>
+<pre><code class="language-cpp">void SetNearClippingPlane(float value)
+</code></pre>
+<hr />
+<h3 id="getnearclippingplane"><a class="header" href="#getnearclippingplane">GetNearClippingPlane</a></h3>
+<p>Get near clipping plane.</p>
+<pre><code class="language-cpp">float GetNearClippingPlane() const
+</code></pre>
+<hr />
+<h3 id="setfarclippingplane"><a class="header" href="#setfarclippingplane">SetFarClippingPlane</a></h3>
+<p>Set far clipping plane.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: far clipping plane</li>
+</ul>
+<pre><code class="language-cpp">void SetFarClippingPlane(float value)
+</code></pre>
+<hr />
+<h3 id="getfarclippingplane"><a class="header" href="#getfarclippingplane">GetFarClippingPlane</a></h3>
+<p>Get far clipping plane.</p>
+<pre><code class="language-cpp">float GetFarClippingPlane() const
+</code></pre>
+<hr />
+<h3 id="screento2dworld"><a class="header" href="#screento2dworld">ScreenTo2DWorld</a></h3>
+<p>Get 2D world position from pixel coordinate.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>x</code>: X pixel position</li>
+<li><code>y</code>: Y pixel position</li>
+</ul>
+<pre><code class="language-cpp">Vector2 ScreenTo2DWorld(int x, int y)
+</code></pre>
+<hr />
+<h3 id="mouseto2dworld"><a class="header" href="#mouseto2dworld">MouseTo2DWorld</a></h3>
+<p>Get 2D world position from mouse's position.</p>
+<pre><code class="language-cpp">ector2 MouseTo2DWorld()
+</code></pre>
+<hr />
+<h3 id="setprojectiontype"><a class="header" href="#setprojectiontype">SetProjectionType</a></h3>
+<p>Set projection type.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>type</code>: Projection type</li>
+</ul>
+<pre><code class="language-cpp">void SetProjectionType(const ProjectionType type)
+</code></pre>
+<hr />
+<h3 id="getprojectiontype"><a class="header" href="#getprojectiontype">GetProjectionType</a></h3>
+<p>Get projection type.</p>
+<pre><code class="language-cpp">ProjectionType GetProjectionType() const
+</code></pre>
+<hr />
+<h3 id="getmouseray"><a class="header" href="#getmouseray">GetMouseRay</a></h3>
+<p>Get mouse normalized ray direction.</p>
+<pre><code class="language-cpp">Vector3 GetMouseRay()
+</code></pre>
+<hr />
+<h3 id="getwidth-1"><a class="header" href="#getwidth-1">GetWidth</a></h3>
+<p>Get view width in pixel.</p>
+<pre><code class="language-cpp">int GetWidth() const
+</code></pre>
+<hr />
+<h3 id="getheight-1"><a class="header" href="#getheight-1">GetHeight</a></h3>
+<p>Get view height in pixel.</p>
+<pre><code class="language-cpp">int GetHeight() const
+</code></pre>
+<hr />
+<h3 id="getaspectratio"><a class="header" href="#getaspectratio">GetAspectRatio</a></h3>
+<p>Get view aspect ratio.</p>
+<pre><code class="language-cpp">float GetAspectRatio() const
+</code></pre>
+<hr />
+<h3 id="getusemultisampling"><a class="header" href="#getusemultisampling">GetUseMultisampling</a></h3>
+<p>Get if the camera is using multisampling (Windows Only).</p>
+<pre><code class="language-cpp">bool GetUseMultisampling() const
+</code></pre>
+<hr />
+<h3 id="setusemultisampling"><a class="header" href="#setusemultisampling">SetUseMultisampling</a></h3>
+<p>Set if the camera is using multisampling (Windows Only).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>useMultisampling</code>: True to enable Multisampling</li>
+</ul>
+<pre><code class="language-cpp">void SetUseMultisampling(bool useMultisampling)
+</code></pre>
+<hr />
+<h3 id="getrawframebuffer"><a class="header" href="#getrawframebuffer">GetRawFrameBuffer</a></h3>
+<p>Get a copy of the frame buffer.<br>
+Heavy operation, use with caution.</p>
+<pre><code class="language-cpp">std::unique_ptr&lt;uint8_t[]&gt; GetRawFrameBuffer()
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -5997,7 +6280,14 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/graphics/camera_projection_type.h&gt;
 </code></pre>
 <h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Enum to list every camera projection types.</p>
+<h2 id="values-8"><a class="header" href="#values-8">Values</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>Perspective</td><td>A projection where objects appear smaller as they get further away</td></tr>
+<tr><td>Orthographic</td><td>A projection where objects retain their size regardless of distance</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -6069,6 +6359,7 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/canvas.h&gt;
 </code></pre>
 <h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
+<p>Component to render a canvas (UI elements)</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6141,6 +6432,28 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/tool/fps_counter.h&gt;
 </code></pre>
 <h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
+<p>Component to display the FPS counter in the game</p>
+<h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>showAverage</td><td>bool</td><td>Should should average fps?</td></tr>
+</tbody></table>
+</div>
+<h2 id="public-methods-11"><a class="header" href="#public-methods-11">Public methods</a></h2>
+<hr />
+<h3 id="gettextrenderer"><a class="header" href="#gettextrenderer">GetTextRenderer</a></h3>
+<p>Get the text renderer used for displaying the FPS.</p>
+<pre><code class="language-cpp">const std::weak_ptr&lt;TextRenderer&gt;&amp; GetTextRenderer()
+</code></pre>
+<hr />
+<h3 id="settextrenderer"><a class="header" href="#settextrenderer">SetTextRenderer</a></h3>
+<p>Set the text renderer to use for displaying the FPS.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>textRenderer</code>: True to enable Multisampling</li>
+</ul>
+<pre><code class="language-cpp">void SetTextRenderer(const std::shared_ptr&lt;TextRenderer&gt;&amp; textRenderer)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6213,6 +6526,139 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/lighting/lighting.h&gt;
 </code></pre>
 <h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
+<p>Component to produce light</p>
+<h2 id="variables-3"><a class="header" href="#variables-3">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>color</td><td>Color</td><td>Color of the light</td></tr>
+</tbody></table>
+</div>
+<h2 id="public-methods-12"><a class="header" href="#public-methods-12">Public methods</a></h2>
+<hr />
+<h3 id="setuppointlight"><a class="header" href="#setuppointlight">SetupPointLight</a></h3>
+<p>Setup the light as a point light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+<li><code>range</code>: Light Range (Greater or equals to 0)</li>
+</ul>
+<pre><code class="language-cpp">void SetupPointLight(const Color&amp; color, float intensity, const float range)
+</code></pre>
+<hr />
+<h3 id="setupdirectionallight"><a class="header" href="#setupdirectionallight">SetupDirectionalLight</a></h3>
+<p>Setup the light as a directional light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+</ul>
+<pre><code class="language-cpp">void SetupDirectionalLight(const Color&amp; color, float intensity)
+</code></pre>
+<hr />
+<h3 id="setupambientlight"><a class="header" href="#setupambientlight">SetupAmbientLight</a></h3>
+<p>Setup the light as an ambient light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+</ul>
+<pre><code class="language-cpp">void SetupAmbientLight(const Color&amp; color, const float intensity)
+</code></pre>
+<hr />
+<h3 id="setupspotlight"><a class="header" href="#setupspotlight">SetupSpotLight</a></h3>
+<p>Setup the light as a spot light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+<li><code>range</code>: Light Range (Greater or equals to 0)</li>
+<li><code>angle</code>: Spot angle [0;90]</li>
+</ul>
+<pre><code class="language-cpp">void SetupSpotLight(const Color&amp; color, const float intensity, const float range, const float angle)
+</code></pre>
+<hr />
+<h3 id="setupspotlight-1"><a class="header" href="#setupspotlight-1">SetupSpotLight</a></h3>
+<p>Setup the light as a spot light.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: Light color</li>
+<li><code>intensity</code>: Light intensity</li>
+<li><code>range</code>: Light Range (Greater or equals to 0)</li>
+<li><code>angle</code>: Spot angle [0;90]</li>
+<li><code>smoothness</code>: Spot smoothness [0;1]</li>
+</ul>
+<pre><code class="language-cpp">void SetupSpotLight(const Color&amp; color, const float intensity, const float range, const float angle, const float smoothness)
+</code></pre>
+<hr />
+<h3 id="setupspotlight-2"><a class="header" href="#setupspotlight-2">SetupSpotLight</a></h3>
+<p>Set light range.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Light range (Greater or equals to 0)</li>
+</ul>
+<pre><code class="language-cpp">void SetRange(float value)
+</code></pre>
+<hr />
+<h3 id="setspotangle"><a class="header" href="#setspotangle">SetSpotAngle</a></h3>
+<p>Set spot angle.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Spot angle [0;90]</li>
+</ul>
+<pre><code class="language-cpp">void SetSpotAngle(float angle)
+</code></pre>
+<hr />
+<h3 id="setspotsmoothness"><a class="header" href="#setspotsmoothness">SetSpotSmoothness</a></h3>
+<p>Set spot smoothness.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Spot smoothness [0;1]</li>
+</ul>
+<pre><code class="language-cpp">void SetSpotSmoothness(float smoothness)
+</code></pre>
+<hr />
+<h3 id="gettype"><a class="header" href="#gettype">GetType</a></h3>
+<p>Get light type.</p>
+<pre><code class="language-cpp">LightType GetType() const
+</code></pre>
+<hr />
+<h3 id="gettype-1"><a class="header" href="#gettype-1">GetType</a></h3>
+<p>Set light type.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>type</code>: Light type</li>
+</ul>
+<pre><code class="language-cpp">void SetType(LightType type)
+</code></pre>
+<hr />
+<h3 id="getintensity"><a class="header" href="#getintensity">GetIntensity</a></h3>
+<p>Get light intensity.</p>
+<pre><code class="language-cpp">float GetIntensity() const
+</code></pre>
+<hr />
+<h3 id="setintensity"><a class="header" href="#setintensity">SetIntensity</a></h3>
+<p>Set light intensity.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>intensity</code>: Light intensity</li>
+</ul>
+<pre><code class="language-cpp">void SetIntensity(float intensity)
+</code></pre>
+<hr />
+<h3 id="getoldconsolecompatibility"><a class="header" href="#getoldconsolecompatibility">GetOldConsoleCompatibility</a></h3>
+<p>Get if the light should simulate lighting from old consoles (To get the same behavior as PSP)y.</p>
+<pre><code class="language-cpp">bool GetOldConsoleCompatibility() const
+</code></pre>
+<hr />
+<h3 id="setoldconsolecompatibility"><a class="header" href="#setoldconsolecompatibility">SetOldConsoleCompatibility</a></h3>
+<p>Set if the light should simulate lighting from old consoles (To get the same behavior as PSP).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: New value</li>
+</ul>
+<pre><code class="language-cpp">void SetOldConsoleCompatibility(bool value)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6285,6 +6731,7 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/lod.h&gt;
 </code></pre>
 <h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
+<p>Component to manage Level of Detail (LOD) for a GameObject</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6357,6 +6804,65 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/mesh_renderer.h&gt;
 </code></pre>
 <h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
+<p>Component that renders a mesh with materials</p>
+<h2 id="public-methods-13"><a class="header" href="#public-methods-13">Public methods</a></h2>
+<hr />
+<h3 id="getmeshdata"><a class="header" href="#getmeshdata">GetMeshData</a></h3>
+<p>Get mesh data.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;MeshData&gt;&amp; GetMeshData() const
+</code></pre>
+<hr />
+<h3 id="setmeshdata"><a class="header" href="#setmeshdata">SetMeshData</a></h3>
+<p>Set mesh data.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>meshData</code>: Mesh data to use</li>
+</ul>
+<pre><code class="language-cpp">void SetMeshData(const std::shared_ptr &lt;MeshData&gt;&amp; meshData)
+</code></pre>
+<hr />
+<h3 id="getmaterials"><a class="header" href="#getmaterials">GetMaterials</a></h3>
+<p>Get materials list.</p>
+<pre><code class="language-cpp">std::vector&lt;std::shared_ptr&lt;Material&gt;&gt; GetMaterials() const
+</code></pre>
+<hr />
+<h3 id="getmaterial-1"><a class="header" href="#getmaterial-1">GetMaterial</a></h3>
+<p>Get a material at a specific index.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>index</code>: Index of the material</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; GetMaterial(int index) const
+</code></pre>
+<hr />
+<h3 id="setmeshdata-1"><a class="header" href="#setmeshdata-1">SetMeshData</a></h3>
+<p>Set a material at a specific index.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>material</code>: Material to use</li>
+<li><code>index</code>: Index of the material</li>
+</ul>
+<pre><code class="language-cpp">void SetMaterial(const std::shared_ptr &lt;Material&gt;&amp; material, int index)
+</code></pre>
+<hr />
+<h3 id="getboundingsphere-1"><a class="header" href="#getboundingsphere-1">GetBoundingSphere</a></h3>
+<p>Get the bounding sphere of the mesh.</p>
+<pre><code class="language-cpp">const Sphere&amp; GetBoundingSphere() const
+</code></pre>
+<hr />
+<h3 id="getuseadvancedlighting"><a class="header" href="#getuseadvancedlighting">GetUseAdvancedLighting</a></h3>
+<p>Get if the mesh can use advanced lighting (point lights, spot lights), improve performance if disabled.</p>
+<pre><code class="language-cpp">bool GetUseAdvancedLighting() const
+</code></pre>
+<hr />
+<h3 id="setuseadvancedlighting"><a class="header" href="#setuseadvancedlighting">SetUseAdvancedLighting</a></h3>
+<p>Set if the mesh can use advanced lighting (point lights, spot lights), improve performance if disabled.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Enable advanced lighting?</li>
+</ul>
+<pre><code class="language-cpp">void SetUseAdvancedLighting(bool value)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6429,6 +6935,104 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/particle_system/particle_system.h&gt;
 </code></pre>
 <h2 id="description-33"><a class="header" href="#description-33">Description</a></h2>
+<p>Component to spawn particles</p>
+<h2 id="public-methods-14"><a class="header" href="#public-methods-14">Public methods</a></h2>
+<hr />
+<h3 id="play-1"><a class="header" href="#play-1">Play</a></h3>
+<p>Emitte all particles when not in loop mode.</p>
+<pre><code class="language-cpp">void Play()
+</code></pre>
+<hr />
+<h3 id="resetparticles"><a class="header" href="#resetparticles">ResetParticles</a></h3>
+<p>Remove all particles and restart the emission.</p>
+<pre><code class="language-cpp">void ResetParticles()
+</code></pre>
+<hr />
+<h3 id="isemitting"><a class="header" href="#isemitting">IsEmitting</a></h3>
+<p>Get if the particle system is emitting particles.</p>
+<pre><code class="language-cpp">bool IsEmitting() const
+</code></pre>
+<hr />
+<h3 id="setisemitting"><a class="header" href="#setisemitting">SetIsEmitting</a></h3>
+<p>Set if the particle system is emitting particles.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isEmitting</code>: Light color</li>
+</ul>
+<pre><code class="language-cpp">void SetIsEmitting(bool isEmitting)
+</code></pre>
+<hr />
+<h3 id="getspawnrate"><a class="header" href="#getspawnrate">GetSpawnRate</a></h3>
+<p>Get the particle spawn rate.</p>
+<pre><code class="language-cpp">float GetSpawnRate() const
+</code></pre>
+<hr />
+<h3 id="setisemitting-1"><a class="header" href="#setisemitting-1">SetIsEmitting</a></h3>
+<p>Set the particle spawn rate.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>spawnRate</code>: Number of particules per seconds</li>
+</ul>
+<pre><code class="language-cpp">void SetSpawnRate(float spawnRate)
+</code></pre>
+<hr />
+<h3 id="setscaleoverlifetimefunction"><a class="header" href="#setscaleoverlifetimefunction">SetScaleOverLifeTimeFunction</a></h3>
+<p>Set you own function to set the global scale of the particle over its life time.<br>
+The function takes the life time ratio [0;1] and return the scale of the particle.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>: function The function to set, should be static (nullptr to use the default function)</li>
+</ul>
+<pre><code class="language-cpp">void SetScaleOverLifeTimeFunction(float (*function)(float))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float GetScaleOverLifeTime(float lifeTime)
+{
+	return std::sin(lifeTime * Math::PI); // Default function in every particle systems
+}
+
+std::shared_ptr&lt;ParticleSystem&gt; particleSystem;
+particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetScaleOverLifeTime);
+</code></pre>
+<hr />
+<h3 id="setspeedmultiplieroverlifetimefunction"><a class="header" href="#setspeedmultiplieroverlifetimefunction">SetSpeedMultiplierOverLifeTimeFunction</a></h3>
+<p>Set you own function to set the speed multiplier of the particle over its life time.<br>
+The function takes the life time ratio [0;1] and return the speed multiplier of the particle.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>: function The function to set, should be static (nullptr to use the default function)</li>
+</ul>
+<pre><code class="language-cpp">void SetSpeedMultiplierOverLifeTimeFunction(float (*function)(float))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float GetSpeedOverLifeTime(float lifeTime)
+{
+	return 1; // Default function in every particle systems
+}
+
+std::shared_ptr&lt;ParticleSystem&gt; particleSystem;
+particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetSpeedOverLifeTime);
+</code></pre>
+<hr />
+<h3 id="setcoloroverlifetimefunction"><a class="header" href="#setcoloroverlifetimefunction">SetColorOverLifeTimeFunction</a></h3>
+<p>Set you own function to set the color of the particle over its life time.<br>
+The function takes the life time ratio [0;1] and return the color of the particle.<br>
+x = red, y = green, z = blue, w = alpha (0 to 1).</p>
+<p>Parameters:</p>
+<ul>
+<li><code>function</code>: function The function to set, should be static (nullptr to use the default function)</li>
+</ul>
+<pre><code class="language-cpp">void SetColorOverLifeTimeFunction(Vector4 (*function)(float))
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Vector4 GetColorOverLifeTime(float lifeTime)
+{
+	return Vector4(1, 1, 1, std::sin(lifeTime * Math::PI)); // Default function in every particle systems
+}
+
+std::shared_ptr&lt;ParticleSystem&gt; particleSystem;
+particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6501,7 +7105,13 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/game_elements/rect_transform.h&gt;
 </code></pre>
 <h2 id="description-34"><a class="header" href="#description-34">Description</a></h2>
-<div style="break-before: page; page-break-before: always;"></div><style>
+<p>Component that represents a transform for UI elements</p>
+<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>position</td><td>Vector2</td><td>Position of the UI elements between 0 and 1 (Normalized position)</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -6573,6 +7183,190 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/physics/rigidbody.h&gt;
 </code></pre>
 <h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
+<p>Component to add physics to the GameObject</p>
+<h2 id="public-methods-15"><a class="header" href="#public-methods-15">Public Methods</a></h2>
+<hr />
+<h3 id="getvelocity"><a class="header" href="#getvelocity">GetVelocity</a></h3>
+<p>Get the velocity.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetVelocity() const
+</code></pre>
+<hr />
+<h3 id="setvelocity"><a class="header" href="#setvelocity">SetVelocity</a></h3>
+<p>Set the velocity.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>velocity</code>: New velocity</li>
+</ul>
+<pre><code class="language-cpp">void SetVelocity(const Vector3&amp; velocity)
+</code></pre>
+<hr />
+<h3 id="gettorque"><a class="header" href="#gettorque">GetTorque</a></h3>
+<p>Get the torque applied to the rigidbody.</p>
+<pre><code class="language-cpp">Vector3 GetTorque() const
+</code></pre>
+<hr />
+<h3 id="applytorque"><a class="header" href="#applytorque">ApplyTorque</a></h3>
+<p>Apply torque.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>torque</code>: Torque to apply</li>
+</ul>
+<pre><code class="language-cpp">void ApplyTorque(const Vector3&amp; torque)
+</code></pre>
+<hr />
+<h3 id="getangularvelocity"><a class="header" href="#getangularvelocity">GetAngularVelocity</a></h3>
+<p>Get the angular velocity.</p>
+<pre><code class="language-cpp">Vector3 GetAngularVelocity() const
+</code></pre>
+<hr />
+<h3 id="setangularvelocity"><a class="header" href="#setangularvelocity">SetAngularVelocity</a></h3>
+<p>Set the angular velocity.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>angularVelocity</code>: Angular velocity to set</li>
+</ul>
+<pre><code class="language-cpp">void SetAngularVelocity(const Vector3&amp; angularVelocity)
+</code></pre>
+<hr />
+<h3 id="addangularvelocity"><a class="header" href="#addangularvelocity">AddAngularVelocity</a></h3>
+<p>Add angular velocity.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>angularVelocity</code>: Angular velocity to add</li>
+</ul>
+<pre><code class="language-cpp">void AddAngularVelocity(const Vector3&amp; angularVelocity)
+</code></pre>
+<hr />
+<h3 id="getdrag"><a class="header" href="#getdrag">GetDrag</a></h3>
+<p>Get the drag value.</p>
+<pre><code class="language-cpp">float GetDrag() const
+</code></pre>
+<hr />
+<h3 id="setdrag"><a class="header" href="#setdrag">SetDrag</a></h3>
+<p>Set the drag value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>drag</code>: Drag value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetDrag(float drag)
+</code></pre>
+<hr />
+<h3 id="getangulardrag"><a class="header" href="#getangulardrag">GetAngularDrag</a></h3>
+<p>Get the angular drag value.</p>
+<pre><code class="language-cpp">float GetAngularDrag() const
+</code></pre>
+<hr />
+<h3 id="setangulardrag"><a class="header" href="#setangulardrag">SetAngularDrag</a></h3>
+<p>Set the angular drag value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>angularDrag</code>: Angular drag value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetAngularDrag(float angularDrag)
+</code></pre>
+<hr />
+<h3 id="getbounce"><a class="header" href="#getbounce">GetBounce</a></h3>
+<p>Get the bounce value.</p>
+<pre><code class="language-cpp">float GetBounce() const
+</code></pre>
+<hr />
+<h3 id="setbounce"><a class="header" href="#setbounce">SetBounce</a></h3>
+<p>Set the bounce value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>bounce</code>: Bounce value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetBounce(float bounce)
+</code></pre>
+<hr />
+<h3 id="getgravitymultiplier"><a class="header" href="#getgravitymultiplier">GetGravityMultiplier</a></h3>
+<p>Get the gravity multiplier.</p>
+<pre><code class="language-cpp">float GetGravityMultiplier() const
+</code></pre>
+<hr />
+<h3 id="setgravitymultiplier"><a class="header" href="#setgravitymultiplier">SetGravityMultiplier</a></h3>
+<p>Set the gravity multiplier.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>gravityMultiplier</code>: Gravity multiplier value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetGravityMultiplier(float gravityMultiplier)
+</code></pre>
+<hr />
+<h3 id="isstatic"><a class="header" href="#isstatic">IsStatic</a></h3>
+<p>Get if the rigidbody is static.</p>
+<pre><code class="language-cpp">float IsStatic() const
+</code></pre>
+<hr />
+<h3 id="setisstatic"><a class="header" href="#setisstatic">SetIsStatic</a></h3>
+<p>Set if the rigidbody is static.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>isStatic</code>: Is static value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetIsStatic(float isStatic)
+</code></pre>
+<hr />
+<h3 id="getmass"><a class="header" href="#getmass">GetMass</a></h3>
+<p>Get the mass of the rigidbody.</p>
+<pre><code class="language-cpp">float GetMass() const
+</code></pre>
+<hr />
+<h3 id="setmass"><a class="header" href="#setmass">SetMass</a></h3>
+<p>Set the mass of the rigidbody.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>mass</code>: Mass value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetMass(float mass)
+</code></pre>
+<hr />
+<h3 id="getfriction"><a class="header" href="#getfriction">GetFriction</a></h3>
+<p>Get the friction value.</p>
+<pre><code class="language-cpp">float GetFriction() const
+</code></pre>
+<hr />
+<h3 id="setfriction"><a class="header" href="#setfriction">SetFriction</a></h3>
+<p>Set the friction value.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>friction</code>: Friction value to set</li>
+</ul>
+<pre><code class="language-cpp">void SetFriction(float friction)
+</code></pre>
+<hr />
+<h3 id="activate"><a class="header" href="#activate">Activate</a></h3>
+<p>Activate the rigidbody (used to wake up the rigidbody if it was sleeping).</p>
+<pre><code class="language-cpp">void Activate()
+</code></pre>
+<hr />
+<h3 id="getlockedmovementaxis"><a class="header" href="#getlockedmovementaxis">GetLockedMovementAxis</a></h3>
+<p>Get locked movement axis.</p>
+<pre><code class="language-cpp">const LockedAxis&amp; GetLockedMovementAxis() const
+</code></pre>
+<hr />
+<h3 id="setlockedmovementaxis"><a class="header" href="#setlockedmovementaxis">SetLockedMovementAxis</a></h3>
+<p>Set locked movement axis.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>axis</code>: Axis to lock</li>
+</ul>
+<pre><code class="language-cpp">void SetLockedMovementAxis(LockedAxis axis)
+</code></pre>
+<hr />
+<h3 id="getlockedmovementaxis-1"><a class="header" href="#getlockedmovementaxis-1">GetLockedMovementAxis</a></h3>
+<p>Get locked rotation axis.</p>
+<pre><code class="language-cpp">const LockedAxis&amp; GetLockedRotationAxis() const
+</code></pre>
+<hr />
+<h3 id="setlockedmovementaxis-1"><a class="header" href="#setlockedmovementaxis-1">SetLockedMovementAxis</a></h3>
+<p>Set locked rotation axis.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>axis</code>: Axis to lock</li>
+</ul>
+<pre><code class="language-cpp">void SetLockedMovementAxis(LockedAxis axis)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6645,6 +7439,36 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/physics/sphere_collider.h&gt;
 </code></pre>
 <h2 id="description-36"><a class="header" href="#description-36">Description</a></h2>
+<p>Component to add a sphere-shaped collider to a GameObject.</p>
+<h2 id="public-methods-16"><a class="header" href="#public-methods-16">Public Methods</a></h2>
+<hr />
+<h3 id="getsize-1"><a class="header" href="#getsize-1">GetSize</a></h3>
+<p>Get the radius of the sphere collider.</p>
+<pre><code class="language-cpp">float GetSize() const
+</code></pre>
+<hr />
+<h3 id="setsize-1"><a class="header" href="#setsize-1">SetSize</a></h3>
+<p>Set the radius of the sphere collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>size</code>: Radius of the sphere</li>
+</ul>
+<pre><code class="language-cpp">void SetSize(float size)
+</code></pre>
+<hr />
+<h3 id="getoffset-2"><a class="header" href="#getoffset-2">GetOffset</a></h3>
+<p>Get the offset position of the sphere collider.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetOffset() const
+</code></pre>
+<hr />
+<h3 id="setoffset-2"><a class="header" href="#setoffset-2">SetOffset</a></h3>
+<p>Set the offset position of the sphere collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>offset</code>: Offset position of the sphere</li>
+</ul>
+<pre><code class="language-cpp">void SetOffset(const Vector3&amp; offset)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6717,6 +7541,50 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/sprite_renderer.h&gt;
 </code></pre>
 <h2 id="description-37"><a class="header" href="#description-37">Description</a></h2>
+<p>Component that renders a sprite with a texture and material</p>
+<h2 id="public-methods-17"><a class="header" href="#public-methods-17">Public Methods</a></h2>
+<hr />
+<h3 id="getcolor-1"><a class="header" href="#getcolor-1">GetColor</a></h3>
+<p>Get the color of the sprite.</p>
+<pre><code class="language-cpp">const Color&amp; GetColor() const
+</code></pre>
+<hr />
+<h3 id="setcolor-4"><a class="header" href="#setcolor-4">SetColor</a></h3>
+<p>Set the color of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>color</code>: New color</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; color)
+</code></pre>
+<hr />
+<h3 id="getmaterial-2"><a class="header" href="#getmaterial-2">GetMaterial</a></h3>
+<p>Get the material of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Material&gt;&amp; GetMaterial() const
+</code></pre>
+<hr />
+<h3 id="setmaterial-1"><a class="header" href="#setmaterial-1">SetMaterial</a></h3>
+<p>Set the material of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>material</code>: New material</li>
+</ul>
+<pre><code class="language-cpp">void SetMaterial(const std::shared_ptr&lt;Material&gt;&amp; material)
+</code></pre>
+<hr />
+<h3 id="gettexture-2"><a class="header" href="#gettexture-2">GetTexture</a></h3>
+<p>Get the texture of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetTexture() const
+</code></pre>
+<hr />
+<h3 id="settexture-2"><a class="header" href="#settexture-2">SetTexture</a></h3>
+<p>Set the texture of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>texture</code>: New texture</li>
+</ul>
+<pre><code class="language-cpp">void SetTexture(const std::shared_ptr&lt;Texture&gt;&amp; texture)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7014,9 +7882,9 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <p>Code sample:</p>
 <pre><code class="language-cpp">DateTime currentDateTime = DateTime::GetNow();
 </code></pre>
-<h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
+<h2 id="public-methods-18"><a class="header" href="#public-methods-18">Public methods</a></h2>
 <hr />
-<h3 id="tostring-2"><a class="header" href="#tostring-2">ToString</a></h3>
+<h3 id="tostring-3"><a class="header" href="#tostring-3">ToString</a></h3>
 <p>Get a string representation of the date and time in the format: "hour:minute:second day/month/year".</p>
 <pre><code class="language-cpp">std::string ToString() const
 </code></pre>
@@ -7025,7 +7893,7 @@ const std::string&amp; name = component-&gt;GetComponentName();
 Debug::Print(currentDateTime.ToString());
 // Prints: "12:49:53 31/5/2025"
 </code></pre>
-<h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
+<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>second</td><td>uint32_t</td><td>Number of seconds</td></tr>
@@ -7325,7 +8193,7 @@ class Event
 <p>Event with arguments:</p>
 <pre><code class="language-cpp">Event&lt;int, const std::string&amp;&gt; myEvent;
 </code></pre>
-<h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
+<h2 id="public-methods-19"><a class="header" href="#public-methods-19">Public methods</a></h2>
 <hr />
 <h3 id="bind"><a class="header" href="#bind">Bind</a></h3>
 <p>Bind a simple function.</p>
@@ -7733,7 +8601,7 @@ if(file-&gt;Open(FileMode::WriteCreateFile))
 </code></pre>
 <h2 id="description-44"><a class="header" href="#description-44">Description</a></h2>
 <p>Class to manage a file (Create, open, read, write).</p>
-<h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
+<h2 id="public-methods-20"><a class="header" href="#public-methods-20">Public methods</a></h2>
 <hr />
 <h3 id="open"><a class="header" href="#open">Open</a></h3>
 <p>Open the file.<br>
@@ -7983,7 +8851,7 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 </code></pre>
 <h2 id="description-45"><a class="header" href="#description-45">Description</a></h2>
 <p>Enum that list every modes to open a file.</p>
-<h2 id="values-8"><a class="header" href="#values-8">Values</a></h2>
+<h2 id="values-9"><a class="header" href="#values-9">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>ReadOnly</td><td>Only read calls are allowed</td></tr>
@@ -8063,14 +8931,14 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 </code></pre>
 <h2 id="description-46"><a class="header" href="#description-46">Description</a></h2>
 <p>Class to manage a directory (Get all files of a folder).</p>
-<h2 id="variables-3"><a class="header" href="#variables-3">Variables</a></h2>
+<h2 id="variables-6"><a class="header" href="#variables-6">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>subdirectories</td><td><code>std::vector&lt;std::shared_ptr&lt;Directory&gt;&gt;</code></td><td>List of sub directories (filled with GetAllFiles)</td></tr>
 <tr><td>files</td><td><code>std::vector&lt;std::shared_ptr&lt;File&gt;&gt;</code></td><td>List of files (filled with GetAllFiles)</td></tr>
 </tbody></table>
 </div>
-<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
+<h2 id="public-methods-21"><a class="header" href="#public-methods-21">Public methods</a></h2>
 <hr />
 <h3 id="getallfiles"><a class="header" href="#getallfiles">GetAllFiles</a></h3>
 <p>Get all the files of the directory (can be very slow and not currently supported on PS3).<br></p>
@@ -8178,7 +9046,7 @@ const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
 </code></pre>
 <h2 id="description-47"><a class="header" href="#description-47">Description</a></h2>
 <p>Enum to list every different results of a file copy call.</p>
-<h2 id="values-9"><a class="header" href="#values-9">Values</a></h2>
+<h2 id="values-10"><a class="header" href="#values-10">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>Success</td><td>File copied successfully.</td></tr>
@@ -8924,7 +9792,7 @@ if (touchCount &gt;= 1)
 </code></pre>
 <h2 id="description-50"><a class="header" href="#description-50">Description</a></h2>
 <p>This class stores informations of finger on a touchscreen.</p>
-<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
+<h2 id="variables-7"><a class="header" href="#variables-7">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>position</td><td><code>Vector2Int</code></td><td>Actual position in pixel of the finger</td></tr>
@@ -9004,7 +9872,7 @@ if (touchCount &gt;= 1)
 </code></pre>
 <h2 id="description-51"><a class="header" href="#description-51">Description</a></h2>
 <p>Enum that list every keys of a keyboard and buttons of a controller.</p>
-<h2 id="values-10"><a class="header" href="#values-10">Values</a></h2>
+<h2 id="values-11"><a class="header" href="#values-11">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody>
 <tr><td>EMPTY</td><td>-1</td></tr>
@@ -9260,7 +10128,7 @@ if (touchCount &gt;= 1)
 </code></pre>
 <h2 id="description-52"><a class="header" href="#description-52">Description</a></h2>
 <p>Class representing rotations in 3D space</p>
-<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
+<h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the quaternion</td></tr>
@@ -9384,7 +10252,7 @@ Quaternion lerp1 = Quaternion::Lerp(a, b, 1.0f); // Equals B
 Quaternion b = Quaternion::Euler(90, 120, 10);
 Quaternion result = Quaternion::Dot(a, b);
 </code></pre>
-<h2 id="public-methods-11"><a class="header" href="#public-methods-11">Public methods</a></h2>
+<h2 id="public-methods-22"><a class="header" href="#public-methods-22">Public methods</a></h2>
 <hr />
 <h3 id="toeuler"><a class="header" href="#toeuler">ToEuler</a></h3>
 <p>Converts the quaternion to Euler angles (in degrees).</p>
@@ -9462,7 +10330,7 @@ a.Set(0.6860413f, 0.3493627f, -0.4916947f, -0.4068529f);
 Vector3 right = a.GetRight();
 </code></pre>
 <hr />
-<h3 id="tostring-3"><a class="header" href="#tostring-3">ToString</a></h3>
+<h3 id="tostring-4"><a class="header" href="#tostring-4">ToString</a></h3>
 <p>Return a string representation of the quaternion like "{x:0.0 y:0.0 z:0.0 w:1.0}"</p>
 <pre><code class="language-cpp"> std::string ToString() const
 </code></pre>
@@ -9551,7 +10419,7 @@ bool operator!=(const Quaternion&amp; left, const Quaternion&amp; right)
 </code></pre>
 <h2 id="description-53"><a class="header" href="#description-53">Description</a></h2>
 <p>Contains 2D coordinates.</p>
-<h2 id="variables-6"><a class="header" href="#variables-6">Variables</a></h2>
+<h2 id="variables-9"><a class="header" href="#variables-9">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -9616,7 +10484,7 @@ Vector2 vec = Vector2(vec2int);
 // X = 1.0f
 // Y = 2.0f
 </code></pre>
-<h2 id="public-methods-12"><a class="header" href="#public-methods-12">Public methods</a></h2>
+<h2 id="public-methods-23"><a class="header" href="#public-methods-23">Public methods</a></h2>
 <h3 id="max"><a class="header" href="#max">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -9673,7 +10541,7 @@ float squaredMagnitude vec.SquaredMagnitude();
 <pre><code class="language-cpp">Vector2 vec = Vector2(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity()); // This will raise an assert in debug to avoid using nan or inf values
 bool valid = vec-&gt;HasInvalidValues();
 </code></pre>
-<h3 id="tostring-4"><a class="header" href="#tostring-4">ToString</a></h3>
+<h3 id="tostring-5"><a class="header" href="#tostring-5">ToString</a></h3>
 <p>Return a string representation of the vector like "{x:1.0, y:2.0}"</p>
 <pre><code class="language-cpp">bool ToString() const
 </code></pre>
@@ -9807,7 +10675,7 @@ bool operator!=(const Vector2&amp; left, const Vector2&amp; right)
 </code></pre>
 <h2 id="description-54"><a class="header" href="#description-54">Description</a></h2>
 <p>Contains integer 2D coordinates.</p>
-<h2 id="variables-7"><a class="header" href="#variables-7">Variables</a></h2>
+<h2 id="variables-10"><a class="header" href="#variables-10">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>int</code></td><td>The x component of the vector</td></tr>
@@ -9872,7 +10740,7 @@ Vector2Int vec = Vector2Int(vec2);
 // X = 1
 // Y = 2
 </code></pre>
-<h2 id="public-methods-13"><a class="header" href="#public-methods-13">Public methods</a></h2>
+<h2 id="public-methods-24"><a class="header" href="#public-methods-24">Public methods</a></h2>
 <h3 id="max-1"><a class="header" href="#max-1">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -9921,7 +10789,7 @@ float magnitude vec.Magnitude();
 <pre><code class="language-cpp">Vector2Int vec = Vector2Int(1, 2);
 float squaredMagnitude vec.SquaredMagnitude();
 </code></pre>
-<h3 id="tostring-5"><a class="header" href="#tostring-5">ToString</a></h3>
+<h3 id="tostring-6"><a class="header" href="#tostring-6">ToString</a></h3>
 <p>Return a string representation of the vector like "{x:1, y:2}"</p>
 <pre><code class="language-cpp">bool ToString() const
 </code></pre>
@@ -10038,7 +10906,7 @@ bool operator!=(const Vector2Int&amp; left, const Vector2Int&amp; right)
 </code></pre>
 <h2 id="description-55"><a class="header" href="#description-55">Description</a></h2>
 <p>Contains 3D coordinates.</p>
-<h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
+<h2 id="variables-11"><a class="header" href="#variables-11">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -10107,7 +10975,7 @@ Vector3 vec = Vector3(vec2int);
 // Y = 2.0f
 // Z = 0.0f
 </code></pre>
-<h2 id="public-methods-14"><a class="header" href="#public-methods-14">Public methods</a></h2>
+<h2 id="public-methods-25"><a class="header" href="#public-methods-25">Public methods</a></h2>
 <h3 id="max-2"><a class="header" href="#max-2">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -10190,7 +11058,7 @@ Vector3 crossResult vec.Cross(vec2);
 <pre><code class="language-cpp">Vector3 vec = Vector3(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity(), 3.0f); // This will raise an assert in debug to avoid using nan or inf values
 bool valid = vec-&gt;HasInvalidValues();
 </code></pre>
-<h3 id="tostring-6"><a class="header" href="#tostring-6">ToString</a></h3>
+<h3 id="tostring-7"><a class="header" href="#tostring-7">ToString</a></h3>
 <p>Return a string representation of the vector like "{x:1.0, y:2.0, z:3.0}"</p>
 <pre><code class="language-cpp">bool ToString() const
 </code></pre>
@@ -10367,7 +11235,7 @@ bool operator!=(const Vector3&amp; left, const Vector3&amp; right)
 </code></pre>
 <h2 id="description-56"><a class="header" href="#description-56">Description</a></h2>
 <p>Contains 4D coordinates.</p>
-<h2 id="variables-9"><a class="header" href="#variables-9">Variables</a></h2>
+<h2 id="variables-12"><a class="header" href="#variables-12">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -10455,7 +11323,7 @@ Vector4 vec = Vector4(vec2int);
 // Z = 0.0f
 // W = 0.0f
 </code></pre>
-<h2 id="public-methods-15"><a class="header" href="#public-methods-15">Public methods</a></h2>
+<h2 id="public-methods-26"><a class="header" href="#public-methods-26">Public methods</a></h2>
 <h3 id="max-3"><a class="header" href="#max-3">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -10512,7 +11380,7 @@ float squaredMagnitude vec.SquaredMagnitude();
 <pre><code class="language-cpp">Vector4 vec = Vector4(std::nanf(""), std::numeric_limits&lt;float&gt;::infinity(), 3.0f, 4.0f); // This will raise an assert in debug to avoid using nan or inf values
 bool valid = vec-&gt;HasInvalidValues();
 </code></pre>
-<h3 id="tostring-7"><a class="header" href="#tostring-7">ToString</a></h3>
+<h3 id="tostring-8"><a class="header" href="#tostring-8">ToString</a></h3>
 <p>Return a string representation of the vector like "{x:1.0, y:2.0, z:3.0, w:4.0}"</p>
 <pre><code class="language-cpp">bool ToString() const
 </code></pre>
@@ -10807,7 +11675,7 @@ For this, a menu of the PSP OS ask to the user to setup a network connection.</p
 <p>Class to send and received data to/from a server.<br>
 Created with the NetworkManager class.<br>
 The socket will be closed when the object is destroyed.</p>
-<h2 id="public-methods-16"><a class="header" href="#public-methods-16">Public methods</a></h2>
+<h2 id="public-methods-27"><a class="header" href="#public-methods-27">Public methods</a></h2>
 <hr />
 <h3 id="senddata-string"><a class="header" href="#senddata-string">SendData (string)</a></h3>
 <p>Send data as a string to the server.</p>
@@ -11305,7 +12173,7 @@ Destroy(myGameObject);
 <h2 id="description-61"><a class="header" href="#description-61">Description</a></h2>
 <p>Parent class of collider components (BoxCollider, SphereCollider...).</p>
 <p>Function of Collider can be used on every colllider component.</p>
-<h2 id="public-methods-17"><a class="header" href="#public-methods-17">Public methods</a></h2>
+<h2 id="public-methods-28"><a class="header" href="#public-methods-28">Public methods</a></h2>
 <hr />
 <h3 id="setistrigger"><a class="header" href="#setistrigger">SetIsTrigger</a></h3>
 <p>Set if the collider is a trigger or not.<br>
@@ -11426,7 +12294,7 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 </code></pre>
 <h2 id="description-62"><a class="header" href="#description-62">Description</a></h2>
 <p>This class stores informations of a collision between two colliders</p>
-<h2 id="variables-10"><a class="header" href="#variables-10">Variables</a></h2>
+<h2 id="variables-13"><a class="header" href="#variables-13">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>collider</td><td><code>Collider*</code></td><td>Collider A</td></tr>
@@ -11505,7 +12373,7 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 </code></pre>
 <h2 id="description-63"><a class="header" href="#description-63">Description</a></h2>
 <p>Class to check collisions with a ray.</p>
-<h2 id="public-methods-18"><a class="header" href="#public-methods-18">Public methods</a></h2>
+<h2 id="public-methods-29"><a class="header" href="#public-methods-29">Public methods</a></h2>
 <hr />
 <h3 id="check"><a class="header" href="#check">Check</a></h3>
 <p>Check if a ray hits a collider.<br>
@@ -11610,7 +12478,7 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 </code></pre>
 <h2 id="description-64"><a class="header" href="#description-64">Description</a></h2>
 <p>This class stores informations of a racyast hit.</p>
-<h2 id="variables-11"><a class="header" href="#variables-11">Variables</a></h2>
+<h2 id="variables-14"><a class="header" href="#variables-14">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>hitGameObject</td><td><code>std::weak_ptr&lt;GameObject&gt;</code></td><td>Pointer of the GameObject hit by the ray</td></tr>
@@ -11703,7 +12571,7 @@ It's used to see variables of a class in the <a href="script_api_reference/engin
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
 <p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
 <p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<h2 id="public-methods-19"><a class="header" href="#public-methods-19">Public methods</a></h2>
+<h2 id="public-methods-30"><a class="header" href="#public-methods-30">Public methods</a></h2>
 <hr />
 <h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
 <p>Get all child class variables references (Needs to be implemented).</p>
@@ -11938,7 +12806,7 @@ SceneManager::LoadScene(sceneToLoad);
 <p>Class to get informations and to interact with the screen.</p>
 <h2 id="static-methods-18"><a class="header" href="#static-methods-18">Static methods</a></h2>
 <hr />
-<h3 id="getwidth-1"><a class="header" href="#getwidth-1">GetWidth</a></h3>
+<h3 id="getwidth-2"><a class="header" href="#getwidth-2">GetWidth</a></h3>
 <p>Get the width of the screen in pixels.</p>
 <pre><code class="language-cpp">int GetWidth()
 </code></pre>
@@ -11946,7 +12814,7 @@ SceneManager::LoadScene(sceneToLoad);
 <pre><code class="language-cpp">int width = Screen::GetWidth();
 </code></pre>
 <hr />
-<h3 id="getheight-1"><a class="header" href="#getheight-1">GetHeight</a></h3>
+<h3 id="getheight-2"><a class="header" href="#getheight-2">GetHeight</a></h3>
 <p>Get the height of the screen in pixels.</p>
 <pre><code class="language-cpp">int GetHeight()
 </code></pre>
@@ -12278,7 +13146,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 </code></pre>
 <h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
 <p>Enum to horizontally align text with text rendering components.</p>
-<h2 id="values-11"><a class="header" href="#values-11">Values</a></h2>
+<h2 id="values-12"><a class="header" href="#values-12">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>Left</td><td>Put the text on the left of the pivot</td></tr>
@@ -12358,7 +13226,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 </code></pre>
 <h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
 <p>Enum to vertically align text with text rendering components.</p>
-<h2 id="values-12"><a class="header" href="#values-12">Values</a></h2>
+<h2 id="values-13"><a class="header" href="#values-13">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>Top</td><td>Put the text on the top of the pivot</td></tr>
@@ -12620,7 +13488,7 @@ uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
 <p>Code sample:</p>
 <pre><code class="language-cpp">uint16_t elementSize = VertexDescriptor::GetVertexElementSize(VertexElement::POSITION_32_BITS);
 </code></pre>
-<h2 id="public-methods-20"><a class="header" href="#public-methods-20">Public methods</a></h2>
+<h2 id="public-methods-31"><a class="header" href="#public-methods-31">Public methods</a></h2>
 <hr />
 <h3 id="addvertexelement"><a class="header" href="#addvertexelement">AddVertexElement</a></h3>
 <p>Add a vertex element to the descriptor.</p>
@@ -12794,7 +13662,7 @@ Do not use if there is no color vertex element.</p>
 </code></pre>
 <h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
 <p>Enum of all different vertex element types.</p>
-<h2 id="values-13"><a class="header" href="#values-13">Values</a></h2>
+<h2 id="values-14"><a class="header" href="#values-14">Values</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
 <tr><td>NONE</td><td>Default value, no selected element</td></tr>

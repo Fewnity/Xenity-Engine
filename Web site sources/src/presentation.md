@@ -10,7 +10,6 @@ _It's pink but you can change the color!_
 ### Supported platforms:<br>
 ✔️ Supported<br>
 🚧 Work In Progress<br>
-❌ Not Supported Yet<br>
 
 | Status | Platform |
 |-|-|
@@ -22,8 +21,8 @@ _It's pink but you can change the color!_
 
 ### Features:
 
-- [X] Basic 2D
-- [X] Basic 3D
+- [X] Basic 2D Rendering (Not great for 2D games)
+- [X] 3D Rendering
 - [X] 2D Audio
 - [ ] 3D Audio
 - [X] Skyboxes

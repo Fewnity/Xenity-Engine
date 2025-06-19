@@ -234,6 +234,9 @@ public:
 ---
 ### OnCollisionStay
 Function called every frame if a collider of the GameObject is still colliding with another collider.
+
+Parameters:
+- `info`: Informations about the collision
 ```cpp
 virtual void OnCollisionStay(CollisionEvent info)
 ```

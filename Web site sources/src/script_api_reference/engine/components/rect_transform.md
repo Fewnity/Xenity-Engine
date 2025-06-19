@@ -6,3 +6,12 @@ Add this in your code:
 ```
 
 ## Description
+
+Component that represents a transform for UI elements
+
+## Variables
+
+---
+| Name | Type | Description |
+|-|-|-|
+position | Vector2 | Position of the UI elements between 0 and 1 (Normalized position)

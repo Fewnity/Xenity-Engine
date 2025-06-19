@@ -239,6 +239,65 @@
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/mesh_renderer.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component that renders a mesh with materials</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="getmeshdata"><a class="header" href="#getmeshdata">GetMeshData</a></h3>
+<p>Get mesh data.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;MeshData&gt;&amp; GetMeshData() const
+</code></pre>
+<hr />
+<h3 id="setmeshdata"><a class="header" href="#setmeshdata">SetMeshData</a></h3>
+<p>Set mesh data.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>meshData</code>: Mesh data to use</li>
+</ul>
+<pre><code class="language-cpp">void SetMeshData(const std::shared_ptr &lt;MeshData&gt;&amp; meshData)
+</code></pre>
+<hr />
+<h3 id="getmaterials"><a class="header" href="#getmaterials">GetMaterials</a></h3>
+<p>Get materials list.</p>
+<pre><code class="language-cpp">std::vector&lt;std::shared_ptr&lt;Material&gt;&gt; GetMaterials() const
+</code></pre>
+<hr />
+<h3 id="getmaterial"><a class="header" href="#getmaterial">GetMaterial</a></h3>
+<p>Get a material at a specific index.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>index</code>: Index of the material</li>
+</ul>
+<pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; GetMaterial(int index) const
+</code></pre>
+<hr />
+<h3 id="setmeshdata-1"><a class="header" href="#setmeshdata-1">SetMeshData</a></h3>
+<p>Set a material at a specific index.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>material</code>: Material to use</li>
+<li><code>index</code>: Index of the material</li>
+</ul>
+<pre><code class="language-cpp">void SetMaterial(const std::shared_ptr &lt;Material&gt;&amp; material, int index)
+</code></pre>
+<hr />
+<h3 id="getboundingsphere"><a class="header" href="#getboundingsphere">GetBoundingSphere</a></h3>
+<p>Get the bounding sphere of the mesh.</p>
+<pre><code class="language-cpp">const Sphere&amp; GetBoundingSphere() const
+</code></pre>
+<hr />
+<h3 id="getuseadvancedlighting"><a class="header" href="#getuseadvancedlighting">GetUseAdvancedLighting</a></h3>
+<p>Get if the mesh can use advanced lighting (point lights, spot lights), improve performance if disabled.</p>
+<pre><code class="language-cpp">bool GetUseAdvancedLighting() const
+</code></pre>
+<hr />
+<h3 id="setuseadvancedlighting"><a class="header" href="#setuseadvancedlighting">SetUseAdvancedLighting</a></h3>
+<p>Set if the mesh can use advanced lighting (point lights, spot lights), improve performance if disabled.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>value</code>: Enable advanced lighting?</li>
+</ul>
+<pre><code class="language-cpp">void SetUseAdvancedLighting(bool value)
+</code></pre>
 
                     </main>
 

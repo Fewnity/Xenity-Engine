@@ -239,6 +239,41 @@
 <pre><code class="language-cpp">#include &lt;engine/physics/box_collider.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component to add a cube-shaped collider to a GameObject.</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="setsize"><a class="header" href="#setsize">SetSize</a></h3>
+<p>Set the size of the box collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>size</code>: New size value</li>
+</ul>
+<pre><code class="language-cpp">void SetSize(const Vector3&amp; size)
+</code></pre>
+<hr />
+<h3 id="setoffset"><a class="header" href="#setoffset">SetOffset</a></h3>
+<p>Set the offset position of the box collider.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>offset</code>: New offset value</li>
+</ul>
+<pre><code class="language-cpp">void SetOffset(const Vector3&amp; offset)
+</code></pre>
+<hr />
+<h3 id="getsize"><a class="header" href="#getsize">GetSize</a></h3>
+<p>Get the size of the box collider.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetSize() const
+</code></pre>
+<hr />
+<h3 id="getoffset"><a class="header" href="#getoffset">GetOffset</a></h3>
+<p>Get the offset position of the box collider.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetOffset() const
+</code></pre>
+<hr />
+<h3 id="tostring"><a class="header" href="#tostring">ToString</a></h3>
+<p>Get the size and offset of the box collider in the form of a string.</p>
+<pre><code class="language-cpp">std::string ToString()
+</code></pre>
 
                     </main>
 
