@@ -45,11 +45,11 @@ BillboardRenderer::~BillboardRenderer()
 	AssetManager::RemoveReflection(this);
 }
 
-void BillboardRenderer::SetOrderInLayer(int orderInLayer)
-{
-	m_orderInLayer = orderInLayer;
-	Graphics::SetDrawOrderListAsDirty();
-}
+//void BillboardRenderer::SetOrderInLayer(int orderInLayer)
+//{
+//	m_orderInLayer = orderInLayer;
+//	Graphics::SetDrawOrderListAsDirty();
+//}
 
 #pragma endregion
 

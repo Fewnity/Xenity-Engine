@@ -34,7 +34,7 @@ BoxCollider::BoxCollider()
 ReflectiveData BoxCollider::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	AddVariable(reflectedVariables, s_size, "size", true);
+	AddVariable(reflectedVariables, m_size, "size", true);
 	AddVariable(reflectedVariables, m_offset, "offset", true);
 	AddVariable(reflectedVariables, m_isTrigger, "isTrigger", true);
 	AddVariable(reflectedVariables, m_generateCollisionEvents, "generateCollisionEvents", true);
@@ -59,7 +59,7 @@ void BoxCollider::OnTransformScaled()
 	if (m_bulletCollisionShape)
 	{
 		const Vector3& scale = GetTransform()->GetScale();
-		m_bulletCollisionShape->setLocalScaling(btVector3(s_size.x / 2.0f * scale.x, s_size.y / 2.0f * scale.y, s_size.z / 2.0f * scale.z));
+		m_bulletCollisionShape->setLocalScaling(btVector3(m_size.x / 2.0f * scale.x, m_size.y / 2.0f * scale.y, m_size.z / 2.0f * scale.z));
 
 		if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
 		{
@@ -129,7 +129,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 		m_bulletCollisionShape = new btBoxShape(btVector3(1, 1, 1));
 	}
 
-	m_bulletCollisionShape->setLocalScaling(btVector3(s_size.x / 2.0f * scale.x, s_size.y / 2.0f * scale.y, s_size.z / 2.0f * scale.z));
+	m_bulletCollisionShape->setLocalScaling(btVector3(m_size.x / 2.0f * scale.x, m_size.y / 2.0f * scale.y, m_size.z / 2.0f * scale.z));
 	m_bulletCollisionShape->setUserPointer(this);
 
 	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
@@ -223,8 +223,8 @@ void BoxCollider::SetDefaultSize()
 	if (mesh && mesh->GetMeshData())
 	{
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
-		s_size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox()));
-		m_offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
+		m_size = meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox();
+		m_offset = (meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f;
 		m_offset.x = -m_offset.x;
 		CalculateBoundingBox();
 	}
@@ -232,23 +232,23 @@ void BoxCollider::SetDefaultSize()
 
 void BoxCollider::CalculateBoundingBox()
 {
-	m_min = -s_size / 2.0f + m_offset;
-	m_max = s_size / 2.0f + m_offset;
+	m_min = -m_size / 2.0f + m_offset;
+	m_max = m_size / 2.0f + m_offset;
 }
 
 void BoxCollider::SetSize(const Vector3& size)
 {
-	this->s_size = size;
+	m_size = size;
 	CalculateBoundingBox();
 }
 
 
 void BoxCollider::SetOffset(const Vector3& offset)
 {
-	this->m_offset = offset;
+	m_offset = offset;
 }
 
 std::string BoxCollider::ToString()
 {
-	return s_size.ToString();
+	return "Size: " + m_size.ToString() + ", Offset:" + m_offset.ToString();
 }

@@ -6,23 +6,23 @@
 void FpsCounter::Update()
 {
 	// Basic FPS average calculation
-	lastFps += 1 / Time::GetUnscaledDeltaTime();
-	lastFps /= 2.0f;
+	m_lastFps += 1 / Time::GetUnscaledDeltaTime();
+	m_lastFps /= 2.0f;
 
-	updateCounter -= Time::GetUnscaledDeltaTime();
+	m_updateCounter -= Time::GetUnscaledDeltaTime();
 
-	const std::shared_ptr<TextRenderer> textRendererLock = textRenderer.lock();
+	const std::shared_ptr<TextRenderer> textRendererLock = m_textRenderer.lock();
 	if (textRendererLock)
 	{
-		if (updateCounter <= 0 || !showAverage)
+		if (m_updateCounter <= 0 || !showAverage)
 		{
-			updateCounter = 0.1f;
+			m_updateCounter = 0.1f;
 
 			// Simplify the fps string to avoid too many decimals
 			std::string fpsString = "";
 			if (showAverage)
 			{
-				fpsString = std::to_string(lastFps);
+				fpsString = std::to_string(m_lastFps);
 			}
 			else
 			{
@@ -39,7 +39,7 @@ void FpsCounter::Update()
 ReflectiveData FpsCounter::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, textRenderer, "textRenderer", true);
+	Reflective::AddVariable(reflectedVariables, m_textRenderer, "textRenderer", true);
 	Reflective::AddVariable(reflectedVariables, showAverage, "showAverage", true);
 	return reflectedVariables;
 }

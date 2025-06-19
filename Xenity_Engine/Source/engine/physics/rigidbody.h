@@ -37,50 +37,145 @@ public:
 	RigidBody();
 	~RigidBody();
 
-	void Awake() override;
+	/**
+	* @brief Get the velocity
+	*/
+	[[nodiscard]] const Vector3& GetVelocity() const { return m_velocity; }
 
-	[[nodiscard]] inline const Vector3& GetVelocity() const { return m_velocity; }
-	void SetVelocity(const Vector3& _velocity);
+	/**
+	* @brief Set the velocity
+	*/
+	void SetVelocity(const Vector3& velocity);
 
-	void ApplyTorque(const Vector3& torque);
+	/**
+	* @brief Get the torque applied to the rigidbody
+	*/
 	[[nodiscard]] Vector3 GetTorque() const;
 
-	void SetAngularVelocity(const Vector3& torque);
-	void AddAngularVelocity(const Vector3& torque);
+	/**
+	* @brief Apply torque
+	*/
+	void ApplyTorque(const Vector3& torque);
+
+	/**
+	* @brief Get the angular velocity
+	*/
 	[[nodiscard]] Vector3 GetAngularVelocity() const;
 
-	[[nodiscard]] inline float GetDrag() const { return m_drag; }
-	void SetDrag(float _drag);
+	/**
+	* @brief Set the angular velocity
+	*/
+	void SetAngularVelocity(const Vector3& angularVelocity);
 
-	[[nodiscard]] inline float GetAngularDrag() const { return m_angularDrag; }
-	void SetAngularDrag(float _angularDrag);
+	/**
+	* @brief Add angular velocity
+	*/
+	void AddAngularVelocity(const Vector3& angularVelocity);
 
-	[[nodiscard]] inline float GetBounce() const { return m_bounce; }
-	void SetBounce(float _bounce);
+	/**
+	* @brief Get the drag value
+	*/
+	[[nodiscard]] float GetDrag() const { return m_drag; }
+	
+	/**
+	* @brief Set the drag value
+	*/
+	void SetDrag(float drag);
 
-	[[nodiscard]] inline float GetGravityMultiplier() const  { return m_gravityMultiplier; }
-	void SetGravityMultiplier(float _gravityMultiplier);
+	/**
+	* @brief Get the angular drag value
+	*/
+	[[nodiscard]] float GetAngularDrag() const { return m_angularDrag; }
 
-	[[nodiscard]] inline float IsStatic() const  { return m_isStatic; }
-	void SetIsStatic(float _isStatic);
+	/**
+	* @brief Set the angular drag value
+	*/
+	void SetAngularDrag(float angularDrag);
+	
+	/**
+	* @brief Get the bounce value
+	*/
+	[[nodiscard]] float GetBounce() const { return m_bounce; }
+	
+	/**
+	* @brief Set the bounce value
+	*/
+	void SetBounce(float bounce);
 
-	[[nodiscard]] inline float GetMass() const { return m_mass; }
-	void SetMass(float _mass);
+	/**
+	* @brief Get the gravity multiplier
+	*/
+	[[nodiscard]] float GetGravityMultiplier() const { return m_gravityMultiplier; }
+	
+	/**
+	* @brief Set the gravity multiplier
+	*/
+	void SetGravityMultiplier(float gravityMultiplier);
 
-	[[nodiscard]] inline float GetFriction() const { return m_friction; }
-	void SetFriction(float _friction);
+	/**
+	* @brief Get if the rigidbody is static
+	*/
+	[[nodiscard]] float IsStatic() const { return m_isStatic; }
+	
+	/**
+	* @brief Set if the rigidbody is static
+	*/
+	void SetIsStatic(float isStatic);
 
-	LockedAxis lockedMovementAxis;
-	LockedAxis lockedRotationAxis;
+	/**
+	* @brief Get the mass of the rigidbody
+	*/
+	[[nodiscard]] float GetMass() const { return m_mass; }
 
+	/**
+	* @brief Set the mass of the rigidbody
+	*/
+	void SetMass(float mass);
+
+	/**
+	* @brief Get the friction value
+	*/
+	[[nodiscard]] float GetFriction() const { return m_friction; }
+
+	/**
+	* @brief Set the friction value
+	*/
+	void SetFriction(float friction);
+
+	/**
+	* @brief Activate the rigidbody (used to wake up the rigidbody if it was sleeping)
+	*/
 	void Activate();
+
+	/**
+	* @brief Get locked movement axis
+	*/
+	[[nodiscard]] const LockedAxis& GetLockedMovementAxis() const
+	{
+		return lockedMovementAxis;
+	}
+
+	/**
+	* @brief Set locked movement axis
+	*/
+	void SetLockedMovementAxis(LockedAxis axis);
+
+	/**
+	* @brief Get locked rotation axis
+	*/
+	[[nodiscard]] const LockedAxis& GetLockedRotationAxis() const
+	{
+		return lockedRotationAxis;
+	}
+
+	/**
+	* @brief Set locked rotation axis
+	*/
+	void SetLockedRotationAxis(LockedAxis axis);
 
 protected:
 	void RemoveReferences()  override;
-
-	bool m_disableEvent = false;
-	std::vector<Collider*> m_colliders;
-	bool m_generatesEvents = false;
+	void Awake() override;
 	void UpdateGeneratesEvents();
 
 	void UpdateRigidBodyMass();
@@ -109,6 +204,9 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
+	std::vector<Collider*> m_colliders;
+	LockedAxis lockedMovementAxis;
+	LockedAxis lockedRotationAxis;
 
 	Vector3 m_velocity = Vector3(0, 0, 0);
 
@@ -129,6 +227,8 @@ protected:
 	bool m_isStatic = false;
 	bool m_isEmpty = false;
 	bool m_isTriggerEmpty = false;
+	bool m_generatesEvents = false;
+	bool m_disableEvent = false;
 
 	/**
 	 * @brief [Internal]

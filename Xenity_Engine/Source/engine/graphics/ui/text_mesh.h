@@ -20,22 +20,7 @@ class API TextMesh : public IDrawable
 {
 public:
 	TextMesh();
-
 	~TextMesh();
-
-	/**
-	* @brief Set order in layer
-	* @param orderInLayer Order in layer
-	*/
-	void SetOrderInLayer(int orderInLayer);
-
-	/**
-	* @brief Get order in layer
-	*/
-	[[nodiscard]] int GetOrderInLayer() const
-	{
-		return m_orderInLayer;
-	}
 
 	/**
 	* @brief Set text color

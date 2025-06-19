@@ -48,12 +48,6 @@ TextMesh::~TextMesh()
 	AssetManager::RemoveReflection(this);
 }
 
-void TextMesh::SetOrderInLayer(int orderInLayer)
-{
-	m_orderInLayer = orderInLayer;
-	Graphics::SetDrawOrderListAsDirty();
-}
-
 #pragma endregion
 
 void TextMesh::SetText(const std::string& text)

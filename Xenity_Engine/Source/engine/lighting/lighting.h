@@ -34,21 +34,21 @@ public:
 	* @param intensity Light intensity
 	* @param range Light Range (Greater or equals to 0)
 	*/
-	void SetupPointLight(const Color& color, float _intensity, const float _range);
+	void SetupPointLight(const Color& color, float intensity, const float range);
 
 	/**
 	* @brief Setup the light as a directional light
 	* @param color Light color
 	* @param intensity Light intensity
 	*/
-	void SetupDirectionalLight(const Color& color, const float _intensity);
+	void SetupDirectionalLight(const Color& color, const float intensity);
 
 	/**
 	* @brief Setup the light as an ambient light
 	* @param color Light color
 	* @param intensity Light intensity
 	*/
-	void SetupAmbientLight(const Color& color, const float _intensity);
+	void SetupAmbientLight(const Color& color, const float intensity);
 
 	/**
 	* @brief Setup the light as a spot light
@@ -57,17 +57,26 @@ public:
 	* @param range Light Range (Greater or equals to 0)
 	* @param angle Spot angle [0;90]
 	*/
-	void SetupSpotLight(const Color& color, const float _intensity, const float _range, const float _angle);
+	void SetupSpotLight(const Color& color, const float intensity, const float range, const float angle);
 
 	/**
-	* @brief Setup the light as a point light
+	* @brief Setup the light as a spot light
 	* @param color Light color
 	* @param intensity Light intensity
 	* @param range Light Range (Greater or equals to 0)
 	* @param angle Spot angle [0;90]
 	* @param smoothness Spot smoothness [0;1]
 	*/
-	void SetupSpotLight(const Color& color, const float _intensity, const float _range, const float _angle, const float _smoothness);
+	void SetupSpotLight(const Color& color, const float intensity, const float range, const float angle, const float smoothness);
+
+	/**
+	* @brief Get light range
+	* @param value Light range
+	*/
+	[[nodiscard]] float GetRange() const
+	{
+		return m_range;
+	}
 
 	/**
 	* @brief Set light range
@@ -76,10 +85,26 @@ public:
 	void SetRange(float value);
 
 	/**
+	* @brief Get spot angle
+	*/
+	[[nodiscard]] float GetSpotAngle() const
+	{
+		return m_spotAngle;
+	}
+
+	/**
 	* @brief Set spot angle
 	* @param value Spot angle [0;90]
 	*/
 	void SetSpotAngle(float angle);
+
+	/**
+	* @brief Get spot smoothness
+	*/
+	[[nodiscard]] float GetSpotSmoothness() const
+	{
+		return m_spotSmoothness;
+	}
 
 	/**
 	* @brief Set spot smoothness
@@ -90,58 +115,42 @@ public:
 	Color color = Color();
 
 	/**
-	* @brief Set light intensity
+	* @brief Get light type
 	*/
-	void SetIntensity(float intensity);
-
-	[[nodiscard]] inline LightType GetType() const
+	[[nodiscard]] LightType GetType() const
 	{
 		return m_type;
 	}
 
+	/**
+	* @brief Set light type
+	*/
 	void SetType(LightType type);
-
-	/**
-	* @brief Get light range
-	* @param value Light range
-	*/
-	[[nodiscard]] inline float GetRange() const
-	{
-		return m_range;
-	}
-
-	/**
-	* @brief Get spot angle
-	*/
-	[[nodiscard]] inline float GetSpotAngle() const
-	{
-		return m_spotAngle;
-	}
-
-	/**
-	* @brief Get spot smoothness
-	*/
-	[[nodiscard]] inline float GetSpotSmoothness() const
-	{
-		return m_spotSmoothness;
-	}
 
 	/**
 	* @brief Get light intensity
 	*/
-	[[nodiscard]] inline float GetIntensity() const
+	[[nodiscard]] float GetIntensity() const
 	{
 		return m_intensity;
 	}
 
+	/**
+	* @brief Set light intensity
+	*/
+	void SetIntensity(float intensity);
 
-	[[nodiscard]] float GetMaxLightDistance() const;
-
+	/**
+	* @brief Get if the light should simulate lighting from old consoles (To get the same behavior as PSP)
+	*/
 	[[nodiscard]] bool GetOldConsoleCompatibility() const
 	{
 		return m_oldConsoleCompatibility;
 	}
 
+	/**
+	* @brief Set if the light should simulate lighting from old consoles (To get the same behavior as PSP)
+	*/
 	void SetOldConsoleCompatibility(bool value)
 	{
 		m_oldConsoleCompatibility = value;
@@ -169,6 +178,8 @@ protected:
 	{
 		return m_quadratic;
 	}
+
+	[[nodiscard]] float GetMaxLightDistance() const;
 
 	friend class AssetManager;
 	friend class WorldPartitionner;

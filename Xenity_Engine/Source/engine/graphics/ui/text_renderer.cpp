@@ -50,11 +50,11 @@ TextRenderer::~TextRenderer()
 
 #pragma endregion
 
-void TextRenderer::SetOrderInLayer(int orderInLayer)
-{
-	m_orderInLayer = orderInLayer;
-	Graphics::SetDrawOrderListAsDirty();
-}
+//void TextRenderer::SetOrderInLayer(int orderInLayer)
+//{
+//	m_orderInLayer = orderInLayer;
+//	Graphics::SetDrawOrderListAsDirty();
+//}
 
 void TextRenderer::SetText(const std::string& text)
 {

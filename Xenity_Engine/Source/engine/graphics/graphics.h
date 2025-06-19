@@ -137,11 +137,6 @@ public:
 
 	static void DrawSubMesh(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const MeshData::SubMesh& subMesh, Material& material, RenderingSettings& renderSettings);
 
-	/**
-	* @brief Set draw order list as dirty
-	*/
-	static void SetDrawOrderListAsDirty();
-
 	static std::vector<std::weak_ptr<Camera>> cameras;
 	API static std::shared_ptr<Camera> usedCamera;
 	static bool needUpdateCamera;

@@ -16,14 +16,6 @@ class RigidBody;
 class btCollisionShape;
 class btRigidBody;
 
-enum class CollisionSide
-{
-	NoSide = 0,
-	SideX = 1,
-	SideY = 2,
-	SideZ = 4,
-};
-
 /**
 * @brief Component to add a cube-shaped collider to a GameObject
 */
@@ -33,28 +25,35 @@ public:
 	BoxCollider();
 	~BoxCollider();
 
-	[[nodiscard]] inline const Vector3& GetMin() const
-	{
-		return m_min;
-	}
-
-	[[nodiscard]] inline const Vector3& GetMax() const
-	{
-		return m_max;
-	}
-
+	/**
+	* @brief Set the size of the box collider
+	*/
 	void SetSize(const Vector3& size);
-	[[nodiscard]] inline const Vector3& GetSize() const
+
+	/**
+	* @brief Set the offset position of the box collider
+	*/
+	void SetOffset(const Vector3& offset);
+
+	/**
+	* @brief Get the size of the box collider
+	*/
+	[[nodiscard]] const Vector3& GetSize() const
 	{
-		return s_size;
+		return m_size;
 	}
 
-	void SetOffset(const Vector3& offset);
-	[[nodiscard]] inline const Vector3& GetOffset() const
+	/**
+	* @brief Get the offset position of the box collider
+	*/
+	[[nodiscard]] const Vector3& GetOffset() const
 	{
 		return m_offset;
 	}
 
+	/**
+	* @brief Get the size and offset of the box collider in the form of a string
+	*/
 	[[nodiscard]] std::string ToString() override;
 
 protected:
@@ -86,7 +85,7 @@ protected:
 	*/
 	void CalculateBoundingBox();
 
-	Vector3 s_size = Vector3(1);
+	Vector3 m_size = Vector3(1);
 	Vector3 m_offset = Vector3(0);
 	Vector3 m_min;
 	Vector3 m_max;

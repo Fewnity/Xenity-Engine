@@ -43,11 +43,11 @@ SpriteRenderer::~SpriteRenderer()
 	AssetManager::RemoveReflection(this);
 }
 
-void SpriteRenderer::SetOrderInLayer(int orderInLayer)
-{
-	m_orderInLayer = orderInLayer;
-	Graphics::SetDrawOrderListAsDirty();
-}
+//void SpriteRenderer::SetOrderInLayer(int orderInLayer)
+//{
+//	m_orderInLayer = orderInLayer;
+//	Graphics::SetDrawOrderListAsDirty();
+//}
 
 #pragma endregion
 

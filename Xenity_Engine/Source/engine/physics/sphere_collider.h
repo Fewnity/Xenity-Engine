@@ -17,7 +17,7 @@ class btCollisionShape;
 class btRigidBody;
 
 /**
-* @brief Component to add a cube-shaped collider to a GameObject
+* @brief Component to add a sphere-shaped collider to a GameObject
 */
 class API SphereCollider : public Collider
 {
@@ -25,17 +25,31 @@ public:
 	SphereCollider();
 	~SphereCollider();
 
-	void SetSize(const float& size);
-	[[nodiscard]] inline const float& GetSize() const
+	/**
+	* @brief Get the size of the sphere collider
+	*/
+	[[nodiscard]] float GetSize() const
 	{
 		return m_size;
 	}
 
-	void SetOffset(const Vector3& offset);
-	[[nodiscard]] inline const Vector3& GetOffset() const
+	/**
+	* @brief Set the radius of the sphere collider
+	*/
+	void SetSize(float size);
+
+	/**
+	* @brief Get the offset position of the sphere collider
+	*/
+	[[nodiscard]] const Vector3& GetOffset() const
 	{
 		return m_offset;
 	}
+
+	/**
+	* @brief Set the offset position of the sphere collider
+	*/
+	void SetOffset(const Vector3& offset);
 
 protected:
 

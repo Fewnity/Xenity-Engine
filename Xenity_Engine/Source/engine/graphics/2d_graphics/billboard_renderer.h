@@ -14,26 +14,42 @@
 
 class Texture;
 
+/**
+* @brief Component to render a billboard sprite (2D sprite that always faces the camera)
+*/
 class API BillboardRenderer : public IDrawable
 {
 public:
 	BillboardRenderer();
 	~BillboardRenderer();
 
-	void SetOrderInLayer(int orderInLayer);
+	///**
+	//* @brief Set the order in layer of the sprite
+	//*/
+	//void SetOrderInLayer(int orderInLayer);
 
 	/**
 	* @brief Set the color of the sprite
 	*/
-	inline void SetColor(const Color& color)
+	void SetColor(const Color& color)
 	{
 		m_color = color;
 	}
 
 	/**
+	* @brief Set the material of the sprite
+	*/
+	void SetMaterial(const std::shared_ptr<Material>& material);
+	
+	/**
+	* @brief Set the texture of the sprite
+	*/
+	void SetTexture(const std::shared_ptr<Texture>& texture);
+
+	/**
 	* @brief Get the material of the sprite
 	*/
-	[[nodiscard]] inline std::shared_ptr <Material> GetMaterial()
+	[[nodiscard]] const std::shared_ptr<Material>& GetMaterial()
 	{
 		return m_material;
 	}
@@ -41,20 +57,10 @@ public:
 	/**
 	* @brief Get the texture of the sprite
 	*/
-	[[nodiscard]] inline std::shared_ptr <Texture> GetTexture()
+	[[nodiscard]] const std::shared_ptr<Texture>& GetTexture()
 	{
 		return m_texture;
 	}
-
-	/**
-	* @brief Set the material of the sprite
-	*/
-	void SetMaterial(const std::shared_ptr <Material>& material);
-	
-	/**
-	* @brief Set the texture of the sprite
-	*/
-	void SetTexture(const std::shared_ptr <Texture>& texture);
 
 protected:
 	ReflectiveData GetReflectiveData() override;
@@ -81,7 +87,7 @@ protected:
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
 	Color m_color = Color();
-	std::shared_ptr <Material> m_material = nullptr;
-	std::shared_ptr <Texture> m_texture = nullptr;
+	std::shared_ptr<Material> m_material = nullptr;
+	std::shared_ptr<Texture> m_texture = nullptr;
 	int m_orderInLayer = 0;
 };

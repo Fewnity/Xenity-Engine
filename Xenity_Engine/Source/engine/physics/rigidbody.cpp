@@ -188,6 +188,18 @@ void RigidBody::Activate()
 	}
 }
 
+void RigidBody::SetLockedMovementAxis(LockedAxis axis)
+{
+	lockedMovementAxis = axis;
+	UpdateLockedAxis();
+}
+
+void RigidBody::SetLockedRotationAxis(LockedAxis axis)
+{
+	lockedRotationAxis = axis;
+	UpdateLockedAxis();
+}
+
 void RigidBody::RemoveReferences()
 {
 	PhysicsManager::RemoveRigidBody(this);

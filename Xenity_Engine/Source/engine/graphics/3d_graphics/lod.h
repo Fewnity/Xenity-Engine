@@ -11,6 +11,9 @@
 
 class MeshRenderer;
 
+/**
+* @brief Component to manage Level of Detail (LOD) for a GameObject
+*/
 class API Lod : public Component
 {
 public:

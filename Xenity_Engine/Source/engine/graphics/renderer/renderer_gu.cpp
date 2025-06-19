@@ -68,6 +68,7 @@ int RendererGU::Init()
 	sceGuViewport(2048, 2048, PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 
 	sceGuDepthRange(100, 65535);
+	// This function has changed in the new PSP SDK, so we may need to adjust it later
 	sceGuScissor(0, 0, PSP_SCR_WIDTH, PSP_SCR_HEIGHT);
 	sceGuEnable(GU_SCISSOR_TEST);
 

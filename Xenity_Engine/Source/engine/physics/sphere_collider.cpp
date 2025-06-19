@@ -193,13 +193,13 @@ void SphereCollider::SetDefaultSize()
 	}
 }
 
-void SphereCollider::SetSize(const float& size)
+void SphereCollider::SetSize(float size)
 {
-	this->m_size = size;
+	m_size = size;
 }
 
 
 void SphereCollider::SetOffset(const Vector3& offset)
 {
-	this->m_offset = offset;
+	m_offset = offset;
 }

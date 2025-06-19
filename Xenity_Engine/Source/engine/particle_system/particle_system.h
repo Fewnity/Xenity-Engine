@@ -42,21 +42,32 @@ public:
 	void ResetParticles();
 
 	/**
+	* @brief Get if the particle system is emitting particles
+	*/
+	[[nodiscard]] bool IsEmitting() const
+	{
+		return m_isEmitting;
+	}
+
+	/**
 	* @brief Set if the particle system is emitting particles
 	*/
-	inline void SetIsEmitting(bool isEmitting)
+	void SetIsEmitting(bool isEmitting)
 	{
 		m_isEmitting = isEmitting;
 	}
 
 	/**
-	* @brief Get if the particle system is emitting particles
+	* @brief Get the particle spawn rate
 	*/
-	[[nodiscard]] inline bool IsEmitting() const
+	[[nodiscard]] float GetSpawnRate() const
 	{
-		return m_isEmitting;
+		return m_spawnRate;
 	}
 
+	/**
+	* @brief Set the particle spawn rate
+	*/
 	void SetSpawnRate(float spawnRate) 
 	{
 		if (spawnRate < 0)
@@ -64,11 +75,6 @@ public:
 			spawnRate = 0;
 		}
 		m_spawnRate = spawnRate;
-	}
-
-	[[nodiscard]] float GetSpawnRate() const
-	{
-		return m_spawnRate;
 	}
 
 	/**
@@ -90,7 +96,7 @@ public:
 
 	/**
 	* @brief Set you own function to set the speed multiplier of the particle over its life time
-	* @brief The function takes the life time ratio [0;1] and return the speed of the particle
+	* @brief The function takes the life time ratio [0;1] and return the speed multiplier of the particle
 	* @param function The function to set, should be static (nullptr to use the default function)
 	*/
 	void SetSpeedMultiplierOverLifeTimeFunction(float (*function)(float))

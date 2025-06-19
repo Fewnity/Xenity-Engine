@@ -340,7 +340,7 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 	const glm::mat4& camMat = Graphics::usedCamera->GetTransformRaw()->GetTransformationMatrix();
 	const glm::mat4& transMat = GetTransformRaw()->GetTransformationMatrix();
 
-	const RGBA& rgba = m_color.GetRGBA();
+	/*const RGBA& rgba = m_color.GetRGBA();*/
 	const Vector3& scale = GetTransformRaw()->GetScale();
 	const glm::vec3 fixedScale = glm::vec3(1.0f / camScale.x, 1.0f / camScale.z, 1.0f / camScale.y) * glm::vec3(scale.x, scale.y, scale.z);
 
@@ -370,9 +370,13 @@ void ParticleSystem::DrawCommand(const RenderCommand& renderCommand)
 			// Fix scale if the camera has a scale (Y and Z are inverted for some raison)
 			newMat = glm::scale(newMat, fixedScale);
 		}
+		Vector4 lifeTimeColorVec4 = colorOverLifeTimeFunction(particle.currentLifeTime / particle.lifeTime);
+		const Color col = Color::CreateFromRGBAFloat(lifeTimeColorVec4.x, lifeTimeColorVec4.y, lifeTimeColorVec4.z, lifeTimeColorVec4.w);
+		const Color finalColor = m_color * col;
+		const RGBA& rgba = finalColor.GetRGBA();
 
 		newMat = glm::scale(newMat, glm::vec3(particle.scale));
-		renderCommand.subMesh->m_meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, std::sin((particle.currentLifeTime / particle.lifeTime) * Math::PI));
+		renderCommand.subMesh->m_meshData->unifiedColor.SetFromRGBAFloat(rgba.r, rgba.g, rgba.b, rgba.a);
 
 #if defined(__PSP__)
 		Graphics::DrawSubMesh(*renderCommand.subMesh, *m_material, m_texture.get(), renderSettings, newMat, newMat, newMat, false);

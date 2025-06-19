@@ -13,7 +13,8 @@
 #include <engine/game_elements/transform.h>
 #include <engine/game_elements/rect_transform.h>
 
-// Vectors
+// Math
+#include <engine/math/math.h>
 #include <engine/math/vector2.h>
 #include <engine/math/vector2_int.h>
 #include <engine/math/vector3.h>
@@ -45,7 +46,7 @@
 
 // Graphics
 #include <engine/graphics/camera.h>
-#include <engine/graphics/camera_projection_types.h>
+#include <engine/graphics/camera_projection_type.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/shader/shader.h>
 #include <engine/graphics/material.h>

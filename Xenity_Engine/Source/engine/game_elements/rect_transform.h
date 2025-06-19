@@ -11,13 +11,16 @@
 
 class Canvas;
 
-class RectTransform : public Component
+/**
+* @brief Component that represents a transform for UI elements
+*/
+class API RectTransform : public Component
 {
 public:
 	RectTransform();
 	~RectTransform();
 
-	Vector2 anchors = Vector2(0);
+	//Vector2 anchors = Vector2(0);
 	Vector2 position = Vector2(0);
 
 protected:
@@ -29,10 +32,10 @@ protected:
 	/**
 	 * @brief [Internal] Update the position of the rect transform
 	 */
-	void UpdatePosition(const std::shared_ptr <Canvas>& canvas);
+	void UpdatePosition(const std::shared_ptr<Canvas>& canvas);
 
 	/**
 	 * @brief [Internal] Update the position of the rect transform
 	 */
-	void UpdatePosition(const std::shared_ptr <RectTransform>& canvas);
+	void UpdatePosition(const std::shared_ptr<RectTransform>& canvas);
 };

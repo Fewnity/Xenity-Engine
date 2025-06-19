@@ -102,27 +102,28 @@ struct Frustum
 	}
 };
 
+/**
+* @brief Component for rendering the scene
+*/
 class API Camera : public Component
 {
 public:
 	Camera();
 	~Camera();
 
-	Frustum frustum;
-
 	/**
-	* @brief Set field of view
-	* @param Field of view angle
+	* @brief Set field of view  (Perspective mode)
+	* @param Field of view angle (in degrees)
 	*/
 	void SetFov(const float fov);
 
 	/**
-	* @brief Get field of view
+	* @brief Get field of view in degrees
 	*/
 	[[nodiscard]] float GetFov() const;
 
 	/**
-	* @brief Set projection size
+	* @brief Set projection size (Orthographic mode)
 	* @param value Projection size
 	*/
 	void SetProjectionSize(const float value);
@@ -136,6 +137,12 @@ public:
 	}
 
 	/**
+	* @brief Set near clipping plane
+	* @param value Near clipping plane
+	*/
+	void SetNearClippingPlane(float value);
+
+	/**
 	* @brief Get near clipping plane
 	*/
 	[[nodiscard]] float GetNearClippingPlane() const
@@ -144,24 +151,18 @@ public:
 	}
 
 	/**
+	* @brief Set far clipping plane
+	* @param value Far clipping plane
+	*/
+	void SetFarClippingPlane(float value);
+
+	/**
 	* @brief Get far clipping plane
 	*/
 	[[nodiscard]] float GetFarClippingPlane() const
 	{
 		return m_farClippingPlane;
 	}
-
-	/**
-	* @brief Set near clipping plane
-	* @param value Neaar clipping plane
-	*/
-	void SetNearClippingPlane(float value);
-
-	/**
-	* @brief Set far clipping plane
-	* @param value Far clipping plane
-	*/
-	void SetFarClippingPlane(float value);
 
 	/**
 	* @brief Get 2D world position from pixel coordinate
@@ -197,6 +198,9 @@ public:
 		return m_projectionType;
 	}
 
+	/**
+	* @brief Get mouse normalized ray direction
+	*/
 	[[nodiscard]] Vector3 GetMouseRay();
 
 	/**
@@ -233,19 +237,16 @@ public:
 
 	/**
 	* @brief Set if the camera is using multisampling (Windows Only)
-	* @param _UseMultisampling True to enable Multisampling
+	* @param useMultisampling True to enable Multisampling
 	*/
 	void SetUseMultisampling(bool useMultisampling)
 	{
 		m_useMultisampling = useMultisampling;
 	}
 
-	void OnComponentAttached() override;
-
-	void UpdateCameraTransformMatrix();
-
 	/**
-	* Heavy operation, use with caution
+	* @brief Get a copy of the frame buffer
+	* @brief Heavy operation, use with caution
 	*/
 	[[nodiscard]] std::unique_ptr<uint8_t[]> GetRawFrameBuffer();
 
@@ -268,8 +269,14 @@ protected:
 	friend class TextManager;
 	friend class ParticleSystem;
 	friend class Material;
+	friend class MeshRenderer;
+
+	Frustum frustum;
 
 	void RemoveReferences() override;
+	void OnComponentAttached() override;
+
+	void UpdateCameraTransformMatrix();
 
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;

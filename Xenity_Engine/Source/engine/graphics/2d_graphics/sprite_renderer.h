@@ -14,36 +14,69 @@
 
 class Texture;
 
+/**
+* @brief Component that renders a sprite with a texture and material
+*/
 class API SpriteRenderer : public IDrawable
 {
 public:
 	SpriteRenderer();
 	~SpriteRenderer();
 
-	void SetOrderInLayer(int orderInLayer);
+	///**
+	//* @brief Get the order in layer of the sprite
+	//*/
+	//[[nodiscard]] int GetOrderInLayer() const
+	//{
+	//	return m_orderInLayer;
+	//}
 
-	[[nodiscard]] inline int GetOrderInLayer() const
+	///**
+	//* @brief Set the order in layer of the sprite
+	//*/
+	//void SetOrderInLayer(int orderInLayer);
+
+	/**
+	* @brief Get the color of the sprite
+	*/
+	[[nodiscard]] const Color& GetColor() const
 	{
-		return m_orderInLayer;
+		return m_color;
 	}
 
 	/**
 	* @brief Set the color of the sprite
 	*/
-	inline void SetColor(const Color& color)
+	void SetColor(const Color& color)
 	{
 		m_color = color;
 	}
 
 	/**
+	* @brief Get the material of the sprite
+	*/
+	[[nodiscard]] const std::shared_ptr<Material>& GetMaterial() const
+	{
+		return m_material;
+	}
+
+	/**
 	* @brief Set the material of the sprite
 	*/
-	void SetMaterial(const std::shared_ptr <Material>& material);
+	void SetMaterial(const std::shared_ptr<Material>& material);
+
+	/**
+	* @brief Get the texture of the sprite
+	*/
+	[[nodiscard]] const std::shared_ptr<Texture>& GetTexture() const
+	{
+		return m_texture;
+	}
 
 	/**
 	* @brief Set the texture of the sprite
 	*/
-	void SetTexture(const std::shared_ptr <Texture>& texture);
+	void SetTexture(const std::shared_ptr<Texture>& texture);
 
 protected:
 	[[nodiscard]] ReflectiveData GetReflectiveData() override;

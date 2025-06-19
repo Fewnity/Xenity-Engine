@@ -58,8 +58,6 @@ std::vector<IDrawable*> Graphics::s_orderedIDrawable;
 
 std::vector<std::weak_ptr<Lod>> Graphics::s_lods;
 
-bool Graphics::s_drawOrderListDirty = true;
-
 std::shared_ptr <MeshData> skyPlane = nullptr;
 
 Shader* Graphics::s_currentShader = nullptr;
@@ -487,7 +485,6 @@ void Graphics::AddDrawable(IDrawable* drawableToAdd)
 	s_orderedIDrawable.push_back(drawableToAdd);
 	s_iDrawablesCount++;
 	s_isRenderingBatchDirty = true;
-	SetDrawOrderListAsDirty();
 }
 
 void Graphics::RemoveDrawable(const IDrawable* drawableToRemove)
@@ -598,13 +595,6 @@ void Graphics::DrawSubMesh(const MeshData::SubMesh& subMesh, Material& material,
 	}
 
 	Engine::GetRenderer().DrawSubMesh(subMesh, material, *texture, renderSettings);
-}
-
-void Graphics::SetDrawOrderListAsDirty()
-{
-	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
-
-	s_drawOrderListDirty = true;
 }
 
 void Graphics::CreateLightLists()

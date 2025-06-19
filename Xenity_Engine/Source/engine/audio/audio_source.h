@@ -12,6 +12,9 @@
 
 class AudioClip;
 
+/**
+* @brief Component to play audio clips
+*/
 class API AudioSource : public Component
 {
 public:
@@ -42,7 +45,7 @@ public:
 	* @brief Set volume
 	* @param _volume
 	*/
-	void SetVolume(float _volume);
+	void SetVolume(float volume);
 
 	/**
 	* @brief Set panning
@@ -59,7 +62,7 @@ public:
 	/**
 	* @brief Get volume
 	*/
-	[[nodiscard]] inline float GetVolume() const
+	[[nodiscard]] float GetVolume() const
 	{
 		return m_volume;
 	}
@@ -67,7 +70,7 @@ public:
 	/**
 	* @brief Get panning
 	*/
-	[[nodiscard]] inline float GetPanning() const
+	[[nodiscard]] float GetPanning() const
 	{
 		return m_pan;
 	}
@@ -75,7 +78,7 @@ public:
 	/**
 	* @brief Get is playing
 	*/
-	[[nodiscard]] inline bool IsPlaying() const
+	[[nodiscard]] bool IsPlaying() const
 	{
 		return m_isPlaying;
 	}
@@ -83,17 +86,23 @@ public:
 	/**
 	* @brief Get is looping
 	*/
-	[[nodiscard]] inline bool IsLooping() const
+	[[nodiscard]] bool IsLooping() const
 	{
 		return m_loop;
 	}
 
-	[[nodiscard]] inline const std::shared_ptr<AudioClip>& GetAudioClip()
+	/**
+	* @brief Get audio clip
+	*/
+	[[nodiscard]] const std::shared_ptr<AudioClip>& GetAudioClip()
 	{
 		return m_audioClip;
 	}
 
-	inline void SetAudioClip(const std::shared_ptr<AudioClip>& audioClip)
+	/**
+	* @brief Set audio clip
+	*/
+	void SetAudioClip(const std::shared_ptr<AudioClip>& audioClip)
 	{
 		m_audioClip = audioClip;
 	}
@@ -115,7 +124,7 @@ protected:
 	/**
 	* @brief Get shared pointer from this
 	*/
-	[[nodiscard]] inline std::shared_ptr<AudioSource> GetThisShared()
+	[[nodiscard]] std::shared_ptr<AudioSource> GetThisShared()
 	{
 		return std::dynamic_pointer_cast<AudioSource>(shared_from_this());
 	}

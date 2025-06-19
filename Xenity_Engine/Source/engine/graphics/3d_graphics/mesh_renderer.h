@@ -17,11 +17,22 @@ class MeshData;
 class Material;
 class Light;
 
+/**
+* @brief Component that renders a mesh with materials
+*/
 class API MeshRenderer : public IDrawable
 {
 public:
 	MeshRenderer();
 	~MeshRenderer();
+
+	/**
+	* @brief Get mesh data
+	*/
+	[[nodiscard]] const std::shared_ptr<MeshData>& GetMeshData() const
+	{
+		return m_meshData;
+	}
 
 	/**
 	* @brief Set mesh data
@@ -30,24 +41,17 @@ public:
 	void SetMeshData(const std::shared_ptr <MeshData>& meshData);
 
 	/**
-	* @brief Get mesh data
-	*/
-	[[nodiscard]] inline const std::shared_ptr<MeshData>& GetMeshData() const
-	{
-		return m_meshData;
-	}
-
-	/**
 	* Get materials list
 	*/
-	[[nodiscard]] inline std::vector<std::shared_ptr <Material>> GetMaterials() const
+	[[nodiscard]] std::vector<std::shared_ptr<Material>> GetMaterials() const
 	{
 		return m_materials;
 	}
 
-	void SetMaterial(const std::shared_ptr <Material>& material, int index);
-
-	[[nodiscard]] inline std::shared_ptr <Material> GetMaterial(int index) const
+	/**
+	* @brief Get a material at a specific index
+	*/
+	[[nodiscard]] std::shared_ptr<Material> GetMaterial(int index) const
 	{
 		if (index < m_materials.size())
 			return m_materials[index];
@@ -55,25 +59,39 @@ public:
 		return nullptr;
 	}
 
+	/**
+	* @brief Set a material at a specific index
+	*/
+	void SetMaterial(const std::shared_ptr<Material>& material, int index);
+
+	/**
+	* @brieg Get the bounding sphere of the mesh
+	*/
 	[[nodiscard]] const Sphere& GetBoundingSphere() const
 	{
 		return m_boundingSphere;
 	}
 
-	void OnDrawGizmosSelected() override;
-
-	void SetUseAdvancedLighting(bool value);
-
+	/**
+	* @brief Get if the mesh can use advanced lighting (point lights, spot lights), improve performance if disabled
+	*/
 	[[nodiscard]] bool GetUseAdvancedLighting() const
 	{
 		return m_useAdvancedLighting;
 	}
+
+	/**
+	* @brief Set if the mesh can use advanced lighting (point lights, spot lights), improve performance if disabled
+	*/
+	void SetUseAdvancedLighting(bool value);
 
 protected:
 	friend class WorldPartitionner;
 
 	void OnNewRender(int cameraIndex) override;
 	void OnComponentAttached() override;
+	void OnDrawGizmosSelected() override;
+
 	std::vector<WorldPartitionner::Chunk*> m_worldChunkPositions;
 	std::vector<Light*> m_affectedByLights;
 	[[nodiscard]] Sphere ProcessBoundingSphere() const;

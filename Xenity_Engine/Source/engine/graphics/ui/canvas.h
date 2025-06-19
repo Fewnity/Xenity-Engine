@@ -10,6 +10,9 @@
 #include <engine/graphics/iDrawable.h>
 #include <engine/math/vector2_int.h>
 
+/**
+* @brief Component to render a canvas (UI elements)
+*/
 class API Canvas : public IDrawable
 {
 public:
