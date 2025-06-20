@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-This class stores informations of a racyast hit.
+This class stores information of a racyast hit.
 
 ## Variables
 

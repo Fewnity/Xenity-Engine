@@ -1,4 +1,4 @@
-# SkyBox
+# Skybox
 
 Add this in your code:
 ```cpp

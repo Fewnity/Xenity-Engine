@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Component that renders a sprite with a texture and material
+Component that renders a sprite with a texture and material.
 
 ## Public Methods
 

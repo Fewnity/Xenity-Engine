@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-This class stores informations about a color.
+This class stores information about a color.
 
 ## Static methods
 

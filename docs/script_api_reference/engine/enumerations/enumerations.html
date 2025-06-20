@@ -235,6 +235,17 @@
 
 </style>
 <h1 id="enumerations"><a class="header" href="#enumerations">Enumerations</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/reflection/enum_utils.h&gt;
+</code></pre>
+<p>If you want to create an enum visible by the editor inspector, you have to use Xenity's custom enums.</p>
+<pre><code class="language-cpp">ENUM(MyEnum, Value0, Value1, Value2);
+</code></pre>
+<p>You can assigan values to each elements:</p>
+<pre><code class="language-cpp">ENUM(MyEnum, Value0 = 1, Value1 = 3, Value2 = 8);
+</code></pre>
+<p>The type of value of an enum element is <code>int</code>.</p>
+<p>You are allowed to create a classic C++ enum class, but you won't be able to use it in the inspector.</p>
 
                     </main>
 

@@ -239,16 +239,180 @@
 <pre><code class="language-cpp">#include &lt;engine/game_elements/transform.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Class representing a 3D transformation (position, rotation, scale) of a GameObject.</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public Methods</a></h2>
+<hr />
+<h3 id="getposition"><a class="header" href="#getposition">GetPosition</a></h3>
+<p>Get world position.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetPosition() const
+</code></pre>
+<hr />
+<h3 id="setposition"><a class="header" href="#setposition">SetPosition</a></h3>
+<p>Set world position.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>position</code>: New world position</li>
+</ul>
+<pre><code class="language-cpp">void SetPosition(const Vector3&amp; position)
+</code></pre>
+<hr />
+<h3 id="getlocalposition"><a class="header" href="#getlocalposition">GetLocalPosition</a></h3>
+<p>Get local position.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetLocalPosition() const
+</code></pre>
+<hr />
+<h3 id="setlocalposition"><a class="header" href="#setlocalposition">SetLocalPosition</a></h3>
+<p>Set local position.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>position</code>: New world position</li>
+</ul>
+<pre><code class="language-cpp">void SetLocalPosition(const Vector3&amp; position)
+</code></pre>
+<hr />
+<h3 id="geteulerangles"><a class="header" href="#geteulerangles">GetEulerAngles</a></h3>
+<p>Get rotation (in degree).</p>
+<pre><code class="language-cpp">const Vector3&amp; GetEulerAngles() const
+</code></pre>
+<hr />
+<h3 id="getlocaleulerangles"><a class="header" href="#getlocaleulerangles">GetLocalEulerAngles</a></h3>
+<p>Get local rotation (in degree).</p>
+<pre><code class="language-cpp">const Vector3&amp; GetLocalEulerAngles() const
+</code></pre>
+<hr />
+<h3 id="getrotation"><a class="header" href="#getrotation">GetRotation</a></h3>
+<p>Get rotation.</p>
+<pre><code class="language-cpp">const Quaternion&amp; GetRotation() const
+</code></pre>
+<hr />
+<h3 id="getlocalrotation"><a class="header" href="#getlocalrotation">GetLocalRotation</a></h3>
+<p>Get local rotation.</p>
+<pre><code class="language-cpp">const Quaternion&amp; GetLocalRotation() const
+</code></pre>
+<hr />
+<h3 id="seteulerangles"><a class="header" href="#seteulerangles">SetEulerAngles</a></h3>
+<p>Set world rotation in degree.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>rotation</code>: New world rotation</li>
+</ul>
+<pre><code class="language-cpp">void SetEulerAngles(const Vector3&amp; rotation)
+</code></pre>
+<hr />
+<h3 id="setlocaleulerangles"><a class="header" href="#setlocaleulerangles">SetLocalEulerAngles</a></h3>
+<p>Set local rotation in degree.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>rotation</code>: New local rotation</li>
+</ul>
+<pre><code class="language-cpp">void SetLocalEulerAngles(const Vector3&amp; rotation)
+</code></pre>
+<hr />
+<h3 id="setrotation"><a class="header" href="#setrotation">SetRotation</a></h3>
+<p>Set world rotation.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>rotation</code>: New world rotation</li>
+</ul>
+<pre><code class="language-cpp">void SetRotation(const Quaternion&amp; rotation)
+</code></pre>
+<hr />
+<h3 id="setlocalrotation"><a class="header" href="#setlocalrotation">SetLocalRotation</a></h3>
+<p>Set local rotation.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>rotation</code>: New local rotation</li>
+</ul>
+<pre><code class="language-cpp">void SetLocalRotation(const Quaternion&amp; rotation)
+</code></pre>
+<hr />
+<h3 id="getscale"><a class="header" href="#getscale">GetScale</a></h3>
+<p>Get scale.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetScale() const
+</code></pre>
+<hr />
+<h3 id="getlocalscale"><a class="header" href="#getlocalscale">GetLocalScale</a></h3>
+<p>Get local scale.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetLocalScale() const
+</code></pre>
+<hr />
+<h3 id="setlocalscale"><a class="header" href="#setlocalscale">SetLocalScale</a></h3>
+<p>Set local scale.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>scale</code>: New local scale</li>
+</ul>
+<pre><code class="language-cpp">void SetLocalScale(const Vector3&amp; scale)
+</code></pre>
+<hr />
+<h3 id="getforward"><a class="header" href="#getforward">GetForward</a></h3>
+<p>Get forward direction.</p>
+<pre><code class="language-cpp">Vector3 GetForward() const
+</code></pre>
+<hr />
+<h3 id="getbackward"><a class="header" href="#getbackward">GetBackward</a></h3>
+<p>Get backward direction.</p>
+<pre><code class="language-cpp">Vector3 GetBackward() const
+</code></pre>
+<hr />
+<h3 id="getleft"><a class="header" href="#getleft">GetLeft</a></h3>
+<p>Get left direction.</p>
+<pre><code class="language-cpp">Vector3 GetLeft() const
+</code></pre>
+<hr />
+<h3 id="getright"><a class="header" href="#getright">GetRight</a></h3>
+<p>Get right direction.</p>
+<pre><code class="language-cpp">Vector3 GetRight() const
+</code></pre>
+<hr />
+<h3 id="getup"><a class="header" href="#getup">GetUp</a></h3>
+<p>Get up direction.</p>
+<pre><code class="language-cpp">Vector3 GetUp() const
+</code></pre>
+<hr />
+<h3 id="getdown"><a class="header" href="#getdown">GetDown</a></h3>
+<p>Get down direction.</p>
+<pre><code class="language-cpp">Vector3 GetDown() const
+</code></pre>
+<hr />
+<h3 id="gettransformationmatrix"><a class="header" href="#gettransformationmatrix">GetTransformationMatrix</a></h3>
+<p>Set transformation matrix.</p>
+<pre><code class="language-cpp">const glm::mat4&amp; GetTransformationMatrix() const
+</code></pre>
+<hr />
+<h3 id="settransformationmatrix"><a class="header" href="#settransformationmatrix">SetTransformationMatrix</a></h3>
+<p>Set transformation matrix.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>matrix</code>: New matrix</li>
+</ul>
+<pre><code class="language-cpp">void SetTransformationMatrix(const glm::mat4&amp; matrix)
+</code></pre>
+<hr />
+<h3 id="getgameobject"><a class="header" href="#getgameobject">GetGameObject</a></h3>
+<p>Get GameObject.</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; GetGameObject() const
+</code></pre>
+<hr />
+<h3 id="getontransformupdated"><a class="header" href="#getontransformupdated">GetOnTransformUpdated</a></h3>
+<p>Get the event that is called when the transform is updated (new position, or new rotation or new scale).</p>
+<pre><code class="language-cpp">Event&lt;&gt;&amp; GetOnTransformUpdated()
+</code></pre>
+<hr />
+<h3 id="getontransformscaled"><a class="header" href="#getontransformscaled">GetOnTransformScaled</a></h3>
+<p>Get the event that is called when the transform is scaled.</p>
+<pre><code class="language-cpp">Event&lt;&gt;&amp; GetOnTransformScaled()
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/components/text_renderer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/time/time.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/date_time/date_time.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/ui_rendering/ui_rendering.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -258,11 +422,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/components/text_renderer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/time/time.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/date_time/date_time.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/ui_rendering/ui_rendering.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

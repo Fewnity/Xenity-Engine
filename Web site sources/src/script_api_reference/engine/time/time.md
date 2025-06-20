@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Class to get time informations (Delta time, elapsed time).
+Class to get time information (Delta time, elapsed time).
 
 Values are updated every frame.
 

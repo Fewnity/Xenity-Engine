@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Class to get informations and to interact with the screen.
+Class to get information and to interact with the screen.
 
 ## Static methods
 

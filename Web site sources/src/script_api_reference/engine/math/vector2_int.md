@@ -8,6 +8,7 @@ Add this in your code:
 ## Description
 
 Contains integer 2D coordinates.
+
 ## Variables
 
 ---

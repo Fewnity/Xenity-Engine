@@ -215,7 +215,7 @@ private:
 Function called when a collision has just occured with another collider.
 
 Parameters:
-- `info`: Informations about the collision
+- `info`: information about the collision
 ```cpp
 virtual void OnCollisionEnter(CollisionEvent info)
 ```
@@ -236,7 +236,7 @@ public:
 Function called every frame if a collider of the GameObject is still colliding with another collider.
 
 Parameters:
-- `info`: Informations about the collision
+- `info`: information about the collision
 ```cpp
 virtual void OnCollisionStay(CollisionEvent info)
 ```
@@ -257,7 +257,7 @@ public:
 Function called when the collision has ended.
 
 Parameters:
-- `info`: Informations about the collision
+- `info`: information about the collision
 ```cpp
 virtual void OnCollisionExit(CollisionEvent info)
 ```
@@ -278,7 +278,7 @@ public:
 Function called when a collider of the GameObject just entered a trigger collider.
 
 Parameters:
-- `info`: Informations about the collision
+- `info`: information about the collision
 ```cpp
 virtual void OnTriggerEnter(CollisionEvent info)
 ```
@@ -299,7 +299,7 @@ public:
 Function called when a collider of the GameObject is still in a trigger collider.
 
 Parameters:
-- `info`: Informations about the collision
+- `info`: information about the collision
 ```cpp
 virtual void OnTriggerStay(CollisionEvent info)
 ```
@@ -320,7 +320,7 @@ public:
 Function called when a collider of the GameObject just leave a trigger collider.
 
 Parameters:
-- `info`: Informations about the collision
+- `info`: information about the collision
 ```cpp
 virtual void OnTriggerExit(CollisionEvent info)
 ```

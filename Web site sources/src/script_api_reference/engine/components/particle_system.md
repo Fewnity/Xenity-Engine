@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Component to spawn particles
+Component to spawn particles.
 
 ## Public methods
 

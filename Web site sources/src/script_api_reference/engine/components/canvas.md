@@ -7,4 +7,4 @@ Add this in your code:
 
 ## Description
 
-Component to render a canvas (UI elements)
+Component to render a canvas (UI elements).

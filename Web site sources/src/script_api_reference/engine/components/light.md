@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Component to produce light
+Component to produce light.
 
 ## Variables
 

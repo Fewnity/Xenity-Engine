@@ -5,6 +5,10 @@ Add this in your code:
 #include <engine/application.h>
 ```
 
+## Description
+
+Class used to manage the application and get information about it.
+
 ## Static methods
 
 ---

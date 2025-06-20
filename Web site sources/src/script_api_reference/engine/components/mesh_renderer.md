@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Component that renders a mesh with materials
+Component that renders a mesh with materials.
 
 ## Public methods
 

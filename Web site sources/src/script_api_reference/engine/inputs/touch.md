@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-This class stores informations of finger on a touchscreen.
+This class stores information of finger on a touchscreen.
 
 ## Variables
 

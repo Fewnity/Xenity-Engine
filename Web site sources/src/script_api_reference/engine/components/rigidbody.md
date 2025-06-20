@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Component to add physics to the GameObject
+Component to add physics to the GameObject.
 
 ## Public Methods
 

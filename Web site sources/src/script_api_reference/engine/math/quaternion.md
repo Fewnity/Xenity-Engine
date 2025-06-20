@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Class representing rotations in 3D space
+Class representing rotations in 3D space.
 
 ## Variables
 

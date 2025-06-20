@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Component that represents a transform for UI elements
+Component that represents a transform for UI elements.
 
 ## Variables
 

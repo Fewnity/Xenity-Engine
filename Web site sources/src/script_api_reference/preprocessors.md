@@ -1,6 +1,6 @@
 # Preprocessors
 
-A list of preprocessors can be used in your code.
+A list of preprocessors that can be used in your code.
 A preprocessor can be used to change your code at compile time.
 
 Sample:
@@ -14,7 +14,7 @@ void MyFunction()
 #if defined(__PSP__)
     Debug::Print("Running on PSP!");
 #elif defined(__vita__)
-    Debug::Print("Running on PSP!");
+    Debug::Print("Running on PsVita!");
 #else
     Debug::Print("Running on something else!");
 #endif

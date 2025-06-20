@@ -1010,7 +1010,7 @@ You can create new project, delete them or simply open them.</p>
 <h1 id="the-inspector"><a class="header" href="#the-inspector">The inspector</a></h1>
 <p>The inspector window lists all components of a <a href="manual/editor_ui/../../script_api_reference/engine/gameobject/gameobject.html">GameObject</a>.</p>
 <p>You have the name of the GameObject and a check box to enable or disable it.<br>
-Then the <a href="manual/editor_ui/../../script_api_reference/engine/components/transform/transform.html">transform</a> of the GameObject that contains the informations about the position, rotation and scale.<br>
+Then the <a href="manual/editor_ui/../../script_api_reference/engine/components/transform/transform.html">transform</a> of the GameObject that contains the information about the position, rotation and scale.<br>
 And finally you have the list of components, you can add new, edit or delete them.<br>
 Most components have a check box to enable or disable them.</p>
 <p><img src="manual/editor_ui/images/inspector.jpg" alt="image" /></p>
@@ -1404,7 +1404,7 @@ It helps you debug your game and understand any issues that occur within the edi
 
 </style>
 <h1 id="the-profiler"><a class="header" href="#the-profiler">The profiler</a></h1>
-<p>The profiler window provides you informations about the performances of your game and of the engine.</p>
+<p>The profiler window provides you information about the performances of your game and of the engine.</p>
 <p>In the first part of the profiler, you can see basic information:</p>
 <ul>
 <li>FPS graph: The graph shows the number of frame per seconds. stable graph and high numbers are better.</li>
@@ -1990,6 +1990,11 @@ If you want to leave the game you can reset the dev kit.</p>
 </style>
 <h1 id="scripting-api-reference"><a class="header" href="#scripting-api-reference">Scripting API reference</a></h1>
 <p>This part of the documentation show all details about the classes and lines of code that you can use in Xenity Engine.</p>
+<ul>
+<li><a href="script_api_reference/./preprocessors.html">Preprocessors</a>: A list of preprocessors that can be used in your code.</li>
+<li><a href="script_api_reference/./editor/editor.html">Editor</a>: List of every editor specific classes and functions.</li>
+<li><a href="script_api_reference/./engine/engine.html">Engine</a>: List of every classes, functions and enums that you can use for you game.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2058,7 +2063,7 @@ If you want to leave the game you can reset the dev kit.</p>
 
 </style>
 <h1 id="preprocessors"><a class="header" href="#preprocessors">Preprocessors</a></h1>
-<p>A list of preprocessors can be used in your code.
+<p>A list of preprocessors that can be used in your code.
 A preprocessor can be used to change your code at compile time.</p>
 <p>Sample:</p>
 <pre><code class="language-cpp">void MyFunction()
@@ -2070,7 +2075,7 @@ A preprocessor can be used to change your code at compile time.</p>
 #if defined(__PSP__)
     Debug::Print("Running on PSP!");
 #elif defined(__vita__)
-    Debug::Print("Running on PSP!");
+    Debug::Print("Running on PsVita!");
 #else
     Debug::Print("Running on something else!");
 #endif
@@ -2163,9 +2168,11 @@ A preprocessor can be used to change your code at compile time.</p>
 
 </style>
 <h1 id="editor-1"><a class="header" href="#editor-1">Editor</a></h1>
-<p>Editor functions and classes can't be used in game builds. You can use them only in the editor.</p>
+<p>List of every editor specific classes and functions.</p>
+<p>Editor classes and functions can't be used in game builds. You can use them only in the editor.</p>
 <ul>
 <li><a href="script_api_reference/editor/./gizmo.html">Gizmo</a>: Class used to rendering shapes in the editor.</li>
+<li><a href="script_api_reference/editor/./editor_icons/editor_icons.html">EditorIcons</a>: Class used to get icon textures of the editor.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -2623,6 +2630,33 @@ Not available in game builds.</p>
 
 </style>
 <h1 id="engine"><a class="header" href="#engine">Engine</a></h1>
+<p>Here is a list of every classes, functions and enums that you can use for you game.</p>
+<ul>
+<li><a href="script_api_reference/engine/./application/application.html">Application</a>: Class used to manage the application and get information about it.</li>
+<li><a href="script_api_reference/engine/./assets/assets.html">Asset</a>: List of all game assets.</li>
+<li><a href="script_api_reference/engine/./color/color.html">Color</a>: This class stores information about a color.</li>
+<li><a href="script_api_reference/engine/./components/components.html">Components</a>: List of every components.</li>
+<li><a href="script_api_reference/engine/./date_time/date_time.html">DateTime</a>: This class represents an instant in time.</li>
+<li><a href="script_api_reference/engine/./debug/debug.html">Debug</a>: Class used to print text in the console and in file.</li>
+<li><a href="script_api_reference/engine/./enumerations/enumerations.html">Enumerations</a>: Information about enumerations.</li>
+<li><a href="script_api_reference/engine/./event/event.html">Event</a>: This class gives the possibility to bind a function to an event.</li>
+<li><a href="script_api_reference/engine/./file_system/file_system.html">FileSystem</a>: This class provides methods to manipulate files and directories.</li>
+<li><a href="script_api_reference/engine/./gameobject/gameobject.html">GameObject</a>: A GameObject is a class that contains some properties and a list of components.</li>
+<li><a href="script_api_reference/engine/./inputs/inputs.html">Inputs</a>: Category of all inputs classes.</li>
+<li><a href="script_api_reference/engine/./math/math.html">Math</a>: Category of all math classes.</li>
+<li><a href="script_api_reference/engine/./network/network.html">Network</a>: Category of all networking classes.</li>
+<li><a href="script_api_reference/engine/./noise/noise.html">Noise</a>: Class to generate 1D, 2D, 3D and 4D Perlin noise.</li>
+<li><a href="script_api_reference/engine/./object_management/object_management.html">Object management</a>: List of functions to manage GameObject and Components of your game.</li>
+<li><a href="script_api_reference/engine/./physics/physics.html">Physics</a>: Category if all physics classes.</li>
+<li><a href="script_api_reference/engine/./reflection/reflective.html">Reflective</a>: Class used for reflection.</li>
+<li><a href="script_api_reference/engine/./scene_manager/scene_manager.html">SceneManager</a>: Class to load scenes.</li>
+<li><a href="script_api_reference/engine/./screen/screen.html">Screen</a>: Class to get information and to interact with the screen.</li>
+<li><a href="script_api_reference/engine/./time/time.html">Time</a>: Class to get time information (Delta time, elapsed time).</li>
+<li><a href="script_api_reference/engine/./transform/transform.html">Transform</a>: Class representing a 3D transformation (position, rotation, scale) of a GameObject.</li>
+<li><a href="script_api_reference/engine/./ui_rendering/ui_rendering.html">UI Rendering</a>: Enum about UI rendering.</li>
+<li><a href="script_api_reference/engine/./utils/utils.html">Utils</a>: Utility classes.</li>
+<li><a href="script_api_reference/engine/./vertex_descriptor/vertex_descriptor.html">VertexDescriptor</a>: Class that store the data structure of a vertex.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2694,6 +2728,8 @@ Not available in game builds.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/application.h&gt;
 </code></pre>
+<h2 id="description-3"><a class="header" href="#description-3">Description</a></h2>
+<p>Class used to manage the application and get information about it.</p>
 <h2 id="static-methods-2"><a class="header" href="#static-methods-2">Static methods</a></h2>
 <hr />
 <h3 id="openurl"><a class="header" href="#openurl">OpenURL</a></h3>
@@ -2863,6 +2899,19 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 
 </style>
 <h1 id="assets"><a class="header" href="#assets">Assets</a></h1>
+<p>Here is a list of every game assets.</p>
+<ul>
+<li><a href="script_api_reference/engine/assets/./audio_clip.html">AudioClip</a>: Asset that stores audio like a sound effect or a music.</li>
+<li><a href="script_api_reference/engine/assets/./font.html">Font</a>: Asset that stores a text font.</li>
+<li><a href="script_api_reference/engine/assets/./icon.html">Icon</a>: Asset that stores an icon.</li>
+<li><a href="script_api_reference/engine/assets/./material.html">Material</a>: Handles the visual appearance of rendered objects, including shaders and textures.</li>
+<li><a href="script_api_reference/engine/assets/./mesh_data.html">MeshData</a>: Asset that stores all the data of a mesh.</li>
+<li><a href="script_api_reference/engine/assets/./prefab.html">Prefab</a>: A prefab stores GameObjects and Components.</li>
+<li><a href="script_api_reference/engine/assets/./scene.html">Scene</a>: Asset that represents a game world. A scene stores a list of GameObject and Components.</li>
+<li><a href="script_api_reference/engine/assets/./shader.html">Shader</a>: Asset that stores shader code.</li>
+<li><a href="script_api_reference/engine/assets/./skybox.html">Skybox</a>: Asset that references all textures that compose a skybox.</li>
+<li><a href="script_api_reference/engine/assets/./texture.html">Texture</a>: Asset that stores an image.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2934,7 +2983,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/audio/audio_clip.h&gt;
 </code></pre>
-<h2 id="description-3"><a class="header" href="#description-3">Description</a></h2>
+<h2 id="description-4"><a class="header" href="#description-4">Description</a></h2>
 <p>Asset that stores audio like a sound effect or a music.</p>
 <p>Used by <a href="script_api_reference/engine/assets/../components/audio_source.html">Audio Source</a>.</p>
 <h2 id="settings"><a class="header" href="#settings">Settings</a></h2>
@@ -3013,7 +3062,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/font.h&gt;
 </code></pre>
-<h2 id="description-4"><a class="header" href="#description-4">Description</a></h2>
+<h2 id="description-5"><a class="header" href="#description-5">Description</a></h2>
 <p>Asset that stores a text font.</p>
 <p>Used by <a href="script_api_reference/engine/assets/../components/text_renderer.html">TextRenderer</a> and by <a href="script_api_reference/engine/assets/../components/text_mesh.mdx.html">TextMesh</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
@@ -3087,7 +3136,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/icon.h&gt;
 </code></pre>
-<h2 id="description-5"><a class="header" href="#description-5">Description</a></h2>
+<h2 id="description-6"><a class="header" href="#description-6">Description</a></h2>
 <p>Asset that stores an icon.</p>
 <p>Used in the <a href="script_api_reference/engine/assets/../../../manual/editor_ui/build_settings.html">Build Settings</a> menu.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
@@ -3161,7 +3210,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/material.h&gt;
 </code></pre>
-<h2 id="description-6"><a class="header" href="#description-6">Description</a></h2>
+<h2 id="description-7"><a class="header" href="#description-7">Description</a></h2>
 <p>Handles the visual appearance of rendered objects, including shaders and textures.<br>
 The Material class allows you to configure how an object should look when drawn on screen.</p>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
@@ -3420,7 +3469,7 @@ float alphaCutoff = material-&gt;GetAlphaCutoff();
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/material_rendering_mode.h&gt;
 </code></pre>
-<h2 id="description-7"><a class="header" href="#description-7">Description</a></h2>
+<h2 id="description-8"><a class="header" href="#description-8">Description</a></h2>
 <p>Enum to define how an object is drawn.</p>
 <h2 id="values-2"><a class="header" href="#values-2">Values</a></h2>
 <hr />
@@ -3500,7 +3549,7 @@ float alphaCutoff = material-&gt;GetAlphaCutoff();
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/mesh_data.h&gt;
 </code></pre>
-<h2 id="description-8"><a class="header" href="#description-8">Description</a></h2>
+<h2 id="description-9"><a class="header" href="#description-9">Description</a></h2>
 <p>Asset that stores all the data of a mesh.</p>
 <h2 id="static-methods-3"><a class="header" href="#static-methods-3">Static methods</a></h2>
 <hr />
@@ -3652,7 +3701,7 @@ const std::unique_ptr&lt;SubMesh&gt;&amp; subMesh2 = meshData-&gt;GetSubMesh(2);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/mesh_data.h&gt;
 </code></pre>
-<h2 id="description-9"><a class="header" href="#description-9">Description</a></h2>
+<h2 id="description-10"><a class="header" href="#description-10">Description</a></h2>
 <p>Class that store vertices and indices of a sub mesh.</p>
 <h2 id="public-methods-2"><a class="header" href="#public-methods-2">Public methods</a></h2>
 <hr />
@@ -3936,7 +3985,7 @@ else
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/prefab.h&gt;
 </code></pre>
-<h2 id="description-10"><a class="header" href="#description-10">Description</a></h2>
+<h2 id="description-11"><a class="header" href="#description-11">Description</a></h2>
 <p>A prefab stores GameObjects and Components.</p>
 <p>A prefab is created when dragging a GameObject from the Hierarchy to the File Explorer.<br>
 Then you can recreate the GameObject by dragging the prefab from the File Explorer to the Scene tab.</p>
@@ -4011,7 +4060,7 @@ Then you can recreate the GameObject by dragging the prefab from the File Explor
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/scene_management/scene.h&gt;
 </code></pre>
-<h2 id="description-11"><a class="header" href="#description-11">Description</a></h2>
+<h2 id="description-12"><a class="header" href="#description-12">Description</a></h2>
 <p>Asset that represents a game world. A scene stores a list of GameObject and Components.</p>
 <p>A scene should a least contains a camera.</p>
 <p>It can be used in the <a href="script_api_reference/engine/assets/../../../manual/editor_ui/project_settings.html">Project Settings</a> menu and by the <a href="script_api_reference/engine/assets/../scene_manager/scene_manager.html">SceneManager</a> class.</p>
@@ -4086,7 +4135,7 @@ Then you can recreate the GameObject by dragging the prefab from the File Explor
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/shader/shader.h&gt;
 </code></pre>
-<h2 id="description-12"><a class="header" href="#description-12">Description</a></h2>
+<h2 id="description-13"><a class="header" href="#description-13">Description</a></h2>
 <p>Asset that stores shader code.</p>
 <p>Not used on PSP.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
@@ -4156,11 +4205,11 @@ Then you can recreate the GameObject by dragging the prefab from the File Explor
 }
 
 </style>
-<h1 id="skybox"><a class="header" href="#skybox">SkyBox</a></h1>
+<h1 id="skybox"><a class="header" href="#skybox">Skybox</a></h1>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/skybox.h&gt;
 </code></pre>
-<h2 id="description-13"><a class="header" href="#description-13">Description</a></h2>
+<h2 id="description-14"><a class="header" href="#description-14">Description</a></h2>
 <p>Asset that references all textures that compose a skybox.</p>
 <p>Can be used in the <a href="script_api_reference/engine/assets/../../../manual/editor_ui/lighting_settigs.html">Lighting Settigs</a> menu.</p>
 <h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
@@ -4244,7 +4293,7 @@ Then you can recreate the GameObject by dragging the prefab from the File Explor
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/texture/texture.h&gt;
 </code></pre>
-<h2 id="description-14"><a class="header" href="#description-14">Description</a></h2>
+<h2 id="description-15"><a class="header" href="#description-15">Description</a></h2>
 <p>Asset that stores an image.</p>
 <p>A texture can be created dynamically.</p>
 <h2 id="general-settings"><a class="header" href="#general-settings">General settings</a></h2>
@@ -4494,7 +4543,7 @@ delete[] rawData;
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
 </code></pre>
-<h2 id="description-15"><a class="header" href="#description-15">Description</a></h2>
+<h2 id="description-16"><a class="header" href="#description-16">Description</a></h2>
 <p>Enum to define how a texture should be filtered.</p>
 <h2 id="values-3"><a class="header" href="#values-3">Values</a></h2>
 <hr />
@@ -4573,7 +4622,7 @@ delete[] rawData;
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
 </code></pre>
-<h2 id="description-16"><a class="header" href="#description-16">Description</a></h2>
+<h2 id="description-17"><a class="header" href="#description-17">Description</a></h2>
 <p>Enum to set the maximum resolution of the texture.</p>
 <h2 id="values-4"><a class="header" href="#values-4">Values</a></h2>
 <hr />
@@ -4656,7 +4705,7 @@ delete[] rawData;
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
 </code></pre>
-<h2 id="description-17"><a class="header" href="#description-17">Description</a></h2>
+<h2 id="description-18"><a class="header" href="#description-18">Description</a></h2>
 <p>Enum that defines how texture coordinates outside the [0, 1] range are handled when sampling a texture.</p>
 <h2 id="values-5"><a class="header" href="#values-5">Values</a></h2>
 <hr />
@@ -4735,7 +4784,7 @@ delete[] rawData;
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
 </code></pre>
-<h2 id="description-18"><a class="header" href="#description-18">Description</a></h2>
+<h2 id="description-19"><a class="header" href="#description-19">Description</a></h2>
 <p>Enum that specifies the pixel format used for textures on the PSP, defining how color data is stored.</p>
 <h2 id="values-6"><a class="header" href="#values-6">Values</a></h2>
 <hr />
@@ -4816,7 +4865,7 @@ delete[] rawData;
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/texture.h&gt;
 </code></pre>
-<h2 id="description-19"><a class="header" href="#description-19">Description</a></h2>
+<h2 id="description-20"><a class="header" href="#description-20">Description</a></h2>
 <p>Enum that specifies the pixel format used for textures on the PS3, defining how color data is stored.</p>
 <h2 id="values-7"><a class="header" href="#values-7">Values</a></h2>
 <hr />
@@ -4897,8 +4946,8 @@ delete[] rawData;
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/color/color.h&gt;
 </code></pre>
-<h2 id="description-20"><a class="header" href="#description-20">Description</a></h2>
-<p>This class stores informations about a color.</p>
+<h2 id="description-21"><a class="header" href="#description-21">Description</a></h2>
+<p>This class stores information about a color.</p>
 <h2 id="static-methods-5"><a class="header" href="#static-methods-5">Static methods</a></h2>
 <hr />
 <h3 id="createfromrgb"><a class="header" href="#createfromrgb">CreateFromRGB</a></h3>
@@ -5111,8 +5160,8 @@ Debug::Print(myColor.ToString());
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/color/color.h&gt;
 </code></pre>
-<h2 id="description-21"><a class="header" href="#description-21">Description</a></h2>
-<p>This class stores informations about a color.</p>
+<h2 id="description-22"><a class="header" href="#description-22">Description</a></h2>
+<p>This class stores information about a color.</p>
 <h2 id="constructors"><a class="header" href="#constructors">Constructors</a></h2>
 <hr />
 <h3 id="rgba-1"><a class="header" href="#rgba-1">RGBA</a></h3>
@@ -5214,6 +5263,26 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 
 </style>
 <h1 id="components"><a class="header" href="#components">Components</a></h1>
+<p>Here is a list of all components of the game engine.</p>
+<ul>
+<li><a href="script_api_reference/engine/components/./component.html">Component</a>: The component class gives you a list of function that you can override in your components.</li>
+<li><a href="script_api_reference/engine/components/./audio_source.html">AudioSource</a>: Component to play audio clips.</li>
+<li><a href="script_api_reference/engine/components/./billboard_renderer.html">BillboardRenderer</a>: Component to render a billboard sprite (2D sprite that always faces the camera).</li>
+<li><a href="script_api_reference/engine/components/./box_collider.html">BoxCollider</a>: Component to add a cube-shaped collider to a GameObject.</li>
+<li><a href="script_api_reference/engine/components/./camera.html">Camera</a>: Component for rendering the scene.</li>
+<li><a href="script_api_reference/engine/components/./canvas.html">Canvas</a>: Component to render a canvas (UI elements).</li>
+<li><a href="script_api_reference/engine/components/./fps_counter.html">FpsCounter</a>: Component to display the FPS counter in the game.</li>
+<li><a href="script_api_reference/engine/components/./light.html">Light</a>: Component to produce light.</li>
+<li><a href="script_api_reference/engine/components/./lod.html">Lod</a>: Component to manage Level of Detail (LOD) for a GameObject.</li>
+<li><a href="script_api_reference/engine/components/./mesh_renderer.html">MeshRenderer</a>: Component that renders a mesh with materials.</li>
+<li><a href="script_api_reference/engine/components/./particle_system.html">ParticleSystem</a>: Component to spawn particles.</li>
+<li><a href="script_api_reference/engine/components/./rect_transform.html">RectTransform</a>: Component that represents a transform for UI elements.</li>
+<li><a href="script_api_reference/engine/components/./rigidbody.html">Rigidbody</a>: Component to add physics to the GameObject.</li>
+<li><a href="script_api_reference/engine/components/./sphere_collider.html">SphereCollider</a>: Component to add a sphere-shaped collider to a GameObject.</li>
+<li><a href="script_api_reference/engine/components/./sprite_renderer.html">SpriteRenderer</a>: Component that renders a sprite with a texture and material.</li>
+<li><a href="script_api_reference/engine/components/./text_mesh.html">TextMesh</a>: Component for rendering text in 3D space.</li>
+<li><a href="script_api_reference/engine/components/./text_renderer.html">TextRenderer</a>: Component for rendering text in a canvas.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -5285,7 +5354,7 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/component.h&gt;
 </code></pre>
-<h2 id="description-22"><a class="header" href="#description-22">Description</a></h2>
+<h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
 <p>The component class gives you a list of function that you can override in your components.</p>
 <h2 id="protected-variables"><a class="header" href="#protected-variables">Protected variables</a></h2>
 <hr />
@@ -5461,7 +5530,7 @@ private:
 <p>Function called when a collision has just occured with another collider.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>info</code>: Informations about the collision</li>
+<li><code>info</code>: information about the collision</li>
 </ul>
 <pre><code class="language-cpp">virtual void OnCollisionEnter(CollisionEvent info)
 </code></pre>
@@ -5480,7 +5549,7 @@ public:
 <p>Function called every frame if a collider of the GameObject is still colliding with another collider.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>info</code>: Informations about the collision</li>
+<li><code>info</code>: information about the collision</li>
 </ul>
 <pre><code class="language-cpp">virtual void OnCollisionStay(CollisionEvent info)
 </code></pre>
@@ -5499,7 +5568,7 @@ public:
 <p>Function called when the collision has ended.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>info</code>: Informations about the collision</li>
+<li><code>info</code>: information about the collision</li>
 </ul>
 <pre><code class="language-cpp">virtual void OnCollisionExit(CollisionEvent info)
 </code></pre>
@@ -5518,7 +5587,7 @@ public:
 <p>Function called when a collider of the GameObject just entered a trigger collider.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>info</code>: Informations about the collision</li>
+<li><code>info</code>: information about the collision</li>
 </ul>
 <pre><code class="language-cpp">virtual void OnTriggerEnter(CollisionEvent info)
 </code></pre>
@@ -5537,7 +5606,7 @@ public:
 <p>Function called when a collider of the GameObject is still in a trigger collider.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>info</code>: Informations about the collision</li>
+<li><code>info</code>: information about the collision</li>
 </ul>
 <pre><code class="language-cpp">virtual void OnTriggerStay(CollisionEvent info)
 </code></pre>
@@ -5556,7 +5625,7 @@ public:
 <p>Function called when a collider of the GameObject just leave a trigger collider.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>info</code>: Informations about the collision</li>
+<li><code>info</code>: information about the collision</li>
 </ul>
 <pre><code class="language-cpp">virtual void OnTriggerExit(CollisionEvent info)
 </code></pre>
@@ -5711,7 +5780,7 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/audio/audio_source.h&gt;
 </code></pre>
-<h2 id="description-23"><a class="header" href="#description-23">Description</a></h2>
+<h2 id="description-24"><a class="header" href="#description-24">Description</a></h2>
 <p>Component to play audio clips.</p>
 <h2 id="public-methods-7"><a class="header" href="#public-methods-7">Public methods</a></h2>
 <hr />
@@ -5862,9 +5931,14 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/billboard_renderer.h&gt;
 </code></pre>
-<h2 id="description-24"><a class="header" href="#description-24">Description</a></h2>
+<h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
 <p>Component to render a billboard sprite (2D sprite that always faces the camera).</p>
 <h2 id="public-methods-8"><a class="header" href="#public-methods-8">Public methods</a></h2>
+<hr />
+<h3 id="getcolor-1"><a class="header" href="#getcolor-1">GetColor</a></h3>
+<p>Get the color of the sprite.</p>
+<pre><code class="language-cpp">const Color&amp; GetColor() const
+</code></pre>
 <hr />
 <h3 id="setcolor-3"><a class="header" href="#setcolor-3">SetColor</a></h3>
 <p>Set the color of the sprite.</p>
@@ -5873,6 +5947,11 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <li><code>Color</code>: New sprite color</li>
 </ul>
 <pre><code class="language-cpp">void SetColor(const Color&amp; color)
+</code></pre>
+<hr />
+<h3 id="getmaterial"><a class="header" href="#getmaterial">GetMaterial</a></h3>
+<p>Get the material of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Material&gt;&amp; GetMaterial()
 </code></pre>
 <hr />
 <h3 id="setmaterial"><a class="header" href="#setmaterial">SetMaterial</a></h3>
@@ -5884,6 +5963,11 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <pre><code class="language-cpp">void SetMaterial(const std::shared_ptr&lt;Material&gt;&amp; material)
 </code></pre>
 <hr />
+<h3 id="gettexture-1"><a class="header" href="#gettexture-1">GetTexture</a></h3>
+<p>Get the texture of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetTexture()
+</code></pre>
+<hr />
 <h3 id="settexture-1"><a class="header" href="#settexture-1">SetTexture</a></h3>
 <p>Set the texture of the sprite.</p>
 <p>Parameters:</p>
@@ -5891,16 +5975,6 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <li><code>texture</code>: New sprite texture</li>
 </ul>
 <pre><code class="language-cpp">void SetTexture(const std::shared_ptr&lt;Texture&gt;&amp; texture)
-</code></pre>
-<hr />
-<h3 id="getmaterial"><a class="header" href="#getmaterial">GetMaterial</a></h3>
-<p>Get the material of the sprite.</p>
-<pre><code class="language-cpp">const std::shared_ptr&lt;Material&gt;&amp; GetMaterial()
-</code></pre>
-<hr />
-<h3 id="gettexture-1"><a class="header" href="#gettexture-1">GetTexture</a></h3>
-<p>Get the texture of the sprite.</p>
-<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetTexture()
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -5973,7 +6047,7 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/box_collider.h&gt;
 </code></pre>
-<h2 id="description-25"><a class="header" href="#description-25">Description</a></h2>
+<h2 id="description-26"><a class="header" href="#description-26">Description</a></h2>
 <p>Component to add a cube-shaped collider to a GameObject.</p>
 <h2 id="public-methods-9"><a class="header" href="#public-methods-9">Public methods</a></h2>
 <hr />
@@ -6080,7 +6154,7 @@ const std::string&amp; name = component-&gt;GetComponentName();
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/camera.h&gt;
 </code></pre>
-<h2 id="description-26"><a class="header" href="#description-26">Description</a></h2>
+<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
 <p>Component for rendering the scene.</p>
 <h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
 <hr />
@@ -6279,7 +6353,7 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/camera_projection_type.h&gt;
 </code></pre>
-<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
+<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
 <p>Enum to list every camera projection types.</p>
 <h2 id="values-8"><a class="header" href="#values-8">Values</a></h2>
 <hr />
@@ -6358,8 +6432,8 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/canvas.h&gt;
 </code></pre>
-<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
-<p>Component to render a canvas (UI elements)</p>
+<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
+<p>Component to render a canvas (UI elements).</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6431,8 +6505,8 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tool/fps_counter.h&gt;
 </code></pre>
-<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
-<p>Component to display the FPS counter in the game</p>
+<h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
+<p>Component to display the FPS counter in the game.</p>
 <h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -6525,8 +6599,8 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/lighting/lighting.h&gt;
 </code></pre>
-<h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
-<p>Component to produce light</p>
+<h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
+<p>Component to produce light.</p>
 <h2 id="variables-3"><a class="header" href="#variables-3">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -6730,8 +6804,8 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/lod.h&gt;
 </code></pre>
-<h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
-<p>Component to manage Level of Detail (LOD) for a GameObject</p>
+<h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
+<p>Component to manage Level of Detail (LOD) for a GameObject.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -6803,8 +6877,8 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/mesh_renderer.h&gt;
 </code></pre>
-<h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
-<p>Component that renders a mesh with materials</p>
+<h2 id="description-33"><a class="header" href="#description-33">Description</a></h2>
+<p>Component that renders a mesh with materials.</p>
 <h2 id="public-methods-13"><a class="header" href="#public-methods-13">Public methods</a></h2>
 <hr />
 <h3 id="getmeshdata"><a class="header" href="#getmeshdata">GetMeshData</a></h3>
@@ -6934,8 +7008,8 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/particle_system/particle_system.h&gt;
 </code></pre>
-<h2 id="description-33"><a class="header" href="#description-33">Description</a></h2>
-<p>Component to spawn particles</p>
+<h2 id="description-34"><a class="header" href="#description-34">Description</a></h2>
+<p>Component to spawn particles.</p>
 <h2 id="public-methods-14"><a class="header" href="#public-methods-14">Public methods</a></h2>
 <hr />
 <h3 id="play-1"><a class="header" href="#play-1">Play</a></h3>
@@ -7104,8 +7178,8 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/rect_transform.h&gt;
 </code></pre>
-<h2 id="description-34"><a class="header" href="#description-34">Description</a></h2>
-<p>Component that represents a transform for UI elements</p>
+<h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
+<p>Component that represents a transform for UI elements.</p>
 <h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -7182,8 +7256,8 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/rigidbody.h&gt;
 </code></pre>
-<h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
-<p>Component to add physics to the GameObject</p>
+<h2 id="description-36"><a class="header" href="#description-36">Description</a></h2>
+<p>Component to add physics to the GameObject.</p>
 <h2 id="public-methods-15"><a class="header" href="#public-methods-15">Public Methods</a></h2>
 <hr />
 <h3 id="getvelocity"><a class="header" href="#getvelocity">GetVelocity</a></h3>
@@ -7438,7 +7512,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/sphere_collider.h&gt;
 </code></pre>
-<h2 id="description-36"><a class="header" href="#description-36">Description</a></h2>
+<h2 id="description-37"><a class="header" href="#description-37">Description</a></h2>
 <p>Component to add a sphere-shaped collider to a GameObject.</p>
 <h2 id="public-methods-16"><a class="header" href="#public-methods-16">Public Methods</a></h2>
 <hr />
@@ -7540,11 +7614,11 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/sprite_renderer.h&gt;
 </code></pre>
-<h2 id="description-37"><a class="header" href="#description-37">Description</a></h2>
-<p>Component that renders a sprite with a texture and material</p>
+<h2 id="description-38"><a class="header" href="#description-38">Description</a></h2>
+<p>Component that renders a sprite with a texture and material.</p>
 <h2 id="public-methods-17"><a class="header" href="#public-methods-17">Public Methods</a></h2>
 <hr />
-<h3 id="getcolor-1"><a class="header" href="#getcolor-1">GetColor</a></h3>
+<h3 id="getcolor-2"><a class="header" href="#getcolor-2">GetColor</a></h3>
 <p>Get the color of the sprite.</p>
 <pre><code class="language-cpp">const Color&amp; GetColor() const
 </code></pre>
@@ -7656,7 +7730,135 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_mesh.h&gt;
 </code></pre>
-<h2 id="description-38"><a class="header" href="#description-38">Description</a></h2>
+<h2 id="description-39"><a class="header" href="#description-39">Description</a></h2>
+<p>Component for rendering text in 3D space.</p>
+<h2 id="public-methods-18"><a class="header" href="#public-methods-18">Public methods</a></h2>
+<hr />
+<h3 id="getcolor-3"><a class="header" href="#getcolor-3">GetColor</a></h3>
+<p>Get the color of the sprite.</p>
+<pre><code class="language-cpp">const Color&amp; GetColor() const
+</code></pre>
+<hr />
+<h3 id="setcolor-5"><a class="header" href="#setcolor-5">SetColor</a></h3>
+<p>Set the color of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>Color</code>: New sprite color</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; color)
+</code></pre>
+<hr />
+<h3 id="gettext"><a class="header" href="#gettext">GetText</a></h3>
+<p>Get text.</p>
+<pre><code class="language-cpp">const std::string&amp; GetText() const
+</code></pre>
+<hr />
+<h3 id="settext"><a class="header" href="#settext">SetText</a></h3>
+<p>Set text.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: New text</li>
+</ul>
+<pre><code class="language-cpp">void SetText(const std::string&amp; text)
+</code></pre>
+<hr />
+<h3 id="getfont"><a class="header" href="#getfont">GetFont</a></h3>
+<p>Get text font.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Font&gt;&amp; GetFont() const
+</code></pre>
+<hr />
+<h3 id="setfont"><a class="header" href="#setfont">SetFont</a></h3>
+<p>Set text font.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>font</code>: New font</li>
+</ul>
+<pre><code class="language-cpp">void SetFont(const std::shared_ptr&lt;Font&gt;&amp; font)
+</code></pre>
+<hr />
+<h3 id="getmaterial-3"><a class="header" href="#getmaterial-3">GetMaterial</a></h3>
+<p>Get the material of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Material&gt;&amp; GetMaterial()
+</code></pre>
+<hr />
+<h3 id="setmaterial-2"><a class="header" href="#setmaterial-2">SetMaterial</a></h3>
+<p>Set the material of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>material</code>: New sprite material</li>
+</ul>
+<pre><code class="language-cpp">void SetMaterial(const std::shared_ptr&lt;Material&gt;&amp; material)
+</code></pre>
+<hr />
+<h3 id="getfontsize"><a class="header" href="#getfontsize">GetFontSize</a></h3>
+<p>Get the font size.</p>
+<pre><code class="language-cpp">float GetFontSize() const
+</code></pre>
+<hr />
+<h3 id="setfontsize"><a class="header" href="#setfontsize">SetFontSize</a></h3>
+<p>Set the font size.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fontSize</code>: New font size</li>
+</ul>
+<pre><code class="language-cpp">void SetFontSize(float fontSize)
+</code></pre>
+<hr />
+<h3 id="getlinespacing"><a class="header" href="#getlinespacing">GetLineSpacing</a></h3>
+<p>Get the line spacing.</p>
+<pre><code class="language-cpp">float GetLineSpacing() const
+</code></pre>
+<hr />
+<h3 id="setlinespacing"><a class="header" href="#setlinespacing">SetLineSpacing</a></h3>
+<p>Set the line spacing.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>lineSpacing</code>: New line spacing</li>
+</ul>
+<pre><code class="language-cpp">void SetLineSpacing(float lineSpacing)
+</code></pre>
+<hr />
+<h3 id="getcharacterspacing"><a class="header" href="#getcharacterspacing">GetCharacterSpacing</a></h3>
+<p>Get the character spacing.</p>
+<pre><code class="language-cpp">float GetCharacterSpacing() const
+</code></pre>
+<hr />
+<h3 id="setcharacterspacing"><a class="header" href="#setcharacterspacing">SetCharacterSpacing</a></h3>
+<p>Set the character spacing.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>characterSpacing</code>: New character spacing</li>
+</ul>
+<pre><code class="language-cpp">void SetCharacterSpacing(float characterSpacing)
+</code></pre>
+<hr />
+<h3 id="getverticalalignment"><a class="header" href="#getverticalalignment">GetVerticalAlignment</a></h3>
+<p>Get the vertical alignment.</p>
+<pre><code class="language-cpp">VerticalAlignment GetVerticalAlignment() const
+</code></pre>
+<hr />
+<h3 id="setverticalalignment"><a class="header" href="#setverticalalignment">SetVerticalAlignment</a></h3>
+<p>Set the vertical alignment.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>verticalAlignment</code>: New vertical alignment</li>
+</ul>
+<pre><code class="language-cpp">void SetVerticalAlignment(VerticalAlignment verticalAlignment)
+</code></pre>
+<hr />
+<h3 id="gethorizontalalignment"><a class="header" href="#gethorizontalalignment">GetHorizontalAlignment</a></h3>
+<p>Get the horizontal alignment.</p>
+<pre><code class="language-cpp">HorizontalAlignment GetHorizontalAlignment() const
+</code></pre>
+<hr />
+<h3 id="sethorizontalalignment"><a class="header" href="#sethorizontalalignment">SetHorizontalAlignment</a></h3>
+<p>Set the horizontal alignment.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>horizontalAlignment</code>: New horizontal alignment</li>
+</ul>
+<pre><code class="language-cpp">void SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7728,79 +7930,135 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_renderer.h&gt;
 </code></pre>
-<h2 id="description-39"><a class="header" href="#description-39">Description</a></h2>
-<div style="break-before: page; page-break-before: always;"></div><style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="transform"><a class="header" href="#transform">Transform</a></h1>
-<p>Add this in your code:</p>
-<pre><code class="language-cpp">#include &lt;engine/game_elements/transform.h&gt;
-</code></pre>
 <h2 id="description-40"><a class="header" href="#description-40">Description</a></h2>
+<p>Component for rendering text in a canvas.</p>
+<h2 id="public-methods-19"><a class="header" href="#public-methods-19">Public methods</a></h2>
+<hr />
+<h3 id="getcolor-4"><a class="header" href="#getcolor-4">GetColor</a></h3>
+<p>Get the color of the sprite.</p>
+<pre><code class="language-cpp">const Color&amp; GetColor() const
+</code></pre>
+<hr />
+<h3 id="setcolor-6"><a class="header" href="#setcolor-6">SetColor</a></h3>
+<p>Set the color of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>Color</code>: New sprite color</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; color)
+</code></pre>
+<hr />
+<h3 id="gettext-1"><a class="header" href="#gettext-1">GetText</a></h3>
+<p>Get text.</p>
+<pre><code class="language-cpp">const std::string&amp; GetText() const
+</code></pre>
+<hr />
+<h3 id="settext-1"><a class="header" href="#settext-1">SetText</a></h3>
+<p>Set text.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: New text</li>
+</ul>
+<pre><code class="language-cpp">void SetText(const std::string&amp; text)
+</code></pre>
+<hr />
+<h3 id="getfont-1"><a class="header" href="#getfont-1">GetFont</a></h3>
+<p>Get text font.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Font&gt;&amp; GetFont() const
+</code></pre>
+<hr />
+<h3 id="setfont-1"><a class="header" href="#setfont-1">SetFont</a></h3>
+<p>Set text font.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>font</code>: New font</li>
+</ul>
+<pre><code class="language-cpp">void SetFont(const std::shared_ptr&lt;Font&gt;&amp; font)
+</code></pre>
+<hr />
+<h3 id="getmaterial-4"><a class="header" href="#getmaterial-4">GetMaterial</a></h3>
+<p>Get the material of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Material&gt;&amp; GetMaterial()
+</code></pre>
+<hr />
+<h3 id="setmaterial-3"><a class="header" href="#setmaterial-3">SetMaterial</a></h3>
+<p>Set the material of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>material</code>: New sprite material</li>
+</ul>
+<pre><code class="language-cpp">void SetMaterial(const std::shared_ptr&lt;Material&gt;&amp; material)
+</code></pre>
+<hr />
+<h3 id="getfontsize-1"><a class="header" href="#getfontsize-1">GetFontSize</a></h3>
+<p>Get the font size.</p>
+<pre><code class="language-cpp">float GetFontSize() const
+</code></pre>
+<hr />
+<h3 id="setfontsize-1"><a class="header" href="#setfontsize-1">SetFontSize</a></h3>
+<p>Set the font size.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fontSize</code>: New font size</li>
+</ul>
+<pre><code class="language-cpp">void SetFontSize(float fontSize)
+</code></pre>
+<hr />
+<h3 id="getlinespacing-1"><a class="header" href="#getlinespacing-1">GetLineSpacing</a></h3>
+<p>Get the line spacing.</p>
+<pre><code class="language-cpp">float GetLineSpacing() const
+</code></pre>
+<hr />
+<h3 id="setlinespacing-1"><a class="header" href="#setlinespacing-1">SetLineSpacing</a></h3>
+<p>Set the line spacing.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>lineSpacing</code>: New line spacing</li>
+</ul>
+<pre><code class="language-cpp">void SetLineSpacing(float lineSpacing)
+</code></pre>
+<hr />
+<h3 id="getcharacterspacing-1"><a class="header" href="#getcharacterspacing-1">GetCharacterSpacing</a></h3>
+<p>Get the character spacing.</p>
+<pre><code class="language-cpp">float GetCharacterSpacing() const
+</code></pre>
+<hr />
+<h3 id="setcharacterspacing-1"><a class="header" href="#setcharacterspacing-1">SetCharacterSpacing</a></h3>
+<p>Set the character spacing.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>characterSpacing</code>: New character spacing</li>
+</ul>
+<pre><code class="language-cpp">void SetCharacterSpacing(float characterSpacing)
+</code></pre>
+<hr />
+<h3 id="getverticalalignment-1"><a class="header" href="#getverticalalignment-1">GetVerticalAlignment</a></h3>
+<p>Get the vertical alignment.</p>
+<pre><code class="language-cpp">VerticalAlignment GetVerticalAlignment() const
+</code></pre>
+<hr />
+<h3 id="setverticalalignment-1"><a class="header" href="#setverticalalignment-1">SetVerticalAlignment</a></h3>
+<p>Set the vertical alignment.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>verticalAlignment</code>: New vertical alignment</li>
+</ul>
+<pre><code class="language-cpp">void SetVerticalAlignment(VerticalAlignment verticalAlignment)
+</code></pre>
+<hr />
+<h3 id="gethorizontalalignment-1"><a class="header" href="#gethorizontalalignment-1">GetHorizontalAlignment</a></h3>
+<p>Get the horizontal alignment.</p>
+<pre><code class="language-cpp">HorizontalAlignment GetHorizontalAlignment() const
+</code></pre>
+<hr />
+<h3 id="sethorizontalalignment-1"><a class="header" href="#sethorizontalalignment-1">SetHorizontalAlignment</a></h3>
+<p>Set the horizontal alignment.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>horizontalAlignment</code>: New horizontal alignment</li>
+</ul>
+<pre><code class="language-cpp">void SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -7882,7 +8140,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Code sample:</p>
 <pre><code class="language-cpp">DateTime currentDateTime = DateTime::GetNow();
 </code></pre>
-<h2 id="public-methods-18"><a class="header" href="#public-methods-18">Public methods</a></h2>
+<h2 id="public-methods-20"><a class="header" href="#public-methods-20">Public methods</a></h2>
 <hr />
 <h3 id="tostring-3"><a class="header" href="#tostring-3">ToString</a></h3>
 <p>Get a string representation of the date and time in the format: "hour:minute:second day/month/year".</p>
@@ -8109,6 +8367,17 @@ Debug::GetOnDebugLogEvent().Unbind(&amp;OnLog);
 
 </style>
 <h1 id="enumerations"><a class="header" href="#enumerations">Enumerations</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/reflection/enum_utils.h&gt;
+</code></pre>
+<p>If you want to create an enum visible by the editor inspector, you have to use Xenity's custom enums.</p>
+<pre><code class="language-cpp">ENUM(MyEnum, Value0, Value1, Value2);
+</code></pre>
+<p>You can assigan values to each elements:</p>
+<pre><code class="language-cpp">ENUM(MyEnum, Value0 = 1, Value1 = 3, Value2 = 8);
+</code></pre>
+<p>The type of value of an enum element is <code>int</code>.</p>
+<p>You are allowed to create a classic C++ enum class, but you won't be able to use it in the inspector.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -8193,7 +8462,7 @@ class Event
 <p>Event with arguments:</p>
 <pre><code class="language-cpp">Event&lt;int, const std::string&amp;&gt; myEvent;
 </code></pre>
-<h2 id="public-methods-19"><a class="header" href="#public-methods-19">Public methods</a></h2>
+<h2 id="public-methods-21"><a class="header" href="#public-methods-21">Public methods</a></h2>
 <hr />
 <h3 id="bind"><a class="header" href="#bind">Bind</a></h3>
 <p>Bind a simple function.</p>
@@ -8601,7 +8870,7 @@ if(file-&gt;Open(FileMode::WriteCreateFile))
 </code></pre>
 <h2 id="description-44"><a class="header" href="#description-44">Description</a></h2>
 <p>Class to manage a file (Create, open, read, write).</p>
-<h2 id="public-methods-20"><a class="header" href="#public-methods-20">Public methods</a></h2>
+<h2 id="public-methods-22"><a class="header" href="#public-methods-22">Public methods</a></h2>
 <hr />
 <h3 id="open"><a class="header" href="#open">Open</a></h3>
 <p>Open the file.<br>
@@ -8938,7 +9207,7 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 <tr><td>files</td><td><code>std::vector&lt;std::shared_ptr&lt;File&gt;&gt;</code></td><td>List of files (filled with GetAllFiles)</td></tr>
 </tbody></table>
 </div>
-<h2 id="public-methods-21"><a class="header" href="#public-methods-21">Public methods</a></h2>
+<h2 id="public-methods-23"><a class="header" href="#public-methods-23">Public methods</a></h2>
 <hr />
 <h3 id="getallfiles"><a class="header" href="#getallfiles">GetAllFiles</a></h3>
 <p>Get all the files of the directory (can be very slow and not currently supported on PS3).<br></p>
@@ -9486,6 +9755,11 @@ if(sharedChild1)
 
 </style>
 <h1 id="inputs"><a class="header" href="#inputs">Inputs</a></h1>
+<ul>
+<li><a href="script_api_reference/engine/inputs/./input_system.html">InputSystem</a>: Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse).</li>
+<li><a href="script_api_reference/engine/inputs/./touch.html">Touch</a>: This class stores information of finger on a touchscreen.</li>
+<li><a href="script_api_reference/engine/inputs/./key_code_enum.html">KeyCode Enum</a>: Enum that list every keys of a keyboard and buttons of a controller.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -9791,7 +10065,7 @@ if (touchCount &gt;= 1)
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
 <h2 id="description-50"><a class="header" href="#description-50">Description</a></h2>
-<p>This class stores informations of finger on a touchscreen.</p>
+<p>This class stores information of finger on a touchscreen.</p>
 <h2 id="variables-7"><a class="header" href="#variables-7">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -10055,6 +10329,13 @@ if (touchCount &gt;= 1)
 
 </style>
 <h1 id="math"><a class="header" href="#math">Math</a></h1>
+<ul>
+<li><a href="script_api_reference/engine/math/./quaternion.html">Quaternion</a>: Class representing rotations in 3D space.</li>
+<li><a href="script_api_reference/engine/math/./vector2_int.html">Vector2Int</a>: Contains integer 2D coordinates.</li>
+<li><a href="script_api_reference/engine/math/./vector2.html">Vector2</a>: Contains 2D coordinates.</li>
+<li><a href="script_api_reference/engine/math/./vector3.html">Vector3</a>: Contains 3D coordinates.</li>
+<li><a href="script_api_reference/engine/math/./vector4.html">Vector4</a>: Contains 4D coordinates.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -10127,7 +10408,7 @@ if (touchCount &gt;= 1)
 <pre><code class="language-cpp">#include &lt;engine/math/quaternion.h&gt;
 </code></pre>
 <h2 id="description-52"><a class="header" href="#description-52">Description</a></h2>
-<p>Class representing rotations in 3D space</p>
+<p>Class representing rotations in 3D space.</p>
 <h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -10252,7 +10533,7 @@ Quaternion lerp1 = Quaternion::Lerp(a, b, 1.0f); // Equals B
 Quaternion b = Quaternion::Euler(90, 120, 10);
 Quaternion result = Quaternion::Dot(a, b);
 </code></pre>
-<h2 id="public-methods-22"><a class="header" href="#public-methods-22">Public methods</a></h2>
+<h2 id="public-methods-24"><a class="header" href="#public-methods-24">Public methods</a></h2>
 <hr />
 <h3 id="toeuler"><a class="header" href="#toeuler">ToEuler</a></h3>
 <p>Converts the quaternion to Euler angles (in degrees).</p>
@@ -10484,7 +10765,7 @@ Vector2 vec = Vector2(vec2int);
 // X = 1.0f
 // Y = 2.0f
 </code></pre>
-<h2 id="public-methods-23"><a class="header" href="#public-methods-23">Public methods</a></h2>
+<h2 id="public-methods-25"><a class="header" href="#public-methods-25">Public methods</a></h2>
 <h3 id="max"><a class="header" href="#max">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -10740,7 +11021,7 @@ Vector2Int vec = Vector2Int(vec2);
 // X = 1
 // Y = 2
 </code></pre>
-<h2 id="public-methods-24"><a class="header" href="#public-methods-24">Public methods</a></h2>
+<h2 id="public-methods-26"><a class="header" href="#public-methods-26">Public methods</a></h2>
 <h3 id="max-1"><a class="header" href="#max-1">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -10975,7 +11256,7 @@ Vector3 vec = Vector3(vec2int);
 // Y = 2.0f
 // Z = 0.0f
 </code></pre>
-<h2 id="public-methods-25"><a class="header" href="#public-methods-25">Public methods</a></h2>
+<h2 id="public-methods-27"><a class="header" href="#public-methods-27">Public methods</a></h2>
 <h3 id="max-2"><a class="header" href="#max-2">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -11323,7 +11604,7 @@ Vector4 vec = Vector4(vec2int);
 // Z = 0.0f
 // W = 0.0f
 </code></pre>
-<h2 id="public-methods-26"><a class="header" href="#public-methods-26">Public methods</a></h2>
+<h2 id="public-methods-28"><a class="header" href="#public-methods-28">Public methods</a></h2>
 <h3 id="max-3"><a class="header" href="#max-3">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -11495,6 +11776,10 @@ bool operator!=(const Vector4&amp; left, const Vector4&amp; right)
 
 </style>
 <h1 id="network"><a class="header" href="#network">Network</a></h1>
+<ul>
+<li><a href="script_api_reference/engine/network/./network_manager.html">NetworkManager</a>: Class to create sockets and to manage networking settings.</li>
+<li><a href="script_api_reference/engine/network/./socket.html">Socket</a>: Class to send and received data to/from a server.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -11675,7 +11960,7 @@ For this, a menu of the PSP OS ask to the user to setup a network connection.</p
 <p>Class to send and received data to/from a server.<br>
 Created with the NetworkManager class.<br>
 The socket will be closed when the object is destroyed.</p>
-<h2 id="public-methods-27"><a class="header" href="#public-methods-27">Public methods</a></h2>
+<h2 id="public-methods-29"><a class="header" href="#public-methods-29">Public methods</a></h2>
 <hr />
 <h3 id="senddata-string"><a class="header" href="#senddata-string">SendData (string)</a></h3>
 <p>Send data as a string to the server.</p>
@@ -12099,6 +12384,11 @@ Destroy(myGameObject);
 
 </style>
 <h1 id="physics-1"><a class="header" href="#physics-1">Physics</a></h1>
+<ul>
+<li><a href="script_api_reference/engine/physics/./collider.html">Collider</a>: Parent class of collider components (BoxCollider, SphereCollider...).</li>
+<li><a href="script_api_reference/engine/physics/./collision_event.html">CollisionEvent</a>: This class stores information of a collision between two colliders.</li>
+<li><a href="script_api_reference/engine/physics/./raycast/raycast.html">Raycast</a>: Class to check collisions with a ray.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -12173,7 +12463,7 @@ Destroy(myGameObject);
 <h2 id="description-61"><a class="header" href="#description-61">Description</a></h2>
 <p>Parent class of collider components (BoxCollider, SphereCollider...).</p>
 <p>Function of Collider can be used on every colllider component.</p>
-<h2 id="public-methods-28"><a class="header" href="#public-methods-28">Public methods</a></h2>
+<h2 id="public-methods-30"><a class="header" href="#public-methods-30">Public methods</a></h2>
 <hr />
 <h3 id="setistrigger"><a class="header" href="#setistrigger">SetIsTrigger</a></h3>
 <p>Set if the collider is a trigger or not.<br>
@@ -12293,7 +12583,7 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <pre><code class="language-cpp">#include &lt;engine/physics/collision_event.h&gt;
 </code></pre>
 <h2 id="description-62"><a class="header" href="#description-62">Description</a></h2>
-<p>This class stores informations of a collision between two colliders</p>
+<p>This class stores information of a collision between two colliders.</p>
 <h2 id="variables-13"><a class="header" href="#variables-13">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -12373,7 +12663,7 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 </code></pre>
 <h2 id="description-63"><a class="header" href="#description-63">Description</a></h2>
 <p>Class to check collisions with a ray.</p>
-<h2 id="public-methods-29"><a class="header" href="#public-methods-29">Public methods</a></h2>
+<h2 id="public-methods-31"><a class="header" href="#public-methods-31">Public methods</a></h2>
 <hr />
 <h3 id="check"><a class="header" href="#check">Check</a></h3>
 <p>Check if a ray hits a collider.<br>
@@ -12477,7 +12767,7 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
 <h2 id="description-64"><a class="header" href="#description-64">Description</a></h2>
-<p>This class stores informations of a racyast hit.</p>
+<p>This class stores information of a racyast hit.</p>
 <h2 id="variables-14"><a class="header" href="#variables-14">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
@@ -12571,7 +12861,7 @@ It's used to see variables of a class in the <a href="script_api_reference/engin
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
 <p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
 <p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<h2 id="public-methods-30"><a class="header" href="#public-methods-30">Public methods</a></h2>
+<h2 id="public-methods-32"><a class="header" href="#public-methods-32">Public methods</a></h2>
 <hr />
 <h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
 <p>Get all child class variables references (Needs to be implemented).</p>
@@ -12803,7 +13093,7 @@ SceneManager::LoadScene(sceneToLoad);
 <pre><code class="language-cpp">#include &lt;engine/ui/screen.h&gt;
 </code></pre>
 <h2 id="description-67"><a class="header" href="#description-67">Description</a></h2>
-<p>Class to get informations and to interact with the screen.</p>
+<p>Class to get information and to interact with the screen.</p>
 <h2 id="static-methods-18"><a class="header" href="#static-methods-18">Static methods</a></h2>
 <hr />
 <h3 id="getwidth-2"><a class="header" href="#getwidth-2">GetWidth</a></h3>
@@ -12929,7 +13219,7 @@ bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
 <pre><code class="language-cpp">#include &lt;engine/time/time.h&gt;
 </code></pre>
 <h2 id="description-68"><a class="header" href="#description-68">Description</a></h2>
-<p>Class to get time informations (Delta time, elapsed time).</p>
+<p>Class to get time information (Delta time, elapsed time).</p>
 <p>Values are updated every frame.</p>
 <h2 id="static-methods-19"><a class="header" href="#static-methods-19">Static methods</a></h2>
 <hr />
@@ -13072,7 +13362,247 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 }
 
 </style>
+<h1 id="transform"><a class="header" href="#transform">Transform</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/game_elements/transform.h&gt;
+</code></pre>
+<h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
+<p>Class representing a 3D transformation (position, rotation, scale) of a GameObject.</p>
+<h2 id="public-methods-33"><a class="header" href="#public-methods-33">Public Methods</a></h2>
+<hr />
+<h3 id="getposition"><a class="header" href="#getposition">GetPosition</a></h3>
+<p>Get world position.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetPosition() const
+</code></pre>
+<hr />
+<h3 id="setposition-1"><a class="header" href="#setposition-1">SetPosition</a></h3>
+<p>Set world position.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>position</code>: New world position</li>
+</ul>
+<pre><code class="language-cpp">void SetPosition(const Vector3&amp; position)
+</code></pre>
+<hr />
+<h3 id="getlocalposition"><a class="header" href="#getlocalposition">GetLocalPosition</a></h3>
+<p>Get local position.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetLocalPosition() const
+</code></pre>
+<hr />
+<h3 id="setlocalposition"><a class="header" href="#setlocalposition">SetLocalPosition</a></h3>
+<p>Set local position.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>position</code>: New world position</li>
+</ul>
+<pre><code class="language-cpp">void SetLocalPosition(const Vector3&amp; position)
+</code></pre>
+<hr />
+<h3 id="geteulerangles"><a class="header" href="#geteulerangles">GetEulerAngles</a></h3>
+<p>Get rotation (in degree).</p>
+<pre><code class="language-cpp">const Vector3&amp; GetEulerAngles() const
+</code></pre>
+<hr />
+<h3 id="getlocaleulerangles"><a class="header" href="#getlocaleulerangles">GetLocalEulerAngles</a></h3>
+<p>Get local rotation (in degree).</p>
+<pre><code class="language-cpp">const Vector3&amp; GetLocalEulerAngles() const
+</code></pre>
+<hr />
+<h3 id="getrotation"><a class="header" href="#getrotation">GetRotation</a></h3>
+<p>Get rotation.</p>
+<pre><code class="language-cpp">const Quaternion&amp; GetRotation() const
+</code></pre>
+<hr />
+<h3 id="getlocalrotation"><a class="header" href="#getlocalrotation">GetLocalRotation</a></h3>
+<p>Get local rotation.</p>
+<pre><code class="language-cpp">const Quaternion&amp; GetLocalRotation() const
+</code></pre>
+<hr />
+<h3 id="seteulerangles"><a class="header" href="#seteulerangles">SetEulerAngles</a></h3>
+<p>Set world rotation in degree.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>rotation</code>: New world rotation</li>
+</ul>
+<pre><code class="language-cpp">void SetEulerAngles(const Vector3&amp; rotation)
+</code></pre>
+<hr />
+<h3 id="setlocaleulerangles"><a class="header" href="#setlocaleulerangles">SetLocalEulerAngles</a></h3>
+<p>Set local rotation in degree.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>rotation</code>: New local rotation</li>
+</ul>
+<pre><code class="language-cpp">void SetLocalEulerAngles(const Vector3&amp; rotation)
+</code></pre>
+<hr />
+<h3 id="setrotation"><a class="header" href="#setrotation">SetRotation</a></h3>
+<p>Set world rotation.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>rotation</code>: New world rotation</li>
+</ul>
+<pre><code class="language-cpp">void SetRotation(const Quaternion&amp; rotation)
+</code></pre>
+<hr />
+<h3 id="setlocalrotation"><a class="header" href="#setlocalrotation">SetLocalRotation</a></h3>
+<p>Set local rotation.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>rotation</code>: New local rotation</li>
+</ul>
+<pre><code class="language-cpp">void SetLocalRotation(const Quaternion&amp; rotation)
+</code></pre>
+<hr />
+<h3 id="getscale"><a class="header" href="#getscale">GetScale</a></h3>
+<p>Get scale.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetScale() const
+</code></pre>
+<hr />
+<h3 id="getlocalscale"><a class="header" href="#getlocalscale">GetLocalScale</a></h3>
+<p>Get local scale.</p>
+<pre><code class="language-cpp">const Vector3&amp; GetLocalScale() const
+</code></pre>
+<hr />
+<h3 id="setlocalscale"><a class="header" href="#setlocalscale">SetLocalScale</a></h3>
+<p>Set local scale.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>scale</code>: New local scale</li>
+</ul>
+<pre><code class="language-cpp">void SetLocalScale(const Vector3&amp; scale)
+</code></pre>
+<hr />
+<h3 id="getforward-1"><a class="header" href="#getforward-1">GetForward</a></h3>
+<p>Get forward direction.</p>
+<pre><code class="language-cpp">Vector3 GetForward() const
+</code></pre>
+<hr />
+<h3 id="getbackward"><a class="header" href="#getbackward">GetBackward</a></h3>
+<p>Get backward direction.</p>
+<pre><code class="language-cpp">Vector3 GetBackward() const
+</code></pre>
+<hr />
+<h3 id="getleft"><a class="header" href="#getleft">GetLeft</a></h3>
+<p>Get left direction.</p>
+<pre><code class="language-cpp">Vector3 GetLeft() const
+</code></pre>
+<hr />
+<h3 id="getright-1"><a class="header" href="#getright-1">GetRight</a></h3>
+<p>Get right direction.</p>
+<pre><code class="language-cpp">Vector3 GetRight() const
+</code></pre>
+<hr />
+<h3 id="getup-1"><a class="header" href="#getup-1">GetUp</a></h3>
+<p>Get up direction.</p>
+<pre><code class="language-cpp">Vector3 GetUp() const
+</code></pre>
+<hr />
+<h3 id="getdown"><a class="header" href="#getdown">GetDown</a></h3>
+<p>Get down direction.</p>
+<pre><code class="language-cpp">Vector3 GetDown() const
+</code></pre>
+<hr />
+<h3 id="gettransformationmatrix"><a class="header" href="#gettransformationmatrix">GetTransformationMatrix</a></h3>
+<p>Set transformation matrix.</p>
+<pre><code class="language-cpp">const glm::mat4&amp; GetTransformationMatrix() const
+</code></pre>
+<hr />
+<h3 id="settransformationmatrix"><a class="header" href="#settransformationmatrix">SetTransformationMatrix</a></h3>
+<p>Set transformation matrix.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>matrix</code>: New matrix</li>
+</ul>
+<pre><code class="language-cpp">void SetTransformationMatrix(const glm::mat4&amp; matrix)
+</code></pre>
+<hr />
+<h3 id="getgameobject-1"><a class="header" href="#getgameobject-1">GetGameObject</a></h3>
+<p>Get GameObject.</p>
+<pre><code class="language-cpp">std::shared_ptr&lt;GameObject&gt; GetGameObject() const
+</code></pre>
+<hr />
+<h3 id="getontransformupdated"><a class="header" href="#getontransformupdated">GetOnTransformUpdated</a></h3>
+<p>Get the event that is called when the transform is updated (new position, or new rotation or new scale).</p>
+<pre><code class="language-cpp">Event&lt;&gt;&amp; GetOnTransformUpdated()
+</code></pre>
+<hr />
+<h3 id="getontransformscaled"><a class="header" href="#getontransformscaled">GetOnTransformScaled</a></h3>
+<p>Get the event that is called when the transform is scaled.</p>
+<pre><code class="language-cpp">Event&lt;&gt;&amp; GetOnTransformScaled()
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="ui-rendering"><a class="header" href="#ui-rendering">UI Rendering</a></h1>
+<ul>
+<li><a href="script_api_reference/engine/ui_rendering/./horizontal_alignment_enum.html">HorizontalAlignment</a>: Enum to horizontally align text with text rendering components.</li>
+<li><a href="script_api_reference/engine/ui_rendering/./vertical_alignment_enum.html">VerticalAlignment</a>: Enum to vertically align text with text rendering components.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -13144,7 +13674,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
+<h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
 <p>Enum to horizontally align text with text rendering components.</p>
 <h2 id="values-12"><a class="header" href="#values-12">Values</a></h2>
 <hr />
@@ -13224,7 +13754,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
+<h2 id="description-71"><a class="header" href="#description-71">Description</a></h2>
 <p>Enum to vertically align text with text rendering components.</p>
 <h2 id="values-13"><a class="header" href="#values-13">Values</a></h2>
 <hr />
@@ -13301,6 +13831,9 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 
 </style>
 <h1 id="utils"><a class="header" href="#utils">Utils</a></h1>
+<ul>
+<li><a href="script_api_reference/engine/utils/./endian_utils/endian_utils.html">EndianUtils</a>: Utility class for endian conversion.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -13372,7 +13905,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/endian_utils.h&gt;
 </code></pre>
-<h2 id="description-71"><a class="header" href="#description-71">Description</a></h2>
+<h2 id="description-72"><a class="header" href="#description-72">Description</a></h2>
 <p>Utility class for endian conversion.<br>
 Usefull when using binary data on different platforms.</p>
 <h2 id="static-methods-20"><a class="header" href="#static-methods-20">Static methods</a></h2>
@@ -13473,7 +14006,7 @@ uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
-<h2 id="description-72"><a class="header" href="#description-72">Description</a></h2>
+<h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
 <p>Class that store the data structure of a vertex.</p>
 <h2 id="static-methods-21"><a class="header" href="#static-methods-21">Static methods</a></h2>
 <hr />
@@ -13488,7 +14021,7 @@ uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
 <p>Code sample:</p>
 <pre><code class="language-cpp">uint16_t elementSize = VertexDescriptor::GetVertexElementSize(VertexElement::POSITION_32_BITS);
 </code></pre>
-<h2 id="public-methods-31"><a class="header" href="#public-methods-31">Public methods</a></h2>
+<h2 id="public-methods-34"><a class="header" href="#public-methods-34">Public methods</a></h2>
 <hr />
 <h3 id="addvertexelement"><a class="header" href="#addvertexelement">AddVertexElement</a></h3>
 <p>Add a vertex element to the descriptor.</p>
@@ -13660,7 +14193,7 @@ Do not use if there is no color vertex element.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
-<h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
+<h2 id="description-74"><a class="header" href="#description-74">Description</a></h2>
 <p>Enum of all different vertex element types.</p>
 <h2 id="values-14"><a class="header" href="#values-14">Values</a></h2>
 <hr />
@@ -13757,7 +14290,7 @@ Do not use if there is no color vertex element.</p>
 <p>The engine configuration is used to make game builds from the editor itself.</p>
 <p>All dependencies binaries are already in the repository.</p>
 <p>Generated files are located in the folder XenityBuild.</p>
-<p>To make a shipping build:</p>
+<h2 id="how-to-make-a-shipping-build"><a class="header" href="#how-to-make-a-shipping-build">How to make a shipping build</a></h2>
 <ul>
 <li>Create a new folder</li>
 <li>build both <code>Engine</code> and <code>Editor</code> configurations,</li>

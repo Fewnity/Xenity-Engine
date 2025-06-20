@@ -13,7 +13,8 @@ All dependencies binaries are already in the repository.
 
 Generated files are located in the folder XenityBuild.
 
-To make a shipping build:
+## How to make a shipping build
+
 - Create a new folder
 - build both `Engine` and `Editor` configurations,
 - Copy `Xenity_Engine_Executable.exe` (from the `Editor` configuration), `Xenity_Engine.dll`, `Xenity_Engine.lib`, `Xenity_Editor.dll`, `Xenity_Editor.lib` into the new folder,

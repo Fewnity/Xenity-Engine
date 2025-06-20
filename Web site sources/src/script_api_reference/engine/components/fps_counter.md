@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-Component to display the FPS counter in the game
+Component to display the FPS counter in the game.
 
 ## Variables
 

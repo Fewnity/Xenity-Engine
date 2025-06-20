@@ -239,6 +239,134 @@
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_renderer.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Component for rendering text in a canvas.</p>
+<h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
+<hr />
+<h3 id="getcolor"><a class="header" href="#getcolor">GetColor</a></h3>
+<p>Get the color of the sprite.</p>
+<pre><code class="language-cpp">const Color&amp; GetColor() const
+</code></pre>
+<hr />
+<h3 id="setcolor"><a class="header" href="#setcolor">SetColor</a></h3>
+<p>Set the color of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>Color</code>: New sprite color</li>
+</ul>
+<pre><code class="language-cpp">void SetColor(const Color&amp; color)
+</code></pre>
+<hr />
+<h3 id="gettext"><a class="header" href="#gettext">GetText</a></h3>
+<p>Get text.</p>
+<pre><code class="language-cpp">const std::string&amp; GetText() const
+</code></pre>
+<hr />
+<h3 id="settext"><a class="header" href="#settext">SetText</a></h3>
+<p>Set text.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>text</code>: New text</li>
+</ul>
+<pre><code class="language-cpp">void SetText(const std::string&amp; text)
+</code></pre>
+<hr />
+<h3 id="getfont"><a class="header" href="#getfont">GetFont</a></h3>
+<p>Get text font.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Font&gt;&amp; GetFont() const
+</code></pre>
+<hr />
+<h3 id="setfont"><a class="header" href="#setfont">SetFont</a></h3>
+<p>Set text font.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>font</code>: New font</li>
+</ul>
+<pre><code class="language-cpp">void SetFont(const std::shared_ptr&lt;Font&gt;&amp; font)
+</code></pre>
+<hr />
+<h3 id="getmaterial"><a class="header" href="#getmaterial">GetMaterial</a></h3>
+<p>Get the material of the sprite.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Material&gt;&amp; GetMaterial()
+</code></pre>
+<hr />
+<h3 id="setmaterial"><a class="header" href="#setmaterial">SetMaterial</a></h3>
+<p>Set the material of the sprite.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>material</code>: New sprite material</li>
+</ul>
+<pre><code class="language-cpp">void SetMaterial(const std::shared_ptr&lt;Material&gt;&amp; material)
+</code></pre>
+<hr />
+<h3 id="getfontsize"><a class="header" href="#getfontsize">GetFontSize</a></h3>
+<p>Get the font size.</p>
+<pre><code class="language-cpp">float GetFontSize() const
+</code></pre>
+<hr />
+<h3 id="setfontsize"><a class="header" href="#setfontsize">SetFontSize</a></h3>
+<p>Set the font size.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fontSize</code>: New font size</li>
+</ul>
+<pre><code class="language-cpp">void SetFontSize(float fontSize)
+</code></pre>
+<hr />
+<h3 id="getlinespacing"><a class="header" href="#getlinespacing">GetLineSpacing</a></h3>
+<p>Get the line spacing.</p>
+<pre><code class="language-cpp">float GetLineSpacing() const
+</code></pre>
+<hr />
+<h3 id="setlinespacing"><a class="header" href="#setlinespacing">SetLineSpacing</a></h3>
+<p>Set the line spacing.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>lineSpacing</code>: New line spacing</li>
+</ul>
+<pre><code class="language-cpp">void SetLineSpacing(float lineSpacing)
+</code></pre>
+<hr />
+<h3 id="getcharacterspacing"><a class="header" href="#getcharacterspacing">GetCharacterSpacing</a></h3>
+<p>Get the character spacing.</p>
+<pre><code class="language-cpp">float GetCharacterSpacing() const
+</code></pre>
+<hr />
+<h3 id="setcharacterspacing"><a class="header" href="#setcharacterspacing">SetCharacterSpacing</a></h3>
+<p>Set the character spacing.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>characterSpacing</code>: New character spacing</li>
+</ul>
+<pre><code class="language-cpp">void SetCharacterSpacing(float characterSpacing)
+</code></pre>
+<hr />
+<h3 id="getverticalalignment"><a class="header" href="#getverticalalignment">GetVerticalAlignment</a></h3>
+<p>Get the vertical alignment.</p>
+<pre><code class="language-cpp">VerticalAlignment GetVerticalAlignment() const
+</code></pre>
+<hr />
+<h3 id="setverticalalignment"><a class="header" href="#setverticalalignment">SetVerticalAlignment</a></h3>
+<p>Set the vertical alignment.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>verticalAlignment</code>: New vertical alignment</li>
+</ul>
+<pre><code class="language-cpp">void SetVerticalAlignment(VerticalAlignment verticalAlignment)
+</code></pre>
+<hr />
+<h3 id="gethorizontalalignment"><a class="header" href="#gethorizontalalignment">GetHorizontalAlignment</a></h3>
+<p>Get the horizontal alignment.</p>
+<pre><code class="language-cpp">HorizontalAlignment GetHorizontalAlignment() const
+</code></pre>
+<hr />
+<h3 id="sethorizontalalignment"><a class="header" href="#sethorizontalalignment">SetHorizontalAlignment</a></h3>
+<p>Set the horizontal alignment.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>horizontalAlignment</code>: New horizontal alignment</li>
+</ul>
+<pre><code class="language-cpp">void SetHorizontalAlignment(HorizontalAlignment horizontalAlignment)
+</code></pre>
 
                     </main>
 
@@ -248,7 +376,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/components/transform.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/date_time/date_time.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -262,7 +390,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/components/transform.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/date_time/date_time.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

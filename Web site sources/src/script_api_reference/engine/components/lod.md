@@ -7,4 +7,4 @@ Add this in your code:
 
 ## Description
 
-Component to manage Level of Detail (LOD) for a GameObject
+Component to manage Level of Detail (LOD) for a GameObject.

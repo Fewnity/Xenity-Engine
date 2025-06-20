@@ -7,7 +7,7 @@ Add this in your code:
 
 ## Description
 
-This class stores informations of a collision between two colliders
+This class stores information of a collision between two colliders.
 
 ## Variables
 

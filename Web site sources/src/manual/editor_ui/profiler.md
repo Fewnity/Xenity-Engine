@@ -1,6 +1,6 @@
 # The profiler
 
-The profiler window provides you informations about the performances of your game and of the engine.
+The profiler window provides you information about the performances of your game and of the engine.
 
 In the first part of the profiler, you can see basic information:
 - FPS graph: The graph shows the number of frame per seconds. stable graph and high numbers are better.

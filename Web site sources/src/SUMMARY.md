@@ -76,7 +76,6 @@
             - [SpriteRenderer](./script_api_reference/engine/components/sprite_renderer.md)
             - [TextMesh](./script_api_reference/engine/components/text_mesh.md)
             - [TextRenderer](./script_api_reference/engine/components/text_renderer.md)
-            - [Transform](./script_api_reference/engine/components/transform.md)
 
         - [DateTime](./script_api_reference/engine/date_time/date_time.md)
         - [Debug](./script_api_reference/engine/debug/debug.md)
@@ -121,6 +120,8 @@
         - [SceneManager](./script_api_reference/engine/scene_manager/scene_manager.md)
         - [Screen](./script_api_reference/engine/screen/screen.md)
         - [Time](./script_api_reference/engine/time/time.md)
+
+        - [Transform](./script_api_reference/engine/transform/transform.md)
 
         - [UI Rendering](./script_api_reference/engine/ui_rendering/ui_rendering.md)
             - [HorizontalAlignment Enum](./script_api_reference/engine/ui_rendering/horizontal_alignment_enum.md)
