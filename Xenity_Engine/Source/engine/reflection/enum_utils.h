@@ -165,5 +165,5 @@ static void* RegisterEnumStringsMap(const std::vector<EnumValueName>& newEnumStr
 * @brief Create an enum that can be used by the editor
 */
 #define ENUM(name, ...) \
-    enum class name { __VA_ARGS__ }; \
+    enum class name : int { __VA_ARGS__ }; \
 	static const void* name##Register = RegisterEnumStringsMap<name>(ConvertEnumToVector(#__VA_ARGS__));

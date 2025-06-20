@@ -85,19 +85,19 @@ public:
 	static void DrawText(const std::string& text, TextInfo* textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Transform& transform, const Color& color, bool canvas, const MeshData& mesh, const Font& font, Material& material);
 
 	/**
-	* @brief Get informations about a text
+	* @brief Get information about a text
 	* @param text Text
 	* @param textLen Text lenght
 	* @param font Font
 	* @param scale Test scale
-	* @return Text informations
+	* @return Text information
 	*/
 	[[nodiscard]] static TextInfo* GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale);
 
 	/**
 	* @brief Create a mesh from a text
 	* @param text Text
-	* @param textInfo Text informations
+	* @param textInfo Text information
 	* @param horizontalAlignment Horizontal alignment
 	* @param verticalAlignment Vertical alignment
 	* @param color Color

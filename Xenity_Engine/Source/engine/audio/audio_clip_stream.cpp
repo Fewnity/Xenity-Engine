@@ -45,7 +45,7 @@ void AudioClipStream::OpenStream(const AudioClip& audioFile)
 		else
 		{
 			m_type = AudioType::Wav;
-			// Get informations
+			// Get information
 			m_channelCount = m_wavStream->channels;
 			m_sampleCount = m_wavStream->totalPCMFrameCount;
 			//Debug::Print("Audio clip data: " + std::to_string(m_wavStream->channels) + " sampleRate: " + std::to_string(m_wavStream->sampleRate) + " m_sampleCount: "+ std::to_string(m_sampleCount), true);
@@ -63,7 +63,7 @@ void AudioClipStream::OpenStream(const AudioClip& audioFile)
 		else
 		{
 			m_type = AudioType::Mp3;
-			// Get informations
+			// Get information
 			m_channelCount = m_mp3Stream->channels;
 			m_sampleCount = drmp3_get_pcm_frame_count(m_mp3Stream);
 			//Debug::Print("Audio clip data: " + std::to_string(m_mp3Stream->channels) + " sampleRate: " + std::to_string(m_mp3Stream->sampleRate) + " m_sampleCount: " + std::to_string(m_sampleCount), true);

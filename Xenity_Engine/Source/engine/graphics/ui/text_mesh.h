@@ -16,11 +16,22 @@ class Font;
 struct TextInfo;
 class MeshData;
 
+/**
+* @brief Component for rendering text in 3D space
+*/
 class API TextMesh : public IDrawable
 {
 public:
 	TextMesh();
 	~TextMesh();
+
+	/**
+	* @brief Get text color
+	*/
+	const Color& GetColor() const
+	{
+		return m_color;
+	}
 
 	/**
 	* @brief Set text color
@@ -32,10 +43,26 @@ public:
 	}
 
 	/**
+	* @brief Get text
+	*/
+	const std::string& GetText() const
+	{
+		return m_text;
+	}
+
+	/**
 	* @brief Set text
 	* @param text Text
 	*/
 	void SetText(const std::string& text);
+
+	/**
+	* @brief Get text font
+	*/
+	const std::shared_ptr<Font>& GetFont() const
+	{
+		return m_font;
+	}
 
 	/**
 	* @brief Set text font
@@ -43,42 +70,83 @@ public:
 	*/
 	void SetFont(const std::shared_ptr<Font>& font);
 
+	/**
+	* @brief Get the material
+	*/
 	[[nodiscard]] std::shared_ptr<Material> GetMaterial() const
 	{
 		return m_material;
 	}
 
+	/**
+	* @brief Set the material
+	*/
 	void SetMaterial(std::shared_ptr<Material> _material);
 
-	void SetFontSize(float fontSize);
+	/**
+	* @brief Get the font size
+	*/
 	[[nodiscard]] float GetFontSize() const
 	{
 		return m_fontSize;
 	}
 
-	void SetLineSpacing(float lineSpacing);
+	/**
+	* @brief Set the font size
+	*/
+	void SetFontSize(float fontSize);
+
+	/**
+	* @brief Get the line spacing
+	*/
 	[[nodiscard]] float GetLineSpacing() const
 	{
 		return m_lineSpacing;
 	}
 
-	void SetCharacterSpacing(float characterSpacing);
+	/**
+	* @brief Set the line spacing
+	*/
+	void SetLineSpacing(float lineSpacing);
+
+	/**
+	* @brief Get the character spacing
+	*/
 	[[nodiscard]] float GetCharacterSpacing() const
 	{
 		return m_characterSpacing;
 	}
 
-	void SetVerticalAlignment(VerticalAlignment verticalAlignment);
+	/**
+	* @brief Set the character spacing
+	*/
+	void SetCharacterSpacing(float characterSpacing);
+
+	/**
+	* @brief Get the vertical alignment
+	*/
 	[[nodiscard]] VerticalAlignment GetVerticalAlignment() const
 	{
 		return m_verticalAlignment;
 	}
 
-	void SetHorizontalAlignment(HorizontalAlignment horizontalAlignment);
+	/**
+	* @brief Set the vertical alignment
+	*/
+	void SetVerticalAlignment(VerticalAlignment verticalAlignment);
+
+	/**
+	* @brief Get the horizontal alignment
+	*/
 	[[nodiscard]] HorizontalAlignment GetHorizontalAlignment() const
 	{
 		return m_horizontalAlignment;
 	}
+
+	/**
+	* @brief Set the horizontal alignment
+	*/
+	void SetHorizontalAlignment(HorizontalAlignment horizontalAlignment);
 
 protected:
 

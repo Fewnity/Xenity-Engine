@@ -139,7 +139,7 @@ protected:
 	*/
 	void UpdateUnsignedInts();
 
-	// Color informations, default is white
+	// Color information, default is white
 	RGBA m_rgba = RGBA(1, 1, 1, 1);
 	unsigned int m_argbInt = 0xFFFFFFFF;
 	unsigned int m_rgbaInt = 0xFFFFFFFF;

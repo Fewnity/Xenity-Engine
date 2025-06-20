@@ -16,6 +16,9 @@
 
 class GameObject;
 
+/**
+* @brief Class representing a 3D transformation (position, rotation, scale) of a GameObject
+*/
 class API Transform : public Reflective, public std::enable_shared_from_this<Transform>
 {
 
@@ -27,23 +30,35 @@ public:
 	/**
 	* @brief Get position
 	*/
-	[[nodiscard]] inline const Vector3& GetPosition() const
+	[[nodiscard]] const Vector3& GetPosition() const
 	{
 		return m_position;
 	}
 
 	/**
+	* @brief Set position
+	* @param value Position
+	*/
+	void SetPosition(const Vector3& position);
+
+	/**
 	* @brief Get local position
 	*/
-	[[nodiscard]] inline const Vector3& GetLocalPosition() const
+	[[nodiscard]] const Vector3& GetLocalPosition() const
 	{
 		return m_localPosition;
 	}
 
 	/**
+	* @brief Set local position
+	* @param value Local position
+	*/
+	void SetLocalPosition(const Vector3& position);
+
+	/**
 	* @brief Get rotation (in degree)
 	*/
-	[[nodiscard]] inline const Vector3& GetEulerAngles() const
+	[[nodiscard]] const Vector3& GetEulerAngles() const
 	{
 		return m_rotation;
 	}
@@ -51,7 +66,7 @@ public:
 	/**
 	* @brief Get local rotation (in degree)
 	*/
-	[[nodiscard]] inline const Vector3& GetLocalEulerAngles() const
+	[[nodiscard]] const Vector3& GetLocalEulerAngles() const
 	{
 		return m_localRotation;
 	}
@@ -59,23 +74,47 @@ public:
 	/**
 	* @brief Get rotation
 	*/
-	[[nodiscard]] inline const Quaternion& GetRotation() const
+	[[nodiscard]] const Quaternion& GetRotation() const
 	{
 		return m_rotationQuaternion;
 	}
 
 	/**
+	* @brief Set rotation in degree
+	* @param value Rotation in degree
+	*/
+	void SetEulerAngles(const Vector3& rotation);
+
+	/**
+	* @brief Set rotation
+	* @param value Rotation
+	*/
+	void SetRotation(const Quaternion& rotation);
+
+	/**
 	* @brief Get local rotation
 	*/
-	[[nodiscard]] inline const Quaternion& GetLocalRotation() const
+	[[nodiscard]] const Quaternion& GetLocalRotation() const
 	{
 		return m_localRotationQuaternion;
 	}
 
 	/**
+	* @brief Set local rotation in degree
+	* @param value Local rotation in degree
+	*/
+	void SetLocalEulerAngles(const Vector3& rotation);
+
+	/**
+	* @brief Set local rotation
+	* @param value Local rotation
+	*/
+	void SetLocalRotation(const Quaternion& rotation);
+
+	/**
 	* @brief Get scale
 	*/
-	[[nodiscard]] inline const Vector3& GetScale() const
+	[[nodiscard]] const Vector3& GetScale() const
 	{
 		return m_scale;
 	}
@@ -83,15 +122,21 @@ public:
 	/**
 	* @brief Get local scale
 	*/
-	[[nodiscard]] inline const Vector3& GetLocalScale() const
+	[[nodiscard]] const Vector3& GetLocalScale() const
 	{
 		return m_localScale;
 	}
 
 	/**
+	* @brief Set local scale
+	* @param value Local scale
+	*/
+	void SetLocalScale(const Vector3& scale);
+
+	/**
 	* @brief Get forward direction
 	*/
-	[[nodiscard]] inline Vector3 GetForward() const
+	[[nodiscard]] Vector3 GetForward() const
 	{
 		const Vector3 direction = Vector3(-rotationMatrix[6], rotationMatrix[7], rotationMatrix[8]);
 		return direction;
@@ -100,7 +145,7 @@ public:
 	/**
 	* @brief Get backward direction
 	*/
-	[[nodiscard]] inline Vector3 GetBackward() const
+	[[nodiscard]] Vector3 GetBackward() const
 	{
 		return -GetForward();
 	}
@@ -108,7 +153,7 @@ public:
 	/**
 	* @brief Get left direction
 	*/
-	[[nodiscard]] inline Vector3 GetLeft() const
+	[[nodiscard]] Vector3 GetLeft() const
 	{
 		return -GetRight();
 	}
@@ -116,7 +161,7 @@ public:
 	/**
 	* @brief Get right direction
 	*/
-	[[nodiscard]] inline Vector3 GetRight() const
+	[[nodiscard]] Vector3 GetRight() const
 	{
 		const Vector3 direction = Vector3(rotationMatrix[0], -rotationMatrix[1], -rotationMatrix[2]);
 		return direction;
@@ -125,7 +170,7 @@ public:
 	/**
 	* @brief Get up direction
 	*/
-	[[nodiscard]] inline Vector3 GetUp() const
+	[[nodiscard]] Vector3 GetUp() const
 	{
 		const Vector3 direction = Vector3(-rotationMatrix[3], rotationMatrix[4], rotationMatrix[5]);
 		return direction;
@@ -134,77 +179,28 @@ public:
 	/**
 	* @brief Get down direction
 	*/
-	[[nodiscard]] inline Vector3 GetDown() const
+	[[nodiscard]] Vector3 GetDown() const
 	{
 		return -GetUp();
 	}
 
 	/**
-	* @brief Set position
-	* @param value Position
+	* @brief Set transformation matrix
 	*/
-	void SetPosition(const Vector3& value);
-
-	/**
-	* @brief Set local position
-	* @param value Local position
-	*/
-	void SetLocalPosition(const Vector3& value);
-
-	/**
-	* @brief Set rotation (in degree)
-	* @param value Rotation (in degree)
-	*/
-	void SetRotation(const Vector3& value);//Euler angle
-
-	/**
-	* @brief Set local rotation (in degree)
-	* @param value Local rotation (in degree)
-	*/
-	void SetLocalRotation(const Vector3& value);//Euler angle
-
-	/**
-	* @brief Set rotation
-	* @param value Rotation
-	*/
-	void SetRotation(const Quaternion& value);
-
-	/**
-	* @brief Set local rotation
-	* @param value Local rotation
-	*/
-	void SetLocalRotation(const Quaternion& value);
-
-	/**
-	* @brief Set local scale
-	* @param value Local scale
-	*/
-	void SetLocalScale(const Vector3& value);
-
-	[[nodiscard]] inline const glm::mat4& GetTransformationMatrix() const
+	[[nodiscard]] const glm::mat4& GetTransformationMatrix() const
 	{
 		return transformationMatrix;
 	}
 
-	[[nodiscard]] inline const glm::mat3& GetInverseNormalMatrix()
-	{
-		if constexpr (!s_UseOpenGLFixedFunctions)
-		{
-			if (m_isNormalMatrixDirty)
-			{
-				normalMatrix = glm::transpose(glm::inverse(glm::mat3(transformationMatrix)));
-				m_isNormalMatrixDirty = false;
-			}
-		}
-		return normalMatrix;
-	}
-
-	[[nodiscard]] const glm::mat4& GetMVPMatrix(size_t currentFrame);
+	/**
+	* @brief Set transformation matrix
+	*/
+	void SetTransformationMatrix(const glm::mat4& matrix);
 
 	/**
 	* @brief Get GameObject
 	*/
-	[[nodiscard]] inline std::shared_ptr<GameObject> GetGameObject() const
+	[[nodiscard]] std::shared_ptr<GameObject> GetGameObject() const
 	{
 		return m_gameObject.lock();
 	}
@@ -218,14 +214,12 @@ public:
 	}
 
 	/**
-	* Get the event that is called when the transform is scamled
+	* Get the event that is called when the transform is scaled
 	*/
 	[[nodiscard]] Event<>& GetOnTransformScaled()
 	{
 		return m_onTransformScaled;
 	}
-
-	void SetTransformationMatrix(const glm::mat4& matrix);
 
 private:
 	glm::mat4 transformationMatrix;
@@ -243,11 +237,28 @@ private:
 	friend class GameObject;
 	friend class SceneManager;
 	friend class InspectorMenu;
+	friend class MeshManager;
+	friend class SpriteManager;
 
 	/**
 	* @brief [Internal] Update children world positions
 	*/
 	void SetChildrenWorldPositions();
+
+	[[nodiscard]] const glm::mat4& GetMVPMatrix(size_t currentFrame);
+
+	[[nodiscard]] const glm::mat3& GetInverseNormalMatrix()
+	{
+		if constexpr (!s_UseOpenGLFixedFunctions)
+		{
+			if (m_isNormalMatrixDirty)
+			{
+				normalMatrix = glm::transpose(glm::inverse(glm::mat3(transformationMatrix)));
+				m_isNormalMatrixDirty = false;
+			}
+		}
+		return normalMatrix;
+	}
 
 	/**
 	* @brief Function called when the parent changed

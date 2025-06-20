@@ -37,6 +37,10 @@
 #include <engine/game_elements/transform.h>
 #include <engine/ui/screen.h>
 
+/*
+* There are many empty functions in this file because fixed pipeline is not supported on PS3.
+*/
+
 #define DEFUALT_CB_SIZE						0x80000		// 512Kb default command buffer size
 #define HOST_STATE_CB_SIZE					0x10000		// 64Kb state command buffer size (used for resetting certain default states)
 #define HOST_ADDR_ALIGNMENT					(1024*1024)

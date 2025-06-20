@@ -1015,7 +1015,7 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 			const size_t projectCount = j.size();
 			for (size_t i = 0; i < projectCount; i++)
 			{
-				// Get project informations (name and path)
+				// Get project information (name and path)
 				ProjectListItem projectItem;
 				projectItem.path = j[i]["path"];
 				const ProjectSettings settings = GetProjectSettings(projectItem.path);

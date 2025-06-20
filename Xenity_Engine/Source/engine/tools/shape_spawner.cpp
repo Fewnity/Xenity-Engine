@@ -82,8 +82,8 @@ void ShapeSpawner::SetDefaultValues(const std::shared_ptr <GameObject>& gameObje
 {
 	XASSERT(gameObject != nullptr, "[ShapeSpawner::SetDefaultValues] gameObject is empty");
 
-	std::shared_ptr<Transform> transform = gameObject->GetTransform();
+	const std::shared_ptr<Transform>& transform = gameObject->GetTransform();
 	transform->SetPosition(s_defaultPosition);
-	transform->SetRotation(s_defaultRotation);
+	transform->SetEulerAngles(s_defaultRotation);
 	transform->SetLocalScale(s_defaultScale);
 }

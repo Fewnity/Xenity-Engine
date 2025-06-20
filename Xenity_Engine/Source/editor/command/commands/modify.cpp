@@ -59,9 +59,9 @@ void InspectorTransformSetRotationCommand::Execute()
 	if (foundGameObject)
 	{
 		if (isLocalRotation)
-			foundGameObject->GetTransform()->SetLocalRotation(newValue);
+			foundGameObject->GetTransform()->SetLocalEulerAngles(newValue);
 		else
-			foundGameObject->GetTransform()->SetRotation(newValue);
+			foundGameObject->GetTransform()->SetEulerAngles(newValue);
 		SceneManager::SetIsSceneDirty(true);
 	}
 }
@@ -72,9 +72,9 @@ void InspectorTransformSetRotationCommand::Undo()
 	if (foundGameObject)
 	{
 		if (isLocalRotation)
-			foundGameObject->GetTransform()->SetLocalRotation(lastValue);
+			foundGameObject->GetTransform()->SetLocalEulerAngles(lastValue);
 		else
-			foundGameObject->GetTransform()->SetRotation(lastValue);
+			foundGameObject->GetTransform()->SetEulerAngles(lastValue);
 		SceneManager::SetIsSceneDirty(true);
 	}
 }

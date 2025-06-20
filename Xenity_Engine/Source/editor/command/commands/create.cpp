@@ -98,7 +98,7 @@ void InspectorCreateGameObjectCommand::Execute()
 				std::shared_ptr<Transform> transform = newGameObject->GetTransform();
 				newGameObject->SetParent(target);
 				transform->SetLocalPosition(Vector3(0));
-				transform->SetLocalRotation(Vector3(0));
+				transform->SetLocalEulerAngles(Vector3(0));
 				transform->SetLocalScale(Vector3(1));
 				done = true;
 			}
@@ -120,7 +120,7 @@ void InspectorCreateGameObjectCommand::Execute()
 				std::shared_ptr<Transform> transform = newGameObject->GetTransform();
 				std::shared_ptr<Transform> selectedTransform = target->GetTransform();
 				transform->SetPosition(selectedTransform->GetPosition());
-				transform->SetRotation(selectedTransform->GetEulerAngles());
+				transform->SetEulerAngles(selectedTransform->GetEulerAngles());
 				transform->SetLocalScale(selectedTransform->GetScale());
 
 				if (target->GetParent().lock())

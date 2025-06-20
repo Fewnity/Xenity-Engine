@@ -75,11 +75,6 @@ void TextRenderer::SetFont(const std::shared_ptr<Font>& font)
 	}
 }
 
-std::shared_ptr<Material> TextRenderer::GetMaterial()
-{
-	return m_material;
-}
-
 void TextRenderer::SetMaterial(std::shared_ptr<Material> material)
 {
 	m_material = material;

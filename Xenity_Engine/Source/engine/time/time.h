@@ -9,7 +9,7 @@
 #include <engine/api.h>
 
 /**
-* @brief Class to get time informations (Delta time, elapsed time)
+* @brief Class to get time information (Delta time, elapsed time)
 */
 class API Time
 {

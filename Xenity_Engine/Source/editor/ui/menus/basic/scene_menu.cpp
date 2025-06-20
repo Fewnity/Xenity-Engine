@@ -778,7 +778,7 @@ void SceneMenu::FocusSelectedObject()
 		std::shared_ptr<Transform> selectedObjectTransform = selectedGameObject->GetTransform();
 		const Vector3 dir = (cameraTransform->GetPosition() - selectedObjectTransform->GetPosition()).Normalized();
 		cameraTransform->SetPosition(selectedObjectTransform->GetPosition() + dir * 2);
-		cameraTransform->SetRotation(Vector3::LookAt(cameraTransform->GetPosition(), selectedObjectTransform->GetPosition()));
+		cameraTransform->SetEulerAngles(Vector3::LookAt(cameraTransform->GetPosition(), selectedObjectTransform->GetPosition()));
 	}
 }
 

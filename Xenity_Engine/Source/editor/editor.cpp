@@ -294,7 +294,7 @@ void Editor::Update()
 				std::shared_ptr<Transform> newTransform = newGameObject->GetTransform();
 				std::shared_ptr<Transform> transformToDuplicate = gameObjectToDuplicate->GetTransform();
 				newTransform->SetLocalPosition(transformToDuplicate->GetLocalPosition());
-				newTransform->SetLocalRotation(transformToDuplicate->GetLocalEulerAngles());
+				newTransform->SetLocalEulerAngles(transformToDuplicate->GetLocalEulerAngles());
 				newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 				SetSelectedGameObject(newGameObject);
 			}

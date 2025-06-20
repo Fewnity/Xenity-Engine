@@ -132,7 +132,7 @@ void Transform::SetLocalPosition(const Vector3& value)
 	UpdateWorldValues();
 }
 
-void Transform::SetRotation(const Vector3& value)
+void Transform::SetEulerAngles(const Vector3& value)
 {
 	XASSERT(!value.HasInvalidValues(), "[Transform::SetRotation] value is invalid");
 
@@ -165,7 +165,7 @@ void Transform::SetRotation(const Vector3& value)
 	}
 }
 
-void Transform::SetLocalRotation(const Vector3& value)
+void Transform::SetLocalEulerAngles(const Vector3& value)
 {
 	XASSERT(!value.HasInvalidValues(), "[Transform::SetLocalRotation] value is invalid");
 
@@ -175,7 +175,7 @@ void Transform::SetLocalRotation(const Vector3& value)
 
 	if (m_gameObject.lock()->GetParent().expired())
 	{
-		SetRotation(value);
+		SetEulerAngles(value);
 		return;
 	}
 

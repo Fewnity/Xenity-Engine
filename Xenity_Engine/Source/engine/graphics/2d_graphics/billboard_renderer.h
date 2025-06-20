@@ -29,22 +29,20 @@ public:
 	//void SetOrderInLayer(int orderInLayer);
 
 	/**
+	* @brief Get the color of the sprite
+	*/
+	const Color& GetColor() const
+	{
+		return m_color;
+	}
+
+	/**
 	* @brief Set the color of the sprite
 	*/
 	void SetColor(const Color& color)
 	{
 		m_color = color;
 	}
-
-	/**
-	* @brief Set the material of the sprite
-	*/
-	void SetMaterial(const std::shared_ptr<Material>& material);
-	
-	/**
-	* @brief Set the texture of the sprite
-	*/
-	void SetTexture(const std::shared_ptr<Texture>& texture);
 
 	/**
 	* @brief Get the material of the sprite
@@ -55,12 +53,22 @@ public:
 	}
 
 	/**
+	* @brief Set the material of the sprite
+	*/
+	void SetMaterial(const std::shared_ptr<Material>& material);
+	
+	/**
 	* @brief Get the texture of the sprite
 	*/
 	[[nodiscard]] const std::shared_ptr<Texture>& GetTexture()
 	{
 		return m_texture;
 	}
+
+	/**
+	* @brief Set the texture of the sprite
+	*/
+	void SetTexture(const std::shared_ptr<Texture>& texture);
 
 protected:
 	ReflectiveData GetReflectiveData() override;

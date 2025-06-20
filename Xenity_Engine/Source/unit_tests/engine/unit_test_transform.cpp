@@ -57,23 +57,23 @@ TestResult TransformSetRotationTest::Start(std::string& errorOut)
 	std::shared_ptr <Transform> transform = gameObject->GetTransform();
 
 	// Normal SetRotation
-	transform->SetRotation(Vector3(90, 180, 270));
+	transform->SetEulerAngles(Vector3(90, 180, 270));
 	EXPECT_EQUALS(transform->GetEulerAngles(), Vector3(90, 180, 270), "Bad Transform SetRotation");
 
 	// Normal SetLocalRotation
-	transform->SetLocalRotation(Vector3(-90, -180, -270));
+	transform->SetLocalEulerAngles(Vector3(-90, -180, -270));
 	EXPECT_EQUALS(transform->GetLocalEulerAngles(), Vector3(-90, -180, -270), "Bad Transform SetLocalRotation");
 
 	// SetRotation in a parent
 	std::shared_ptr<GameObject> parent = CreateGameObject();
 	gameObject->SetParent(parent);
-	parent->GetTransform()->SetRotation(Vector3(10, 20, 30));
-	transform->SetRotation(Vector3(10, 20, 30));
+	parent->GetTransform()->SetEulerAngles(Vector3(10, 20, 30));
+	transform->SetEulerAngles(Vector3(10, 20, 30));
 	EXPECT_EQUALS(transform->GetEulerAngles(), Vector3(10, 20, 30), "Bad Transform SetRotation in a parent (GetEulerAngles)");
 	EXPECT_EQUALS(transform->GetLocalEulerAngles(), Vector3(0, 0, 0), "Bad Transform SetRotation in a parent (GetLocalEulerAngles)");
 
 	// SetLocalRotation in a parent
-	transform->SetLocalRotation(Vector3(10, 20, 30));
+	transform->SetLocalEulerAngles(Vector3(10, 20, 30));
 	EXPECT_EQUALS(transform->GetEulerAngles(), Vector3(8.21814728f, 42.4855080f, 61.8378067f), "Bad Transform SetLocalRotation in a parent (GetEulerAngles)");
 	EXPECT_EQUALS(transform->GetLocalEulerAngles(), Vector3(10, 20, 30), "Bad Transform SetLocalRotation in a parent (GetLocalEulerAngles)");
 
