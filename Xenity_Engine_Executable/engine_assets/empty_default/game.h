@@ -1,4 +1,4 @@
-//DO NOT MODIFY THIS FILE
+// DO NOT MODIFY THIS FILE
 
 #if defined(EXPORT)
 #define API2
