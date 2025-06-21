@@ -10,6 +10,7 @@
 #include <ShObjIdl.h>
 #endif
 
+#include <engine/game_elements/gameplay_manager.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/constants.h>
 #include "engine.h"
@@ -30,7 +31,11 @@ void Application::OpenURL(const std::string& url)
 
 void Application::Quit()
 {
+#if defined(EDITOR)
+	GameplayManager::SetGameState(GameState::Stopped, true);
+#else
 	Engine::Quit();
+#endif
 }
 
 Platform Application::GetPlatform()
