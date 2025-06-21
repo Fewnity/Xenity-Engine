@@ -280,7 +280,6 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 			{
 				const std::string componentName = componentKV.value()["Type"];
 				std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, *newGameObject);
-
 				if (comp)
 				{
 					tempComponents.push_back(comp);
@@ -292,17 +291,17 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 						comp->SetIsEnabled(isEnabled);
 					}
 				}
+
 #if defined(EDITOR)
-				else
+				if (!comp)
 				{
 					// If the component is missing (the class doesn't exist anymore or the game is not compiled)
 					// Create a missing script and copy component data to avoid data loss
-					const std::shared_ptr<MissingScript> missingScript = std::make_shared<MissingScript>();
-					missingScript->data = componentKV.value();
-					newGameObject->AddExistingComponent(missingScript);
-					comp = missingScript;
+					comp = ClassRegistry::AddComponentFromName("MissingScript", *newGameObject);
+					std::dynamic_pointer_cast<MissingScript>(comp)->data = componentKV.value();
 				}
 #endif
+
 				if (comp)
 				{
 					allComponents.push_back(comp);

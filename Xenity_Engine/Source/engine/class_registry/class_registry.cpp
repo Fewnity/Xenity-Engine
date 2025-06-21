@@ -160,6 +160,7 @@ void ClassRegistry::RegisterEngineComponents()
 	REGISTER_COMPONENT(SphereCollider, true);
 	REGISTER_COMPONENT(Lod, true);
 	REGISTER_COMPONENT(FpsCounter, false);
+	REGISTER_COMPONENT(MissingScript, false);
 #if defined(DEBUG)
 	REGISTER_COMPONENT(TestComponent, false);
 #endif
