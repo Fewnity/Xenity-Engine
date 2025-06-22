@@ -200,5 +200,4 @@ private:
 
 	static int s_iDrawablesCount;
 	static int s_lodsCount;
-	static bool s_drawOrderListDirty;
 };

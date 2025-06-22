@@ -38,15 +38,24 @@ void SpriteManager::Init()
 	s_spriteMeshData = MeshData::MakeMeshDataForFile();
 	VertexDescriptor spriteDescriptor;
 	spriteDescriptor.AddVertexElement(VertexElement::UV_32_BITS);
+#if defined(__vita__)
+	spriteDescriptor.AddVertexElement(VertexElement::COLOR_4_FLOATS);
+#endif
 	spriteDescriptor.AddVertexElement(VertexElement::POSITION_32_BITS);
 	s_spriteMeshData->CreateSubMesh(4, 6, spriteDescriptor);
 
 	const std::unique_ptr<MeshData::SubMesh>& subMesh = s_spriteMeshData->m_subMeshes[0];
+#if defined(__vita__)
+	subMesh->SetVertex(1.0f, 1.0f, Color::CreateFromRGBA(255, 255, 255, 255), -0.5f, -0.5f, 0.0f, 0);
+	subMesh->SetVertex(0.0f, 1.0f, Color::CreateFromRGBA(255, 255, 255, 255), 0.5f, -0.5f, 0.0f, 1);
+	subMesh->SetVertex(0.0f, 0.0f, Color::CreateFromRGBA(255, 255, 255, 255), 0.5f, 0.5f, 0.0f, 2);
+	subMesh->SetVertex(1.0f, 0.0f, Color::CreateFromRGBA(255, 255, 255, 255), -0.5f, 0.5f, 0.0f, 3);
+#else
 	subMesh->SetVertex(1.0f, 1.0f, -0.5f, -0.5f, 0.0f, 0);
 	subMesh->SetVertex(0.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1);
 	subMesh->SetVertex(0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 2);
 	subMesh->SetVertex(1.0f, 0.0f, -0.5f, 0.5f, 0.0f, 3);
-
+#endif
 	subMesh->SetIndex(0, 0);
 	subMesh->SetIndex(1, 2);
 	subMesh->SetIndex(2, 1);
@@ -61,6 +70,9 @@ void SpriteManager::Init()
 	VertexDescriptor withNormalsDescriptor;
 	withNormalsDescriptor.AddVertexElement(VertexElement::UV_32_BITS);
 	withNormalsDescriptor.AddVertexElement(VertexElement::NORMAL_32_BITS);
+#if defined(__vita__)
+	withNormalsDescriptor.AddVertexElement(VertexElement::COLOR_4_FLOATS);
+#endif
 	withNormalsDescriptor.AddVertexElement(VertexElement::POSITION_32_BITS);
 	s_spriteMeshDataWithNormals->CreateSubMesh(4, 6, withNormalsDescriptor);
 
@@ -69,6 +81,12 @@ void SpriteManager::Init()
 	subMeshWithNormals->SetVertex(0.0f, 1.0f, 0, 0, -1, 0.5f, -0.5f, 0.0f, 1);
 	subMeshWithNormals->SetVertex(0.0f, 0.0f, 0, 0, -1, 0.5f, 0.5f, 0.0f, 2);
 	subMeshWithNormals->SetVertex(1.0f, 0.0f, 0, 0, -1, -0.5f, 0.5f, 0.0f, 3);
+#if defined(__vita__)
+	subMeshWithNormals->SetColor(Color::CreateFromRGBA(255, 255, 255, 255), 0);
+	subMeshWithNormals->SetColor(Color::CreateFromRGBA(255, 255, 255, 255), 1);
+	subMeshWithNormals->SetColor(Color::CreateFromRGBA(255, 255, 255, 255), 2);
+	subMeshWithNormals->SetColor(Color::CreateFromRGBA(255, 255, 255, 255), 3);
+#endif
 
 	subMeshWithNormals->SetIndex(0, 0);
 	subMeshWithNormals->SetIndex(1, 2);

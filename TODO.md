@@ -3,7 +3,6 @@
 Rework the documentation
 Add unit tests for modify commands and Awake/Start/Update/
 Rework the Screen::MakeScreenshot to be able to use in game loop
-Fix PsVita rendering
 
 Fix PSP sleep mode when networking is enabled
 
