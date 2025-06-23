@@ -23,6 +23,6 @@ MissingScript::~MissingScript()
 ReflectiveData MissingScript::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, data, "data", true);
+	Reflective::AddVariable(reflectedVariables, data, "data", false);
 	return reflectedVariables;
 }
