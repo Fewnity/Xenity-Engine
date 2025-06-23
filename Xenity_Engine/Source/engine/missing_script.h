@@ -21,6 +21,6 @@ public:
 	~MissingScript();
 
 	ReflectiveData GetReflectiveData() override;
-	nlohmann::json data;
+	nlohmann::ordered_json data;
 };
 

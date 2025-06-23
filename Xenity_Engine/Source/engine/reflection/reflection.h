@@ -31,6 +31,7 @@ typedef std::variant <
 	std::reference_wrapper<bool>,
 	std::reference_wrapper<std::string>,
 	std::reference_wrapper<nlohmann::json>,
+	std::reference_wrapper<nlohmann::ordered_json>,
 	std::reference_wrapper<Reflective>,
 
 	// components/game elements

@@ -8,10 +8,12 @@
 
 #include <vector>
 #include <set>
+#include <json_fwd.hpp>
 
 #include <engine/reflection/reflection.h>
 
 class FileReference;
+class MissingScript;
 
 class FileReferenceFinder
 {
@@ -32,8 +34,11 @@ public:
 	* @param reflectiveData Reflective data to get the files ids
 	*/
 	static void GetUsedFilesInReflectiveData(std::set<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData);
+	static void GetUsedFilesInMissingScript(std::set<uint64_t>& usedFilesIds, const MissingScript& missingScript);
 
 private:
+
+	static void ExtractInts(const nlohmann::ordered_json& j, std::vector<uint64_t>& result);
 
 	/**
 	* @brief Function for non file reference types, return false

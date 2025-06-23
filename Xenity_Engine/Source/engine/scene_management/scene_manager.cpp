@@ -100,15 +100,16 @@ nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, st
 			j["Components"][compIdString]["Type"] = component->GetComponentName();
 			j["Components"][compIdString]["Values"] = ReflectionUtils::ReflectiveDataToJson(componentData);
 			j["Components"][compIdString]["Enabled"] = component->IsEnabled();
+			// Get all files ids used by the component
+			FileReferenceFinder::GetUsedFilesInReflectiveData(uniqueIds, componentData);
 		}
 		else
 		{
 			// Or save component raw values
 			j["Components"][compIdString] = missingScript->data;
+			// Get all files ids used by the component (not optimal but prevents missing ids when saving a scene without compiling the game)
+			FileReferenceFinder::GetUsedFilesInMissingScript(uniqueIds, *missingScript);
 		}
-
-		// Get all files ids used by the component
-		FileReferenceFinder::GetUsedFilesInReflectiveData(uniqueIds, componentData);
 	}
 
 	return j;

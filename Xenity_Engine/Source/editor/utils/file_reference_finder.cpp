@@ -18,6 +18,10 @@
 #include <engine/graphics/skybox.h>
 #include <engine/debug/debug.h>
 #include <engine/graphics/ui/icon.h>
+#include <engine/missing_script.h>
+#include <engine/asset_management/project_manager.h>
+
+using ordered_json = nlohmann::ordered_json;
 
 template<typename T>
 std::enable_if_t<std::is_base_of<FileReference, T>::value, bool>
@@ -40,13 +44,13 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::
 {
 	if (valuePtr)
 	{
-		const std::vector <std::shared_ptr<T>>& getVal = valuePtr->get();
-		const size_t vectorSize = getVal.size();
-		for (size_t vIndex = 0; vIndex < vectorSize; vIndex++)
+		const std::vector<std::shared_ptr<T>>& fileList = valuePtr->get();
+		const size_t vectorSize = fileList.size();
+		for (size_t index = 0; index < vectorSize; index++)
 		{
-			if (getVal.at(vIndex))
+			if (fileList.at(index))
 			{
-				ids.insert(getVal.at(vIndex)->GetFileId());
+				ids.insert(fileList.at(index)->GetFileId());
 			}
 		}
 		return true;
@@ -57,6 +61,7 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::vector<std::
 	}
 }
 
+// If the variable is not a file pointer
 template<typename T>
 bool FileReferenceFinder::GetFileRefId(const T& var, std::set<uint64_t>& ids)
 {
@@ -81,6 +86,35 @@ void FileReferenceFinder::GetUsedFilesInReflectiveData(std::set<uint64_t>& usedF
 			{
 				usedFilesIds.insert(id);
 			}
+		}
+	}
+}
+
+void FileReferenceFinder::ExtractInts(const ordered_json& j, std::vector<uint64_t>& result) 
+{
+	if (j.is_number_integer()) 
+	{
+		result.push_back(j.get<uint64_t>());
+	}
+	else if (j.is_array() || j.is_object()) 
+	{
+		for (const auto& el : j) 
+		{
+			ExtractInts(el, result);
+		}
+	}
+}
+
+void FileReferenceFinder::GetUsedFilesInMissingScript(std::set<uint64_t>& usedFilesIds, const MissingScript& missingScript)
+{
+	ordered_json json = missingScript.data;
+	std::vector<uint64_t> ids;
+	ExtractInts(json, ids);
+	for (uint64_t id : ids)
+	{
+		if(ProjectManager::GetFileReferenceById(id))
+		{
+			usedFilesIds.insert(id);
 		}
 	}
 }
