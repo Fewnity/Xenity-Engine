@@ -117,7 +117,7 @@ void SpriteManager::Close()
  * @param scale Sprite scale
  * @param texture Texture
  */
-void SpriteManager::DrawSprite(Transform& transform, const Color& color, Material& material, Texture* texture)
+void SpriteManager::DrawSprite(Transform& transform, const Color& color, Material& material, Texture* texture, bool forCanvas)
 {
 	s_spriteMeshData->unifiedColor = color;
 
@@ -142,10 +142,18 @@ void SpriteManager::DrawSprite(Transform& transform, const Color& color, Materia
 	glm::mat4 mvp;
 	if constexpr (!s_UseOpenGLFixedFunctions)
 	{
-		mvp = Graphics::usedCamera->m_viewProjectionMatrix * matCopy;
+		if (Graphics::usedCamera->IsEditor() || !forCanvas)
+		{
+			mvp = Graphics::usedCamera->m_viewProjectionMatrix * matCopy;
+		}
+		else 
+		{
+			static const glm::mat4 canvasCameraViewMatrix = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
+			mvp = (Graphics::usedCamera->m_canvasProjection * canvasCameraViewMatrix) * matCopy;
+		}
 	}
 
-	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matCopy, transform.GetInverseNormalMatrix(), mvp, false);
+	Graphics::DrawSubMesh(*s_spriteMeshData->m_subMeshes[0], material, texture, renderSettings, matCopy, transform.GetInverseNormalMatrix(), mvp, forCanvas);
 }
 
 void SpriteManager::DrawSprite(const Vector3& position, const Quaternion& rotation, const Vector3& scale, const Color& color, Material& material, Texture* texture)

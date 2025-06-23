@@ -90,5 +90,5 @@ void SpriteRenderer::OnEnabled()
 
 void SpriteRenderer::DrawCommand([[maybe_unused]] const RenderCommand& renderCommand)
 {
-	SpriteManager::DrawSprite(*GetTransformRaw(), m_color, *m_material, m_texture.get());
+	SpriteManager::DrawSprite(*GetTransformRaw(), m_color, *m_material, m_texture.get(), false);
 }

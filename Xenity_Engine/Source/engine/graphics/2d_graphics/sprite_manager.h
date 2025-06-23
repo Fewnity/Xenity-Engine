@@ -51,7 +51,7 @@ public:
 	* @param material Sprite's material
 	* @param texture Sprite's texture
 	*/
-	static void DrawSprite(Transform& transform, const Color& color, Material& material, Texture* texture);
+	static void DrawSprite(Transform& transform, const Color& color, Material& material, Texture* texture, bool forCanvas);
 
 	/**
 	* @brief Render a 2D line
