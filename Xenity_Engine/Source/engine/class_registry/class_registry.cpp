@@ -42,6 +42,7 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
 #include <engine/graphics/ui/canvas.h>
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/graphics/ui/text_mesh.h>
+#include <engine/graphics/ui/image_renderer.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/graphics/3d_graphics/lod.h>
 #include <engine/graphics/2d_graphics/tile_map.h>
@@ -160,7 +161,8 @@ void ClassRegistry::RegisterEngineComponents()
 	REGISTER_COMPONENT(SphereCollider, true);
 	REGISTER_COMPONENT(Lod, true);
 	REGISTER_COMPONENT(FpsCounter, false);
-	REGISTER_COMPONENT(MissingScript, false);
+	REGISTER_COMPONENT(MissingScript, true);
+	REGISTER_COMPONENT(ImageRenderer, true);
 #if defined(DEBUG)
 	REGISTER_COMPONENT(TestComponent, false);
 #endif
@@ -183,6 +185,8 @@ void ClassRegistry::RegisterEngineComponents()
 	REGISTER_COMPONENT_DOC_LINK(SphereCollider, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/sphere_collider.html");
 	REGISTER_COMPONENT_DOC_LINK(Lod, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/lod.html");
 	REGISTER_COMPONENT_DOC_LINK(FpsCounter, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/fps_counter.html");
+	REGISTER_COMPONENT_DOC_LINK(ImageRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/text_renderer.html");
+
 	//REGISTER_COMPONENT_DOC_LINK(TestComponent, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
 
 	REGISTER_INVISIBLE_COMPONENT(MissingScript, true);

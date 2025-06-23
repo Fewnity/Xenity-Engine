@@ -512,6 +512,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\graphics\ui\image_renderer.cpp" />
     <ClCompile Include="Source\engine\math\math.cpp" />
     <ClCompile Include="Source\editor\ui\editor_icons.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
@@ -705,6 +706,7 @@
     <ClCompile Include="Source\engine\graphics\texture\texture_default.cpp" />
     <ClCompile Include="Source\engine\graphics\texture\texture_ps3.cpp" />
     <ClCompile Include="Source\engine\graphics\texture\texture_psp.cpp" />
+    <ClInclude Include="Source\engine\graphics\ui\image_renderer.h" />
     <ClInclude Include="Source\engine\math\math.h" />
     <ClInclude Include="Source\editor\ui\editor_icons.h" />
     <ClInclude Include="Source\engine\debug\debug_type.h" />

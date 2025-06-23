@@ -355,6 +355,7 @@
     <ClCompile Include="Source\editor\ui\editor_icons.cpp" />
     <ClCompile Include="Source\engine\math\math.cpp" />
     <ClCompile Include="Source\unit_tests\editor\unit_test_modify_command.cpp" />
+    <ClCompile Include="Source\engine\graphics\ui\image_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -820,6 +821,7 @@
     <ClInclude Include="Source\editor\ui\editor_icons.h" />
     <ClInclude Include="Source\engine\debug\debug_type.h" />
     <ClInclude Include="Source\engine\math\math.h" />
+    <ClInclude Include="Source\engine\graphics\ui\image_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />
