@@ -27,37 +27,37 @@ void CreateClassMenu::Draw()
 	{
 		OnStartDrawing();
 
-		if (EditorUI::DrawInputTemplate("Class name", className) != ValueInputState::NO_CHANGE)
+		if (EditorUI::DrawInputTemplate("Class name", m_className) != ValueInputState::NO_CHANGE)
 		{
-			if (!fileNameChanged)
+			if (!m_fileNameChanged)
 			{
 				SetFileNameFromClassName();
 			}
 		}
 
-		if (EditorUI::DrawInputTemplate("File name", fileName) != ValueInputState::NO_CHANGE)
+		if (EditorUI::DrawInputTemplate("File name", m_fileName) != ValueInputState::NO_CHANGE)
 		{
-			fileNameChanged = true;
-			const size_t fileNameSize = fileName.size();
+			m_fileNameChanged = true;
+			const size_t fileNameSize = m_fileName.size();
 			for (int i = 0; i < fileNameSize; i++)
 			{
-				fileName[i] = std::tolower(fileName[i]);
+				m_fileName[i] = std::tolower(m_fileName[i]);
 			}
 		}
 
 		// Draw created files list
 		ImGui::Separator();
 		ImGui::TextDisabled("Created files: ");
-		ImGui::Text("%s.cpp", fileName.c_str());
-		ImGui::Text("%s.h", fileName.c_str());
+		ImGui::Text("%s.cpp", m_fileName.c_str());
+		ImGui::Text("%s.h", m_fileName.c_str());
 		ImGui::Separator();
 
 		//TODO check if the class and file names are correct
-		if (ImGui::Button("Create") && !className.empty() && !fileName.empty())
+		if (ImGui::Button("Create") && !m_className.empty() && !m_fileName.empty())
 		{
 			CreateFiles();
 			Reset();
-			isActive = false;
+			m_isActive = false;
 		}
 
 		CalculateWindowValues();
@@ -72,36 +72,36 @@ void CreateClassMenu::Draw()
 
 void CreateClassMenu::Reset()
 {
-	className = "MyClass";
-	fileName = "my_class";
+	m_className = "MyClass";
+	m_fileName = "my_class";
 }
 
 void CreateClassMenu::SetFolderPath(const std::string& path)
 {
-	folderPath = path;
+	m_folderPath = path;
 }
 
 void CreateClassMenu::SetFileNameFromClassName()
 {
-	const size_t classNameSize = className.size();
-	fileName.clear();
+	const size_t classNameSize = m_className.size();
+	m_fileName.clear();
 	for (int i = 0; i < classNameSize; i++)
 	{
-		if (i > 0 && std::tolower(className[i - 1]) == className[i - 1])
+		if (i > 0 && std::tolower(m_className[i - 1]) == m_className[i - 1])
 		{
-			if (std::tolower(className[i]) != className[i])
+			if (std::tolower(m_className[i]) != m_className[i])
 			{
-				fileName.push_back('_');
+				m_fileName.push_back('_');
 			}
 		}
-		fileName.push_back(std::tolower(className[i]));
+		m_fileName.push_back(std::tolower(m_className[i]));
 	}
 }
 
 void CreateClassMenu::CreateFiles()
 {
-	std::shared_ptr<File> codeFile = Editor::CreateNewFile(folderPath + "\\" + fileName, FileType::File_Code, false);
-	std::shared_ptr<File> headerFile = Editor::CreateNewFile(folderPath + "\\" + fileName, FileType::File_Header, false);
+	std::shared_ptr<File> codeFile = Editor::CreateNewFile(m_folderPath + "\\" + m_fileName, FileType::File_Code, false);
+	std::shared_ptr<File> headerFile = Editor::CreateNewFile(m_folderPath + "\\" + m_fileName, FileType::File_Header, false);
 
 	// Get default cpp code text
 	std::string codeData = AssetManager::GetDefaultFileData(FileType::File_Code);
@@ -117,12 +117,12 @@ void CreateClassMenu::CreateFiles()
 	{
 		if (StringUtils::FindTag(codeData, i, codeDataSize, "{CLASSNAME}", beg, end))
 		{
-			codeData.replace(beg, end - beg - 1, className);
+			codeData.replace(beg, end - beg - 1, m_className);
 			codeDataSize = codeData.size();
 		}
 		else if (StringUtils::FindTag(codeData, i, codeDataSize, "{FILENAME}", beg, end))
 		{
-			codeData.replace(beg, end - beg - 1, fileName);
+			codeData.replace(beg, end - beg - 1, m_fileName);
 			codeDataSize = codeData.size();
 		}
 	}
@@ -130,7 +130,7 @@ void CreateClassMenu::CreateFiles()
 	{
 		if (StringUtils::FindTag(headerData, i, headerDataSize, "{CLASSNAME}", beg, end))
 		{
-			headerData.replace(beg, end - beg - 1, className);
+			headerData.replace(beg, end - beg - 1, m_className);
 			headerDataSize = headerData.size();
 		}
 	}

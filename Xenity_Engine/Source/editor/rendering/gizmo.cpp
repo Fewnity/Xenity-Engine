@@ -21,13 +21,13 @@
 #include <engine/math/math.h>
 #include <engine/debug/stack_debug_object.h>
 
-Color Gizmo::color;
+Color Gizmo::s_color;
 
 void Gizmo::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	color = Color::CreateFromRGB(255, 255, 255);
+	s_color = Color::CreateFromRGB(255, 255, 255);
 }
 
 void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
@@ -52,7 +52,7 @@ void Gizmo::DrawLine(const Vector3& a, const Vector3& b)
 	renderSettings.useDepth = false;
 	renderSettings.useLighting = false;
 	renderSettings.useTexture = false;
-	Engine::GetRenderer().DrawLine(aCopy, bCopy, color, renderSettings);
+	Engine::GetRenderer().DrawLine(aCopy, bCopy, s_color, renderSettings);
 }
 
 void Gizmo::DrawBillboard(const Vector3& position, const Vector2& scale, const std::shared_ptr<Texture>& texture, const Color& color)
@@ -129,5 +129,5 @@ void Gizmo::SetColor(const Color& newColor)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
-	color = newColor;
+	s_color = newColor;
 }

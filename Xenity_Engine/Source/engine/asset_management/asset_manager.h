@@ -129,8 +129,8 @@ public:
 	*/
 	[[nodiscard]] static inline Material* GetMaterial(const int index)
 	{
-		XASSERT(index < materials.size(), "[AssetManager::GetMaterial] index is invalid");
-		return materials[index];
+		XASSERT(index < s_materials.size(), "[AssetManager::GetMaterial] index is invalid");
+		return s_materials[index];
 	}
 
 	/**
@@ -140,8 +140,8 @@ public:
 	*/
 	[[nodiscard]] static inline Shader* GetShader(const int index)
 	{
-		XASSERT(index < shaders.size(), "[AssetManager::GetShader] index is invalid");
-		return shaders[index];
+		XASSERT(index < s_shaders.size(), "[AssetManager::GetShader] index is invalid");
+		return s_shaders[index];
 	}
 
 	/**
@@ -151,8 +151,8 @@ public:
 	*/
 	[[nodiscard]] static inline Reflective* GetReflectiveData(const int index)
 	{
-		XASSERT(index < reflections.size(), "[AssetManager::GetReflectiveData] index is invalid");
-		return reflections[index];
+		XASSERT(index < s_reflections.size(), "[AssetManager::GetReflectiveData] index is invalid");
+		return s_reflections[index];
 	}
 
 	/**
@@ -162,8 +162,8 @@ public:
 	*/
 	[[nodiscard]] static inline const std::shared_ptr<FileReference>& GetFileReference(const int index)
 	{
-		XASSERT(index < fileReferences.size(), "[AssetManager::GetFileReference] index is invalid");
-		return fileReferences[index];
+		XASSERT(index < s_fileReferences.size(), "[AssetManager::GetFileReference] index is invalid");
+		return s_fileReferences[index];
 	}
 
 	/**
@@ -173,13 +173,13 @@ public:
 	*/
 	[[nodiscard]] static inline const Light* GetLight(const int index)
 	{
-		XASSERT(index < lights.size(), "[AssetManager::GetLight] index is invalid");
-		return lights[index];
+		XASSERT(index < s_lights.size(), "[AssetManager::GetLight] index is invalid");
+		return s_lights[index];
 	}
 
 	[[nodiscard]] static inline const std::vector<Light*>& GetLights()
 	{
-		return lights;
+		return s_lights;
 	}
 
 	/**
@@ -192,7 +192,7 @@ public:
 	*/
 	[[nodiscard]] static inline int GetMaterialCount()
 	{
-		return materialCount;
+		return s_materialCount;
 	}
 
 	/**
@@ -200,7 +200,7 @@ public:
 	*/
 	[[nodiscard]] static inline int GetShaderCount()
 	{
-		return shaderCount;
+		return s_shaderCount;
 	}
 
 	/**
@@ -208,7 +208,7 @@ public:
 	*/
 	[[nodiscard]] static inline int GetReflectionCount()
 	{
-		return reflectionCount;
+		return s_reflectionCount;
 	}
 
 	/**
@@ -216,7 +216,7 @@ public:
 	*/
 	[[nodiscard]] static inline int GetFileReferenceCount()
 	{
-		return fileReferenceCount;
+		return s_fileReferenceCount;
 	}
 
 	/**
@@ -224,7 +224,7 @@ public:
 	*/
 	[[nodiscard]] static inline int GetLightCount()
 	{
-		return lightCount;
+		return s_lightCount;
 	}
 
 	/**
@@ -252,15 +252,15 @@ public:
 
 private:
 
-	static int materialCount;
-	static int shaderCount;
-	static int reflectionCount;
-	static int fileReferenceCount;
-	static int lightCount;
+	static int s_materialCount;
+	static int s_shaderCount;
+	static int s_reflectionCount;
+	static int s_fileReferenceCount;
+	static int s_lightCount;
 
-	static std::vector<Shader*> shaders;
-	static std::vector<Material*> materials;
-	static std::vector<Reflective*> reflections;
-	static std::vector<std::shared_ptr<FileReference>> fileReferences;
-	static std::vector<Light*> lights;
+	static std::vector<Shader*> s_shaders;
+	static std::vector<Material*> s_materials;
+	static std::vector<Reflective*> s_reflections;
+	static std::vector<std::shared_ptr<FileReference>> s_fileReferences;
+	static std::vector<Light*> s_lights;
 };

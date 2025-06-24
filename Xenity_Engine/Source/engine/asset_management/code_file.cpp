@@ -9,7 +9,7 @@
 
 CodeFile::CodeFile(const bool isHeader)
 {
-	this->isHeader = isHeader;
+	m_isHeader = isHeader;
 }
 
 std::shared_ptr<CodeFile> CodeFile::MakeCode(const bool isHeader)

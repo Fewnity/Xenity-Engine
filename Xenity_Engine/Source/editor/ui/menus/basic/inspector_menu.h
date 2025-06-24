@@ -63,11 +63,11 @@ private:
 	*/
 	void DrawComponentsHeaders(const GameObject& selectedGameObject);
 
-	bool showAddComponentMenu = false;
+	bool m_showAddComponentMenu = false;
 
-	std::string previewText = "";
-	bool isPlayingAudio = false;
-	bool areWindowsFocused = false;
+	std::string m_previewText = "";
+	bool m_isPlayingAudio = false;
+	bool m_areWindowsFocused = false;
 
 	void StopAudio();
 };

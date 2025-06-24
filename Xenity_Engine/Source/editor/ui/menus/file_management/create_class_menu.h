@@ -18,11 +18,12 @@ public:
 	void SetFolderPath(const std::string& path);
 
 private:
-	std::string className = "";
-	std::string fileName = "";
-	std::string folderPath = "";
-	bool fileNameChanged = false;
 	void SetFileNameFromClassName();
 	void CreateFiles();
+
+	std::string m_className = "";
+	std::string m_fileName = "";
+	std::string m_folderPath = "";
+	bool m_fileNameChanged = false;
 };
 

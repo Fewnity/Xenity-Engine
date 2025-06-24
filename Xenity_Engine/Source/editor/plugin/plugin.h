@@ -27,9 +27,9 @@ public:
 	virtual void Shutdown() = 0;
 
 	[[nodiscard]] virtual PluginInfos CreateInfos() = 0;
-	[[nodiscard]] const PluginInfos& GetInfos() const { return infos; }
+	[[nodiscard]] const PluginInfos& GetInfos() const { return m_infos; }
 
 private:
-	PluginInfos infos;
+	PluginInfos m_infos;
 };
 

@@ -131,9 +131,9 @@ public:
 	template <typename T>
 	[[nodiscard]] static std::shared_ptr<T> GetMenu(bool createIfNotFound = true)
 	{
-		for (int i = 0; i < menuCount; i++)
+		for (int i = 0; i < s_menuCount; i++)
 		{
-			if (auto menu = std::dynamic_pointer_cast<T>(menus[i]))
+			if (auto menu = std::dynamic_pointer_cast<T>(s_menus[i]))
 			{
 				return menu;
 			}
@@ -153,9 +153,9 @@ public:
 	[[nodiscard]] static std::vector<std::shared_ptr<T>> GetMenus()
 	{
 		std::vector<std::shared_ptr<T>> menusListT;
-		for (int i = 0; i < menuCount; i++)
+		for (int i = 0; i < s_menuCount; i++)
 		{
-			if (auto menu = std::dynamic_pointer_cast<T>(menus[i]))
+			if (auto menu = std::dynamic_pointer_cast<T>(s_menus[i]))
 			{
 				menusListT.push_back(menu);
 			}
@@ -169,12 +169,12 @@ public:
 	template <typename T>
 	static void RemoveMenu()
 	{
-		for (int i = 0; i < menuCount; i++)
+		for (int i = 0; i < s_menuCount; i++)
 		{
-			if (auto menu = std::dynamic_pointer_cast<T>(menus[i]))
+			if (auto menu = std::dynamic_pointer_cast<T>(s_menus[i]))
 			{
-				menus.erase(menus.begin() + i);
-				menuCount--;
+				s_menus.erase(s_menus.begin() + i);
+				s_menuCount--;
 				break;
 			}
 		}
@@ -187,12 +187,12 @@ public:
 	{
 		XASSERT(menu != nullptr, "[Editor::RemoveMenu] menu is nullptr");
 
-		for (int i = 0; i < menuCount; i++)
+		for (int i = 0; i < s_menuCount; i++)
 		{
-			if (menu == menus[i].get())
+			if (menu == s_menus[i].get())
 			{
-				menus.erase(menus.begin() + i);
-				menuCount--;
+				s_menus.erase(s_menus.begin() + i);
+				s_menuCount--;
 				break;
 			}
 		}
@@ -207,29 +207,29 @@ public:
 	[[nodiscard]] static std::shared_ptr<T> AddMenu(bool active)
 	{
 		int count = 0;
-		for (int i = 0; i < menuCount; i++)
+		for (int i = 0; i < s_menuCount; i++)
 		{
-			if (std::shared_ptr<T> menu = std::dynamic_pointer_cast<T>(menus[i]))
+			if (std::shared_ptr<T> menu = std::dynamic_pointer_cast<T>(s_menus[i]))
 			{
 				count++;
 			}
 		}
 
 		std::shared_ptr<T> newMenu = std::make_shared<T>();
-		menus.push_back(newMenu);
+		s_menus.push_back(newMenu);
 		newMenu->id = count;
 		newMenu->Init();
 		newMenu->SetActive(active);
-		menuCount++;
+		s_menuCount++;
 		return newMenu;
 	}
 
 	static void OnMenuActiveStateChange(const std::string& menuName, bool active, int id)
 	{
-		const size_t menuSize = menuSettings.settings.size();
+		const size_t menuSize = s_menuSettings.settings.size();
 		for (size_t i = 0; i < menuSize; i++)
 		{
-			MenuSetting& setting = *menuSettings.settings[i];
+			MenuSetting& setting = *s_menuSettings.settings[i];
 			if (setting.name == menuName && setting.id == id)
 			{
 				setting.isActive = active;
@@ -248,15 +248,15 @@ public:
 		{
 			//int count = 0;
 			int highestId = 0;
-			for (int i = 0; i < menuCount; i++)
+			for (int i = 0; i < s_menuCount; i++)
 			{
-				if (menus[i]->name == menuName)
+				if (s_menus[i]->name == menuName)
 				{
 					idCount++;
-					usedIds.push_back(menus[i]->id);
-					if (menus[i]->id > highestId)
+					usedIds.push_back(s_menus[i]->id);
+					if (s_menus[i]->id > highestId)
 					{
-						highestId = menus[i]->id;
+						highestId = s_menus[i]->id;
 					}
 				}
 			}
@@ -290,20 +290,20 @@ public:
 		}
 
 		std::shared_ptr<Menu> menu = ClassRegistry::CreateMenuFromName(menuName);
-		menus.push_back(menu);
+		s_menus.push_back(menu);
 
 		menu->id = id;
 		menu->name = menuName;
 		menu->Init();
 		menu->SetActive(active);
-		menuCount++;
+		s_menuCount++;
 
 		bool menuSettingFound = false;
-		const size_t menuSize = menuSettings.settings.size();
+		const size_t menuSize = s_menuSettings.settings.size();
 		MenuSetting* settingToUse = nullptr;
 		for (size_t i = 0; i < menuSize; i++)
 		{
-			MenuSetting& setting = *menuSettings.settings[i];
+			MenuSetting& setting = *s_menuSettings.settings[i];
 			if (setting.name == menuName)
 			{
 				settingToUse = &setting;
@@ -317,15 +317,12 @@ public:
 		}
 		if (!menuSettingFound && settingToUse)
 		{
-			UpdateOrAddMenuSetting(menuSettings.settings, menuName, active, settingToUse->isUnique, id);
+			UpdateOrAddMenuSetting(s_menuSettings.settings, menuName, active, settingToUse->isUnique, id);
 		}
 		SaveMenuSettings();
 
 		return menu;
 	}
-
-	static MenuGroup currentMenu;
-	static std::weak_ptr<AudioSource> audioSource;
 
 	/**
 	* @brief Set selected file reference
@@ -436,21 +433,24 @@ public:
 
 	static bool IsUpdateAvailable() 
 	{
-		return updateAvailable;
+		return s_updateAvailable;
 	}
 
-	static std::shared_ptr <MeshData> rightArrow;
-	static std::shared_ptr <MeshData> upArrow;
-	static std::shared_ptr <MeshData> forwardArrow;
-	static std::shared_ptr <MeshData> rotationCircleX;
-	static std::shared_ptr <MeshData> rotationCircleY;
-	static std::shared_ptr <MeshData> rotationCircleZ;
-	static std::shared_ptr <Texture> toolArrowsTexture;
+	static std::shared_ptr <MeshData> s_rightArrow;
+	static std::shared_ptr <MeshData> s_upArrow;
+	static std::shared_ptr <MeshData> s_forwardArrow;
+	static std::shared_ptr <MeshData> s_rotationCircleX;
+	static std::shared_ptr <MeshData> s_rotationCircleY;
+	static std::shared_ptr <MeshData> s_rotationCircleZ;
+	static std::shared_ptr <Texture> s_toolArrowsTexture;
 
-	static std::vector<std::shared_ptr<Menu>> menus;
-	static std::weak_ptr <Menu> lastFocusedGameMenu;
-	static bool isToolLocalMode;
-	static float cameraSpeed;
+	static std::vector<std::shared_ptr<Menu>> s_menus;
+	static std::weak_ptr <Menu> s_lastFocusedGameMenu;
+	static bool s_isToolLocalMode;
+	static float s_cameraSpeed;
+
+	static MenuGroup s_currentMenu;
+	static std::weak_ptr<AudioSource> s_audioSource;
 
 private:
 	class MenuSetting : public Reflective
@@ -486,7 +486,6 @@ private:
 		std::vector<MenuSetting*> settings;
 		int version = 1;
 	};
-	static MenuSettings menuSettings;
 
 	[[nodiscard]] static bool CheckIntegrity();
 	static void CheckItemIntegrity(const std::string& itemPath, bool& success);
@@ -514,16 +513,16 @@ private:
 
 	static void OnUpdateChecked(bool newVersionAvailable);
 
-	static bool updateAvailable;
-	static int menuCount;
-	static std::shared_ptr <ProjectDirectory> currentProjectDirectory;
-	static std::vector<std::weak_ptr<GameObject>> selectedGameObjects;
-	static std::shared_ptr<FileReference> selectedFileReference;
+	static bool s_updateAvailable;
+	static int s_menuCount;
+	static std::shared_ptr <ProjectDirectory> s_currentProjectDirectory;
+	static std::vector<std::weak_ptr<GameObject>> s_selectedGameObjects;
+	static std::shared_ptr<FileReference> s_selectedFileReference;
 
-	static std::shared_ptr<MainBarMenu> mainBar;
-	static std::shared_ptr <BottomBarMenu> bottomBar;
-	static std::vector<std::string> dragdropEntries;
-	static Event<bool>* onUpdateCheckedEvent;
-	static bool needProjectDiretoryUpdate;
+	static std::shared_ptr<MainBarMenu> s_mainBar;
+	static std::shared_ptr <BottomBarMenu> s_bottomBar;
+	static std::vector<std::string> s_dragdropEntries;
+	static Event<bool>* s_onUpdateCheckedEvent;
+	static bool s_needProjectDiretoryUpdate;
+	static MenuSettings s_menuSettings;
 };
-

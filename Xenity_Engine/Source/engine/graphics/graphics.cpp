@@ -374,7 +374,7 @@ void Graphics::Draw()
 				{
 					SCOPED_PROFILER("Graphics::DrawGizmo", scopeBenchmarkDrawGizmo);
 					const std::vector<const std::vector<std::shared_ptr<Component>>*> componentsLists = ComponentManager::GetAllComponentsLists();
-					const uint64_t audioSourceUniqueId = Editor::audioSource.lock()->GetUniqueId();
+					const uint64_t audioSourceUniqueId = Editor::s_audioSource.lock()->GetUniqueId();
 					for (const std::vector<std::shared_ptr<Component>>* componentsList : componentsLists)
 					{
 						for (const std::shared_ptr<Component>& component : *componentsList)
@@ -924,7 +924,7 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		const Vector3& selectedGoPos = selectedGo->GetTransform()->GetPosition();
 
 		Quaternion selectedGoRot = selectedGo->GetTransform()->GetRotation();
-		if (Editor::isToolLocalMode)
+		if (Editor::s_isToolLocalMode)
 			selectedGoRot = Quaternion::Identity();
 
 		float dist = 1;
@@ -943,18 +943,18 @@ void Graphics::DrawEditorTool(const Vector3& cameraPosition)
 		renderSettings.useTexture = true;
 		renderSettings.useLighting = false;
 
-		AssetManager::unlitMaterial->m_texture = Editor::toolArrowsTexture;
+		AssetManager::unlitMaterial->m_texture = Editor::s_toolArrowsTexture;
 		if (sceneMenu->toolMode == ToolMode::Tool_Move || sceneMenu->toolMode == ToolMode::Tool_Scale)
 		{
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rightArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::upArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::forwardArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::s_rightArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::s_upArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::s_forwardArrow->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		}
 		else if (sceneMenu->toolMode == ToolMode::Tool_Rotate)
 		{
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleX->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleY->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
-			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::rotationCircleZ->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::s_rotationCircleX->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::s_rotationCircleY->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
+			Graphics::DrawSubMesh(selectedGoPos, selectedGoRot, scale, *Editor::s_rotationCircleZ->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 		}
 		AssetManager::unlitMaterial->m_texture = nullptr;
 	}

@@ -118,7 +118,7 @@ void GameplayManager::SetGameState(GameState newGameState, bool restoreScene)
 		s_gameState = newGameState;
 	}
 
-	if (auto menu = Editor::lastFocusedGameMenu.lock())
+	if (auto menu = Editor::s_lastFocusedGameMenu.lock())
 	{
 		std::dynamic_pointer_cast<GameMenu>(menu)->needUpdateCamera = true;
 	}

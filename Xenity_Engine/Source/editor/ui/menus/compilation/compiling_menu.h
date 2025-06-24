@@ -27,6 +27,6 @@ public:
 	void ClosePopup(CompilerParams params, bool result);
 
 private:
-	CompilingPupopState popupState = CompilingPupopState::Closed;
+	CompilingPupopState m_popupState = CompilingPupopState::Closed;
 };
 

@@ -24,7 +24,7 @@ std::vector<BuildPlatform> BuildSettingsMenu::buildPlatforms;
 
 void BuildSettingsMenu::Init()
 {
-	onSettingChangedEvent = new Event<>();
+	m_onSettingChangedEvent = new Event<>();
 
 	///// Create all build platforms
 
@@ -35,7 +35,7 @@ void BuildSettingsMenu::Init()
 	windowsPlatform.supportBuildAndRun = true;
 	windowsPlatform.supportBuildAndRunOnHardware = false;
 	windowsPlatform.platform = Platform::P_Windows;
-	windowsPlatform.settings = std::make_shared<PlatformSettingsWindows>(onSettingChangedEvent);
+	windowsPlatform.settings = std::make_shared<PlatformSettingsWindows>(m_onSettingChangedEvent);
 
 	BuildPlatform linuxPlatform = BuildPlatform();
 	linuxPlatform.name = "Linux";
@@ -44,7 +44,7 @@ void BuildSettingsMenu::Init()
 	linuxPlatform.supportBuildAndRun = false;
 	linuxPlatform.supportBuildAndRunOnHardware = false;
 	linuxPlatform.platform = Platform::P_Linux;
-	linuxPlatform.settings = std::make_shared<PlatformSettingsWindows>(onSettingChangedEvent);
+	linuxPlatform.settings = std::make_shared<PlatformSettingsWindows>(m_onSettingChangedEvent);
 
 	BuildPlatform pspPlatform = BuildPlatform();
 	pspPlatform.name = "PSP";
@@ -53,7 +53,7 @@ void BuildSettingsMenu::Init()
 	pspPlatform.supportBuildAndRun = true;
 	pspPlatform.supportBuildAndRunOnHardware = false;
 	pspPlatform.platform = Platform::P_PSP;
-	pspPlatform.settings = std::make_shared<PlatformSettingsPSP>(onSettingChangedEvent);
+	pspPlatform.settings = std::make_shared<PlatformSettingsPSP>(m_onSettingChangedEvent);
 
 	BuildPlatform psvitaPlatform = BuildPlatform();
 	psvitaPlatform.name = "PsVita";
@@ -62,7 +62,7 @@ void BuildSettingsMenu::Init()
 	psvitaPlatform.supportBuildAndRun = false;
 	psvitaPlatform.supportBuildAndRunOnHardware = false;
 	psvitaPlatform.platform = Platform::P_PsVita;
-	psvitaPlatform.settings = std::make_shared<PlatformSettingsPsVita>(onSettingChangedEvent);
+	psvitaPlatform.settings = std::make_shared<PlatformSettingsPsVita>(m_onSettingChangedEvent);
 
 	/*BuildPlatform ps2Platform = BuildPlatform();
 	ps2Platform.name = "PS2";
@@ -79,7 +79,7 @@ void BuildSettingsMenu::Init()
 	ps3Platform.supportBuildAndRun = false;
 	ps3Platform.supportBuildAndRunOnHardware = false;
 	ps3Platform.platform = Platform::P_PS3;
-	ps3Platform.settings = std::make_shared<PlatformSettingsPS3>(onSettingChangedEvent);
+	ps3Platform.settings = std::make_shared<PlatformSettingsPS3>(m_onSettingChangedEvent);
 
 	/*BuildPlatform ps4Platform = BuildPlatform();
 	ps4Platform.name = "PS4";
@@ -97,7 +97,7 @@ void BuildSettingsMenu::Init()
 	//buildPlatforms.push_back(ps2Platform);
 	//buildPlatforms.push_back(ps4Platform);
 
-	onSettingChangedEvent->Bind(&BuildSettingsMenu::OnSettingChanged, this);
+	m_onSettingChangedEvent->Bind(&BuildSettingsMenu::OnSettingChanged, this);
 }
 
 void BuildSettingsMenu::Draw()
@@ -105,7 +105,7 @@ void BuildSettingsMenu::Draw()
 	ImGui::SetNextWindowSize(ImVec2(900, 500), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSizeConstraints(ImVec2(100, 100), ImVec2(999999, 999999));
 
-	const bool visible = ImGui::Begin("Build Settings", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Build Settings", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -154,7 +154,7 @@ void BuildSettingsMenu::Draw()
 				}
 				else
 				{
-					if (i == selectedPlatformIndex)
+					if (i == m_selectedPlatformIndex)
 						backgroundColorCoef = 0.17f;
 					else
 						backgroundColorCoef = 0.35f;
@@ -191,7 +191,7 @@ void BuildSettingsMenu::Draw()
 					ImGui::SetCursorPos(startcursorPos);
 					if (ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availColSize.x, 50 + 10)))
 					{
-						selectedPlatformIndex = i;
+						m_selectedPlatformIndex = i;
 						lastSettingError = 0;
 					}
 				}
@@ -209,10 +209,10 @@ void BuildSettingsMenu::Draw()
 			ImGui::TableSetColumnIndex(1);
 			ImGui::BeginChild("build_settings_settings_table_child");
 			//ImGui::Text("Settings");
-			const BuildPlatform& platform = buildPlatforms[selectedPlatformIndex];
+			const BuildPlatform& platform = buildPlatforms[m_selectedPlatformIndex];
 
 			ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(*platform.settings, Application::PlatformToAssetPlatform(platform.platform));
-			const bool valueChanged = EditorUI::DrawReflectiveData(reflectiveDataToDraw, platform.settings->GetReflectiveData(), onSettingChangedEvent) != ValueInputState::NO_CHANGE;
+			const bool valueChanged = EditorUI::DrawReflectiveData(reflectiveDataToDraw, platform.settings->GetReflectiveData(), m_onSettingChangedEvent) != ValueInputState::NO_CHANGE;
 			if (valueChanged && reflectiveDataToDraw.command)
 			{
 				CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);
@@ -276,7 +276,7 @@ void BuildSettingsMenu::Draw()
 			availColSize = ImGui::GetContentRegionAvail();
 			if (platform.supportBuildAndRunOnHardware)
 			{
-				ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y) * 2 * EditorUI::GetUiScale());
+				ImGui::SetCursorPosY(m_windowSize.y - (20 + style.ItemSpacing.y) * 2 * EditorUI::GetUiScale());
 				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x) * EditorUI::GetUiScale());
 				if (ImGui::Button("Build And Run On Hardware", ImVec2((180 + style.ItemSpacing.x) * EditorUI::GetUiScale(), 20 * EditorUI::GetUiScale())))
 				{
@@ -288,7 +288,7 @@ void BuildSettingsMenu::Draw()
 				ImGui::SetCursorPosX(availColSize.x - (180 + style.ItemSpacing.x) * EditorUI::GetUiScale());
 			else
 				ImGui::SetCursorPosX(availColSize.x - (80) * EditorUI::GetUiScale());
-			ImGui::SetCursorPosY(windowSize.y - (20 + style.ItemSpacing.y) * EditorUI::GetUiScale());
+			ImGui::SetCursorPosY(m_windowSize.y - (20 + style.ItemSpacing.y) * EditorUI::GetUiScale());
 			ImGui::BeginDisabled(!isGameStopped);
 			if (ImGui::Button("Build", ImVec2(80 * EditorUI::GetUiScale(), 20 * EditorUI::GetUiScale())))
 			{

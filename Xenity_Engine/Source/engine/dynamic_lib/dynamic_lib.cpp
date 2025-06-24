@@ -44,7 +44,7 @@ void DynamicLibrary::LoadGameLibrary(const std::string& libraryName)
 			Debug::PrintError("[DynamicLibrary::LoadGameLibrary] Library not found, error code:" + std::to_string(errorCode) + " file: " + fileName, true);
 	}
 
-	ProjectManager::projectSettings.isCompiled = result;
+	ProjectManager::s_projectSettings.isCompiled = result;
 #endif
 }
 

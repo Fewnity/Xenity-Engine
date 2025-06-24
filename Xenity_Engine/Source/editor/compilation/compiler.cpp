@@ -41,16 +41,16 @@ namespace fs = std::filesystem;
 // Note: A docker copy command will create a directory of the source folder has not the same name as the dest folder.
 // If both folders have the same name, the content of src will be pasted in dst without creating a new folder
 
-Event<CompilerParams, bool> Compiler::OnCompilationEndedEvent;
-Event<CompilerParams> Compiler::OnCompilationStartedEvent;
+Event<CompilerParams, bool> Compiler::s_onCompilationEndedEvent;
+Event<CompilerParams> Compiler::s_onCompilationStartedEvent;
 
-std::string Compiler::engineFolderLocation = "";
-std::string Compiler::engineProjectLocation = "";
-std::string  Compiler::compilerExecFileName = "";
+std::string Compiler::s_engineFolderLocation = "";
+std::string Compiler::s_engineProjectLocation = "";
+std::string  Compiler::s_compilerExecFileName = "";
 
-CompilationMethod Compiler::compilationMethod = CompilationMethod::MSVC;
-bool Compiler::isCompilationCancelled = false;
-CompilationTimings Compiler::timings;
+CompilationMethod Compiler::s_compilationMethod = CompilationMethod::MSVC;
+bool Compiler::s_isCompilationCancelled = false;
+CompilationTimings Compiler::s_timings;
 
 std::string MakePathAbsolute(const std::string& path, const std::string& root)
 {
@@ -75,7 +75,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 
 	DeleteTempFiles(params);
 
-	isCompilationCancelled = false;
+	s_isCompilationCancelled = false;
 
 	// Ensure path are absolute
 	const std::string root = fs::current_path().string();
@@ -109,7 +109,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 		fs::remove_all(params.tempPath);
 		fs::create_directory(params.tempPath);
 		fs::create_directory(params.tempPath + "cooked_assets/");
-		fs::create_directory(engineProjectLocation + "Source/game_code/");
+		fs::create_directory(s_engineProjectLocation + "Source/game_code/");
 	}
 	catch (const std::exception&)
 	{
@@ -118,24 +118,24 @@ CompileResult Compiler::Compile(CompilerParams params)
 
 	// Save project settings of the build
 	{
-		ProjectSettings projectSettingsCopy = ProjectManager::projectSettings;
+		ProjectSettings projectSettingsCopy = ProjectManager::s_projectSettings;
 
-		ProjectManager::projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
+		ProjectManager::s_projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
 		bool isDebugMode = false;
 #if defined(DEBUG)
 		isDebugMode = true;
 #endif
-		ProjectManager::projectSettings.isLibCompiledForDebug = isDebugMode;
+		ProjectManager::s_projectSettings.isLibCompiledForDebug = isDebugMode;
 
 		bool is64Bits = false;
 #if defined(_WIN64)
 		is64Bits = true;
 #endif
-		ProjectManager::projectSettings.isLibCompiledFor64Bits = is64Bits;
+		ProjectManager::s_projectSettings.isLibCompiledFor64Bits = is64Bits;
 
 		ProjectManager::SaveProjectSettings(params.tempPath);
 
-		ProjectManager::projectSettings = projectSettingsCopy;
+		ProjectManager::s_projectSettings = projectSettingsCopy;
 	}
 
 	bool cookResult = true;
@@ -159,7 +159,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 		}
 		cookResult = Cooker::CookAssets(cookSettings);
 		cookBenchmark.Stop();
-		timings.cookTime = cookBenchmark.GetMicroSeconds();
+		s_timings.cookTime = cookBenchmark.GetMicroSeconds();
 	}
 
 	CleanDestinationFolder(params.exportPath);
@@ -208,20 +208,20 @@ void Compiler::Init()
 void Compiler::UpdatePaths()
 {
 	const std::string root = FileSystem::ConvertWindowsPathToBasicPath(fs::current_path().string());
-	engineFolderLocation = root + "/";
-	engineProjectLocation = engineFolderLocation;
+	s_engineFolderLocation = root + "/";
+	s_engineProjectLocation = s_engineFolderLocation;
 
-	const size_t backSlashPos = engineProjectLocation.substr(0, engineProjectLocation.size() - 1).find_last_of('/');
-	std::string visualStudioProjectPath = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
+	const size_t backSlashPos = s_engineProjectLocation.substr(0, s_engineProjectLocation.size() - 1).find_last_of('/');
+	std::string visualStudioProjectPath = s_engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
 	if (fs::exists(visualStudioProjectPath + "Xenity_Engine.vcxproj"))
 	{
-		engineProjectLocation = engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
+		s_engineProjectLocation = s_engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
 	}
 
 #if defined(_WIN64) 
-	compilerExecFileName = MSVC_START_FILE_64BITS;
+	s_compilerExecFileName = MSVC_START_FILE_64BITS;
 #else
-	compilerExecFileName = MSVC_START_FILE_32BITS;
+	s_compilerExecFileName = MSVC_START_FILE_32BITS;
 #endif
 }
 
@@ -232,7 +232,7 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	int error = 0;
 
 	// Check if the compiler executable exists
-	if (!fs::exists(EngineSettings::values.compilerPath + compilerExecFileName))
+	if (!fs::exists(EngineSettings::values.compilerPath + s_compilerExecFileName))
 	{
 		error |= (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE;
 	}
@@ -242,16 +242,16 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (params.buildType == BuildType::EditorHotReloading)
 		{
-			if (!fs::exists(engineFolderLocation + ENGINE_EDITOR_FOLDER + ".lib") ||
-				!fs::exists(engineFolderLocation + ENGINE_EDITOR_FOLDER + ".dll"))
+			if (!fs::exists(s_engineFolderLocation + ENGINE_EDITOR_FOLDER + ".lib") ||
+				!fs::exists(s_engineFolderLocation + ENGINE_EDITOR_FOLDER + ".dll"))
 			{
 				error |= (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB;
 			}
 		}
 		else
 		{
-			if (!fs::exists(engineFolderLocation + ENGINE_GAME_FOLDER + ".lib") ||
-				!fs::exists(engineFolderLocation + ENGINE_GAME_FOLDER + ".dll"))
+			if (!fs::exists(s_engineFolderLocation + ENGINE_GAME_FOLDER + ".lib") ||
+				!fs::exists(s_engineFolderLocation + ENGINE_GAME_FOLDER + ".dll"))
 			{
 				error |= (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB;
 			}
@@ -273,11 +273,11 @@ CompilerAvailability Compiler::CheckCompilerAvailability(const CompilerParams& p
 	{
 		if (error & (int)CompilerAvailability::MISSING_COMPILER_SOFTWARE)
 		{
-			Debug::PrintError("Compiler executable " + std::string(compilerExecFileName) + " not found in " + EngineSettings::values.compilerPath);
+			Debug::PrintError("Compiler executable " + std::string(s_compilerExecFileName) + " not found in " + EngineSettings::values.compilerPath);
 		}
 		if (error & (int)CompilerAvailability::MISSING_ENGINE_COMPILED_LIB)
 		{
-			Debug::PrintError("Compiled engine library not found in " + engineFolderLocation);
+			Debug::PrintError("Compiled engine library not found in " + s_engineFolderLocation);
 		}
 		if (error & (int)CompilerAvailability::MISSING_PPSSPP)
 		{
@@ -404,7 +404,7 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 	params.tempPath = ProjectManager::GetProjectFolderPath() + ".build/";
 	params.exportPath = exportPath;
 
-	OnCompilationStartedEvent.Trigger(params);
+	s_onCompilationStartedEvent.Trigger(params);
 
 	if (buildType == BuildType::BuildShadersAndGame)
 	{
@@ -467,7 +467,7 @@ CompileResult Compiler::CompileGame(const BuildPlatform buildPlatform, BuildType
 	}
 
 	totalCompilationBenchmark.Stop();
-	timings.totalCompileTime = totalCompilationBenchmark.GetMicroSeconds();
+	s_timings.totalCompileTime = totalCompilationBenchmark.GetMicroSeconds();
 
 	PrintTimings();
 
@@ -503,11 +503,11 @@ void Compiler::CleanDestinationFolder(const std::string& exportPath)
 void Compiler::PrintTimings()
 {
 	Debug::Print("Compilation timings:");
-	Debug::Print("Cooking time: " + std::to_string(timings.cookTime) + " us (" + std::to_string(timings.cookTime / 1000000.0f) + " s)");
-	Debug::Print("Docker preparation time: " + std::to_string(timings.prepareDockerTime) + " us" + " us (" + std::to_string(timings.prepareDockerTime / 1000000.0f) + " s)");
-	Debug::Print("Docker code compile time: " + std::to_string(timings.dockerCompileTime) + " us" + " us (" + std::to_string(timings.dockerCompileTime / 1000000.0f) + " s)");
-	Debug::Print("Docker shader compile time: " + std::to_string(timings.shaderCompileTime) + " us" + " us (" + std::to_string(timings.shaderCompileTime / 1000000.0f) + " s)");
-	Debug::Print("Total compile time: " + std::to_string(timings.totalCompileTime) + " us" + " us (" + std::to_string(timings.totalCompileTime / 1000000.0f) + " s)");
+	Debug::Print("Cooking time: " + std::to_string(s_timings.cookTime) + " us (" + std::to_string(s_timings.cookTime / 1000000.0f) + " s)");
+	Debug::Print("Docker preparation time: " + std::to_string(s_timings.prepareDockerTime) + " us" + " us (" + std::to_string(s_timings.prepareDockerTime / 1000000.0f) + " s)");
+	Debug::Print("Docker code compile time: " + std::to_string(s_timings.dockerCompileTime) + " us" + " us (" + std::to_string(s_timings.dockerCompileTime / 1000000.0f) + " s)");
+	Debug::Print("Docker shader compile time: " + std::to_string(s_timings.shaderCompileTime) + " us" + " us (" + std::to_string(s_timings.shaderCompileTime / 1000000.0f) + " s)");
+	Debug::Print("Total compile time: " + std::to_string(s_timings.totalCompileTime) + " us" + " us (" + std::to_string(s_timings.totalCompileTime / 1000000.0f) + " s)");
 }
 
 void Compiler::CompileGameThreaded(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
@@ -640,7 +640,7 @@ void Compiler::OnCompileEnd(CompileResult result, CompilerParams& params)
 
 	if (params.buildType != BuildType::BuildShaders || result != CompileResult::SUCCESS)
 	{
-		OnCompilationEndedEvent.Trigger(params, result == CompileResult::SUCCESS);
+		s_onCompilationEndedEvent.Trigger(params, result == CompileResult::SUCCESS);
 	}
 }
 
@@ -718,23 +718,23 @@ std::vector<std::string> CopyGameSource(const CompilerParams& params)
 
 CompileResult Compiler::CompileWindows(const CompilerParams& params)
 {
-	compilationMethod = CompilationMethod::MSVC;
+	s_compilationMethod = CompilationMethod::MSVC;
 
 	if (params.buildType == BuildType::EditorHotReloading) // In hot reloading mode:
 	{
-		const std::string engineLibPath = engineFolderLocation + ENGINE_EDITOR_FOLDER + ".lib";
+		const std::string engineLibPath = s_engineFolderLocation + ENGINE_EDITOR_FOLDER + ".lib";
 
 		// Copy engine editor lib to the temp build folder
 		CopyUtils::AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_EDITOR_FOLDER + ".lib");
 		// Copy editor header
-		CopyUtils::AddCopyEntry(false, engineProjectLocation + "Source/xenity_editor.h", params.tempPath + "xenity_editor.h");
+		CopyUtils::AddCopyEntry(false, s_engineProjectLocation + "Source/xenity_editor.h", params.tempPath + "xenity_editor.h");
 	}
 	else // In build mode:
 	{
-		const std::string engineLibPath = engineFolderLocation + ENGINE_GAME_FOLDER + ".lib";
-		const std::string engineDllPath = engineFolderLocation + ENGINE_GAME_FOLDER + ".dll";
-		const std::string sdlDllPath = engineFolderLocation + "SDL3.dll";
-		const std::string freetypeDllPath = engineFolderLocation + "freetype.dll";
+		const std::string engineLibPath = s_engineFolderLocation + ENGINE_GAME_FOLDER + ".lib";
+		const std::string engineDllPath = s_engineFolderLocation + ENGINE_GAME_FOLDER + ".dll";
+		const std::string sdlDllPath = s_engineFolderLocation + "SDL3.dll";
+		const std::string freetypeDllPath = s_engineFolderLocation + "freetype.dll";
 
 		// Copy engine game lib to the temp build folder
 		CopyUtils::AddCopyEntry(false, engineLibPath, params.tempPath + ENGINE_GAME_FOLDER + ".lib");
@@ -745,9 +745,9 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	}
 
 	// Copy engine headers to the temp build folder
-	CopyUtils::AddCopyEntry(true, engineProjectLocation + "Source/engine/", params.tempPath + "engine/");
-	CopyUtils::AddCopyEntry(false, engineProjectLocation + "Source/xenity.h", params.tempPath + "xenity.h");
-	CopyUtils::AddCopyEntry(false, engineFolderLocation + "main.cpp", params.tempPath + "main.cpp");
+	CopyUtils::AddCopyEntry(true, s_engineProjectLocation + "Source/engine/", params.tempPath + "engine/");
+	CopyUtils::AddCopyEntry(false, s_engineProjectLocation + "Source/xenity.h", params.tempPath + "xenity.h");
+	CopyUtils::AddCopyEntry(false, s_engineFolderLocation + "main.cpp", params.tempPath + "main.cpp");
 	const bool headerCopyResult = CopyUtils::ExecuteCopyEntries();
 	if (!headerCopyResult)
 	{
@@ -763,9 +763,9 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 	else
 	{
 		// Copy default icon
-		CopyUtils::AddCopyEntry(false, engineFolderLocation + "logo.ico", params.tempPath + "logo.ico");
+		CopyUtils::AddCopyEntry(false, s_engineFolderLocation + "logo.ico", params.tempPath + "logo.ico");
 	}
-	CopyUtils::AddCopyEntry(false, engineFolderLocation + "res.rc", params.tempPath + "res.rc");
+	CopyUtils::AddCopyEntry(false, s_engineFolderLocation + "res.rc", params.tempPath + "res.rc");
 	const bool iconCopyResult = CopyUtils::ExecuteCopyEntries();
 	if (!iconCopyResult)
 	{
@@ -830,10 +830,10 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 // Deprecated
 CompileResult Compiler::CompileWSL(const CompilerParams& params)
 {
-	compilationMethod = CompilationMethod::WSL;
+	s_compilationMethod = CompilationMethod::WSL;
 
-	const std::string convertedEnginePath = WindowsPathToWSL(engineProjectLocation);
-	const std::string convertedEngineExePath = WindowsPathToWSL(engineFolderLocation);
+	const std::string convertedEnginePath = WindowsPathToWSL(s_engineProjectLocation);
+	const std::string convertedEngineExePath = WindowsPathToWSL(s_engineFolderLocation);
 	// Clear compilation folder
 	[[maybe_unused]] const int clearFolderResult = system("wsl sh -c 'rm -rf ~/XenityTestProject'");
 
@@ -926,16 +926,16 @@ bool Compiler::CreateDockerImage()
 
 void Compiler::CancelCompilation()
 {
-	if (compilationMethod == CompilationMethod::DOCKER)
+	if (s_compilationMethod == CompilationMethod::DOCKER)
 	{
 		system("docker stop -t 0 XenityEngineBuild");
-		isCompilationCancelled = true;
+		s_isCompilationCancelled = true;
 	}
 }
 
 CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 {
-	compilationMethod = CompilationMethod::DOCKER;
+	s_compilationMethod = CompilationMethod::DOCKER;
 	Benchmark dockerPreparationBenchmark;
 	dockerPreparationBenchmark.Start();
 	DockerState state = CheckDockerState(nullptr);
@@ -1027,22 +1027,22 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	if (params.buildType != BuildType::BuildShaders)
 	{
 		// Copy source code and libraries
-		const std::string copyEngineSourceCommand = "docker cp \"" + engineProjectLocation + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		const std::string copyEngineSourceCommand = "docker cp \"" + s_engineProjectLocation + "Source\" XenityEngineBuild:\"/home/XenityBuild/\"";
 		[[maybe_unused]] const int copyCodeResult = system(copyEngineSourceCommand.c_str()); // Engine's source code + (game's code but to change later)
-		const std::string copyEngineLibrariesCommand = "docker cp \"" + engineProjectLocation + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		const std::string copyEngineLibrariesCommand = "docker cp \"" + s_engineProjectLocation + "include\" XenityEngineBuild:\"/home/XenityBuild/\"";
 		[[maybe_unused]] const int copyLibrariesResult = system(copyEngineLibrariesCommand.c_str()); // Engine's libraries
-		const std::string copyMainCommand = "docker cp \"" + engineFolderLocation + "main.cpp\" XenityEngineBuild:\"/home/XenityBuild/Source/\"";
+		const std::string copyMainCommand = "docker cp \"" + s_engineFolderLocation + "main.cpp\" XenityEngineBuild:\"/home/XenityBuild/Source/\"";
 		[[maybe_unused]] const int copyMainResult = system(copyMainCommand.c_str()); // main.cpp file
 
 		// Copy make file or CMakeLists.txt
 		if (params.buildPlatform.platform == Platform::P_PS3)
 		{
-			const std::string copyMakeFileCommand = "docker cp \"" + engineFolderLocation + "Makefile.PS3\" XenityEngineBuild:\"/home/XenityBuild/Makefile\"";
+			const std::string copyMakeFileCommand = "docker cp \"" + s_engineFolderLocation + "Makefile.PS3\" XenityEngineBuild:\"/home/XenityBuild/Makefile\"";
 			[[maybe_unused]] const int copyMakeFileCommandResult = system(copyMakeFileCommand.c_str()); // make file
 		}
 		else
 		{
-			const std::string copyCmakeCommand = "docker cp \"" + engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
+			const std::string copyCmakeCommand = "docker cp \"" + s_engineFolderLocation + "CMakeLists.txt\" XenityEngineBuild:\"/home/XenityBuild/\"";
 			[[maybe_unused]] const int copyCmakelistsResult = system(copyCmakeCommand.c_str()); // Cmakelists file
 		}
 
@@ -1074,11 +1074,11 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	{
 		FixCompileShadersScript();
 
-		const std::string copyCompileShadersCommand = "docker cp \"" + engineFolderLocation + "compile_shaders_fixed.sh\" XenityEngineBuild:\"/home/XenityBuild/compile_shaders.sh\"";
+		const std::string copyCompileShadersCommand = "docker cp \"" + s_engineFolderLocation + "compile_shaders_fixed.sh\" XenityEngineBuild:\"/home/XenityBuild/compile_shaders.sh\"";
 		[[maybe_unused]] const int copyCompileShadersCommandResult = system(copyCompileShadersCommand.c_str()); // compile shaders script file
 	}
 
-	if (isCompilationCancelled)
+	if (s_isCompilationCancelled)
 	{
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
 	}
@@ -1091,12 +1091,12 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 		CopyAssetsToDocker(params);
 	}
 
-	if (isCompilationCancelled)
+	if (s_isCompilationCancelled)
 	{
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
 	}
 	dockerPreparationBenchmark.Stop();
-	timings.prepareDockerTime = dockerPreparationBenchmark.GetMicroSeconds();
+	s_timings.prepareDockerTime = dockerPreparationBenchmark.GetMicroSeconds();
 
 	Benchmark dockerCompilationBenchmark;
 	dockerCompilationBenchmark.Start();
@@ -1104,9 +1104,9 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	const std::string startCommand = "docker start -a XenityEngineBuild";
 	[[maybe_unused]] const int startResult = system(startCommand.c_str());
 	dockerCompilationBenchmark.Stop();
-	timings.dockerCompileTime = dockerCompilationBenchmark.GetMicroSeconds();
+	s_timings.dockerCompileTime = dockerCompilationBenchmark.GetMicroSeconds();
 
-	if (isCompilationCancelled)
+	if (s_isCompilationCancelled)
 	{
 		return CompileResult::ERROR_COMPILATION_CANCELLED;
 	}
@@ -1190,7 +1190,7 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 
 		//---------------- PSP compiler will look for images in the build folder ----------------
 		// Copy default psp images
-		const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psp_images\" XenityEngineBuild:\"/home/XenityBuild/build/\"";
+		const std::string copyImagesCommand = "docker cp \"" + s_engineFolderLocation + "psp_images\" XenityEngineBuild:\"/home/XenityBuild/build/\"";
 		[[maybe_unused]] const int copyImagesResult = system(copyImagesCommand.c_str());
 		if (platformSettings)
 		{
@@ -1216,7 +1216,7 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 	{
 		std::shared_ptr<PlatformSettingsPsVita> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPsVita>(params.buildPlatform.settings);
 		// Copy default psp images
-		const std::string copyImagesCommand = "docker cp \"" + engineFolderLocation + "psvita_images\" XenityEngineBuild:\"/home/XenityBuild/\"";
+		const std::string copyImagesCommand = "docker cp \"" + s_engineFolderLocation + "psvita_images\" XenityEngineBuild:\"/home/XenityBuild/\"";
 		[[maybe_unused]] const int copyImagesResult = system(copyImagesCommand.c_str());
 
 		const std::string copyGameEngineAssetsCommand = "docker cp \"" + ProjectManager::GetEngineAssetFolderPath().substr(0, ProjectManager::GetEngineAssetFolderPath().size() - 1) + "\" XenityEngineBuild:\"/home/XenityBuild/\"";
@@ -1269,7 +1269,7 @@ void Compiler::CopyAssetsToDocker(const CompilerParams& params)
 void Compiler::FixCompileShadersScript()
 {
 	// In case the script has windows line endings, remove them to avoid errors on linux
-	std::shared_ptr<File> shaderScriptFile = FileSystem::MakeFile(engineFolderLocation + "compile_shaders.sh");
+	std::shared_ptr<File> shaderScriptFile = FileSystem::MakeFile(s_engineFolderLocation + "compile_shaders.sh");
 	if (!shaderScriptFile->Open(FileMode::ReadOnly)) 
 	{
 		Debug::PrintError("[Compiler::FixCompileShadersScript] Failed to open compile_shaders.sh");
@@ -1288,9 +1288,9 @@ void Compiler::FixCompileShadersScript()
 		}
 	}
 
-	FileSystem::Delete(engineFolderLocation + "compile_shaders_fixed.sh");
+	FileSystem::Delete(s_engineFolderLocation + "compile_shaders_fixed.sh");
 	// Write the new script
-	std::shared_ptr<File> updatedShaderScriptFile = FileSystem::MakeFile(engineFolderLocation + "compile_shaders_fixed.sh");
+	std::shared_ptr<File> updatedShaderScriptFile = FileSystem::MakeFile(s_engineFolderLocation + "compile_shaders_fixed.sh");
 	if (!updatedShaderScriptFile->Open(FileMode::WriteCreateFile))
 	{
 		Debug::PrintError("[Compiler::FixCompileShadersScript] Failed to create compile_shaders_fixed.sh");
@@ -1310,7 +1310,7 @@ std::string Compiler::GetStartCompilerCommand()
 		command += path.substr(0, 2) + " && "; // Go to the compiler folder
 	}
 	command += "cd \"" + EngineSettings::values.compilerPath + "\""; // Go to the compiler folder
-	command += " && " + compilerExecFileName; // Start the compiler
+	command += " && " + s_compilerExecFileName; // Start the compiler
 	//command += " >nul";	// Mute output
 	return command;
 }
@@ -1349,8 +1349,8 @@ std::string Compiler::GetCompileGameLibCommand(const CompilerParams& params, con
 	}
 
 	// Add include directories
-	command += " -I \"" + engineProjectLocation + "include\"";
-	command += " -I \"" + engineProjectLocation + "Source\"";
+	command += " -I \"" + s_engineProjectLocation + "include\"";
+	command += " -I \"" + s_engineProjectLocation + "Source\"";
 
 	// Create DLL
 	command += " /LD";
@@ -1407,8 +1407,8 @@ std::string Compiler::GetCompileExecutableCommand(const CompilerParams& params)
 #if !defined(DEBUG)
 	command += " /O2";
 #endif
-	command += " -I \"" + engineProjectLocation + "include\"";
-	command += " -I \"" + engineProjectLocation + "Source\"";
+	command += " -I \"" + s_engineProjectLocation + "include\"";
+	command += " -I \"" + s_engineProjectLocation + "Source\"";
 	command += " main.cpp " + std::string(ENGINE_GAME_FOLDER) + ".lib";
 	//command += " >nul"; // Mute output
 	return command;

@@ -47,15 +47,15 @@ void RectTransform::UpdatePosition(const std::shared_ptr <Canvas>& canvas)
 
 	float aspect = Graphics::usedCamera->GetAspectRatio();
 #if defined(EDITOR)
-	if (Editor::lastFocusedGameMenu.lock() != nullptr) 
+	if (Editor::s_lastFocusedGameMenu.lock() != nullptr)
 	{
-		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::lastFocusedGameMenu.lock())->lastSize;
+		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::s_lastFocusedGameMenu.lock())->lastSize;
 		aspect = windowsSize.x / windowsSize.y;
 	}
 #endif
 	const float xOff = (-aspect * 5) + (position.x * (aspect * 10));
 	const float yOff = (-1 * 5) + (position.y * (1 * 10));
-	const Vector3 newPos = Vector3(xOff, -yOff, 0); // Z 1 to avoid issue with near clipping plane
+	const Vector3 newPos = Vector3(xOff, -yOff, 0);
 	GetTransformRaw()->SetLocalPosition(newPos);
 }
 

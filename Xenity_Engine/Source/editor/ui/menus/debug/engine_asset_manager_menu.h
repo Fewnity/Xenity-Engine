@@ -19,8 +19,8 @@ public:
 	void Draw() override;
 
 private:
-	std::vector<std::shared_ptr<File>> engineAssetsFiles;
-	std::vector<uint64_t> ids;
-	std::vector<uint64_t> oldIds;
+	std::vector<std::shared_ptr<File>> m_engineAssetsFiles;
+	std::vector<uint64_t> m_ids;
+	std::vector<uint64_t> m_oldIds;
 };
 

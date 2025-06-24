@@ -26,7 +26,7 @@ namespace fs = std::filesystem;
 
 #define ASSETS_FOLDER "assets/"
 
-FileDataBase Cooker::fileDataBase;
+FileDataBase Cooker::s_fileDataBase;
 using ordered_json = nlohmann::ordered_json;
 
 std::mutex dataBaseMutex;
@@ -39,8 +39,8 @@ bool Cooker::CookAssets(const CookSettings& settings)
 	XASSERT(settings.platform != Platform::P_COUNT, "[Cooker::CookAssets] Platform is not set");
 
 	// Create a new data base and binary file
-	fileDataBase.Clear();
-	bool databaseCreated = fileDataBase.GetBitFile().Create(settings.exportPath + "data.xenb");
+	s_fileDataBase.Clear();
+	bool databaseCreated = s_fileDataBase.GetBitFile().Create(settings.exportPath + "data.xenb");
 
 	if (!databaseCreated)
 	{
@@ -95,7 +95,7 @@ bool Cooker::CookAssets(const CookSettings& settings)
 	}
 
 	// Check the integrity of the data base
-	const IntegrityState integrityState = fileDataBase.CheckIntegrity();
+	const IntegrityState integrityState = s_fileDataBase.CheckIntegrity();
 	if (integrityState != IntegrityState::Integrity_Ok)
 	{
 		Debug::PrintError("[Cooker::CookAssets] Data base integrity check failed");
@@ -103,8 +103,8 @@ bool Cooker::CookAssets(const CookSettings& settings)
 	}
 
 	// Save the data base file
-	fileDataBase.SaveToFile(settings.exportPath + "db.xenb");
-	fileDataBase.GetBitFile().Close();
+	s_fileDataBase.SaveToFile(settings.exportPath + "db.xenb");
+	s_fileDataBase.GetBitFile().Close();
 
 	return true;
 }
@@ -201,12 +201,12 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 
 	if (fileData)
 	{
-		dataOffset = fileDataBase.GetBitFile().AddData(fileData, cookedFileSize);
+		dataOffset = s_fileDataBase.GetBitFile().AddData(fileData, cookedFileSize);
 		delete[] fileData;
 	}
 	if (metaFileData)
 	{
-		metaDataOffset = fileDataBase.GetBitFile().AddData(metaFileData, cookedMetaFileSizeOut);
+		metaDataOffset = s_fileDataBase.GetBitFile().AddData(metaFileData, cookedMetaFileSizeOut);
 		delete[] metaFileData;
 	}
 
@@ -219,7 +219,7 @@ void Cooker::CookAsset(const CookSettings settings, const FileInfo fileInfo, con
 	fileDataBaseEntry->ms = metaSize; // Meta Size in byte
 	fileDataBaseEntry->t = fileInfo.type; // Type
 
-	fileDataBase.AddFile(fileDataBaseEntry);
+	s_fileDataBase.AddFile(fileDataBaseEntry);
 	dataBaseMutex.unlock();
 }
 

@@ -59,24 +59,24 @@
 
 using json = nlohmann::ordered_json;
 
-std::unordered_map<uint64_t, FileInfo> ProjectManager::projectFilesIds;
-std::shared_ptr<ProjectDirectory> ProjectManager::projectDirectory = nullptr;
-ProjectSettings ProjectManager::projectSettings;
-std::string ProjectManager::projectFolderPath = "";
-std::string ProjectManager::assetFolderPath = "";
-std::string ProjectManager::engineAssetsFolderPath = "";
-std::string ProjectManager::publicEngineAssetsFolderPath = "";
-bool ProjectManager::projectLoaded = false;
-ProjectState ProjectManager::projectState = ProjectState::NotLoaded;
-std::shared_ptr<Directory> ProjectManager::projectDirectoryBase = nullptr;
-std::shared_ptr<Directory> ProjectManager::publicEngineAssetsDirectoryBase = nullptr;
-std::shared_ptr<Directory> ProjectManager::additionalAssetDirectoryBase = nullptr;
-Event<> ProjectManager::projectLoadedEvent;
-Event<> ProjectManager::projectUnloadedEvent;
-FileDataBase ProjectManager::fileDataBase;
+std::unordered_map<uint64_t, FileInfo> ProjectManager::s_projectFilesIds;
+std::shared_ptr<ProjectDirectory> ProjectManager::s_projectDirectory = nullptr;
+ProjectSettings ProjectManager::s_projectSettings;
+std::string ProjectManager::s_projectFolderPath = "";
+std::string ProjectManager::s_assetFolderPath = "";
+std::string ProjectManager::s_engineAssetsFolderPath = "";
+std::string ProjectManager::s_publicEngineAssetsFolderPath = "";
+bool ProjectManager::s_projectLoaded = false;
+ProjectState ProjectManager::s_projectState = ProjectState::NotLoaded;
+std::shared_ptr<Directory> ProjectManager::s_projectDirectoryBase = nullptr;
+std::shared_ptr<Directory> ProjectManager::s_publicEngineAssetsDirectoryBase = nullptr;
+std::shared_ptr<Directory> ProjectManager::s_additionalAssetDirectoryBase = nullptr;
+Event<> ProjectManager::s_projectLoadedEvent;
+Event<> ProjectManager::s_projectUnloadedEvent;
+FileDataBase ProjectManager::s_fileDataBase;
 
-int ProjectManager::loadedFilesCount = 0;
-int ProjectManager::totalFilesCount = 0;
+int ProjectManager::s_loadedFilesCount = 0;
+int ProjectManager::s_totalFilesCount = 0;
 
 std::shared_ptr<ProjectDirectory> ProjectManager::FindProjectDirectory(const ProjectDirectory& directoryToCheck, const std::string& directoryPath)
 {
@@ -168,32 +168,32 @@ void ProjectManager::FindAllProjectFiles()
 	Editor::SetCurrentProjectDirectory(nullptr);
 
 	// Keep in memory all old files path to check later if some files have been moved
-	for (const auto& kv : projectFilesIds)
+	for (const auto& kv : s_projectFilesIds)
 	{
 		FileChange fileChange = FileChange();
 		fileChange.path = kv.second.fileAndId.file->GetPath();
 		oldProjectFilesIds[kv.first] = fileChange;
 	}
 #endif
-	projectDirectory = std::make_shared<ProjectDirectory>(assetFolderPath, 0);
+	s_projectDirectory = std::make_shared<ProjectDirectory>(s_assetFolderPath, 0);
 
-	projectFilesIds.clear();
+	s_projectFilesIds.clear();
 
 	std::vector<FileInfo> compatibleFiles = GetCompatibleFiles();
-	totalFilesCount = static_cast<int>(compatibleFiles.size());
-	loadedFilesCount = 0;
+	s_totalFilesCount = static_cast<int>(compatibleFiles.size());
+	s_loadedFilesCount = 0;
 	CheckAndGenerateFileIds(compatibleFiles);
 
 	// Fill projectFilesIds
 	for (const auto& kv : compatibleFiles)
 	{
-		projectFilesIds[kv.fileAndId.id] = kv;
+		s_projectFilesIds[kv.fileAndId.id] = kv;
 	}
 	compatibleFiles.clear();
 
 #if defined(EDITOR)
 	// Check if a file has changed or has been deleted
-	for (const auto& kv : projectFilesIds)
+	for (const auto& kv : s_projectFilesIds)
 	{
 		const bool contains = oldProjectFilesIds.find(kv.first) != oldProjectFilesIds.end();
 		if (contains)
@@ -212,7 +212,7 @@ void ProjectManager::FindAllProjectFiles()
 	{
 		if (kv.second.hasChanged)
 		{
-			GetFileReferenceById(kv.first)->m_file = projectFilesIds[kv.first].fileAndId.file;
+			GetFileReferenceById(kv.first)->m_file = s_projectFilesIds[kv.first].fileAndId.file;
 		}
 		else if (kv.second.hasBeenDeleted)
 		{
@@ -222,15 +222,15 @@ void ProjectManager::FindAllProjectFiles()
 	oldProjectFilesIds.clear();
 
 	// Get all project directories and open one
-	CreateProjectDirectories(*projectDirectoryBase, *projectDirectory);
-	const std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(*projectDirectory, oldPath);
+	CreateProjectDirectories(*s_projectDirectoryBase, *s_projectDirectory);
+	const std::shared_ptr<ProjectDirectory> lastOpenedDir = FindProjectDirectory(*s_projectDirectory, oldPath);
 	if (lastOpenedDir)
 	{
 		Editor::SetCurrentProjectDirectory(lastOpenedDir);
 	}
 	else
 	{
-		Editor::SetCurrentProjectDirectory(projectDirectory);
+		Editor::SetCurrentProjectDirectory(s_projectDirectory);
 	}
 #endif
 
@@ -271,9 +271,9 @@ void ProjectManager::CreateVisualStudioSettings()
 			}
 
 			// Create vscode folder
-			FileSystem::CreateFolder(assetFolderPath + ".vscode/");
+			FileSystem::CreateFolder(s_assetFolderPath + ".vscode/");
 
-			const std::string filePath = assetFolderPath + ".vscode/c_cpp_properties.json";
+			const std::string filePath = s_assetFolderPath + ".vscode/c_cpp_properties.json";
 			FileSystem::Delete(filePath);
 
 			// Create the vscode settings file
@@ -328,7 +328,7 @@ void ProjectManager::FillProjectDirectory(ProjectDirectory& _projectDirectory)
 	std::vector<std::shared_ptr<FileReference>>& projFileVector = _projectDirectory.files;
 	projFileVector.clear();
 
-	for (const auto& kv : ProjectManager::projectFilesIds)
+	for (const auto& kv : ProjectManager::s_projectFilesIds)
 	{
 		// Check if this file is in this folder
 		if (_projectDirectory.path == kv.second.fileAndId.file->GetFolderPath())
@@ -358,10 +358,10 @@ void ProjectManager::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	engineAssetsFolderPath = "./engine_assets/";
-	publicEngineAssetsFolderPath = "./public_engine_assets/";
+	s_engineAssetsFolderPath = "./engine_assets/";
+	s_publicEngineAssetsFolderPath = "./public_engine_assets/";
 
-	publicEngineAssetsDirectoryBase = std::make_shared<Directory>(publicEngineAssetsFolderPath);
+	s_publicEngineAssetsDirectoryBase = std::make_shared<Directory>(s_publicEngineAssetsFolderPath);
 
 #if defined(EDITOR)
 	Compiler::GetOnCompilationEndedEvent().Bind(&ProjectManager::OnProjectCompiled);
@@ -412,13 +412,13 @@ bool ProjectManager::CreateProject(const std::string& name, const std::string& f
 		Debug::PrintError("[ProjectManager::CreateProject] Error when copying .gitignore file into the project.", true);
 	}
 
-	projectSettings.projectName = name;
-	projectSettings.gameName = name;
-	projectSettings.startScene = sceneRef;
-	projectFolderPath = folderPath + name + "/";
+	s_projectSettings.projectName = name;
+	s_projectSettings.gameName = name;
+	s_projectSettings.startScene = sceneRef;
+	s_projectFolderPath = folderPath + name + "/";
 	SaveProjectSettings();
 
-	return LoadProject(projectFolderPath) == ProjectLoadingErrors::Success;
+	return LoadProject(s_projectFolderPath) == ProjectLoadingErrors::Success;
 #else
 	return false;
 #endif
@@ -501,25 +501,25 @@ void ProjectManager::OnProjectCompiled([[maybe_unused]] CompilerParams params, b
 
 	if (result)
 	{
-		projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
+		s_projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
 	}
 	else
 	{
 		// Set the version to 0 to avoid loading old DLL
-		projectSettings.compiledLibEngineVersion = "0";
+		s_projectSettings.compiledLibEngineVersion = "0";
 	}
 
 	bool isDebugMode = false;
 #if defined(DEBUG)
 	isDebugMode = true;
 #endif
-	projectSettings.isLibCompiledForDebug = isDebugMode;
+	s_projectSettings.isLibCompiledForDebug = isDebugMode;
 
 	bool is64Bits = false;
 #if defined(_WIN64)
 	is64Bits = true;
 #endif
-	projectSettings.isLibCompiledFor64Bits = is64Bits;
+	s_projectSettings.isLibCompiledFor64Bits = is64Bits;
 
 	SaveProjectSettings();
 }
@@ -529,19 +529,19 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	projectState = ProjectState::Loading;
+	s_projectState = ProjectState::Loading;
 
 	Debug::Print("Loading project: " + projectPathToLoad, true);
 
-	projectLoaded = false;
+	s_projectLoaded = false;
 
-	projectFolderPath = projectPathToLoad;
-	assetFolderPath = projectPathToLoad + "assets/";
+	s_projectFolderPath = projectPathToLoad;
+	s_assetFolderPath = projectPathToLoad + "assets/";
 
 #if !defined(EDITOR)
-	if (fileDataBase.LoadFromFile(projectPathToLoad + "db.xenb"))
+	if (s_fileDataBase.LoadFromFile(projectPathToLoad + "db.xenb"))
 	{
-		if (!fileDataBase.GetBitFile().Open("data.xenb"))
+		if (!s_fileDataBase.GetBitFile().Open("data.xenb"))
 		{
 			Debug::PrintError("[ProjectManager::LoadProject] Failed to open the data file", true);
 			return ProjectLoadingErrors::FailedToOpenDataFile;
@@ -554,23 +554,23 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	}
 #endif
 
-	projectDirectoryBase = std::make_shared<Directory>(assetFolderPath);
+	s_projectDirectoryBase = std::make_shared<Directory>(s_assetFolderPath);
 
 #if defined(EDITOR)
-	if (!std::filesystem::exists(assetFolderPath))
+	if (!std::filesystem::exists(s_assetFolderPath))
 	{
 		return ProjectLoadingErrors::NoAssetFolder;
 	}
-	FileSystem::CreateFolder(projectFolderPath + "/temp/");
-	FileSystem::CreateFolder(projectFolderPath + "/additional_assets/");
+	FileSystem::CreateFolder(s_projectFolderPath + "/temp/");
+	FileSystem::CreateFolder(s_projectFolderPath + "/additional_assets/");
 #endif
 
-	additionalAssetDirectoryBase = std::make_shared<Directory>(projectFolderPath + "/additional_assets/");
+	s_additionalAssetDirectoryBase = std::make_shared<Directory>(s_projectFolderPath + "/additional_assets/");
 
 	FindAllProjectFiles();
 
 	LoadProjectSettings();
-	projectSettings.engineVersion = ENGINE_VERSION;
+	s_projectSettings.engineVersion = ENGINE_VERSION;
 #if defined(EDITOR)
 	SaveProjectSettings(); // Save to update the file if the engine version has changed
 #endif
@@ -600,9 +600,9 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	}
 #endif
 
-	projectLoadedEvent.Trigger();
-	projectLoaded = true;
-	projectState = ProjectState::WaitingForScene;
+	s_projectLoadedEvent.Trigger();
+	s_projectLoaded = true;
+	s_projectState = ProjectState::WaitingForScene;
 
 	Debug::Print("Project loaded", true);
 
@@ -628,30 +628,30 @@ void ProjectManager::UnloadProject()
 	ClassRegistry::RegisterEngineComponents();
 	ClassRegistry::RegisterEngineFileClasses();
 
-	projectSettings.startScene.reset();
-	projectDirectoryBase.reset();
-	additionalAssetDirectoryBase.reset();
-	projectDirectory.reset();
-	projectFilesIds.clear();
+	s_projectSettings.startScene.reset();
+	s_projectDirectoryBase.reset();
+	s_additionalAssetDirectoryBase.reset();
+	s_projectDirectory.reset();
+	s_projectFilesIds.clear();
 
-	projectSettings.projectName.clear();
-	projectSettings.gameName.clear();
+	s_projectSettings.projectName.clear();
+	s_projectSettings.gameName.clear();
 
-	projectFolderPath.clear();
-	assetFolderPath.clear();
+	s_projectFolderPath.clear();
+	s_assetFolderPath.clear();
 
-	loadedFilesCount = 0;
-	totalFilesCount = 0;
+	s_loadedFilesCount = 0;
+	s_totalFilesCount = 0;
 
-	projectLoaded = false;
-	projectState = ProjectState::NotLoaded;
+	s_projectLoaded = false;
+	s_projectState = ProjectState::NotLoaded;
 
 	Engine::s_game.reset();
 	DynamicLibrary::UnloadGameLibrary();
 	AssetManager::RemoveAllFileReferences();
 	Window::UpdateWindowTitle();
 
-	projectUnloadedEvent.Trigger();
+	s_projectUnloadedEvent.Trigger();
 #endif
 }
 
@@ -665,7 +665,7 @@ std::set<uint64_t> ProjectManager::GetAllUsedFileByTheGame()
 	const size_t sceneCount = sceneFiles.size();
 
 	// Add all engine files
-	for (auto& fileIds : projectFilesIds)
+	for (auto& fileIds : s_projectFilesIds)
 	{
 		if (fileIds.first <= UniqueId::reservedFileId)
 		{
@@ -781,7 +781,7 @@ std::vector<FileInfo> ProjectManager::GetFilesByType(const FileType type)
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
 	std::vector<FileInfo> fileList;
-	for (const auto& fileinfo : projectFilesIds)
+	for (const auto& fileinfo : s_projectFilesIds)
 	{
 		if (fileinfo.second.type == type)
 		{
@@ -796,9 +796,9 @@ FileInfo* ProjectManager::GetFileById(const uint64_t id)
 {
 	STACK_DEBUG_OBJECT(STACK_LOW_PRIORITY);
 
-	if (projectFilesIds.find(id) != projectFilesIds.end())
+	if (s_projectFilesIds.find(id) != s_projectFilesIds.end())
 	{
-		return &projectFilesIds[id];
+		return &s_projectFilesIds[id];
 	}
 
 	return nullptr;
@@ -830,9 +830,9 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceById(const uint64
 	// If the file is not instanciated, create the File Reference
 	if (fileRef == nullptr)
 	{
-		if (projectFilesIds.find(id) != projectFilesIds.end())
+		if (s_projectFilesIds.find(id) != s_projectFilesIds.end())
 		{
-			fileRef = CreateFileReference(projectFilesIds[id], id);
+			fileRef = CreateFileReference(s_projectFilesIds[id], id);
 		}
 	}
 
@@ -863,7 +863,7 @@ std::shared_ptr<FileReference> ProjectManager::GetFileReferenceByFilePath(const 
 	const uint64_t fileId = ProjectManager::ReadFileId(*file);
 #else
 	uint64_t fileId = -1;
-	for (const auto& kv : projectFilesIds)
+	for (const auto& kv : s_projectFilesIds)
 	{
 		if (kv.second.fileAndId.file->GetPath() == filePathFixed)
 		{
@@ -920,7 +920,7 @@ void ProjectManager::LoadProjectSettings()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	projectSettings = GetProjectSettings(projectFolderPath);
+	s_projectSettings = GetProjectSettings(s_projectFolderPath);
 }
 
 void ProjectManager::SaveProjectSettings(const std::string& folderPath)
@@ -931,7 +931,7 @@ void ProjectManager::SaveProjectSettings(const std::string& folderPath)
 	FileSystem::Delete(path);
 	json projectData;
 
-	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(projectSettings.GetReflectiveData());
+	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(s_projectSettings.GetReflectiveData());
 
 	const std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
 	if (projectFile->Open(FileMode::WriteCreateFile))
@@ -947,7 +947,7 @@ void ProjectManager::SaveProjectSettings(const std::string& folderPath)
 
 void ProjectManager::SaveProjectSettings()
 {
-	SaveProjectSettings(projectFolderPath);
+	SaveProjectSettings(s_projectFolderPath);
 }
 
 void ProjectManager::SaveMetaFile(FileReference& fileReference)
@@ -963,7 +963,7 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 	FileSystem::Delete(file->GetPath() + META_EXTENSION);
 	json metaData;
 	metaData["id"] = fileReference.m_fileId;
-	metaData["MetaVersion"] = metaVersion;
+	metaData["MetaVersion"] = s_metaVersion;
 
 	// Save platform specific data
 	for (size_t i = 0; i < static_cast<size_t>(AssetPlatform::AP_COUNT); i++)
@@ -1211,7 +1211,7 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 		jsonString = metaFile->ReadAll();
 		metaFile->Close();
 #else
-		unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(fileReference.m_metaPosition, fileReference.m_metaSize);
+		unsigned char* binData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(fileReference.m_metaPosition, fileReference.m_metaSize);
 		jsonString = std::string(reinterpret_cast<const char*>(binData), fileReference.m_metaSize);
 		free(binData);
 #endif
@@ -1259,9 +1259,9 @@ void ProjectManager::CreateGame()
 #if defined(DEBUG)
 	isDebugMode = true;
 #endif
-	const bool isSameVersion = projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION;
-	const bool isSameDebugMode = projectSettings.isLibCompiledForDebug == isDebugMode;
-	const bool isSame64Bits = projectSettings.isLibCompiledFor64Bits == is64Bits;
+	const bool isSameVersion = s_projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION;
+	const bool isSameDebugMode = s_projectSettings.isLibCompiledForDebug == isDebugMode;
+	const bool isSame64Bits = s_projectSettings.isLibCompiledFor64Bits == is64Bits;
 
 	if (isSameVersion && isSameDebugMode && isSame64Bits)
 	{
@@ -1296,9 +1296,9 @@ std::vector<FileInfo> ProjectManager::GetCompatibleFiles()
 	// Get all compatible files of the project
 #if defined(EDITOR)
 	std::vector<FileInfo> projectFiles;
-	AddFilesToProjectFiles(projectFiles, *publicEngineAssetsDirectoryBase, true); // This directory first
-	AddFilesToProjectFiles(projectFiles, *projectDirectoryBase, false);
-	AddFilesToProjectFiles(projectFiles, *additionalAssetDirectoryBase, false);
+	AddFilesToProjectFiles(projectFiles, *s_publicEngineAssetsDirectoryBase, true); // This directory first
+	AddFilesToProjectFiles(projectFiles, *s_projectDirectoryBase, false);
+	AddFilesToProjectFiles(projectFiles, *s_additionalAssetDirectoryBase, false);
 
 	// Get all files supported by the engine
 	const size_t fileCount = projectFiles.size();
@@ -1320,7 +1320,7 @@ std::vector<FileInfo> ProjectManager::GetCompatibleFiles()
 	projectFiles.clear();
 #else
 	// All files in fileDataBase.fileList are compatible
-	for (const auto& f : fileDataBase.GetFileList())
+	for (const auto& f : s_fileDataBase.GetFileList())
 	{
 		FileInfo compatibleFile;
 		compatibleFile.fileAndId.file = FileSystem::MakeFile(f->p);
@@ -1375,7 +1375,7 @@ void ProjectManager::CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFi
 				const uint64_t fileId = ReadFileId(*file);
 
 				mutex.lock();
-				loadedFilesCount++;
+				s_loadedFilesCount++;
 				if (fileId == -1)
 				{
 					fileWithoutMeta.push_back(&compatibleFiles[index]);

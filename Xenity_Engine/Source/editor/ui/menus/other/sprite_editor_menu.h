@@ -15,7 +15,6 @@
 
 class Texture;
 
-
 class SpriteEditorMenu : public Menu
 {
 public:	
@@ -59,17 +58,17 @@ private:
 	*/
 	void AddNewSpriteSelection(const Vector2& position, const Vector2& size, const Vector2& pivot);
 
-	std::shared_ptr<Texture> spriteToEdit;
-	std::shared_ptr<Texture> oldSpriteToEdit; // TODO improve this by removing this and using events
+	std::shared_ptr<Texture> m_spriteToEdit;
+	std::shared_ptr<Texture> m_oldSpriteToEdit; // TODO improve this by removing this and using events
 
-	Vector2 offset = Vector2(0, 0);
-	Vector2 minOffset = Vector2(-0.5f, -0.5f);
-	Vector2 maxOffset = Vector2(0.5f, 0.5f);
+	Vector2 m_offset = Vector2(0, 0);
+	Vector2 m_minOffset = Vector2(-0.5f, -0.5f);
+	Vector2 m_maxOffset = Vector2(0.5f, 0.5f);
 
-	float zoom = 1;
-	float minZoom = 0.2f;
-	float maxZoom = 3;
-	std::vector<SpriteSelection> spriteSelections;
-	int currentSelectedSpriteIndex = -1;
+	float m_zoom = 1;
+	float m_minZoom = 0.2f;
+	float m_maxZoom = 3;
+	std::vector<SpriteSelection> m_spriteSelections;
+	int m_currentSelectedSpriteIndex = -1;
 };
 

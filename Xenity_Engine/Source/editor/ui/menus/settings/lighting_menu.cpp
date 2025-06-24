@@ -20,7 +20,7 @@ void LightingMenu::Init()
 void LightingMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
-	const bool visible = ImGui::Begin("Lighting", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Lighting", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

@@ -36,21 +36,21 @@ void InspectorRectTransformSetPositionCommand::Undo()
 
 InspectorTransformSetPositionCommand::InspectorTransformSetPositionCommand(uint64_t _targetId, const Vector3& newValue, const Vector3& lastValue, bool isLocalPosition)
 {
-	this->targetId = _targetId;
-	this->newValue = newValue;
-	this->lastValue = lastValue;
-	this->isLocalPosition = isLocalPosition;
+	m_targetId = _targetId;
+	m_newValue = newValue;
+	m_lastValue = lastValue;
+	m_isLocalPosition = isLocalPosition;
 }
 
 void InspectorTransformSetPositionCommand::Execute()
 {
-	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(m_targetId);
 	if (foundGameObject)
 	{
-		if (isLocalPosition)
-			foundGameObject->GetTransform()->SetLocalPosition(newValue);
+		if (m_isLocalPosition)
+			foundGameObject->GetTransform()->SetLocalPosition(m_newValue);
 		else
-			foundGameObject->GetTransform()->SetPosition(newValue);
+			foundGameObject->GetTransform()->SetPosition(m_newValue);
 
 		SceneManager::SetIsSceneDirty(true);
 	}
@@ -58,13 +58,13 @@ void InspectorTransformSetPositionCommand::Execute()
 
 void InspectorTransformSetPositionCommand::Undo()
 {
-	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(m_targetId);
 	if (foundGameObject)
 	{
-		if (isLocalPosition)
-			foundGameObject->GetTransform()->SetLocalPosition(lastValue);
+		if (m_isLocalPosition)
+			foundGameObject->GetTransform()->SetLocalPosition(m_lastValue);
 		else
-			foundGameObject->GetTransform()->SetPosition(lastValue);
+			foundGameObject->GetTransform()->SetPosition(m_lastValue);
 
 		SceneManager::SetIsSceneDirty(true);
 	}
@@ -75,34 +75,34 @@ void InspectorTransformSetPositionCommand::Undo()
 
 InspectorTransformSetRotationCommand::InspectorTransformSetRotationCommand(uint64_t _targetId, const Vector3& newValue, const Vector3& lastValue, bool isLocalRotation)
 {
-	this->targetId = _targetId;
-	this->newValue = newValue;
-	this->lastValue = lastValue;
-	this->isLocalRotation = isLocalRotation;
+	m_targetId = _targetId;
+	m_newValue = newValue;
+	m_lastValue = lastValue;
+	m_isLocalRotation = isLocalRotation;
 }
 
 void InspectorTransformSetRotationCommand::Execute()
 {
-	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(m_targetId);
 	if (foundGameObject)
 	{
-		if (isLocalRotation)
-			foundGameObject->GetTransform()->SetLocalEulerAngles(newValue);
+		if (m_isLocalRotation)
+			foundGameObject->GetTransform()->SetLocalEulerAngles(m_newValue);
 		else
-			foundGameObject->GetTransform()->SetEulerAngles(newValue);
+			foundGameObject->GetTransform()->SetEulerAngles(m_newValue);
 		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
 void InspectorTransformSetRotationCommand::Undo()
 {
-	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(m_targetId);
 	if (foundGameObject)
 	{
-		if (isLocalRotation)
-			foundGameObject->GetTransform()->SetLocalEulerAngles(lastValue);
+		if (m_isLocalRotation)
+			foundGameObject->GetTransform()->SetLocalEulerAngles(m_lastValue);
 		else
-			foundGameObject->GetTransform()->SetEulerAngles(lastValue);
+			foundGameObject->GetTransform()->SetEulerAngles(m_lastValue);
 		SceneManager::SetIsSceneDirty(true);
 	}
 }
@@ -110,27 +110,27 @@ void InspectorTransformSetRotationCommand::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCommand(uint64_t _targetId, const Vector3& _newValue, const Vector3& _lastValue) : newValue(_newValue), lastValue(_lastValue)
+InspectorTransformSetLocalScaleCommand::InspectorTransformSetLocalScaleCommand(uint64_t _targetId, const Vector3& _newValue, const Vector3& _lastValue) : m_newValue(_newValue), m_lastValue(_lastValue)
 {
-	this->targetId = _targetId;
+	m_targetId = _targetId;
 }
 
 void InspectorTransformSetLocalScaleCommand::Execute()
 {
-	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(m_targetId);
 	if (foundGameObject)
 	{
-		foundGameObject->GetTransform()->SetLocalScale(newValue);
+		foundGameObject->GetTransform()->SetLocalScale(m_newValue);
 		SceneManager::SetIsSceneDirty(true);
 	}
 }
 
 void InspectorTransformSetLocalScaleCommand::Undo()
 {
-	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+	std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(m_targetId);
 	if (foundGameObject)
 	{
-		foundGameObject->GetTransform()->SetLocalScale(lastValue);
+		foundGameObject->GetTransform()->SetLocalScale(m_lastValue);
 		SceneManager::SetIsSceneDirty(true);
 	}
 }
@@ -138,19 +138,19 @@ void InspectorTransformSetLocalScaleCommand::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(Transform& transform, const nlohmann::json& newTransformDataData) : transformData(newTransformDataData)
+InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(Transform& transform, const nlohmann::json& newTransformDataData) : m_transformData(newTransformDataData)
 {
-	this->transformtId = transform.GetGameObject()->GetUniqueId();
-	this->oldTransformData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform.GetReflectiveData());
+	m_transformtId = transform.GetGameObject()->GetUniqueId();
+	m_oldTransformData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform.GetReflectiveData());
 }
 
 void InspectorSetTransformDataCommand::Execute()
 {
-	std::shared_ptr<GameObject> gameObject = FindGameObjectById(transformtId);
+	std::shared_ptr<GameObject> gameObject = FindGameObjectById(m_transformtId);
 	if (gameObject)
 	{
 		std::shared_ptr<Transform> transformToUpdate = gameObject->GetTransform();
-		ReflectionUtils::JsonToReflectiveData(transformData, transformToUpdate->GetReflectiveData());
+		ReflectionUtils::JsonToReflectiveData(m_transformData, transformToUpdate->GetReflectiveData());
 		transformToUpdate->m_isTransformationMatrixDirty = true;
 		transformToUpdate->UpdateWorldValues();
 		transformToUpdate->OnReflectionUpdated();
@@ -160,11 +160,11 @@ void InspectorSetTransformDataCommand::Execute()
 
 void InspectorSetTransformDataCommand::Undo()
 {
-	std::shared_ptr<GameObject> gameObject = FindGameObjectById(transformtId);
+	std::shared_ptr<GameObject> gameObject = FindGameObjectById(m_transformtId);
 	if (gameObject)
 	{
 		std::shared_ptr<Transform> transformToUpdate = gameObject->GetTransform();
-		ReflectionUtils::JsonToReflectiveData(oldTransformData, transformToUpdate->GetReflectiveData());
+		ReflectionUtils::JsonToReflectiveData(m_oldTransformData, transformToUpdate->GetReflectiveData());
 		transformToUpdate->m_isTransformationMatrixDirty = true;
 		transformToUpdate->UpdateWorldValues();
 		transformToUpdate->OnReflectionUpdated();

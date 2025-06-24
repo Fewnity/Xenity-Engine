@@ -15,25 +15,25 @@
 
 void DockerConfigMenu::Init()
 {
-	dockerStateEvent.Bind(&DockerConfigMenu::SetDockerState, this);
+	m_dockerStateEvent.Bind(&DockerConfigMenu::SetDockerState, this);
 	Refresh();
 }
 
 void DockerConfigMenu::Refresh() 
 {
-	std::thread refreshThread(&Compiler::CheckDockerState, &dockerStateEvent);
+	std::thread refreshThread(&Compiler::CheckDockerState, &m_dockerStateEvent);
 	refreshThread.detach();
 }
 
 void DockerConfigMenu::SetDockerState(const DockerState state)
 {
-	currentDockerState = state;
+	m_currentDockerState = state;
 }
 
 void DockerConfigMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
-	const bool visible = ImGui::Begin("Docker Config", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Docker Config", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -44,17 +44,17 @@ void DockerConfigMenu::Draw()
 		}
 		std::string stateText = "";
 		ImVec4 color;
-		if (currentDockerState == DockerState::NOT_INSTALLED) 
+		if (m_currentDockerState == DockerState::NOT_INSTALLED)
 		{
 			stateText = "Docker is not installed";
 			color = ImVec4(1, 0, 0, 1);
 		}
-		else if (currentDockerState == DockerState::NOT_RUNNING)
+		else if (m_currentDockerState == DockerState::NOT_RUNNING)
 		{
 			stateText = "Docker is not running";
 			color = ImVec4(1, 0.64f, 0, 1);
 		}
-		else if (currentDockerState == DockerState::MISSING_IMAGE)
+		else if (m_currentDockerState == DockerState::MISSING_IMAGE)
 		{
 			stateText = "Docker image is missing";
 			color = ImVec4(1, 0.64f, 0, 1);
@@ -66,7 +66,7 @@ void DockerConfigMenu::Draw()
 		}
 		
 		ImGui::TextColored(color, "%s", stateText.c_str());
-		if (currentDockerState == DockerState::NOT_INSTALLED)
+		if (m_currentDockerState == DockerState::NOT_INSTALLED)
 		{
 			ImGui::Text("You have to install Docker on your computer");
 			if (ImGui::Button("Docker website"))
@@ -74,7 +74,7 @@ void DockerConfigMenu::Draw()
 				Editor::OpenLinkInWebBrowser("https://www.docker.com/products/docker-desktop/");
 			}
 		}
-		else if (currentDockerState == DockerState::MISSING_IMAGE)
+		else if (m_currentDockerState == DockerState::MISSING_IMAGE)
 		{
 			ImGui::Text("You have to create the Ubuntu Docker image (automatic process, can take few minutes)");
 			if (ImGui::Button("Create image"))
@@ -86,7 +86,7 @@ void DockerConfigMenu::Draw()
 				Refresh();
 			}
 		}
-		else if (currentDockerState == DockerState::NOT_RUNNING)
+		else if (m_currentDockerState == DockerState::NOT_RUNNING)
 		{
 			ImGui::Text("You have to launch Docker");
 			if (ImGui::Button("Start Docker"))

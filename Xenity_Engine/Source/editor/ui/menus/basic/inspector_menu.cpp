@@ -38,7 +38,7 @@ void InspectorMenu::Init()
 void InspectorMenu::Draw()
 {
 	const std::string windowName = "Inspector###Inspector" + std::to_string(id);
-	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -66,22 +66,22 @@ void InspectorMenu::Draw()
 
 		CalculateWindowValues();
 
-		if (isFocused)
-			areWindowsFocused = true;
+		if (m_isFocused)
+			m_areWindowsFocused = true;
 
-		if (!areWindowsFocused)
+		if (!m_areWindowsFocused)
 		{
 			StopAudio();
 		}
 
-		areWindowsFocused = false;
+		m_areWindowsFocused = false;
 	}
 	else
 	{
 		ResetWindowValues();
 		StopAudio();
 	}
-	if (!isActive)
+	if (!m_isActive)
 	{
 		StopAudio();
 	}
@@ -190,14 +190,14 @@ void InspectorMenu::DrawFilePreview()
 		if (loadedPreview != Editor::GetSelectedFileReference())
 		{
 			loadedPreview = Editor::GetSelectedFileReference();
-			previewText.clear();
+			m_previewText.clear();
 			// Read text file
 			if (loadedPreview->m_fileType == FileType::File_Code || loadedPreview->m_fileType == FileType::File_Header || loadedPreview->m_fileType == FileType::File_Shader)
 			{
 				std::shared_ptr<File> file = loadedPreview->m_file;
 				if (file->Open(FileMode::ReadOnly))
 				{
-					previewText = file->ReadAll();
+					m_previewText = file->ReadAll();
 					file->Close();
 				}
 				else
@@ -225,17 +225,17 @@ void InspectorMenu::DrawFilePreview()
 		}
 
 		// If the preview is a text, calculate the text size
-		if (!previewText.empty())
+		if (!m_previewText.empty())
 		{
-			sizeY = ImGui::CalcTextSize(previewText.c_str(), 0, false, availSize.x).y + 10; // + 10 to avoid the hided last line in some text
+			sizeY = ImGui::CalcTextSize(m_previewText.c_str(), 0, false, availSize.x).y + 10; // + 10 to avoid the hided last line in some text
 		}
 
 		ImGui::Text("Preview:");
 		ImGui::BeginChild("Preview", ImVec2(0, sizeY), ImGuiChildFlags_Borders, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-		if (!previewText.empty()) // Draw text preview
+		if (!m_previewText.empty()) // Draw text preview
 		{
-			ImGui::TextWrapped("%s", previewText.c_str());
+			ImGui::TextWrapped("%s", m_previewText.c_str());
 		}
 		else if (textureId != 0) // Draw image preview
 		{
@@ -289,7 +289,7 @@ void InspectorMenu::DrawFilePreview()
 			PlayedSound* playedSound = nullptr;
 			for (size_t i = 0; i < playedSoundCount; i++)
 			{
-				if (AudioManager::s_channel->m_playedSounds[i]->m_audioSource.lock() == Editor::audioSource.lock())
+				if (AudioManager::s_channel->m_playedSounds[i]->m_audioSource.lock() == Editor::s_audioSource.lock())
 				{
 					// Get audio stream
 					stream = AudioManager::s_channel->m_playedSounds[i]->m_audioClipStream.get();
@@ -301,38 +301,38 @@ void InspectorMenu::DrawFilePreview()
 			// Draw Play/Stop button
 			if (stream)
 			{
-				if (Editor::audioSource.lock()->IsPlaying())
+				if (Editor::s_audioSource.lock()->IsPlaying())
 				{
 					if (ImGui::Button("Pause audio"))
 					{
-						Editor::audioSource.lock()->Pause();
+						Editor::s_audioSource.lock()->Pause();
 					}
 				}
 				else
 				{
 					if (ImGui::Button("Resume audio"))
 					{
-						Editor::audioSource.lock()->Resume();
+						Editor::s_audioSource.lock()->Resume();
 					}
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("Stop audio"))
 				{
-					Editor::audioSource.lock()->Stop();
-					isPlayingAudio = false;
+					Editor::s_audioSource.lock()->Stop();
+					m_isPlayingAudio = false;
 				}
 			}
 			else
 			{
 				if (ImGui::Button("Play audio"))
 				{
-					std::shared_ptr<AudioSource> audioSource = Editor::audioSource.lock();
+					std::shared_ptr<AudioSource> audioSource = Editor::s_audioSource.lock();
 					if (audioSource)
 					{
 						audioSource->Stop();
 						audioSource->SetAudioClip(std::dynamic_pointer_cast<AudioClip>(loadedPreview));
 						audioSource->Play();
-						isPlayingAudio = true;
+						m_isPlayingAudio = true;
 					}
 				}
 			}
@@ -396,7 +396,7 @@ void InspectorMenu::DrawFilePreview()
 			ImGui::Text("No preview available");
 
 		if (ImGui::IsWindowFocused())
-			areWindowsFocused = true;
+			m_areWindowsFocused = true;
 
 		ImGui::EndChild();
 	}
@@ -434,7 +434,7 @@ void InspectorMenu::DrawFileInfo(FileReference& selectedFileReference)
 		AudioClipStream* stream = nullptr;
 		for (size_t i = 0; i < playedSoundCount; i++)
 		{
-			if (AudioManager::s_channel->m_playedSounds[i]->m_audioSource.lock() == Editor::audioSource.lock())
+			if (AudioManager::s_channel->m_playedSounds[i]->m_audioSource.lock() == Editor::s_audioSource.lock())
 			{
 				// Get audio stream
 				disableMetaView = true;
@@ -541,17 +541,17 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 	DrawComponentsHeaders(selectedGameObject);
 
 	const float cursorX = ImGui::GetCursorPosX();
-	ImGui::SetCursorPosX(startAvailableSize.x / 4.0f + cursorX);
+	ImGui::SetCursorPosX(m_startAvailableSize.x / 4.0f + cursorX);
 	bool justChanged = false;
-	if (ImGui::Button("Add Component", ImVec2(startAvailableSize.x / 2.0f, 0)))
+	if (ImGui::Button("Add Component", ImVec2(m_startAvailableSize.x / 2.0f, 0)))
 	{
-		showAddComponentMenu = true;
+		m_showAddComponentMenu = true;
 		justChanged = true;
 	}
-	if (showAddComponentMenu)
+	if (m_showAddComponentMenu)
 	{
-		ImGui::SetCursorPosX(startAvailableSize.x / 4.0f + cursorX);
-		ImGui::BeginChild("inspectorComponentList", ImVec2(startAvailableSize.x / 2.0f, 0), ImGuiChildFlags_FrameStyle);
+		ImGui::SetCursorPosX(m_startAvailableSize.x / 4.0f + cursorX);
+		ImGui::BeginChild("inspectorComponentList", ImVec2(m_startAvailableSize.x / 2.0f, 0), ImGuiChildFlags_FrameStyle);
 		std::vector<std::string> componentNames = ClassRegistry::GetComponentNames();
 		const size_t componentCount = componentNames.size();
 		for (size_t i = 0; i < componentCount; i++)
@@ -570,7 +570,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 				if (std::shared_ptr<Collider> boxCollider = std::dynamic_pointer_cast<Collider>(newComponent))
 					boxCollider->SetDefaultSize();
 
-				showAddComponentMenu = false;
+				m_showAddComponentMenu = false;
 			}
 			std::shared_ptr<Texture> texture = EditorUI::componentsIcons[componentNames[i]];
 			if (!texture)
@@ -587,7 +587,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 		ImGui::EndChild();
 		if ((ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)) && !ImGui::IsItemHovered() && !justChanged)
 		{
-			showAddComponentMenu = false;
+			m_showAddComponentMenu = false;
 		}
 	}
 }
@@ -830,9 +830,9 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 
 void InspectorMenu::StopAudio()
 {
-	if (isPlayingAudio)
+	if (m_isPlayingAudio)
 	{
-		Editor::audioSource.lock()->Stop();
-		isPlayingAudio = false;
+		Editor::s_audioSource.lock()->Stop();
+		m_isPlayingAudio = false;
 	}
 }

@@ -25,15 +25,15 @@
 
 using json = nlohmann::json;
 
-int EditorUI::uiId = 0;
+int EditorUI::s_uiId = 0;
 
 std::map<std::string, std::shared_ptr<Texture>> EditorUI::componentsIcons;
 
 MultiDragData EditorUI::multiDragData;
 
-float EditorUI::uiScale = 1;
+float EditorUI::s_uiScale = 1;
 std::shared_ptr<Menu> EditorUI::currentSelectAssetMenu;
-bool EditorUI::isEditingElement = false;
+bool EditorUI::s_isEditingElement = false;
 
 CopyType EditorUI::currentCopyType;
 json EditorUI::copiedComponentJson;
@@ -158,7 +158,7 @@ void EditorUI::NewFrame()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
-	uiId = 0;
+	s_uiId = 0;
 }
 
 void EditorUI::UpdateUIScale()
@@ -168,14 +168,14 @@ void EditorUI::UpdateUIScale()
 	const int index = SDL_GetDisplayForWindow(Window::s_window);
 	if (index >= 0)
 	{
-		uiScale = SDL_GetDisplayContentScale(index);
-		if (uiScale == 0)
+		s_uiScale = SDL_GetDisplayContentScale(index);
+		if (s_uiScale == 0)
 		{
-			uiScale = 1;
+			s_uiScale = 1;
 		}
 	}
 
-	ImGui::GetIO().FontGlobalScale = 0.5f * uiScale;
+	ImGui::GetIO().FontGlobalScale = 0.5f * s_uiScale;
 }
 
 void EditorUI::LoadComponentIcon(std::string iconName, const std::string& path)
@@ -199,7 +199,7 @@ void EditorUI::Render()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	isEditingElement = ImGui::IsAnyItemActive();
+	s_isEditingElement = ImGui::IsAnyItemActive();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -223,8 +223,8 @@ void EditorUI::SetRoundedCorner(float value)
 
 std::string EditorUI::GenerateItemId()
 {
-	const std::string itemId = "##" + std::to_string(uiId);
-	uiId++;
+	const std::string itemId = "##" + std::to_string(s_uiId);
+	s_uiId++;
 	return itemId;
 }
 

@@ -22,7 +22,7 @@ void GameMenu::Draw()
 {
 	std::shared_ptr<Camera> camera = nullptr;
 	Vector2Int frameBufferSize;
-	if (startAvailableSize.x != 0 && startAvailableSize.y != 0)
+	if (m_startAvailableSize.x != 0 && m_startAvailableSize.y != 0)
 	{
 		const size_t cameraCount = Graphics::cameras.size();
 
@@ -35,7 +35,7 @@ void GameMenu::Draw()
 				camera = tempCam;
 				if (needUpdateCamera)
 				{
-					camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(startAvailableSize.x), static_cast<int>(startAvailableSize.y)));
+					camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(m_startAvailableSize.x), static_cast<int>(m_startAvailableSize.y)));
 					needUpdateCamera = false;
 				}
 				frameBufferSize.x = camera->GetWidth();
@@ -47,7 +47,7 @@ void GameMenu::Draw()
 
 	// Generate tab name
 	std::string windowName = "Game";
-	if (isLastFrameOpened)
+	if (m_isLastFrameOpened)
 	{
 		if (camera)
 		{
@@ -61,8 +61,8 @@ void GameMenu::Draw()
 	windowName += "###Game" + std::to_string(id);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
-	isLastFrameOpened = visible;
+	const bool visible = ImGui::Begin(windowName.c_str(), &m_isActive, ImGuiWindowFlags_NoCollapse);
+	m_isLastFrameOpened = visible;
 	if (visible)
 	{
 		OnStartDrawing();
@@ -74,13 +74,13 @@ void GameMenu::Draw()
 
 		if (camera)
 		{
-			if ((isHovered || isFocused || lastSize != startAvailableSize || Editor::lastFocusedGameMenu.lock() == nullptr) && (startAvailableSize.x != 0 && startAvailableSize.y != 0))
+			if ((m_isHovered || m_isFocused || lastSize != m_startAvailableSize || Editor::s_lastFocusedGameMenu.lock() == nullptr) && (m_startAvailableSize.x != 0 && m_startAvailableSize.y != 0))
 			{
-				Editor::lastFocusedGameMenu = shared_from_this();
-				camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(startAvailableSize.x), static_cast<int>(startAvailableSize.y)));
-				lastSize = startAvailableSize;
+				Editor::s_lastFocusedGameMenu = shared_from_this();
+				camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(m_startAvailableSize.x), static_cast<int>(m_startAvailableSize.y)));
+				lastSize = m_startAvailableSize;
 			}
-			ImGui::Image((ImTextureID)camera->m_secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((ImTextureID)camera->m_secondFramebufferTexture, ImVec2(m_startAvailableSize.x, m_startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		else
 		{
@@ -109,7 +109,7 @@ void GameMenu::DrawNoCameraText()
 	const std::string noCamText = "There is no camera";
 	const ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
 	const float offY = ImGui::GetCursorPosY();
-	ImGui::SetCursorPos(ImVec2((startAvailableSize.x - textSize.x) / 2.0f, (startAvailableSize.y + offY) / 2.0f));
+	ImGui::SetCursorPos(ImVec2((m_startAvailableSize.x - textSize.x) / 2.0f, (m_startAvailableSize.y + offY) / 2.0f));
 	ImGui::Text("%s", noCamText.c_str());
 	ImGui::PopFont();
 

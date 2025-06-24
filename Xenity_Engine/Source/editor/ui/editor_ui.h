@@ -428,7 +428,7 @@ public:
 	*/
 	[[nodiscard]] static float GetUiScale()
 	{
-		return uiScale;
+		return s_uiScale;
 	}
 
 	/**
@@ -684,7 +684,7 @@ public:
 	*/
 	[[nodiscard]] static bool IsEditingElement()
 	{
-		return isEditingElement;
+		return s_isEditingElement;
 	}
 
 	static CopyType currentCopyType;
@@ -692,9 +692,6 @@ public:
 	static std::string copiedComponentName;
 	static Event<>* onValueChangedEvent;
 private:
-	static int uiId;
-	static bool isEditingElement;
-	static float uiScale;
 
 	/**
 	* @brief Update the ui scale based on the screen resolution/settings
@@ -932,4 +929,8 @@ private:
 	static ValueInputState DrawVariable(ReflectiveDataToDraw& reflectiveDataToDraw, const std::reference_wrapper<Reflective> valuePtr);
 
 	static bool DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGameObject, const std::shared_ptr <GameObject>& dropAreaOwner, bool isParent, bool isParentOpened);
+
+	static int s_uiId;
+	static bool s_isEditingElement;
+	static float s_uiScale;
 };

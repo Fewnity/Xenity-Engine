@@ -98,17 +98,16 @@ protected:
 	*/
 	virtual void CalculateWindowValues();
 
-	bool isHovered = false;
-	bool isFocused = false;
-	bool forceFocus = false;
-	bool isActive = true;
-	bool previousIsActive = true;
+	bool m_isHovered = false;
+	bool m_isFocused = false;
+	bool m_forceFocus = false;
+	bool m_isActive = true;
+	bool m_previousIsActive = true;
 
-
-	Vector2 windowSize = Vector2(0);
-	Vector2 windowPosition = Vector2(0);
-	Vector2 mousePosition = Vector2(0);
-	Vector2 oldMousePosition = Vector2(0);
-	Vector2 startAvailableSize = Vector2(0);
+	Vector2 m_windowSize = Vector2(0);
+	Vector2 m_windowPosition = Vector2(0);
+	Vector2 m_mousePosition = Vector2(0);
+	Vector2 m_oldMousePosition = Vector2(0);
+	Vector2 m_startAvailableSize = Vector2(0);
 };
 

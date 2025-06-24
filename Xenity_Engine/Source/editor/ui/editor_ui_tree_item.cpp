@@ -22,7 +22,7 @@ bool EditorUI::DrawTreeItem(const std::shared_ptr<ProjectDirectory>& projectDir)
 	bool objectClicked = false;
 	if (projectDir)
 	{
-		const int childCount = (int)projectDir->subdirectories.size();
+		const size_t childCount = projectDir->subdirectories.size();
 		int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
 		if (Editor::GetCurrentProjectDirectory() == projectDir)
 			flags |= ImGuiTreeNodeFlags_Selected;
@@ -56,7 +56,7 @@ bool EditorUI::DrawTreeItem(const std::shared_ptr<ProjectDirectory>& projectDir)
 		}
 		if (opened)
 		{
-			for (int i = 0; i < childCount; i++)
+			for (size_t i = 0; i < childCount; i++)
 			{
 				const bool clickedTemp = DrawTreeItem(projectDir->subdirectories[i]);
 				if (clickedTemp)

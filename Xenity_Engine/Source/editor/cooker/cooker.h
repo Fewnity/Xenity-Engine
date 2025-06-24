@@ -23,7 +23,7 @@ public:
 	[[nodiscard]] static bool CookAssets(const CookSettings& settings);
 
 private:
-	static FileDataBase fileDataBase;
+	static FileDataBase s_fileDataBase;
 	
 	static void CookAsset(const CookSettings settings, const FileInfo fileInfo, const std::string exportFolderPath, const std::string partialFilePath);
 

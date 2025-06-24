@@ -21,40 +21,40 @@ void DevKitControlMenu::Init()
 void DevKitControlMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
-	const bool visible = ImGui::Begin("Dev Kit Control", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Dev Kit Control", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
-		devKitListMutex.lock();
-		size_t devKitCount = devKits.size();
-		devKitListMutex.unlock();
+		m_devKitListMutex.lock();
+		size_t devKitCount = m_devKits.size();
+		m_devKitListMutex.unlock();
 		if (ImGui::BeginTable("dev_kits_list", 1, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_BordersOuterV))
 		{
 			ImGui::TableSetupColumn("Dev kits", ImGuiTableColumnFlags_WidthStretch);
 			ImGui::TableSetupScrollFreeze(0, 1);
 			ImGui::TableHeadersRow();
 
-			devKitListMutex.lock();
+			m_devKitListMutex.lock();
 			for (size_t i = 0; i < devKitCount; i++)
 			{
 				ImGui::TableNextRow(0, 0);
 				ImGui::TableSetColumnIndex(0);
-				std::string selectableText = devKits[i].name + " | ip: " + devKits[i].ip;
-				if (i == selectedDevKit)
+				std::string selectableText = m_devKits[i].name + " | ip: " + m_devKits[i].ip;
+				if (i == m_selectedDevKit)
 				{
 					selectableText += " [selected]";
 				}
 				selectableText += "##" + std::to_string(i);
-				if (ImGui::Selectable(selectableText.c_str(), i == selectedDevKit, 0))
+				if (ImGui::Selectable(selectableText.c_str(), i == m_selectedDevKit, 0))
 				{
-					selectedDevKit = static_cast<int>(i);
+					m_selectedDevKit = static_cast<int>(i);
 				}
 			}
-			devKitListMutex.unlock();
+			m_devKitListMutex.unlock();
 
 			ImGui::EndTable();
 		}
-		const bool canUpdateList = currentError != DevKitError::WaitingForResponse;
+		const bool canUpdateList = m_currentError != DevKitError::WaitingForResponse;
 		if (!canUpdateList)
 		{
 			ImGui::BeginDisabled();
@@ -69,7 +69,7 @@ void DevKitControlMenu::Draw()
 			ImGui::EndDisabled();
 		}
 
-		const bool validDevKitSelected = selectedDevKit != -1 && selectedDevKit < devKitCount && currentError != DevKitError::WaitingForResponse;
+		const bool validDevKitSelected = m_selectedDevKit != -1 && m_selectedDevKit < devKitCount && m_currentError != DevKitError::WaitingForResponse;
 
 		ImGui::Separator();
 
@@ -123,14 +123,14 @@ void DevKitControlMenu::Draw()
 			ImGui::EndDisabled();
 		}
 		ImGui::Separator();
-		if (currentError == DevKitError::WaitingForResponse)
+		if (m_currentError == DevKitError::WaitingForResponse)
 		{
 			ImGui::Text("Waiting for response...");
 		}
-		else if (currentError != DevKitError::NoError)
+		else if (m_currentError != DevKitError::NoError)
 		{
 			std::string errorString = "Error: ";
-			switch (currentError)
+			switch (m_currentError)
 			{
 			case DevKitError::FailedToPowerOn:
 				errorString += "Failed to power on dev kit";
@@ -168,80 +168,80 @@ void DevKitControlMenu::Draw()
 
 void DevKitControlMenu::PowerOnDevKit()
 {
-	currentError = DevKitError::WaitingForResponse;
+	m_currentError = DevKitError::WaitingForResponse;
 
 	std::string returnText = "";
 	std::string command = "\"" + EngineSettings::values.ps3CtrlPath + "\"";
-	command += " -t " + devKits[selectedDevKit].name;
+	command += " -t " + m_devKits[m_selectedDevKit].name;
 	command += " power -on";
 	const int result = Editor::ExecuteSystemCommand(command, returnText);
 	if (result != 0)
 	{
-		currentError = DevKitError::FailedToPowerOn;
+		m_currentError = DevKitError::FailedToPowerOn;
 	}
 	else
 	{
-		currentError = DevKitError::NoError;
+		m_currentError = DevKitError::NoError;
 	}
 }
 
 void DevKitControlMenu::PowerOffDevKit()
 {
-	currentError = DevKitError::WaitingForResponse;
+	m_currentError = DevKitError::WaitingForResponse;
 
 	std::string returnText = "";
 	std::string command = "\"" + EngineSettings::values.ps3CtrlPath + "\"";
-	command += " -t " + devKits[selectedDevKit].name;
+	command += " -t " + m_devKits[m_selectedDevKit].name;
 	command += " power -off";
 	const int result = Editor::ExecuteSystemCommand(command, returnText);
 	if (result != 0)
 	{
-		currentError = DevKitError::FailedToPowerOff;
+		m_currentError = DevKitError::FailedToPowerOff;
 	}
 	else
 	{
-		currentError = DevKitError::NoError;
+		m_currentError = DevKitError::NoError;
 	}
 }
 
 void DevKitControlMenu::ResetDevKit()
 {
-	currentError = DevKitError::WaitingForResponse;
+	m_currentError = DevKitError::WaitingForResponse;
 
 	std::string returnText = "";
 	std::string command = "\"" + EngineSettings::values.ps3CtrlPath + "\"";
-	command += " -t " + devKits[selectedDevKit].name;
+	command += " -t " + m_devKits[m_selectedDevKit].name;
 	command += " run -r";
 
 	const int result = Editor::ExecuteSystemCommand(command, returnText);
 	if (result != 0)
 	{
-		currentError = DevKitError::FailedToReset;
+		m_currentError = DevKitError::FailedToReset;
 	}
 	else
 	{
-		currentError = DevKitError::NoError;
+		m_currentError = DevKitError::NoError;
 	}
 }
 
 void DevKitControlMenu::GetDevKitList()
 {
-	currentError = DevKitError::WaitingForResponse;
+	m_currentError = DevKitError::WaitingForResponse;
 
 	std::string returnText = "";
 	const int result = Editor::ExecuteSystemCommand("\"" + EngineSettings::values.ps3CtrlPath + "\" list", returnText);
 	if (result != 0)
 	{
-		currentError = DevKitError::FailedToGetList;
+		m_currentError = DevKitError::FailedToGetList;
 	}
 	else
 	{
-		currentError = DevKitError::NoError;
+		m_currentError = DevKitError::NoError;
 	}
 
-	devKitListMutex.lock();
-	devKits.clear();
-	devKitListMutex.unlock();
+	m_devKitListMutex.lock();
+	m_devKits.clear();
+	m_devKitListMutex.unlock();
 	std::vector<std::string> stringList = StringUtils::Split(returnText, '-');
 	for (size_t i = 0; i < stringList.size(); i++)
 	{
@@ -253,20 +253,20 @@ void DevKitControlMenu::GetDevKitList()
 		const size_t ipEndIndex = stringList[i].find("\n", ipIndex);
 		const std::string ip = stringList[i].substr(ipIndex, ipEndIndex - ipIndex);
 
-		devKitListMutex.lock();
-		devKits.push_back({ name, ip });
-		devKitListMutex.unlock();
+		m_devKitListMutex.lock();
+		m_devKits.push_back({ name, ip });
+		m_devKitListMutex.unlock();
 	}
 }
 
 void DevKitControlMenu::LaunchGame(DevKitRunningMode devKitRunningMode)
 {
-	currentError = DevKitError::WaitingForResponse;
+	m_currentError = DevKitError::WaitingForResponse;
 
 	std::string returnText = "";
 	std::string command = "\"\"" + EngineSettings::values.ps3CtrlPath + "\"";
 	// Option used to run the game from fake dev kit (retail console with DEX firmware) since fake dev kit cannot run games from PC
-	command += " run -t " + devKits[selectedDevKit].name;
+	command += " run -t " + m_devKits[m_selectedDevKit].name;
 	if (devKitRunningMode == DevKitRunningMode::FromHDD)
 	{
 		command += " ../dev_hdd0/xenity_engine/XenityBuild.self";
@@ -280,11 +280,11 @@ void DevKitControlMenu::LaunchGame(DevKitRunningMode devKitRunningMode)
 	const int result = Editor::ExecuteSystemCommand(command, returnText);
 	if (result != 0)
 	{
-		currentError = DevKitError::FailedToLaunchGame;
+		m_currentError = DevKitError::FailedToLaunchGame;
 	}
 	else
 	{
-		currentError = DevKitError::NoError;
+		m_currentError = DevKitError::NoError;
 	}
 }
 
@@ -292,7 +292,7 @@ void DevKitControlMenu::StartLogListening()
 {
 	std::string returnText = "";
 	std::string command = "\"" + EngineSettings::values.ps3CtrlPath + "\"";
-	command += " -t " + devKits[selectedDevKit].name;
+	command += " -t " + m_devKits[m_selectedDevKit].name;
 	command += " run -p"; // -p option is used to print logs and keep the process running
 
 	const int result = Editor::ExecuteSystemCommand(command, returnText);

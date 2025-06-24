@@ -18,7 +18,7 @@ InputButtonState EditorUI::DrawInputButton(const std::string& inputName, const s
 	float w = ImGui::GetContentRegionAvail().x;
 	if (addUnbindButton)
 	{
-		w -= 25 * uiScale;
+		w -= 25 * s_uiScale;
 	}
 	ImGui::BeginGroup();
 	const std::string id = buttonText + GenerateItemId();

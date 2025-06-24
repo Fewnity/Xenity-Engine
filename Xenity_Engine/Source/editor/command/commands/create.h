@@ -34,7 +34,7 @@ public:
 	std::string componentName = "";
 	uint64_t componentId = 0;
 private:
-	uint64_t targetId = 0;
+	uint64_t m_targetId = 0;
 };
 
 //----------------------------------------------------------------------------
@@ -51,10 +51,10 @@ public:
 	void Undo() override;
 	std::vector<uint64_t> createdGameObjects;
 private:
-	std::vector<uint64_t> targets;
-	std::vector<uint64_t> oldParents;
-	CreateGameObjectMode mode; // 0 Create Empty, 1 Create Child, 2 Create parent
-	bool alreadyExecuted = false;
+	std::vector<uint64_t> m_targets;
+	std::vector<uint64_t> m_oldParents;
+	CreateGameObjectMode m_mode; // 0 Create Empty, 1 Create Child, 2 Create parent
+	bool m_alreadyExecuted = false;
 };
 
 //----------------------------------------------------------------------------

@@ -37,12 +37,12 @@ CreateProjectMenu::CreateProjectMenu()
 	{
 		std::wstring wStringDocPath = &docPath[0]; //convert to wstring
 		std::string stringDocPath(wStringDocPath.begin(), wStringDocPath.end()); //and convert to string.
-		projectParentDir = stringDocPath + "\\Xenity_Projects\\";
+		m_projectParentDir = stringDocPath + "\\Xenity_Projects\\";
 		// Create the directory if not found
-		const bool folderCreateResult = FileSystem::CreateFolder(projectParentDir);
+		const bool folderCreateResult = FileSystem::CreateFolder(m_projectParentDir);
 		if (!folderCreateResult) 
 		{
-			projectParentDir.clear();
+			m_projectParentDir.clear();
 		}
 	}
 #endif
@@ -66,7 +66,7 @@ void  CreateProjectMenu::DrawTitle()
 void  CreateProjectMenu::DrawProjectPath()
 {
 	// Draw project path
-	const std::string projectFolderText = "Project folder: " + projectParentDir + projectName + "\\";
+	const std::string projectFolderText = "Project folder: " + m_projectParentDir + m_projectName + "\\";
 	ImGui::Text("%s", projectFolderText.c_str());
 }
 
@@ -79,7 +79,7 @@ bool CreateProjectMenu::DrawSelectFolderButton()
 		const std::string folder = EditorUI::OpenFolderDialog("Select a folder", "");
 		if (!folder.empty())
 		{
-			projectParentDir = folder;
+			m_projectParentDir = folder;
 			projectFolderChanged = true;
 		}
 	}
@@ -88,21 +88,21 @@ bool CreateProjectMenu::DrawSelectFolderButton()
 
 bool CreateProjectMenu::DrawProjectNameInput()
 {
-	return EditorUI::DrawInputTemplate("Project Name", projectName) != ValueInputState::NO_CHANGE;
+	return EditorUI::DrawInputTemplate("Project Name", m_projectName) != ValueInputState::NO_CHANGE;
 }
 
 void CreateProjectMenu::DrawError() 
 {
 	const ImColor red = ImColor(1.0f, 0.0f, 0.0f, 1.0f);
-	if (createProjectError == CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS)
+	if (m_createProjectError == CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS)
 	{
 		ImGui::TextColored(red, "A project has already this name");
 	}
-	else if (createProjectError == CreateProjectError::ERROR_EMPTY_FOLDER)
+	else if (m_createProjectError == CreateProjectError::ERROR_EMPTY_FOLDER)
 	{
 		ImGui::TextColored(red, "Project folder not selected");
 	}
-	else if (createProjectError == CreateProjectError::ERROR_EMPTY_NAME)
+	else if (m_createProjectError == CreateProjectError::ERROR_EMPTY_NAME)
 	{
 		ImGui::TextColored(red, "Project name empty");
 	}
@@ -113,33 +113,33 @@ void CreateProjectMenu::DrawCreateProjectButton()
 	// Draw create project button
 	if (ImGui::Button("Create project"))
 	{
-		if (projectParentDir.empty())
+		if (m_projectParentDir.empty())
 		{
-			createProjectError = CreateProjectError::ERROR_EMPTY_FOLDER;
+			m_createProjectError = CreateProjectError::ERROR_EMPTY_FOLDER;
 		}
-		else if (projectName.empty())
+		else if (m_projectName.empty())
 		{
-			createProjectError = CreateProjectError::ERROR_EMPTY_NAME;
+			m_createProjectError = CreateProjectError::ERROR_EMPTY_NAME;
 		}
 		else
 		{
-			const std::shared_ptr <Directory> projectDir = std::make_shared<Directory>(projectParentDir + projectName);
+			const std::shared_ptr <Directory> projectDir = std::make_shared<Directory>(m_projectParentDir + m_projectName);
 			if (projectDir->CheckIfExist())
 			{
-				createProjectError = CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS;
+				m_createProjectError = CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS;
 			}
 			else
 			{
-				const bool creationResult = ProjectManager::CreateProject(projectName, projectParentDir);
+				const bool creationResult = ProjectManager::CreateProject(m_projectName, m_projectParentDir);
 				if (creationResult)
 				{
 					std::vector<ProjectListItem> projectsList = ProjectManager::GetProjectsList();
 					ProjectListItem newProjectListItem;
-					newProjectListItem.name = projectName;
-					newProjectListItem.path = projectParentDir + projectName + "\\";
+					newProjectListItem.name = m_projectName;
+					newProjectListItem.path = m_projectParentDir + m_projectName + "\\";
 					projectsList.push_back(newProjectListItem);
 					ProjectManager::SaveProjectsList(projectsList);
-					Editor::currentMenu = MenuGroup::Menu_Editor;
+					Editor::s_currentMenu = MenuGroup::Menu_Editor;
 				}
 			}
 		}
@@ -166,7 +166,7 @@ void CreateProjectMenu::Draw()
 
 		if (ImGui::Button("Back"))
 		{
-			Editor::currentMenu = MenuGroup::Menu_Select_Project;
+			Editor::s_currentMenu = MenuGroup::Menu_Select_Project;
 		}
 
 		// Set text scale to 200%
@@ -188,13 +188,13 @@ void CreateProjectMenu::Draw()
 
 		bool nameChanged = DrawProjectNameInput();
 
-		if (projectFolderChanged && createProjectError == CreateProjectError::ERROR_EMPTY_FOLDER)
+		if (projectFolderChanged && m_createProjectError == CreateProjectError::ERROR_EMPTY_FOLDER)
 		{
-			createProjectError = CreateProjectError::NO_ERROR_;
+			m_createProjectError = CreateProjectError::NO_ERROR_;
 		}
-		else if ((nameChanged || projectFolderChanged) && createProjectError == CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS)
+		else if ((nameChanged || projectFolderChanged) && m_createProjectError == CreateProjectError::ERROR_PROJECT_ALREADY_EXISTS)
 		{
-			createProjectError = CreateProjectError::NO_ERROR_;
+			m_createProjectError = CreateProjectError::NO_ERROR_;
 		}
 
 		DrawError();

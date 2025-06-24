@@ -35,23 +35,23 @@ void EngineAssetManagerMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(600, 250), ImGuiCond_FirstUseEver);
 
-	const bool visible = ImGui::Begin("Engine Assets Manager", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Engine Assets Manager", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
 		if (ImGui::Button("Refresh list")) 
 		{
 			ProjectManager::RefreshProjectDirectory();
-			engineAssetsFiles = ProjectManager::publicEngineAssetsDirectoryBase->GetAllFiles(true);
+			m_engineAssetsFiles = ProjectManager::s_publicEngineAssetsDirectoryBase->GetAllFiles(true);
 
-			ids.clear();
-			size_t fileCount = engineAssetsFiles.size();
+			m_ids.clear();
+			size_t fileCount = m_engineAssetsFiles.size();
 			for (size_t i = 0; i < fileCount; i++)
 			{
-				std::shared_ptr<File> file = engineAssetsFiles[i];
+				std::shared_ptr<File> file = m_engineAssetsFiles[i];
 				if (file->GetPath().substr(file->GetPath().size() - 5) == ".meta") 
 				{
-					engineAssetsFiles.erase(engineAssetsFiles.begin() + i);
+					m_engineAssetsFiles.erase(m_engineAssetsFiles.begin() + i);
 					i--;
 					fileCount--;
 					continue;
@@ -73,26 +73,26 @@ void EngineAssetManagerMenu::Draw()
 						}
 						catch (const std::exception&)
 						{
-							ids.push_back(0);
+							m_ids.push_back(0);
 						}
-						ids.push_back(data["id"]);
+						m_ids.push_back(data["id"]);
 					}
 				}
 			}
-			oldIds = ids;
+			m_oldIds = m_ids;
 		}
-		const size_t idCount = ids.size();
+		const size_t idCount = m_ids.size();
 		ImGui::SameLine();
 		if (ImGui::Button("Save"))
 		{
 			for (size_t i = 0; i < idCount; i++)
 			{
-				std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(oldIds[i]);
-				fileRef->m_fileId = ids[i];
+				std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(m_oldIds[i]);
+				fileRef->m_fileId = m_ids[i];
 				fileRef->m_isMetaDirty = true;
 				ProjectManager::SaveMetaFile(*fileRef);
 			}
-			oldIds = ids;
+			m_oldIds = m_ids;
 		}
 		/*if (ImGui::Button("Fix ids"))
 		{
@@ -118,9 +118,9 @@ void EngineAssetManagerMenu::Draw()
 			{
 				ImGui::TableNextRow(0, 0);
 				ImGui::TableSetColumnIndex(0);
-				ImGui::Text("%s", engineAssetsFiles[i]->GetFileName().c_str());
+				ImGui::Text("%s", m_engineAssetsFiles[i]->GetFileName().c_str());
 				ImGui::TableSetColumnIndex(1);
-				EditorUI::DrawInputTemplate("Id", ids[i]);
+				EditorUI::DrawInputTemplate("Id", m_ids[i]);
 			}
 			ImGui::EndTable();
 		}

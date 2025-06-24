@@ -1,21 +1,21 @@
 #include "editor_icons.h"
 #include "editor_ui.h"
 
-std::vector<std::shared_ptr<Texture>> EditorIcons::icons;
+std::vector<std::shared_ptr<Texture>> EditorIcons::s_icons;
 
 const std::vector<std::shared_ptr<Texture>>& EditorIcons::GetIcons()
 {
-    return icons;
+    return s_icons;
 }
 
 const std::shared_ptr<Texture>& EditorIcons::GetIcon(IconName iconName)
 {
-	return icons[static_cast<int>(iconName)];
+	return s_icons[static_cast<int>(iconName)];
 }
 
 void EditorIcons::Init()
 {
-	icons.resize((int)IconName::Icon_Count);
+	s_icons.resize(static_cast<int>(IconName::Icon_Count));
 
 	// File types icons
 	LoadEditorIcon(IconName::Icon_File, "icons/text.png");
@@ -75,5 +75,5 @@ void EditorIcons::LoadEditorIcon(IconName iconName, const std::string& path)
 	loadOptions.threaded = true;
 	fileIcon->LoadFileReference(loadOptions);
 
-	icons[(int)iconName] = std::move(fileIcon);
+	s_icons[(int)iconName] = std::move(fileIcon);
 }

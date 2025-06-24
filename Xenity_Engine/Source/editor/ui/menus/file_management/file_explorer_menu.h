@@ -61,14 +61,13 @@ private:
 
 	void SetFileToRename(const std::shared_ptr<FileReference>& file, const std::shared_ptr<ProjectDirectory>& directory);
 
-	bool fileHovered = false;
-	std::string renamingString = "";
-
-	std::shared_ptr<FileReference> fileToRename = nullptr;
-	std::shared_ptr<ProjectDirectory> directoryToRename = nullptr;
-	bool ignoreClose = false;
-	bool focusSet = false;
-	bool cancelNextClick = false;
-	bool firstClickedInWindow = false;
+	std::string m_renamingString = "";
+	std::shared_ptr<FileReference> m_fileToRename = nullptr;
+	std::shared_ptr<ProjectDirectory> m_directoryToRename = nullptr;
+	bool m_fileHovered = false;
+	bool m_ignoreClose = false;
+	bool m_focusSet = false;
+	bool m_cancelNextClick = false;
+	bool m_firstClickedInWindow = false;
 };
 

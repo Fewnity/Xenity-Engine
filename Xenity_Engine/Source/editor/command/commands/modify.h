@@ -364,60 +364,60 @@ inline void InspectorItemSetActiveCommand<T>::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-template<typename T>
-class InspectorItemSetStaticCommand : public Command
-{
-public:
-	InspectorItemSetStaticCommand() = delete;
-	InspectorItemSetStaticCommand(const T& target, bool newValue);
-	void Execute() override;
-	void Undo() override;
-private:
-	void ApplyValue(bool valueToSet);
-	uint64_t targetId = 0;
-	bool newValue;
-};
-
-template<typename T>
-inline void InspectorItemSetStaticCommand<T>::ApplyValue(bool valueToSet)
-{
-	if constexpr (std::is_base_of<T, GameObject>())
-	{
-		std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
-		if (foundGameObject)
-		{
-			foundGameObject->m_isStatic = valueToSet;
-			foundGameObject->OnReflectionUpdated();
-			SceneManager::SetIsSceneDirty(true);
-		}
-	}
-	else
-	{
-		Debug::PrintError("Can't do Command!");
-	}
-}
-
-template<typename T>
-inline InspectorItemSetStaticCommand<T>::InspectorItemSetStaticCommand(const T& target, bool newValue)
-{
-	if constexpr (std::is_base_of<T, GameObject>() || std::is_base_of<T, Component>())
-	{
-		this->targetId = target.GetUniqueId();
-	}
-	this->newValue = newValue;
-}
-
-template<typename T>
-inline void InspectorItemSetStaticCommand<T>::Execute()
-{
-	ApplyValue(newValue);
-}
-
-template<typename T>
-inline void InspectorItemSetStaticCommand<T>::Undo()
-{
-	ApplyValue(!newValue);
-}
+//template<typename T>
+//class InspectorItemSetStaticCommand : public Command
+//{
+//public:
+//	InspectorItemSetStaticCommand() = delete;
+//	InspectorItemSetStaticCommand(const T& target, bool newValue);
+//	void Execute() override;
+//	void Undo() override;
+//private:
+//	void ApplyValue(bool valueToSet);
+//	uint64_t targetId = 0;
+//	bool newValue;
+//};
+//
+//template<typename T>
+//inline void InspectorItemSetStaticCommand<T>::ApplyValue(bool valueToSet)
+//{
+//	if constexpr (std::is_base_of<T, GameObject>())
+//	{
+//		std::shared_ptr<GameObject> foundGameObject = FindGameObjectById(targetId);
+//		if (foundGameObject)
+//		{
+//			foundGameObject->m_isStatic = valueToSet;
+//			foundGameObject->OnReflectionUpdated();
+//			SceneManager::SetIsSceneDirty(true);
+//		}
+//	}
+//	else
+//	{
+//		Debug::PrintError("Can't do Command!");
+//	}
+//}
+//
+//template<typename T>
+//inline InspectorItemSetStaticCommand<T>::InspectorItemSetStaticCommand(const T& target, bool newValue)
+//{
+//	if constexpr (std::is_base_of<T, GameObject>() || std::is_base_of<T, Component>())
+//	{
+//		this->targetId = target.GetUniqueId();
+//	}
+//	this->newValue = newValue;
+//}
+//
+//template<typename T>
+//inline void InspectorItemSetStaticCommand<T>::Execute()
+//{
+//	ApplyValue(newValue);
+//}
+//
+//template<typename T>
+//inline void InspectorItemSetStaticCommand<T>::Undo()
+//{
+//	ApplyValue(!newValue);
+//}
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -446,10 +446,10 @@ public:
 	void Execute() override;
 	void Undo() override;
 private:
-	uint64_t targetId;
-	Vector3 newValue;
-	Vector3 lastValue;
-	bool isLocalPosition;
+	uint64_t m_targetId;
+	Vector3 m_newValue;
+	Vector3 m_lastValue;
+	bool m_isLocalPosition;
 };
 
 //----------------------------------------------------------------------------
@@ -463,10 +463,10 @@ public:
 	void Execute() override;
 	void Undo() override;
 private:
-	uint64_t targetId;
-	Vector3 newValue;
-	Vector3 lastValue;
-	bool isLocalRotation;
+	uint64_t m_targetId;
+	Vector3 m_newValue;
+	Vector3 m_lastValue;
+	bool m_isLocalRotation;
 };
 
 //----------------------------------------------------------------------------
@@ -480,9 +480,9 @@ public:
 	void Execute() override;
 	void Undo() override;
 private:
-	uint64_t targetId;
-	Vector3 newValue;
-	Vector3 lastValue;
+	uint64_t m_targetId;
+	Vector3 m_newValue;
+	Vector3 m_lastValue;
 };
 
 //----------------------------------------------------------------------------
@@ -497,27 +497,27 @@ public:
 	void Execute() override;
 	void Undo() override;
 private:
-	uint64_t componentId = 0;
-	nlohmann::json componentData;
-	nlohmann::json oldComponentData;
-	std::string componentName = "";
+	uint64_t m_componentId = 0;
+	nlohmann::json m_componentData;
+	nlohmann::json m_oldComponentData;
+	std::string m_componentName = "";
 };
 
 template<typename T>
-inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(T& componentToUse, const nlohmann::json& newComponentData) : componentData(newComponentData)
+inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(T& componentToUse, const nlohmann::json& newComponentData) : m_componentData(newComponentData)
 {
-	this->componentId = componentToUse.GetUniqueId();
-	this->oldComponentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.GetReflectiveData());
-	this->componentName = componentToUse.GetComponentName();
+	this->m_componentId = componentToUse.GetUniqueId();
+	this->m_oldComponentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.GetReflectiveData());
+	this->m_componentName = componentToUse.GetComponentName();
 }
 
 template<typename T>
 inline void InspectorSetComponentDataCommand<T>::Execute()
 {
-	std::shared_ptr<Component> componentToUpdate = FindComponentById(componentId);
+	std::shared_ptr<Component> componentToUpdate = FindComponentById(m_componentId);
 	if (componentToUpdate)
 	{
-		ReflectionUtils::JsonToReflectiveData(componentData, componentToUpdate->GetReflectiveData());
+		ReflectionUtils::JsonToReflectiveData(m_componentData, componentToUpdate->GetReflectiveData());
 		componentToUpdate->OnReflectionUpdated();
 		SceneManager::SetIsSceneDirty(true);
 	}
@@ -526,10 +526,10 @@ inline void InspectorSetComponentDataCommand<T>::Execute()
 template<typename T>
 inline void InspectorSetComponentDataCommand<T>::Undo()
 {
-	std::shared_ptr<Component> componentToUpdate = FindComponentById(componentId);
+	std::shared_ptr<Component> componentToUpdate = FindComponentById(m_componentId);
 	if (componentToUpdate)
 	{
-		ReflectionUtils::JsonToReflectiveData(oldComponentData, componentToUpdate->GetReflectiveData());
+		ReflectionUtils::JsonToReflectiveData(m_oldComponentData, componentToUpdate->GetReflectiveData());
 		componentToUpdate->OnReflectionUpdated();
 		SceneManager::SetIsSceneDirty(true);
 	}
@@ -546,9 +546,9 @@ public:
 	void Execute() override;
 	void Undo() override;
 private:
-	uint64_t transformtId = 0;
-	nlohmann::json transformData;
-	nlohmann::json oldTransformData;
+	uint64_t m_transformtId = 0;
+	nlohmann::json m_transformData;
+	nlohmann::json m_oldTransformData;
 };
 
 //----------------------------------------------------------------------------

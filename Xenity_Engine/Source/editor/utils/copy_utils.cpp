@@ -8,12 +8,12 @@
 
 namespace fs = std::filesystem;
 
-std::vector<CopyEntry> CopyUtils::copyEntries;
+std::vector<CopyEntry> CopyUtils::s_copyEntries;
 
 bool CopyUtils::ExecuteCopyEntries()
 {
 	bool success = true;
-	for (const CopyEntry& entry : copyEntries)
+	for (const CopyEntry& entry : s_copyEntries)
 	{
 		try
 		{
@@ -40,7 +40,7 @@ bool CopyUtils::ExecuteCopyEntries()
 			success = false;
 		}
 	}
-	copyEntries.clear();
+	s_copyEntries.clear();
 	return success;
 }
 
@@ -59,5 +59,5 @@ void CopyUtils::AddCopyEntry(bool isFolder, const std::string& source, const std
 	entry.sourcePath = FileSystem::ConvertBasicPathToWindowsPath(source);
 	entry.destPath = FileSystem::ConvertBasicPathToWindowsPath(dest);
 
-	copyEntries.push_back(entry);
+	s_copyEntries.push_back(entry);
 }

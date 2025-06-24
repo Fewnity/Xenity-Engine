@@ -18,7 +18,7 @@ public:
 	bool needUpdateCamera = false;
 	Vector2 lastSize = Vector2(1280,720);
 private:
-	bool isLastFrameOpened = false;
+	bool m_isLastFrameOpened = false;
 
 	/**
 	* Draw a message to say there is no camera

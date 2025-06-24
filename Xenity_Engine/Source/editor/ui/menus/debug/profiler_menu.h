@@ -56,20 +56,20 @@ private:
 
 	void CreateTimelineItems();
 
-	float fpsAVG = 0;
-	float nextFpsUpdate = 0;
-	float lastFps = 0;
-	float fpsHistory[FPS_HISTORY_SIZE] = { 0 };
-	float usedMemoryHistory[USED_MEMORY_HISTORY_SIZE] = { 0 };
-	float usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE] = { 0 };
-	bool counterInitialised = false;
-	std::vector<TimelineItem> timelineItems;
-	std::vector<ClassicProfilerItem> classicProfilerItems;
-	bool isPaused = false;
-	uint64_t lastStartTime;
-	uint64_t lastEndTime;
-	uint32_t lastMaxLevel;
-	uint32_t selectedProfilingRow = 0;
-	uint32_t lastFrame = 0;
+	std::vector<TimelineItem> m_timelineItems;
+	std::vector<ClassicProfilerItem> m_classicProfilerItems;
+	uint64_t m_lastStartTime;
+	uint64_t m_lastEndTime;
+	uint32_t m_lastMaxLevel;
+	uint32_t m_selectedProfilingRow = 0;
+	uint32_t m_lastFrame = 0;
+	float m_fpsAVG = 0;
+	float m_nextFpsUpdate = 0;
+	float m_lastFps = 0;
+	float m_fpsHistory[FPS_HISTORY_SIZE] = { 0 };
+	float m_usedMemoryHistory[USED_MEMORY_HISTORY_SIZE] = { 0 };
+	float m_usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE] = { 0 };
+	bool m_counterInitialised = false;
+	bool m_isPaused = false;
 };
 

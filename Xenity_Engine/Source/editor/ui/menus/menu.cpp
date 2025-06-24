@@ -14,39 +14,39 @@
 
 void Menu::Focus()
 {
-	forceFocus = true;
+	m_forceFocus = true;
 }
 
 bool Menu::IsFocused() const
 {
-	return isFocused;
+	return m_isFocused;
 }
 
 bool Menu::IsHovered() const
 {
-	return isHovered;
+	return m_isHovered;
 }
 
 Vector2 Menu::GetWindowSize() const
 {
-	return windowSize;
+	return m_windowSize;
 }
 
 Vector2 Menu::GetWindowPosition() const
 {
-	return windowPosition;
+	return m_windowPosition;
 }
 
 Vector2 Menu::GetMousePosition() const
 {
-	return mousePosition;
+	return m_mousePosition;
 }
 
 void Menu::SetActive(bool active)
 {
-	isActive = active;
-	previousIsActive = active;
-	if (isActive) 
+	m_isActive = active;
+	m_previousIsActive = active;
+	if (m_isActive)
 	{
 		OnOpen();
 	}
@@ -58,47 +58,47 @@ void Menu::SetActive(bool active)
 
 bool Menu::IsActive() const
 {
-	return isActive;
+	return m_isActive;
 }
 
 void Menu::OnClose()
 {
-	Editor::OnMenuActiveStateChange(name, isActive, id);
+	Editor::OnMenuActiveStateChange(name, m_isActive, id);
 }
 
 void Menu::OnStartDrawing()
 {
 	const ImVec2 size = ImGui::GetContentRegionAvail();
-	startAvailableSize = Vector2(size.x, size.y);
-	windowSize = startAvailableSize;
-	if (forceFocus)
+	m_startAvailableSize = Vector2(size.x, size.y);
+	m_windowSize = m_startAvailableSize;
+	if (m_forceFocus)
 	{
 		ImGui::SetWindowFocus();
-		isFocused = true;
-		forceFocus = false;
+		m_isFocused = true;
+		m_forceFocus = false;
 	}
 }
 
 void Menu::CheckOnCloseEvent() 
 {
-	if (isActive != previousIsActive)
+	if (m_isActive != m_previousIsActive)
 	{
-		if (!isActive)
+		if (!m_isActive)
 		{
 			OnClose();
 		}
-		previousIsActive = isActive;
+		m_previousIsActive = m_isActive;
 	}
 }
 
 void Menu::ResetWindowValues()
 {
-	windowPosition = Vector2(0, 0);
-	mousePosition = Vector2(0, 0);
-	windowSize = Vector2(0, 0);
-	startAvailableSize = Vector2(0, 0);
-	isHovered = false;
-	isFocused = false;
+	m_windowPosition = Vector2(0, 0);
+	m_mousePosition = Vector2(0, 0);
+	m_windowSize = Vector2(0, 0);
+	m_startAvailableSize = Vector2(0, 0);
+	m_isHovered = false;
+	m_isFocused = false;
 
 	CheckOnCloseEvent();
 }
@@ -107,11 +107,11 @@ void Menu::CalculateWindowValues()
 {
 	const ImVec2 imguiWindowPos = ImGui::GetWindowPos();
 	const ImVec2 imguiMousePos = ImGui::GetMousePos();
-	windowPosition = Vector2(imguiWindowPos.x, imguiWindowPos.y);
-	oldMousePosition = mousePosition;
-	mousePosition = Vector2(imguiMousePos.x, (imguiMousePos.y - (ImGui::GetWindowSize().y - startAvailableSize.y))) - windowPosition;
-	isFocused = ImGui::IsWindowFocused();
-	isHovered = ImGui::IsWindowHovered();
+	m_windowPosition = Vector2(imguiWindowPos.x, imguiWindowPos.y);
+	m_oldMousePosition = m_mousePosition;
+	m_mousePosition = Vector2(imguiMousePos.x, (imguiMousePos.y - (ImGui::GetWindowSize().y - m_startAvailableSize.y))) - m_windowPosition;
+	m_isFocused = ImGui::IsWindowFocused();
+	m_isHovered = ImGui::IsWindowHovered();
 
 	CheckOnCloseEvent();
 }

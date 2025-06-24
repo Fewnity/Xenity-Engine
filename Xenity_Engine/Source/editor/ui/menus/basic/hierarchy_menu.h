@@ -19,7 +19,7 @@ public:
 	void Draw() override;
 
 private:
-	std::weak_ptr<GameObject> rightClickedElement;
-	bool firstClickedInWindow = false;
+	std::weak_ptr<GameObject> m_rightClickedElement;
+	bool m_firstClickedInWindow = false;
 };
 

@@ -23,9 +23,9 @@ public:
 	void Draw() override;
 
 private:
-	bool wrongDbLoaded = false;
-	bool loaded = false;
-	std::unique_ptr<FileDataBase> db = nullptr;
-	IntegrityState integrityState = IntegrityState::Integrity_Ok;
+	bool m_wrongDbLoaded = false;
+	bool m_loaded = false;
+	std::unique_ptr<FileDataBase> m_db = nullptr;
+	IntegrityState m_integrityState = IntegrityState::Integrity_Ok;
 };
 

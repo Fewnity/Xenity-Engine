@@ -17,7 +17,7 @@
 
 typedef Plugin* (__cdecl* CreatePluginFunction)();
 
-std::vector<std::unique_ptr<Plugin>> PluginManager::plugins;
+std::vector<std::unique_ptr<Plugin>> PluginManager::s_plugins;
 
 //  NOTE: well I don't like that but including Windows.h in the header file
 //		  creates compiling errors in input_system.h
@@ -90,7 +90,7 @@ void PluginManager::Init()
 void PluginManager::Stop()
 {
 	// Release plugins
-	plugins.clear();
+	s_plugins.clear();
 
 	// Release DLLs
 	for (auto& lib : libs)
@@ -127,7 +127,7 @@ void PluginManager::Register(Plugin* plugin)
 	);
 
 	// Store into plugins
-	plugins.emplace_back(plugin);
+	s_plugins.emplace_back(plugin);
 	Debug::Print("[PluginManager::Register] Registered plugin '" + infos.name + "'", true);
 }
 #endif

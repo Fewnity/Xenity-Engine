@@ -35,7 +35,7 @@ public:
 
 	void OnOpen() override
 	{
-		searchBuffer = "";
+		m_searchBuffer = "";
 	}
 
 	void DrawItem(const std::string& itemName, int& currentCol, int colCount, float offset, const Texture& icon, float iconSize, size_t index, bool isSelected)
@@ -75,7 +75,7 @@ public:
 
 	void SearchFiles(FileType type) 
 	{
-		foundFiles.clear();
+		m_foundFiles.clear();
 		const std::vector<FileInfo> projectFiles = ProjectManager::GetFilesByType(type);
 		const size_t fileCount = projectFiles.size();
 
@@ -84,10 +84,10 @@ public:
 		{
 			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(projectFiles[i].fileAndId.id);
 			// Filter files by user search
-			if (!searchBuffer.empty())
+			if (!m_searchBuffer.empty())
 			{
 				std::string lowerFileName = StringUtils::ToLower(fileRef->m_file->GetFileName());
-				if (lowerFileName.find(searchBuffer) == std::string::npos)
+				if (lowerFileName.find(m_searchBuffer) == std::string::npos)
 				{
 					continue;
 				}
@@ -107,11 +107,11 @@ public:
 			loadOptions.threaded = false;
 			fileRef->LoadFileReference(loadOptions);
 
-			foundFiles.push_back(fileRef);
+			m_foundFiles.push_back(fileRef);
 		}
 
 		// Sort files by name
-		std::sort(foundFiles.begin(), foundFiles.end(),
+		std::sort(m_foundFiles.begin(), m_foundFiles.end(),
 			[](const std::shared_ptr<FileReference>& a, const std::shared_ptr<FileReference>& b)
 			{
 				std::string fileA = a->m_file->GetFileName() + a->m_file->GetFileExtension();
@@ -124,7 +124,7 @@ public:
 				return fileA < fileB;
 			});
 
-		fileType = type;
+		m_fileType = type;
 	}
 
 	void Draw() override
@@ -147,12 +147,12 @@ public:
 			ImGui::BeginChild("SelectAssetContent");
 			if (ImGui::BeginTable("selectfiletable", colCount, ImGuiTableFlags_None))
 			{
-				const size_t fileCount = foundFiles.size();
+				const size_t fileCount = m_foundFiles.size();
 				int currentCol = 0;
 				for (size_t i = 0; i < fileCount; i++)
 				{
 					FileExplorerItem item;
-					item.file = foundFiles[i];
+					item.file = m_foundFiles[i];
 					bool isSelected = valuePtr->get() == std::dynamic_pointer_cast<T>(item.file);
 					DrawItem(item.file->m_file->GetFileName(), currentCol, colCount, offset, *FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
 
@@ -182,7 +182,7 @@ public:
 					}
 					if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered())
 					{
-						isActive = false;
+						m_isActive = false;
 					}
 				}
 			}
@@ -194,17 +194,17 @@ public:
 			// Draw search bar
 			ImGui::Text("Search");
 			ImGui::SameLine();
-			const bool scearchBarChanged = ImGui::InputText("##SearchBar", &searchBuffer);
+			const bool scearchBarChanged = ImGui::InputText("##SearchBar", &m_searchBuffer);
 			if (scearchBarChanged)
 			{
-				searchBuffer = StringUtils::ToLower(searchBuffer);
-				SearchFiles(fileType);
+				m_searchBuffer = StringUtils::ToLower(m_searchBuffer);
+				SearchFiles(m_fileType);
 			}
 			ImGui::SameLine();
 			const bool showEngineAssetOnlyChanged = ImGui::Checkbox("showEngineAssetOnly", &showEngineAssetOnly);
 			if (showEngineAssetOnlyChanged)
 			{
-				SearchFiles(fileType);
+				SearchFiles(m_fileType);
 			}
 			ImGui::EndChild();
 
@@ -228,8 +228,8 @@ public:
 	bool hasReflectiveDataToDraw = false;
 	bool showEngineAssetOnly = false;
 private:
-	std::vector<std::shared_ptr<FileReference>> foundFiles;
-	FileType fileType = FileType::File_Other;
-	std::string searchBuffer = "";
+	std::vector<std::shared_ptr<FileReference>> m_foundFiles;
+	FileType m_fileType = FileType::File_Other;
+	std::string m_searchBuffer = "";
 };
 

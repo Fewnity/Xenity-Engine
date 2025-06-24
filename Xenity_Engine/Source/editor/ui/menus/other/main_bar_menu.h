@@ -23,7 +23,7 @@ public:
 	*/
 	float GetHeight() const
 	{
-		return height;
+		return m_height;
 	}
 
 private:
@@ -45,5 +45,5 @@ private:
 	*/
 	bool DrawImageButton(const bool enabled, const Texture& texture);
 
-	float height = 0;
+	float m_height = 0;
 };

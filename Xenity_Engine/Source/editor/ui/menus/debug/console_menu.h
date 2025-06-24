@@ -21,15 +21,16 @@ public:
 private:
 	void OnNewDebug(const std::string& text, DebugType debugType);
 	void OnPlay();
-	bool consoleMode = false;
-	bool showLogs = true;
-	bool showWarnings = true;
-	bool showErrors = true;
-	bool clearOnPlay = true;
-	int lastHistoryCount = 0;
-	float maxScrollSize;
-	int needUpdateScrool = 0;
-	std::shared_ptr<Socket> clientSocket;
-	std::string totalClientText;
+
+	bool m_consoleMode = false;
+	bool m_showLogs = true;
+	bool m_showWarnings = true;
+	bool m_showErrors = true;
+	bool m_clearOnPlay = true;
+	int m_lastHistoryCount = 0;
+	float m_maxScrollSize;
+	int m_needUpdateScrool = 0;
+	std::shared_ptr<Socket> m_clientSocket;
+	std::string m_totalClientText;
 };
 

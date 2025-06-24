@@ -18,9 +18,11 @@ public:
 	void Init() override;
 	void Draw() override;
 	void Refresh();
+
 private:
 	void SetDockerState(const DockerState state);
-	DockerState currentDockerState = DockerState::NOT_INSTALLED;
-	Event<DockerState> dockerStateEvent;
+
+	DockerState m_currentDockerState = DockerState::NOT_INSTALLED;
+	Event<DockerState> m_dockerStateEvent;
 };
 

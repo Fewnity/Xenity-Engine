@@ -36,7 +36,7 @@ public:
 	static void Register( Plugin* plugin );
 
 private:
-	static std::vector<std::unique_ptr<Plugin>> plugins;
+	static std::vector<std::unique_ptr<Plugin>> s_plugins;
 };
 
 #endif

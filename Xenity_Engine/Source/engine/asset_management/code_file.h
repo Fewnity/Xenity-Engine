@@ -31,9 +31,9 @@ protected:
 	*/
 	[[nodiscard]] inline bool IsHeader()
 	{
-		return isHeader;
+		return m_isHeader;
 	}
 
-	bool isHeader = false;
+	bool m_isHeader = false;
 };
 

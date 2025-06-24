@@ -48,38 +48,38 @@
 #include <engine/debug/stack_debug_object.h>
 using json = nlohmann::json;
 
-std::weak_ptr<AudioSource> Editor::audioSource;
-std::shared_ptr <ProjectDirectory> Editor::currentProjectDirectory = nullptr;
+std::weak_ptr<AudioSource> Editor::s_audioSource;
+std::shared_ptr <ProjectDirectory> Editor::s_currentProjectDirectory = nullptr;
 
-MenuGroup Editor::currentMenu = MenuGroup::Menu_Select_Project;
+MenuGroup Editor::s_currentMenu = MenuGroup::Menu_Select_Project;
 
-std::vector<std::shared_ptr<Menu>> Editor::menus;
-std::weak_ptr <Menu> Editor::lastFocusedGameMenu;
+std::vector<std::shared_ptr<Menu>> Editor::s_menus;
+std::weak_ptr <Menu> Editor::s_lastFocusedGameMenu;
 
-std::shared_ptr <MainBarMenu> Editor::mainBar = nullptr;
-std::shared_ptr <BottomBarMenu> Editor::bottomBar = nullptr;
+std::shared_ptr <MainBarMenu> Editor::s_mainBar = nullptr;
+std::shared_ptr <BottomBarMenu> Editor::s_bottomBar = nullptr;
 
-std::vector <std::weak_ptr<GameObject>> Editor::selectedGameObjects;
-std::shared_ptr<FileReference> Editor::selectedFileReference = nullptr;
+std::vector <std::weak_ptr<GameObject>> Editor::s_selectedGameObjects;
+std::shared_ptr<FileReference> Editor::s_selectedFileReference = nullptr;
 
-std::shared_ptr <MeshData> Editor::rightArrow = nullptr;
-std::shared_ptr <MeshData> Editor::upArrow = nullptr;
-std::shared_ptr <MeshData> Editor::forwardArrow = nullptr;
-std::shared_ptr <MeshData> Editor::rotationCircleX = nullptr;
-std::shared_ptr <MeshData> Editor::rotationCircleY = nullptr;
-std::shared_ptr <MeshData> Editor::rotationCircleZ = nullptr;
-std::shared_ptr <Texture> Editor::toolArrowsTexture = nullptr;
+std::shared_ptr <MeshData> Editor::s_rightArrow = nullptr;
+std::shared_ptr <MeshData> Editor::s_upArrow = nullptr;
+std::shared_ptr <MeshData> Editor::s_forwardArrow = nullptr;
+std::shared_ptr <MeshData> Editor::s_rotationCircleX = nullptr;
+std::shared_ptr <MeshData> Editor::s_rotationCircleY = nullptr;
+std::shared_ptr <MeshData> Editor::s_rotationCircleZ = nullptr;
+std::shared_ptr <Texture> Editor::s_toolArrowsTexture = nullptr;
 
-std::vector<std::string> Editor::dragdropEntries;
+std::vector<std::string> Editor::s_dragdropEntries;
 
-Editor::MenuSettings Editor::menuSettings;
+Editor::MenuSettings Editor::s_menuSettings;
 
-int Editor::menuCount = 0;
-bool Editor::isToolLocalMode;
-Event<bool>* Editor::onUpdateCheckedEvent = new Event<bool>();
-bool Editor::updateAvailable = false;
-float Editor::cameraSpeed = 30;
-bool Editor::needProjectDiretoryUpdate = false;
+int Editor::s_menuCount = 0;
+bool Editor::s_isToolLocalMode;
+Event<bool>* Editor::s_onUpdateCheckedEvent = new Event<bool>();
+bool Editor::s_updateAvailable = false;
+float Editor::s_cameraSpeed = 30;
+bool Editor::s_needProjectDiretoryUpdate = false;
 
 void Editor::Init()
 {
@@ -89,31 +89,31 @@ void Editor::Init()
 	SaveMenuSettings();
 	CreateMenus();
 
-	onUpdateCheckedEvent->Bind(&OnUpdateChecked);
-	std::thread thread(&UpdateChecker::CheckForUpdate, onUpdateCheckedEvent);
+	s_onUpdateCheckedEvent->Bind(&OnUpdateChecked);
+	std::thread thread(&UpdateChecker::CheckForUpdate, s_onUpdateCheckedEvent);
 	thread.detach();
 
 	// Create audio source for audio clip preview
 	std::shared_ptr<GameObject> audioSourceGO = CreateGameObjectEditor("AudioSource");
-	audioSource = audioSourceGO->AddComponent<AudioSource>();
-	audioSource.lock()->m_isEditor = true;
+	s_audioSource = audioSourceGO->AddComponent<AudioSource>();
+	s_audioSource.lock()->m_isEditor = true;
 
 	// Load Assets
-	rightArrow = MeshManager::LoadMesh("engine_assets/right_arrow.obj");
-	upArrow = MeshManager::LoadMesh("engine_assets/up_arrow.obj");
-	forwardArrow = MeshManager::LoadMesh("engine_assets/forward_arrow.obj");
+	s_rightArrow = MeshManager::LoadMesh("engine_assets/right_arrow.obj");
+	s_upArrow = MeshManager::LoadMesh("engine_assets/up_arrow.obj");
+	s_forwardArrow = MeshManager::LoadMesh("engine_assets/forward_arrow.obj");
 
-	rotationCircleX = MeshManager::LoadMesh("engine_assets/rotation_circleX.obj");
-	rotationCircleY = MeshManager::LoadMesh("engine_assets/rotation_circleY.obj");
-	rotationCircleZ = MeshManager::LoadMesh("engine_assets/rotation_circleZ.obj");
+	s_rotationCircleX = MeshManager::LoadMesh("engine_assets/rotation_circleX.obj");
+	s_rotationCircleY = MeshManager::LoadMesh("engine_assets/rotation_circleY.obj");
+	s_rotationCircleZ = MeshManager::LoadMesh("engine_assets/rotation_circleZ.obj");
 
-	toolArrowsTexture = Texture::MakeTexture();
-	toolArrowsTexture->m_file = FileSystem::MakeFile("engine_assets/tool_arrows_colors.png");
-	toolArrowsTexture->SetFilter(Filter::Point);
+	s_toolArrowsTexture = Texture::MakeTexture();
+	s_toolArrowsTexture->m_file = FileSystem::MakeFile("engine_assets/tool_arrows_colors.png");
+	s_toolArrowsTexture->SetFilter(Filter::Point);
 	FileReference::LoadOptions loadOptions;
 	loadOptions.platform = Application::GetPlatform();
 	loadOptions.threaded = true;
-	toolArrowsTexture->LoadFileReference(loadOptions);
+	s_toolArrowsTexture->LoadFileReference(loadOptions);
 
 	Engine::GetOnWindowFocusEvent()->Bind(&OnWindowFocused);
 
@@ -125,7 +125,7 @@ void Editor::Init()
 
 void Editor::Stop()
 {
-	menus.clear();
+	s_menus.clear();
 }
 
 void Editor::SaveMenuSettings()
@@ -133,7 +133,7 @@ void Editor::SaveMenuSettings()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	std::shared_ptr<File> file = FileSystem::MakeFile("menu_settings.json");
-	if (!ReflectionUtils::ReflectiveDataToFile(menuSettings.GetReflectiveData(), file)) 
+	if (!ReflectionUtils::ReflectiveDataToFile(s_menuSettings.GetReflectiveData(), file))
 	{
 		Debug::PrintError("[Editor::SaveMenuSettings] Failed to save menu settings", true);
 	}
@@ -147,11 +147,11 @@ void Editor::LoadMenuSettings()
 	std::shared_ptr<File> file = FileSystem::MakeFile("menu_settings.json");
 	if (file->CheckIfExist())
 	{
-		success = ReflectionUtils::FileToReflectiveData(file, menuSettings.GetReflectiveData());
+		success = ReflectionUtils::FileToReflectiveData(file, s_menuSettings.GetReflectiveData());
 	}
 
 	// If the file does not exist or is corrupted, create a new one
-	if (!success || menuSettings.settings.empty())
+	if (!success || s_menuSettings.settings.empty())
 	{
 		CreateNewMenuSettings();
 		SaveMenuSettings();
@@ -175,12 +175,12 @@ Editor::MenuSetting* Editor::UpdateOrAddMenuSetting(std::vector<MenuSetting*>& m
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	const size_t menuSize = menuSettings.settings.size();
+	const size_t menuSize = s_menuSettings.settings.size();
 	bool found = false;
 	MenuSetting* menuSetting = nullptr;
 	for (size_t i = 0; i < menuSize; i++)
 	{
-		MenuSetting& setting = *menuSettings.settings[i];
+		MenuSetting& setting = *s_menuSettings.settings[i];
 		if (setting.name == name && setting.id == id)
 		{
 			setting.isActive = isActive;
@@ -203,8 +203,8 @@ void Editor::CreateNewMenuSettings()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	menuSettings = MenuSettings();
-	std::vector<MenuSetting*>& menuSettingList = menuSettings.settings;
+	s_menuSettings = MenuSettings();
+	std::vector<MenuSetting*>& menuSettingList = s_menuSettings.settings;
 
 	AddMenuSetting(menuSettingList, "CreateClassMenu", false, true);
 	AddMenuSetting(menuSettingList, "LightingMenu", false, true);
@@ -236,7 +236,7 @@ void Editor::CreateNewMenuSettings()
 void Editor::OnFileModified()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-	needProjectDiretoryUpdate = true;
+	s_needProjectDiretoryUpdate = true;
 }
 
 void Editor::OnCodeModified()
@@ -324,7 +324,7 @@ void Editor::Update()
 			const std::shared_ptr<HierarchyMenu> hierarchy = Editor::GetMenu<HierarchyMenu>();
 			if ((sceneMenu && sceneMenu->IsFocused()) || (hierarchy && hierarchy->IsFocused()))
 			{
-				for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+				for (std::weak_ptr<GameObject>& currentGameObject : s_selectedGameObjects)
 				{
 					if (currentGameObject.lock())
 					{
@@ -332,7 +332,7 @@ void Editor::Update()
 						CommandManager::AddCommandAndExecute(command);
 					}
 				}
-				selectedGameObjects.clear();
+				s_selectedGameObjects.clear();
 			}
 		}
 
@@ -367,9 +367,9 @@ void Editor::Update()
 			}
 		}
 
-		if (needProjectDiretoryUpdate)
+		if (s_needProjectDiretoryUpdate)
 		{
-			needProjectDiretoryUpdate = false;
+			s_needProjectDiretoryUpdate = false;
 			ProjectManager::RefreshProjectDirectory();
 		}
 	}
@@ -383,11 +383,11 @@ void Editor::Draw()
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
 	ApplyEditorStyle();
-	if (currentMenu == MenuGroup::Menu_Editor)
-		mainBar->Draw();
+	if (s_currentMenu == MenuGroup::Menu_Editor)
+		s_mainBar->Draw();
 
-	float offset = mainBar->GetHeight();
-	if (currentMenu != MenuGroup::Menu_Editor)
+	float offset = s_mainBar->GetHeight();
+	if (s_currentMenu != MenuGroup::Menu_Editor)
 		offset = 0;
 
 	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - offset - 32));
@@ -429,18 +429,18 @@ void Editor::Draw()
 	ImGui::DockSpace(dsId);
 
 	//int menuCount = menus.size();
-	for (int i = 0; i < menuCount; i++)
+	for (int i = 0; i < s_menuCount; i++)
 	{
-		if (menus[i]->IsActive() && menus[i]->group == currentMenu)
-			menus[i]->Draw();
+		if (s_menus[i]->IsActive() && s_menus[i]->group == s_currentMenu)
+			s_menus[i]->Draw();
 	}
 
 	ImGui::PopStyleVar();
 	ImGui::End();
 
-	if (currentMenu == MenuGroup::Menu_Editor)
+	if (s_currentMenu == MenuGroup::Menu_Editor)
 	{
-		bottomBar->Draw();
+		s_bottomBar->Draw();
 	}
 
 	RemoveEditorStyle();
@@ -579,7 +579,7 @@ void Editor::CreateEmptyChild()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, CreateGameObjectMode::CreateChild);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(s_selectedGameObjects, CreateGameObjectMode::CreateChild);
 	CommandManager::AddCommandAndExecute(command);
 }
 
@@ -587,7 +587,7 @@ void Editor::CreateEmptyParent()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, CreateGameObjectMode::CreateParent);
+	auto command = std::make_shared<InspectorCreateGameObjectCommand>(s_selectedGameObjects, CreateGameObjectMode::CreateParent);
 	CommandManager::AddCommandAndExecute(command);
 }
 
@@ -595,7 +595,7 @@ void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& file
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	selectedFileReference = fileReference;
+	s_selectedFileReference = fileReference;
 	std::shared_ptr<InspectorMenu> inspector = Editor::GetMenu<InspectorMenu>();
 	if (inspector)
 		inspector->loadedPreview = nullptr;
@@ -606,7 +606,7 @@ void Editor::SetSelectedFileReference(const std::shared_ptr<FileReference>& file
 
 std::shared_ptr<FileReference> Editor::GetSelectedFileReference()
 {
-	return selectedFileReference;
+	return s_selectedFileReference;
 }
 
 void Editor::SetSelectedGameObject(const std::shared_ptr<GameObject>& newSelected)
@@ -621,19 +621,19 @@ void Editor::SetSelectedGameObject(const std::shared_ptr<GameObject>& newSelecte
 	SetSelectedFileReference(nullptr);
 
 	newSelected->m_isSelected = true;
-	selectedGameObjects.push_back(newSelected);
+	s_selectedGameObjects.push_back(newSelected);
 }
 
 void Editor::ClearSelectedGameObjects()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	for (std::weak_ptr<GameObject>& currentGameObject : s_selectedGameObjects)
 	{
 		if (currentGameObject.lock())
 			currentGameObject.lock()->m_isSelected = false;
 	}
-	selectedGameObjects.clear();
+	s_selectedGameObjects.clear();
 }
 
 void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObjectToAdd)
@@ -641,10 +641,10 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 	XASSERT(gameObjectToAdd != nullptr, "[Editor::AddSelectedGameObject] gameObjectToAdd is nullptr");
 
 	size_t foundAt = -1;
-	size_t selectedGameObjectsCount = selectedGameObjects.size();
+	size_t selectedGameObjectsCount = s_selectedGameObjects.size();
 	for (size_t i = 0; i < selectedGameObjectsCount; i++)
 	{
-		if (selectedGameObjects[i].lock() == gameObjectToAdd)
+		if (s_selectedGameObjects[i].lock() == gameObjectToAdd)
 		{
 			foundAt = i;
 			break;
@@ -654,12 +654,12 @@ void Editor::AddSelectedGameObject(const std::shared_ptr<GameObject>& gameObject
 	if (foundAt == -1)
 	{
 		gameObjectToAdd->m_isSelected = true;
-		selectedGameObjects.push_back(gameObjectToAdd);
+		s_selectedGameObjects.push_back(gameObjectToAdd);
 	}
 	else 
 	{
 		gameObjectToAdd->m_isSelected = false;
-		selectedGameObjects.erase(selectedGameObjects.begin() + foundAt);
+		s_selectedGameObjects.erase(s_selectedGameObjects.begin() + foundAt);
 	}
 }
 
@@ -669,13 +669,13 @@ void Editor::RemoveSelectedGameObject(const std::shared_ptr<GameObject>& gameObj
 
 	XASSERT(gameObjectToRemove != nullptr, "[Editor::RemoveSelectedGameObject] gameObjectToRemove is nullptr");
 
-	const size_t goCount = selectedGameObjects.size();
+	const size_t goCount = s_selectedGameObjects.size();
 	for (size_t i = 0; i < goCount; i++)
 	{
-		if (selectedGameObjects[i].lock() == gameObjectToRemove)
+		if (s_selectedGameObjects[i].lock() == gameObjectToRemove)
 		{
 			gameObjectToRemove->m_isSelected = false;
-			selectedGameObjects.erase(selectedGameObjects.begin() + i);
+			s_selectedGameObjects.erase(s_selectedGameObjects.begin() + i);
 			break;
 		}
 	}
@@ -687,7 +687,7 @@ bool Editor::IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObje
 
 	XASSERT(gameObjectToCheck != nullptr, "[Editor::IsInSelectedGameObjects] gameObjectToCheck is nullptr");
 
-	for (std::weak_ptr<GameObject>& currentGameObject : selectedGameObjects)
+	for (std::weak_ptr<GameObject>& currentGameObject : s_selectedGameObjects)
 	{
 		if (currentGameObject.lock() == gameObjectToCheck)
 		{
@@ -700,33 +700,33 @@ bool Editor::IsInSelectedGameObjects(const std::shared_ptr<GameObject>& gameObje
 
 const std::vector<std::weak_ptr<GameObject>>& Editor::GetSelectedGameObjects()
 {
-	return selectedGameObjects;
+	return s_selectedGameObjects;
 }
 
 void Editor::SetCurrentProjectDirectory(const std::shared_ptr <ProjectDirectory>& dir)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	if (currentProjectDirectory)
-		currentProjectDirectory->files.clear();
-	currentProjectDirectory = dir;
-	if (currentProjectDirectory)
+	if (s_currentProjectDirectory)
+		s_currentProjectDirectory->files.clear();
+	s_currentProjectDirectory = dir;
+	if (s_currentProjectDirectory)
 	{
-		ProjectManager::FillProjectDirectory(*currentProjectDirectory);
-		const size_t itemCount = currentProjectDirectory->files.size();
+		ProjectManager::FillProjectDirectory(*s_currentProjectDirectory);
+		const size_t itemCount = s_currentProjectDirectory->files.size();
 		FileReference::LoadOptions loadOptions;
 		loadOptions.platform = Application::GetPlatform();
 		loadOptions.threaded = true;
 		for (size_t i = 0; i < itemCount; i++)
 		{
-			currentProjectDirectory->files[i]->LoadFileReference(loadOptions);
+			s_currentProjectDirectory->files[i]->LoadFileReference(loadOptions);
 		}
 	}
 }
 
 std::shared_ptr <ProjectDirectory> Editor::GetCurrentProjectDirectory()
 {
-	return currentProjectDirectory;
+	return s_currentProjectDirectory;
 }
 
 std::shared_ptr<File> Editor::CreateNewFile(const std::string& fileName, FileType type, bool fillWithDefaultData, bool refreshProject)
@@ -819,7 +819,7 @@ void Editor::AddDragAndDrop(const std::string& path)
 	if (path.empty())
 		return;
 
-	dragdropEntries.push_back(path);
+	s_dragdropEntries.push_back(path);
 }
 
 void Editor::StartFolderCopy(const std::string& path, const std::string& newPath)
@@ -905,7 +905,7 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 
 void Editor::OnUpdateChecked(bool newVersionAvailable)
 {
-	updateAvailable = newVersionAvailable;
+	s_updateAvailable = newVersionAvailable;
 	if (newVersionAvailable)
 	{
 		GetMenu<UpdateAvailableMenu>()->SetActive(true);
@@ -947,12 +947,12 @@ void Editor::OnDragAndDropFileFinished()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	const size_t size = dragdropEntries.size();
+	const size_t size = s_dragdropEntries.size();
 	for (size_t dragIndex = 0; dragIndex < size; dragIndex++)
 	{
 		try
 		{
-			std::string& path = dragdropEntries[dragIndex];
+			std::string& path = s_dragdropEntries[dragIndex];
 			const bool isDirectory = std::filesystem::is_directory(path);
 			const int pathSize = static_cast<int>(path.size());
 
@@ -972,7 +972,7 @@ void Editor::OnDragAndDropFileFinished()
 			if (isDirectory)
 			{
 				FileSystem::CreateFolder(newPath + '\\');
-				StartFolderCopy(dragdropEntries[dragIndex] + '\\', newPath + '\\');
+				StartFolderCopy(s_dragdropEntries[dragIndex] + '\\', newPath + '\\');
 			}
 			else
 			{
@@ -993,7 +993,7 @@ void Editor::OnDragAndDropFileFinished()
 		}
 	}
 
-	dragdropEntries.clear();
+	s_dragdropEntries.clear();
 	ProjectManager::RefreshProjectDirectory();
 }
 
@@ -1070,18 +1070,18 @@ void Editor::CreateMenus()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	const size_t menuSize = menuSettings.settings.size();
+	const size_t menuSize = s_menuSettings.settings.size();
 	for (size_t i = 0; i < menuSize; i++)
 	{
-		MenuSetting& setting = *menuSettings.settings[i];
+		MenuSetting& setting = *s_menuSettings.settings[i];
 		if (setting.isUnique || setting.isActive)
 			AddMenu(setting.name, setting.isActive, setting.id);
 	}
 
-	mainBar = std::make_shared<MainBarMenu>();
-	mainBar->Init();
+	s_mainBar = std::make_shared<MainBarMenu>();
+	s_mainBar->Init();
 
-	bottomBar = std::make_shared<BottomBarMenu>();
+	s_bottomBar = std::make_shared<BottomBarMenu>();
 }
 
 bool Editor::SeparateFileFromPath(const std::string& fullPath, std::string& folderPath, std::string& fileName)

@@ -9,5 +9,5 @@
 void Plugin::Setup()
 {
 	//  register infos
-	infos = CreateInfos();
+	m_infos = CreateInfos();
 }

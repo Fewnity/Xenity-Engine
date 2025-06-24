@@ -8,11 +8,11 @@
 
 #include <imgui/imgui.h>
 
-bool RightClickMenu::isFocusCorrect = false;
-bool RightClickMenu::isDrawn = false;
-std::string RightClickMenu::isDrawnName = "";
+bool RightClickMenu::s_isFocusCorrect = false;
+bool RightClickMenu::s_isDrawn = false;
+std::string RightClickMenu::s_isDrawnName = "";
 
-RightClickMenu::RightClickMenu(const std::string& uniqueName) : nameId(uniqueName)
+RightClickMenu::RightClickMenu(const std::string& uniqueName) : m_nameId(uniqueName)
 {
 }
 
@@ -61,7 +61,7 @@ RightClickMenuState RightClickMenu::Check(const bool blockOpen, bool disableHove
 	bool isHovered = ImGui::IsItemHovered();
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && (isHovered || disableHoveredCheck))
 	{
-		isFocusCorrect = true;
+		s_isFocusCorrect = true;
 	}
 
 	bool isClicked = ImGui::IsMouseReleased(ImGuiMouseButton_Right);
@@ -69,15 +69,15 @@ RightClickMenuState RightClickMenu::Check(const bool blockOpen, bool disableHove
 
 	if (isClicked && (isHovered || disableHoveredCheck))
 	{
-		if (!blockOpen && isFocusCorrect)
+		if (!blockOpen && s_isFocusCorrect)
 		{
-			ImGui::OpenPopup(nameId.c_str());
+			ImGui::OpenPopup(m_nameId.c_str());
 			state = RightClickMenuState::JustOpened;
-			isDrawnName = nameId;
+			s_isDrawnName = m_nameId;
 		}
-		isFocusCorrect = false;
+		s_isFocusCorrect = false;
 	}
-	if (state == RightClickMenuState::Closed && isDrawn && isDrawnName == nameId)
+	if (state == RightClickMenuState::Closed && s_isDrawn && s_isDrawnName == m_nameId)
 	{
 		state = RightClickMenuState::Opened;
 	}
@@ -88,13 +88,13 @@ bool RightClickMenu::Draw()
 {
 	bool drawn = false;
 
-	if (isDrawnName == nameId)
-		isDrawn = false;
+	if (s_isDrawnName == m_nameId)
+		s_isDrawn = false;
 
-	if (ImGui::BeginPopup(nameId.c_str()))
+	if (ImGui::BeginPopup(m_nameId.c_str()))
 	{
 		drawn = true;
-		isDrawn = true;
+		s_isDrawn = true;
 		const size_t itemsCount = items.size();
 		for (size_t i = 0; i < itemsCount; i++)
 		{
@@ -138,7 +138,7 @@ RightClickMenuItem::~RightClickMenuItem()
 RightClickMenuItem* RightClickMenuItem::AddItem(const std::string& title, std::function<void()> onClickFunction)
 {
 	RightClickMenuItem* newItem = new RightClickMenuItem();
-	newItem->text = title;
+	newItem->m_text = title;
 	newItem->onClicked = onClickFunction;
 	onHoverItems.push_back(newItem);
 
@@ -148,7 +148,7 @@ RightClickMenuItem* RightClickMenuItem::AddItem(const std::string& title, std::f
 RightClickMenuItem* RightClickMenuItem::AddItem(const std::string& title)
 {
 	RightClickMenuItem* newItem = new RightClickMenuItem();
-	newItem->text = title;
+	newItem->m_text = title;
 	onHoverItems.push_back(newItem);
 
 	return onHoverItems[onHoverItems.size() - 1];

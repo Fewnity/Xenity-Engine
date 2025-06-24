@@ -454,7 +454,7 @@ void Engine::Loop()
 							SceneManager::LoadScene(ProjectManager::GetStartScene());
 						}
 #if defined(EDITOR)
-						Editor::currentMenu = MenuGroup::Menu_Editor;
+						Editor::s_currentMenu = MenuGroup::Menu_Editor;
 #endif
 						ProjectManager::SetProjectState(ProjectState::Loaded);
 					}

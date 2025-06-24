@@ -34,8 +34,8 @@ private:
 	void DrawError();
 	void DrawCreateProjectButton();
 
-	std::string projectName;
-	std::string projectParentDir;
-	CreateProjectError createProjectError = CreateProjectError::NO_ERROR_;
+	std::string m_projectName;
+	std::string m_projectParentDir;
+	CreateProjectError m_createProjectError = CreateProjectError::NO_ERROR_;
 };
 

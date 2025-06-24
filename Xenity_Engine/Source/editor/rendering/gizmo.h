@@ -58,6 +58,6 @@ private:
 	*/
 	static void Init();
 
-	static Color color;
+	static Color s_color;
 };
 

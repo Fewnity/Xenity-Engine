@@ -11,35 +11,35 @@
 #include <engine/assertions/assertions.h>
 #include <engine/game_elements/gameplay_manager.h>
 
-std::vector<std::shared_ptr<Command>> CommandManager::commands;
-int CommandManager::maxCommandCount = 100;
-int CommandManager::currentCommand = -1;
+std::vector<std::shared_ptr<Command>> CommandManager::s_commands;
+int CommandManager::s_maxCommandCount = 100;
+int CommandManager::s_currentCommand = -1;
 
 void CommandManager::AddCommand(std::shared_ptr<Command> command)
 {
 	XASSERT(command != nullptr, "[CommandManager::AddCommand] command is nullptr");
 
-	commands.push_back(command);
-	size_t commandCount = commands.size();
+	s_commands.push_back(command);
+	size_t commandCount = s_commands.size();
 	// If we are not at the end of the list, remove all other commands starting from currentCommand to the end of the list
-	if (currentCommand != commandCount - 1)
+	if (s_currentCommand != commandCount - 1)
 	{
-		const int count = static_cast<int>((commandCount - 1) - (currentCommand + 1));
+		const int count = static_cast<int>((commandCount - 1) - (s_currentCommand + 1));
 		for (int i = 0; i < count; i++)
 		{
-			commands.erase(commands.begin() + (currentCommand + 1));
+			s_commands.erase(s_commands.begin() + (s_currentCommand + 1));
 			commandCount--;
 		}
 	}
 
 	// If the history is full, 
-	if (commandCount >= maxCommandCount)
+	if (commandCount >= s_maxCommandCount)
 	{
-		commands.erase(commands.begin());
+		s_commands.erase(s_commands.begin());
 	}
 	else
 	{
-		currentCommand++;
+		s_currentCommand++;
 	}
 }
 
@@ -53,40 +53,40 @@ void CommandManager::AddCommandAndExecute(std::shared_ptr<Command> command)
 
 void CommandManager::ClearCommands()
 {
-	commands.clear();
+	s_commands.clear();
 }
 
 void CommandManager::ClearInGameCommands()
 {
-	size_t commandCount = commands.size();
+	size_t commandCount = s_commands.size();
 	for (size_t i = 0; i < commandCount; i++)
 	{
-		if (commands[i]->doneInPlayMode) 
+		if (s_commands[i]->doneInPlayMode)
 		{
-			commands.erase(commands.begin() + i);
+			s_commands.erase(s_commands.begin() + i);
 			commandCount--;
 			i--;
 		}
 	}
-	currentCommand = static_cast<int>(commandCount - 1);
+	s_currentCommand = static_cast<int>(commandCount - 1);
 }
 
 void CommandManager::Undo()
 {
 	// If we are not at the beginning of the list
-	if (currentCommand >= 0)
+	if (s_currentCommand >= 0)
 	{
-		commands[currentCommand]->Undo();
-		currentCommand--;
+		s_commands[s_currentCommand]->Undo();
+		s_currentCommand--;
 	}
 }
 
 void CommandManager::Redo()
 {
 	//If we are not at the end of the list
-	if ((int)commands.size() - 1 > currentCommand)
+	if ((int)s_commands.size() - 1 > s_currentCommand)
 	{
-		currentCommand++;
-		commands[currentCommand]->Redo();
+		s_currentCommand++;
+		s_commands[s_currentCommand]->Redo();
 	}
 }

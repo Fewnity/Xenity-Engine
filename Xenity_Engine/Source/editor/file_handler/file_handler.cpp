@@ -13,10 +13,10 @@
 
 using namespace std::chrono;
 
-uint64_t FileHandler::lastModifiedCodeFileTime = 0;
-uint64_t FileHandler::lastModifiedFileTime = 0;
-uint32_t FileHandler::lastFileCount = 0;
-uint32_t FileHandler::tempFileCount = 0;
+uint64_t FileHandler::s_lastModifiedCodeFileTime = 0;
+uint64_t FileHandler::s_lastModifiedFileTime = 0;
+uint32_t FileHandler::s_lastFileCount = 0;
+uint32_t FileHandler::s_tempFileCount = 0;
 
 bool FileHandler::HasCodeChangedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback)
 {
@@ -35,9 +35,9 @@ bool FileHandler::HasCodeChangedDirect(const std::string& folderPath, bool isThr
 		// Check last date
 		const auto duration = time.time_since_epoch();
 		const uint64_t durationCount = duration.count();
-		if (durationCount > lastModifiedCodeFileTime)
+		if (durationCount > s_lastModifiedCodeFileTime)
 		{
-			lastModifiedCodeFileTime = durationCount;
+			s_lastModifiedCodeFileTime = durationCount;
 			changed = true;
 		}
 	}
@@ -72,15 +72,15 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& folderPath)
 					continue;
 			}
 
-			tempFileCount++;
+			s_tempFileCount++;
 
 			// Check last date
 			const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
 			const auto duration = time.time_since_epoch();
 			const uint64_t durationCount = duration.count();
-			if (durationCount > lastModifiedFileTime)
+			if (durationCount > s_lastModifiedFileTime)
 			{
-				lastModifiedFileTime = durationCount;
+				s_lastModifiedFileTime = durationCount;
 				changed = true;
 			}
 		}
@@ -95,13 +95,13 @@ bool FileHandler::HasFileChangedOrAddedRecursive(const std::string& folderPath)
 
 bool FileHandler::HasFileChangedOrAddedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback)
 {
-	tempFileCount = 0;
+	s_tempFileCount = 0;
 	bool result = HasFileChangedOrAddedRecursive(folderPath);
-	if (tempFileCount != lastFileCount)
+	if (s_tempFileCount != s_lastFileCount)
 	{
 		result = true;
 	}
-	lastFileCount = tempFileCount;
+	s_lastFileCount = s_tempFileCount;
 
 	if (isThreaded && result)
 	{
@@ -138,18 +138,18 @@ void FileHandler::SetLastModifiedFile(const std::string& file)
 	const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
 	const auto duration = time.time_since_epoch();
 	const uint64_t durationCount = duration.count();
-	if (durationCount > lastModifiedFileTime)
+	if (durationCount > s_lastModifiedFileTime)
 	{
-		lastModifiedFileTime = durationCount;
+		s_lastModifiedFileTime = durationCount;
 	}
 }
 
 void FileHandler::RemoveOneFile()
 {
-	lastFileCount--;
+	s_lastFileCount--;
 }
 
 void FileHandler::AddOneFile()
 {
-	lastFileCount++;
+	s_lastFileCount++;
 }

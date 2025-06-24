@@ -32,8 +32,8 @@
 
 void SceneMenu::Init()
 {
-	cameraGO = CreateGameObjectEditor("Camera");
-	std::shared_ptr<Camera> cameraLock = cameraGO.lock()->AddComponent<Camera>();
+	m_cameraGO = CreateGameObjectEditor("Camera");
+	std::shared_ptr<Camera> cameraLock = m_cameraGO.lock()->AddComponent<Camera>();
 	cameraLock->SetNearClippingPlane(0.01f);
 	cameraLock->SetFarClippingPlane(2000);
 	cameraLock->SetProjectionSize(5.0f);
@@ -68,13 +68,14 @@ void SceneMenu::MoveCamera()
 	{
 		startRotatingCamera = false;
 	}
-	if (isFocused)
+
+	if (m_isFocused)
 	{
 		// Get camera transform
-		std::shared_ptr<Transform> cameraTransform = cameraGO.lock()->GetTransform();
+		std::shared_ptr<Transform> cameraTransform = m_cameraGO.lock()->GetTransform();
 		Vector3 pos = cameraTransform->GetPosition();
 
-		if ((ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) && isHovered)
+		if ((ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) && m_isHovered)
 		{
 			startRotatingCamera = true;
 		}
@@ -92,14 +93,14 @@ void SceneMenu::MoveCamera()
 
 		if (!InputSystem::GetKey(KeyCode::LEFT_CONTROL)) // Disable camera keyboard controls while making a shortcut
 		{
-			if (mode2D)
+			if (m_mode2D)
 				upDownRef = &upWorld;
 			if (InputSystem::GetKey(KeyCode::UP) || InputSystem::GetKey(KeyCode::Z))
 				*upDownRef = -1 * Time::GetDeltaTime();
 			else if (InputSystem::GetKey(KeyCode::DOWN) || InputSystem::GetKey(KeyCode::S))
 				*upDownRef = 1 * Time::GetDeltaTime();
 
-			if (!mode2D)
+			if (!m_mode2D)
 			{
 				if (InputSystem::GetKey(KeyCode::A))
 					upWorld = 1 * Time::GetDeltaTime();
@@ -114,21 +115,21 @@ void SceneMenu::MoveCamera()
 		}
 
 		// Move the camera when using the mouse's wheel (Do not use delta time)
-		if (isHovered)
+		if (m_isHovered)
 		{
-			if (!mode2D)
+			if (!m_mode2D)
 			{
 				if (InputSystem::GetKey(KeyCode::LEFT_SHIFT))
 				{
-					Editor::cameraSpeed += InputSystem::mouseWheel;
-					if (Editor::cameraSpeed < 1.0f)
+					Editor::s_cameraSpeed += InputSystem::mouseWheel;
+					if (Editor::s_cameraSpeed < 1.0f)
 					{
-						Editor::cameraSpeed = 1.0f;
+						Editor::s_cameraSpeed = 1.0f;
 					}
 
-					if (Editor::cameraSpeed > 100)
+					if (Editor::s_cameraSpeed > 100)
 					{
-						Editor::cameraSpeed = 100;
+						Editor::s_cameraSpeed = 100;
 					}
 				}
 				else
@@ -146,15 +147,15 @@ void SceneMenu::MoveCamera()
 		}
 
 		// Apply values
-		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * Editor::cameraSpeed;
-		pos -= cameraTransform->GetLeft() * (side / 7.0f) * Editor::cameraSpeed;
-		pos -= cameraTransform->GetUp() * (up / 7.0f) * Editor::cameraSpeed;
-		pos.y -= (upWorld / 7.0f) * Editor::cameraSpeed;
+		pos -= cameraTransform->GetForward() * (fwd / 7.0f) * Editor::s_cameraSpeed;
+		pos -= cameraTransform->GetLeft() * (side / 7.0f) * Editor::s_cameraSpeed;
+		pos -= cameraTransform->GetUp() * (up / 7.0f) * Editor::s_cameraSpeed;
+		pos.y -= (upWorld / 7.0f) * Editor::s_cameraSpeed;
 
 		cameraTransform->SetPosition(pos);
 
 		// Rotate the camera when dragging the mouse right click
-		if (!mode2D && ImGui::IsMouseDown(ImGuiMouseButton_Right))
+		if (!m_mode2D && ImGui::IsMouseDown(ImGuiMouseButton_Right))
 		{
 			const Quaternion& rotQ = cameraTransform->GetRotation();
 			Quaternion rotX = Quaternion::AngleAxis(-InputSystem::mouseSpeed.y * 70, Vector3(1, 0, 0));
@@ -163,7 +164,7 @@ void SceneMenu::MoveCamera()
 			Quaternion newRot = rotY * rotQ * rotX;
 			cameraTransform->SetRotation(newRot);
 		}
-		else if (mode2D)
+		else if (m_mode2D)
 		{
 			cameraTransform->SetRotation(Quaternion::Identity());
 		}
@@ -269,10 +270,10 @@ void SceneMenu::GetMouseRay(Vector3& mouseWorldDir, Vector3& mouseWorldDirNormal
 	glm::mat4 cameraModelMatrix = glm::toMat4(glm::quat(baseQ.w, -baseQ.x, -baseQ.y, -baseQ.z));
 
 	// Get screen mouse position (inverted)
-	const glm::vec3 mousePositionGLM = glm::vec3(startAvailableSize.x - mousePosition.x, startAvailableSize.y - (windowSize.y - mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
+	const glm::vec3 mousePositionGLM = glm::vec3(m_startAvailableSize.x - m_mousePosition.x, m_startAvailableSize.y - (m_windowSize.y - m_mousePosition.y), 0.0f); // Invert Y for OpenGL coordinates
 
 	// Get world mouse position (position at the near clipping plane)
-	worldCoords = Vector3(glm::unProject(mousePositionGLM, cameraModelMatrix, camera.GetProjection(), glm::vec4(0, 0, startAvailableSize.x, startAvailableSize.y)));
+	worldCoords = Vector3(glm::unProject(mousePositionGLM, cameraModelMatrix, camera.GetProjection(), glm::vec4(0, 0, m_startAvailableSize.x, m_startAvailableSize.y)));
 
 	// Normalise direction if needed
 	mouseWorldDir = worldCoords;
@@ -295,7 +296,7 @@ Side SceneMenu::GetNearSide(float camDistance,
 		forwardPointsDist = 99999999.0f;
 
 	float distanceDiviser = camDistance;
-	if (mode2D)
+	if (m_mode2D)
 		distanceDiviser = weakCamera.lock()->GetProjectionSize();
 
 	// Detect the arrow
@@ -338,7 +339,7 @@ Side SceneMenu::DetectSide(float camDistance, const Vector3& objectPosition, con
 	bool isRightTooFar = fabs(objectPosition.x - rightClosestPoint.x) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
 	bool isUpTooFar = fabs(objectPosition.y - upClosestPoint.y) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
 	bool isForwardTooFar = fabs(objectPosition.z - forwardClosestPoint.z) > 1 * weakCamera.lock()->GetProjectionSize() / 5.0f;
-	if (!mode2D)
+	if (!m_mode2D)
 	{
 		isRightTooFar = fabs(objectPosition.x - rightClosestPoint.x) > 1 * camDistance / 8.0f;
 		isUpTooFar = fabs(objectPosition.y - upClosestPoint.y) > 1 * camDistance / 8.0f;
@@ -373,8 +374,8 @@ void SceneMenu::CheckAllowRotation(float dist, bool& allowRotation, bool isInter
 	{
 		if (dist >= 0.10f && dist <= 0.13f)
 		{
-			startDragPos = intersection;
-			side = sideToCheck;
+			m_startDragPos = intersection;
+			m_side = sideToCheck;
 			allowRotation = true;
 		}
 		else
@@ -398,10 +399,10 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 	mouseWorldDirNormalized *= -1;
 
 	// Store world mouse position
-	oldWorldMousePosition = worldMousePosition;
-	worldMousePosition = mouseWorldDir;
+	m_oldWorldMousePosition = m_worldMousePosition;
+	m_worldMousePosition = mouseWorldDir;
 
-	if (mode2D && toolMode != ToolMode::Tool_MoveCamera)
+	if (m_mode2D && toolMode != ToolMode::Tool_MoveCamera)
 		mouseWorldDirNormalized = Vector3(0, 0, -1);
 
 	std::shared_ptr<GameObject> newGameObjectSelected = nullptr;
@@ -411,7 +412,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 
 		bool hasListChanged = false;
 		const size_t selectedGoSize = selectedGOs.size();
-		if (selectedGoSize != lastHitGameObjects.size())
+		if (selectedGoSize != m_lastHitGameObjects.size())
 		{
 			hasListChanged = true;
 		}
@@ -419,7 +420,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 		{
 			for (size_t i = 0; i < selectedGoSize; i++)
 			{
-				if (lastHitGameObjects.size() <= i || (selectedGOs[i].gameObject.lock() != lastHitGameObjects[i].gameObject.lock()))
+				if (m_lastHitGameObjects.size() <= i || (selectedGOs[i].gameObject.lock() != m_lastHitGameObjects[i].gameObject.lock()))
 				{
 					hasListChanged = true;
 					break;
@@ -427,28 +428,28 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 			}
 		}
 
-		if (hasListChanged || selectedGameObjectIndex >= selectedGoSize)
+		if (hasListChanged || m_selectedGameObjectIndex >= selectedGoSize)
 		{
-			selectedGameObjectIndex = 0;
+			m_selectedGameObjectIndex = 0;
 		}
 
 		if (selectedGoSize > 0)
 		{
-			newGameObjectSelected = selectedGOs[selectedGameObjectIndex].gameObject.lock();
-			selectedGameObjectIndex++;
+			newGameObjectSelected = selectedGOs[m_selectedGameObjectIndex].gameObject.lock();
+			m_selectedGameObjectIndex++;
 		}
 
-		lastHitGameObjects = selectedGOs;
+		m_lastHitGameObjects = selectedGOs;
 	}
 
 	// Move the camera if the mouse left button is held
-	if ((InputSystem::GetKey(KeyCode::MOUSE_LEFT) && toolMode == ToolMode::Tool_MoveCamera) || InputSystem::GetKey(KeyCode::MOUSE_MIDDLE) || (ImGui::IsMouseDown(ImGuiMouseButton_Right) && mode2D))
+	if ((InputSystem::GetKey(KeyCode::MOUSE_LEFT) && toolMode == ToolMode::Tool_MoveCamera) || InputSystem::GetKey(KeyCode::MOUSE_MIDDLE) || (ImGui::IsMouseDown(ImGuiMouseButton_Right) && m_mode2D))
 	{
-		float tempCameraHandMoveSpeed = cameraHandMoveSpeed;
-		if (mode2D)
+		float tempCameraHandMoveSpeed = m_cameraHandMoveSpeed;
+		if (m_mode2D)
 			tempCameraHandMoveSpeed = 1;
 
-		const Vector3 newPos = cameraTransform->GetPosition() + (oldWorldMousePosition - worldMousePosition) * tempCameraHandMoveSpeed;
+		const Vector3 newPos = cameraTransform->GetPosition() + (m_oldWorldMousePosition - m_worldMousePosition) * tempCameraHandMoveSpeed;
 		cameraTransform->SetPosition(newPos);
 	}
 
@@ -469,13 +470,13 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 
 			//objectPosition
 			Vector3 camPosition = cameraTransform->GetPosition();
-			if (mode2D)
+			if (m_mode2D)
 				camPosition = Vector3(-worldCoords.x, -worldCoords.y, -worldCoords.z) + camPosition;
 
 			Vector3 objectRight = Vector3(1, 0, 0);
 			Vector3 objectUp = Vector3(0, 1, 0);
 			Vector3 objectForward = Vector3(0, 0, 1);
-			if (!Editor::isToolLocalMode)
+			if (!Editor::s_isToolLocalMode)
 			{
 				// Get selected gameObject directions
 				objectRight = selectedGoTransform->GetRight();
@@ -486,26 +487,26 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 			const float camDistance = Vector3::Distance(objectPosition, camPosition);
 			if (InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT))
 			{
-				side = DetectSide(camDistance, objectPosition, camPosition, mouseWorldDirNormalized, objectRight, objectUp, objectForward);
+				m_side = DetectSide(camDistance, objectPosition, camPosition, mouseWorldDirNormalized, objectRight, objectUp, objectForward);
 
-				oldTransformPosition = selectedGoTransform->GetPosition();
-				oldTransformRotation = selectedGoTransform->GetLocalEulerAngles();
-				oldTransformScale = selectedGoTransform->GetLocalScale();
+				m_oldTransformPosition = selectedGoTransform->GetPosition();
+				m_oldTransformRotation = selectedGoTransform->GetLocalEulerAngles();
+				m_oldTransformScale = selectedGoTransform->GetLocalScale();
 
 				const std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
 				if (rect)
 				{
-					oldRectTransformPosition = rect->position;
+					m_oldRectTransformPosition = rect->position;
 				}
 			}
 
-			if (InputSystem::GetKey(KeyCode::MOUSE_LEFT) && (side != Side::Side_None || toolMode == ToolMode::Tool_Rotate))
+			if (InputSystem::GetKey(KeyCode::MOUSE_LEFT) && (m_side != Side::Side_None || toolMode == ToolMode::Tool_Rotate))
 			{
 				Vector3 planeNormalX = Vector3(1, 0, 0);
 				Vector3 planeNormalY = Vector3(0, 1, 0);
 				Vector3 planeNormalZ = Vector3(0, 0, 1);
 
-				if (!Editor::isToolLocalMode && toolMode == ToolMode::Tool_Rotate)
+				if (!Editor::s_isToolLocalMode && toolMode == ToolMode::Tool_Rotate)
 				{
 					planeNormalX = objectRight;
 					planeNormalY = objectUp;
@@ -516,7 +517,7 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 				Vector3 intersectionY = Vector3(0);
 				Vector3 intersectionZ = Vector3(0);
 				Vector3 rayStartPosition = cameraTransform->GetPosition() - selectedGoTransform->GetPosition();
-				if (mode2D)
+				if (m_mode2D)
 					rayStartPosition += mouseWorldDir;
 
 				const bool isIntersectionXGood = IntersectionPoint(rayStartPosition, mouseWorldDirNormalized, planeNormalX, intersectionX);
@@ -526,11 +527,11 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 				Vector3 objectDir = Vector3(0);
 
 				// Select the right value
-				if (side == Side::Side_Right)
+				if (m_side == Side::Side_Right)
 					objectDir = objectRight;
-				else if (side == Side::Side_Up)
+				else if (m_side == Side::Side_Up)
 					objectDir = objectUp;
-				else if (side == Side::Side_Forward)
+				else if (m_side == Side::Side_Forward)
 					objectDir = objectForward;
 
 				// Get the closest point on the object axis
@@ -544,35 +545,34 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 						const std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
 						if (rect)
 						{
-							startObjectValue = Vector3(rect->position.x, rect->position.y, 0);
+							m_startObjectValue = Vector3(rect->position.x, rect->position.y, 0);
 						}
 						else
-							startObjectValue = selectedGoTransform->GetPosition();
+							m_startObjectValue = selectedGoTransform->GetPosition();
 					}
 					else if (toolMode == ToolMode::Tool_Rotate)
 						//startObjectValue = selectedGoTransform->GetLocalEulerAngles();
-						startObjectRotation = selectedGoTransform->GetLocalRotation();
+						m_startObjectRotation = selectedGoTransform->GetLocalRotation();
 					else if (toolMode == ToolMode::Tool_Scale)
-						startObjectValue = selectedGoTransform->GetLocalScale();
+						m_startObjectValue = selectedGoTransform->GetLocalScale();
 
-					startMovePosition = closestPoint;
-					finalAngle = 0;
+					m_startMovePosition = closestPoint;
+					m_finalAngle = 0;
 
-
-					allowRotation = false;
+					m_allowRotation = false;
 					if (toolMode == ToolMode::Tool_Rotate)
 					{
 						float distanceDiviser = camDistance;
-						if (mode2D)
+						if (m_mode2D)
 							distanceDiviser = camera->GetProjectionSize() * 1.5f;
 
 						const float distX = Vector3::Distance(Vector3(0), intersectionX) / distanceDiviser;
 						const float distY = Vector3::Distance(Vector3(0), intersectionY) / distanceDiviser;
 						const float distZ = Vector3::Distance(Vector3(0), intersectionZ) / distanceDiviser;
 
-						CheckAllowRotation(distX, allowRotation, isIntersectionXGood, Side::Side_Right, intersectionX);
-						CheckAllowRotation(distY, allowRotation, isIntersectionYGood, Side::Side_Up, intersectionY);
-						CheckAllowRotation(distZ, allowRotation, isIntersectionZGood, Side::Side_Forward, intersectionZ);
+						CheckAllowRotation(distX, m_allowRotation, isIntersectionXGood, Side::Side_Right, intersectionX);
+						CheckAllowRotation(distY, m_allowRotation, isIntersectionYGood, Side::Side_Up, intersectionY);
+						CheckAllowRotation(distZ, m_allowRotation, isIntersectionZGood, Side::Side_Forward, intersectionZ);
 					}
 				}
 
@@ -580,66 +580,66 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 				if (toolMode == ToolMode::Tool_Move)
 				{
 					// Calculate the value offset
-					Vector3 objectOffset = (closestPoint - startMovePosition);
+					Vector3 objectOffset = (closestPoint - m_startMovePosition);
 
 					// Snap values if needed
 					if (InputSystem::GetKey(KeyCode::LEFT_CONTROL))
 					{
-						objectOffset.x = (int)(objectOffset.x / snapAmount) * snapAmount;
-						objectOffset.y = (int)(objectOffset.y / snapAmount) * snapAmount;
-						objectOffset.z = (int)(objectOffset.z / snapAmount) * snapAmount;
+						objectOffset.x = (int)(objectOffset.x / m_snapAmount) * m_snapAmount;
+						objectOffset.y = (int)(objectOffset.y / m_snapAmount) * m_snapAmount;
+						objectOffset.z = (int)(objectOffset.z / m_snapAmount) * m_snapAmount;
 					}
 					const std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
 					if (rect)
 					{
-						rect->position.x = startObjectValue.x + objectOffset.x / (Graphics::usedCamera->GetAspectRatio() * 10.0f);
-						rect->position.y = startObjectValue.y - objectOffset.y / 10.0f;
+						rect->position.x = m_startObjectValue.x + objectOffset.x / (Graphics::usedCamera->GetAspectRatio() * 10.0f);
+						rect->position.y = m_startObjectValue.y - objectOffset.y / 10.0f;
 					}
 					else
 					{
-						selectedGoTransform->SetPosition(startObjectValue + objectOffset);
+						selectedGoTransform->SetPosition(m_startObjectValue + objectOffset);
 					}
 				}
-				else if (toolMode == ToolMode::Tool_Rotate && allowRotation)
+				else if (toolMode == ToolMode::Tool_Rotate && m_allowRotation)
 				{
 					Vector3 finalIntersection;
-					if (side == Side::Side_Right)
+					if (m_side == Side::Side_Right)
 						finalIntersection = intersectionX;
-					else if (side == Side::Side_Up)
+					else if (m_side == Side::Side_Up)
 						finalIntersection = intersectionY;
-					else if (side == Side::Side_Forward)
+					else if (m_side == Side::Side_Forward)
 						finalIntersection = intersectionZ;
 
-					if (finalIntersection != startDragPos)
+					if (finalIntersection != m_startDragPos)
 					{
-						const double angle = startDragPos.Dot(finalIntersection) / (startDragPos.Magnitude() * finalIntersection.Magnitude());
+						const double angle = m_startDragPos.Dot(finalIntersection) / (m_startDragPos.Magnitude() * finalIntersection.Magnitude());
 						float angleDeg = static_cast<float>(acos(angle) * 180.0 / Math::PI);
 						if (!std::isnan(angleDeg))
 						{
 							float crossProduct = 0;
 
-							if (side == Side::Side_Right)
-								crossProduct = startDragPos.z * finalIntersection.y - startDragPos.y * finalIntersection.z;
-							else if (side == Side::Side_Up)
-								crossProduct = startDragPos.x * finalIntersection.z - startDragPos.z * finalIntersection.x;
-							else if (side == Side::Side_Forward)
-								crossProduct = startDragPos.y * finalIntersection.x - startDragPos.x * finalIntersection.y;
+							if (m_side == Side::Side_Right)
+								crossProduct = m_startDragPos.z * finalIntersection.y - m_startDragPos.y * finalIntersection.z;
+							else if (m_side == Side::Side_Up)
+								crossProduct = m_startDragPos.x * finalIntersection.z - m_startDragPos.z * finalIntersection.x;
+							else if (m_side == Side::Side_Forward)
+								crossProduct = m_startDragPos.y * finalIntersection.x - m_startDragPos.x * finalIntersection.y;
 
-							if (side == Side::Side_Right)
+							if (m_side == Side::Side_Right)
 							{
 								if (objectRight.x < 0)
 								{
 									angleDeg *= -1;
 								}
 							}
-							else if (side == Side::Side_Up)
+							else if (m_side == Side::Side_Up)
 							{
 								if (objectUp.y < 0)
 								{
 									angleDeg *= -1;
 								}
 							}
-							else if (side == Side::Side_Forward)
+							else if (m_side == Side::Side_Forward)
 							{
 								if (objectForward.z < 0)
 								{
@@ -648,18 +648,18 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 							}
 
 							if (crossProduct < 0)
-								finalAngle += angleDeg;
+								m_finalAngle += angleDeg;
 							else
-								finalAngle -= angleDeg;
+								m_finalAngle -= angleDeg;
 
-							if (side == Side::Side_Right)
-								selectedGoTransform->SetLocalRotation(startObjectRotation * Quaternion::Euler(finalAngle, 0, 0));
-							else if (side == Side::Side_Up)
-								selectedGoTransform->SetLocalRotation(startObjectRotation * Quaternion::Euler(0, finalAngle, 0));
-							else if (side == Side::Side_Forward)
-								selectedGoTransform->SetLocalRotation(startObjectRotation * Quaternion::Euler(0, 0, finalAngle));
+							if (m_side == Side::Side_Right)
+								selectedGoTransform->SetLocalRotation(m_startObjectRotation * Quaternion::Euler(m_finalAngle, 0, 0));
+							else if (m_side == Side::Side_Up)
+								selectedGoTransform->SetLocalRotation(m_startObjectRotation * Quaternion::Euler(0, m_finalAngle, 0));
+							else if (m_side == Side::Side_Forward)
+								selectedGoTransform->SetLocalRotation(m_startObjectRotation * Quaternion::Euler(0, 0, m_finalAngle));
 						}
-						startDragPos = finalIntersection;
+						m_startDragPos = finalIntersection;
 					}
 				}
 				else if (toolMode == ToolMode::Tool_Scale)
@@ -667,70 +667,70 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 					float dotValue = 0;
 					float initialDotValue = 0;
 					float scaleAmount = 0;
-					if (side == Side::Side_Right)
+					if (m_side == Side::Side_Right)
 					{
-						initialDotValue = objectRight.Dot(startMovePosition - selectedGoTransform->GetPosition());
+						initialDotValue = objectRight.Dot(m_startMovePosition - selectedGoTransform->GetPosition());
 						dotValue = objectRight.Dot(closestPoint - selectedGoTransform->GetPosition());
 					}
-					else if (side == Side::Side_Up)
+					else if (m_side == Side::Side_Up)
 					{
-						initialDotValue = objectUp.Dot(startMovePosition - selectedGoTransform->GetPosition());
+						initialDotValue = objectUp.Dot(m_startMovePosition - selectedGoTransform->GetPosition());
 						dotValue = objectUp.Dot(closestPoint - selectedGoTransform->GetPosition());
 					}
-					else if (side == Side::Side_Forward)
+					else if (m_side == Side::Side_Forward)
 					{
-						initialDotValue = objectForward.Dot(startMovePosition - selectedGoTransform->GetPosition());
+						initialDotValue = objectForward.Dot(m_startMovePosition - selectedGoTransform->GetPosition());
 						dotValue = objectForward.Dot(closestPoint - selectedGoTransform->GetPosition());
 					}
 
 					scaleAmount = dotValue - initialDotValue;
 
-					if (side == Side::Side_Right)
-						selectedGoTransform->SetLocalScale(startObjectValue + Vector3(scaleAmount, 0, 0));
-					else if (side == Side::Side_Up)
-						selectedGoTransform->SetLocalScale(startObjectValue + Vector3(0, scaleAmount, 0));
-					else if (side == Side::Side_Forward)
-						selectedGoTransform->SetLocalScale(startObjectValue + Vector3(0, 0, scaleAmount));
+					if (m_side == Side::Side_Right)
+						selectedGoTransform->SetLocalScale(m_startObjectValue + Vector3(scaleAmount, 0, 0));
+					else if (m_side == Side::Side_Up)
+						selectedGoTransform->SetLocalScale(m_startObjectValue + Vector3(0, scaleAmount, 0));
+					else if (m_side == Side::Side_Forward)
+						selectedGoTransform->SetLocalScale(m_startObjectValue + Vector3(0, 0, scaleAmount));
 				}
 			}
 
 			if (InputSystem::GetKeyUp(KeyCode::MOUSE_LEFT))
 			{
-				if (side != Side::Side_None)
+				if (m_side != Side::Side_None)
 				{
 					if (toolMode == ToolMode::Tool_Move)
 					{
 						const std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
 						if (rect)
 						{
-							auto command = std::make_shared<InspectorRectTransformSetPositionCommand>(rect->GetUniqueId(), rect->position, oldRectTransformPosition);
+							auto command = std::make_shared<InspectorRectTransformSetPositionCommand>(rect->GetUniqueId(), rect->position, m_oldRectTransformPosition);
 							CommandManager::AddCommandAndExecute(command);
 						}
 						else 
 						{
-							auto command = std::make_shared<InspectorTransformSetPositionCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetPosition(), oldTransformPosition, false);
+							auto command = std::make_shared<InspectorTransformSetPositionCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetPosition(), m_oldTransformPosition, false);
 							CommandManager::AddCommandAndExecute(command);
 						}
 					}
 					else if (toolMode == ToolMode::Tool_Rotate)
 					{
-						auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetLocalEulerAngles(), oldTransformRotation, true);
+						auto command = std::make_shared<InspectorTransformSetRotationCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetLocalEulerAngles(), m_oldTransformRotation, true);
 						CommandManager::AddCommandAndExecute(command);
 					}
 					else if (toolMode == ToolMode::Tool_Scale)
 					{
-						auto command = std::make_shared<InspectorTransformSetLocalScaleCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetLocalScale(), oldTransformScale);
+						auto command = std::make_shared<InspectorTransformSetLocalScaleCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetLocalScale(), m_oldTransformScale);
 						CommandManager::AddCommandAndExecute(command);
 					}
 				}
-				side = Side::Side_None;
+				m_side = Side::Side_None;
 			}
 		}
 	}
 
 	if (InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT))
 	{
-		if (side == Side::Side_None)
+		if (m_side == Side::Side_None)
 		{
 			if (InputSystem::GetKey(KeyCode::LEFT_CONTROL) && newGameObjectSelected)
 			{
@@ -768,8 +768,8 @@ Vector3 SceneMenu::GetNearestPoint(const Vector3& linePos1, const Vector3& lineD
 
 void SceneMenu::Switch2DMode(bool is2D)
 {
-	mode2D = is2D;
-	if (mode2D)
+	m_mode2D = is2D;
+	if (m_mode2D)
 	{
 		weakCamera.lock()->SetProjectionType(ProjectionType::Orthographic);
 		gridAxis = 2;
@@ -808,13 +808,13 @@ void SceneMenu::Draw()
 
 	// Generate tab name
 	std::string windowName = "Scene";
-	if (isLastFrameOpened)
+	if (m_isLastFrameOpened)
 		windowName += " " + std::to_string(frameBufferSize.x) + "x" + std::to_string(frameBufferSize.y);
 	windowName += "###Scene" + std::to_string(id);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoCollapse);
-	isLastFrameOpened = visible;
+	const bool visible = ImGui::Begin(windowName.c_str(), &m_isActive, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoCollapse);
+	m_isLastFrameOpened = visible;
 	if (visible)
 	{
 		OnStartDrawing();
@@ -824,14 +824,14 @@ void SceneMenu::Draw()
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
 		{
 			ImGui::SetWindowFocus();
-			isFocused = true;
+			m_isFocused = true;
 		}
-		if (camera && (startAvailableSize.x != 0 && startAvailableSize.y != 0))
+		if (camera && (m_startAvailableSize.x != 0 && m_startAvailableSize.y != 0))
 		{
 			MoveCamera();
 
-			camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(startAvailableSize.x), static_cast<int>(startAvailableSize.y)));
-			ImGui::Image((ImTextureID)(size_t)camera->m_secondFramebufferTexture, ImVec2(startAvailableSize.x, startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
+			camera->ChangeFrameBufferSize(Vector2Int(static_cast<int>(m_startAvailableSize.x), static_cast<int>(m_startAvailableSize.y)));
+			ImGui::Image((ImTextureID)(size_t)camera->m_secondFramebufferTexture, ImVec2(m_startAvailableSize.x, m_startAvailableSize.y), ImVec2(0, 1), ImVec2(1, 0));
 
 			std::shared_ptr<FileReference> mesh = nullptr;
 			EditorUI::DragDropTarget("Files" + std::to_string((int)FileType::File_Mesh), mesh, false);
@@ -844,9 +844,9 @@ void SceneMenu::Draw()
 				Vector3 mouseWorldDirNormalized;
 				GetMouseRay(mouseWorldDir, mouseWorldDirNormalized, worldCoords, *camera);
 
-				if (draggedMeshGameObject)
+				if (m_draggedMeshGameObject)
 				{
-					draggedMeshGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
+					m_draggedMeshGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
 				}
 				else
 				{
@@ -864,7 +864,7 @@ void SceneMenu::Draw()
 						}
 						Editor::SetSelectedGameObject(newGameObject);
 						SceneManager::SetIsSceneDirty(true);
-						draggedMeshGameObject = newGameObject;
+						m_draggedMeshGameObject = newGameObject;
 					}
 					else 
 					{
@@ -879,7 +879,7 @@ void SceneMenu::Draw()
 								newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);
 								Editor::SetSelectedGameObject(newGameObject);
 								SceneManager::SetIsSceneDirty(true);
-								draggedMeshGameObject = newGameObject;
+								m_draggedMeshGameObject = newGameObject;
 							}
 							else 
 							{
@@ -891,7 +891,7 @@ void SceneMenu::Draw()
 			}
 			else
 			{
-				draggedMeshGameObject.reset();
+				m_draggedMeshGameObject.reset();
 			}
 
 			if (ImGui::IsItemHovered())
@@ -957,7 +957,7 @@ bool SceneMenu::DrawImageButton(bool enabled, const Texture& texture, const std:
 bool SceneMenu::DrawToolWindow()
 {
 	bool buttonHovered = false;
-	std::string toolModeText = "Tool mode (Camera speed: " + std::to_string(static_cast<int>(Editor::cameraSpeed)) + ")";
+	std::string toolModeText = "Tool mode (Camera speed: " + std::to_string(static_cast<int>(Editor::s_cameraSpeed)) + ")";
 	if (ImGui::CollapsingHeader(toolModeText.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		EditorUI::SetButtonColor(toolMode == ToolMode::Tool_MoveCamera);
@@ -988,12 +988,12 @@ bool SceneMenu::DrawToolWindow()
 		else if (rotateClicked)
 		{
 			toolMode = ToolMode::Tool_Rotate;
-			Editor::isToolLocalMode = false;
+			Editor::s_isToolLocalMode = false;
 		}
 		else if (scaleClicked)
 		{
 			toolMode = ToolMode::Tool_Scale;
-			Editor::isToolLocalMode = false;
+			Editor::s_isToolLocalMode = false;
 		}
 
 		if (gridClicked)
@@ -1001,10 +1001,10 @@ bool SceneMenu::DrawToolWindow()
 			Graphics::SetIsGridRenderingEnabled(!Graphics::IsGridRenderingEnabled());
 		}
 
-		EditorUI::SetButtonColor(mode2D);
+		EditorUI::SetButtonColor(m_mode2D);
 		if (ImGui::Button("2D"))
 		{
-			Switch2DMode(!mode2D);
+			Switch2DMode(!m_mode2D);
 		}
 		if (ImGui::IsItemHovered())
 		{
@@ -1014,18 +1014,18 @@ bool SceneMenu::DrawToolWindow()
 		EditorUI::SetButtonColor(false);
 		if (toolMode == ToolMode::Tool_Move)
 		{
-			if (Editor::isToolLocalMode)
+			if (Editor::s_isToolLocalMode)
 			{
 				if (ImGui::Button("Local"))
 				{
-					Editor::isToolLocalMode = false;
+					Editor::s_isToolLocalMode = false;
 				}
 			}
 			else
 			{
 				if (ImGui::Button("World"))
 				{
-					Editor::isToolLocalMode = true;
+					Editor::s_isToolLocalMode = true;
 				}
 			}
 			if (ImGui::IsItemHovered())

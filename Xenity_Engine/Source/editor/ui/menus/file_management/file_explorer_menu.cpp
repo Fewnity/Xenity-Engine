@@ -63,12 +63,12 @@ void FileExplorerMenu::OpenItem(const FileExplorerItem& item)
 
 void FileExplorerMenu::SetFileToRename(const std::shared_ptr<FileReference>& file, const std::shared_ptr<ProjectDirectory>& directory)
 {
-	fileToRename = file;
-	directoryToRename = directory;
-	if (fileToRename)
-		renamingString = fileToRename->m_file->GetFileName();
-	else if (directoryToRename)
-		renamingString = directoryToRename->GetFolderName();
+	m_fileToRename = file;
+	m_directoryToRename = directory;
+	if (m_fileToRename)
+		m_renamingString = m_fileToRename->m_file->GetFileName();
+	else if (m_directoryToRename)
+		m_renamingString = m_directoryToRename->GetFolderName();
 }
 
 void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, const int colCount, const float offset, const FileExplorerItem& item)
@@ -152,17 +152,16 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	ImGui::SetCursorPos(finalImageCursorPos);
 
-
 	if (hovered)
 	{
-		fileHovered = true;
+		m_fileHovered = true;
 	}
-	if (hovered && ((ImGui::IsMouseClicked(0) && doubleClicked) || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))) && !cancelNextClick)
+	if (hovered && ((ImGui::IsMouseClicked(0) && doubleClicked) || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1))) && !m_cancelNextClick)
 	{
 		if (doubleClicked)
 		{
 			OpenItem(item);
-			cancelNextClick = true;
+			m_cancelNextClick = true;
 		}
 		else
 		{
@@ -175,18 +174,18 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 
 	const float windowWidth = ImGui::GetContentRegionAvail().x;
 	const float textWidth = ImGui::CalcTextSize(itemName.c_str()).x;
-	if ((fileToRename == item.file && item.file) || (directoryToRename == item.directory && item.directory && !item.file))
+	if ((m_fileToRename == item.file && item.file) || (m_directoryToRename == item.directory && item.directory && !item.file))
 	{
-		if (!focusSet)
+		if (!m_focusSet)
 		{
 			ImGui::SetKeyboardFocusHere();
-			focusSet = true;
+			m_focusSet = true;
 		}
 		ImGui::SetNextItemWidth(-1);
-		ImGui::InputText(EditorUI::GenerateItemId().c_str(), &renamingString, ImGuiInputTextFlags_AutoSelectAll);
+		ImGui::InputText(EditorUI::GenerateItemId().c_str(), &m_renamingString, ImGuiInputTextFlags_AutoSelectAll);
 		if (ImGui::IsItemClicked())
 		{
-			ignoreClose = true;
+			m_ignoreClose = true;
 		}
 	}
 	else
@@ -294,12 +293,12 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 		//-
 		RightClickMenuItem* RenameItem = fileExplorerRightClickMenu.AddItem("Rename", [this, &fileExplorerItem]()
 			{
-				fileToRename = fileExplorerItem.file;
-				directoryToRename = fileExplorerItem.directory;
-				if (fileToRename)
-					renamingString = fileToRename->m_file->GetFileName();
-				else if (directoryToRename)
-					renamingString = directoryToRename->GetFolderName();
+				m_fileToRename = fileExplorerItem.file;
+				m_directoryToRename = fileExplorerItem.directory;
+				if (m_fileToRename)
+					m_renamingString = m_fileToRename->m_file->GetFileName();
+				else if (m_directoryToRename)
+					m_renamingString = m_directoryToRename->GetFolderName();
 			});
 		RenameItem->SetIsVisible(itemSelected);
 		RightClickMenuItem* openMenuItem = fileExplorerRightClickMenu.AddItem("Open", [this, &fileExplorerItem]()
@@ -365,7 +364,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 	int state = 0;
 	if (rightClickDrawn)
 	{
-		fileHovered = true;
+		m_fileHovered = true;
 		if (rightClickState == RightClickMenuState::JustOpened)
 		{
 			state = 1;
@@ -385,7 +384,7 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, c
 		std::string payloadName;
 		if (fileExplorerItem.file)
 		{
-			if (isHovered)
+			if (m_isHovered)
 				payloadName = "Files";
 			else
 				payloadName = "Files" + std::to_string((int)fileExplorerItem.file->GetFileType());
@@ -475,12 +474,12 @@ std::shared_ptr<Texture> FileExplorerMenu::GetItemIcon(const FileExplorerItem& f
 
 void FileExplorerMenu::Draw()
 {
-	fileHovered = false;
+	m_fileHovered = false;
 
 	const float iconSize = 64 * EditorUI::GetUiScale();
 	std::string windowName = "File Explorer###File_Explorer" + std::to_string(id);
 
-	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar);
+	const bool visible = ImGui::Begin(windowName.c_str(), &m_isActive, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar);
 
 	if (visible)
 	{
@@ -489,13 +488,13 @@ void FileExplorerMenu::Draw()
 		const float offset = ImGui::GetCursorPosX();
 		if (ImGui::BeginTable("explorer_table", 2, ImGuiTableFlags_None | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable))
 		{
-			ImGui::TableNextRow(0, startAvailableSize.y);
+			ImGui::TableNextRow(0, m_startAvailableSize.y);
 			ImGui::TableSetColumnIndex(0);
 			ImGui::BeginChild("explorer_table_folder_tree_child");
 			const bool treeItemClicked = EditorUI::DrawTreeItem(ProjectManager::GetProjectDirectory());
 			if (treeItemClicked)
 			{
-				fileHovered = true;
+				m_fileHovered = true;
 			}
 			ImGui::EndChild();
 			ImGui::TableSetColumnIndex(1);
@@ -531,7 +530,7 @@ void FileExplorerMenu::Draw()
 				}
 				ImGui::EndTable();
 				// Unselect file or open the popup if background is clicked
-				if (!fileHovered && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup))
+				if (!m_fileHovered && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup))
 				{
 					std::shared_ptr <ProjectDirectory> currentDir = Editor::GetCurrentProjectDirectory();
 					FileExplorerItem item;
@@ -539,9 +538,9 @@ void FileExplorerMenu::Draw()
 					const int result = CheckOpenRightClickPopupFile(item, false, "backgroundClick");
 					if (result != 0 || (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(1)))
 					{
-						if (ignoreClose)
+						if (m_ignoreClose)
 						{
-							ignoreClose = false;
+							m_ignoreClose = false;
 						}
 						else
 						{
@@ -586,7 +585,7 @@ void FileExplorerMenu::Draw()
 
 		CalculateWindowValues();
 		// Recheck for isHovered because of child windows and dragging item UI
-		isHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_ChildWindows); // Do this after CalculateWindowValues()
+		m_isHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_ChildWindows); // Do this after CalculateWindowValues()
 	}
 	else
 	{
@@ -595,7 +594,7 @@ void FileExplorerMenu::Draw()
 
 	if (ImGui::IsMouseReleased(0))
 	{
-		cancelNextClick = false;
+		m_cancelNextClick = false;
 	}
 	ImGui::End();
 }
@@ -604,40 +603,40 @@ void FileExplorerMenu::Rename()
 {
 	bool needTitleRefresh = false;
 	bool needUpdate = false;
-	if (!renamingString.empty() && fileToRename)
+	if (!m_renamingString.empty() && m_fileToRename)
 	{
 		needUpdate = true;
 
-		std::shared_ptr<File> file = fileToRename->m_file;
-		const bool success = FileSystem::Rename(file->GetPath(), file->GetFolderPath() + renamingString + file->GetFileExtension());
+		std::shared_ptr<File> file = m_fileToRename->m_file;
+		const bool success = FileSystem::Rename(file->GetPath(), file->GetFolderPath() + m_renamingString + file->GetFileExtension());
 		if (success)
 		{
-			FileSystem::Rename(file->GetPath() + ".meta", file->GetFolderPath() + renamingString + file->GetFileExtension() + ".meta");
-			if (SceneManager::GetOpenedScene() == fileToRename)
+			FileSystem::Rename(file->GetPath() + ".meta", file->GetFolderPath() + m_renamingString + file->GetFileExtension() + ".meta");
+			if (SceneManager::GetOpenedScene() == m_fileToRename)
 			{
 				needTitleRefresh = true;
 			}
 		}
-		else if(renamingString + file->GetFileExtension() != file->GetFileName() + file->GetFileExtension())
+		else if(m_renamingString + file->GetFileExtension() != file->GetFileName() + file->GetFileExtension())
 		{
 			EditorUI::OpenDialog("Error", "There is already a file with the same name in this location.", DialogType::Dialog_Type_OK);
 		}
 	}
-	else if (!renamingString.empty() && directoryToRename)
+	else if (!m_renamingString.empty() && m_directoryToRename)
 	{
 		needUpdate = true;
 
-		std::string parentPath = directoryToRename->path;
+		std::string parentPath = m_directoryToRename->path;
 		// Remove the old folder name from the path
 		const size_t lastSlash = parentPath.find_last_of('/', parentPath.size() - 2);
 		parentPath = parentPath.substr(0, lastSlash) + "/";
 
-		const bool success = FileSystem::Rename(directoryToRename->path, parentPath + renamingString + "/");
+		const bool success = FileSystem::Rename(m_directoryToRename->path, parentPath + m_renamingString + "/");
 	}
 
-	fileToRename.reset();
-	directoryToRename = nullptr;
-	focusSet = false;
+	m_fileToRename.reset();
+	m_directoryToRename = nullptr;
+	m_focusSet = false;
 
 	if (needUpdate)
 		ProjectManager::RefreshProjectDirectory();

@@ -73,6 +73,6 @@ private:
 	*/
 	static void LoadEditorIcon(IconName iconName, const std::string& path);
 
-	static std::vector<std::shared_ptr<Texture>> icons;
+	static std::vector<std::shared_ptr<Texture>> s_icons;
 };
 

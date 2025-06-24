@@ -51,10 +51,10 @@ private:
 	static void AddCommand(std::shared_ptr<Command> command);
 
 	// Size of the command history
-	static int maxCommandCount;
+	static int s_maxCommandCount;
 	// Current command index in the history
-	static int currentCommand;
+	static int s_currentCommand;
 	// Command history
-	static std::vector<std::shared_ptr<Command>> commands;
+	static std::vector<std::shared_ptr<Command>> s_commands;
 };
 

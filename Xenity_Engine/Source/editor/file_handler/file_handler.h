@@ -50,10 +50,10 @@ private:
 	*/
 	[[nodiscard]] static bool HasFileChangedOrAddedRecursive(const std::string& folderPath);
 
-	static uint64_t lastModifiedCodeFileTime;
-	static uint64_t lastModifiedFileTime;
-	static uint32_t lastFileCount;
-	static uint32_t tempFileCount;
+	static uint64_t s_lastModifiedCodeFileTime;
+	static uint64_t s_lastModifiedFileTime;
+	static uint32_t s_lastFileCount;
+	static uint32_t s_tempFileCount;
 
 	/**
 	* @brief Check if code files have changed

@@ -18,8 +18,8 @@ class DevKitControlMenu : public Menu
 public:
 	void Init() override;
 	void Draw() override;
-private:
 
+private:
 	enum class DevKitError
 	{
 		NoError,
@@ -44,9 +44,9 @@ private:
 	void LaunchGame(DevKitRunningMode devKitRunningMode);
 	void StartLogListening();
 
-	std::mutex devKitListMutex;
-	std::vector<DevKit> devKits;
-	DevKitError currentError = DevKitError::NoError;
-	int selectedDevKit = -1;
+	std::mutex m_devKitListMutex;
+	std::vector<DevKit> m_devKits;
+	DevKitError m_currentError = DevKitError::NoError;
+	int m_selectedDevKit = -1;
 };
 

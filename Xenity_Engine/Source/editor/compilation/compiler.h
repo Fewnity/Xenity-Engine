@@ -153,7 +153,7 @@ public:
 	*/
 	[[nodiscard]] static Event<CompilerParams, bool>& GetOnCompilationEndedEvent()
 	{
-		return OnCompilationEndedEvent;
+		return s_onCompilationEndedEvent;
 	}
 
 	/**
@@ -161,7 +161,7 @@ public:
 	*/
 	[[nodiscard]] static Event<CompilerParams>& GetOnCompilationStartedEvent()
 	{
-		return OnCompilationStartedEvent;
+		return s_onCompilationStartedEvent;
 	}
 
 	/**
@@ -181,11 +181,11 @@ public:
 
 	[[nodiscard]] static CompilationMethod GetCompilationMethod()
 	{
-		return compilationMethod;
+		return s_compilationMethod;
 	}
 
 private:
-	static CompilationTimings timings;
+	static CompilationTimings s_timings;
 
 	static void DeleteTempFiles(const CompilerParams& params);
 	static void CleanDestinationFolder(const std::string& exportPath);
@@ -286,13 +286,13 @@ private:
 
 	static void FixCompileShadersScript();
 
-	static Event<CompilerParams, bool> OnCompilationEndedEvent;
-	static Event<CompilerParams> OnCompilationStartedEvent;
+	static Event<CompilerParams, bool> s_onCompilationEndedEvent;
+	static Event<CompilerParams> s_onCompilationStartedEvent;
 
-	static std::string compilerExecFileName;
-	static std::string engineFolderLocation;
-	static std::string engineProjectLocation;
+	static std::string s_compilerExecFileName;
+	static std::string s_engineFolderLocation;
+	static std::string s_engineProjectLocation;
 
-	static CompilationMethod compilationMethod;
-	static bool isCompilationCancelled;
+	static CompilationMethod s_compilationMethod;
+	static bool s_isCompilationCancelled;
 };

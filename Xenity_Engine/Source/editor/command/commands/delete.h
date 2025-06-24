@@ -54,7 +54,7 @@ private:
 	GameObjectChild AddChild(GameObject& child);
 	void ReCreateChild(const GameObjectChild& child, const std::shared_ptr<GameObject>& parent);
 	void UpdateChildComponents(const GameObjectChild& child);
-	GameObjectChild gameObjectChild;
+	GameObjectChild m_gameObjectChild;
 };
 
 //----------------------------------------------------------------------------
@@ -69,28 +69,28 @@ public:
 	void Undo() override;
 	[[nodiscard]] uint64_t GetComponentId() const
 	{
-		return componentId;
+		return m_componentId;
 	}
 private:
-	uint64_t gameObjectId = 0;
-	uint64_t componentId = 0;
-	nlohmann::json componentData;
-	std::string componentName = "";
-	bool isEnabled = true;
+	uint64_t m_gameObjectId = 0;
+	uint64_t m_componentId = 0;
+	nlohmann::json m_componentData;
+	std::string m_componentName = "";
+	bool m_isEnabled = true;
 };
 
 inline InspectorDeleteComponentCommand::InspectorDeleteComponentCommand(Component& componentToDestroy)
 {
-	this->componentId = componentToDestroy.GetUniqueId();
-	this->gameObjectId = componentToDestroy.GetGameObject()->GetUniqueId();
-	this->componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroy.GetReflectiveData());
-	this->componentName = componentToDestroy.GetComponentName();
-	isEnabled = componentToDestroy.IsEnabled();
+	m_componentId = componentToDestroy.GetUniqueId();
+	m_gameObjectId = componentToDestroy.GetGameObject()->GetUniqueId();
+	m_componentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToDestroy.GetReflectiveData());
+	m_componentName = componentToDestroy.GetComponentName();
+	m_isEnabled = componentToDestroy.IsEnabled();
 }
 
 inline void InspectorDeleteComponentCommand::Execute()
 {
-	std::shared_ptr<Component> componentToDestroy = FindComponentById(componentId);
+	std::shared_ptr<Component> componentToDestroy = FindComponentById(m_componentId);
 	if (componentToDestroy)
 	{
 		Destroy(componentToDestroy);
@@ -100,13 +100,13 @@ inline void InspectorDeleteComponentCommand::Execute()
 
 inline void InspectorDeleteComponentCommand::Undo()
 {
-	std::shared_ptr<GameObject> gameObject = FindGameObjectById(gameObjectId);
+	std::shared_ptr<GameObject> gameObject = FindGameObjectById(m_gameObjectId);
 	if (gameObject)
 	{
-		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(componentName, *gameObject);
-		ReflectionUtils::JsonToReflectiveData(componentData, component->GetReflectiveData());
-		component->SetIsEnabled(isEnabled);
-		component->SetUniqueId(componentId);
+		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(m_componentName, *gameObject);
+		ReflectionUtils::JsonToReflectiveData(m_componentData, component->GetReflectiveData());
+		component->SetIsEnabled(m_isEnabled);
+		component->SetUniqueId(m_componentId);
 		component->OnReflectionUpdated();
 		SceneManager::SetIsSceneDirty(true);
 	}

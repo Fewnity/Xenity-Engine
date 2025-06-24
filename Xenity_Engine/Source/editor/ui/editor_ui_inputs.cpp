@@ -22,7 +22,7 @@ void EditorUI::DrawInputTitle(const std::string& title)
 	float lastCursorX = ImGui::GetCursorPosX();
 	ImGui::Text("%s", title.c_str());
 	ImGui::SameLine();
-	ImGui::SetCursorPosX(lastCursorX + 150 * uiScale);
+	ImGui::SetCursorPosX(lastCursorX + 150 * s_uiScale);
 	ImGui::SetNextItemWidth(-1);
 }
 

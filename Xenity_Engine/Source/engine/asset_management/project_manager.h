@@ -180,7 +180,7 @@ public:
 	*/
 	[[nodiscard]] static inline std::string GetProjectName()
 	{
-		return projectSettings.projectName;
+		return s_projectSettings.projectName;
 	}
 
 	/**
@@ -188,7 +188,7 @@ public:
 	*/
 	[[nodiscard]] static inline std::string GetGameName()
 	{
-		return projectSettings.gameName;
+		return s_projectSettings.gameName;
 	}
 
 	/**
@@ -196,7 +196,7 @@ public:
 	*/
 	[[nodiscard]] static inline std::shared_ptr<Scene> GetStartScene()
 	{
-		return projectSettings.startScene;
+		return s_projectSettings.startScene;
 	}
 
 	/**
@@ -204,7 +204,7 @@ public:
 	*/
 	[[nodiscard]] static inline const std::string& GetProjectFolderPath()
 	{
-		return projectFolderPath;
+		return s_projectFolderPath;
 	}
 
 	/**
@@ -212,7 +212,7 @@ public:
 	*/
 	[[nodiscard]] static inline const std::string& GetAssetFolderPath()
 	{
-		return assetFolderPath;
+		return s_assetFolderPath;
 	}
 
 	/**
@@ -220,7 +220,7 @@ public:
 	*/
 	[[nodiscard]] static inline const std::string& GetEngineAssetFolderPath()
 	{
-		return engineAssetsFolderPath;
+		return s_engineAssetsFolderPath;
 	}
 
 	/**
@@ -228,7 +228,7 @@ public:
 	*/
 	[[nodiscard]] static inline const std::string& GetPublicEngineAssetFolderPath()
 	{
-		return publicEngineAssetsFolderPath;
+		return s_publicEngineAssetsFolderPath;
 	}
 
 	/**
@@ -236,17 +236,17 @@ public:
 	*/
 	[[nodiscard]] static inline bool IsProjectLoaded()
 	{
-		return projectLoaded;
+		return s_projectLoaded;
 	}
 
 	[[nodiscard]] static inline ProjectState GetProjectState()
 	{
-		return projectState;
+		return s_projectState;
 	}
 
-	static inline void SetProjectState(ProjectState _projectState)
+	static inline void SetProjectState(ProjectState projectState)
 	{
-		projectState = _projectState;
+		s_projectState = projectState;
 	}
 
 	/**
@@ -282,10 +282,10 @@ public:
 	*/
 	static float GetLoadingProgress()
 	{
-		if(totalFilesCount == 0)
+		if(s_totalFilesCount == 0)
 			return 0.0f;
 
-		return (float)loadedFilesCount  / (float)totalFilesCount;
+		return (float)s_loadedFilesCount  / (float)s_totalFilesCount;
 	}
 
 	/**
@@ -319,7 +319,7 @@ public:
 	*/
 	[[nodiscard]] static std::shared_ptr<ProjectDirectory> GetProjectDirectory()
 	{
-		return projectDirectory;
+		return s_projectDirectory;
 	}
 
 	/**
@@ -327,7 +327,7 @@ public:
 	*/
 	[[nodiscard]] static inline Event<>& GetProjectLoadedEvent()
 	{
-		return projectLoadedEvent;
+		return s_projectLoadedEvent;
 	}
 
 	/**
@@ -335,19 +335,16 @@ public:
 	*/
 	[[nodiscard]] static inline Event<>& GetProjectUnloadedEvent()
 	{
-		return projectUnloadedEvent;
+		return s_projectUnloadedEvent;
 	}
 
-	static ProjectSettings projectSettings;
-	static std::shared_ptr <Directory> projectDirectoryBase;
-	static std::shared_ptr <Directory> publicEngineAssetsDirectoryBase;
-	static std::shared_ptr <Directory> additionalAssetDirectoryBase;
-	static FileDataBase fileDataBase;
+	static ProjectSettings s_projectSettings;
+	static std::shared_ptr <Directory> s_projectDirectoryBase;
+	static std::shared_ptr <Directory> s_publicEngineAssetsDirectoryBase;
+	static std::shared_ptr <Directory> s_additionalAssetDirectoryBase;
+	static FileDataBase s_fileDataBase;
+
 private:
-
-	static int loadedFilesCount;
-	static int totalFilesCount;
-
 	/**
 	* @brief Load project settings
 	*/
@@ -411,17 +408,19 @@ private:
 
 	static void CheckAndGenerateFileIds(std::vector<FileInfo>& compatibleFiles);
 
-	static std::shared_ptr<ProjectDirectory> projectDirectory;
-	static std::unordered_map<uint64_t, FileInfo> projectFilesIds;
-	static bool projectLoaded;
-	static ProjectState projectState;
-	static std::string projectFolderPath;
-	static std::string engineAssetsFolderPath;
-	static std::string publicEngineAssetsFolderPath;
-	static std::string assetFolderPath;
-	static constexpr int metaVersion = 1;
+	static std::shared_ptr<ProjectDirectory> s_projectDirectory;
+	static std::unordered_map<uint64_t, FileInfo> s_projectFilesIds;
+	static bool s_projectLoaded;
+	static ProjectState s_projectState;
+	static std::string s_projectFolderPath;
+	static std::string s_engineAssetsFolderPath;
+	static std::string s_publicEngineAssetsFolderPath;
+	static std::string s_assetFolderPath;
+	static constexpr int s_metaVersion = 1;
 
-	static Event<> projectLoadedEvent;
-	static Event<> projectUnloadedEvent;
+	static Event<> s_projectLoadedEvent;
+	static Event<> s_projectUnloadedEvent;
+	static int s_loadedFilesCount;
+	static int s_totalFilesCount;
 };
 

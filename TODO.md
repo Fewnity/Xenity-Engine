@@ -8,6 +8,7 @@
 - Add PS3 multi gamepad support
 - Add ImageRenderer for canvas
 - Add buttons for canvas
+- CTRL+Z does not work on UI elements and gizmo arrows
 
 ## Can be done for a later release
 

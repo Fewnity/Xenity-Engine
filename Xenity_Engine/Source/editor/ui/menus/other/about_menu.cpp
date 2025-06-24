@@ -17,7 +17,7 @@ void AboutMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 
-	const bool visible = ImGui::Begin("About Xenity Engine", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("About Xenity Engine", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

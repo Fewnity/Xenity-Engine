@@ -20,7 +20,7 @@ std::string FileReference::ReadString() const
 		m_file->Close();
 	}
 #else
-	unsigned char* binData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
+	unsigned char* binData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
 	string = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
 	free(binData);
 #endif
@@ -41,7 +41,7 @@ unsigned char* FileReference::ReadBinary(size_t& size) const
 		size = fileBufferSize;
 	}
 #else
-	fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
+	fileData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
 	size = m_fileSize;
 #endif
 

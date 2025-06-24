@@ -43,7 +43,7 @@ public:
 	*/
 	void SetTitle(const std::string& title) 
 	{
-		this->text = title;
+		m_text = title;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public:
 	*/
 	void SetIsEnabled(const bool isEnabled) 
 	{
-		this->isEnabled = isEnabled;
+		m_isEnabled = isEnabled;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public:
 	*/
 	void SetIsVisible(const bool isVisible) 
 	{
-		this->isVisible = isVisible;
+		m_isVisible = isVisible;
 	}
 
 	/**
@@ -69,7 +69,7 @@ public:
 	*/
 	[[nodiscard]] const std::string& GetTitle() const
 	{
-		return text;
+		return m_text;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public:
 	*/
 	[[nodiscard]] bool IsEnabled() const
 	{
-		return isEnabled;
+		return m_isEnabled;
 	}
 
 	/**
@@ -85,16 +85,16 @@ public:
 	*/
 	[[nodiscard]] bool GetIsVisible() const
 	{
-		return isVisible;
+		return m_isVisible;
 	}
 
 	std::vector<RightClickMenuItem*> onHoverItems;
 	std::function<void()> onClicked;
 
 private:
-	std::string text;
-	bool isEnabled = true;
-	bool isVisible = true;
+	std::string m_text;
+	bool m_isEnabled = true;
+	bool m_isVisible = true;
 };
 
 class RightClickMenu
@@ -133,6 +133,7 @@ public:
 	RightClickMenuItem* AddItem(const std::string& title);
 
 	std::vector<RightClickMenuItem*> items;
+
 private:
 
 	/**
@@ -141,8 +142,8 @@ private:
 	*/
 	void DrawRecursive(const RightClickMenuItem& item) const;
 
-	static bool isDrawn;
-	static std::string isDrawnName;
-	static bool isFocusCorrect;
-	std::string nameId;
+	static bool s_isDrawn;
+	static std::string s_isDrawnName;
+	static bool s_isFocusCorrect;
+	std::string m_nameId;
 };

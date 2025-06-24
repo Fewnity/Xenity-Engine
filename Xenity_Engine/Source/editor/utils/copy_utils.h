@@ -28,6 +28,6 @@ public:
 	static void AddCopyEntry(bool isFolder, const std::string& source, const std::string& dest);
 
 private:
-	static std::vector<CopyEntry> copyEntries;
+	static std::vector<CopyEntry> s_copyEntries;
 };
 

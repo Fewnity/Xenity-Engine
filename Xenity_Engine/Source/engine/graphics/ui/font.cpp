@@ -89,7 +89,7 @@ bool Font::CreateFont(Font& font)
 #else
 	const size_t fileBufferSize = m_fileSize;
 	unsigned char* fileData = nullptr;
-	fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(m_filePosition, fileBufferSize);
+	fileData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(m_filePosition, fileBufferSize);
 	if (FT_New_Memory_Face(ft, fileData, static_cast<FT_Long>(fileBufferSize), 0, &face))
 	{
 		Debug::PrintError("[Font::CreateFont] Failed to load font from memory", true);

@@ -77,7 +77,7 @@ void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChild& chil
 
 InspectorDeleteGameObjectCommand::InspectorDeleteGameObjectCommand(GameObject& gameObjectToDestroy)
 {
-	gameObjectChild = AddChild(gameObjectToDestroy);
+	m_gameObjectChild = AddChild(gameObjectToDestroy);
 	//this->gameObjectId = gameObjectToDestroyLock->GetUniqueId();
 	//this->gameObjectData["Values"] = ReflectionUtils::ReflectiveDataToJson(gameObjectToDestroyLock->GetReflectiveData());
 	//this->componentName = componentToDestroyLock->GetComponentName();
@@ -86,7 +86,7 @@ InspectorDeleteGameObjectCommand::InspectorDeleteGameObjectCommand(GameObject& g
 
 void InspectorDeleteGameObjectCommand::Execute()
 {
-	std::shared_ptr<GameObject> gameObjectToDestroy = FindGameObjectById(gameObjectChild.gameObjectId);
+	std::shared_ptr<GameObject> gameObjectToDestroy = FindGameObjectById(m_gameObjectChild.gameObjectId);
 	if (gameObjectToDestroy)
 	{
 		Destroy(gameObjectToDestroy);
@@ -97,13 +97,13 @@ void InspectorDeleteGameObjectCommand::Execute()
 void InspectorDeleteGameObjectCommand::Undo()
 {
 	std::shared_ptr<GameObject> parentGameObject = nullptr;
-	if (gameObjectChild.parentGameObjectId != 0)
+	if (m_gameObjectChild.parentGameObjectId != 0)
 	{
-		parentGameObject = FindGameObjectById(gameObjectChild.parentGameObjectId);
+		parentGameObject = FindGameObjectById(m_gameObjectChild.parentGameObjectId);
 	}
 
-	ReCreateChild(gameObjectChild, parentGameObject);
-	UpdateChildComponents(gameObjectChild);
+	ReCreateChild(m_gameObjectChild, parentGameObject);
+	UpdateChildComponents(m_gameObjectChild);
 	/*std::shared_ptr<GameObject> gameObject = CreateGameObject();
 	ReflectionUtils::JsonToReflectiveData(gameObjectData, gameObject->GetReflectiveData());
 	gameObject->OnReflectionUpdated();

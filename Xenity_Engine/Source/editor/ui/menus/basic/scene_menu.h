@@ -65,30 +65,30 @@ private:
 
 	void CheckAllowRotation(float dist, bool& allowRotation, bool isIntersectionGood, Side sideToCheck, const Vector3& intersection);
 
-	std::weak_ptr<GameObject> cameraGO;
-	bool isLastFrameOpened = false;
-	Vector3 oldWorldMousePosition;
-	Vector3 worldMousePosition;
-	Vector3 startMovePosition;
-	Vector3 startObjectValue;
-	Quaternion startObjectRotation;
-	Side side = Side::Side_None;
-	float snapAmount = 1.0f;
-	float cameraHandMoveSpeed = 200.0f;
+	std::weak_ptr<GameObject> m_cameraGO;
+	bool m_isLastFrameOpened = false;
+	Vector3 m_oldWorldMousePosition;
+	Vector3 m_worldMousePosition;
+	Vector3 m_startMovePosition;
+	Vector3 m_startObjectValue;
+	Quaternion m_startObjectRotation;
+	Side m_side = Side::Side_None;
+	float m_snapAmount = 1.0f;
+	float m_cameraHandMoveSpeed = 200.0f;
 
-	Vector3 startDragPos = Vector3(0);
+	Vector3 m_startDragPos = Vector3(0);
 
-	bool mode2D = false;
-	float finalAngle = 0;
-	bool allowRotation = false;
+	bool m_mode2D = false;
+	float m_finalAngle = 0;
+	bool m_allowRotation = false;
 	void Switch2DMode(bool is2D);
-	Vector3 oldTransformPosition;
-	Vector2 oldRectTransformPosition;
-	Vector3 oldTransformRotation;
-	Vector3 oldTransformScale;
-	std::shared_ptr<GameObject> draggedMeshGameObject;
-	float lastScaleDot = 0;
-	int selectedGameObjectIndex = 0;
-	std::vector<HitGameObjectInfo> lastHitGameObjects;
+	Vector3 m_oldTransformPosition;
+	Vector2 m_oldRectTransformPosition;
+	Vector3 m_oldTransformRotation;
+	Vector3 m_oldTransformScale;
+	std::shared_ptr<GameObject> m_draggedMeshGameObject;
+	float m_lastScaleDot = 0;
+	int m_selectedGameObjectIndex = 0;
+	std::vector<HitGameObjectInfo> m_lastHitGameObjects;
 };
 

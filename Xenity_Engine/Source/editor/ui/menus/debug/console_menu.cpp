@@ -29,12 +29,12 @@ void ConsoleMenu::Init()
 
 void ConsoleMenu::OnNewDebug(const std::string& text, DebugType debugType)
 {
-	needUpdateScrool = 1;
+	m_needUpdateScrool = 1;
 }
 
 void ConsoleMenu::OnPlay()
 {
-	if (clearOnPlay)
+	if (m_clearOnPlay)
 		Debug::ClearDebugLogs();
 }
 
@@ -42,7 +42,7 @@ void ConsoleMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 	const std::string windowName = "Console###Console" + std::to_string(id);
-	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -51,17 +51,17 @@ void ConsoleMenu::Draw()
 		ImGui::SetCursorPosY(startCusorPos.y * 2);
 		const size_t historyCount = Debug::s_debugMessageHistory.size();
 
-		if (needUpdateScrool != 0)
-			needUpdateScrool++;
+		if (m_needUpdateScrool != 0)
+			m_needUpdateScrool++;
 
-		if (needUpdateScrool >= 6)
+		if (m_needUpdateScrool >= 6)
 		{
-			needUpdateScrool = 0;
-			ImGui::SetNextWindowScroll(ImVec2(-1, maxScrollSize));
+			m_needUpdateScrool = 0;
+			ImGui::SetNextWindowScroll(ImVec2(-1, m_maxScrollSize));
 		}
 
 		ImGui::BeginChild("ConsoleMenuChild");
-		if (consoleMode)
+		if (m_consoleMode)
 		{
 			ImGui::Text("%s", Debug::GetDebugString().c_str());
 			RightClickMenu rightClickMenu = RightClickMenu("ConsoleMenuRightClick");
@@ -81,19 +81,19 @@ void ConsoleMenu::Draw()
 				ImVec4 color = ImVec4(1, 1, 1, 1);
 				if (history.type == DebugType::Log)
 				{
-					if (!showLogs)
+					if (!m_showLogs)
 						continue;
 				}
 				else if (history.type == DebugType::Warning)
 				{
-					if (!showWarnings)
+					if (!m_showWarnings)
 						continue;
 
 					color = ImVec4(1, 1, 0, 1);
 				}
 				else if (history.type == DebugType::Error)
 				{
-					if (!showErrors)
+					if (!m_showErrors)
 						continue;
 
 					color = ImVec4(1, 0, 0, 1);
@@ -111,25 +111,25 @@ void ConsoleMenu::Draw()
 				rightClickMenu.Draw();
 			}
 		}
-		if (needUpdateScrool == 5)
+		if (m_needUpdateScrool == 5)
 		{
-			if (ImGui::GetScrollY() != maxScrollSize)
+			if (ImGui::GetScrollY() != m_maxScrollSize)
 			{
-				needUpdateScrool = 0;
+				m_needUpdateScrool = 0;
 			}
-			maxScrollSize = ImGui::GetScrollMaxY();
+			m_maxScrollSize = ImGui::GetScrollMaxY();
 		}
 		ImGui::EndChild();
 
 		ImGui::SetCursorPos(startCusorPos);
 		ImGui::BeginChild("ConsoleMenuChild2", ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
 		std::string modeButtonText = "Console mode";
-		if (consoleMode)
+		if (m_consoleMode)
 			modeButtonText = "List mode";
 
 		if (ImGui::Button(modeButtonText.c_str()))
 		{
-			consoleMode = !consoleMode;
+			m_consoleMode = !m_consoleMode;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Clear"))
@@ -137,36 +137,36 @@ void ConsoleMenu::Draw()
 			Debug::ClearDebugLogs();
 		}
 		ImGui::SameLine();
-		EditorUI::SetButtonColor(clearOnPlay);
+		EditorUI::SetButtonColor(m_clearOnPlay);
 		if (ImGui::Button("Clear on play"))
 		{
-			clearOnPlay = !clearOnPlay;
+			m_clearOnPlay = !m_clearOnPlay;
 		}
 		EditorUI::EndButtonColor();
 
-		if (!consoleMode)
+		if (!m_consoleMode)
 		{
 			ImGui::SameLine();
-			EditorUI::SetButtonColor(showLogs);
+			EditorUI::SetButtonColor(m_showLogs);
 			if (ImGui::Button("Show Logs"))
 			{
-				showLogs = !showLogs;
+				m_showLogs = !m_showLogs;
 			}
 			EditorUI::EndButtonColor();
 
 			ImGui::SameLine();
-			EditorUI::SetButtonColor(showWarnings);
+			EditorUI::SetButtonColor(m_showWarnings);
 			if (ImGui::Button("Show Warnings"))
 			{
-				showWarnings = !showWarnings;
+				m_showWarnings = !m_showWarnings;
 			}
 			EditorUI::EndButtonColor();
 
 			ImGui::SameLine();
-			EditorUI::SetButtonColor(showErrors);
+			EditorUI::SetButtonColor(m_showErrors);
 			if (ImGui::Button("Show Errors"))
 			{
-				showErrors = !showErrors;
+				m_showErrors = !m_showErrors;
 			}
 			EditorUI::EndButtonColor();
 		}

@@ -17,7 +17,7 @@ void UpdateAvailableMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 
-	const bool visible = ImGui::Begin("Update Available!", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Update Available!", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();

@@ -20,13 +20,13 @@ void ProjectSettingsMenu::Init()
 void ProjectSettingsMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
-	const bool visible = ImGui::Begin("Project Settings", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Project Settings", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
 
 		ReflectiveDataToDraw reflectiveDataToDraw = EditorUI::CreateReflectiveDataToDraw(AssetPlatform::AP_Standalone);
-		EditorUI::DrawReflectiveData(reflectiveDataToDraw, ProjectManager::projectSettings.GetReflectiveData(), nullptr);
+		EditorUI::DrawReflectiveData(reflectiveDataToDraw, ProjectManager::s_projectSettings.GetReflectiveData(), nullptr);
 		if (reflectiveDataToDraw.command)
 		{
 			CommandManager::AddCommandAndExecute(reflectiveDataToDraw.command);

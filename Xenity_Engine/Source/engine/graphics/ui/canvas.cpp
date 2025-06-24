@@ -88,9 +88,9 @@ void Canvas::OnDrawGizmos()
 #if defined(EDITOR)
 	float aspect = Graphics::usedCamera->GetAspectRatio();
 
-	if (Editor::lastFocusedGameMenu.lock() != nullptr)
+	if (Editor::s_lastFocusedGameMenu.lock() != nullptr)
 	{
-		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::lastFocusedGameMenu.lock())->lastSize;
+		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::s_lastFocusedGameMenu.lock())->lastSize;
 		aspect = windowsSize.x / windowsSize.y;
 	}
 

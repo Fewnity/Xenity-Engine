@@ -80,13 +80,13 @@ std::string Application::GetGameDataFolder()
 {
 	std::string folder = "";
 #if defined(__vita__)
-	if (ProjectManager::projectSettings.gameName.empty())
+	if (ProjectManager::s_projectSettings.gameName.empty())
 	{
 		folder = "ux0:/data/xenity_engine/";
 	}
 	else
 	{
-		folder = "ux0:/data/" + ProjectManager::projectSettings.gameName + "/";
+		folder = "ux0:/data/" + ProjectManager::s_projectSettings.gameName + "/";
 	}
 #else
 	folder = GetGameFolder();
@@ -148,10 +148,10 @@ std::string Application::GetXenityVersion()
 
 std::string Application::GetGameName()
 {
-	return ProjectManager::projectSettings.gameName;
+	return ProjectManager::s_projectSettings.gameName;
 }
 
 std::string Application::GetCompanyName()
 {
-	return ProjectManager::projectSettings.companyName;
+	return ProjectManager::s_projectSettings.companyName;
 }

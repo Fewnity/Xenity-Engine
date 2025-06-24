@@ -8,8 +8,6 @@
 
 #include "asset_management/asset_manager.h"
 
-using json = nlohmann::json;
-
 MissingScript::MissingScript()
 {
 	AssetManager::AddReflection(this);

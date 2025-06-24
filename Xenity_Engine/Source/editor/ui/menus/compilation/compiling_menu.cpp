@@ -24,9 +24,9 @@ void CompilingMenu::Init()
 
 void CompilingMenu::Draw()
 {
-	if (popupState == CompilingPupopState::Opening)
+	if (m_popupState == CompilingPupopState::Opening)
 	{
-		popupState = CompilingPupopState::Closing;
+		m_popupState = CompilingPupopState::Closing;
 		ImGui::OpenPopup("Compiling...");
 	}
 
@@ -44,7 +44,7 @@ void CompilingMenu::Draw()
 				Compiler::CancelCompilation();
 			}
 		}
-		if (popupState == CompilingPupopState::Closed)
+		if (m_popupState == CompilingPupopState::Closed)
 		{
 			ImGui::CloseCurrentPopup();
 		}
@@ -54,10 +54,10 @@ void CompilingMenu::Draw()
 
 void CompilingMenu::OpenPopup(CompilerParams params)
 {
-	popupState = CompilingPupopState::Opening;
+	m_popupState = CompilingPupopState::Opening;
 }
 
 void CompilingMenu::ClosePopup(CompilerParams params, bool result)
 {
-	popupState = CompilingPupopState::Closed;
+	m_popupState = CompilingPupopState::Closed;
 }

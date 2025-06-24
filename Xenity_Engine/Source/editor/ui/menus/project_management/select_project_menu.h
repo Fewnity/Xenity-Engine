@@ -30,9 +30,9 @@ private:
 	void ShowProjectError(ProjectLoadingErrors error);
 	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const uint32_t& bg_col, const uint32_t& fg_col);
 
-	std::vector<ProjectListItem> projectsList;
-	ProjectListItem* selectedProject = nullptr;
-	ProjectListItem* projectToLoad = nullptr;
-	std::thread loadingThread;
+	std::vector<ProjectListItem> m_projectsList;
+	ProjectListItem* m_selectedProject = nullptr;
+	ProjectListItem* m_projectToLoad = nullptr;
+	std::thread m_loadingThread;
 };
 

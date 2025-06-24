@@ -39,7 +39,7 @@ void DataBaseCheckerMenu::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(600, 250), ImGuiCond_FirstUseEver);
 
-	const bool visible = ImGui::Begin("Database Checker", &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin("Database Checker", &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -50,83 +50,83 @@ void DataBaseCheckerMenu::Draw()
 			if (!path.empty())
 			{
 				const std::string binaryFilePath = EditorUI::OpenFileDialog("Load data.xenb", "");
-				wrongDbLoaded = false;
-				loaded = false;
-				db = std::make_unique<FileDataBase>();
+				m_wrongDbLoaded = false;
+				m_loaded = false;
+				m_db = std::make_unique<FileDataBase>();
 				try
 				{
-					if (db->LoadFromFile(path)) 
+					if (m_db->LoadFromFile(path))
 					{
-						if (db->GetBitFile().Open(binaryFilePath)) 
+						if (m_db->GetBitFile().Open(binaryFilePath))
 						{
-							integrityState = db->CheckIntegrity();
-							db->GetBitFile().Close();
-							loaded = true;
+							m_integrityState = m_db->CheckIntegrity();
+							m_db->GetBitFile().Close();
+							m_loaded = true;
 						}
 					}
 				}
 				catch (const std::exception&)
 				{
-					wrongDbLoaded = true;
+					m_wrongDbLoaded = true;
 				}
 			}
 		}
 		ImGui::Separator();
 
-		if (wrongDbLoaded)
+		if (m_wrongDbLoaded)
 		{
 			ImGui::TextColored(ImVec4(1, 0, 0, 1), "Selected file is not a database");
 		}
 
-		if (loaded)
+		if (m_loaded)
 		{
 			ImGui::Text("Integrity State:");
-			if (integrityState == IntegrityState::Integrity_Ok)
+			if (m_integrityState == IntegrityState::Integrity_Ok)
 			{
 				ImGui::TextColored(ImVec4(0, 1, 0, 1), "Ok");
 			}
 			else
 			{
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Error_Non_Unique_Ids))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Error_Non_Unique_Ids))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Non unique ids found");
 				}
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Has_Wrong_Type_Files))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Has_Wrong_Type_Files))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "File with wrong type found");
 				}
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Has_Empty_Path))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Has_Empty_Path))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "File with an empty path found");
 				}
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_File_Position))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_File_Position))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "File with wrong position found");
 				}
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_File_Size))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_File_Size))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "File with wrong size found");
 				}
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_File_Position))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_File_Position))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Meta file with wrong size found");
 				}
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_Meta_File_Size))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_Meta_File_Size))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "Meta file with wrong position found");
 				}
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_Bit_File_Size))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Wrong_Bit_File_Size))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "The bit file size does not match");
 				}
-				if (static_cast<int>(integrityState) & static_cast<int>(IntegrityState::Integrity_Empty))
+				if (static_cast<int>(m_integrityState) & static_cast<int>(IntegrityState::Integrity_Empty))
 				{
 					ImGui::TextColored(ImVec4(1, 0, 0, 1), "The bit file is empty");
 				}
 			}
 
 			ImGui::Text("Entry list");
-			if (db)
+			if (m_db)
 			{
 				if (ImGui::BeginTable("meta_file_table", 7, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_Resizable))
 				{
@@ -140,7 +140,7 @@ void DataBaseCheckerMenu::Draw()
 					ImGui::TableSetupScrollFreeze(0, 1);
 					ImGui::TableHeadersRow();
 
-					std::vector<FileDataBaseEntry*> entries = db->GetFileList();
+					std::vector<FileDataBaseEntry*> entries = m_db->GetFileList();
 					for (auto entry : entries)
 					{
 						ImGui::TableNextRow(0, 0);

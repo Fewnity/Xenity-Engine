@@ -24,7 +24,7 @@ SelectProjectMenu::SelectProjectMenu()
 
 void SelectProjectMenu::Init()
 {
-	projectsList = ProjectManager::GetProjectsList();
+	m_projectsList = ProjectManager::GetProjectsList();
 }
 
 // Code from https://github.com/ocornut/imgui/issues/1901
@@ -114,7 +114,7 @@ void SelectProjectMenu::Draw()
 
 		if (ImGui::Button("Create project"))
 		{
-			Editor::currentMenu = MenuGroup::Menu_Create_Project;
+			Editor::s_currentMenu = MenuGroup::Menu_Create_Project;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Load project"))
@@ -156,10 +156,10 @@ void SelectProjectMenu::OnLoadButtonClick()
 		{
 			// Check if the project is already in the opened projects list
 			bool projectAlreadyInList = false;
-			const size_t projectsCount = projectsList.size();
+			const size_t projectsCount = m_projectsList.size();
 			for (size_t i = 0; i < projectsCount; i++)
 			{
-				if (projectsList[i].path == projectPath)
+				if (m_projectsList[i].path == projectPath)
 				{
 					projectAlreadyInList = true;
 					break;
@@ -173,12 +173,12 @@ void SelectProjectMenu::OnLoadButtonClick()
 				ProjectListItem newProjectListItem;
 				newProjectListItem.name = ProjectManager::GetProjectName();
 				newProjectListItem.path = projectPath;
-				projectsList.push_back(newProjectListItem);
+				m_projectsList.push_back(newProjectListItem);
 
-				ProjectManager::SaveProjectsList(projectsList);
+				ProjectManager::SaveProjectsList(m_projectsList);
 			}
 
-			Editor::currentMenu = MenuGroup::Menu_Editor;
+			Editor::s_currentMenu = MenuGroup::Menu_Editor;
 		}
 		else
 		{
@@ -200,10 +200,10 @@ void SelectProjectMenu::DrawProjectsList()
 		ImGui::BeginDisabled();
 	}
 
-	size_t projectListSize = projectsList.size();
+	size_t projectListSize = m_projectsList.size();
 	for (size_t i = 0; i < projectListSize; i++)
 	{
-		ProjectListItem& project = projectsList[i];
+		ProjectListItem& project = m_projectsList[i];
 		ImGui::BeginGroup();
 		ImVec2 cursorPos = ImGui::GetCursorPos();
 		ImGui::Text("%s", project.name.c_str());
@@ -213,12 +213,12 @@ void SelectProjectMenu::DrawProjectsList()
 		ImGui::SetCursorPos(ImVec2(availWidth - 50, cursorPos.y + 15));
 		if (ImGui::Button((std::string("...") + EditorUI::GenerateItemId()).c_str()))
 		{
-			selectedProject = &project;
-			ImGui::OpenPopup(std::to_string(*(size_t*)selectedProject).c_str());
+			m_selectedProject = &project;
+			ImGui::OpenPopup(std::to_string(*(size_t*)m_selectedProject).c_str());
 		}
-		if (selectedProject == &project)
+		if (m_selectedProject == &project)
 		{
-			if (ImGui::BeginPopup(std::to_string(*(size_t*)selectedProject).c_str()))
+			if (ImGui::BeginPopup(std::to_string(*(size_t*)m_selectedProject).c_str()))
 			{
 				if (ImGui::MenuItem("Remove from list"))
 				{
@@ -229,7 +229,7 @@ void SelectProjectMenu::DrawProjectsList()
 						i--;
 						projectListSize--;
 					}
-					selectedProject = nullptr;
+					m_selectedProject = nullptr;
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::MenuItem("Delete"))
@@ -241,7 +241,7 @@ void SelectProjectMenu::DrawProjectsList()
 						i--;
 						projectListSize--;
 					}
-					selectedProject = nullptr;
+					m_selectedProject = nullptr;
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::EndPopup();
@@ -253,23 +253,23 @@ void SelectProjectMenu::DrawProjectsList()
 		{
 			if (ProjectManager::GetProjectState() == ProjectState::NotLoaded)
 			{
-				projectToLoad = &project;
-				loadingThread = std::thread([this, project]()
+				m_projectToLoad = &project;
+				m_loadingThread = std::thread([this, project]()
 					{
 						ProjectLoadingErrors result = ProjectManager::LoadProject(project.path);
 						if (result != ProjectLoadingErrors::Success)
 						{
 							ShowProjectError(result);
 						}
-						loadingThread.detach();
+						m_loadingThread.detach();
 					});
 			}
 		}
-		if (projectToLoad == &project)
+		if (m_projectToLoad == &project)
 		{
 			if (ProjectManager::GetProjectState() == ProjectState::NotLoaded && !buttonClicked)
 			{
-				projectToLoad = nullptr;
+				m_projectToLoad = nullptr;
 			}
 			else 
 			{
@@ -290,7 +290,7 @@ void SelectProjectMenu::DrawProjectsList()
 
 void SelectProjectMenu::DeleteProject(size_t projectIndex, bool deleteFiles)
 {
-	ProjectListItem& project = projectsList[projectIndex];
+	ProjectListItem& project = m_projectsList[projectIndex];
 	if (deleteFiles && std::filesystem::exists(project.path))
 	{
 		try
@@ -301,8 +301,8 @@ void SelectProjectMenu::DeleteProject(size_t projectIndex, bool deleteFiles)
 		{
 		}
 	}
-	projectsList.erase(projectsList.begin() + projectIndex);
-	ProjectManager::SaveProjectsList(projectsList);
+	m_projectsList.erase(m_projectsList.begin() + projectIndex);
+	ProjectManager::SaveProjectsList(m_projectsList);
 }
 
 void SelectProjectMenu::ShowProjectError(ProjectLoadingErrors error)

@@ -138,7 +138,7 @@ void MainBarMenu::Draw()
 		if (ImGui::MenuItem("Close project", nullptr, nullptr, isGameStopped))
 		{
 			ProjectManager::UnloadProject();
-			Editor::currentMenu = MenuGroup::Menu_Select_Project;
+			Editor::s_currentMenu = MenuGroup::Menu_Select_Project;
 		}
 		if (ImGui::MenuItem("Exit", nullptr, nullptr, isGameStopped))
 		{
@@ -553,11 +553,11 @@ void MainBarMenu::Draw()
 		Editor::GetMenu<UpdateAvailableMenu>()->Focus();
 	}
 	ImGui::PopStyleColor();
-	height = ImGui::GetWindowHeight();
+	m_height = ImGui::GetWindowHeight();
 	ImGui::EndMainMenuBar();
 
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + height));
+	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + m_height));
 	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 0));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 4));
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -565,7 +565,7 @@ void MainBarMenu::Draw()
 	style.WindowBorderSize = 0;
 	ImGui::Begin("undermainbar", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-	height += ImGui::GetWindowHeight();
+	m_height += ImGui::GetWindowHeight();
 	
 	const float oldFramePadding = style.FramePadding.x;
 	style.FramePadding.x = 14;

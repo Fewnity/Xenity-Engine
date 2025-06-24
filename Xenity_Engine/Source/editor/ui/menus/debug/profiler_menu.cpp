@@ -29,15 +29,15 @@ void ProfilerMenu::Draw()
 	UpdateFpsCounter();
 	UpdateMemoryCounter();
 	const std::string windowName = "Profiling###Profiling" + std::to_string(id);
-	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
 
-		const std::string fpsText = "FPS: " + std::to_string(lastFps) + "###FPS_COUNTER";
-		ImGui::PlotLines(fpsText.c_str(), fpsHistory, FPS_HISTORY_SIZE, 0, "", 0);
+		const std::string fpsText = "FPS: " + std::to_string(m_lastFps) + "###FPS_COUNTER";
+		ImGui::PlotLines(fpsText.c_str(), m_fpsHistory, FPS_HISTORY_SIZE, 0, "", 0);
 
-		ImGui::Text("FPS average: %0.2f, average frame time %0.2fms", fpsAVG, (1 / fpsAVG) * 1000);
+		ImGui::Text("FPS average: %0.2f, average frame time %0.2fms", m_fpsAVG, (1 / m_fpsAVG) * 1000);
 
 		ImGui::Text("DrawCalls Count: %d", Performance::GetDrawCallCount());
 		ImGui::Text("Triangles Count: %d", Performance::GetDrawTrianglesCount());
@@ -61,47 +61,47 @@ void ProfilerMenu::UpdateFpsCounter()
 	const ImGuiIO& io = ImGui::GetIO();
 
 	//Update timer to slowly update framerate
-	nextFpsUpdate += Time::GetUnscaledDeltaTime();
-	if (nextFpsUpdate >= 0.06f)
+	m_nextFpsUpdate += Time::GetUnscaledDeltaTime();
+	if (m_nextFpsUpdate >= 0.06f)
 	{
-		nextFpsUpdate = 0;
-		lastFps = io.Framerate;
+		m_nextFpsUpdate = 0;
+		m_lastFps = io.Framerate;
 	}
 
 	// If the counter history is empty, fill the counter with the current frame rate
-	if (!counterInitialised)
+	if (!m_counterInitialised)
 	{
-		counterInitialised = true;
+		m_counterInitialised = true;
 		for (int i = 0; i < FPS_HISTORY_SIZE; i++)
 		{
-			fpsHistory[i] = io.Framerate;
+			m_fpsHistory[i] = io.Framerate;
 		}
 	}
 
 	// Move history and make an average
-	fpsAVG = 0;
+	m_fpsAVG = 0;
 	for (int i = 0; i < FPS_HISTORY_SIZE - 1; i++)
 	{
-		fpsAVG += fpsHistory[i];
-		fpsHistory[i] = fpsHistory[i + 1];
+		m_fpsAVG += m_fpsHistory[i];
+		m_fpsHistory[i] = m_fpsHistory[i + 1];
 	}
-	fpsAVG /= FPS_HISTORY_SIZE - 1;
-	fpsHistory[FPS_HISTORY_SIZE - 1] = lastFps;
+	m_fpsAVG /= FPS_HISTORY_SIZE - 1;
+	m_fpsHistory[FPS_HISTORY_SIZE - 1] = m_lastFps;
 }
 
 void ProfilerMenu::UpdateMemoryCounter()
 {
 	for (int i = 0; i < USED_MEMORY_HISTORY_SIZE - 1; i++)
 	{
-		usedMemoryHistory[i] = usedMemoryHistory[i + 1];
+		m_usedMemoryHistory[i] = m_usedMemoryHistory[i + 1];
 	}
-	usedMemoryHistory[USED_MEMORY_HISTORY_SIZE - 1] = static_cast<float>(MemoryInfo::GetUsedMemory() / 1000);
+	m_usedMemoryHistory[USED_MEMORY_HISTORY_SIZE - 1] = static_cast<float>(MemoryInfo::GetUsedMemory() / 1000);
 
 	for (int i = 0; i < USED_VIDE_MEMORY_HISTORY_SIZE - 1; i++)
 	{
-		usedVideoMemoryHistory[i] = usedVideoMemoryHistory[i + 1];
+		m_usedVideoMemoryHistory[i] = m_usedVideoMemoryHistory[i + 1];
 	}
-	usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE - 1] = static_cast<float>(MemoryInfo::GetUsedVideoMemory() / 1000);
+	m_usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE - 1] = static_cast<float>(MemoryInfo::GetUsedVideoMemory() / 1000);
 }
 
 void ProfilerMenu::DrawMemoryStats()
@@ -109,14 +109,14 @@ void ProfilerMenu::DrawMemoryStats()
 	if (ImGui::CollapsingHeader("Memory stats", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
 		ImGui::Text("Used memory:");
-		const std::string usedMemoryText = std::to_string((size_t)usedMemoryHistory[USED_MEMORY_HISTORY_SIZE - 1]) + " KiloBytes" + "###USED_MEMORY_COUNTER";
-		ImGui::PlotLines(usedMemoryText.c_str(), usedMemoryHistory, USED_MEMORY_HISTORY_SIZE, 0, "", 0);
+		const std::string usedMemoryText = std::to_string((size_t)m_usedMemoryHistory[USED_MEMORY_HISTORY_SIZE - 1]) + " KiloBytes" + "###USED_MEMORY_COUNTER";
+		ImGui::PlotLines(usedMemoryText.c_str(), m_usedMemoryHistory, USED_MEMORY_HISTORY_SIZE, 0, "", 0);
 
 		ImGui::Separator();
 
 		ImGui::Text("Used video memory:");
-		const std::string usedVideoMemoryText = std::to_string((size_t)usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE - 1]) + " KiloBytes" + "###USED_MEMORY_COUNTER";
-		ImGui::PlotLines(usedVideoMemoryText.c_str(), usedVideoMemoryHistory, USED_VIDE_MEMORY_HISTORY_SIZE, 0, "", 0);
+		const std::string usedVideoMemoryText = std::to_string((size_t)m_usedVideoMemoryHistory[USED_VIDE_MEMORY_HISTORY_SIZE - 1]) + " KiloBytes" + "###USED_MEMORY_COUNTER";
+		ImGui::PlotLines(usedVideoMemoryText.c_str(), m_usedVideoMemoryHistory, USED_VIDE_MEMORY_HISTORY_SIZE, 0, "", 0);
 
 #if defined(DEBUG)
 		ImGui::Separator();
@@ -149,25 +149,25 @@ void ProfilerMenu::DrawProfilerGraph()
 {
 	if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed))
 	{
-		const std::string pauseText = isPaused ? "Resume Profilers" : "Pause Profilers";
+		const std::string pauseText = m_isPaused ? "Resume Profilers" : "Pause Profilers";
 		if (ImGui::Button(pauseText.c_str()))
 		{
-			isPaused = !isPaused;
-			Performance::s_isPaused = isPaused;
+			m_isPaused = !m_isPaused;
+			Performance::s_isPaused = m_isPaused;
 		}
 
-		uint64_t offsetTime = lastStartTime;
-		uint64_t endTime = lastEndTime;
+		uint64_t offsetTime = m_lastStartTime;
+		uint64_t endTime = m_lastEndTime;
 		bool needUpdate = true;
 
-		if (isPaused)
+		if (m_isPaused)
 		{
-			Performance::s_currentProfilerFrame = selectedProfilingRow;
+			Performance::s_currentProfilerFrame = m_selectedProfilingRow;
 		}
 		else
 		{
-			selectedProfilingRow = Performance::s_currentProfilerFrame;
-			lastFrame = Performance::s_currentFrame;
+			m_selectedProfilingRow = Performance::s_currentProfilerFrame;
+			m_lastFrame = Performance::s_currentFrame;
 		}
 
 		auto UpdateProfilers = [this, &offsetTime, &endTime, &needUpdate]()
@@ -189,8 +189,8 @@ void ProfilerMenu::DrawProfilerGraph()
 
 					CreateTimelineItems();
 
-					lastStartTime = offsetTime;
-					lastEndTime = endTime;
+					m_lastStartTime = offsetTime;
+					m_lastEndTime = endTime;
 				}
 			};
 
@@ -199,9 +199,9 @@ void ProfilerMenu::DrawProfilerGraph()
 			std::string filePath = EditorUI::OpenFileDialog("Select record file", "");
 			if (!filePath.empty())
 			{
-				selectedProfilingRow = Performance::s_currentProfilerFrame;
-				lastFrame = Performance::s_currentFrame;
-				isPaused = true;
+				m_selectedProfilingRow = Performance::s_currentProfilerFrame;
+				m_lastFrame = Performance::s_currentFrame;
+				m_isPaused = true;
 				Performance::s_isPaused = true;
 				Performance::LoadFromBinary(filePath);
 				UpdateProfilers();
@@ -234,22 +234,22 @@ void ProfilerMenu::DrawProfilerGraph()
 					ImGui::TableNextRow();
 					ImGui::TableSetColumnIndex(0);
 					std::string idStr = std::to_string(profilerLine.frameId);
-					if (profilerLine.frameId == lastFrame)
+					if (profilerLine.frameId == m_lastFrame)
 					{
 						idStr += " (last frame)";
 					}
-					if (ImGui::Selectable(idStr.c_str(), selectedProfilingRow == i))
+					if (ImGui::Selectable(idStr.c_str(), m_selectedProfilingRow == i))
 					{
-						selectedProfilingRow = i;
-						isPaused = true;
+						m_selectedProfilingRow = i;
+						m_isPaused = true;
 					}
 
 					ImGui::TableSetColumnIndex(1);
 					const std::string frameDurationStr = std::to_string(profilerLine.frameDuration);
-					if (ImGui::Selectable(frameDurationStr.c_str(), selectedProfilingRow == i))
+					if (ImGui::Selectable(frameDurationStr.c_str(), m_selectedProfilingRow == i))
 					{
-						selectedProfilingRow = i;
-						isPaused = true;
+						m_selectedProfilingRow = i;
+						m_isPaused = true;
 					}
 
 					i++;
@@ -269,7 +269,7 @@ void ProfilerMenu::DrawProfilerGraph()
 					ImGui::TableSetupScrollFreeze(0, 1);
 					ImGui::TableHeadersRow();
 
-					for (const auto& profilerLine : classicProfilerItems)
+					for (const auto& profilerLine : m_classicProfilerItems)
 					{
 						ImGui::TableNextRow();
 						const uint64_t totalEngineTime = endTime - offsetTime;
@@ -313,16 +313,16 @@ void ProfilerMenu::DrawProfilerGraph()
 
 					// Set the axis limits
 					ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, static_cast<float>(endTime - offsetTime));
-					ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, lastMaxLevel + 1);
+					ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, m_lastMaxLevel + 1);
 
 					const ImPlotPoint mousePoint = ImPlot::GetPlotMousePos();
 					ImVec2 mousePixelPos = ImPlot::PlotToPixels(mousePoint.x, mousePoint.y);
 
 					size_t hoveredItemIndex = -1;
-					const size_t timelineItemsCount = timelineItems.size();
+					const size_t timelineItemsCount = m_timelineItems.size();
 					for (size_t i = 0; i < timelineItemsCount; i++)
 					{
-						const TimelineItem& item = timelineItems[i];
+						const TimelineItem& item = m_timelineItems[i];
 						if (ImPlot::BeginItem(item.name.c_str()))
 						{
 							// Get the item position in pixels and draw it
@@ -345,7 +345,7 @@ void ProfilerMenu::DrawProfilerGraph()
 
 					if (hoveredItemIndex != -1)
 					{
-						const TimelineItem hoveredItem = timelineItems[hoveredItemIndex];
+						const TimelineItem hoveredItem = m_timelineItems[hoveredItemIndex];
 						uint64_t itemTime = hoveredItem.end - hoveredItem.start;
 
 						const float oldMouseX = mousePixelPos.x;
@@ -396,12 +396,12 @@ void ProfilerMenu::DrawProfilerGraph()
 
 void ProfilerMenu::CreateTimelineItems()
 {
-	timelineItems.clear();
-	classicProfilerItems.clear();
-	lastMaxLevel = 0;
+	m_timelineItems.clear();
+	m_classicProfilerItems.clear();
+	m_lastMaxLevel = 0;
 	for (const auto& valCategory : Performance::s_scopProfilerList[Performance::s_currentProfilerFrame].timerResults)
 	{
-		ClassicProfilerItem& classicProfilerItem = classicProfilerItems.emplace_back(Performance::s_scopProfilerNames[valCategory.first]);
+		ClassicProfilerItem& classicProfilerItem = m_classicProfilerItems.emplace_back(Performance::s_scopProfilerNames[valCategory.first]);
 
 		for (const auto& value : valCategory.second)
 		{
@@ -412,11 +412,11 @@ void ProfilerMenu::CreateTimelineItems()
 			item.start = value.start;
 			item.end = value.end;
 			item.level = value.level;
-			if (lastMaxLevel < value.level)
+			if (m_lastMaxLevel < value.level)
 			{
-				lastMaxLevel = value.level;
+				m_lastMaxLevel = value.level;
 			}
-			timelineItems.push_back(item);
+			m_timelineItems.push_back(item);
 		}
 	}
 }

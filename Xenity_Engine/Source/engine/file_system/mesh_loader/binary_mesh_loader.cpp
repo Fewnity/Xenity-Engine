@@ -32,7 +32,7 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	unsigned char* fileData = ProjectManager::fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
+	unsigned char* fileData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
 
 	uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);

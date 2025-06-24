@@ -22,7 +22,7 @@ void HierarchyMenu::Draw()
 {
 	const std::string windowName = "Hierarchy###Hierarchy" + std::to_string(id);
 
-	const bool visible = ImGui::Begin(windowName.c_str(), &isActive, ImGuiWindowFlags_NoCollapse);
+	const bool visible = ImGui::Begin(windowName.c_str(), &m_isActive, ImGuiWindowFlags_NoCollapse);
 	if (visible)
 	{
 		OnStartDrawing();
@@ -36,7 +36,7 @@ void HierarchyMenu::Draw()
 		{
 			if (GameplayManager::gameObjects[i]->GetParent().lock() == nullptr)
 			{
-				const int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i], rightClickedElement);
+				const int r = EditorUI::DrawTreeItem(GameplayManager::gameObjects[i], m_rightClickedElement);
 				if (r != 0)
 				{
 					disableDrag = true;
@@ -64,27 +64,27 @@ void HierarchyMenu::Draw()
 		}
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsItemHovered())
 		{
-			firstClickedInWindow = true;
+			m_firstClickedInWindow = true;
 		}
 		if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && !disableDrag)
 		{
-			rightClickedElement.reset();
+			m_rightClickedElement.reset();
 		}
 
 
 		// Start creating right click menu
 		RightClickMenu backgroundRightClickMenu = RightClickMenu("HierarchyRightClickMenu");
-		RightClickMenuState rightClickState = backgroundRightClickMenu.Check(!firstClickedInWindow, false);
+		RightClickMenuState rightClickState = backgroundRightClickMenu.Check(!m_firstClickedInWindow, false);
 
 		if (rightClickState != RightClickMenuState::Closed)
 		{
 		std::function<void()> destroyGameObjectFunc = [this]()
 			{
-				if (rightClickedElement.lock())
+				if (m_rightClickedElement.lock())
 				{
-					auto command = std::make_shared<InspectorDeleteGameObjectCommand>(*rightClickedElement.lock());
+					auto command = std::make_shared<InspectorDeleteGameObjectCommand>(*m_rightClickedElement.lock());
 					CommandManager::AddCommandAndExecute(command);
-					rightClickedElement.reset();
+					m_rightClickedElement.reset();
 				}
 			};
 
@@ -95,7 +95,7 @@ void HierarchyMenu::Draw()
 			// -
 			RightClickMenuItem* destroyGameObjectMenuItem = backgroundRightClickMenu.AddItem("Destroy GameObject", destroyGameObjectFunc);
 			RightClickMenuItem* gameObjectMenuItem = backgroundRightClickMenu.AddItem("GameObject");
-			destroyGameObjectMenuItem->SetIsVisible(rightClickedElement.lock() != nullptr);
+			destroyGameObjectMenuItem->SetIsVisible(m_rightClickedElement.lock() != nullptr);
 			//--
 			RightClickMenuItem* createEmptyParentMenuItem = gameObjectMenuItem->AddItem("Create Empty Parent", []() { Editor::CreateEmptyParent(); });
 			gameObjectMenuItem->AddItem("Create Empty", [hasSelectedGameObject]() { if(hasSelectedGameObject) Editor::CreateEmptyChild(); else Editor::CreateEmpty(); });
@@ -105,13 +105,13 @@ void HierarchyMenu::Draw()
 		backgroundRightClickMenu.Draw();
 
 		if (rightClickState == RightClickMenuState::JustOpened)
-			firstClickedInWindow = false;
+			m_firstClickedInWindow = false;
 
 		CalculateWindowValues();
 		if (isChildFocused)
-			isFocused = isChildFocused;
+			m_isFocused = isChildFocused;
 		if (isChildHovered)
-			isHovered = isChildHovered;
+			m_isHovered = isChildHovered;
 	}
 	else
 	{

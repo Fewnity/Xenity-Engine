@@ -32,7 +32,7 @@ private:
 	static std::vector<BuildPlatform> buildPlatforms;
 	int lastSettingError = 0;
 
-	size_t selectedPlatformIndex = 0;
-	Event<>* onSettingChangedEvent = nullptr;
+	size_t m_selectedPlatformIndex = 0;
+	Event<>* m_onSettingChangedEvent = nullptr;
 };
 

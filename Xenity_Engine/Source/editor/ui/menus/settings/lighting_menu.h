@@ -19,7 +19,8 @@ public:
 	void Draw() override;
 
 private:
-	Event<> m_onValueChangedEvent;
 	void OnValueChanged();
+
+	Event<> m_onValueChangedEvent;
 };
 

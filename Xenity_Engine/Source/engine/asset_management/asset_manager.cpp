@@ -31,17 +31,17 @@
 
 bool initialised = false;
 
-std::vector<Shader*> AssetManager::shaders;
-std::vector<Material*> AssetManager::materials;
-std::vector<Reflective*> AssetManager::reflections;
-std::vector<std::shared_ptr<FileReference>> AssetManager::fileReferences;
-std::vector<Light*> AssetManager::lights;
+std::vector<Shader*> AssetManager::s_shaders;
+std::vector<Material*> AssetManager::s_materials;
+std::vector<Reflective*> AssetManager::s_reflections;
+std::vector<std::shared_ptr<FileReference>> AssetManager::s_fileReferences;
+std::vector<Light*> AssetManager::s_lights;
 
-int AssetManager::shaderCount = 0;
-int AssetManager::materialCount = 0;
-int AssetManager::reflectionCount = 0;
-int AssetManager::fileReferenceCount = 0;
-int AssetManager::lightCount = 0;
+int AssetManager::s_shaderCount = 0;
+int AssetManager::s_materialCount = 0;
+int AssetManager::s_reflectionCount = 0;
+int AssetManager::s_fileReferenceCount = 0;
+int AssetManager::s_lightCount = 0;
 
 std::shared_ptr<Shader> AssetManager::standardShader = nullptr;
 #if defined(ENABLE_SHADER_VARIANT_OPTIMIZATION)
@@ -134,9 +134,9 @@ void AssetManager::OnProjectUnloaded()
 void AssetManager::ReloadAllMaterials()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-	for (int i = 0; i < materialCount; i++)
+	for (int i = 0; i < s_materialCount; i++)
 	{
-		Material* material = materials[i];
+		Material* material = s_materials[i];
 		material->UnloadFileReference();
 		FileReference::LoadOptions loadOption;
 		loadOption.platform = Application::GetPlatform();
@@ -153,8 +153,8 @@ void AssetManager::AddMaterial(Material* material)
 
 	XASSERT(material != nullptr, "[AssetManager::AddMaterial] Material is null");
 
-	materials.push_back(material);
-	materialCount++;
+	s_materials.push_back(material);
+	s_materialCount++;
 }
 
 void AssetManager::AddShader(Shader* shader)
@@ -163,8 +163,8 @@ void AssetManager::AddShader(Shader* shader)
 
 	XASSERT(shader != nullptr, "[AssetManager::AddShader] Shader is null");
 
-	shaders.push_back(shader);
-	shaderCount++;
+	s_shaders.push_back(shader);
+	s_shaderCount++;
 }
 
 void AssetManager::AddReflection(Reflective* reflection)
@@ -176,8 +176,8 @@ void AssetManager::AddReflection(Reflective* reflection)
 #if defined(EDITOR)
 	if (initialised)
 	{
-		reflections.push_back(reflection);
-		reflectionCount++;
+		s_reflections.push_back(reflection);
+		s_reflectionCount++;
 	}
 #endif
 }
@@ -188,8 +188,8 @@ void AssetManager::AddFileReference(const std::shared_ptr<FileReference>& fileRe
 
 	XASSERT(fileReference != nullptr, "[AssetManager::AddFileReference] fileReference is null");
 
-	fileReferences.push_back(fileReference);
-	fileReferenceCount++;
+	s_fileReferences.push_back(fileReference);
+	s_fileReferenceCount++;
 }
 
 /// <summary>
@@ -202,8 +202,8 @@ void AssetManager::AddLight(Light* light)
 
 	XASSERT(light != nullptr, "[AssetManager::AddLight] light is null");
 
-	lights.push_back(light);
-	lightCount++;
+	s_lights.push_back(light);
+	s_lightCount++;
 
 	Graphics::CreateLightLists();
 	UpdateLightIndices();
@@ -216,9 +216,9 @@ void AssetManager::UpdateLightIndices()
 	int pointLightCount = 0;
 	int spotLightCount = 0;
 	int directionalLightCount = 0;
-	for (int i = 0; i < lightCount; i++)
+	for (int i = 0; i < s_lightCount; i++)
 	{
-		Light* light = lights[i];
+		Light* light = s_lights[i];
 		if (light->IsEnabled() && light->GetGameObjectRaw()->IsLocalActive())
 		{
 			if (light->GetType() == LightType::Point)
@@ -254,13 +254,13 @@ void AssetManager::RemoveMaterial(const Material* material)
 	if (!Engine::IsRunning(true))
 		return;
 
-	XASSERT(!materials.empty(), "[AssetManager::RemoveMaterial] materials is empty");
+	XASSERT(!s_materials.empty(), "[AssetManager::RemoveMaterial] materials is empty");
 
 	int materialIndex = 0;
 	bool found = false;
-	for (int i = 0; i < materialCount; i++)
+	for (int i = 0; i < s_materialCount; i++)
 	{
-		if (materials[i] == material)
+		if (s_materials[i] == material)
 		{
 			found = true;
 			materialIndex = i;
@@ -270,8 +270,8 @@ void AssetManager::RemoveMaterial(const Material* material)
 
 	if (found)
 	{
-		materials.erase(materials.begin() + materialIndex);
-		materialCount--;
+		s_materials.erase(s_materials.begin() + materialIndex);
+		s_materialCount--;
 	}
 	else 
 	{
@@ -288,13 +288,13 @@ void AssetManager::RemoveShader(const Shader* shader)
 	if (!Engine::IsRunning(true))
 		return;
 
-	XASSERT(!shaders.empty(), "[AssetManager::RemoveShader] shaders is empty");
+	XASSERT(!s_shaders.empty(), "[AssetManager::RemoveShader] shaders is empty");
 
 	int shaderIndex = 0;
 	bool found = false;
-	for (int i = 0; i < shaderCount; i++)
+	for (int i = 0; i < s_shaderCount; i++)
 	{
-		if (shaders[i] == shader)
+		if (s_shaders[i] == shader)
 		{
 			found = true;
 			shaderIndex = i;
@@ -304,8 +304,8 @@ void AssetManager::RemoveShader(const Shader* shader)
 
 	if (found)
 	{
-		shaders.erase(shaders.begin() + shaderIndex);
-		shaderCount--;
+		s_shaders.erase(s_shaders.begin() + shaderIndex);
+		s_shaderCount--;
 	}
 	else
 	{
@@ -323,15 +323,15 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 	if (!Engine::IsRunning(true))
 		return;
 
-	XASSERT(!reflections.empty(), "[AssetManager::RemoveReflection] reflections is empty");
+	XASSERT(!s_reflections.empty(), "[AssetManager::RemoveReflection] reflections is empty");
 
 	if (initialised)
 	{
 		int reflectionIndex = 0;
 		bool found = false;
-		for (int i = 0; i < reflectionCount; i++)
+		for (int i = 0; i < s_reflectionCount; i++)
 		{
-			if (reflections[i] == reflection)
+			if (s_reflections[i] == reflection)
 			{
 				found = true;
 				reflectionIndex = i;
@@ -341,8 +341,8 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 
 		if (found)
 		{
-			reflections.erase(reflections.begin() + reflectionIndex);
-			reflectionCount--;
+			s_reflections.erase(s_reflections.begin() + reflectionIndex);
+			s_reflectionCount--;
 		}
 		else
 		{
@@ -360,9 +360,9 @@ void AssetManager::ForceDeleteFileReference(const std::shared_ptr<FileReference>
 		return;
 
 	RemoveFileReference(fileReference);
-	for (int reflectionIndex = 0; reflectionIndex < reflectionCount; reflectionIndex++)
+	for (int reflectionIndex = 0; reflectionIndex < s_reflectionCount; reflectionIndex++)
 	{
-		auto map = reflections[reflectionIndex]->GetReflectiveData();
+		auto map = s_reflections[reflectionIndex]->GetReflectiveData();
 		for (const ReflectiveEntry& reflectiveEntry : map)
 		{
 			const VariableReference& variableRef = reflectiveEntry.variable.value();
@@ -392,8 +392,8 @@ void AssetManager::RemoveAllFileReferences()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	fileReferences.clear();
-	fileReferenceCount = 0;
+	s_fileReferences.clear();
+	s_fileReferenceCount = 0;
 }
 
 void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fileReference)
@@ -405,13 +405,13 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 	if (!Engine::IsRunning(true))
 		return;
 
-	XASSERT(!fileReferences.empty(), "[AssetManager::RemoveFileReference] fileReferences is empty");
+	XASSERT(!s_fileReferences.empty(), "[AssetManager::RemoveFileReference] fileReferences is empty");
 
 	int fileReferenceIndex = 0;
 	bool found = false;
-	for (int i = 0; i < fileReferenceCount; i++)
+	for (int i = 0; i < s_fileReferenceCount; i++)
 	{
-		if (fileReferences[i] == fileReference)
+		if (s_fileReferences[i] == fileReference)
 		{
 			found = true;
 			fileReferenceIndex = i;
@@ -421,8 +421,8 @@ void AssetManager::RemoveFileReference(const std::shared_ptr<FileReference>& fil
 
 	if (found)
 	{
-		fileReferences.erase(fileReferences.begin() + fileReferenceIndex);
-		fileReferenceCount--;
+		s_fileReferences.erase(s_fileReferences.begin() + fileReferenceIndex);
+		s_fileReferenceCount--;
 	}
 	else
 	{
@@ -443,13 +443,13 @@ void AssetManager::RemoveLight(Light* light)
 	if (!Engine::IsRunning(true))
 		return;
 
-	XASSERT(!lights.empty(), "[AssetManager::RemoveLight] lights is empty");
+	XASSERT(!s_lights.empty(), "[AssetManager::RemoveLight] lights is empty");
 
 	int lightIndex = 0;
 	bool found = false;
-	for (int i = 0; i < lightCount; i++)
+	for (int i = 0; i < s_lightCount; i++)
 	{
-		if (lights[i] == light)
+		if (s_lights[i] == light)
 		{
 			found = true;
 			lightIndex = i;
@@ -459,8 +459,8 @@ void AssetManager::RemoveLight(Light* light)
 
 	if (found)
 	{
-		lights.erase(lights.begin() + lightIndex);
-		lightCount--;
+		s_lights.erase(s_lights.begin() + lightIndex);
+		s_lightCount--;
 		Graphics::CreateLightLists();
 		UpdateLightIndices();
 	}
