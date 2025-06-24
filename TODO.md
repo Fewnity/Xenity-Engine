@@ -6,7 +6,6 @@
 - Fix PSP sleep mode when networking is enabled
 - Add trigger values for gamepads
 - Add PS3 multi gamepad support
-- Add ImageRenderer for canvas
 - Add buttons for canvas
 - CTRL+Z does not work on UI elements and gizmo arrows
 
