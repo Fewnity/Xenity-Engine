@@ -422,6 +422,22 @@ inline void InspectorItemSetStaticCommand<T>::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
+class InspectorRectTransformSetPositionCommand : public Command
+{
+public:
+	InspectorRectTransformSetPositionCommand() = delete;
+	InspectorRectTransformSetPositionCommand(uint64_t _targetId, const Vector2& newValue, const Vector2& lastValue);
+	void Execute() override;
+	void Undo() override;
+private:
+	uint64_t m_targetId;
+	Vector2 m_newValue;
+	Vector2 m_lastValue;
+};
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
 class InspectorTransformSetPositionCommand : public Command
 {
 public:

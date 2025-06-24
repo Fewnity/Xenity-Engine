@@ -491,6 +491,12 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 				oldTransformPosition = selectedGoTransform->GetPosition();
 				oldTransformRotation = selectedGoTransform->GetLocalEulerAngles();
 				oldTransformScale = selectedGoTransform->GetLocalScale();
+
+				const std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
+				if (rect)
+				{
+					oldRectTransformPosition = rect->position;
+				}
 			}
 
 			if (InputSystem::GetKey(KeyCode::MOUSE_LEFT) && (side != Side::Side_None || toolMode == ToolMode::Tool_Rotate))
@@ -591,7 +597,6 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 					}
 					else
 					{
-						//selectedGoTransform->SetLocalPosition(startObjectValue + objectOffset);
 						selectedGoTransform->SetPosition(startObjectValue + objectOffset);
 					}
 				}
@@ -695,8 +700,17 @@ void SceneMenu::ProcessTool(std::shared_ptr<Camera>& camera, bool allowDeselecti
 				{
 					if (toolMode == ToolMode::Tool_Move)
 					{
-						auto command = std::make_shared<InspectorTransformSetPositionCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetPosition(), oldTransformPosition, false);
-						CommandManager::AddCommandAndExecute(command);
+						const std::shared_ptr<RectTransform> rect = selectedGO->GetComponent<RectTransform>();
+						if (rect)
+						{
+							auto command = std::make_shared<InspectorRectTransformSetPositionCommand>(rect->GetUniqueId(), rect->position, oldRectTransformPosition);
+							CommandManager::AddCommandAndExecute(command);
+						}
+						else 
+						{
+							auto command = std::make_shared<InspectorTransformSetPositionCommand>(selectedGoTransform->GetGameObject()->GetUniqueId(), selectedGoTransform->GetPosition(), oldTransformPosition, false);
+							CommandManager::AddCommandAndExecute(command);
+						}
 					}
 					else if (toolMode == ToolMode::Tool_Rotate)
 					{

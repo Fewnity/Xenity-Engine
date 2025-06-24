@@ -21,7 +21,7 @@ public:
 	~RectTransform();
 
 	//Vector2 anchors = Vector2(0);
-	Vector2 position = Vector2(0);
+	Vector2 position = Vector2(0.5f, 0.5f);
 
 protected:
 	[[nodiscard]] ReflectiveData GetReflectiveData() override;

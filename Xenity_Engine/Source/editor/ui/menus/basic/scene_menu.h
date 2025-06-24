@@ -21,6 +21,7 @@ enum class Side
 #include <editor/tool_mode.h>
 
 #include <engine/math/vector3.h>
+#include <engine/math/vector2.h>
 #include <engine/math/quaternion.h>
 
 class GameObject;
@@ -82,6 +83,7 @@ private:
 	bool allowRotation = false;
 	void Switch2DMode(bool is2D);
 	Vector3 oldTransformPosition;
+	Vector2 oldRectTransformPosition;
 	Vector3 oldTransformRotation;
 	Vector3 oldTransformScale;
 	std::shared_ptr<GameObject> draggedMeshGameObject;

@@ -5,6 +5,34 @@
 // This file is part of Xenity Engine
 
 #include "modify.h"
+#include <engine/game_elements/rect_transform.h>
+
+InspectorRectTransformSetPositionCommand::InspectorRectTransformSetPositionCommand(uint64_t _targetId, const Vector2& newValue, const Vector2& lastValue)
+{
+	m_targetId = _targetId;
+	m_newValue = newValue;
+	m_lastValue = lastValue;
+}
+
+void InspectorRectTransformSetPositionCommand::Execute()
+{
+	std::shared_ptr<Component> foundGameObject = FindComponentById(m_targetId);
+	if (foundGameObject)
+	{
+		std::dynamic_pointer_cast<RectTransform>(foundGameObject)->position = m_newValue;
+		SceneManager::SetIsSceneDirty(true);
+	}
+}
+
+void InspectorRectTransformSetPositionCommand::Undo()
+{
+	std::shared_ptr<Component> foundGameObject = FindComponentById(m_targetId);
+	if (foundGameObject)
+	{
+		std::dynamic_pointer_cast<RectTransform>(foundGameObject)->position = m_lastValue;
+		SceneManager::SetIsSceneDirty(true);
+	}
+}
 
 InspectorTransformSetPositionCommand::InspectorTransformSetPositionCommand(uint64_t _targetId, const Vector3& newValue, const Vector3& lastValue, bool isLocalPosition)
 {
