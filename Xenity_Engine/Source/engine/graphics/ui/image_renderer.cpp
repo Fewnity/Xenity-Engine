@@ -10,7 +10,7 @@
 ReflectiveData ImageRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, image, "image", true);
+	Reflective::AddVariable(reflectedVariables, m_image, "image", true);
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
 	return reflectedVariables;
 }
@@ -24,7 +24,7 @@ void ImageRenderer::OnReflectionUpdated()
 
 void ImageRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!image)
+	if (!m_image)
 		return;
 
 	RenderCommand command = RenderCommand();
@@ -40,5 +40,21 @@ void ImageRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 
 void ImageRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	SpriteManager::DrawSprite(*GetTransformRaw(), color, *AssetManager::unlitMaterial, image.get(), true);
+	SpriteManager::DrawSprite(*GetTransformRaw(), color, *AssetManager::unlitMaterial, m_image.get(), true);
+}
+
+void ImageRenderer::SetImage(const std::shared_ptr<Texture>& image)
+{
+	m_image = image;
+	Graphics::s_isRenderingBatchDirty = true;
+}
+
+void ImageRenderer::OnDisabled()
+{
+	Graphics::s_isRenderingBatchDirty = true;
+}
+
+void ImageRenderer::OnEnabled()
+{
+	Graphics::s_isRenderingBatchDirty = true;
 }

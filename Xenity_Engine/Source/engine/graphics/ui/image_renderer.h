@@ -8,11 +8,34 @@ class Texture;
 class API ImageRenderer : public IDrawable
 {
 public:
-	std::shared_ptr<Texture> image;
 	Color color;
+
+	/**
+	* @brief Get the image texture
+	*/
+	[[nodiscard]] const std::shared_ptr<Texture>& GetIamge() const
+	{
+		return m_image;
+	}
+
+	/**
+	* @brief Set the image texture
+	*/
+	void SetImage(const std::shared_ptr<Texture>& image);
+
 private:
+	std::shared_ptr<Texture> m_image;
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
+	/**
+	* @brief Called when the component is disabled
+	*/
+	void OnDisabled() override;
+
+	/**
+	* @brief Called when the component is enabled
+	*/
+	void OnEnabled() override;
 
 	/**
 	* @brief Create the render commands
