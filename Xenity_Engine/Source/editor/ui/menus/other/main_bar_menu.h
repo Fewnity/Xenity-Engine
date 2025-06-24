@@ -37,7 +37,7 @@ private:
 	* Create a gameobject with a component
 	*/
 	template <typename T>
-	std::shared_ptr<T> CreateGameObjectWithComponent(const std::string& gameObjectName);
+	std::vector <std::shared_ptr<T>> CreateGameObjectWithComponent(const std::string& gameObjectName);
 
 	/**
 	* Draw an image as a button

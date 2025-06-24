@@ -48,6 +48,7 @@
 #include <engine/game_elements/rect_transform.h>
 #include "update_available_menu.h"
 #include <editor/ui/editor_icons.h>
+#include <engine/graphics/ui/image_renderer.h>
 
 void MainBarMenu::Init()
 {
@@ -76,23 +77,39 @@ inline void MainBarMenu::AddComponentToSelectedGameObject()
 }
 
 template <typename T>
-std::shared_ptr<T> MainBarMenu::CreateGameObjectWithComponent(const std::string& gameObjectName)
+std::vector <std::shared_ptr<T>> MainBarMenu::CreateGameObjectWithComponent(const std::string& gameObjectName)
 {
-	auto command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), CreateGameObjectMode::CreateEmpty);
-	CommandManager::AddCommandAndExecute(command);
-	std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(command->createdGameObjects[0]);
-	createdGameObject->SetName(Editor::GetIncrementedGameObjectName(gameObjectName));
+	std::vector<std::weak_ptr<GameObject>> selectedGameObjects = Editor::GetSelectedGameObjects();
+	std::shared_ptr<InspectorCreateGameObjectCommand> command;
+	if(selectedGameObjects.empty())
+	{
+		command = std::make_shared<InspectorCreateGameObjectCommand>(std::vector<std::weak_ptr<GameObject>>(), CreateGameObjectMode::CreateEmpty);
+	}
+	else 
+	{
+		command = std::make_shared<InspectorCreateGameObjectCommand>(selectedGameObjects, CreateGameObjectMode::CreateChild);
+	}
+	
+	std::vector<std::shared_ptr<T>> createdComponents;
 
-	auto componentCommand = std::make_shared<InspectorAddComponentCommand>(*createdGameObject, ClassRegistry::GetClassInfo<T>()->name);
-	CommandManager::AddCommandAndExecute(componentCommand);
-	std::shared_ptr<Component> newComponent = FindComponentById(componentCommand->componentId);
+	CommandManager::AddCommandAndExecute(command);
+	for (uint64_t id : command->createdGameObjects)
+	{
+		std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(id);
+		createdGameObject->SetName(Editor::GetIncrementedGameObjectName(gameObjectName));
+
+		auto componentCommand = std::make_shared<InspectorAddComponentCommand>(*createdGameObject, ClassRegistry::GetClassInfo<T>()->name);
+		CommandManager::AddCommandAndExecute(componentCommand);
+		std::shared_ptr<Component> newComponent = FindComponentById(componentCommand->componentId);
+		createdComponents.push_back(std::dynamic_pointer_cast<T>(newComponent));
+	}
 
 	/*auto command2 = std::make_shared<InspectorAddComponentCommand<T>>(command->createdGameObjects[0].lock());
 	CommandManager::AddCommand(command2);
 	command2->Execute();
 
 	return command2->newComponent.lock();*/
-	return std::dynamic_pointer_cast<T>(newComponent);
+	return createdComponents;
 }
 
 bool MainBarMenu::DrawImageButton(const bool enabled, const Texture& texture)
@@ -198,7 +215,7 @@ void MainBarMenu::Draw()
 			ImGui::Separator();
 			if (ImGui::MenuItem("Text Mesh"))
 			{
-				std::shared_ptr<TextMesh> textMesh = CreateGameObjectWithComponent<TextMesh>("Text Mesh");
+				CreateGameObjectWithComponent<TextMesh>("Text Mesh");
 			}
 			ImGui::EndMenu();
 		}
@@ -206,7 +223,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Sprite Renderer"))
 			{
-				std::shared_ptr<SpriteRenderer> spriteRenderer = CreateGameObjectWithComponent<SpriteRenderer>("Sprite");
+				CreateGameObjectWithComponent<SpriteRenderer>("Sprite");
 			}
 			ImGui::EndMenu();
 		}
@@ -214,12 +231,23 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Canvas"))
 			{
-				std::shared_ptr<Canvas> canvas = CreateGameObjectWithComponent<Canvas>("Canvas");
+				CreateGameObjectWithComponent<Canvas>("Canvas");
 			}
 			if (ImGui::MenuItem("Text Renderer"))
 			{
-				std::shared_ptr<TextRenderer> textRenderer = CreateGameObjectWithComponent<TextRenderer>("Text Renderer");
-				textRenderer->GetGameObject()->AddComponent<RectTransform>();
+				std::vector<std::shared_ptr<TextRenderer>> textRenderers = CreateGameObjectWithComponent<TextRenderer>("Text Renderer");
+				for (std::shared_ptr<TextRenderer> textRenderer : textRenderers)
+				{
+					textRenderer->GetGameObject()->AddComponent<RectTransform>();
+				}
+			}
+			if (ImGui::MenuItem("Image Renderer"))
+			{
+				std::vector<std::shared_ptr<ImageRenderer>> imageRenderers = CreateGameObjectWithComponent<ImageRenderer>("Image Renderer");
+				for (std::shared_ptr<ImageRenderer> imageRenderer : imageRenderers)
+				{
+					imageRenderer->GetGameObject()->AddComponent<RectTransform>();
+				}
 			}
 			ImGui::EndMenu();
 		}
@@ -227,23 +255,35 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Ambient Light"))
 			{
-				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Ambient Light");
-				light->SetupAmbientLight(Color::CreateFromRGBFloat(1, 1, 1), 0.2f);
+				std::vector<std::shared_ptr<Light>> lights = CreateGameObjectWithComponent<Light>("Ambient Light");
+				for (std::shared_ptr<Light> light : lights)
+				{
+					light->SetupAmbientLight(Color::CreateFromRGBFloat(1, 1, 1), 0.2f);
+				}
 			}
 			if (ImGui::MenuItem("Directional Light"))
 			{
-				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Directional Light");
-				light->SetupDirectionalLight(Color::CreateFromRGBFloat(1, 1, 1), 1);
+				std::vector<std::shared_ptr<Light>> lights = CreateGameObjectWithComponent<Light>("Directional Light");
+				for (std::shared_ptr<Light> light : lights)
+				{
+					light->SetupDirectionalLight(Color::CreateFromRGBFloat(1, 1, 1), 1);
+				}
 			}
 			if (ImGui::MenuItem("Spot Light"))
 			{
-				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Spot Light");
-				light->SetupSpotLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10, 60, 0.5f);
+				std::vector<std::shared_ptr<Light>> lights = CreateGameObjectWithComponent<Light>("Spot Light");
+				for (std::shared_ptr<Light> light : lights)
+				{
+					light->SetupSpotLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10, 60, 0.5f);
+				}
 			}
 			if (ImGui::MenuItem("Point Light"))
 			{
-				std::shared_ptr<Light> light = CreateGameObjectWithComponent<Light>("Point Light");
-				light->SetupPointLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10);
+				std::vector<std::shared_ptr<Light>> lights = CreateGameObjectWithComponent<Light>("Point Light");
+				for (std::shared_ptr<Light> light : lights)
+				{
+					light->SetupPointLight(Color::CreateFromRGBFloat(1, 1, 1), 1, 10);
+				}
 			}
 			ImGui::EndMenu();
 		}
@@ -251,7 +291,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Audio Source"))
 			{
-				std::shared_ptr<AudioSource> audioSource = CreateGameObjectWithComponent<AudioSource>("Audio Source");
+				CreateGameObjectWithComponent<AudioSource>("Audio Source");
 			}
 			ImGui::EndMenu();
 		}
@@ -259,13 +299,19 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("2D Camera"))
 			{
-				std::shared_ptr<Camera> camera = CreateGameObjectWithComponent<Camera>("Camera");
-				camera->SetProjectionType(ProjectionType::Orthographic);
+				std::vector<std::shared_ptr<Camera>> cameras = CreateGameObjectWithComponent<Camera>("Camera");
+				for (std::shared_ptr<Camera> camera : cameras)
+				{
+					camera->SetProjectionType(ProjectionType::Orthographic);
+				}
 			}
 			if (ImGui::MenuItem("3D Camera"))
 			{
-				std::shared_ptr<Camera> camera = CreateGameObjectWithComponent<Camera>("Camera");
-				camera->SetProjectionType(ProjectionType::Perspective);
+				std::vector<std::shared_ptr<Camera>> cameras = CreateGameObjectWithComponent<Camera>("Camera");
+				for (std::shared_ptr<Camera> camera : cameras)
+				{
+					camera->SetProjectionType(ProjectionType::Perspective);
+				}
 			}
 			ImGui::EndMenu();
 		}
@@ -273,7 +319,7 @@ void MainBarMenu::Draw()
 		{
 			if (ImGui::MenuItem("Particle System"))
 			{
-				std::shared_ptr<ParticleSystem> particleSystem = CreateGameObjectWithComponent<ParticleSystem>("Particle System");
+				CreateGameObjectWithComponent<ParticleSystem>("Particle System");
 			}
 			ImGui::EndMenu();
 		}
@@ -364,6 +410,10 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Text Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
 				AddComponentToSelectedGameObject<TextRenderer>();
+			}
+			if (ImGui::MenuItem("Image Renderer", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<ImageRenderer>();
 			}
 			ImGui::EndMenu();
 		}
