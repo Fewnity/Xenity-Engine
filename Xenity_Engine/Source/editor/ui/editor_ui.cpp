@@ -78,7 +78,8 @@ int EditorUI::Init()
 	LoadComponentIcon("Default", "icons/components/default.png");
 	LoadComponentIcon("Camera", "icons/components/camera.png");
 	LoadComponentIcon("Light", "icons/components/point_light.png");
-
+	LoadComponentIcon("ImageRenderer", "icons/components/image.png");
+	LoadComponentIcon("Button", "icons/components/button.png");
 
 	Debug::Print("---- Editor UI initiated ----", true);
 	return 0;
