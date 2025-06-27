@@ -17,22 +17,68 @@
 #include <engine/graphics/color/color.h>
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
+#include <engine/graphics/ui/button.h>
 #include <engine/asset_management/asset_manager.h>
 #include <engine/ui/window.h>
 #include <engine/game_elements/rect_transform.h>
 #include <engine/engine.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/inputs/input_system.h>
 
 ReflectiveData Canvas::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, lastSize, "lastSize", true);
+	Reflective::AddVariable(reflectedVariables, lastSize, "lastSize", false);
 	return reflectedVariables;
 }
 
 void Canvas::OnReflectionUpdated()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+}
+
+void Canvas::UpdateButtons(const std::shared_ptr<GameObject>& gameObject)
+{
+	std::vector<std::shared_ptr<GameObject>> children;
+	for (size_t i = 0; i < gameObject->GetChildrenCount(); i++)
+	{
+		children.push_back(gameObject->GetChild(i).lock());
+	}
+	for (const auto& child : children)
+	{
+		std::shared_ptr<Button> button = child->GetComponent<Button>();
+		if (button)
+		{
+			button->CheckClick(*this);
+		}
+		UpdateButtons(child);
+	}
+}
+
+void Canvas::Update()
+{
+	bool needCheck = InputSystem::GetKeyDown(KeyCode::MOUSE_LEFT);
+	if (!needCheck)
+	{
+		const int touchScreenCount = InputSystem::GetTouchScreenCount();
+		if (touchScreenCount != 0)
+		{
+			const int touchScreenCount = InputSystem::GetTouchCount(0);
+			for (size_t touchIndex = 0; touchIndex < touchScreenCount; touchIndex++)
+			{
+				if (InputSystem::GetTouch(touchIndex, 0).pressed)
+				{
+					needCheck = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (needCheck)
+	{
+		UpdateButtons(GetGameObject());
+	}
 }
 
 void Canvas::OnDisabled()
@@ -60,7 +106,19 @@ void Canvas::DrawCommand(const RenderCommand& renderCommand)
 {
 	/*if (Window::GetWidth() != lastSize.x || Window::GetHeight() != lastSize.y)
 	{*/
+#if defined(EDITOR)
+	if (Editor::s_lastFocusedGameMenu.lock() != nullptr)
+	{
+		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::s_lastFocusedGameMenu.lock())->lastSize;
+		lastSize = Vector2Int(windowsSize.x, windowsSize.y);
+	}
+	else 
+	{
+		lastSize = Vector2Int(1920, 1080);
+	}
+#else
 	lastSize = Vector2Int(Window::GetWidth(), Window::GetHeight());
+#endif
 
 	for (uint32_t i = 0; i < GetGameObject()->GetChildrenCount(); i++)
 	{

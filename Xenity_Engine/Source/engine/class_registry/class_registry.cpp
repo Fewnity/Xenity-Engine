@@ -43,6 +43,7 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/graphics/ui/text_mesh.h>
 #include <engine/graphics/ui/image_renderer.h>
+#include <engine/graphics/ui/button.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
 #include <engine/graphics/3d_graphics/lod.h>
 #include <engine/graphics/2d_graphics/tile_map.h>
@@ -55,7 +56,6 @@ std::vector<ClassRegistry::MenuClassInfo> ClassRegistry::s_menuClassInfos;
 #include <engine/physics/rigidbody.h>
 #include <engine/physics/box_collider.h>
 #include <engine/physics/sphere_collider.h>
-#include <engine/test_component.h>
 #include <engine/missing_script.h>
 #include <engine/graphics/texture/texture.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
@@ -142,7 +142,7 @@ void ClassRegistry::RegisterEngineComponents()
 	REGISTER_COMPONENT(Light, true);
 	REGISTER_COMPONENT(Camera, true);
 	REGISTER_COMPONENT(TextRenderer, true);
-	REGISTER_COMPONENT(Canvas, true);
+	REGISTER_COMPONENT(Canvas, false);
 	REGISTER_COMPONENT(RectTransform, true);
 	REGISTER_COMPONENT(TextMesh, true);
 	REGISTER_COMPONENT(MeshRenderer, true);
@@ -163,6 +163,7 @@ void ClassRegistry::RegisterEngineComponents()
 	REGISTER_COMPONENT(FpsCounter, false);
 	REGISTER_COMPONENT(MissingScript, true);
 	REGISTER_COMPONENT(ImageRenderer, true);
+	REGISTER_COMPONENT(Button, true);
 #if defined(DEBUG)
 	REGISTER_COMPONENT(TestComponent, false);
 #endif
@@ -185,7 +186,8 @@ void ClassRegistry::RegisterEngineComponents()
 	REGISTER_COMPONENT_DOC_LINK(SphereCollider, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/sphere_collider.html");
 	REGISTER_COMPONENT_DOC_LINK(Lod, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/lod.html");
 	REGISTER_COMPONENT_DOC_LINK(FpsCounter, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/fps_counter.html");
-	REGISTER_COMPONENT_DOC_LINK(ImageRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/text_renderer.html");
+	REGISTER_COMPONENT_DOC_LINK(ImageRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/image_renderer.html");
+	REGISTER_COMPONENT_DOC_LINK(Button, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/button.html");
 
 	//REGISTER_COMPONENT_DOC_LINK(TestComponent, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
 

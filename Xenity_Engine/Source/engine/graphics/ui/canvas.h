@@ -19,10 +19,18 @@ public:
 	Canvas();
 	~Canvas();
 
+	const Vector2Int& GetSize()
+	{
+		return lastSize;
+	}
+
 protected:
 	void OnDrawGizmos() override;
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
+	void Update() override;
+
+	void UpdateButtons(const std::shared_ptr<GameObject>& gameObject);
 
 	/**
 	* @brief Called when the component is disabled

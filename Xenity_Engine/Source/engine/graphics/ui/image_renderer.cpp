@@ -6,6 +6,9 @@
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 #include <engine/graphics/graphics.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/inputs/input_system.h>
+#include <engine/game_elements/rect_transform.h>
+#include <engine/graphics/ui/canvas.h>
 
 ReflectiveData ImageRenderer::GetReflectiveData()
 {
@@ -40,6 +43,8 @@ void ImageRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 
 void ImageRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
+	XASSERT(m_image, "[ImageRenderer::DrawCommand] Image is nullptr");
+
 	SpriteManager::DrawSprite(*GetTransformRaw(), color, *AssetManager::unlitMaterial, m_image.get(), true);
 }
 

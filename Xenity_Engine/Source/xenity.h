@@ -64,6 +64,8 @@
 #include <engine/graphics/ui/text_renderer.h>
 #include <engine/graphics/ui/text_alignments.h>
 #include <engine/graphics/ui/canvas.h>
+#include <engine/graphics/ui/image_renderer.h>
+#include <engine/graphics/ui/button.h>
 
 // Files
 #include <engine/file_system/file_system.h>

@@ -49,6 +49,7 @@
 #include "update_available_menu.h"
 #include <editor/ui/editor_icons.h>
 #include <engine/graphics/ui/image_renderer.h>
+#include <engine/graphics/ui/button.h>
 
 void MainBarMenu::Init()
 {
@@ -249,6 +250,14 @@ void MainBarMenu::Draw()
 					imageRenderer->GetGameObject()->AddComponent<RectTransform>();
 				}
 			}
+			if (ImGui::MenuItem("Button"))
+			{
+				std::vector<std::shared_ptr<Button>> buttons = CreateGameObjectWithComponent<Button>("Button");
+				for (std::shared_ptr<Button> button : buttons)
+				{
+					button->GetGameObject()->AddComponent<RectTransform>();
+				}
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Light"))
@@ -414,6 +423,10 @@ void MainBarMenu::Draw()
 			if (ImGui::MenuItem("Image Renderer", nullptr, nullptr, hasSelectedGameObject))
 			{
 				AddComponentToSelectedGameObject<ImageRenderer>();
+			}
+			if (ImGui::MenuItem("Button", nullptr, nullptr, hasSelectedGameObject))
+			{
+				AddComponentToSelectedGameObject<Button>();
 			}
 			ImGui::EndMenu();
 		}

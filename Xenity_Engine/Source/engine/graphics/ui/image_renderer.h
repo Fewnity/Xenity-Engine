@@ -4,6 +4,7 @@
 #include <engine/graphics/color/color.h>
 
 class Texture;
+class Canvas;
 
 class API ImageRenderer : public IDrawable
 {
@@ -13,7 +14,7 @@ public:
 	/**
 	* @brief Get the image texture
 	*/
-	[[nodiscard]] const std::shared_ptr<Texture>& GetIamge() const
+	[[nodiscard]] const std::shared_ptr<Texture>& GetImage() const
 	{
 		return m_image;
 	}
@@ -23,10 +24,11 @@ public:
 	*/
 	void SetImage(const std::shared_ptr<Texture>& image);
 
-private:
-	std::shared_ptr<Texture> m_image;
+protected:
 	ReflectiveData GetReflectiveData() override;
+
 	void OnReflectionUpdated() override;
+
 	/**
 	* @brief Called when the component is disabled
 	*/
@@ -46,5 +48,7 @@ private:
 	* @brief Draw the command
 	*/
 	void DrawCommand(const RenderCommand& renderCommand) override;
+
+	std::shared_ptr<Texture> m_image;
 };
 
