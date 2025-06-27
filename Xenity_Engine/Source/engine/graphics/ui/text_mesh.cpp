@@ -104,6 +104,9 @@ void TextMesh::CreateRenderCommands(RenderBatch& renderBatch)
 /// </summary>
 void TextMesh::DrawCommand(const RenderCommand& renderCommand)
 {
+	XASSERT(renderCommand.material, "[TextMesh::DrawCommand] Material is nullptr");
+	XASSERT(m_font, "[TextMesh::DrawCommand] Font is nullptr");
+
 	if (m_isTextInfoDirty)
 	{
 		if (m_mesh)

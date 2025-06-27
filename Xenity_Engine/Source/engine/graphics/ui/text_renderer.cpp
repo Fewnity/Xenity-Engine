@@ -112,6 +112,9 @@ void TextRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 /// </summary>
 void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
+	XASSERT(renderCommand.material, "[TextRenderer::DrawCommand] Material is nullptr");
+	XASSERT(m_font, "[TextRenderer::DrawCommand] Font is nullptr");
+
 	if (m_isTextInfoDirty)
 	{
 		if (m_mesh)
