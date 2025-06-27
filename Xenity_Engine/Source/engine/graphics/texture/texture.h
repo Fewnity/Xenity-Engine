@@ -67,13 +67,19 @@ public:
 class TextureSettingsPSVITA : public TextureSettings
 {
 public:
+	TextureSettingsPSVITA() 
+	{
+		resolution = TextureResolution::R_256x256;
+	}
 };
 
 class TextureSettingsPSP : public TextureSettings
 {
 public:
-	PSPTextureType type = PSPTextureType::RGBA_5650;
-	bool tryPutInVram = true;
+	TextureSettingsPSP()
+	{
+		resolution = TextureResolution::R_128x128;
+	}
 
 	ReflectiveData GetReflectiveData() override
 	{
@@ -88,6 +94,9 @@ public:
 		Reflective::AddVariable(reflectedVariables, tryPutInVram, "tryPutInVram", true);
 		return reflectedVariables;
 	}
+
+	PSPTextureType type = PSPTextureType::RGBA_5650;
+	bool tryPutInVram = true;
 };
 
 class TextureSettingsPS3 : public TextureSettings
