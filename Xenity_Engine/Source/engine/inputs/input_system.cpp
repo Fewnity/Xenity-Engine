@@ -399,6 +399,7 @@ void InputSystem::Read()
 			Touch newTouch = Touch();
 			newTouch.fingerId = touchRaw.fingerId;
 			newTouch.position = Vector2Int(touchRaw.position.x, touchRaw.position.y);
+			newTouch.startPosition = newTouch.position;
 			newTouch.pressed = true;
 			newTouch.held = true;
 			screen->touches.push_back(newTouch);
