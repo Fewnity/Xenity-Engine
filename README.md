@@ -96,6 +96,10 @@ Discord: `fewnity`
 
 The code of this repository is under the MIT license.
 
+## Game Consoles SDKs
+
+https://github.com/Fewnity/Xenity-Engine-SDK
+
 ## Used libraries
 Stb (used: stb_image 2.23 (later versions do not work on PSP), stb_image_resize 0.97, stb_image_write 1.16): https://github.com/nothings/stb
 
