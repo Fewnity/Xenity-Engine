@@ -2,13 +2,11 @@
 
 Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows.
 
-[Xenity Documentation](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/Doc/README.md)
+[Xenity Scripting Documentation](https://fewnity.github.io/Xenity-Engine/script_api_reference/scripting_api_reference.html)
 
-I'm planning to work on a new engine, to fix the big problems of this engine.<br>
-So I probably won't add new feature to this engine. But Pull request are still welcomed!
-
-The game engine is a work in progress, so any pull requests are welcome!<br>
-New features, refactor, bug fixes, optimizations or documentations everything is good to take!
+I'm planning to work on a new engine, to fix most of the big problems of this engine.<br>
+So I probably won't add new feature to this engine.<br>
+But pull requests are still welcomed, new features, refactor, bug fixes, optimizations or improve documentations, everything is good to take!
 
 ![image](https://github.com/Fewnity/Xenity-Engine/assets/39272935/df59e12e-b989-4b0d-93b1-4f95fac7c91f)
 
@@ -16,7 +14,6 @@ New features, refactor, bug fixes, optimizations or documentations everything is
 ### Supported platforms:<br>
 ✔️ Supported<br>
 🚧 Work In Progress<br>
-❌ Not Supported Yet<br>
 
 | Status | Platform |
 |-|-|
