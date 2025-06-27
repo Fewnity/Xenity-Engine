@@ -323,7 +323,7 @@ void Camera::UpdateProjection()
 	}
 }
 
-Matrix4x4 createViewMatrix(const Vector3& cameraPosition, const Vector3& targetPosition, const Vector3& upVector)
+Matrix4x4 CreateViewMatrix(const Vector3& cameraPosition, const Vector3& targetPosition, const Vector3& upVector)
 {
 	Vector3 forward = (targetPosition - cameraPosition).Normalized();
 	forward = -forward;
@@ -353,7 +353,7 @@ Matrix4x4 createViewMatrix(const Vector3& cameraPosition, const Vector3& targetP
 
 void Camera::UpdateFrustum()
 {
-	const Matrix4x4 vm = createViewMatrix(GetTransformRaw()->GetPosition(), GetTransformRaw()->GetPosition() + GetTransformRaw()->GetForward(), GetTransformRaw()->GetUp());
+	const Matrix4x4 vm = CreateViewMatrix(GetTransformRaw()->GetPosition(), GetTransformRaw()->GetPosition() + GetTransformRaw()->GetForward(), GetTransformRaw()->GetUp());
 	frustum.ExtractPlanes((float*)&GetProjection(), vm.m);
 }
 
