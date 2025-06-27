@@ -412,6 +412,19 @@ void InputSystem::Read()
 		}
 	}
 
+	mousePosition = Vector2(0);
+	if (screenCount != 0)
+	{
+		if(screens[0]->touches.size() != 0)
+		{
+			mousePosition = Vector2(screens[0]->touches[0].position.x, screens[0]->touches[0].position.y);
+		}
+		else
+		{
+			mousePosition = Vector2(0);
+		}
+	}
+
 	// Remove not updated inputs
 	for (size_t screenIndex = 0; screenIndex < screenCount; screenIndex++)
 	{
