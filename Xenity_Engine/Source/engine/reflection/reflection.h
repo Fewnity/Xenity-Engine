@@ -82,6 +82,30 @@ public:
  */
 struct API ReflectiveEntry
 {
+	ReflectiveEntry& SetIsPublic(bool isPublic)
+	{
+		this->isPublic = isPublic;
+		return *this;
+	}
+
+	ReflectiveEntry& SetIsSlider(bool isSlider)
+	{
+		this->isSlider = isSlider;
+		return *this;
+	}
+
+	ReflectiveEntry& SetMinSliderValue(double minSliderValue)
+	{
+		this->minSliderValue = minSliderValue;
+		return *this;
+	}
+
+	ReflectiveEntry& SetMaxSliderValue(double maxSliderValue)
+	{
+		this->maxSliderValue = maxSliderValue;
+		return *this;
+	}
+
 	std::optional<VariableReference> variable;
 	uint64_t typeId = 0;
 	TypeSpawner* typeSpawner = nullptr;
