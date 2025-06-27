@@ -127,7 +127,7 @@ public:
 	* @param index The index of the material
 	* @return The material
 	*/
-	[[nodiscard]] static inline Material* GetMaterial(const int index)
+	[[nodiscard]] static Material* GetMaterial(const int index)
 	{
 		XASSERT(index < s_materials.size(), "[AssetManager::GetMaterial] index is invalid");
 		return s_materials[index];
@@ -138,21 +138,10 @@ public:
 	* @param index The index of the shader
 	* @return The shader
 	*/
-	[[nodiscard]] static inline Shader* GetShader(const int index)
+	[[nodiscard]] static Shader* GetShader(const int index)
 	{
 		XASSERT(index < s_shaders.size(), "[AssetManager::GetShader] index is invalid");
 		return s_shaders[index];
-	}
-
-	/**
-	* @brief Get a reflection by index
-	* @param index The index of the reflection
-	* @return The reflection
-	*/
-	[[nodiscard]] static inline Reflective* GetReflectiveData(const int index)
-	{
-		XASSERT(index < s_reflections.size(), "[AssetManager::GetReflectiveData] index is invalid");
-		return s_reflections[index];
 	}
 
 	/**
@@ -160,7 +149,7 @@ public:
 	* @param index The index of the file reference
 	* @return The file reference
 	*/
-	[[nodiscard]] static inline const std::shared_ptr<FileReference>& GetFileReference(const int index)
+	[[nodiscard]] static const std::shared_ptr<FileReference>& GetFileReference(const int index)
 	{
 		XASSERT(index < s_fileReferences.size(), "[AssetManager::GetFileReference] index is invalid");
 		return s_fileReferences[index];
@@ -171,13 +160,13 @@ public:
 	* @param index The index of the light
 	* @return The light
 	*/
-	[[nodiscard]] static inline const Light* GetLight(const int index)
+	[[nodiscard]] static const Light* GetLight(const int index)
 	{
 		XASSERT(index < s_lights.size(), "[AssetManager::GetLight] index is invalid");
 		return s_lights[index];
 	}
 
-	[[nodiscard]] static inline const std::vector<Light*>& GetLights()
+	[[nodiscard]] static const std::vector<Light*>& GetLights()
 	{
 		return s_lights;
 	}
@@ -190,7 +179,7 @@ public:
 	/**
 	* @brief Get the number of materials
 	*/
-	[[nodiscard]] static inline int GetMaterialCount()
+	[[nodiscard]] static int GetMaterialCount()
 	{
 		return s_materialCount;
 	}
@@ -198,7 +187,7 @@ public:
 	/**
 	* @brief Get the number of shaders
 	*/
-	[[nodiscard]] static inline int GetShaderCount()
+	[[nodiscard]] static int GetShaderCount()
 	{
 		return s_shaderCount;
 	}
@@ -206,7 +195,7 @@ public:
 	/**
 	* @brief Get the number of reflections
 	*/
-	[[nodiscard]] static inline int GetReflectionCount()
+	[[nodiscard]] static int GetReflectionCount()
 	{
 		return s_reflectionCount;
 	}
@@ -214,7 +203,7 @@ public:
 	/**
 	* @brief Get the number of file references
 	*/
-	[[nodiscard]] static inline int GetFileReferenceCount()
+	[[nodiscard]] static int GetFileReferenceCount()
 	{
 		return s_fileReferenceCount;
 	}
@@ -222,7 +211,7 @@ public:
 	/**
 	* @brief Get the number of lights
 	*/
-	[[nodiscard]] static inline int GetLightCount()
+	[[nodiscard]] static int GetLightCount()
 	{
 		return s_lightCount;
 	}
