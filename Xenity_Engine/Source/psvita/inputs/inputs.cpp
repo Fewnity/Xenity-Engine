@@ -12,11 +12,14 @@
 #include "../common/debugScreen.h"
 #include "../../engine/inputs/input_system.h"
 #include "../../engine/inputs/input_touch_raw.h"
+#include "../../engine/debug/debug.h"
+#include "../../engine/ui/screen.h"
 #include <psp2/touch.h>
 #include <cstring>
 
 SceCtrlData ctrl;
 SceTouchData touch[SCE_TOUCH_PORT_MAX_NUM];
+SceTouchPanelInfo panelInfo[SCE_TOUCH_PORT_MAX_NUM];
 
 void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& buttonMap, Input* inputs)
 {
@@ -43,6 +46,8 @@ void CrossInputsInit()
 	sceTouchSetSamplingState(SCE_TOUCH_PORT_BACK, SCE_TOUCH_SAMPLING_STATE_START);
 	sceTouchEnableTouchForce(SCE_TOUCH_PORT_FRONT);
 	sceTouchEnableTouchForce(SCE_TOUCH_PORT_BACK);
+	sceTouchGetPanelInfo(SCE_TOUCH_PORT_FRONT, &panelInfo[0]);
+	sceTouchGetPanelInfo(SCE_TOUCH_PORT_BACK, &panelInfo[1]);
 }
 
 InputPad CrossGetInputPad(const int controllerId)
@@ -59,8 +64,11 @@ InputPad CrossGetInputPad(const int controllerId)
 	pad.rx = ((ctrl.rx - 128) / 256.0f) * 2;
 	pad.ry = ((ctrl.ry - 128) / 256.0f) * 2;
 
-
 	return pad;
+}
+
+long mapValue(long x, long in_min, long in_max, long out_min, long out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 std::vector<TouchRaw> CrossUpdateTouch()
@@ -74,8 +82,8 @@ std::vector<TouchRaw> CrossUpdateTouch()
 			for (int finger = 0; finger < touch[screen].reportNum; finger++)
 			{
 				TouchRaw t = TouchRaw();
-				t.position.x = touch[screen].report[finger].x;
-				t.position.y = touch[screen].report[finger].y;
+				t.position.x = mapValue(touch[screen].report[finger].x, panelInfo[0].minAaX, panelInfo[0].maxAaX, 0, Screen::GetWidth());
+				t.position.y = mapValue(touch[screen].report[finger].y, panelInfo[0].minAaY, panelInfo[0].maxAaY, 0, Screen::GetHeight());
 				t.fingerId = touch[screen].report[finger].id;
 				t.force = touch[screen].report[finger].force;
 				t.screenIndex = screen;
