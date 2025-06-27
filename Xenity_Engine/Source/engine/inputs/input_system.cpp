@@ -223,7 +223,6 @@ void InputSystem::Read(const SDL_Event& event)
 			}
 		}
 
-
 		if (gameMenu && gameMenu->IsHovered() && (!sceneMenu || !sceneMenu->startRotatingCamera))
 		{
 			mousePosition = gameMenu->GetMousePosition();
@@ -400,12 +399,15 @@ void InputSystem::Read()
 			Touch newTouch = Touch();
 			newTouch.fingerId = touchRaw.fingerId;
 			newTouch.position = Vector2Int(touchRaw.position.x, touchRaw.position.y);
+			newTouch.pressed = true;
+			newTouch.held = true;
 			screen->touches.push_back(newTouch);
 			screen->updated.push_back(true);
 		}
 		else // If the input is held, update it
 		{
 			screen->touches[foundInputIndex].position = Vector2Int(touchRaw.position.x, touchRaw.position.y);
+			screen->touches[foundInputIndex].pressed = false; // The input is not pressed anymore
 		}
 	}
 

@@ -163,6 +163,8 @@ struct Touch
 	Vector2Int position = Vector2Int(0);
 	Vector2Int startPosition = Vector2Int(0);
 	int fingerId = -1;
+	bool pressed = false;
+	bool held = false;
 };
 
 /**
