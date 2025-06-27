@@ -103,6 +103,11 @@ void Texture::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 #if defined(EDITOR)
+	for (auto& setting : m_settings)
+	{
+		setting.second->OnReflectionUpdated();
+	}
+
 	if (previousResolution != GetCookResolution() && m_fileStatus == FileStatus::FileStatus_Loaded && isValid)
 	{
 		previousResolution = GetCookResolution();

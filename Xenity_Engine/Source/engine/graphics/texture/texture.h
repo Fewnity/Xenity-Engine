@@ -38,6 +38,14 @@ public:
 	//int mipmaplevelCount = 0;
 	int pixelPerUnit = 100;
 
+	void OnReflectionUpdated() override
+	{
+		if(pixelPerUnit <= 0)
+		{
+			pixelPerUnit = 1; // Ensure pixel per unit is always positive
+		}
+	}
+
 	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
@@ -85,7 +93,10 @@ public:
 class TextureSettingsPS3 : public TextureSettings
 {
 public:
-	PS3TextureType type = PS3TextureType::ARGB_0565;
+	TextureSettingsPS3()
+	{
+		resolution = TextureResolution::R_256x256;
+	}
 
 	ReflectiveData GetReflectiveData() override
 	{
@@ -99,6 +110,8 @@ public:
 		Reflective::AddVariable(reflectedVariables, type, "type", true);
 		return reflectedVariables;
 	}
+
+	PS3TextureType type = PS3TextureType::ARGB_0565;
 };
 
 struct TextureConstructorParams
@@ -165,6 +178,10 @@ public:
 	 */
 	void SetPixelPerUnit(int value)
 	{
+		if (value <= 0)
+		{
+			value = 1; // Ensure pixel per unit is always positive
+		}
 		m_settings.at(Application::GetAssetPlatform())->pixelPerUnit = value;
 	}
 
