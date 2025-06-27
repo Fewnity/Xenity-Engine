@@ -22,7 +22,6 @@ class btRigidBody;
 class API SphereCollider : public Collider
 {
 public:
-	SphereCollider();
 	~SphereCollider();
 
 	/**

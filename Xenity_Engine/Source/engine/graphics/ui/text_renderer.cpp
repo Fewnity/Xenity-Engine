@@ -19,7 +19,6 @@
 
 TextRenderer::TextRenderer()
 {
-	AssetManager::AddReflection(this);
 	m_material = AssetManager::unlitMaterial;
 }
 
@@ -41,11 +40,6 @@ void TextRenderer::OnReflectionUpdated()
 
 	m_isTextInfoDirty = true;
 	Graphics::s_isRenderingBatchDirty = true;
-}
-
-TextRenderer::~TextRenderer()
-{
-	AssetManager::RemoveReflection(this);
 }
 
 #pragma endregion

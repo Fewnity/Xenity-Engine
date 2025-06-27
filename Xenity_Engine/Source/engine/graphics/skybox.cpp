@@ -17,18 +17,6 @@
 
 using ordered_json = nlohmann::ordered_json;
 
-SkyBox::SkyBox()
-{
-	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
-
-	AssetManager::AddReflection(this);
-}
-
-SkyBox::~SkyBox()
-{
-	AssetManager::RemoveReflection(this);
-}
-
 SkyBox::SkyBox(const std::shared_ptr<Texture>& _front, const std::shared_ptr<Texture>& _back, const std::shared_ptr<Texture>& _up, const std::shared_ptr<Texture>& _down, const std::shared_ptr<Texture>& _left, const std::shared_ptr<Texture>& _right)
 	: front(_front), back(_back), up(_up), down(_down), left(_left), right(_right)
 {

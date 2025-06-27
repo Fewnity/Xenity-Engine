@@ -18,12 +18,6 @@
 
 #pragma region Constructors / Destructor
 
-BillboardRenderer::BillboardRenderer()
-{
-	AssetManager::AddReflection(this);
-	//material = AssetManager::standardMaterial;
-}
-
 ReflectiveData BillboardRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -38,11 +32,6 @@ void BillboardRenderer::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 	Graphics::s_isRenderingBatchDirty = true;
-}
-
-BillboardRenderer::~BillboardRenderer()
-{
-	AssetManager::RemoveReflection(this);
 }
 
 //void BillboardRenderer::SetOrderInLayer(int orderInLayer)

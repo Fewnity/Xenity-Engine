@@ -29,8 +29,6 @@
 #include <engine/debug/stack_debug_object.h>
 #include <engine/debug/performance.h>
 
-bool initialised = false;
-
 std::vector<Shader*> AssetManager::s_shaders;
 std::vector<Material*> AssetManager::s_materials;
 std::vector<Reflective*> AssetManager::s_reflections;
@@ -61,7 +59,6 @@ void AssetManager::Init()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	initialised = true;
 	ProjectManager::GetProjectLoadedEvent().Bind(&AssetManager::OnProjectLoaded);
 	ProjectManager::GetProjectUnloadedEvent().Bind(&AssetManager::OnProjectUnloaded);
 
@@ -174,11 +171,9 @@ void AssetManager::AddReflection(Reflective* reflection)
 	XASSERT(reflection != nullptr, "[AssetManager::AddReflection] Reflection is null");
 
 #if defined(EDITOR)
-	if (initialised)
-	{
-		s_reflections.push_back(reflection);
-		s_reflectionCount++;
-	}
+
+	s_reflections.push_back(reflection);
+	s_reflectionCount++;
 #endif
 }
 
@@ -273,7 +268,7 @@ void AssetManager::RemoveMaterial(const Material* material)
 		s_materials.erase(s_materials.begin() + materialIndex);
 		s_materialCount--;
 	}
-	else 
+	else
 	{
 		XASSERT(false, "[AssetManager::RemoveMaterial] material not found");
 	}
@@ -325,29 +320,26 @@ void AssetManager::RemoveReflection(const Reflective* reflection)
 
 	XASSERT(!s_reflections.empty(), "[AssetManager::RemoveReflection] reflections is empty");
 
-	if (initialised)
+	int reflectionIndex = 0;
+	bool found = false;
+	for (int i = 0; i < s_reflectionCount; i++)
 	{
-		int reflectionIndex = 0;
-		bool found = false;
-		for (int i = 0; i < s_reflectionCount; i++)
+		if (s_reflections[i] == reflection)
 		{
-			if (s_reflections[i] == reflection)
-			{
-				found = true;
-				reflectionIndex = i;
-				break;
-			}
+			found = true;
+			reflectionIndex = i;
+			break;
 		}
+	}
 
-		if (found)
-		{
-			s_reflections.erase(s_reflections.begin() + reflectionIndex);
-			s_reflectionCount--;
-		}
-		else
-		{
-			XASSERT(false, "[AssetManager::RemoveReflection] reflection not found");
-		}
+	if (found)
+	{
+		s_reflections.erase(s_reflections.begin() + reflectionIndex);
+		s_reflectionCount--;
+	}
+	else
+	{
+		XASSERT(false, "[AssetManager::RemoveReflection] reflection not found");
 	}
 #endif
 }

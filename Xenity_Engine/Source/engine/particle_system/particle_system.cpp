@@ -37,16 +37,10 @@ std::default_random_engine ParticleSystem::m_gen;
 
 ParticleSystem::ParticleSystem()
 {
-	AssetManager::AddReflection(this);
 	scaleOverLifeTimeFunction = DefaultGetScaleOverLifeTime;
 	speedMultiplierOverLifeTimeFunction = DefaultGetSpeedOverLifeTime;
 	colorOverLifeTimeFunction = DefaultGetColorOverLifeTime;
 	AllocateParticlesMemory();
-}
-
-ParticleSystem::~ParticleSystem()
-{
-	AssetManager::RemoveReflection(this);
 }
 
 ReflectiveData ParticleSystem::GetReflectiveData()

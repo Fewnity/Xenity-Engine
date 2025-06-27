@@ -104,8 +104,6 @@ void Canvas::CreateRenderCommands(RenderBatch& renderBatch)
 
 void Canvas::DrawCommand(const RenderCommand& renderCommand)
 {
-	/*if (Window::GetWidth() != lastSize.x || Window::GetHeight() != lastSize.y)
-	{*/
 #if defined(EDITOR)
 	if (Editor::s_lastFocusedGameMenu.lock() != nullptr)
 	{
@@ -125,20 +123,9 @@ void Canvas::DrawCommand(const RenderCommand& renderCommand)
 		std::shared_ptr<RectTransform> rect = GetGameObject()->GetChildren()[i].lock()->GetComponent<RectTransform>();
 		if (rect)
 		{
-			rect->UpdatePosition(std::dynamic_pointer_cast<Canvas>(shared_from_this()));
+			rect->UpdatePosition(*this);
 		}
 	}
-	//}
-}
-
-Canvas::Canvas()
-{
-	AssetManager::AddReflection(this);
-}
-
-Canvas::~Canvas()
-{
-	AssetManager::RemoveReflection(this);
 }
 
 void Canvas::OnDrawGizmos()

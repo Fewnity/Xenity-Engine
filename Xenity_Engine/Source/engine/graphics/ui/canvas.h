@@ -16,8 +16,6 @@
 class API Canvas : public IDrawable
 {
 public:
-	Canvas();
-	~Canvas();
 
 	const Vector2Int& GetSize()
 	{

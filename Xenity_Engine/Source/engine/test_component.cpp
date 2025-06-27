@@ -23,16 +23,6 @@
 #include <engine/audio/audio_clip.h>
 #include <engine/scene_management/scene.h>
 
-TestComponent::TestComponent()
-{
-	AssetManager::AddReflection(this);
-}
-
-TestComponent::~TestComponent()
-{
-	AssetManager::RemoveReflection(this);
-}
-
 ReflectiveData TestComponent::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;

@@ -20,8 +20,6 @@ class Texture;
 class API BillboardRenderer : public IDrawable
 {
 public:
-	BillboardRenderer();
-	~BillboardRenderer();
 
 	///**
 	//* @brief Set the order in layer of the sprite

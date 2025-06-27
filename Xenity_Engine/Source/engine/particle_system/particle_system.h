@@ -29,7 +29,6 @@ class API ParticleSystem : public IDrawable
 {
 public:
 	ParticleSystem();
-	~ParticleSystem();
 
 	/**
 	* Emitte all particles when not in loop mode

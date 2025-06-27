@@ -44,8 +44,6 @@ ENUM(Colors, Blue = 5, Red = 145, Orange = 1203, Yellow = 145, Green = 145, Purp
 class TestComponent : public Component
 {
 public:
-	TestComponent();
-	~TestComponent();
 
 	ReflectiveData GetReflectiveData() override;
 	void Start() override;

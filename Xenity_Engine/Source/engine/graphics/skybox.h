@@ -19,9 +19,7 @@ class Texture;
 class API SkyBox : public FileReference, public std::enable_shared_from_this<SkyBox>
 {
 public:
-
-	SkyBox();
-	~SkyBox();
+	SkyBox() = default;
 
 	std::shared_ptr<Texture> front = nullptr;
 	std::shared_ptr<Texture> back = nullptr;

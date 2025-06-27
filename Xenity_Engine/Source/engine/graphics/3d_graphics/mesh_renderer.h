@@ -23,7 +23,6 @@ class Light;
 class API MeshRenderer : public IDrawable
 {
 public:
-	MeshRenderer();
 	~MeshRenderer();
 
 	/**

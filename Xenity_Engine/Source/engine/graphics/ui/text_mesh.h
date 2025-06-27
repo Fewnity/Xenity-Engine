@@ -23,7 +23,6 @@ class API TextMesh : public IDrawable
 {
 public:
 	TextMesh();
-	~TextMesh();
 
 	/**
 	* @brief Get text color

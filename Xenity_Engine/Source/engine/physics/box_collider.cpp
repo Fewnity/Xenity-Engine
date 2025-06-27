@@ -27,7 +27,6 @@
 
 BoxCollider::BoxCollider()
 {
-	AssetManager::AddReflection(this);
 	CalculateBoundingBox();
 }
 
@@ -93,8 +92,6 @@ BoxCollider::~BoxCollider()
 {
 	GetTransform()->GetOnTransformScaled().Unbind(&BoxCollider::OnTransformScaled, this);
 	GetTransform()->GetOnTransformUpdated().Unbind(&BoxCollider::OnTransformUpdated, this);
-
-	AssetManager::RemoveReflection(this);
 }
 
 void BoxCollider::Awake()

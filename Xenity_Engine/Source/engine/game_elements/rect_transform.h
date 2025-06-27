@@ -17,8 +17,6 @@ class Canvas;
 class API RectTransform : public Component
 {
 public:
-	RectTransform();
-	~RectTransform();
 
 	//Vector2 anchors = Vector2(0);
 	Vector2 position = Vector2(0.5f, 0.5f);
@@ -32,10 +30,10 @@ protected:
 	/**
 	 * @brief [Internal] Update the position of the rect transform
 	 */
-	void UpdatePosition(const std::shared_ptr<Canvas>& canvas);
+	void UpdatePosition(const Canvas& canvas);
 
 	/**
 	 * @brief [Internal] Update the position of the rect transform
 	 */
-	void UpdatePosition(const std::shared_ptr<RectTransform>& canvas);
+	void UpdatePosition(const RectTransform& canvas);
 };

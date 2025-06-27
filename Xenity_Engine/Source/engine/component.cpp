@@ -24,11 +24,17 @@ Component::Component(bool canBeDisabled, bool allowOtherInstanceOnGameObject)
 {
 	m_canBeDisabled = canBeDisabled;
 	m_allowOtherInstanceOnGameObject = allowOtherInstanceOnGameObject;
+#if defined(EDITOR)
+	AssetManager::AddReflection(this);
+#endif
 }
 
 
 Component::~Component()
 {
+#if defined(EDITOR)
+	AssetManager::RemoveReflection(this);
+#endif
 }
 
 #pragma endregion

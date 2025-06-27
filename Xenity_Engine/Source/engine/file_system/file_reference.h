@@ -34,7 +34,9 @@ enum class FileStatus
 class API FileReference : public Reflective, public std::enable_shared_from_this<FileReference>
 {
 public:
-	FileReference() = default;
+	FileReference();
+	~FileReference();
+
 	FileReference(const FileReference& other) = delete;
 	FileReference& operator=(const FileReference&) = delete;
 

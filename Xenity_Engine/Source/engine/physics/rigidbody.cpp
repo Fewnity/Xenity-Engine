@@ -20,7 +20,6 @@
 
 RigidBody::RigidBody() : Component(false, false)
 {
-	AssetManager::AddReflection(this);
 }
 
 ReflectiveData RigidBody::GetReflectiveData()
@@ -378,7 +377,6 @@ RigidBody::~RigidBody()
 		GetTransformRaw()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
 	}
 
-	AssetManager::RemoveReflection(this);
 	for (Collider* c : m_colliders)
 	{
 		c->SetRigidbody(nullptr);

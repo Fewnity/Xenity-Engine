@@ -8,6 +8,17 @@
 #include <engine/file_system/file.h>
 #include <engine/file_system/data_base/file_data_base.h>
 #include <engine/asset_management/project_manager.h>
+#include <engine/asset_management/asset_manager.h>
+
+FileReference::FileReference()
+{
+	AssetManager::AddReflection(this);
+}
+
+FileReference::~FileReference()
+{
+	AssetManager::RemoveReflection(this);
+}
 
 std::string FileReference::ReadString() const
 {

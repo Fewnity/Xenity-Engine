@@ -18,9 +18,6 @@ class AudioClip;
 class API AudioSource : public Component
 {
 public:
-	AudioSource();
-	~AudioSource();
-
 	/**
 	* @brief Play audio
 	*/

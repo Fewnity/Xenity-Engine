@@ -63,7 +63,7 @@ public:
 	static void AddShader(Shader* shader);
 
 	/**
-	* @brief Used in component constructor when the component has files references stored in variables
+	* @brief Used in component constructor when the component has files references stored in variables (Editor only)
 	* @param reflection The reflection to add
 	*/
 	static void AddReflection(Reflective* reflection);
@@ -95,7 +95,7 @@ public:
 	static void RemoveShader(const Shader* shader);
 
 	/**
-	* @brief Used in component destructor when the component has files references stored in variables
+	* @brief Used in component destructor when the component has files references stored in variables (Editor only)
 	* @param reflection The reflection to remove
 	*/
 	static void RemoveReflection(const Reflective* reflection);

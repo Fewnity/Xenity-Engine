@@ -26,11 +26,6 @@
 #include "rigidbody.h"
 #include "physics_manager.h"
 
-SphereCollider::SphereCollider()
-{
-	AssetManager::AddReflection(this);
-}
-
 ReflectiveData SphereCollider::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -57,7 +52,6 @@ SphereCollider::~SphereCollider()
 {
 	GetTransform()->GetOnTransformScaled().Unbind(&SphereCollider::OnTransformScaled, this);
 	GetTransform()->GetOnTransformUpdated().Unbind(&SphereCollider::OnTransformUpdated, this);
-	AssetManager::RemoveReflection(this);
 }
 
 void SphereCollider::Awake()

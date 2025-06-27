@@ -23,7 +23,6 @@
 
 Light::Light()
 {
-	AssetManager::AddReflection(this);
 	UpdateLightValues();
 }
 
@@ -66,7 +65,6 @@ Light::~Light()
 		GetTransformRaw()->GetOnTransformUpdated().Unbind(&Light::OnTransformPositionUpdated, this);
 	}
 	WorldPartitionner::RemoveLight(this);
-	AssetManager::RemoveReflection(this);
 }
 
 void Light::RemoveReferences()

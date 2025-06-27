@@ -45,11 +45,6 @@ bool IsSphereInFrustum(const Frustum& frustum, const Sphere& sphere)
 	return true;
 }
 
-MeshRenderer::MeshRenderer()
-{
-	AssetManager::AddReflection(this);
-}
-
 void MeshRenderer::OnDrawGizmosSelected()
 {
 	if (!m_meshData)
@@ -185,7 +180,6 @@ void MeshRenderer::OnReflectionUpdated()
 MeshRenderer::~MeshRenderer()
 {
 	GetTransformRaw()->GetOnTransformUpdated().Unbind(&MeshRenderer::OnTransformPositionUpdated, this);
-	AssetManager::RemoveReflection(this);
 	WorldPartitionner::RemoveMeshRenderer(this);
 }
 

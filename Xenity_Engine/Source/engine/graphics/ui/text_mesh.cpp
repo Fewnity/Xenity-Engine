@@ -19,7 +19,6 @@
 
 TextMesh::TextMesh()
 {
-	AssetManager::AddReflection(this);
 	m_material = AssetManager::standardMaterial;
 }
 
@@ -41,11 +40,6 @@ void TextMesh::OnReflectionUpdated()
 
 	m_isTextInfoDirty = true;
 	Graphics::s_isRenderingBatchDirty = true;
-}
-
-TextMesh::~TextMesh()
-{
-	AssetManager::RemoveReflection(this);
 }
 
 #pragma endregion

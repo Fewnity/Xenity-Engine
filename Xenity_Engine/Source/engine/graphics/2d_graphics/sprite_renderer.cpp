@@ -17,11 +17,6 @@
 
 #pragma region Constructors / Destructor
 
-SpriteRenderer::SpriteRenderer()
-{
-	AssetManager::AddReflection(this);
-}
-
 ReflectiveData SpriteRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -36,11 +31,6 @@ void SpriteRenderer::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 	Graphics::s_isRenderingBatchDirty = true;
-}
-
-SpriteRenderer::~SpriteRenderer()
-{
-	AssetManager::RemoveReflection(this);
 }
 
 //void SpriteRenderer::SetOrderInLayer(int orderInLayer)

@@ -24,12 +24,6 @@
 #include <engine/debug/debug.h>
 #include "audio_manager.h"
 
-
-AudioSource::AudioSource()
-{
-	AssetManager::AddReflection(this);
-}
-
 ReflectiveData AudioSource::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -45,11 +39,6 @@ ReflectiveData AudioSource::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, m_loop, "loop", true);
 	Reflective::AddVariable(reflectedVariables, m_audioClip, "audioClip", true);
 	return reflectedVariables;
-}
-
-AudioSource::~AudioSource()
-{
-	AssetManager::RemoveReflection(this);
 }
 
 void AudioSource::RemoveReferences()

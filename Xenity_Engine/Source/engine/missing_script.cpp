@@ -8,16 +8,6 @@
 
 #include "asset_management/asset_manager.h"
 
-MissingScript::MissingScript()
-{
-	AssetManager::AddReflection(this);
-}
-
-MissingScript::~MissingScript()
-{
-	AssetManager::RemoveReflection(this);
-}
-
 ReflectiveData MissingScript::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;

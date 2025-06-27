@@ -20,8 +20,6 @@ class Texture;
 class API SpriteRenderer : public IDrawable
 {
 public:
-	SpriteRenderer();
-	~SpriteRenderer();
 
 	///**
 	//* @brief Get the order in layer of the sprite

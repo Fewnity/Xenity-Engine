@@ -18,16 +18,6 @@
 #include <engine/graphics/camera.h>
 #include <engine/debug/stack_debug_object.h>
 
-RectTransform::RectTransform()
-{
-	AssetManager::AddReflection(this);
-}
-
-RectTransform::~RectTransform()
-{
-	AssetManager::RemoveReflection(this);
-}
-
 ReflectiveData RectTransform::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -41,10 +31,8 @@ void RectTransform::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 }
 
-void RectTransform::UpdatePosition(const std::shared_ptr <Canvas>& canvas) 
+void RectTransform::UpdatePosition(const Canvas& canvas) 
 {
-	XASSERT(canvas != nullptr, "[RectTransform::UpdatePosition] canvas is nullptr");
-
 	float aspect = Graphics::usedCamera->GetAspectRatio();
 #if defined(EDITOR)
 	if (Editor::s_lastFocusedGameMenu.lock() != nullptr)
@@ -59,7 +47,7 @@ void RectTransform::UpdatePosition(const std::shared_ptr <Canvas>& canvas)
 	GetTransformRaw()->SetLocalPosition(newPos);
 }
 
-void RectTransform::UpdatePosition(const std::shared_ptr <RectTransform>& rect)
+void RectTransform::UpdatePosition(const RectTransform& rect)
 {
 
 }

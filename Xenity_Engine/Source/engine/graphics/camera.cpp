@@ -48,7 +48,6 @@ Camera::Camera() : m_fov(DEFAULT_CAMERA_FOV), m_isProjectionDirty(true)
 #endif
 
 	ChangeFrameBufferSize(Vector2Int(Window::GetWidth(), Window::GetHeight()));
-	AssetManager::AddReflection(this);
 }
 
 void Camera::OnComponentAttached()
@@ -212,7 +211,6 @@ Camera::~Camera()
 		glDeleteRenderbuffers(1, &m_depthframebuffer);
 	}
 #endif
-	AssetManager::RemoveReflection(this);
 	GetTransformRaw()->GetOnTransformUpdated().Unbind(&Camera::UpdateCameraTransformMatrix, this);
 }
 
