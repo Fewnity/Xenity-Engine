@@ -116,3 +116,13 @@ std::string Vector2::ToString() const
 {
 	return "{x:" + std::to_string(x) + " y:" + std::to_string(y) + "}";
 }
+
+Vector2 operator*(const Vector2& left, const Vector2Int& right)
+{
+	return Vector2{ left.x * right.x, left.y * right.y };
+}
+
+Vector2 operator*(const Vector2Int& left, const Vector2& right)
+{
+	return Vector2{ left.x * right.x, left.y * right.y };
+}

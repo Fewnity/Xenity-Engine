@@ -112,6 +112,10 @@ inline Vector2 operator*(const Vector2& left, const Vector2& right)
 	return Vector2{ left.x * right.x, left.y * right.y };
 }
 
+Vector2 operator*(const Vector2& left, const Vector2Int& right);
+
+Vector2 operator*(const Vector2Int& left, const Vector2& right);
+
 inline Vector2 operator*(const Vector2& vec, const float value)
 {
 	return Vector2{ vec.x * value, vec.y * value };
