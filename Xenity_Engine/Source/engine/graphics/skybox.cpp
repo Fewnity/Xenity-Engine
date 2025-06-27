@@ -15,7 +15,7 @@
 #include <engine/debug/stack_debug_object.h>
 #include <engine/graphics/texture/texture.h>
 
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 SkyBox::SkyBox()
 {
@@ -57,7 +57,7 @@ void SkyBox::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 #if defined(EDITOR)
-	json jsonData;
+	ordered_json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
 	jsonData["Version"] = s_version;
 
@@ -78,10 +78,10 @@ void SkyBox::LoadFileReference(const LoadOptions& loadOptions)
 		const std::string jsonString = ReadString();
 		if (!jsonString.empty())
 		{
-			json j;
+			ordered_json j;
 			try
 			{
-				j = json::parse(jsonString);
+				j = ordered_json::parse(jsonString);
 			}
 			catch (const std::exception&)
 			{

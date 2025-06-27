@@ -37,8 +37,6 @@
 #endif
 #include <engine/file_system/async_file_loading.h>
 
-using json = nlohmann::json;
-
 glm::mat4 Shader::m_canvasCameraTransformationMatrix;
 
 std::shared_ptr<Light> Shader::defaultDarkLight;

@@ -23,7 +23,7 @@
 #include <engine/graphics/texture/texture_default.h>
 #include <editor/ui/editor_icons.h>
 
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 int EditorUI::s_uiId = 0;
 
@@ -36,7 +36,7 @@ std::shared_ptr<Menu> EditorUI::currentSelectAssetMenu;
 bool EditorUI::s_isEditingElement = false;
 
 CopyType EditorUI::currentCopyType;
-json EditorUI::copiedComponentJson;
+ordered_json EditorUI::copiedComponentJson;
 std::string EditorUI::copiedComponentName;
 Event<>* EditorUI::onValueChangedEvent = nullptr;
 

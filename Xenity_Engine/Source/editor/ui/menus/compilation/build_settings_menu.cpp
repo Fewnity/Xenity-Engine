@@ -18,7 +18,7 @@
 #include <engine/graphics/texture/texture_default.h>
 #include <editor/ui/editor_icons.h>
 
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 std::vector<BuildPlatform> BuildSettingsMenu::buildPlatforms;
 
@@ -356,11 +356,11 @@ void BuildSettingsMenu::LoadSettings()
 
 	if (!data.empty())
 	{
-		json buildSettingsData;
+		ordered_json buildSettingsData;
 		try
 		{
 			// Parse data to json
-			buildSettingsData = json::parse(data);
+			buildSettingsData = ordered_json::parse(data);
 		}
 		catch (const std::exception&)
 		{
@@ -385,7 +385,7 @@ void BuildSettingsMenu::SaveSettings()
 {
 	// Generate json from settings data
 	const size_t platformCount = buildPlatforms.size();
-	json buildSettingsData;
+	ordered_json buildSettingsData;
 
 	for (size_t i = 0; i < platformCount; i++)
 	{

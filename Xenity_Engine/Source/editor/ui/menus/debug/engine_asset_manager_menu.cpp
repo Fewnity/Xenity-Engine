@@ -18,7 +18,7 @@
 #include <engine/constants.h>
 
 #include <json.hpp>
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 void EngineAssetManagerMenu::Init()
 {
@@ -66,10 +66,10 @@ void EngineAssetManagerMenu::Draw()
 					metaFile->Close();
 					if (!jsonString.empty())
 					{
-						json data;
+						ordered_json data;
 						try
 						{
-							data = json::parse(jsonString);
+							data = ordered_json::parse(jsonString);
 						}
 						catch (const std::exception&)
 						{

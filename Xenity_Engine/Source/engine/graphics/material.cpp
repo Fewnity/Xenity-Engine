@@ -20,7 +20,7 @@
 #include "graphics.h"
 #include "renderer/renderer.h"
 
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 #pragma region Constructors / Destructor
 
@@ -124,10 +124,10 @@ std::vector<uint64_t> Material::GetUsedFilesIds()
 
 	std::string jsonString = ReadString();
 
-	json j;
+	ordered_json j;
 	try
 	{
-		j = json::parse(jsonString);
+		j = ordered_json::parse(jsonString);
 		if (j.contains("Values"))
 		{
 			if (j["Values"].contains("texture"))
@@ -270,7 +270,7 @@ void Material::OnReflectionUpdated()
 #if defined(EDITOR)
 	Graphics::s_isRenderingBatchDirty = true;
 
-	json jsonData;
+	ordered_json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
 	jsonData["Version"] = s_version;
 
@@ -294,10 +294,10 @@ void Material::LoadFileReference(const LoadOptions& loadOptions)
 		const std::string jsonString = ReadString();
 		if (!jsonString.empty())
 		{
-			json j;
+			ordered_json j;
 			try
 			{
-				j = json::parse(jsonString);
+				j = ordered_json::parse(jsonString);
 			}
 			catch (const std::exception&)
 			{

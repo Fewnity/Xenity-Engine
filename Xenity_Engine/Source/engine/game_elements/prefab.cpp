@@ -4,7 +4,7 @@
 #include <engine/reflection/reflection_utils.h>
 #include <engine/scene_management/scene_manager.h>
 
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 Prefab::Prefab()
 {
@@ -28,7 +28,7 @@ ReflectiveData Prefab::GetReflectiveData()
 	return reflectedVariables;
 }
 
-const nlohmann::json& Prefab::GetData() const
+const nlohmann::ordered_json& Prefab::GetData() const
 {
 	return data;
 }
@@ -42,10 +42,10 @@ void Prefab::LoadFileReference(const LoadOptions& loadOptions)
 		const std::string jsonString = ReadString();
 		if (!jsonString.empty())
 		{
-			json j;
+			ordered_json j;
 			try
 			{
-				j = json::parse(jsonString);
+				j = ordered_json::parse(jsonString);
 			}
 			catch (const std::exception&)
 			{
@@ -72,7 +72,7 @@ void Prefab::SetData(GameObject& gameObject)
 
 	SaveGameObject(gameObject, usedFilesIds);
 
-	json jsonData;
+	ordered_json jsonData;
 	jsonData["Values"] = ReflectionUtils::ReflectiveDataToJson(GetReflectiveData());
 	jsonData["Version"] = s_version;
 

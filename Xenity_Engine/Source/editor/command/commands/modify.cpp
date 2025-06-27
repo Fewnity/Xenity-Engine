@@ -138,7 +138,7 @@ void InspectorTransformSetLocalScaleCommand::Undo()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(Transform& transform, const nlohmann::json& newTransformDataData) : m_transformData(newTransformDataData)
+InspectorSetTransformDataCommand::InspectorSetTransformDataCommand(Transform& transform, const nlohmann::ordered_json& newTransformDataData) : m_transformData(newTransformDataData)
 {
 	m_transformtId = transform.GetGameObject()->GetUniqueId();
 	m_oldTransformData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform.GetReflectiveData());

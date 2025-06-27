@@ -34,22 +34,22 @@ public:
 	void Execute() override;
 	void Undo() override;
 private:
-	void SetValue(const nlohmann::json& valueToSet, bool isUndo);
-	void FindValueToChange(ReflectiveDataToDraw& reflectiveDataToDraw, nlohmann::json& jsonToChange, int currentIndex);
+	void SetValue(const nlohmann::ordered_json& valueToSet, bool isUndo);
+	void FindValueToChange(ReflectiveDataToDraw& reflectiveDataToDraw, nlohmann::ordered_json& jsonToChange, int currentIndex);
 
 	uint64_t targetId = 0;
 	ReflectiveDataToDraw::OwnerTypeEnum ownerType = ReflectiveDataToDraw::OwnerTypeEnum::None;
 	std::string variableName;
 	T* valuePtr;
 	ReflectiveEntry reflectiveEntry;
-	nlohmann::json newValue2;
-	nlohmann::json lastValue2;
+	nlohmann::ordered_json newValue2;
+	nlohmann::ordered_json lastValue2;
 	bool isMetadata = false;
 	AssetPlatform platform;
 };
 
 template<typename T>
-void ReflectiveChangeValueCommand<T>::FindValueToChange(ReflectiveDataToDraw& reflectiveDataToDraw, nlohmann::json& jsonToChange, int currentIndex)
+void ReflectiveChangeValueCommand<T>::FindValueToChange(ReflectiveDataToDraw& reflectiveDataToDraw, nlohmann::ordered_json& jsonToChange, int currentIndex)
 {
 	/*if (json.is_object())
 	{
@@ -127,7 +127,7 @@ inline ReflectiveChangeValueCommand<T>::ReflectiveChangeValueCommand(ReflectiveD
 }
 
 template<typename T>
-inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::json& valueToSet, bool isUndo)
+inline void ReflectiveChangeValueCommand<T>::SetValue(const nlohmann::ordered_json& valueToSet, bool isUndo)
 {
 	bool hasBeenSet = false;
 	if (targetId != 0)
@@ -493,18 +493,18 @@ class InspectorSetComponentDataCommand : public Command
 {
 public:
 	InspectorSetComponentDataCommand() = delete;
-	InspectorSetComponentDataCommand(T& componentToUse, const nlohmann::json& newComponentData);
+	InspectorSetComponentDataCommand(T& componentToUse, const nlohmann::ordered_json& newComponentData);
 	void Execute() override;
 	void Undo() override;
 private:
 	uint64_t m_componentId = 0;
-	nlohmann::json m_componentData;
-	nlohmann::json m_oldComponentData;
+	nlohmann::ordered_json m_componentData;
+	nlohmann::ordered_json m_oldComponentData;
 	std::string m_componentName = "";
 };
 
 template<typename T>
-inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(T& componentToUse, const nlohmann::json& newComponentData) : m_componentData(newComponentData)
+inline InspectorSetComponentDataCommand<T>::InspectorSetComponentDataCommand(T& componentToUse, const nlohmann::ordered_json& newComponentData) : m_componentData(newComponentData)
 {
 	this->m_componentId = componentToUse.GetUniqueId();
 	this->m_oldComponentData["Values"] = ReflectionUtils::ReflectiveDataToJson(componentToUse.GetReflectiveData());
@@ -542,13 +542,13 @@ class InspectorSetTransformDataCommand : public Command
 {
 public:
 	InspectorSetTransformDataCommand() = delete;
-	InspectorSetTransformDataCommand(Transform& transform, const nlohmann::json& newComponentData);
+	InspectorSetTransformDataCommand(Transform& transform, const nlohmann::ordered_json& newComponentData);
 	void Execute() override;
 	void Undo() override;
 private:
 	uint64_t m_transformtId = 0;
-	nlohmann::json m_transformData;
-	nlohmann::json m_oldTransformData;
+	nlohmann::ordered_json m_transformData;
+	nlohmann::ordered_json m_oldTransformData;
 };
 
 //----------------------------------------------------------------------------

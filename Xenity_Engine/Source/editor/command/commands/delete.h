@@ -36,7 +36,7 @@ public:
 private:
 	struct GameObjectComponent
 	{
-		nlohmann::json componentData;
+		nlohmann::ordered_json componentData;
 		std::string componentName = "";
 		bool isEnabled = true;
 		uint64_t componentId = 0;
@@ -44,8 +44,8 @@ private:
 
 	struct GameObjectChild
 	{
-		nlohmann::json gameObjectData;
-		nlohmann::json transformData;
+		nlohmann::ordered_json gameObjectData;
+		nlohmann::ordered_json transformData;
 		uint64_t gameObjectId = 0;
 		uint64_t parentGameObjectId = 0;
 		std::vector<GameObjectChild> children;
@@ -74,7 +74,7 @@ public:
 private:
 	uint64_t m_gameObjectId = 0;
 	uint64_t m_componentId = 0;
-	nlohmann::json m_componentData;
+	nlohmann::ordered_json m_componentData;
 	std::string m_componentName = "";
 	bool m_isEnabled = true;
 };

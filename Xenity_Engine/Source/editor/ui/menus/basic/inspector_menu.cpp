@@ -28,7 +28,7 @@
 #include <engine/application.h>
 #include <editor/ui/editor_icons.h>
 
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 void InspectorMenu::Init()
 {
@@ -95,7 +95,7 @@ int InspectorMenu::CheckOpenRightClickPopupTransform(Transform& transform, const
 {
 	std::function<void()> copyFunc = [&transform]()
 		{
-			json copyData;
+			ordered_json copyData;
 			copyData["Values"] = ReflectionUtils::ReflectiveDataToJson(transform.GetReflectiveData());
 			EditorUI::copiedComponentJson = copyData;
 			EditorUI::currentCopyType = CopyType::Transform;
@@ -139,7 +139,7 @@ int InspectorMenu::CheckOpenRightClickPopup(Component& component, int& component
 
 	std::function<void()> copyFunc = [&component]()
 		{
-			json copyData;
+			ordered_json copyData;
 			copyData["Values"] = ReflectionUtils::ReflectiveDataToJson(component.GetReflectiveData());
 			EditorUI::copiedComponentJson = copyData;
 			EditorUI::copiedComponentName = component.GetComponentName();
@@ -574,7 +574,10 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 			}
 			std::shared_ptr<Texture> texture = EditorUI::componentsIcons[componentNames[i]];
 			if (!texture)
+			{
 				texture = EditorUI::componentsIcons["Default"];
+			}
+
 			if (texture)
 			{
 				ImGui::SetCursorPosX(lastCursorX);

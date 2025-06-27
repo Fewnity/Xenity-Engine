@@ -20,6 +20,7 @@
 #include <engine/graphics/ui/icon.h>
 #include <engine/missing_script.h>
 #include <engine/asset_management/project_manager.h>
+#include <engine/game_elements/prefab.h>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -29,7 +30,11 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::shared_ptr<T
 {
 	if (valuePtr && valuePtr->get())
 	{
-		ids.insert(valuePtr->get()->GetFileId());
+		auto ret = ids.insert(valuePtr->get()->GetFileId());
+		if(valuePtr->get()->GetFileType() == FileType::File_Prefab && ret.second)
+		{
+			GetUsedFilesInJson(ids, std::dynamic_pointer_cast<Prefab>(valuePtr->get())->GetData());
+		}
 		return true;
 	}
 	else
@@ -73,20 +78,10 @@ void FileReferenceFinder::GetUsedFilesInReflectiveData(std::set<uint64_t>& usedF
 	for (const ReflectiveEntry& reflectiveEntry : reflectiveData)
 	{
 		const VariableReference& variableRef = reflectiveEntry.variable.value();
-		bool isFileFound = false;
-		std::set<uint64_t> foundFileIds;
-		std::visit([&foundFileIds, &isFileFound](const auto& value)
+		std::visit([&usedFilesIds](const auto& value)
 			{
-				isFileFound = GetFileRefId(&value, foundFileIds);
+				GetFileRefId(&value, usedFilesIds);
 			}, variableRef);
-
-		if (isFileFound)
-		{
-			for (uint64_t id : foundFileIds)
-			{
-				usedFilesIds.insert(id);
-			}
-		}
 	}
 }
 
@@ -105,9 +100,8 @@ void FileReferenceFinder::ExtractInts(const ordered_json& j, std::vector<uint64_
 	}
 }
 
-void FileReferenceFinder::GetUsedFilesInMissingScript(std::set<uint64_t>& usedFilesIds, const MissingScript& missingScript)
+void FileReferenceFinder::GetUsedFilesInJson(std::set<uint64_t>& usedFilesIds, const ordered_json& json)
 {
-	ordered_json json = missingScript.data;
 	std::vector<uint64_t> ids;
 	ExtractInts(json, ids);
 	for (uint64_t id : ids)

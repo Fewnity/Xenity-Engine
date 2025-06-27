@@ -34,7 +34,7 @@ public:
 	* @param reflectiveData Reflective data to get the files ids
 	*/
 	static void GetUsedFilesInReflectiveData(std::set<uint64_t>& usedFilesIds, const ReflectiveData& reflectiveData);
-	static void GetUsedFilesInMissingScript(std::set<uint64_t>& usedFilesIds, const MissingScript& missingScript);
+	static void GetUsedFilesInJson(std::set<uint64_t>& usedFilesIds, const nlohmann::ordered_json& json);
 
 private:
 

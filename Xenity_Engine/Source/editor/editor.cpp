@@ -46,7 +46,6 @@
 #include <engine/debug/debug.h>
 #include <engine/event_system/event_system.h>
 #include <engine/debug/stack_debug_object.h>
-using json = nlohmann::json;
 
 std::weak_ptr<AudioSource> Editor::s_audioSource;
 std::shared_ptr <ProjectDirectory> Editor::s_currentProjectDirectory = nullptr;

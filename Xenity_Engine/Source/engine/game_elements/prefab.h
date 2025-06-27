@@ -17,13 +17,13 @@ public:
 #if defined(EDITOR)
 	void SetData(GameObject& gameObject);
 #endif
-	const nlohmann::json& GetData() const;
+	const nlohmann::ordered_json& GetData() const;
 	void LoadFileReference(const LoadOptions& loadOptions) override;
 private:
 #if defined(EDITOR)
 	void SaveGameObject(GameObject& gameObject, std::set<uint64_t>& usedFilesIds);
 #endif
-	nlohmann::json data;
+	nlohmann::ordered_json data;
 	static constexpr int s_version = 1;
 };
 

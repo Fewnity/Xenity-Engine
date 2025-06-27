@@ -17,7 +17,7 @@
 #include <engine/scene_management/scene_manager.h>
 #include <engine/game_elements/prefab.h>
 
-using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 struct ComponentAndId
 {
@@ -70,7 +70,7 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 		const ReflectiveData newReflection = newComponent->GetReflectiveData();
 		const ReflectiveData reflectionToCopy = componentToDuplicate->GetReflectiveData();
 
-		json copiedValues;
+		ordered_json copiedValues;
 		copiedValues["Values"] = ReflectionUtils::ReflectiveDataToJson(reflectionToCopy);
 
 		ReflectionUtils::JsonToReflectiveData(copiedValues, newReflection);

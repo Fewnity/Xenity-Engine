@@ -272,7 +272,7 @@ public:
 		T value = valueRef;
 		ValueInputState returnValue = ValueInputState::NO_CHANGE;
 
-		if constexpr (std::is_same<T, nlohmann::json>())
+		if constexpr (std::is_same<T, nlohmann::json>() || std::is_same<T, nlohmann::ordered_json>())
 			return returnValue;
 
 		DrawInputTitle(inputName);
@@ -317,7 +317,7 @@ public:
 		T value = valueRef;
 		ValueInputState returnValue = ValueInputState::NO_CHANGE;
 
-		if constexpr (std::is_same<T, nlohmann::json>())
+		if constexpr (std::is_same<T, nlohmann::json>() || std::is_same<T, nlohmann::ordered_json>())
 			return returnValue;
 
 		DrawInputTitle(inputName);
@@ -688,7 +688,7 @@ public:
 	}
 
 	static CopyType currentCopyType;
-	static nlohmann::json copiedComponentJson;
+	static nlohmann::ordered_json copiedComponentJson;
 	static std::string copiedComponentName;
 	static Event<>* onValueChangedEvent;
 private:
