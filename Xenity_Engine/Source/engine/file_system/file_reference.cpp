@@ -9,22 +9,30 @@
 #include <engine/file_system/data_base/file_data_base.h>
 #include <engine/asset_management/project_manager.h>
 #include <engine/asset_management/asset_manager.h>
+#include <engine/debug/debug.h>
 
-FileReference::FileReference()
+FileReference::FileReference(bool isForCooking)
 {
-	AssetManager::AddReflection(this);
+	m_isForCooking = isForCooking;
+	if (!m_isForCooking)
+	{
+		AssetManager::AddReflection(this);
+	}
 }
 
 FileReference::~FileReference()
 {
-	AssetManager::RemoveReflection(this);
+	if (!m_isForCooking)
+	{
+		AssetManager::RemoveReflection(this);
+	}
 }
 
 std::string FileReference::ReadString() const
 {
 	std::string string = "";
 #if defined(EDITOR)
-	bool loadResult = m_file->Open(FileMode::ReadOnly);
+	const bool loadResult = m_file->Open(FileMode::ReadOnly);
 	if (loadResult)
 	{
 		string = m_file->ReadAll();
@@ -43,7 +51,7 @@ unsigned char* FileReference::ReadBinary(size_t& size) const
 {
 	unsigned char* fileData = nullptr;
 #if defined(EDITOR)
-	bool openResult = m_file->Open(FileMode::ReadOnly);
+	const bool openResult = m_file->Open(FileMode::ReadOnly);
 	if (openResult)
 	{
 		size_t fileBufferSize = 0;

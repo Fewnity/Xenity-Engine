@@ -33,7 +33,7 @@
 #include <engine/debug/memory_tracker.h>
 #include <engine/debug/stack_debug_object.h>
 
-MeshData::MeshData()
+MeshData::MeshData(bool isForCooking) : FileReference(isForCooking)
 {
 }
 

@@ -228,7 +228,7 @@ void Cooker::CookMesh(const CookSettings& settings, const FileInfo& fileInfo, co
 	const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo.fileAndId.file);
 
 	// Load mesh data
-	MeshData meshData = MeshData();
+	MeshData meshData = MeshData(true);
 	meshData.m_file = fileInfo.fileAndId.file;
 	FileReference::LoadOptions loadOptions;
 	loadOptions.platform = settings.platform;

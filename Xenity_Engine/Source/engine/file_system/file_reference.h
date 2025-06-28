@@ -34,7 +34,7 @@ enum class FileStatus
 class API FileReference : public Reflective, public std::enable_shared_from_this<FileReference>
 {
 public:
-	FileReference();
+	FileReference(bool isForCooking = false);
 	~FileReference();
 
 	FileReference(const FileReference& other) = delete;
@@ -134,4 +134,7 @@ protected:
 
 	std::string ReadString() const;
 	unsigned char* ReadBinary(size_t& size) const;
+
+private:
+	bool m_isForCooking = false;
 };

@@ -192,7 +192,8 @@ public:
 		bool m_isQuad = false;
 	};
 
-	MeshData();
+	MeshData() = default;
+	MeshData(bool isForCooking);
 	~MeshData();
 
 	[[nodiscard]] static std::shared_ptr<MeshData> CreateMeshData();
