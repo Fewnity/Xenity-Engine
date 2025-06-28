@@ -133,6 +133,8 @@ private:
 		s_openedScene = _openedScene;
 	}
 
+	static void ClearOpenedSceneFile();
+
 	/**
 	 * @brief [Internal] Show a dialog to ask if the user wants to save the scene if it has been modified
 	 * @return True if canceled
@@ -142,7 +144,7 @@ private:
 	/**
 	* @brief [Internal] Load scene from json data
 	*/
-	static void LoadScene(const nlohmann::ordered_json& jsonData);
+	static void LoadScene(const nlohmann::ordered_json& jsonData, const nlohmann::ordered_json& jsonUsedFileListData);
 
 	static std::shared_ptr<Scene> s_openedScene;
 	static bool s_sceneModified;

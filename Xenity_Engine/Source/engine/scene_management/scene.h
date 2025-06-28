@@ -19,6 +19,9 @@ public:
 
 protected:
 	friend class ProjectManager;
+	friend class SceneManager;
+
+	std::vector<std::shared_ptr<FileReference>> m_fileReferenceList;
 
 	ReflectiveData GetReflectiveData() override;
 	ReflectiveData GetMetaReflectiveData(AssetPlatform platform) override;

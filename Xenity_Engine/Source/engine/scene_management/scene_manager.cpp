@@ -37,7 +37,9 @@ using ordered_json = nlohmann::ordered_json;
 std::shared_ptr<Scene> SceneManager::s_openedScene = nullptr;
 
 ordered_json savedSceneData;
+ordered_json savedSceneUsedFileListData;
 ordered_json savedSceneDataHotReloading;
+ordered_json savedSceneUsedFileListDataHotReloading;
 
 bool SceneManager::s_sceneModified = false;
 
@@ -150,18 +152,20 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 	if (saveType == SaveSceneType::SaveSceneForPlayState) // Save Scene in a temporary json to restore it after quitting play mode
 	{
 		savedSceneData = j;
+		savedSceneUsedFileListData = usedFilesJson;
 	}
 	else if (saveType == SaveSceneType::SaveSceneForHotReloading)// Save Scene in a temporary json to restore it after compiling the game
 	{
 		savedSceneDataHotReloading = j;
+		savedSceneUsedFileListDataHotReloading = usedFilesJson;
 	}
 	else
 	{
 		// Get scene path
 		std::string path = "";
-		if (SceneManager::s_openedScene)
+		if (s_openedScene)
 		{
-			path = SceneManager::s_openedScene->m_file->GetPath();
+			path = s_openedScene->m_file->GetPath();
 			XASSERT(!path.empty(), "[SceneManager::SaveScene] Scene path is empty");
 		}
 		else
@@ -197,14 +201,14 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 
 std::shared_ptr<GameObject> SceneManager::FindGameObjectByIdAdvanced(const uint64_t id, bool searchInTempList)
 {
-	const std::vector<std::shared_ptr<GameObject>>& gameObjects = (!SceneManager::tempGameobjects.empty() && searchInTempList) ? SceneManager::tempGameobjects : GameplayManager::GetGameObjects();
+	const std::vector<std::shared_ptr<GameObject>>& gameObjects = (!tempGameobjects.empty() && searchInTempList) ? tempGameobjects : GameplayManager::GetGameObjects();
 
 	const size_t gameObjectCount = gameObjects.size();
 
-	if (!SceneManager::idRedirection.empty())
+	if (!idRedirection.empty())
 	{
-		auto v = SceneManager::idRedirection.find(id);
-		if (v != SceneManager::idRedirection.end())
+		auto v = idRedirection.find(id);
+		if (v != idRedirection.end())
 		{
 			uint64_t realId = v->second;
 			for (size_t i = 0; i < gameObjectCount; i++)
@@ -227,16 +231,16 @@ std::shared_ptr<GameObject> SceneManager::FindGameObjectByIdAdvanced(const uint6
 std::shared_ptr<Component> SceneManager::FindComponentByIdAdvanced(const uint64_t id, bool searchInTempList)
 {
 	uint64_t realId = -1;
-	if (!SceneManager::idRedirection.empty())
+	if (!idRedirection.empty())
 	{
-		auto v = SceneManager::idRedirection.find(id);
-		if (v != SceneManager::idRedirection.end())
+		auto v = idRedirection.find(id);
+		if (v != idRedirection.end())
 		{
 			realId = v->second;
 		}
 	}
 
-	const std::vector<std::shared_ptr<Component>>& components = (!SceneManager::tempComponents.empty() && searchInTempList) ? SceneManager::tempComponents : ComponentManager::GetAllComponents();
+	const std::vector<std::shared_ptr<Component>>& components = (!tempComponents.empty() && searchInTempList) ? tempComponents : ComponentManager::GetAllComponents();
 	for (const std::shared_ptr<Component>& component : components)
 	{
 		if ((component->GetUniqueId() == id || component->GetUniqueId() == realId) && IsValid(component))
@@ -453,14 +457,23 @@ void SceneManager::RestoreScene()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	LoadScene(savedSceneData);
+	LoadScene(savedSceneData, savedSceneUsedFileListData);
 }
 
 void SceneManager::RestoreSceneHotReloading()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	LoadScene(savedSceneDataHotReloading);
+	LoadScene(savedSceneDataHotReloading, savedSceneUsedFileListDataHotReloading);
+}
+
+void SceneManager::ClearOpenedSceneFile()
+{
+	if (s_openedScene)
+	{
+		s_openedScene->m_fileReferenceList.clear();
+		s_openedScene.reset();
+	}
 }
 
 bool SceneManager::OnQuit()
@@ -499,7 +512,7 @@ bool SceneManager::OnQuit()
 	return cancel;
 }
 
-void SceneManager::LoadScene(const ordered_json& jsonData)
+void SceneManager::LoadScene(const ordered_json& jsonData, const ordered_json& jsonUsedFileListData)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -514,6 +527,18 @@ void SceneManager::LoadScene(const ordered_json& jsonData)
 #endif
 
 	ClearScene();
+	for (const auto& idKv : jsonUsedFileListData["UsedFiles"]["Values"].items())
+	{
+		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(idKv.value());
+		s_openedScene->m_fileReferenceList.push_back(fileRef);
+
+#if !defined(EDITOR)
+		FileReference::LoadOptions options;
+		options.threaded = false;
+		options.platform = Application::GetPlatform();
+		fileRef->LoadFileReference(options);
+#endif
+	}
 
 	if (jsonData.contains("GameObjects"))
 	{
@@ -548,12 +573,16 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 
 	Debug::Print("Loading scene...", true);
 
+	ClearOpenedSceneFile();
+	s_openedScene = scene;
+
 	// Read scene data
 	const std::string jsonString = scene->ReadString();
 
 	XASSERT(!jsonString.empty(), "[SceneManager::LoadScene] jsonString is empty");
 
 	ordered_json data;
+	ordered_json usedFileListData;
 	try
 	{
 		if (!jsonString.empty())
@@ -563,6 +592,9 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 			{
 				const std::string sceneStr = jsonString.substr(sceneDataPosition);
 				data = ordered_json::parse(sceneStr);
+
+				const std::string sceneFileListStr = jsonString.substr(0, sceneDataPosition);
+				usedFileListData = ordered_json::parse(sceneFileListStr);
 			}
 		}
 	}
@@ -576,8 +608,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		return;
 	}
 
-	LoadScene(data);
-	s_openedScene = scene;
+	LoadScene(data, usedFileListData);
 #if defined(EDITOR)
 	SetIsSceneDirty(false);
 #endif
@@ -614,6 +645,6 @@ void SceneManager::ClearScene()
 
 void SceneManager::CreateEmptyScene()
 {
-	s_openedScene.reset();
-	SceneManager::ClearScene();
+	ClearOpenedSceneFile();
+	ClearScene();
 }
