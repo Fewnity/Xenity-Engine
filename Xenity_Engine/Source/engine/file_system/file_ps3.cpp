@@ -44,7 +44,7 @@ void FilePS3::Write(const std::string& data)
 {
 	if (m_currentFileMode == FileMode::ReadOnly)
 	{
-		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
+		Debug::PrintError("[File::Write] The file is in Read Only mode");
 		return;
 	}
 
@@ -65,7 +65,7 @@ std::string FilePS3::ReadAll()
 {
 	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
-		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		Debug::PrintError("[File::ReadAll] The file is in Write mode");
 		return "";
 	}
 
@@ -77,13 +77,13 @@ std::string FilePS3::ReadAll()
 		uint64_t pos;
 		sysFsLseek(m_fileId, 0, FS_SEEK_SET, &pos);
 
-		char* data = (char*)malloc(size + 1);
+		char* data = new char[size + 1];
 		data[size] = 0;
 		uint64_t read;
 		sysFsRead(m_fileId, data, size, &read);
 
 		allText = data;
-		free(data);
+		delete[] data;
 	}
 	return allText;
 }
@@ -103,7 +103,7 @@ unsigned char* FilePS3::ReadAllBinary(size_t& size)
 		sysFsStat(m_path.c_str(), &file_stat);
 		uint64_t pos;
 		sysFsLseek(m_fileId, 0, FS_SEEK_SET, &pos);
-		data = (char*)malloc(file_stat.size + 1);
+		data = new char[file_stat.size + 1];
 
 		uint64_t read;
 		sysFsRead(m_fileId, data, file_stat.size, &read);
@@ -119,7 +119,7 @@ unsigned char* FilePS3::ReadBinary(size_t offset, size_t size)
 	{
 		uint64_t pos;
 		sysFsLseek(m_fileId, offset, FS_SEEK_SET, &pos);
-		data = (char*)malloc(size);
+		data = new char[size];
 		uint64_t read;
 		sysFsRead(m_fileId, data, size, &read);
 	}

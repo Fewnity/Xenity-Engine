@@ -41,7 +41,7 @@ std::string FileReference::ReadString() const
 #else
 	unsigned char* binData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(m_filePosition, m_fileSize);
 	string = std::string(reinterpret_cast<const char*>(binData), m_fileSize);
-	free(binData);
+	delete[] binData;
 #endif
 
 	return string;

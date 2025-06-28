@@ -198,6 +198,7 @@ protected:
 	std::vector<rsxProgramConst*> m_directionalLightIndicesLocations;
 	std::vector<rsxProgramConst*> m_pointLightIndicesLocations;
 	std::vector<rsxProgramConst*> m_spotLightIndicesLocations;
+	unsigned char* fullShaderPtr;
 };
 
 #endif

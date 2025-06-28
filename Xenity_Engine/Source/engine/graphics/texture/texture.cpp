@@ -211,7 +211,7 @@ void Texture::LoadTexture()
 		// Load image with stb_image
 	unsigned char* data2 = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &m_width, &height,
 		&nrChannels, 4);
-	free(fileData);
+	delete[] fileData;
 
 	m_originalWidth = m_width;
 	m_originalHeight = height;
@@ -242,7 +242,7 @@ void Texture::LoadTexture()
 	else
 	{
 		// Resize image
-		m_buffer = static_cast<unsigned char*>(malloc(newWidth * newHeight * 4));
+		m_buffer = static_cast<unsigned char*>(malloc(newWidth * newHeight * 4)); // Keep this malloc because stbi_load_from_memory uses malloc internally
 		stbir_resize_uint8(data2, m_width, height, 0, m_buffer, newWidth, newHeight, 0, 4);
 		free(data2);
 	}

@@ -301,7 +301,7 @@ void Performance::LoadFromBinary(const std::string& path)
 			s_scopProfilerList[s_currentProfilerFrame].timerResults[key] = scopTimerResultList;
 		}
 
-		free(originalDataPtr);
+		delete[] originalDataPtr;
 	}
 	else
 	{

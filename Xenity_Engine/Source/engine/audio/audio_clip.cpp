@@ -84,7 +84,7 @@ void AudioClip::UnloadFileReference()
 	// If audio file was loaded in memory, free data
 	if (m_audioMemory.m_data)
 	{
-		free(m_audioMemory.m_data);
+		delete[] m_audioMemory.m_data;
 		m_audioMemory.m_data = nullptr;
 	}
 	m_fileStatus = FileStatus::FileStatus_Not_Loaded;

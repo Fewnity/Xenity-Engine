@@ -34,7 +34,7 @@ void FileDefault::Write(const std::string& data)
 {
 	if (m_currentFileMode == FileMode::ReadOnly)
 	{
-		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
+		Debug::PrintError("[File::Write] The file is in Read Only mode");
 		return;
 	}
 
@@ -50,7 +50,7 @@ void FileDefault::Write(const unsigned char* data, size_t size)
 {
 	if (m_currentFileMode == FileMode::ReadOnly)
 	{
-		Debug::PrintError("[File::ReadAllBinary] The file is in Read Only mode");
+		Debug::PrintError("[File::Write] The file is in Read Only mode");
 		return;
 	}
 
@@ -66,7 +66,7 @@ std::string FileDefault::ReadAll()
 {
 	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
-		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		Debug::PrintError("[File::ReadAll] The file is in Write mode");
 		return "";
 	}
 
@@ -98,7 +98,7 @@ unsigned char* FileDefault::ReadAllBinary(size_t& size)
 		return nullptr;
 	}
 
-	char* data = static_cast<char*>(malloc(pos));
+	char* data = new char[pos];
 	if (!data) 
 	{
 		size = 0;
@@ -114,12 +114,12 @@ unsigned char* FileDefault::ReadBinary(size_t offset, size_t size)
 {
 	if (m_currentFileMode == FileMode::WriteOnly || m_currentFileMode == FileMode::WriteCreateFile)
 	{
-		Debug::PrintError("[File::ReadAllBinary] The file is in Write mode");
+		Debug::PrintError("[File::ReadBinary] The file is in Write mode");
 		return nullptr;
 	}
 
 	m_file.seekg(offset, std::ios_base::beg);
-	char* data = static_cast<char*>(malloc(size));
+	char* data = new char[size];
 	m_file.read(data, size);
 
 	return (unsigned char*)data;

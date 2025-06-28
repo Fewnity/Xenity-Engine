@@ -1213,7 +1213,7 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 #else
 		unsigned char* binData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(fileReference.m_metaPosition, fileReference.m_metaSize);
 		jsonString = std::string(reinterpret_cast<const char*>(binData), fileReference.m_metaSize);
-		free(binData);
+		delete[] binData;
 #endif
 
 		json metaData;

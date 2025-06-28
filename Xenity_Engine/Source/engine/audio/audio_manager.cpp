@@ -474,8 +474,8 @@ int AudioManager::Init()
 		return -1;
 	}
 #elif defined(_WIN32) || defined(_WIN64)
-	audioData = (short*)malloc(sizeof(short) * buffSize);
-	audioData2 = (short*)malloc(sizeof(short) * buffSize);
+	audioData = new short[buffSize];
+	audioData2 = new short[buffSize];
 
 	XASSERT(audioData != nullptr, "[AudioManager::Init] audioData is null");
 	XASSERT(audioData2 != nullptr, "[AudioManager::Init] audioData2 is null");
@@ -567,7 +567,7 @@ int AudioManager::Init()
 
 	uint64_t prio = 1500;
 	size_t stacksize = 0x10000;
-	char *audioThreadname = (char*) malloc(13*sizeof(char));
+	char* audioThreadname = new char[13]; // TODO fix this small leak
 
 	strcpy(audioThreadname, "audio_thread");
 	void *threadarg = (void*)0x1337;
@@ -575,7 +575,7 @@ int AudioManager::Init()
 
 	uint64_t prio2 = 1500;
 	size_t stacksize2 = 0x100000;
-	char *audioBufferThreadname = (char*) malloc(22*sizeof(char));
+	char *audioBufferThreadname = new char[22];// TODO fix this small leak
 	strcpy(audioBufferThreadname, "fillAudioBufferThread");
 	int tret2 = sysThreadCreate(&fillBufferThread, fillAudioBufferThread, threadarg, prio2, stacksize2, THREAD_JOINABLE, audioBufferThreadname);
 #endif
@@ -597,8 +597,8 @@ void AudioManager::Stop()
 	waveOutUnprepareHeader(hWaveOut, &waveHdr[1], sizeof(WAVEHDR));
 	waveOutClose(hWaveOut);
 
-	free(audioData);
-	free(audioData2);
+	delete[] audioData;
+	delete[] audioData2;
 #elif defined(__PSP__)
 	sceKernelTerminateDeleteThread(sendAudioThread);
 	sceKernelTerminateDeleteThread(fillBufferThread);

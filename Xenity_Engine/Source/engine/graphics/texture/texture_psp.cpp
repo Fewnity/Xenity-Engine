@@ -269,10 +269,10 @@ void TexturePSP::SetTextureLevel(int level, const unsigned char* texData)
 	unsigned int* dataBuffer = (unsigned int*)memalign(16, byteCount);
 	if (needResize)
 	{
-		unsigned char* resizedData = (unsigned char*)malloc((resizedPW * resizedPH) * 4);
+		unsigned char* resizedData = new unsigned char[(resizedPW * resizedPH) * 4];
 		stbir_resize_uint8(texData, m_width, height, 0, resizedData, resizedPW, resizedPH, 0, 4);
 		copy_texture_data(dataBuffer, resizedData, resizedPW, resizedPH, type, PSPTextureType::RGBA_8888);
-		free(resizedData);
+		delete[] resizedData;
 	}
 	else
 	{

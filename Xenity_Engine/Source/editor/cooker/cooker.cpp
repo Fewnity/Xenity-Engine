@@ -442,8 +442,8 @@ void Cooker::CookShader(const CookSettings& settings, const FileInfo& fileInfo, 
 			shaderFile.write((char*)fragmentCodeBinary, fragmentBinaryCodeSizeFixed);
 			shaderFile.close();
 
-			free(vertexCodeBinary);
-			free(fragmentCodeBinary);
+			delete[] vertexCodeBinary;
+			delete[] fragmentCodeBinary;
 		}
 	}
 	else
@@ -514,11 +514,11 @@ void Cooker::CookTexture(const CookSettings& settings, const FileInfo& fileInfo,
 				return;
 			}
 		}
-		unsigned char* resizedImageData = (unsigned char*)malloc(newWidth * newHeight * 4);
+		unsigned char* resizedImageData = new unsigned char[newWidth * newHeight * 4];
 		stbir_resize_uint8(imageData, width, height, 0, resizedImageData, newWidth, newHeight, 0, 4);
 
 		stbi_write_png(exportPath.c_str(), newWidth, newHeight, 4, resizedImageData, 0);
-		free(resizedImageData);
+		delete[] resizedImageData;
 	}
 	else // Just copy the texture file
 	{

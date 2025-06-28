@@ -389,7 +389,7 @@ void MeshData::CreateSubMesh(uint32_t vcount, uint32_t index_count, const Vertex
 #elif defined(__PS3__)
 		newSubMesh->m_indices = rsxMemalign(128, newSubMesh->m_indexMemSize);
 #else
-		newSubMesh->m_indices = malloc(newSubMesh->m_indexMemSize);
+		newSubMesh->m_indices = new char[newSubMesh->m_indexMemSize];
 #endif
 
 #if defined (DEBUG)
@@ -508,7 +508,7 @@ void MeshData::CreateSubMesh(uint32_t vcount, uint32_t index_count, const Vertex
 #elif defined(__PS3__)
 	newSubMesh->m_data = (void*)rsxMemalign(128, newSubMesh->m_vertexMemSize);
 #else
-	newSubMesh->m_data = (void*)malloc(newSubMesh->m_vertexMemSize);
+	newSubMesh->m_data = new char[newSubMesh->m_vertexMemSize];
 #endif
 
 #if !defined(_EE)
@@ -583,13 +583,17 @@ void MeshData::SubMesh::FreeData()
 	{
 #if defined(__PSP__)
 		if (isOnVram)
+		{
 			vfree(m_data);
+		}
 		else
+		{
 			free(m_data);
+		}
 #elif defined(__PS3__)
 		rsxFree(m_data);
 #else
-		free(m_data);
+		delete[] static_cast<char*>(m_data);
 #endif
 		m_data = nullptr;
 	}
@@ -599,7 +603,7 @@ void MeshData::SubMesh::FreeData()
 #if defined(__PS3__)
 		rsxFree(m_indices);
 #else
-		free(m_indices);
+		delete[] static_cast<char*>(m_indices);
 #endif
 		m_indices = nullptr;
 	}

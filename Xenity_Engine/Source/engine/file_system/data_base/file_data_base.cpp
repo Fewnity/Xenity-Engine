@@ -105,7 +105,7 @@ bool FileDataBase::LoadFromFile(const std::string& path)
 		std::vector<uint8_t> binaryFileDataBase;
 		binaryFileDataBase.resize(dataSize);
 		memcpy(binaryFileDataBase.data(), data, dataSize);
-		free(data);
+		delete[] data;
 
 		const ordered_json j = ordered_json::from_msgpack(binaryFileDataBase);
 

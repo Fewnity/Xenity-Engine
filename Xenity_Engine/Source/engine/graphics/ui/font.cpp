@@ -93,6 +93,10 @@ bool Font::CreateFont(Font& font)
 	if (FT_New_Memory_Face(ft, fileData, static_cast<FT_Long>(fileBufferSize), 0, &face))
 	{
 		Debug::PrintError("[Font::CreateFont] Failed to load font from memory", true);
+		if (fileData)
+		{
+			delete[] fileData;
+		}
 		return false;
 	}
 #endif
@@ -111,12 +115,15 @@ bool Font::CreateFont(Font& font)
 	channelCount = 4;
 #endif
 
-	unsigned char *atlas = (unsigned char *)calloc((size_t)atlasSize * atlasSize * channelCount, sizeof(unsigned char));
+	unsigned char *atlas = new unsigned char[atlasSize * atlasSize * channelCount];
 	if (!atlas)
 	{
+#if !defined(EDITOR)
+		delete[] fileData;
+#endif
 		return false;
 	}
-
+	memset(atlas, 0, atlasSize * atlasSize * channelCount);
 	int xOffset = 0;
 	int yOffset = 0;
 	for (unsigned char c = 0; c < 255; c++)
@@ -187,7 +194,10 @@ bool Font::CreateFont(Font& font)
 		catch (...)
 		{
 			Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + font.m_file->GetPath(), true);
-			free(atlas);
+			delete[] atlas;
+#if !defined(EDITOR)
+			delete[] fileData;
+#endif
 			return false;
 		}
 	}
@@ -205,12 +215,12 @@ bool Font::CreateFont(Font& font)
 
 	font.fontAtlas = newAtlas;
 
-	free(atlas);
+	delete[] atlas;
 
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
 #if !defined(EDITOR)
-	free(fileData);
+	delete[] fileData;
 #endif
 #if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important

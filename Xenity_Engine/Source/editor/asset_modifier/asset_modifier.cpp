@@ -46,7 +46,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int
 		}
 
 		// Alloc memory for the cropped texture
-		unsigned char* croppedBuffer = (unsigned char*)malloc(width * height * channelCount * sizeof(unsigned char));
+		unsigned char* croppedBuffer = new unsigned char[width * height * channelCount];
 		if (!croppedBuffer)
 		{
 			stbi_image_free(buffer);
@@ -70,7 +70,7 @@ void AssetModifier::CropTexture(std::shared_ptr<Texture> textureInput, const int
 
 		stbi_write_png(fileOutput->GetPath().c_str(), width, height, channelCount, croppedBuffer, 0);
 
-		free(croppedBuffer);
+		delete[] croppedBuffer;
 		stbi_image_free(buffer);
 	}
 	else 

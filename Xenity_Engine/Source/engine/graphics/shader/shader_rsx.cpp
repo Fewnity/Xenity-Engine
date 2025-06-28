@@ -53,7 +53,7 @@ ShaderRSX::SpotLightVariableIds::SpotLightVariableIds(int index, rsxFragmentProg
 
 ShaderRSX::~ShaderRSX()
 {
-
+	delete[] fullShaderPtr;
 }
 
 void ShaderRSX::Init()
@@ -65,14 +65,13 @@ void ShaderRSX::Load(const LoadOptions& loadOptions)
 {
 	size_t size = 0;
 	unsigned char* fullShader = ReadShaderBinary(size);
-	//Debug::Print("size: " + std::to_string(size));
+	fullShaderPtr = fullShader;
 
 	// Read vertex shader code size
 	uint32_t vertexShaderCodeSize = 0;
 	memcpy(&vertexShaderCodeSize, fullShader, sizeof(uint32_t));
 	vertexShaderCodeSize = EndianUtils::SwapEndian(vertexShaderCodeSize);
 	fullShader += sizeof(uint32_t);
-	//Debug::Print("vertexShaderCodeSize: " + std::to_string(vertexShaderCodeSize));
 
 	// Read code
 	m_vertexProgram = (rsxVertexProgram*)fullShader;
@@ -91,7 +90,6 @@ void ShaderRSX::Load(const LoadOptions& loadOptions)
 	memcpy(&fragmentShaderCodeSize, fullShader, sizeof(uint32_t));
 	fragmentShaderCodeSize = EndianUtils::SwapEndian(fragmentShaderCodeSize);
 	fullShader += sizeof(uint32_t);
-	//Debug::Print("fragmentShaderCodeSize: " + std::to_string(fragmentShaderCodeSize));
 
 	m_fragmentProgram = (rsxFragmentProgram*)fullShader;
 
@@ -105,7 +103,6 @@ void ShaderRSX::Load(const LoadOptions& loadOptions)
 
 	{
 		rsxVertexProgramGetUCode(m_vertexProgram, &m_vertexProgramCode, &m_vertexProgramSize);
-		//printf("vertexProgramSize: %d\n", m_vertexProgramSize);
 
 		m_projMatrix = rsxVertexProgramGetConst(m_vertexProgram, "projection");
 		m_viewMatrix = rsxVertexProgramGetConst(m_vertexProgram, "camera");
@@ -116,7 +113,6 @@ void ShaderRSX::Load(const LoadOptions& loadOptions)
 
 	{
 		rsxFragmentProgramGetUCode(m_fragmentProgram, &m_fragmentProgramCode, &m_fragmentProgramSize);
-		//printf("fragmentProgramSize: %d\n", m_fragmentProgramSize);
 
 		m_fragmentProgramCodeOnGPU = (uint32_t*)rsxMemalign(64, m_fragmentProgramSize);
 		memcpy(m_fragmentProgramCodeOnGPU, m_fragmentProgramCode, m_fragmentProgramSize);

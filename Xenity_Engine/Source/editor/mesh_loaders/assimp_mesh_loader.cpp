@@ -60,7 +60,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 		{
 			const std::string assimpError = importer.GetErrorString();
 			Debug::PrintError("[AssimpMeshLoader::LoadMesh] Failed to load the mesh: " + file->GetPath() + " (" + assimpError + ")", true);
-			free(data);
+			delete[] data;
 			return false;
 		}
 
@@ -162,7 +162,7 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 				}
 			}
 		}
-		free(data);
+		delete[] data;
 	}
 
 	return true;
