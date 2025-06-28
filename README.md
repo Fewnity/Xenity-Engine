@@ -7,6 +7,7 @@ Xenity Engine is a crossplatform game engine based on GameObjects and Components
 I'm planning to work on a new engine, to fix most of the big problems of this engine.<br>
 So I probably won't add new feature to this engine.<br>
 But pull requests are still welcomed, new features, refactor, bug fixes, optimizations or improve documentations, everything is good to take!
+If you want to improve the engine, here is the [TODO list](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/TODO.md).
 
 ![image](https://github.com/Fewnity/Xenity-Engine/assets/39272935/df59e12e-b989-4b0d-93b1-4f95fac7c91f)
 
