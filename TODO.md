@@ -6,8 +6,14 @@
 - Fix PSP sleep mode when networking is enabled
 - Add trigger values for gamepads
 - Add PS3 multi gamepad support
-- Add buttons for canvas
-- CTRL+Z does not work on UI elements and gizmo arrows
+
+- Screen::GetWidth/GetHeight do not work for editor in game tab
+- Fix crash when deleting a material while used for rendering (try with audio and meshes) (need to recall CreateRenderCommands)
+- Add color variable to text renderer
+- Always use unlit material on sprite and text renderer instead of variable material
+- Increase ground polygons on the dungeon game
+- Try to add a little time to jump on the dungeon game
+- Add a win text for the last level on the dungeon game
 
 ## Can be done for a later release
 
@@ -23,7 +29,7 @@
 - Add a function to resize a submesh (resize only if size is different, usefull for text)
 - Try to remove rotation and local rotation from transform, maybe remove position
 - Check why the tv texture does not load on PSP (Specific to my project)
-- Try to build dll with debug symbols
+- Try to build game dll with debug symbols for debugging in visual studio
 - Check if force inline for GLM is better or not
 - Reduce cache size by deleting executable file
 - Separate audio platform specific code into more files
@@ -63,6 +69,5 @@
 - Add transparency setting on textures to reduce size in memory if alpha is not needed
 - Preview part in inspector : Add mesh preview
 - Tilemap: Refactor the whole tilemap system
-- Touch : Add  input state : Begin, Hold (and End?)
 - Create OnReflectionUpdated in transform and set isTransformationMatrixDirty = true; and call UpdateWorldValues in the function?
 - Change rightClickedElement and use selected gameobjects if clicked on selected gameobjects
