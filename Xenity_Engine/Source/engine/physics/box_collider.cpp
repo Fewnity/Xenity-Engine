@@ -30,6 +30,12 @@ BoxCollider::BoxCollider()
 	CalculateBoundingBox();
 }
 
+BoxCollider::~BoxCollider()
+{
+	GetTransform()->GetOnTransformScaled().Unbind(&BoxCollider::OnTransformScaled, this);
+	GetTransform()->GetOnTransformUpdated().Unbind(&BoxCollider::OnTransformUpdated, this);
+}
+
 ReflectiveData BoxCollider::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -86,12 +92,6 @@ void BoxCollider::OnTransformUpdated()
 			btQuaternion(transform.GetRotation().x, transform.GetRotation().y, transform.GetRotation().z, transform.GetRotation().w),
 			btVector3(-newPos.x, newPos.y, newPos.z)));
 	}
-}
-
-BoxCollider::~BoxCollider()
-{
-	GetTransform()->GetOnTransformScaled().Unbind(&BoxCollider::OnTransformScaled, this);
-	GetTransform()->GetOnTransformUpdated().Unbind(&BoxCollider::OnTransformUpdated, this);
 }
 
 void BoxCollider::Awake()

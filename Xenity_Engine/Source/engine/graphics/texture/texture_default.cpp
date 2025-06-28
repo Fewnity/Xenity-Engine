@@ -39,7 +39,7 @@
 
 TextureDefault::~TextureDefault()
 {
-	Debug::Print("TextureDefault::~TextureDefault()" + std::to_string(m_textureId), true);
+	//Debug::Print("TextureDefault::~TextureDefault()" + std::to_string(m_textureId), true);
 	this->UnloadFileReference();
 }
 
@@ -49,8 +49,6 @@ void TextureDefault::Bind() const
 
 	glBindTexture(GL_TEXTURE_2D, m_textureId);
 	ApplyTextureFilters();
-	//float borderColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
-	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
 int TextureDefault::GetWrapModeEnum(WrapMode wrapMode) const
@@ -60,10 +58,6 @@ int TextureDefault::GetWrapModeEnum(WrapMode wrapMode) const
 	{
 	case WrapMode::ClampToEdge:
 		mode = GL_CLAMP_TO_EDGE;
-//#if defined(_WIN32) || defined(_WIN64) || defined (__LINUX__)
-//#else
-//		mode = GL_CLAMP;
-//#endif
 		break;
 	case WrapMode::Repeat:
 		mode = GL_REPEAT;

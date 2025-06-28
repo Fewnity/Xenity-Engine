@@ -42,7 +42,7 @@ void Canvas::UpdateButtons(const std::shared_ptr<GameObject>& gameObject)
 	std::vector<std::shared_ptr<GameObject>> children;
 	for (size_t i = 0; i < gameObject->GetChildrenCount(); i++)
 	{
-		children.push_back(gameObject->GetChild(i).lock());
+		children.push_back(gameObject->GetChild(static_cast<int>(i)).lock());
 	}
 	for (const auto& child : children)
 	{
@@ -64,7 +64,7 @@ void Canvas::Update()
 		if (touchScreenCount != 0)
 		{
 			const int touchScreenCount = InputSystem::GetTouchCount(0);
-			for (size_t touchIndex = 0; touchIndex < touchScreenCount; touchIndex++)
+			for (int touchIndex = 0; touchIndex < touchScreenCount; touchIndex++)
 			{
 				if (InputSystem::GetTouch(touchIndex, 0).pressed)
 				{
@@ -108,7 +108,7 @@ void Canvas::DrawCommand(const RenderCommand& renderCommand)
 	if (Editor::s_lastFocusedGameMenu.lock() != nullptr)
 	{
 		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::s_lastFocusedGameMenu.lock())->lastSize;
-		lastSize = Vector2Int(windowsSize.x, windowsSize.y);
+		lastSize = Vector2Int(static_cast<int>(windowsSize.x), static_cast<int>(windowsSize.y));
 	}
 	else 
 	{

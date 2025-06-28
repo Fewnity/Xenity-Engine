@@ -26,6 +26,15 @@ Light::Light()
 	UpdateLightValues();
 }
 
+Light::~Light()
+{
+	if (GetTransformRaw())
+	{
+		GetTransformRaw()->GetOnTransformUpdated().Unbind(&Light::OnTransformPositionUpdated, this);
+	}
+	WorldPartitionner::RemoveLight(this);
+}
+
 float Light::GetMaxLightDistance() const
 {
 	const float fixedLinear = (0.7f * 7.0f) / (m_range);
@@ -56,15 +65,6 @@ void Light::OnComponentAttached()
 	{
 		GetTransformRaw()->GetOnTransformUpdated().Bind(&Light::OnTransformPositionUpdated, this);
 	}
-}
-
-Light::~Light()
-{
-	if(GetTransformRaw())
-	{
-		GetTransformRaw()->GetOnTransformUpdated().Unbind(&Light::OnTransformPositionUpdated, this);
-	}
-	WorldPartitionner::RemoveLight(this);
 }
 
 void Light::RemoveReferences()

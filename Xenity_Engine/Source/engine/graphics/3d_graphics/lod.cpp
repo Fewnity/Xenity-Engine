@@ -12,10 +12,6 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/camera.h>
 
-Lod::Lod()
-{
-}
-
 ReflectiveData Lod::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;

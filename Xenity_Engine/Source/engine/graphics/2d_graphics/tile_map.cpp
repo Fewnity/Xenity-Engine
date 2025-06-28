@@ -25,12 +25,10 @@
 
 Tilemap::Tilemap()
 {
-	AssetManager::AddReflection(this);
 }
 
 Tilemap::~Tilemap()
 {
-	AssetManager::RemoveReflection(this);
 }
 
 ReflectiveData Tilemap::GetReflectiveData()

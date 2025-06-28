@@ -417,7 +417,7 @@ void InputSystem::Read()
 	{
 		if(screens[0]->touches.size() != 0)
 		{
-			mousePosition = Vector2(screens[0]->touches[0].position.x, screens[0]->touches[0].position.y);
+			mousePosition = Vector2(static_cast<float>(screens[0]->touches[0].position.x), static_cast<float>(screens[0]->touches[0].position.y));
 		}
 		else
 		{

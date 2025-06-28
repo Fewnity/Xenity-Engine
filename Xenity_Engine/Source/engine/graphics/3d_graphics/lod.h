@@ -17,7 +17,6 @@ class MeshRenderer;
 class API Lod : public Component
 {
 public:
-	Lod();
 	~Lod();
 
 protected:

@@ -17,7 +17,8 @@
 class MissingScript : public Component
 {
 public:
-	ReflectiveData GetReflectiveData() override;
 	nlohmann::ordered_json data;
+private:
+	ReflectiveData GetReflectiveData() override;
 };
 

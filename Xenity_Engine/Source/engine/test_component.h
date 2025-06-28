@@ -44,11 +44,6 @@ ENUM(Colors, Blue = 5, Red = 145, Orange = 1203, Yellow = 145, Green = 145, Purp
 class TestComponent : public Component
 {
 public:
-
-	ReflectiveData GetReflectiveData() override;
-	void Start() override;
-	void Update() override;
-
 	CustomClass myCustomClass = CustomClass();
 
 	std::weak_ptr<MeshRenderer> myComponent;
@@ -103,5 +98,10 @@ public:
 	bool myBool = false;
 	Colors myEnum = Colors::Red;
 	Matos myMatos = Matos::Clavier;
+
+private:
+	void Start() override;
+	void Update() override;
+	ReflectiveData GetReflectiveData() override;
 };
 

@@ -22,6 +22,39 @@ RigidBody::RigidBody() : Component(false, false)
 {
 }
 
+RigidBody::~RigidBody()
+{
+	if (GetTransformRaw())
+	{
+		GetTransformRaw()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
+	}
+
+	for (Collider* c : m_colliders)
+	{
+		c->SetRigidbody(nullptr);
+	}
+
+	if (m_bulletRigidbody)
+	{
+		PhysicsManager::s_physDynamicsWorld->removeRigidBody(m_bulletRigidbody);
+		PhysicsManager::s_physDynamicsWorld->removeRigidBody(m_bulletTriggerRigidbody);
+
+		delete m_bulletCompoundShape;
+		m_bulletCompoundShape = nullptr;
+
+		delete m_bulletTriggerCompoundShape;
+		m_bulletTriggerCompoundShape = nullptr;
+
+		delete m_bulletRigidbody->getMotionState();
+		delete m_bulletRigidbody;
+		m_bulletRigidbody = nullptr;
+
+		delete m_bulletTriggerRigidbody->getMotionState();
+		delete m_bulletTriggerRigidbody;
+		m_bulletTriggerRigidbody = nullptr;
+	}
+}
+
 ReflectiveData RigidBody::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
@@ -367,39 +400,6 @@ void RigidBody::Tick()
 		const btVector3& vel = m_bulletRigidbody->getLinearVelocity();
 		m_velocity = Vector3(vel.x(), vel.y(), vel.z());
 		m_disableEvent = false;
-	}
-}
-
-RigidBody::~RigidBody()
-{
-	if (GetTransformRaw())
-	{
-		GetTransformRaw()->GetOnTransformUpdated().Unbind(&RigidBody::OnTransformUpdated, this);
-	}
-
-	for (Collider* c : m_colliders)
-	{
-		c->SetRigidbody(nullptr);
-	}
-
-	if (m_bulletRigidbody)
-	{
-		PhysicsManager::s_physDynamicsWorld->removeRigidBody(m_bulletRigidbody);
-		PhysicsManager::s_physDynamicsWorld->removeRigidBody(m_bulletTriggerRigidbody);
-
-		delete m_bulletCompoundShape;
-		m_bulletCompoundShape = nullptr;
-
-		delete m_bulletTriggerCompoundShape;
-		m_bulletTriggerCompoundShape = nullptr;
-
-		delete m_bulletRigidbody->getMotionState();
-		delete m_bulletRigidbody;
-		m_bulletRigidbody = nullptr;
-
-		delete m_bulletTriggerRigidbody->getMotionState();
-		delete m_bulletTriggerRigidbody;
-		m_bulletTriggerRigidbody = nullptr;
 	}
 }
 

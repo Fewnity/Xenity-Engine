@@ -20,6 +20,8 @@ public:
 	{
 	}
 
+	virtual ~BaseComponentList() = default;
+
 	/**
 	* @brief Create a new component of the child template type (Will create a new list if no slot available)
 	*/

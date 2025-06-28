@@ -55,7 +55,7 @@ void Button::CheckClick(Canvas& canvas)
 			else if (InputSystem::GetTouchScreenCount() != 0)
 			{
 				const int touchScreenCount = InputSystem::GetTouchCount(0);
-				for (size_t touchIndex = 0; touchIndex < touchScreenCount; touchIndex++)
+				for (int touchIndex = 0; touchIndex < touchScreenCount; touchIndex++)
 				{
 					const Touch touch = InputSystem::GetTouch(touchIndex, 0);
 					if (touch.pressed &&

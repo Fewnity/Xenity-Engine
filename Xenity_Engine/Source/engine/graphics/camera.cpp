@@ -36,6 +36,8 @@
 
 #pragma region Constructors / Destructor
 
+//TODO : Move this Opengl specific code
+
 Camera::Camera() : m_fov(DEFAULT_CAMERA_FOV), m_isProjectionDirty(true)
 {
 	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
@@ -48,6 +50,35 @@ Camera::Camera() : m_fov(DEFAULT_CAMERA_FOV), m_isProjectionDirty(true)
 #endif
 
 	ChangeFrameBufferSize(Vector2Int(Window::GetWidth(), Window::GetHeight()));
+}
+
+Camera::~Camera()
+{
+	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	if (m_framebuffer != -1)
+	{
+		glDeleteFramebuffers(1, &m_framebuffer);
+	}
+	if (m_secondFramebuffer != -1)
+	{
+		glDeleteFramebuffers(1, &m_secondFramebuffer);
+	}
+	if (m_framebufferTexture != -1)
+	{
+		glDeleteTextures(1, &m_framebufferTexture);
+	}
+	if (m_secondFramebufferTexture != -1)
+	{
+		glDeleteTextures(1, &m_secondFramebufferTexture);
+	}
+	if (m_depthframebuffer != -1)
+	{
+		glDeleteRenderbuffers(1, &m_depthframebuffer);
+	}
+#endif
+	GetTransformRaw()->GetOnTransformUpdated().Unbind(&Camera::UpdateCameraTransformMatrix, this);
 }
 
 void Camera::OnComponentAttached()
@@ -183,35 +214,6 @@ void Camera::OnReflectionUpdated()
 		m_lastMultisamplingValue = m_useMultisampling;
 		m_needFrameBufferUpdate = true;
 	}
-}
-
-Camera::~Camera()
-{
-	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
-
-#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
-	if (m_framebuffer != -1)
-	{
-		glDeleteFramebuffers(1, &m_framebuffer);
-	}
-	if (m_secondFramebuffer != -1)
-	{
-		glDeleteFramebuffers(1, &m_secondFramebuffer);
-	}
-	if (m_framebufferTexture != -1)
-	{
-		glDeleteTextures(1, &m_framebufferTexture);
-	}
-	if (m_secondFramebufferTexture != -1)
-	{
-		glDeleteTextures(1, &m_secondFramebufferTexture);
-	}
-	if (m_depthframebuffer != -1)
-	{
-		glDeleteRenderbuffers(1, &m_depthframebuffer);
-	}
-#endif
-	GetTransformRaw()->GetOnTransformUpdated().Unbind(&Camera::UpdateCameraTransformMatrix, this);
 }
 
 #pragma endregion
