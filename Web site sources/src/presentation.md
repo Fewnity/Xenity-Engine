@@ -41,6 +41,8 @@ _It's pink but you can change the color!_
 
 You can see all limitations [here](./limitations.md).
 
+If you want to improve the engine, here is the [TODO list](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/TODO.md).
+
 ### Contact:
 
 **Discord:** fewnity
