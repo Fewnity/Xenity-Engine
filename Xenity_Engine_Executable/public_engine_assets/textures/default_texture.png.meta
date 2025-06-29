@@ -5,7 +5,6 @@
 "Values": {
 "resolution": 2048,
 "useMipMap": false,
-"mipmaplevelCount": 0,
 "filter": 1,
 "wrapMode": 3,
 "pixelPerUnit": 100
@@ -15,7 +14,6 @@
 "Values": {
 "resolution": 2048,
 "useMipMap": false,
-"mipmaplevelCount": 0,
 "filter": 1,
 "wrapMode": 3,
 "pixelPerUnit": 100,
@@ -27,7 +25,6 @@
 "Values": {
 "resolution": 2048,
 "useMipMap": false,
-"mipmaplevelCount": 0,
 "filter": 1,
 "wrapMode": 3,
 "pixelPerUnit": 100
@@ -37,10 +34,10 @@
 "Values": {
 "resolution": 2048,
 "useMipMap": false,
-"mipmaplevelCount": 0,
 "filter": 1,
 "wrapMode": 3,
-"pixelPerUnit": 100
+"pixelPerUnit": 100,
+"type": 2
 }
 }
 }

@@ -28,6 +28,12 @@ public:
 	static std::shared_ptr <GameObject> SpawnCube();
 
 	/**
+	* @brief Spawn a subdivided cube
+	* @return A shared pointer to the subdivided cube GameObject
+	*/
+	static std::shared_ptr <GameObject> SpawnSubdividedCube();
+
+	/**
 	* @brief Spawn a sphere
 	* @return A shared pointer to the sphere GameObject
 	*/

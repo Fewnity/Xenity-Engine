@@ -23,7 +23,16 @@ Vector3 ShapeSpawner::s_defaultScale = Vector3(1, 1, 1);
 
 std::shared_ptr <GameObject> ShapeSpawner::SpawnCube()
 {
-	std::shared_ptr <GameObject> gameObject = MakeMesh("Cube", "public_engine_assets/models/CubeTriangulate.obj");
+	std::shared_ptr <GameObject> gameObject = MakeMesh("Cube", "public_engine_assets/models/Cube.obj");
+
+	gameObject->AddComponent<BoxCollider>();
+
+	return gameObject;
+}
+
+std::shared_ptr <GameObject> ShapeSpawner::SpawnSubdividedCube()
+{
+	std::shared_ptr <GameObject> gameObject = MakeMesh("SubdividedCube", "public_engine_assets/models/SubdividedCube.obj");
 
 	gameObject->AddComponent<BoxCollider>();
 
@@ -32,7 +41,7 @@ std::shared_ptr <GameObject> ShapeSpawner::SpawnCube()
 
 std::shared_ptr <GameObject> ShapeSpawner::SpawnSphere()
 {
-	std::shared_ptr <GameObject> gameObject = MakeMesh("Sphere", "public_engine_assets/models/SphereTriangulate.obj");
+	std::shared_ptr <GameObject> gameObject = MakeMesh("Sphere", "public_engine_assets/models/Sphere.obj");
 
 	gameObject->AddComponent<SphereCollider>();
 
@@ -41,22 +50,22 @@ std::shared_ptr <GameObject> ShapeSpawner::SpawnSphere()
 
 std::shared_ptr <GameObject> ShapeSpawner::SpawnCone()
 {
-	return MakeMesh("Cone", "public_engine_assets/models/ConeTriangulate.obj");
+	return MakeMesh("Cone", "public_engine_assets/models/Cone.obj");
 }
 
 std::shared_ptr <GameObject> ShapeSpawner::SpawnDonut()
 {
-	return MakeMesh("Donut", "public_engine_assets/models/DonutTriangulate.obj");
+	return MakeMesh("Donut", "public_engine_assets/models/Donut.obj");
 }
 
 std::shared_ptr <GameObject> ShapeSpawner::SpawnPlane()
 {
-	return MakeMesh("Plane", "public_engine_assets/models/PlaneTriangulate.obj");
+	return MakeMesh("Plane", "public_engine_assets/models/Plane.obj");
 }
 
 std::shared_ptr <GameObject> ShapeSpawner::SpawnCylinder()
 {
-	return MakeMesh("Cylinder", "public_engine_assets/models/CylinderTriangulate.obj");
+	return MakeMesh("Cylinder", "public_engine_assets/models/Cylinder.obj");
 }
 
 std::shared_ptr<GameObject> ShapeSpawner::MakeMesh(const std::string& gameObjectName, const std::string& meshFilePath)

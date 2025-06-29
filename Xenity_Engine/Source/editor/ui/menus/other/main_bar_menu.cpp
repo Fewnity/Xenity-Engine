@@ -193,6 +193,10 @@ void MainBarMenu::Draw()
 			{
 				Editor::SetSelectedGameObject(ShapeSpawner::SpawnCube());
 			}
+			if (ImGui::MenuItem("Subdivided Cube"))
+			{
+				Editor::SetSelectedGameObject(ShapeSpawner::SpawnSubdividedCube());
+			}
 			if (ImGui::MenuItem("Sphere"))
 			{
 				Editor::SetSelectedGameObject(ShapeSpawner::SpawnSphere());
