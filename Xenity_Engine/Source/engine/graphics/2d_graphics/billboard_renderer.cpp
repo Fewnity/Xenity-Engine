@@ -23,7 +23,6 @@ ReflectiveData BillboardRenderer::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
 	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
-	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
 	return reflectedVariables;
 }
 
@@ -44,23 +43,16 @@ void BillboardRenderer::OnReflectionUpdated()
 
 void BillboardRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!m_material || !m_texture)
+	if (!m_texture)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = m_material.get();
 	command.drawable = this;
 	command.transform = GetTransformRaw();
 	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 
 	renderBatch.spriteCommands.push_back(command);
 	renderBatch.spriteCommandIndex++;
-}
-
-void BillboardRenderer::SetMaterial(const std::shared_ptr<Material>& material)
-{
-	m_material = material;
-	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void BillboardRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
@@ -79,11 +71,8 @@ void BillboardRenderer::OnEnabled()
 	Graphics::s_isRenderingBatchDirty = true;
 }
 
-/// <summary>
-/// Draw sprite
-/// </summary>
 void BillboardRenderer::DrawCommand([[maybe_unused]] const RenderCommand& renderCommand)
 {
 	const Transform* transform = GetTransformRaw();
-	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera->GetTransformRaw()->GetRotation() * transform->GetRotation(), transform->GetScale(), m_color, *m_material, m_texture.get());
+	SpriteManager::DrawSprite(transform->GetPosition(), Graphics::usedCamera->GetTransformRaw()->GetRotation() * transform->GetRotation(), transform->GetScale(), m_color, *AssetManager::unlitMaterial.get(), m_texture.get());
 }

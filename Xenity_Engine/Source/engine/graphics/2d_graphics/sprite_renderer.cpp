@@ -22,7 +22,6 @@ ReflectiveData SpriteRenderer::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
 	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
-	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
 	return reflectedVariables;
 }
 
@@ -43,23 +42,16 @@ void SpriteRenderer::OnReflectionUpdated()
 
 void SpriteRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!m_material || !m_texture)
+	if (!m_texture)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = m_material.get();
 	command.drawable = this;
 	command.transform = GetTransformRaw();
 	command.isEnabled = IsEnabled() && GetGameObjectRaw()->IsLocalActive();
 
 	renderBatch.spriteCommands.push_back(command);
 	renderBatch.spriteCommandIndex++;
-}
-
-void SpriteRenderer::SetMaterial(const std::shared_ptr<Material>& material)
-{
-	m_material = material;
-	Graphics::s_isRenderingBatchDirty = true;
 }
 
 void SpriteRenderer::SetTexture(const std::shared_ptr<Texture>& texture)
@@ -80,5 +72,5 @@ void SpriteRenderer::OnEnabled()
 
 void SpriteRenderer::DrawCommand([[maybe_unused]] const RenderCommand& renderCommand)
 {
-	SpriteManager::DrawSprite(*GetTransformRaw(), m_color, *m_material, m_texture.get(), false);
+	SpriteManager::DrawSprite(*GetTransformRaw(), m_color, *AssetManager::unlitMaterial.get(), m_texture.get(), false);
 }

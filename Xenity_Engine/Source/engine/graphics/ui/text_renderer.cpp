@@ -19,7 +19,6 @@
 
 TextRenderer::TextRenderer()
 {
-	m_material = AssetManager::unlitMaterial;
 }
 
 ReflectiveData TextRenderer::GetReflectiveData()
@@ -27,7 +26,7 @@ ReflectiveData TextRenderer::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_text, "text", true);
 	Reflective::AddVariable(reflectedVariables, m_font, "font", true);
-	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
+	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
 	Reflective::AddVariable(reflectedVariables, m_horizontalAlignment, "horizontalAlignment", true);
 	Reflective::AddVariable(reflectedVariables, m_verticalAlignment, "verticalAlignment", true);
 	Reflective::AddVariable(reflectedVariables, m_fontSize, "fontSize", true);
@@ -69,12 +68,6 @@ void TextRenderer::SetFont(const std::shared_ptr<Font>& font)
 	}
 }
 
-void TextRenderer::SetMaterial(std::shared_ptr<Material> material)
-{
-	m_material = material;
-	Graphics::s_isRenderingBatchDirty = true;
-}
-
 void TextRenderer::OnDisabled()
 {
 	Graphics::s_isRenderingBatchDirty = true;
@@ -87,11 +80,10 @@ void TextRenderer::OnEnabled()
 
 void TextRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 {
-	if (!m_material || !m_font)
+	if (!m_font)
 		return;
 
 	RenderCommand command = RenderCommand();
-	command.material = m_material.get();
 	command.drawable = this;
 	command.subMesh = nullptr;
 	command.transform = GetTransformRaw();
@@ -106,7 +98,6 @@ void TextRenderer::CreateRenderCommands(RenderBatch& renderBatch)
 /// </summary>
 void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 {
-	XASSERT(renderCommand.material, "[TextRenderer::DrawCommand] Material is nullptr");
 	XASSERT(m_font, "[TextRenderer::DrawCommand] Font is nullptr");
 
 	if (m_isTextInfoDirty)
@@ -125,7 +116,7 @@ void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 	}
 	if (m_mesh)
 	{
-		TextManager::DrawText(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, *GetTransformRaw(), m_color, true, *m_mesh, *m_font, *m_material);
+		TextManager::DrawText(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, *GetTransformRaw(), m_color, true, *m_mesh, *m_font, *AssetManager::unlitMaterial.get());
 	}
 }
 

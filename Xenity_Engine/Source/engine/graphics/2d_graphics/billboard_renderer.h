@@ -41,19 +41,6 @@ public:
 	{
 		m_color = color;
 	}
-
-	/**
-	* @brief Get the material of the sprite
-	*/
-	[[nodiscard]] const std::shared_ptr<Material>& GetMaterial()
-	{
-		return m_material;
-	}
-
-	/**
-	* @brief Set the material of the sprite
-	*/
-	void SetMaterial(const std::shared_ptr<Material>& material);
 	
 	/**
 	* @brief Get the texture of the sprite
@@ -93,7 +80,6 @@ protected:
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
 	Color m_color = Color();
-	std::shared_ptr<Material> m_material = nullptr;
 	std::shared_ptr<Texture> m_texture = nullptr;
 	int m_orderInLayer = 0;
 };

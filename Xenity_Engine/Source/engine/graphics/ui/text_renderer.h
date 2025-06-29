@@ -84,19 +84,6 @@ public:
 	void SetFont(const std::shared_ptr<Font>& font);
 
 	/**
-	* @brief Get the material
-	*/
-	[[nodiscard]] const std::shared_ptr<Material>& GetMaterial()
-	{
-		return m_material;
-	}
-
-	/**
-	* @brief Set the material
-	*/
-	void SetMaterial(std::shared_ptr<Material> material);
-
-	/**
 	* @brief Get the font size
 	*/
 	[[nodiscard]] float GetFontSize() const
@@ -166,8 +153,6 @@ protected:
 	ReflectiveData GetReflectiveData() override;
 	void OnReflectionUpdated() override;
 
-	std::shared_ptr<Material> m_material = nullptr;
-
 	/**
 	* @brief Called when the component is disabled
 	*/
@@ -191,7 +176,7 @@ protected:
 	std::shared_ptr<MeshData> m_mesh = nullptr;
 	std::shared_ptr<Font> m_font;
 	TextInfo* m_textInfo = nullptr;
-	std::string m_text;
+	std::string m_text = "Text";
 	Color m_color = Color();
 	int m_orderInLayer = 0;
 	float m_fontSize = 1;
