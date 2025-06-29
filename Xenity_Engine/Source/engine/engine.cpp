@@ -289,15 +289,21 @@ void Engine::CheckEvents()
 #if defined(EDITOR)
 		case (SDL_EVENT_DROP_COMPLETE):
 		{
-			Editor::OnDragAndDropFileFinished();
+			if (ProjectManager::IsProjectLoaded())
+			{
+				Editor::OnDragAndDropFileFinished();
+			}
 			break;
 		}
 
 		case (SDL_EVENT_DROP_FILE):
 		{
-			const char* dropped_filedir = event.drop.data;
-			Editor::AddDragAndDrop(dropped_filedir);
-			//SDL_free(dropped_filedir); // Free dropped_filedir memory // FIXME TODO memory leak here! Crash if used since updated to SDL3
+			if (ProjectManager::IsProjectLoaded())
+			{
+				const char* dropped_filedir = event.drop.data;
+				Editor::AddDragAndDrop(dropped_filedir);
+				//SDL_free(dropped_filedir); // Free dropped_filedir memory // FIXME TODO memory leak here! Crash if used since updated to SDL3
+			}
 			break;
 		}
 #endif
