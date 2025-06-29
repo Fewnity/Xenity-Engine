@@ -16,12 +16,12 @@ public:
 	/**
 	* @brief Get the width of the screen in pixels
 	*/
-	[[nodiscard]] static inline int GetWidth() { return s_width; }
+	[[nodiscard]] static int GetWidth();
 
 	/**
 	* @brief Get the height of the screen in pixels
 	*/
-	[[nodiscard]] static inline int GetHeight() { return s_height; }
+	[[nodiscard]] static int GetHeight();
 
 	/**
 	* @brief Set if the window should be in fullscreen mode

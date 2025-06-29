@@ -18,9 +18,37 @@
 #include <engine/graphics/camera.h>
 #include "window.h"
 
+#if defined(EDITOR)
+#include <editor/editor.h>
+#include <editor/ui/menus/basic/game_menu.h>
+#endif
 int Screen::s_height = 0;
 int Screen::s_width = 0;
 bool Screen::s_useVSync = true;
+
+int Screen::GetWidth()
+{
+#if defined(EDITOR)
+	if (Editor::s_lastFocusedGameMenu.lock() != nullptr)
+	{
+		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::s_lastFocusedGameMenu.lock())->lastSize;
+		return static_cast<int>(windowsSize.x);
+	}
+#endif
+	return s_width;
+}
+
+int Screen::GetHeight() 
+{ 
+#if defined(EDITOR)
+	if (Editor::s_lastFocusedGameMenu.lock() != nullptr)
+	{
+		const Vector2 windowsSize = std::dynamic_pointer_cast<GameMenu>(Editor::s_lastFocusedGameMenu.lock())->lastSize;
+		return static_cast<int>(windowsSize.y);
+	}
+#endif
+	return s_height; 
+}
 
 void Screen::SetFullScreen(bool useFullScreenMode)
 {
