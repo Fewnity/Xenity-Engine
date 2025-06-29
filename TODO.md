@@ -7,13 +7,7 @@
 - Add trigger values for gamepads
 - Add PS3 multi gamepad support
 
-- Screen::GetWidth/GetHeight do not work for editor in game tab
-- Fix crash when deleting a material while used for rendering (try with audio and meshes) (need to recall CreateRenderCommands)
-- Add color variable to text renderer
-- Always use unlit material on sprite and text renderer instead of variable material
-- Increase ground polygons on the dungeon game
-- Try to add a little time to jump on the dungeon game
-- Add a win text for the last level on the dungeon game
+- Fix UI ordering
 
 ## Can be done for a later release
 
