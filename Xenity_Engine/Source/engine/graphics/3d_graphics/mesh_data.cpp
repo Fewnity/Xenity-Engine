@@ -16,6 +16,7 @@
 #endif
 
 #include <engine/graphics/color/color.h>
+#include <engine/graphics/graphics.h>
 #include <engine/debug/debug.h>
 #include <engine/engine.h>
 #if defined(EDITOR)
@@ -35,6 +36,19 @@
 
 MeshData::MeshData(bool isForCooking) : FileReference(isForCooking)
 {
+}
+
+/**
+ * @brief Destructor
+ *
+ */
+MeshData::~MeshData()
+{
+	Unload();
+	if (m_fileId != -1)
+	{
+		Graphics::s_isRenderingBatchDirty = true;
+	}
 }
 
 std::shared_ptr<MeshData> MeshData::CreateMeshData()
@@ -244,15 +258,6 @@ void MeshData::FreeMeshData(bool deleteSubMeshes)
 			}
 		}
 	}
-}
-
-/**
- * @brief Destructor
- *
- */
-MeshData::~MeshData()
-{
-	Unload();
 }
 
 void MeshData::LoadFileReference(const LoadOptions& loadOptions)

@@ -38,6 +38,7 @@ Material::~Material()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	AssetManager::RemoveMaterial(this);
+	Graphics::s_isRenderingBatchDirty = true;
 }
 
 #pragma endregion
