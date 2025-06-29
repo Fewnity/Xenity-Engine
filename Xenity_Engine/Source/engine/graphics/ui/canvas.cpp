@@ -28,7 +28,6 @@
 ReflectiveData Canvas::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, lastSize, "lastSize", false);
 	return reflectedVariables;
 }
 
