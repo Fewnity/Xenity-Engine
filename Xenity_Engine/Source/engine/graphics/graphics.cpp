@@ -628,7 +628,7 @@ void Graphics::OnProjectLoaded()
 
 	if (!skyPlane)
 	{
-		skyPlane = AssetManager::LoadEngineAsset<MeshData>("public_engine_assets/models/PlaneTriangulate.obj");
+		skyPlane = AssetManager::LoadEngineAsset<MeshData>("public_engine_assets/models/Plane.obj");
 
 		if (skyPlane)
 		{
