@@ -230,6 +230,10 @@ void MainBarMenu::Draw()
 			{
 				CreateGameObjectWithComponent<SpriteRenderer>("Sprite");
 			}
+			if (ImGui::MenuItem("Billboard Renderer"))
+			{
+				CreateGameObjectWithComponent<BillboardRenderer>("Billboard");
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("UI"))
