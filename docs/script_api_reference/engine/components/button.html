@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Camera - Xenity Engine</title>
+        <title>Button - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -234,148 +234,60 @@
 }
 
 </style>
-<h1 id="camera"><a class="header" href="#camera">Camera</a></h1>
+<h1 id="button"><a class="header" href="#button">Button</a></h1>
 <p>Add this in your code:</p>
-<pre><code class="language-cpp">#include &lt;engine/graphics/camera.h&gt;
+<pre><code class="language-cpp">#include &lt;engine/graphics/ui/button.h&gt;
 </code></pre>
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
-<p>Component for rendering the scene.</p>
+<p>Component that renders a button on the screen.</p>
+<h2 id="variables"><a class="header" href="#variables">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>color</td><td><code>Color</code></td><td>Color of the sprite</td></tr>
+</tbody></table>
+</div>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
-<h3 id="setfov"><a class="header" href="#setfov">SetFov</a></h3>
-<p>Set field of view (Perspective mode).</p>
+<h3 id="getimage"><a class="header" href="#getimage">GetImage</a></h3>
+<p>Get the image.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetImage() const
+</code></pre>
+<hr />
+<h3 id="setimage"><a class="header" href="#setimage">SetImage</a></h3>
+<p>Set the image.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>fov</code>: Field of view angle (in degrees)</li>
+<li><code>image</code>: Image to use</li>
 </ul>
-<pre><code class="language-cpp">void SetFov(const float fov)
+<pre><code class="language-cpp">void SetImage(const std::shared_ptr&lt;Texture&gt;&amp; image)
 </code></pre>
 <hr />
-<h3 id="getfov"><a class="header" href="#getfov">GetFov</a></h3>
-<p>Get field of view in degrees.</p>
-<pre><code class="language-cpp">float GetFov() const
+<h3 id="getonclickevent"><a class="header" href="#getonclickevent">GetOnClickEvent</a></h3>
+<p>Get the onClick event, called when the user clicks on the button.</p>
+<pre><code class="language-cpp">Event&lt;&gt;&amp; GetOnClickEvent()
 </code></pre>
-<hr />
-<h3 id="setprojectionsize"><a class="header" href="#setprojectionsize">SetProjectionSize</a></h3>
-<p>Set projection size (Orthographic mode).</p>
-<p>Parameters:</p>
-<ul>
-<li><code>value</code>: Projection size</li>
-</ul>
-<pre><code class="language-cpp">void SetProjectionSize(const float value)
-</code></pre>
-<hr />
-<h3 id="getprojectionsize"><a class="header" href="#getprojectionsize">GetProjectionSize</a></h3>
-<p>Get projection size.</p>
-<pre><code class="language-cpp">float GetProjectionSize() const
-</code></pre>
-<hr />
-<h3 id="setnearclippingplane"><a class="header" href="#setnearclippingplane">SetNearClippingPlane</a></h3>
-<p>Set near clipping plane.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>value</code>: Near clipping plane</li>
-</ul>
-<pre><code class="language-cpp">void SetNearClippingPlane(float value)
-</code></pre>
-<hr />
-<h3 id="getnearclippingplane"><a class="header" href="#getnearclippingplane">GetNearClippingPlane</a></h3>
-<p>Get near clipping plane.</p>
-<pre><code class="language-cpp">float GetNearClippingPlane() const
-</code></pre>
-<hr />
-<h3 id="setfarclippingplane"><a class="header" href="#setfarclippingplane">SetFarClippingPlane</a></h3>
-<p>Set far clipping plane.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>value</code>: far clipping plane</li>
-</ul>
-<pre><code class="language-cpp">void SetFarClippingPlane(float value)
-</code></pre>
-<hr />
-<h3 id="getfarclippingplane"><a class="header" href="#getfarclippingplane">GetFarClippingPlane</a></h3>
-<p>Get far clipping plane.</p>
-<pre><code class="language-cpp">float GetFarClippingPlane() const
-</code></pre>
-<hr />
-<h3 id="screento2dworld"><a class="header" href="#screento2dworld">ScreenTo2DWorld</a></h3>
-<p>Get 2D world position from pixel coordinate.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>x</code>: X pixel position</li>
-<li><code>y</code>: Y pixel position</li>
-</ul>
-<pre><code class="language-cpp">Vector2 ScreenTo2DWorld(int x, int y)
-</code></pre>
-<hr />
-<h3 id="mouseto2dworld"><a class="header" href="#mouseto2dworld">MouseTo2DWorld</a></h3>
-<p>Get 2D world position from mouse's position.</p>
-<pre><code class="language-cpp">ector2 MouseTo2DWorld()
-</code></pre>
-<hr />
-<h3 id="setprojectiontype"><a class="header" href="#setprojectiontype">SetProjectionType</a></h3>
-<p>Set projection type.</p>
-<p>Parameters:</p>
-<ul>
-<li><code>type</code>: Projection type</li>
-</ul>
-<pre><code class="language-cpp">void SetProjectionType(const ProjectionType type)
-</code></pre>
-<hr />
-<h3 id="getprojectiontype"><a class="header" href="#getprojectiontype">GetProjectionType</a></h3>
-<p>Get projection type.</p>
-<pre><code class="language-cpp">ProjectionType GetProjectionType() const
-</code></pre>
-<hr />
-<h3 id="getmouseray"><a class="header" href="#getmouseray">GetMouseRay</a></h3>
-<p>Get mouse normalized ray direction.</p>
-<pre><code class="language-cpp">Vector3 GetMouseRay()
-</code></pre>
-<hr />
-<h3 id="getwidth"><a class="header" href="#getwidth">GetWidth</a></h3>
-<p>Get view width in pixel.</p>
-<pre><code class="language-cpp">int GetWidth() const
-</code></pre>
-<hr />
-<h3 id="getheight"><a class="header" href="#getheight">GetHeight</a></h3>
-<p>Get view height in pixel.</p>
-<pre><code class="language-cpp">int GetHeight() const
-</code></pre>
-<hr />
-<h3 id="getaspectratio"><a class="header" href="#getaspectratio">GetAspectRatio</a></h3>
-<p>Get view aspect ratio.</p>
-<pre><code class="language-cpp">float GetAspectRatio() const
-</code></pre>
-<hr />
-<h3 id="getusemultisampling"><a class="header" href="#getusemultisampling">GetUseMultisampling</a></h3>
-<p>Get if the camera is using multisampling (Windows Only).</p>
-<pre><code class="language-cpp">bool GetUseMultisampling() const
-</code></pre>
-<hr />
-<h3 id="setusemultisampling"><a class="header" href="#setusemultisampling">SetUseMultisampling</a></h3>
-<p>Set if the camera is using multisampling (Windows Only).</p>
-<p>Parameters:</p>
-<ul>
-<li><code>useMultisampling</code>: True to enable Multisampling</li>
-</ul>
-<pre><code class="language-cpp">void SetUseMultisampling(bool useMultisampling)
-</code></pre>
-<hr />
-<h3 id="getrawframebuffer"><a class="header" href="#getrawframebuffer">GetRawFrameBuffer</a></h3>
-<p>Get a copy of the frame buffer.<br>
-Heavy operation, use with caution.</p>
-<pre><code class="language-cpp">std::unique_ptr&lt;uint8_t[]&gt; GetRawFrameBuffer()
+<p>Code sample:</p>
+<pre><code class="language-cpp">class MyClass
+{
+public:
+    void OnClick() { }
+};
+
+std::shared_ptr&lt;Button&gt; button; // Filled variable
+MyClass myClassInstance = MyClass();
+
+button-&gt;GetOnClickEvent().Bind(&amp;MyClass::MyStaticFunction, &amp;myClassInstance);
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../script_api_reference/engine/components/button.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/components/box_collider.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../script_api_reference/engine/components/projection_type_enum.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/components/camera.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -385,11 +297,11 @@ Heavy operation, use with caution.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../script_api_reference/engine/components/button.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/components/box_collider.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../script_api_reference/engine/components/projection_type_enum.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/components/camera.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

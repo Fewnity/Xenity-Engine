@@ -12,7 +12,9 @@ If you are already using Docker, Xenity Engine won't affect your existing images
 ## Docker Setup
 
 To be able to compile on game consoles you have to:
-- Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/),
+- Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/),<br>
+If docker ask you between Hyper-V and WSL, choose WSL.
+- If you have never used WSL or if Docker asks you do to this, open a CMD and run the `wsl --update` command. Docker requires a minimum version of WSL.
 - Finish the docker install in Xenity. For this, go to the [Docker Configuration menu](../manual/editor_ui/docker_configuration.md) (`Window -> Docker Configuration`), and follow the instructions.
 
 The process can take several minutes especially if you have a slow computer or a slow internet connection. (The editor will freeze, do not close it).

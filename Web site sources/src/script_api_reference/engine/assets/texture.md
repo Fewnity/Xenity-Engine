@@ -16,7 +16,7 @@ A texture can be created dynamically.
 ---
 | Name | Type | Description |
 |-|-|-|
-Resolution | Enum | Max texture solution
+Resolution | Enum | Max texture resolution
 Filter | Enum | Texture filter
 WrapMode | Enum | Texture wrap mode
 UseMipMap | CheckBox | If enabled, smaller versions of the texture will be generated. Improves rendering but consumes more memory (Not working on PS3).

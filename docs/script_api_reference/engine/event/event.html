@@ -242,6 +242,14 @@
 <p>This class gives the possibility to bind a function to an event.<br>
 When a event object is destroyed, all bound functions are unbound.</p>
 <p>This class is using templates.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>If your bound functions reference an object that is about to be destroyed, make sure to unbind them manually beforehand.<br>
+Failing to do so may lead to undefined behavior such as accessing dangling pointers or crashing the application.</p>
+</div>
 <pre><code class="language-cpp">template&lt;typename... Args&gt;
 class Event
 </code></pre>

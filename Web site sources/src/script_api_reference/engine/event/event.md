@@ -12,6 +12,10 @@ When a event object is destroyed, all bound functions are unbound.
 
 This class is using templates.
 
+> [!WARNING]
+> If your bound functions reference an object that is about to be destroyed, make sure to unbind them manually beforehand.<br>
+> Failing to do so may lead to undefined behavior such as accessing dangling pointers or crashing the application.
+
 ```cpp
 template<typename... Args>
 class Event

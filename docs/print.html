@@ -289,6 +289,7 @@ C++ Plugins (Started but not finished)</li>
 </ul>
 </div>
 <p>You can see all limitations <a href="./limitations.html">here</a>.</p>
+<p>If you want to improve the engine, here is the <a href="https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/TODO.md">TODO list</a>.</p>
 <h3 id="contact"><a class="header" href="#contact">Contact:</a></h3>
 <p><strong>Discord:</strong> fewnity</p>
 <p><strong>Email:</strong> fewnity@gmail.com</p>
@@ -548,7 +549,9 @@ The main reason is most SDKs are only working on Linux. Docker is a simple way t
 <h2 id="docker-setup"><a class="header" href="#docker-setup">Docker Setup</a></h2>
 <p>To be able to compile on game consoles you have to:</p>
 <ul>
-<li>Download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>,</li>
+<li>Download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>,<br>
+If docker ask you between Hyper-V and WSL, choose WSL.</li>
+<li>If you have never used WSL or if Docker asks you do to this, open a CMD and run the <code>wsl --update</code> command. Docker requires a minimum version of WSL.</li>
 <li>Finish the docker install in Xenity. For this, go to the <a href="installation/../manual/editor_ui/docker_configuration.html">Docker Configuration menu</a> (<code>Window -&gt; Docker Configuration</code>), and follow the instructions.</li>
 </ul>
 <p>The process can take several minutes especially if you have a slow computer or a slow internet connection. (The editor will freeze, do not close it).</p>
@@ -1089,7 +1092,7 @@ Most components have a check box to enable or disable them.</p>
 <li>You can double click on folders to open them or use the folder list on the left.</li>
 <li>To move a files you can drag it into a folder.</li>
 <li>To manage a file, you can right click on it and you will see a list of command (delete, rename...).</li>
-<li>You can right click the back of the file explorer, and you will see a list of commands (Create files, open folder in explorer...).</li>
+<li>You can right click the background of the file explorer and you will see a list of commands (Create files and component class, open folder in explorer...).</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -4299,7 +4302,7 @@ Then you can recreate the GameObject by dragging the prefab from the File Explor
 <h2 id="general-settings"><a class="header" href="#general-settings">General settings</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td>Resolution</td><td>Enum</td><td>Max texture solution</td></tr>
+<tr><td>Resolution</td><td>Enum</td><td>Max texture resolution</td></tr>
 <tr><td>Filter</td><td>Enum</td><td>Texture filter</td></tr>
 <tr><td>WrapMode</td><td>Enum</td><td>Texture wrap mode</td></tr>
 <tr><td>UseMipMap</td><td>CheckBox</td><td>If enabled, smaller versions of the texture will be generated. Improves rendering but consumes more memory (Not working on PS3).</td></tr>
@@ -6150,13 +6153,124 @@ const std::string&amp; name = component-&gt;GetComponentName();
 }
 
 </style>
+<h1 id="button"><a class="header" href="#button">Button</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/ui/button.h&gt;
+</code></pre>
+<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
+<p>Component that renders a button on the screen.</p>
+<h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>color</td><td><code>Color</code></td><td>Color of the sprite</td></tr>
+</tbody></table>
+</div>
+<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
+<hr />
+<h3 id="getimage"><a class="header" href="#getimage">GetImage</a></h3>
+<p>Get the image.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetImage() const
+</code></pre>
+<hr />
+<h3 id="setimage"><a class="header" href="#setimage">SetImage</a></h3>
+<p>Set the image.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>image</code>: Image to use</li>
+</ul>
+<pre><code class="language-cpp">void SetImage(const std::shared_ptr&lt;Texture&gt;&amp; image)
+</code></pre>
+<hr />
+<h3 id="getonclickevent"><a class="header" href="#getonclickevent">GetOnClickEvent</a></h3>
+<p>Get the onClick event, called when the user clicks on the button.</p>
+<pre><code class="language-cpp">Event&lt;&gt;&amp; GetOnClickEvent()
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">class MyClass
+{
+public:
+    void OnClick() { }
+};
+
+std::shared_ptr&lt;Button&gt; button; // Filled variable
+MyClass myClassInstance = MyClass();
+
+button-&gt;GetOnClickEvent().Bind(&amp;MyClass::MyStaticFunction, &amp;myClassInstance);
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="camera"><a class="header" href="#camera">Camera</a></h1>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/camera.h&gt;
 </code></pre>
-<h2 id="description-27"><a class="header" href="#description-27">Description</a></h2>
+<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
 <p>Component for rendering the scene.</p>
-<h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
+<h2 id="public-methods-11"><a class="header" href="#public-methods-11">Public methods</a></h2>
 <hr />
 <h3 id="setfov"><a class="header" href="#setfov">SetFov</a></h3>
 <p>Set field of view (Perspective mode).</p>
@@ -6353,7 +6467,7 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/camera_projection_type.h&gt;
 </code></pre>
-<h2 id="description-28"><a class="header" href="#description-28">Description</a></h2>
+<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
 <p>Enum to list every camera projection types.</p>
 <h2 id="values-8"><a class="header" href="#values-8">Values</a></h2>
 <hr />
@@ -6432,7 +6546,7 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/canvas.h&gt;
 </code></pre>
-<h2 id="description-29"><a class="header" href="#description-29">Description</a></h2>
+<h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
 <p>Component to render a canvas (UI elements).</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -6505,15 +6619,15 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tool/fps_counter.h&gt;
 </code></pre>
-<h2 id="description-30"><a class="header" href="#description-30">Description</a></h2>
+<h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
 <p>Component to display the FPS counter in the game.</p>
-<h2 id="variables-2"><a class="header" href="#variables-2">Variables</a></h2>
+<h2 id="variables-3"><a class="header" href="#variables-3">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>showAverage</td><td>bool</td><td>Should should average fps?</td></tr>
 </tbody></table>
 </div>
-<h2 id="public-methods-11"><a class="header" href="#public-methods-11">Public methods</a></h2>
+<h2 id="public-methods-12"><a class="header" href="#public-methods-12">Public methods</a></h2>
 <hr />
 <h3 id="gettextrenderer"><a class="header" href="#gettextrenderer">GetTextRenderer</a></h3>
 <p>Get the text renderer used for displaying the FPS.</p>
@@ -6595,19 +6709,113 @@ Heavy operation, use with caution.</p>
 }
 
 </style>
+<h1 id="imagerenderer"><a class="header" href="#imagerenderer">ImageRenderer</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/graphics/ui/image_renderer.h&gt;
+</code></pre>
+<h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
+<p>Component that renders an image on the screen.</p>
+<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>color</td><td><code>Color</code></td><td>Color of the image</td></tr>
+</tbody></table>
+</div>
+<h2 id="public-methods-13"><a class="header" href="#public-methods-13">Public methods</a></h2>
+<hr />
+<h3 id="getimage-1"><a class="header" href="#getimage-1">GetImage</a></h3>
+<p>Get the image.</p>
+<pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetImage() const
+</code></pre>
+<hr />
+<h3 id="setimage-1"><a class="header" href="#setimage-1">SetImage</a></h3>
+<p>Set the image.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>image</code>: Image to use</li>
+</ul>
+<pre><code class="language-cpp">void SetImage(const std::shared_ptr&lt;Texture&gt;&amp; image)
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="light"><a class="header" href="#light">Light</a></h1>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/lighting/lighting.h&gt;
 </code></pre>
-<h2 id="description-31"><a class="header" href="#description-31">Description</a></h2>
+<h2 id="description-33"><a class="header" href="#description-33">Description</a></h2>
 <p>Component to produce light.</p>
-<h2 id="variables-3"><a class="header" href="#variables-3">Variables</a></h2>
+<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>color</td><td>Color</td><td>Color of the light</td></tr>
 </tbody></table>
 </div>
-<h2 id="public-methods-12"><a class="header" href="#public-methods-12">Public methods</a></h2>
+<h2 id="public-methods-14"><a class="header" href="#public-methods-14">Public methods</a></h2>
 <hr />
 <h3 id="setuppointlight"><a class="header" href="#setuppointlight">SetupPointLight</a></h3>
 <p>Setup the light as a point light.</p>
@@ -6804,7 +7012,7 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/lod.h&gt;
 </code></pre>
-<h2 id="description-32"><a class="header" href="#description-32">Description</a></h2>
+<h2 id="description-34"><a class="header" href="#description-34">Description</a></h2>
 <p>Component to manage Level of Detail (LOD) for a GameObject.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -6877,9 +7085,9 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/mesh_renderer.h&gt;
 </code></pre>
-<h2 id="description-33"><a class="header" href="#description-33">Description</a></h2>
+<h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
 <p>Component that renders a mesh with materials.</p>
-<h2 id="public-methods-13"><a class="header" href="#public-methods-13">Public methods</a></h2>
+<h2 id="public-methods-15"><a class="header" href="#public-methods-15">Public methods</a></h2>
 <hr />
 <h3 id="getmeshdata"><a class="header" href="#getmeshdata">GetMeshData</a></h3>
 <p>Get mesh data.</p>
@@ -7008,9 +7216,9 @@ Heavy operation, use with caution.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/particle_system/particle_system.h&gt;
 </code></pre>
-<h2 id="description-34"><a class="header" href="#description-34">Description</a></h2>
+<h2 id="description-36"><a class="header" href="#description-36">Description</a></h2>
 <p>Component to spawn particles.</p>
-<h2 id="public-methods-14"><a class="header" href="#public-methods-14">Public methods</a></h2>
+<h2 id="public-methods-16"><a class="header" href="#public-methods-16">Public methods</a></h2>
 <hr />
 <h3 id="play-1"><a class="header" href="#play-1">Play</a></h3>
 <p>Emitte all particles when not in loop mode.</p>
@@ -7178,9 +7386,9 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/rect_transform.h&gt;
 </code></pre>
-<h2 id="description-35"><a class="header" href="#description-35">Description</a></h2>
+<h2 id="description-37"><a class="header" href="#description-37">Description</a></h2>
 <p>Component that represents a transform for UI elements.</p>
-<h2 id="variables-4"><a class="header" href="#variables-4">Variables</a></h2>
+<h2 id="variables-6"><a class="header" href="#variables-6">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>position</td><td>Vector2</td><td>Position of the UI elements between 0 and 1 (Normalized position)</td></tr>
@@ -7256,9 +7464,9 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/rigidbody.h&gt;
 </code></pre>
-<h2 id="description-36"><a class="header" href="#description-36">Description</a></h2>
+<h2 id="description-38"><a class="header" href="#description-38">Description</a></h2>
 <p>Component to add physics to the GameObject.</p>
-<h2 id="public-methods-15"><a class="header" href="#public-methods-15">Public Methods</a></h2>
+<h2 id="public-methods-17"><a class="header" href="#public-methods-17">Public Methods</a></h2>
 <hr />
 <h3 id="getvelocity"><a class="header" href="#getvelocity">GetVelocity</a></h3>
 <p>Get the velocity.</p>
@@ -7512,9 +7720,9 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/sphere_collider.h&gt;
 </code></pre>
-<h2 id="description-37"><a class="header" href="#description-37">Description</a></h2>
+<h2 id="description-39"><a class="header" href="#description-39">Description</a></h2>
 <p>Component to add a sphere-shaped collider to a GameObject.</p>
-<h2 id="public-methods-16"><a class="header" href="#public-methods-16">Public Methods</a></h2>
+<h2 id="public-methods-18"><a class="header" href="#public-methods-18">Public Methods</a></h2>
 <hr />
 <h3 id="getsize-1"><a class="header" href="#getsize-1">GetSize</a></h3>
 <p>Get the radius of the sphere collider.</p>
@@ -7614,9 +7822,9 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/sprite_renderer.h&gt;
 </code></pre>
-<h2 id="description-38"><a class="header" href="#description-38">Description</a></h2>
+<h2 id="description-40"><a class="header" href="#description-40">Description</a></h2>
 <p>Component that renders a sprite with a texture and material.</p>
-<h2 id="public-methods-17"><a class="header" href="#public-methods-17">Public Methods</a></h2>
+<h2 id="public-methods-19"><a class="header" href="#public-methods-19">Public Methods</a></h2>
 <hr />
 <h3 id="getcolor-2"><a class="header" href="#getcolor-2">GetColor</a></h3>
 <p>Get the color of the sprite.</p>
@@ -7730,9 +7938,9 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_mesh.h&gt;
 </code></pre>
-<h2 id="description-39"><a class="header" href="#description-39">Description</a></h2>
+<h2 id="description-41"><a class="header" href="#description-41">Description</a></h2>
 <p>Component for rendering text in 3D space.</p>
-<h2 id="public-methods-18"><a class="header" href="#public-methods-18">Public methods</a></h2>
+<h2 id="public-methods-20"><a class="header" href="#public-methods-20">Public methods</a></h2>
 <hr />
 <h3 id="getcolor-3"><a class="header" href="#getcolor-3">GetColor</a></h3>
 <p>Get the color of the sprite.</p>
@@ -7930,9 +8138,9 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_renderer.h&gt;
 </code></pre>
-<h2 id="description-40"><a class="header" href="#description-40">Description</a></h2>
+<h2 id="description-42"><a class="header" href="#description-42">Description</a></h2>
 <p>Component for rendering text in a canvas.</p>
-<h2 id="public-methods-19"><a class="header" href="#public-methods-19">Public methods</a></h2>
+<h2 id="public-methods-21"><a class="header" href="#public-methods-21">Public methods</a></h2>
 <hr />
 <h3 id="getcolor-4"><a class="header" href="#getcolor-4">GetColor</a></h3>
 <p>Get the color of the sprite.</p>
@@ -8140,7 +8348,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Code sample:</p>
 <pre><code class="language-cpp">DateTime currentDateTime = DateTime::GetNow();
 </code></pre>
-<h2 id="public-methods-20"><a class="header" href="#public-methods-20">Public methods</a></h2>
+<h2 id="public-methods-22"><a class="header" href="#public-methods-22">Public methods</a></h2>
 <hr />
 <h3 id="tostring-3"><a class="header" href="#tostring-3">ToString</a></h3>
 <p>Get a string representation of the date and time in the format: "hour:minute:second day/month/year".</p>
@@ -8151,7 +8359,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 Debug::Print(currentDateTime.ToString());
 // Prints: "12:49:53 31/5/2025"
 </code></pre>
-<h2 id="variables-5"><a class="header" href="#variables-5">Variables</a></h2>
+<h2 id="variables-7"><a class="header" href="#variables-7">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>second</td><td>uint32_t</td><td>Number of seconds</td></tr>
@@ -8232,7 +8440,7 @@ Debug::Print(currentDateTime.ToString());
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/debug/debug.h&gt;
 </code></pre>
-<h2 id="description-41"><a class="header" href="#description-41">Description</a></h2>
+<h2 id="description-43"><a class="header" href="#description-43">Description</a></h2>
 <p>Class used to print text in the console and in file or remotely to a server (Server part is removed for now).</p>
 <p>You can find logs in the <code>xenity_engine_debug.txt</code> file.<br>
 The file will be created in the same folder of the executable file.<br>
@@ -8449,10 +8657,18 @@ Debug::GetOnDebugLogEvent().Unbind(&amp;OnLog);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/event_system/event_system.h&gt;
 </code></pre>
-<h2 id="description-42"><a class="header" href="#description-42">Description</a></h2>
+<h2 id="description-44"><a class="header" href="#description-44">Description</a></h2>
 <p>This class gives the possibility to bind a function to an event.<br>
 When a event object is destroyed, all bound functions are unbound.</p>
 <p>This class is using templates.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>If your bound functions reference an object that is about to be destroyed, make sure to unbind them manually beforehand.<br>
+Failing to do so may lead to undefined behavior such as accessing dangling pointers or crashing the application.</p>
+</div>
 <pre><code class="language-cpp">template&lt;typename... Args&gt;
 class Event
 </code></pre>
@@ -8462,7 +8678,7 @@ class Event
 <p>Event with arguments:</p>
 <pre><code class="language-cpp">Event&lt;int, const std::string&amp;&gt; myEvent;
 </code></pre>
-<h2 id="public-methods-21"><a class="header" href="#public-methods-21">Public methods</a></h2>
+<h2 id="public-methods-23"><a class="header" href="#public-methods-23">Public methods</a></h2>
 <hr />
 <h3 id="bind"><a class="header" href="#bind">Bind</a></h3>
 <p>Bind a simple function.</p>
@@ -8673,7 +8889,7 @@ size_t count = myEvent.GetBoundFunctionCount(); // count = 2
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
 </code></pre>
-<h2 id="description-43"><a class="header" href="#description-43">Description</a></h2>
+<h2 id="description-45"><a class="header" href="#description-45">Description</a></h2>
 <p>This class provides methods to manipulate files and directories.</p>
 <h2 id="static-methods-8"><a class="header" href="#static-methods-8">Static methods</a></h2>
 <hr />
@@ -8868,9 +9084,9 @@ if(file-&gt;Open(FileMode::WriteCreateFile))
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
 </code></pre>
-<h2 id="description-44"><a class="header" href="#description-44">Description</a></h2>
+<h2 id="description-46"><a class="header" href="#description-46">Description</a></h2>
 <p>Class to manage a file (Create, open, read, write).</p>
-<h2 id="public-methods-22"><a class="header" href="#public-methods-22">Public methods</a></h2>
+<h2 id="public-methods-24"><a class="header" href="#public-methods-24">Public methods</a></h2>
 <hr />
 <h3 id="open"><a class="header" href="#open">Open</a></h3>
 <p>Open the file.<br>
@@ -9118,7 +9334,7 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
 </code></pre>
-<h2 id="description-45"><a class="header" href="#description-45">Description</a></h2>
+<h2 id="description-47"><a class="header" href="#description-47">Description</a></h2>
 <p>Enum that list every modes to open a file.</p>
 <h2 id="values-9"><a class="header" href="#values-9">Values</a></h2>
 <hr />
@@ -9198,16 +9414,16 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/directory.h&gt;
 </code></pre>
-<h2 id="description-46"><a class="header" href="#description-46">Description</a></h2>
+<h2 id="description-48"><a class="header" href="#description-48">Description</a></h2>
 <p>Class to manage a directory (Get all files of a folder).</p>
-<h2 id="variables-6"><a class="header" href="#variables-6">Variables</a></h2>
+<h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>subdirectories</td><td><code>std::vector&lt;std::shared_ptr&lt;Directory&gt;&gt;</code></td><td>List of sub directories (filled with GetAllFiles)</td></tr>
 <tr><td>files</td><td><code>std::vector&lt;std::shared_ptr&lt;File&gt;&gt;</code></td><td>List of files (filled with GetAllFiles)</td></tr>
 </tbody></table>
 </div>
-<h2 id="public-methods-23"><a class="header" href="#public-methods-23">Public methods</a></h2>
+<h2 id="public-methods-25"><a class="header" href="#public-methods-25">Public methods</a></h2>
 <hr />
 <h3 id="getallfiles"><a class="header" href="#getallfiles">GetAllFiles</a></h3>
 <p>Get all the files of the directory (can be very slow and not currently supported on PS3).<br></p>
@@ -9313,7 +9529,7 @@ const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
 </code></pre>
-<h2 id="description-47"><a class="header" href="#description-47">Description</a></h2>
+<h2 id="description-49"><a class="header" href="#description-49">Description</a></h2>
 <p>Enum to list every different results of a file copy call.</p>
 <h2 id="values-10"><a class="header" href="#values-10">Values</a></h2>
 <hr />
@@ -9393,7 +9609,7 @@ const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/gameobject.h&gt;
 </code></pre>
-<h2 id="description-48"><a class="header" href="#description-48">Description</a></h2>
+<h2 id="description-50"><a class="header" href="#description-50">Description</a></h2>
 <p>A GameObject is a class that contains some properties and a list of components.<br>
 Includes functions to create GameObjects.</p>
 <h2 id="global-methods"><a class="header" href="#global-methods">Global Methods</a></h2>
@@ -9831,7 +10047,7 @@ if(sharedChild1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-49"><a class="header" href="#description-49">Description</a></h2>
+<h2 id="description-51"><a class="header" href="#description-51">Description</a></h2>
 <p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse).</p>
 <h2 id="macros"><a class="header" href="#macros">Macros</a></h2>
 <p><code>PLAYER_1</code> value: 0<br>
@@ -10064,9 +10280,9 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-50"><a class="header" href="#description-50">Description</a></h2>
+<h2 id="description-52"><a class="header" href="#description-52">Description</a></h2>
 <p>This class stores information of finger on a touchscreen.</p>
-<h2 id="variables-7"><a class="header" href="#variables-7">Variables</a></h2>
+<h2 id="variables-9"><a class="header" href="#variables-9">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>position</td><td><code>Vector2Int</code></td><td>Actual position in pixel of the finger</td></tr>
@@ -10144,7 +10360,7 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-51"><a class="header" href="#description-51">Description</a></h2>
+<h2 id="description-53"><a class="header" href="#description-53">Description</a></h2>
 <p>Enum that list every keys of a keyboard and buttons of a controller.</p>
 <h2 id="values-11"><a class="header" href="#values-11">Values</a></h2>
 <hr />
@@ -10407,9 +10623,9 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/quaternion.h&gt;
 </code></pre>
-<h2 id="description-52"><a class="header" href="#description-52">Description</a></h2>
+<h2 id="description-54"><a class="header" href="#description-54">Description</a></h2>
 <p>Class representing rotations in 3D space.</p>
-<h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
+<h2 id="variables-10"><a class="header" href="#variables-10">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the quaternion</td></tr>
@@ -10533,7 +10749,7 @@ Quaternion lerp1 = Quaternion::Lerp(a, b, 1.0f); // Equals B
 Quaternion b = Quaternion::Euler(90, 120, 10);
 Quaternion result = Quaternion::Dot(a, b);
 </code></pre>
-<h2 id="public-methods-24"><a class="header" href="#public-methods-24">Public methods</a></h2>
+<h2 id="public-methods-26"><a class="header" href="#public-methods-26">Public methods</a></h2>
 <hr />
 <h3 id="toeuler"><a class="header" href="#toeuler">ToEuler</a></h3>
 <p>Converts the quaternion to Euler angles (in degrees).</p>
@@ -10698,9 +10914,9 @@ bool operator!=(const Quaternion&amp; left, const Quaternion&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector2.h&gt;
 </code></pre>
-<h2 id="description-53"><a class="header" href="#description-53">Description</a></h2>
+<h2 id="description-55"><a class="header" href="#description-55">Description</a></h2>
 <p>Contains 2D coordinates.</p>
-<h2 id="variables-9"><a class="header" href="#variables-9">Variables</a></h2>
+<h2 id="variables-11"><a class="header" href="#variables-11">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -10765,7 +10981,7 @@ Vector2 vec = Vector2(vec2int);
 // X = 1.0f
 // Y = 2.0f
 </code></pre>
-<h2 id="public-methods-25"><a class="header" href="#public-methods-25">Public methods</a></h2>
+<h2 id="public-methods-27"><a class="header" href="#public-methods-27">Public methods</a></h2>
 <h3 id="max"><a class="header" href="#max">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -10954,9 +11170,9 @@ bool operator!=(const Vector2&amp; left, const Vector2&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector2_int.h&gt;
 </code></pre>
-<h2 id="description-54"><a class="header" href="#description-54">Description</a></h2>
+<h2 id="description-56"><a class="header" href="#description-56">Description</a></h2>
 <p>Contains integer 2D coordinates.</p>
-<h2 id="variables-10"><a class="header" href="#variables-10">Variables</a></h2>
+<h2 id="variables-12"><a class="header" href="#variables-12">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>int</code></td><td>The x component of the vector</td></tr>
@@ -11021,7 +11237,7 @@ Vector2Int vec = Vector2Int(vec2);
 // X = 1
 // Y = 2
 </code></pre>
-<h2 id="public-methods-26"><a class="header" href="#public-methods-26">Public methods</a></h2>
+<h2 id="public-methods-28"><a class="header" href="#public-methods-28">Public methods</a></h2>
 <h3 id="max-1"><a class="header" href="#max-1">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -11185,9 +11401,9 @@ bool operator!=(const Vector2Int&amp; left, const Vector2Int&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector3.h&gt;
 </code></pre>
-<h2 id="description-55"><a class="header" href="#description-55">Description</a></h2>
+<h2 id="description-57"><a class="header" href="#description-57">Description</a></h2>
 <p>Contains 3D coordinates.</p>
-<h2 id="variables-11"><a class="header" href="#variables-11">Variables</a></h2>
+<h2 id="variables-13"><a class="header" href="#variables-13">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -11256,7 +11472,7 @@ Vector3 vec = Vector3(vec2int);
 // Y = 2.0f
 // Z = 0.0f
 </code></pre>
-<h2 id="public-methods-27"><a class="header" href="#public-methods-27">Public methods</a></h2>
+<h2 id="public-methods-29"><a class="header" href="#public-methods-29">Public methods</a></h2>
 <h3 id="max-2"><a class="header" href="#max-2">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -11514,9 +11730,9 @@ bool operator!=(const Vector3&amp; left, const Vector3&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector4.h&gt;
 </code></pre>
-<h2 id="description-56"><a class="header" href="#description-56">Description</a></h2>
+<h2 id="description-58"><a class="header" href="#description-58">Description</a></h2>
 <p>Contains 4D coordinates.</p>
-<h2 id="variables-12"><a class="header" href="#variables-12">Variables</a></h2>
+<h2 id="variables-14"><a class="header" href="#variables-14">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>x</td><td><code>float</code></td><td>The x component of the vector</td></tr>
@@ -11604,7 +11820,7 @@ Vector4 vec = Vector4(vec2int);
 // Z = 0.0f
 // W = 0.0f
 </code></pre>
-<h2 id="public-methods-28"><a class="header" href="#public-methods-28">Public methods</a></h2>
+<h2 id="public-methods-30"><a class="header" href="#public-methods-30">Public methods</a></h2>
 <h3 id="max-3"><a class="header" href="#max-3">Max</a></h3>
 <p>Get the biggest value of the vector.</p>
 <pre><code class="language-cpp">float Max()
@@ -11851,7 +12067,7 @@ bool operator!=(const Vector4&amp; left, const Vector4&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
 </code></pre>
-<h2 id="description-57"><a class="header" href="#description-57">Description</a></h2>
+<h2 id="description-59"><a class="header" href="#description-59">Description</a></h2>
 <p>Class to create sockets and to manage networking settings.</p>
 <h2 id="static-methods-15"><a class="header" href="#static-methods-15">Static methods</a></h2>
 <hr />
@@ -11956,11 +12172,11 @@ For this, a menu of the PSP OS ask to the user to setup a network connection.</p
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
 </code></pre>
-<h2 id="description-58"><a class="header" href="#description-58">Description</a></h2>
+<h2 id="description-60"><a class="header" href="#description-60">Description</a></h2>
 <p>Class to send and received data to/from a server.<br>
 Created with the NetworkManager class.<br>
 The socket will be closed when the object is destroyed.</p>
-<h2 id="public-methods-29"><a class="header" href="#public-methods-29">Public methods</a></h2>
+<h2 id="public-methods-31"><a class="header" href="#public-methods-31">Public methods</a></h2>
 <hr />
 <h3 id="senddata-string"><a class="header" href="#senddata-string">SendData (string)</a></h3>
 <p>Send data as a string to the server.</p>
@@ -12102,7 +12318,7 @@ if(socket)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/noise/noise.h&gt;
 </code></pre>
-<h2 id="description-59"><a class="header" href="#description-59">Description</a></h2>
+<h2 id="description-61"><a class="header" href="#description-61">Description</a></h2>
 <p>Class to generate 1D, 2D, 3D and 4D Perlin noise.</p>
 <h2 id="static-methods-16"><a class="header" href="#static-methods-16">Static methods</a></h2>
 <hr />
@@ -12230,7 +12446,7 @@ if(socket)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/gameplay_utility.h&gt;
 </code></pre>
-<h2 id="description-60"><a class="header" href="#description-60">Description</a></h2>
+<h2 id="description-62"><a class="header" href="#description-62">Description</a></h2>
 <p>Class to manage Objects (GameObject and Components).<br>
 You can Instantiate, Check and Destroy Objects.</p>
 <h2 id="methods"><a class="header" href="#methods">Methods</a></h2>
@@ -12460,10 +12676,10 @@ Destroy(myGameObject);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/collider.h&gt;
 </code></pre>
-<h2 id="description-61"><a class="header" href="#description-61">Description</a></h2>
+<h2 id="description-63"><a class="header" href="#description-63">Description</a></h2>
 <p>Parent class of collider components (BoxCollider, SphereCollider...).</p>
 <p>Function of Collider can be used on every colllider component.</p>
-<h2 id="public-methods-30"><a class="header" href="#public-methods-30">Public methods</a></h2>
+<h2 id="public-methods-32"><a class="header" href="#public-methods-32">Public methods</a></h2>
 <hr />
 <h3 id="setistrigger"><a class="header" href="#setistrigger">SetIsTrigger</a></h3>
 <p>Set if the collider is a trigger or not.<br>
@@ -12582,9 +12798,9 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/collision_event.h&gt;
 </code></pre>
-<h2 id="description-62"><a class="header" href="#description-62">Description</a></h2>
+<h2 id="description-64"><a class="header" href="#description-64">Description</a></h2>
 <p>This class stores information of a collision between two colliders.</p>
-<h2 id="variables-13"><a class="header" href="#variables-13">Variables</a></h2>
+<h2 id="variables-15"><a class="header" href="#variables-15">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>collider</td><td><code>Collider*</code></td><td>Collider A</td></tr>
@@ -12661,9 +12877,9 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
-<h2 id="description-63"><a class="header" href="#description-63">Description</a></h2>
+<h2 id="description-65"><a class="header" href="#description-65">Description</a></h2>
 <p>Class to check collisions with a ray.</p>
-<h2 id="public-methods-31"><a class="header" href="#public-methods-31">Public methods</a></h2>
+<h2 id="public-methods-33"><a class="header" href="#public-methods-33">Public methods</a></h2>
 <hr />
 <h3 id="check"><a class="header" href="#check">Check</a></h3>
 <p>Check if a ray hits a collider.<br>
@@ -12766,9 +12982,9 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
-<h2 id="description-64"><a class="header" href="#description-64">Description</a></h2>
+<h2 id="description-66"><a class="header" href="#description-66">Description</a></h2>
 <p>This class stores information of a racyast hit.</p>
-<h2 id="variables-14"><a class="header" href="#variables-14">Variables</a></h2>
+<h2 id="variables-16"><a class="header" href="#variables-16">Variables</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>hitGameObject</td><td><code>std::weak_ptr&lt;GameObject&gt;</code></td><td>Pointer of the GameObject hit by the ray</td></tr>
@@ -12847,7 +13063,7 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/reflection/reflection.h&gt;
 </code></pre>
-<h2 id="description-65"><a class="header" href="#description-65">Description</a></h2>
+<h2 id="description-67"><a class="header" href="#description-67">Description</a></h2>
 <p>Class to inherit if you want to access child's variables to fill variables from json or save them to json.<br>
 It's used to see variables of a class in the <a href="script_api_reference/engine/reflection/../../../manual/editor_ui/inspector.html">Inspector</a>.</p>
 <p>GameObject, Transform and Component implement this class.</p>
@@ -12861,7 +13077,7 @@ It's used to see variables of a class in the <a href="script_api_reference/engin
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
 <p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
 <p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<h2 id="public-methods-32"><a class="header" href="#public-methods-32">Public methods</a></h2>
+<h2 id="public-methods-34"><a class="header" href="#public-methods-34">Public methods</a></h2>
 <hr />
 <h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
 <p>Get all child class variables references (Needs to be implemented).</p>
@@ -12988,7 +13204,7 @@ void MyComponent::OnReflectionUpdated()
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/scene_manager/scene_manager.h&gt;
 </code></pre>
-<h2 id="description-66"><a class="header" href="#description-66">Description</a></h2>
+<h2 id="description-68"><a class="header" href="#description-68">Description</a></h2>
 <p>Class to load scenes.</p>
 <h2 id="static-methods-17"><a class="header" href="#static-methods-17">Static methods</a></h2>
 <hr />
@@ -13092,7 +13308,7 @@ SceneManager::LoadScene(sceneToLoad);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/ui/screen.h&gt;
 </code></pre>
-<h2 id="description-67"><a class="header" href="#description-67">Description</a></h2>
+<h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
 <p>Class to get information and to interact with the screen.</p>
 <h2 id="static-methods-18"><a class="header" href="#static-methods-18">Static methods</a></h2>
 <hr />
@@ -13218,7 +13434,7 @@ bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/time/time.h&gt;
 </code></pre>
-<h2 id="description-68"><a class="header" href="#description-68">Description</a></h2>
+<h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
 <p>Class to get time information (Delta time, elapsed time).</p>
 <p>Values are updated every frame.</p>
 <h2 id="static-methods-19"><a class="header" href="#static-methods-19">Static methods</a></h2>
@@ -13366,9 +13582,9 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/transform.h&gt;
 </code></pre>
-<h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
+<h2 id="description-71"><a class="header" href="#description-71">Description</a></h2>
 <p>Class representing a 3D transformation (position, rotation, scale) of a GameObject.</p>
-<h2 id="public-methods-33"><a class="header" href="#public-methods-33">Public Methods</a></h2>
+<h2 id="public-methods-35"><a class="header" href="#public-methods-35">Public Methods</a></h2>
 <hr />
 <h3 id="getposition"><a class="header" href="#getposition">GetPosition</a></h3>
 <p>Get world position.</p>
@@ -13674,7 +13890,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
+<h2 id="description-72"><a class="header" href="#description-72">Description</a></h2>
 <p>Enum to horizontally align text with text rendering components.</p>
 <h2 id="values-12"><a class="header" href="#values-12">Values</a></h2>
 <hr />
@@ -13754,7 +13970,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-71"><a class="header" href="#description-71">Description</a></h2>
+<h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
 <p>Enum to vertically align text with text rendering components.</p>
 <h2 id="values-13"><a class="header" href="#values-13">Values</a></h2>
 <hr />
@@ -13905,7 +14121,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/endian_utils.h&gt;
 </code></pre>
-<h2 id="description-72"><a class="header" href="#description-72">Description</a></h2>
+<h2 id="description-74"><a class="header" href="#description-74">Description</a></h2>
 <p>Utility class for endian conversion.<br>
 Usefull when using binary data on different platforms.</p>
 <h2 id="static-methods-20"><a class="header" href="#static-methods-20">Static methods</a></h2>
@@ -14006,7 +14222,7 @@ uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
-<h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
+<h2 id="description-75"><a class="header" href="#description-75">Description</a></h2>
 <p>Class that store the data structure of a vertex.</p>
 <h2 id="static-methods-21"><a class="header" href="#static-methods-21">Static methods</a></h2>
 <hr />
@@ -14021,7 +14237,7 @@ uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
 <p>Code sample:</p>
 <pre><code class="language-cpp">uint16_t elementSize = VertexDescriptor::GetVertexElementSize(VertexElement::POSITION_32_BITS);
 </code></pre>
-<h2 id="public-methods-34"><a class="header" href="#public-methods-34">Public methods</a></h2>
+<h2 id="public-methods-36"><a class="header" href="#public-methods-36">Public methods</a></h2>
 <hr />
 <h3 id="addvertexelement"><a class="header" href="#addvertexelement">AddVertexElement</a></h3>
 <p>Add a vertex element to the descriptor.</p>
@@ -14193,7 +14409,7 @@ Do not use if there is no color vertex element.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
-<h2 id="description-74"><a class="header" href="#description-74">Description</a></h2>
+<h2 id="description-76"><a class="header" href="#description-76">Description</a></h2>
 <p>Enum of all different vertex element types.</p>
 <h2 id="values-14"><a class="header" href="#values-14">Values</a></h2>
 <hr />
@@ -14379,7 +14595,8 @@ Do not use if there is no color vertex element.</p>
 <p><a href="https://github.com/CyrilArtFX">CyrilArtFX</a><br>
 <a href="https://github.com/arkaht">arkaht</a><br></p>
 <h2 id="icons-not-fully-updated"><a class="header" href="#icons-not-fully-updated">Icons (not fully updated):</a></h2>
-<p><a href="https://www.flaticon.com/free-icon/question_471664?term=question">Question free icon designed by Freepik</a></p>
+<p><a href="https://www.flaticon.com/free-icon/question_471664?term=question">Question free icon designed by Freepik</a>
+<a href="https://www.flaticon.com/free-icon/button_9374979?related_id=9374942">Click through rate icons created by Prashanth Rapolu 15</a></p>
 
                     </main>
 

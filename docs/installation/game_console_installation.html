@@ -243,7 +243,9 @@ The main reason is most SDKs are only working on Linux. Docker is a simple way t
 <h2 id="docker-setup"><a class="header" href="#docker-setup">Docker Setup</a></h2>
 <p>To be able to compile on game consoles you have to:</p>
 <ul>
-<li>Download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>,</li>
+<li>Download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>,<br>
+If docker ask you between Hyper-V and WSL, choose WSL.</li>
+<li>If you have never used WSL or if Docker asks you do to this, open a CMD and run the <code>wsl --update</code> command. Docker requires a minimum version of WSL.</li>
 <li>Finish the docker install in Xenity. For this, go to the <a href="../manual/editor_ui/docker_configuration.html">Docker Configuration menu</a> (<code>Window -&gt; Docker Configuration</code>), and follow the instructions.</li>
 </ul>
 <p>The process can take several minutes especially if you have a slow computer or a slow internet connection. (The editor will freeze, do not close it).</p>
