@@ -117,7 +117,7 @@ void BuildSettingsMenu::Draw()
 		{
 			// Create two columns
 			ImGui::TableSetupColumn(0, ImGuiTableColumnFlags_WidthFixed,
-				260.0f);
+				260.0f * GetUIScale());
 			ImGui::TableSetupColumn(0, ImGuiTableColumnFlags_WidthStretch,
 				0);
 
@@ -126,8 +126,8 @@ void BuildSettingsMenu::Draw()
 			// Platforms list
 			ImGui::TableSetColumnIndex(0);
 			ImGui::BeginChild("build_settings_platforms_table_child");
-			//ImGui::Text("Platforms");
-			const int imageSize = 50;
+
+			const int imageSize = 50 * GetUIScale();
 
 			const size_t platformCount = buildPlatforms.size();
 			ImVec2 availColSize = ImGui::GetContentRegionAvail();
@@ -167,7 +167,7 @@ void BuildSettingsMenu::Draw()
 				// Draw button background
 				const ImVec2 winPos = ImGui::GetWindowPos();
 				ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(winPos.x + cursorPos.x, winPos.y + cursorPos.y - scrollY),
-					ImVec2(winPos.x + cursorPos.x + availColSize.x, winPos.y + cursorPos.y - scrollY + 50 + 10),
+					ImVec2(winPos.x + cursorPos.x + availColSize.x, winPos.y + cursorPos.y - scrollY + imageSize + 10),
 					backgroundColor, 5);
 
 				// Draw icon
@@ -199,7 +199,7 @@ void BuildSettingsMenu::Draw()
 
 				if (i != platformCount - 1)
 				{
-					ImGui::SetCursorPosY(startcursorPos.y + 50 + 16);
+					ImGui::SetCursorPosY(startcursorPos.y + imageSize + 16);
 				}
 			}
 

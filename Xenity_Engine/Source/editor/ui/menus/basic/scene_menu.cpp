@@ -940,7 +940,7 @@ bool SceneMenu::DrawImageButton(bool enabled, const Texture& texture, const std:
 		ImGui::BeginDisabled();
 	}
 
-	const bool clicked = ImGui::ImageButton(buttonId.c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(texture), ImVec2(24, 24), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	const bool clicked = ImGui::ImageButton(buttonId.c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(texture), ImVec2(24 * GetUIScale(), 24 * GetUIScale()), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	if (!enabled)
 	{
 		ImGui::EndDisabled();

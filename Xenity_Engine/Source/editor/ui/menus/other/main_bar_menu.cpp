@@ -117,7 +117,7 @@ bool MainBarMenu::DrawImageButton(const bool enabled, const Texture& texture)
 {
 	if (!enabled)
 		ImGui::BeginDisabled();
-	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(texture), ImVec2(18, 18), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
+	const bool clicked = ImGui::ImageButton(EditorUI::GenerateItemId().c_str(), (ImTextureID)(size_t)EditorUI::GetTextureId(texture), ImVec2(18 * GetUIScale(), 18 * GetUIScale()), ImVec2(0.005f, 0.005f), ImVec2(0.995f, 0.995f));
 	if (!enabled)
 		ImGui::EndDisabled();
 	return clicked;

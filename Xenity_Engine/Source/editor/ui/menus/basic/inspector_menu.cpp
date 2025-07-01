@@ -559,7 +559,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 			float lastCursorX = ImGui::GetCursorPosX();
 			float lastCursorY = ImGui::GetCursorPosY();
 
-			ImGui::SetCursorPosX(30);
+			ImGui::SetCursorPosX(30 * GetUIScale());
 			if (ImGui::Button(componentNames[i].c_str()))
 			{
 				auto command = std::make_shared<InspectorAddComponentCommand>(*Editor::GetSelectedGameObjects()[0].lock(), componentNames[i]);
@@ -583,7 +583,7 @@ void InspectorMenu::DrawGameObjectInfo(GameObject& selectedGameObject)
 				ImGui::SetCursorPosX(lastCursorX);
 				ImGui::SetCursorPosY(lastCursorY);
 				texture->Bind();
-				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23, 23));
+				ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(23 * GetUIScale(), 23 * GetUIScale()));
 			}
 
 		}
@@ -669,15 +669,19 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 		headerHeight = ImGui::GetItemRectSize().y;
 	}
 
+	const float spaceBetweenElements = 6 * GetUIScale();
+	const float arrowImageOffset = ImGui::GetFontSize() + spaceBetweenElements;
+	const float componentImageOffset = headerHeight - 2 + spaceBetweenElements;
+
 	float finalCursorX = ImGui::GetCursorPosX();
 	float finalCursorY = ImGui::GetCursorPosY();
-	ImGui::SetCursorPosX(63);
+	ImGui::SetCursorPosX(cursorX + componentImageOffset + arrowImageOffset);
 	ImGui::SetCursorPosY(cursorY + 3);
 	ImGui::Text("Transform");
 
 	if (texture)
 	{
-		ImGui::SetCursorPosX(35);
+		ImGui::SetCursorPosX(cursorX + arrowImageOffset);
 		ImGui::SetCursorPosY(cursorY + 1);
 		texture->Bind();
 		ImGui::Image((ImTextureID)(size_t)EditorUI::GetTextureId(*texture), ImVec2(headerHeight - 2, headerHeight - 2));
@@ -695,6 +699,7 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 	{
 		std::shared_ptr <Component> comp = selectedGameObject.m_components[i];
 
+		const float cursorX = ImGui::GetCursorPosX();
 		const float cursorY = ImGui::GetCursorPosY();
 
 		bool isEnable = comp->IsEnabled();
@@ -770,9 +775,14 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 		const float lastCursorX = ImGui::GetCursorPosX();
 		const float lastCursorY = ImGui::GetCursorPosY();
 
+		const float spaceBetweenElements = 6 * GetUIScale();
+		const float arrowImageOffset = ImGui::GetFontSize() + spaceBetweenElements;
+		const float componentImageOffset = headerHeight - 2 + spaceBetweenElements;
+
 		// Draw component enabled checkbox
-		ImGui::SetCursorPosX(62);
+		ImGui::SetCursorPosX(cursorX + arrowImageOffset + componentImageOffset);
 		ImGui::SetCursorPosY(cursorY);
+		float boxSize = 0;
 		if (comp->m_canBeDisabled)
 		{
 			const bool isEnabledChanged = ImGui::Checkbox(EditorUI::GenerateItemId().c_str(), &isEnable);
@@ -781,17 +791,19 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 				auto command = std::make_shared<InspectorItemSetActiveCommand<Component>>(*comp, isEnable);
 				CommandManager::AddCommandAndExecute(command);
 			}
+			boxSize = ImGui::GetFrameHeight() + spaceBetweenElements;
 		}
 
 		//Draw component title
-		ImGui::SetCursorPosX(92);
+		ImGui::SetCursorPosX(cursorX + arrowImageOffset + componentImageOffset + boxSize);
 		ImGui::SetCursorPosY(cursorY + 3);
 		if (!comp->GetComponentName().empty())
 			ImGui::Text("%s", comp->GetComponentName().c_str());
 		else
 			ImGui::Text("Missing component name");
 
-		ImGui::SetCursorPosX(35);
+		//ImGui::SetCursorPosX(35 * GetUIScale());
+		ImGui::SetCursorPosX(cursorX + arrowImageOffset);
 		ImGui::SetCursorPosY(cursorY + 1);
 
 		if (texture)

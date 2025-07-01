@@ -92,11 +92,11 @@ void SelectProjectMenu::Draw()
 		ImGui::PushFont(font);
 
 		//Draw text
-		const std::string noCamText = "Projects";
-		const ImVec2 textSize = ImGui::CalcTextSize(noCamText.c_str());
+		const std::string projectsText = "Projects";
+		const ImVec2 textSize = ImGui::CalcTextSize(projectsText.c_str());
 
 		ImGui::SetCursorPos(ImVec2((viewport->WorkSize.x - textSize.x) / 2.0f, 10));
-		ImGui::Text("%s", noCamText.c_str());
+		ImGui::Text("%s", projectsText.c_str());
 
 		ImGui::PopFont();
 
@@ -210,7 +210,7 @@ void SelectProjectMenu::DrawProjectsList()
 		ImGui::Text("%s", project.path.c_str());
 		float availWidth = ImGui::GetContentRegionAvail().x;
 		ImGui::SameLine();
-		ImGui::SetCursorPos(ImVec2(availWidth - 50, cursorPos.y + 15));
+		ImGui::SetCursorPos(ImVec2(availWidth - 50 * GetUIScale(), cursorPos.y + 15 * GetUIScale()));
 		if (ImGui::Button((std::string("...") + EditorUI::GenerateItemId()).c_str()))
 		{
 			m_selectedProject = &project;
@@ -247,8 +247,22 @@ void SelectProjectMenu::DrawProjectsList()
 				ImGui::EndPopup();
 			}
 		}
+		if (m_projectToLoad == &project)
+		{
+			if (ProjectManager::GetProjectState() == ProjectState::NotLoaded)
+			{
+				m_projectToLoad = nullptr;
+			}
+			else 
+			{
+				ImGui::SetCursorPos(ImVec2(cursorPos.x, cursorPos.y + 53 * GetUIScale()));
+				BufferingBar("##buffer_bar", ProjectManager::GetLoadingProgress(), ImVec2(400 * GetUIScale(), 6 * GetUIScale()), ImGui::GetColorU32(ImGuiCol_Button), ImGui::GetColorU32(ImGuiCol_ButtonHovered));
+			}
+		}
+		ImGui::EndGroup();
 		ImGui::SetCursorPos(ImVec2(cursorPos.x, cursorPos.y));
-		const bool buttonClicked = ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availWidth, 60));
+		ImVec2 butSize = ImGui::GetItemRectSize();
+		const bool buttonClicked = ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(butSize.x, butSize.y));
 		if (buttonClicked)
 		{
 			if (ProjectManager::GetProjectState() == ProjectState::NotLoaded)
@@ -265,20 +279,6 @@ void SelectProjectMenu::DrawProjectsList()
 					});
 			}
 		}
-		if (m_projectToLoad == &project)
-		{
-			if (ProjectManager::GetProjectState() == ProjectState::NotLoaded && !buttonClicked)
-			{
-				m_projectToLoad = nullptr;
-			}
-			else 
-			{
-				ImGui::SetCursorPos(ImVec2(cursorPos.x, cursorPos.y + 53));
-				BufferingBar("##buffer_bar", ProjectManager::GetLoadingProgress(), ImVec2(400, 6), ImGui::GetColorU32(ImGuiCol_Button), ImGui::GetColorU32(ImGuiCol_ButtonHovered));
-			}
-		}
-		ImGui::EndGroup();
-
 		ImGui::Separator();
 	}
 

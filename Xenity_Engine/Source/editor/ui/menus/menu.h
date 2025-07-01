@@ -81,6 +81,8 @@ public:
 
 protected:
 
+	float GetUIScale();
+
 	/**
 	* @brief Called when the menu starts drawing
 	*/

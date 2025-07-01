@@ -9,7 +9,7 @@
 #include <imgui/imgui.h>
 
 #include <editor/editor.h>
-
+#include <editor/ui/editor_ui.h>
 #include <engine/math/vector2.h>
 
 void Menu::Focus()
@@ -64,6 +64,11 @@ bool Menu::IsActive() const
 void Menu::OnClose()
 {
 	Editor::OnMenuActiveStateChange(name, m_isActive, id);
+}
+
+float Menu::GetUIScale()
+{
+	return EditorUI::GetUiScale();
 }
 
 void Menu::OnStartDrawing()

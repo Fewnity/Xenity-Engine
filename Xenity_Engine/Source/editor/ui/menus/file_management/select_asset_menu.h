@@ -129,7 +129,7 @@ public:
 
 	void Draw() override
 	{
-		ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(1000, 400), ImGuiCond_FirstUseEver);
 		bool isOpen = true;
 		const bool visible = ImGui::Begin("Select file##Selectfile", &isOpen, ImGuiWindowFlags_NoCollapse);
 		if (visible)
@@ -139,7 +139,7 @@ public:
 			ImGui::SetCursorPosY(startCusorPos.y * 2);
 
 			const float width = ImGui::GetContentRegionAvail().x;
-			int colCount = (int)(width / (100 * 1)); // Replace 1 by EditorUI::GetUIScale()
+			int colCount = (int)(width / (100 * GetUIScale()));
 			if (colCount <= 0)
 				colCount = 1;
 			const float offset = ImGui::GetCursorPosX();
@@ -154,7 +154,7 @@ public:
 					FileExplorerItem item;
 					item.file = m_foundFiles[i];
 					bool isSelected = valuePtr->get() == std::dynamic_pointer_cast<T>(item.file);
-					DrawItem(item.file->m_file->GetFileName(), currentCol, colCount, offset, *FileExplorerMenu::GetItemIcon(item), 64, i, isSelected);
+					DrawItem(item.file->m_file->GetFileName(), currentCol, colCount, offset, *FileExplorerMenu::GetItemIcon(item), 64 * GetUIScale(), i, isSelected);
 
 					if (ImGui::IsItemClicked())
 					{
