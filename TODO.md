@@ -7,8 +7,6 @@
 - Add trigger values for gamepads
 - Add PS3 multi gamepad support
 
-- Fix UI ordering
-
 ## Can be done for a later release
 
 ### High priority
