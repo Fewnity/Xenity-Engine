@@ -6,6 +6,9 @@
 class Texture;
 class Canvas;
 
+/**
+* @brief Component that renders an image on the screen.
+*/
 class API ImageRenderer : public IDrawable
 {
 public:

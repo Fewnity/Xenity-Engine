@@ -41,19 +41,19 @@ public:
 		m_color = color;
 	}
 
-	///**
-	//* @brief Set order in layer
-	//* @param orderInLayer Order in layer
-	//*/
-	//void SetOrderInLayer(int orderInLayer);
+	/**
+	* @brief Set order in layer
+	* @param orderInLayer Order in layer
+	*/
+	void SetOrderInLayer(int orderInLayer);
 
-	///**
-	//* @brief Get order in layer
-	//*/
-	//[[nodiscard]] int GetOrderInLayer() const
-	//{
-	//	return m_orderInLayer;
-	//}
+	/**
+	* @brief Get order in layer
+	*/
+	[[nodiscard]] int GetOrderInLayer() const
+	{
+		return m_orderInLayer;
+	}
 
 	/**
 	* @brief Get text
@@ -178,7 +178,7 @@ protected:
 	TextInfo* m_textInfo = nullptr;
 	std::string m_text = "Text";
 	Color m_color = Color();
-	int m_orderInLayer = 0;
+	
 	float m_fontSize = 1;
 
 	HorizontalAlignment m_horizontalAlignment = HorizontalAlignment::Center;

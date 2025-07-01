@@ -76,7 +76,7 @@ public:
 	/**
 	* @brief Sort transparent drawables
 	*/
-	static void SortTransparentDrawables();
+	static void SortDrawables();
 
 	/**
 	* @brief Delete all drawables
@@ -155,6 +155,7 @@ public:
 	static std::vector <Light*> s_directionalLights;
 	static void CreateLightLists();
 	static bool s_isLightUpdateNeeded;
+	static bool s_needUpdateUIOrdering;
 	static void SetIsGridRenderingEnabled(bool enabled);
 	[[nodiscard]] static bool IsGridRenderingEnabled();
 

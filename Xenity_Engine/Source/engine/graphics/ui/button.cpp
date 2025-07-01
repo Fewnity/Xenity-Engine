@@ -11,12 +11,6 @@
 #include <engine/graphics/ui/canvas.h>
 #include <engine/game_elements/transform.h>
 
-void Button::SetImage(const std::shared_ptr<Texture>& image)
-{
-	m_image = image;
-	Graphics::s_isRenderingBatchDirty = true;
-}
-
 void Button::CheckClick(Canvas& canvas)
 {
 	if (!IsEnabled() || !GetGameObject()->IsLocalActive())

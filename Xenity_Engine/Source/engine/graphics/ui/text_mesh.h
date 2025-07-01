@@ -166,7 +166,6 @@ protected:
 	std::shared_ptr<Font> m_font;
 	std::string m_text = "Text";
 	Color m_color = Color();
-	int m_orderInLayer = 0;
 	float m_fontSize = 1;
 
 	float m_lineSpacing = 0;

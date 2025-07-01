@@ -93,7 +93,6 @@ protected:
 	Color m_color = Color();
 	std::shared_ptr <MeshData> m_meshData = nullptr;
 	std::shared_ptr <Material> m_material = nullptr;
-	int m_orderInLayer = 0;
 
 public:
 	float width = 1;

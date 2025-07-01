@@ -12,3 +12,9 @@ void IDrawable::RemoveReferences()
 {
 	Graphics::RemoveDrawable(this);
 }
+
+void IDrawable::SetOrderInLayer(int orderInLayer)
+{
+	m_orderInLayer = orderInLayer;
+	Graphics::s_needUpdateUIOrdering = true;
+}

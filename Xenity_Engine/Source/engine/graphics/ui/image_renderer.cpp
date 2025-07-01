@@ -15,6 +15,7 @@ ReflectiveData ImageRenderer::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_image, "image", true);
 	Reflective::AddVariable(reflectedVariables, color, "color", true);
+	Reflective::AddVariable(reflectedVariables, m_orderInLayer, "orderInLayer", true);
 	return reflectedVariables;
 }
 
@@ -23,6 +24,7 @@ void ImageRenderer::OnReflectionUpdated()
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 
 	Graphics::s_isRenderingBatchDirty = true;
+	Graphics::s_needUpdateUIOrdering = true;
 }
 
 void ImageRenderer::CreateRenderCommands(RenderBatch& renderBatch)

@@ -131,7 +131,6 @@ protected:
 	int chunkSize = 0;
 	bool dirtyMeshes = false;
 
-	int m_orderInLayer = 0;
 	void DrawCommand(const RenderCommand& renderCommand) override;
 
 	/**

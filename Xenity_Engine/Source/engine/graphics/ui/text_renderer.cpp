@@ -30,6 +30,7 @@ ReflectiveData TextRenderer::GetReflectiveData()
 	Reflective::AddVariable(reflectedVariables, m_horizontalAlignment, "horizontalAlignment", true);
 	Reflective::AddVariable(reflectedVariables, m_verticalAlignment, "verticalAlignment", true);
 	Reflective::AddVariable(reflectedVariables, m_fontSize, "fontSize", true);
+	Reflective::AddVariable(reflectedVariables, m_orderInLayer, "orderInLayer", true);
 	return reflectedVariables;
 }
 
@@ -39,15 +40,10 @@ void TextRenderer::OnReflectionUpdated()
 
 	m_isTextInfoDirty = true;
 	Graphics::s_isRenderingBatchDirty = true;
+	Graphics::s_needUpdateUIOrdering = true;
 }
 
 #pragma endregion
-
-//void TextRenderer::SetOrderInLayer(int orderInLayer)
-//{
-//	m_orderInLayer = orderInLayer;
-//	Graphics::SetDrawOrderListAsDirty();
-//}
 
 void TextRenderer::SetText(const std::string& text)
 {

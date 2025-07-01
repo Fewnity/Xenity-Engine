@@ -63,7 +63,7 @@ std::shared_ptr <MeshData> skyPlane = nullptr;
 Shader* Graphics::s_currentShader = nullptr;
 Material* Graphics::s_currentMaterial = nullptr;
 IDrawableTypes Graphics::s_currentMode = IDrawableTypes::Draw_3D;
-
+bool Graphics::s_needUpdateUIOrdering = true;
 bool Graphics::s_isRenderingBatchDirty = true;
 RenderBatch renderBatch;
 
@@ -193,7 +193,7 @@ void Graphics::Draw()
 			Engine::GetRenderer().NewFrame();
 			s_currentFrame++;
 
-			SortTransparentDrawables();
+			SortDrawables();
 			CheckLods();
 
 			// Set material as dirty
@@ -439,16 +439,27 @@ bool meshComparator3(const RenderCommand& c1, const RenderCommand& c2)
 	return Vector3::Distance(c2.transform->GetPosition(), meshComparatorCamPos) > Vector3::Distance(c1.transform->GetPosition(), meshComparatorCamPos);
 }
 
-void Graphics::SortTransparentDrawables()
+bool UIElementComparator(const RenderCommand& c1, const RenderCommand& c2)
+{
+	return c2.drawable->GetOrderInLayer() > c1.drawable->GetOrderInLayer();
+}
+
+void Graphics::SortDrawables()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	SCOPED_PROFILER("Graphics::SortTransparentDrawables", scopeBenchmark);
+	SCOPED_PROFILER("Graphics::SortDrawables", scopeBenchmark);
 	meshComparatorCamPos = usedCamera->GetTransformRaw()->GetPosition();
 	std::sort(renderBatch.transparentMeshCommands.begin(), renderBatch.transparentMeshCommands.begin() + renderBatch.transparentMeshCommandIndex, meshComparator2);
 #if defined(ENABLE_OVERDRAW_OPTIMIZATION)
 	std::sort(renderBatch.opaqueMeshCommands.begin(), renderBatch.opaqueMeshCommands.begin() + renderBatch.opaqueMeshCommandIndex, meshComparator3);
 #endif
+
+	if (s_needUpdateUIOrdering)
+	{
+		s_needUpdateUIOrdering = false;
+		std::sort(renderBatch.uiCommands.begin(), renderBatch.uiCommands.begin() + renderBatch.uiCommandIndex, UIElementComparator);
+	}
 }
 
 void Graphics::OrderDrawables()

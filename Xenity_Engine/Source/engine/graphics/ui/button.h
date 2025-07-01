@@ -8,22 +8,12 @@
 class Texture;
 class Canvas;
 
+/**
+* @brief Component that renders a button on the screen.
+*/
 class API Button : public ImageRenderer
 {
 public:
-	/**
-	* @brief Get the image texture
-	*/
-	[[nodiscard]] const std::shared_ptr<Texture>& GetImage() const
-	{
-		return m_image;
-	}
-
-	/**
-	* @brief Set the image texture
-	*/
-	void SetImage(const std::shared_ptr<Texture>& image);
-
 	/**
 	* @brief Get the onClick event
 	*/

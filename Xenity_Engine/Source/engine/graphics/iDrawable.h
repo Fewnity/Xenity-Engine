@@ -17,6 +17,20 @@ class API IDrawable : public Component
 public:
 	virtual ~IDrawable() = default;
 
+	/**
+	* @brief Get order in layer
+	*/
+	[[nodiscard]] int GetOrderInLayer() const
+	{
+		return m_orderInLayer;
+	}
+
+	/**
+	* @brief Set order in layer
+	* @param orderInLayer Order in layer
+	*/
+	void SetOrderInLayer(int orderInLayer);
+
 protected:
 	friend class Graphics;
 
@@ -33,4 +47,6 @@ protected:
 	virtual void DrawCommand(const RenderCommand & renderCommand) = 0;
 
 	virtual void OnNewRender(int cameraIndex) {};
+
+	int m_orderInLayer = 0;
 };

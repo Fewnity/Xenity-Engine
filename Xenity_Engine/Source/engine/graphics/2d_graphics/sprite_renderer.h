@@ -89,5 +89,4 @@ protected:
 
 	Color m_color = Color();
 	std::shared_ptr <Texture> m_texture = nullptr;
-	int m_orderInLayer = 0;
 };
