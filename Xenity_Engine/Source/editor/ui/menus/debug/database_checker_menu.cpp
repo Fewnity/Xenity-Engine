@@ -51,7 +51,7 @@ void DataBaseCheckerMenu::Draw()
 			{
 				const std::string binaryFilePath = EditorUI::OpenFileDialog("Load data.xenb", "");
 				m_wrongDbLoaded = false;
-				m_loaded = false;
+				m_loadindState = LoadingState::FailedToLoad;
 				m_db = std::make_unique<FileDataBase>();
 				try
 				{
@@ -61,7 +61,7 @@ void DataBaseCheckerMenu::Draw()
 						{
 							m_integrityState = m_db->CheckIntegrity();
 							m_db->GetBitFile().Close();
-							m_loaded = true;
+							m_loadindState = LoadingState::Loaded;
 						}
 					}
 				}
@@ -78,7 +78,7 @@ void DataBaseCheckerMenu::Draw()
 			ImGui::TextColored(ImVec4(1, 0, 0, 1), "Selected file is not a database");
 		}
 
-		if (m_loaded)
+		if (m_loadindState == LoadingState::Loaded)
 		{
 			ImGui::Text("Integrity State:");
 			if (m_integrityState == IntegrityState::Integrity_Ok)
@@ -165,7 +165,7 @@ void DataBaseCheckerMenu::Draw()
 				}
 			}
 		}
-		else 
+		else if(m_loadindState == LoadingState::FailedToLoad)
 		{
 			ImGui::TextColored(ImVec4(1, 0, 0, 1), "Failed to open data base");
 		}

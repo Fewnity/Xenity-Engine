@@ -23,8 +23,15 @@ public:
 	void Draw() override;
 
 private:
+	enum class LoadingState
+	{
+		Not_Loaded,
+		Loaded,
+		FailedToLoad
+	};
+
 	bool m_wrongDbLoaded = false;
-	bool m_loaded = false;
+	LoadingState m_loadindState = LoadingState::Not_Loaded;
 	std::unique_ptr<FileDataBase> m_db = nullptr;
 	IntegrityState m_integrityState = IntegrityState::Integrity_Ok;
 };
