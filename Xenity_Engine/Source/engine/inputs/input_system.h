@@ -342,7 +342,6 @@ public:
 	*/
 	[[nodiscard]] static Touch GetTouch(const int touchIndex, const int screenIndex);
 
-
 	/**
 	* @brief Hide mouse
 	*/
