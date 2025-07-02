@@ -241,7 +241,7 @@ public:
 	}
 
 	/**
-	* @brief Get left joystick value,  values between -1.0f and 1.0f
+	* @brief Get left joystick value, values between -1.0f and 1.0f
 	* @param controllerIndex Controller index (0-7)
 	*/
 	[[nodiscard]] static Vector2 GetLeftJoystick(const int controllerIndex = 0)
@@ -262,7 +262,7 @@ public:
 	}
 
 	/**
-	* @brief Get right joystick value,  values between -1.0f and 1.0f
+	* @brief Get right joystick value, values between -1.0f and 1.0f
 	* @param controllerIndex Controller index (0-7)
 	*/
 	[[nodiscard]] static Vector2 GetRightJoystick(const int controllerIndex = 0)
@@ -280,6 +280,48 @@ public:
 		}
 
 		return rightJoystick[controllerIndex];
+	}
+
+	/**
+	* @brief Get left trigger value (L2), values between 0.0f and 1.0f
+	* @param controllerIndex Controller index (0-7)
+	*/
+	[[nodiscard]] static float GetLeftTrigger(const int controllerIndex = 0)
+	{
+#if defined(EDITOR)
+		if (s_blockGameInput)
+		{
+			return 0;
+		}
+#endif
+
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return 0;
+		}
+
+		return triggers[controllerIndex].x;
+	}
+
+	/**
+	* @brief Get right trigger value (R2), values between 0.0f and 1.0f
+	* @param controllerIndex Controller index (0-7)
+	*/
+	[[nodiscard]] static float GetRightTrigger(const int controllerIndex = 0)
+	{
+#if defined(EDITOR)
+		if (s_blockGameInput)
+		{
+			return 0;
+		}
+#endif
+
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return 0;
+		}
+
+		return triggers[controllerIndex].y;
 	}
 
 	/**
@@ -319,6 +361,7 @@ public:
 private:
 	static Vector2 leftJoystick[MAX_CONTROLLER];
 	static Vector2 rightJoystick[MAX_CONTROLLER];
+	static Vector2 triggers[MAX_CONTROLLER];
 	friend class Engine;
 
 	struct TouchScreen

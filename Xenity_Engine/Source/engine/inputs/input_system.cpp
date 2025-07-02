@@ -45,6 +45,7 @@ Vector2 InputSystem::mouseSpeedRaw = Vector2();
 
 Vector2 InputSystem::leftJoystick[MAX_CONTROLLER];
 Vector2 InputSystem::rightJoystick[MAX_CONTROLLER];
+Vector2 InputSystem::triggers[MAX_CONTROLLER];
 Input InputSystem::s_inputs[MAX_CONTROLLER][INPUT_COUNT];
 float InputSystem::mouseWheel = 0;
 bool InputSystem::s_hidedMouse = false;
@@ -155,6 +156,9 @@ void InputSystem::UpdateControllers()
 
 		rightJoystick[controllerIndex].x = pad.rx;
 		rightJoystick[controllerIndex].y = pad.ry;
+
+		triggers[controllerIndex].x = pad.leftTrigger;
+		triggers[controllerIndex].y = pad.rightTrigger;
 
 #if defined(__PSP__) || defined(__vita__) || defined(__PS3__) // For system that return a single int for buttons
 		const auto mapE = s_buttonMap[controllerIndex].end();

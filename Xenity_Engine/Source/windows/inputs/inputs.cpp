@@ -161,12 +161,27 @@ InputPad CrossGetInputPad(const int controllerId)
 		const int16_t rightYValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_RIGHTY);
 		const int16_t leftXValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_LEFTX);
 		const int16_t leftYValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_LEFTY);
+		int16_t rightTriggerValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_RIGHT_TRIGGER);
+		int16_t leftTriggerValue = SDL_GetGamepadAxis(controller, SDL_GAMEPAD_AXIS_LEFT_TRIGGER);
+
+		if (rightTriggerValue == 1)
+		{
+			rightTriggerValue = 0;
+		}
+		if (leftTriggerValue == 1)
+		{
+			leftTriggerValue = 0;
+		}
+
 
 		pad.lx = ((leftXValue) / 65536.0f) * 2;
 		pad.ly = ((leftYValue) / 65536.0f) * 2;
 
 		pad.rx = ((rightXValue) / 65536.0f) * 2;
 		pad.ry = ((rightYValue) / 65536.0f) * 2;
+
+		pad.rightTrigger = rightTriggerValue / 32767.0f;
+		pad.leftTrigger = leftTriggerValue / 32767.0f;
 	}
 
 	return pad;

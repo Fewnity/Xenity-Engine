@@ -40,9 +40,12 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& button
 
 void CrossInputsInit()
 {
-	ioPadInit(7);
-	// ioPadSetPressMode(0, PAD_PRESS_MODE_ON);
-	// ioPadSetPortSetting(0, PAD_SETTINGS_PRESS_ON);
+	ioPadInit(8);
+	// Enable analog triggers
+	for (size_t i = 0; i < 8; i++)
+	{
+		ioPadSetPressMode(i, PAD_PRESS_MODE_ON);
+	}
 }
 
 InputPad oldPad = InputPad();
@@ -54,6 +57,7 @@ InputPad CrossGetInputPad(const int controllerId)
 	padInfo padinfo;
 	ioPadGetInfo(&padinfo);
 
+	// TODO Add multiple controller support
 	const uint32_t controllerIndex = 0;
 	if(padinfo.status[controllerIndex]) 
 	{
@@ -74,6 +78,11 @@ InputPad CrossGetInputPad(const int controllerId)
 			// Right joystick
 			pad.rx = ((paddata.ANA_R_H - 128) / 256.0f) * 2;
 			pad.ry = ((paddata.ANA_R_V - 128) / 256.0f) * 2;
+
+			// Triggers
+			pad.leftTrigger = paddata.PRE_L2 / 255.0f;
+			pad.rightTrigger = paddata.PRE_R2 / 255.0f;
+
 			oldPad = pad;
 		}
 		else

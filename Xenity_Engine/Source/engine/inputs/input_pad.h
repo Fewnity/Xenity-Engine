@@ -13,5 +13,7 @@ struct InputPad
 	float ly = 0;
 	float rx = 0;
 	float ry = 0;
+	float leftTrigger = 0;
+	float rightTrigger = 0;
 	int buttons = 0;
 };
