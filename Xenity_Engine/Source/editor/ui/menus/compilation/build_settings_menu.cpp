@@ -189,7 +189,7 @@ void BuildSettingsMenu::Draw()
 				if (platform.isSupported)
 				{
 					ImGui::SetCursorPos(startcursorPos);
-					if (ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availColSize.x, 50 + 10)))
+					if (ImGui::InvisibleButton(EditorUI::GenerateItemId().c_str(), ImVec2(availColSize.x, 50 * GetUIScale() + 10)))
 					{
 						m_selectedPlatformIndex = i;
 						lastSettingError = 0;
