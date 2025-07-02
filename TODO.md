@@ -4,8 +4,10 @@
 - Rework the Screen::MakeScreenshot to be able to use in game loop
 - Implement alpha testing on PsVita shaders
 - Fix PSP sleep mode when networking is enabled
-- Add trigger values for gamepads
+- Try to fix the car jump at the startup of a build
+- Add a raycast to the car
 - Add PS3 multi gamepad support
+- Check why 480p resolution on PS3 stretch the screen
 
 ## Can be done for a later release
 
