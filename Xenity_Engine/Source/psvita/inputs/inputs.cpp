@@ -50,12 +50,15 @@ void CrossInputsInit()
 	sceTouchGetPanelInfo(SCE_TOUCH_PORT_BACK, &panelInfo[1]);
 }
 
-InputPad CrossGetInputPad(const int controllerId)
+InputPad CrossGetInputPad(const int controllerIndex)
 {
-	if (controllerId != 0)
-		return;
-
 	InputPad pad = InputPad();
+
+	if (controllerIndex != 0)
+	{
+		return pad;
+	}
+
 	sceCtrlPeekBufferPositive(0, &ctrl, 1);
 	pad.buttons = ctrl.buttons;
 
