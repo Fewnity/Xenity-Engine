@@ -453,17 +453,6 @@ void Engine::Loop()
 				}
 				else
 				{
-					if (ProjectManager::GetProjectState() == ProjectState::WaitingForScene)
-					{
-						if (ProjectManager::GetStartScene())
-						{
-							SceneManager::LoadScene(ProjectManager::GetStartScene());
-						}
-#if defined(EDITOR)
-						Editor::s_currentMenu = MenuGroup::Menu_Editor;
-#endif
-						ProjectManager::SetProjectState(ProjectState::Loaded);
-					}
 #if defined(EDITOR)
 					glBindFramebuffer(GL_FRAMEBUFFER, 0);
 					s_renderer->Clear(ClearMode::Color_Depth);
@@ -476,6 +465,19 @@ void Engine::Loop()
 #endif
 				}
 			}
+
+			if (ProjectManager::GetProjectState() == ProjectState::WaitingForScene)
+			{
+				if (ProjectManager::GetStartScene())
+				{
+					SceneManager::LoadScene(ProjectManager::GetStartScene());
+				}
+#if defined(EDITOR)
+				Editor::s_currentMenu = MenuGroup::Menu_Editor;
+#endif
+				ProjectManager::SetProjectState(ProjectState::Loaded);
+			}
+
 			InputSystem::s_blockGameInput = false;
 			FrameLimiter::Wait();
 		}
