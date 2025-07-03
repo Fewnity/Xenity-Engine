@@ -40,32 +40,38 @@ void CrossAddInputs(std::map<int, Input*>& keyMap, std::map<int, Input*>& button
 
 void CrossInputsInit()
 {
-	ioPadInit(8);
+	ioPadInit(7);
 	// Enable analog triggers
-	for (size_t i = 0; i < 8; i++)
+	for (size_t i = 0; i < MAX_PORT_NUM; i++)
 	{
 		ioPadSetPressMode(i, PAD_PRESS_MODE_ON);
 	}
 }
 
-InputPad oldPad = InputPad();
+InputPad oldPad[MAX_PORT_NUM] { InputPad() };
+padInfo padinfo;
 
-InputPad CrossGetInputPad(const int controllerId)
+InputPad CrossGetInputPad(const int controllerIndex)
 {
 	InputPad pad = InputPad();
 
-	padInfo padinfo;
-	ioPadGetInfo(&padinfo);
+	if (controllerIndex == 0)
+	{
+		ioPadGetInfo(&padinfo);
+	}
 
-	// TODO Add multiple controller support
-	const uint32_t controllerIndex = 0;
-	if(padinfo.status[controllerIndex]) 
+	if (controllerIndex >= padinfo.connected)
+	{
+		return pad;
+	}
+
+	if (padinfo.status[controllerIndex])
 	{
 		padData paddata = padData();
 		ioPadGetData(controllerIndex, &paddata);
-		
+
 		// Check the len to detect if there is new update, if not, the structure is just full of 0
-		if(paddata.len != 0)
+		if (paddata.len != 0)
 		{
 			// Read buttons
 			const u32 btn = ((paddata.button[2] << 8) | (paddata.button[3] & 0xff));
@@ -83,11 +89,11 @@ InputPad CrossGetInputPad(const int controllerId)
 			pad.leftTrigger = paddata.PRE_L2 / 255.0f;
 			pad.rightTrigger = paddata.PRE_R2 / 255.0f;
 
-			oldPad = pad;
+			oldPad[controllerIndex] = pad;
 		}
 		else
 		{
-			pad = oldPad;
+			pad = oldPad[controllerIndex];
 		}
 
 		ioPadClearBuf(controllerIndex);

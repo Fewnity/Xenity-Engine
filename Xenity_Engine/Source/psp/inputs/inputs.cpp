@@ -39,6 +39,9 @@ void CrossInputsInit()
 
 InputPad CrossGetInputPad(const int controllerId)
 {
+	if (controllerId != 0)
+		return;
+
 	InputPad pad = InputPad();
 	sceCtrlReadBufferPositive(&ctrl, 1);
 	pad.buttons = ctrl.Buttons;
