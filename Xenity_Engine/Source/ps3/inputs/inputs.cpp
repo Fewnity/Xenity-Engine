@@ -48,7 +48,7 @@ void CrossInputsInit()
 	}
 }
 
-InputPad oldPad[MAX_PORT_NUM] { InputPad() };
+InputPad oldPad[MAX_PORT_NUM] { InputPad(), InputPad(), InputPad(), InputPad(), InputPad(), InputPad(), InputPad() };
 padInfo padinfo;
 
 InputPad CrossGetInputPad(const int controllerIndex)
