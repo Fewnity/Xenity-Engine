@@ -4,10 +4,7 @@
 - Rework the Screen::MakeScreenshot to be able to use in game loop
 - Implement alpha testing on PsVita shaders
 - Fix PSP sleep mode when networking is enabled
-- Try to fix the car jump at the startup of a build
 - Add a raycast to the car
-- Add PS3 multi gamepad support
-- Check why 480p resolution on PS3 stretch the screen
 
 ## Can be done for a later release
 
@@ -36,6 +33,7 @@
 - Add a property window on components to have values in a new window
 - Add a Find function for child only in a gameobject
 - Check memory leak when removing an item from vector in the EditorUI (element is removed from the list but not deleted)
+- Check why 480p resolution on PS3 stretch the screen
 
 ### Low priority (Not important features or complex tasks)
 - Multiple gameobject selection (Very complex task)
