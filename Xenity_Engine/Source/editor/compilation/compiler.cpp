@@ -982,7 +982,7 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 
 	// We have to stop and remove the container to recreate it
 	[[maybe_unused]] const int stopResult = system("docker stop XenityEngineBuild");
-	[[maybe_unused]] const int removeResult = system("docker remove XenityEngineBuild");
+	[[maybe_unused]] const int removeResult = system("docker container remove XenityEngineBuild");
 
 	std::string gameNameWithoutSpace = ProjectManager::GetGameName();
 	std::replace(gameNameWithoutSpace.begin(), gameNameWithoutSpace.end(), ' ', '_');
