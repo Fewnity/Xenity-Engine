@@ -4,7 +4,6 @@
 - Rework the Screen::MakeScreenshot to be able to use in game loop
 - Implement alpha testing on PsVita shaders
 - Fix PSP sleep mode when networking is enabled
-- Add a raycast to the car
 
 ## Can be done for a later release
 
