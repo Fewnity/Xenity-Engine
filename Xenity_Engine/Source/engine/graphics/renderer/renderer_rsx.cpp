@@ -230,7 +230,6 @@ void RendererRSX::initVideoConfiguration()
 
 	rval = videoGetState(VIDEO_PRIMARY, 0, &state);
 
-	// Better to replace this by aspect_ratio = vResolution.width/vResolution.height; ?
 	switch (state.displayMode.aspect) {
 	case VIDEO_ASPECT_4_3:
 		aspect_ratio = 4.0f / 3.0f;
