@@ -4,6 +4,7 @@
 - Rework the Screen::MakeScreenshot to be able to use in game loop
 - Implement alpha testing on PsVita shaders
 - Fix PSP sleep mode when networking is enabled
+- Add a way for the user to export profiler data from a script
 
 ## Can be done for a later release
 

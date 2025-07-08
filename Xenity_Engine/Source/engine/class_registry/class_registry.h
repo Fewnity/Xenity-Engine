@@ -24,9 +24,8 @@ class Menu;
 class Component;
 
 // maxCount is the maximum number of components of this type that can be used in a scene
-#define REGISTER_COMPONENT(component, disableUpdateLoop) ClassRegistry::AddComponentClass<component>(#component, 100, disableUpdateLoop)
-#define REGISTER_INVISIBLE_COMPONENT(component, disableUpdateLoop) ClassRegistry::AddComponentClass<component>(#component, 100, disableUpdateLoop, false)
-#define REGISTER_COMPONENT_DOC_LINK(component, link) ClassRegistry::GetClassInfo<component>()->docLink = std::string(link);
+#define REGISTER_COMPONENT(component) ClassRegistry::AddComponentClass<component>(#component, 100)
+#define REGISTER_INVISIBLE_COMPONENT(component) ClassRegistry::AddComponentClass<component>(#component, 100, false)
 #define REGISTER_FILE(fileClass, fileType) AddFileClass<fileClass>(#fileClass, fileType)
 
 
@@ -42,8 +41,37 @@ public:
 
 	struct ClassInfo
 	{
+		/**
+		* @brief Disable the update function for this component.
+		*/
+		ClassInfo& DisableUpdateFunction()
+		{
+			disableUpdateLoop = true;
+			return *this;
+		}
+
+		/**
+		* @brief Set the documentation link for this class.
+		*/
+		ClassInfo& SetDocLink(const std::string& link)
+		{
+			docLink = link;
+			return *this;
+		}
+
+		/**
+		* @brief Set the maximum number of components of this type that will be contiguous in memory.
+		* @brief This is used to optimize memory usage and performance, higher value consumes more memory but can improve performances.
+		* @brief If this component is not used a lot, you can set a small value to save memory.
+		*/
+		ClassInfo& SetListSize(size_t count)
+		{
+			maxCount = count;
+			return *this;
+		}
+
 		std::string name = "";
-		mutable std::string docLink = "";
+		std::string docLink = "";
 		uint64_t typeId = 0;
 		size_t maxCount = 0;
 		bool disableUpdateLoop = false;
@@ -63,8 +91,8 @@ public:
 	* @param isVisible Is the component visible in the editor
 	*/
 	template<typename T>
-	std::enable_if_t<std::is_base_of<Component, T>::value, void>
-	static AddComponentClass(const std::string& name, size_t maxCount = 100, bool disableUpdateLoop = false, bool isVisible = true)
+	std::enable_if_t<std::is_base_of<Component, T>::value, ClassInfo&>
+	static AddComponentClass(const std::string& name, size_t maxCount = 100, bool isVisible = true)
 	{
 		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty");
 
@@ -75,12 +103,12 @@ public:
 		s_nameToComponent[name] = { function , isVisible };
 
 		static const size_t classHashCode = typeid(T).hash_code();
-		ClassInfo classInfo;
+		ClassInfo& classInfo = s_classInfos.emplace_back();
 		classInfo.name = name;
 		classInfo.typeId = classHashCode;
 		classInfo.maxCount = maxCount;
-		classInfo.disableUpdateLoop = disableUpdateLoop;
-		s_classInfos.push_back(classInfo);
+
+		return classInfo;
 	}
 
 #if defined (EDITOR)

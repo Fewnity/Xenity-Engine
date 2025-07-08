@@ -2073,15 +2073,16 @@ If you want to leave the game you can reset the dev kit.</p>
 </style>
 <h1 id="how-to-create-a-project"><a class="header" href="#how-to-create-a-project">How to create a project</a></h1>
 <p>With Xenity you can work with multiple projects. If you don't have one, let's create one.</p>
-<p>Click on "Create project":</p>
+<p>Click on <code>Create project</code>:</p>
 <p><img src="manual/usage/images/create_project_project_list.png" alt="image" /></p>
 <p>This will show a new menu asking for two info:</p>
 <ul>
-<li>Location of the project</li>
-<li>Name of the project</li>
+<li>Location of the project,</li>
+<li>Name of the project.</li>
 </ul>
-<p>By default the project location is "User/Documents/Xenity_Projects/" but if you want you can select a new folder.</p>
+<p>By default the project location is <code>User/Documents/Xenity_Projects/</code> but if you want you can select a new folder.</p>
 <p><img src="manual/usage/images/create_project_menu.png" alt="image" /></p>
+<p>Then you can finally click on <code>Create project</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2151,10 +2152,10 @@ If you want to leave the game you can reset the dev kit.</p>
 </style>
 <h1 id="how-to-add-an-existing-project"><a class="header" href="#how-to-add-an-existing-project">How to add an existing project</a></h1>
 <p>If you have a folder containing a Xenity project and the project is not listed in the project list, you can add it.</p>
-<p>If you want, there is a list of project sample that you can download, see <a href="manual/usage/../../game_project_samples/game_project_samples.html">Game Project Samples</a>.</p>
-<p>First click on the "Load project" button:</p>
+<p>If you want, there is a list of project samples that you can download, see <a href="manual/usage/../../game_project_samples/game_project_samples.html">Game Project Samples</a>.</p>
+<p>First click on the <code>Load project</code> button:</p>
 <p><img src="manual/usage/images/load_existing_project_ui.png" alt="image" /></p>
-<p>And select the folder if the project, this folder should contains the Asset folder.</p>
+<p>And select the folder of the project, this folder should contains the <code>asset</code> folder.</p>
 <p><img src="manual/usage/images/load_existing_project_folder.png" alt="image" /></p>
 <p>Then the project will load and will be added to the project list.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
@@ -2301,6 +2302,23 @@ See the <a href="manual/usage/../../script_api_reference/engine/assets/scene.htm
 
 </style>
 <h1 id="how-to-create-a-component"><a class="header" href="#how-to-create-a-component">How to create a component</a></h1>
+<p>Xenity provides a simple way to create a component for your game.</p>
+<p>First, make a right click on the background of the file explorer, then click on Create C++ class:</p>
+<p><img src="manual/usage/images/create_component_file_explorer.png" alt="image" /></p>
+<p>Then a menu will ask for information about the new class:</p>
+<ul>
+<li>Class name,</li>
+<li>File name.</li>
+</ul>
+<p>If you modify the class name, the file name will be automatically updated with the new name.</p>
+<p><img src="manual/usage/images/create_component_menu.png" alt="image" /></p>
+<p>And finally, the engine needs to know that this class exists. For this, you have to open game.cpp and add two lines:</p>
+<ul>
+<li>An include to the file,</li>
+<li>A REGISTER_COMPONENT call.</li>
+</ul>
+<p>REGISTER_COMPONENT allows you to add parameters about this class, for example the DisableUpdateFunction will prevent the engine from calling the Update function every frame.</p>
+<p><img src="manual/usage/images/create_component_game_cpp.png" alt="image" /></p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2371,8 +2389,8 @@ See the <a href="manual/usage/../../script_api_reference/engine/assets/scene.htm
 <h1 id="how-to-play-your-game-in-the-editor"><a class="header" href="#how-to-play-your-game-in-the-editor">How to play your game in the editor</a></h1>
 <p>Xenity allows you to test your game directly in the editor.</p>
 <p>For this, you have to compile the code of your game to be able to use scripts you have made.</p>
-<p>To compile, open the "Game" tab and click on Compile Game.
-<img src="manual/usage/images/compile_in_editor.png" alt="image" /></p>
+<p>To compile, open the <code>Game</code> tab and click on <code>Compile Game</code>.</p>
+<p><img src="manual/usage/images/compile_in_editor.png" alt="image" /></p>
 <p>Each time you change you game code, you have to compile to apply changes.</p>
 <p>You can compile while playing your game, the editor will reload the current scene, but this feature may not work properly. (Heap created by components won't be restored, only reflected variables will be restored).</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
@@ -2443,6 +2461,38 @@ See the <a href="manual/usage/../../script_api_reference/engine/assets/scene.htm
 
 </style>
 <h1 id="how-to-play-your-game-on-game-console"><a class="header" href="#how-to-play-your-game-on-game-console">How to play your game on game console</a></h1>
+<p>First of all, to run a homebrew made with Xenity, you need a jailbreaked game console.</p>
+<p>It's highly recommended to test your builds on real hardware before publishing your game. If you cannot test, you can ask to some people on homebrew discord servers to test them or ask me.</p>
+<p>To build a game on game console, you have to setup Docker, see <a href="manual/usage/../../installation/game_console_installation.html">Game Console Installation</a>.
+Then you can check the <a href="manual/usage/../editor_ui/build_settings.html">Build Setting Menu</a>, it's the menu to use to make builds.</p>
+<p>Preview of the build menu:</p>
+<p><img src="manual/usage/images/build_menu.png" alt="image" /></p>
+<p>Each game console has a special executable file.</p>
+<ul>
+<li>On PSP it's an EBOOT.PBP file, it will directly launch the game.</li>
+<li>On PsVita it's a .vpk file, it will install the game, asset files are in the .vpk file.</li>
+<li>On PS3 it's a .self, it will directly launch the game.</li>
+</ul>
+<h2 id="emulation"><a class="header" href="#emulation">Emulation</a></h2>
+<p>You can try your game on emulator, but it's not recommended to check performances with them, a game can run smoothly on an emulator but run poorly on real hardware or not even boot! Sometimes emulators won't crash if you code has a bug.</p>
+<ul>
+<li>For PSP you can use <a href="https://www.ppsspp.org/">PPSSPP</a>.</li>
+<li>For PS3 you can use <a href="https://rpcs3.net/">RPCS3</a>.</li>
+<li>No working emulator for PsVita is available.</li>
+</ul>
+<h2 id="running-on-real-hardware"><a class="header" href="#running-on-real-hardware">Running on real hardware</a></h2>
+<h3 id="psp"><a class="header" href="#psp">PSP</a></h3>
+<p>Put the game build folder in the GAME folder of your PSP memory stick then you should see a new game in the game list.</p>
+<p>The log file is located next the the EBOOT file.</p>
+<h3 id="psvita"><a class="header" href="#psvita">PsVita</a></h3>
+<h4 id="setup"><a class="header" href="#setup">Setup</a></h4>
+<p>Xenity games needs some setup to run on a PsVita. The libshacccg.suprx file needs to be extracted and decrypted. This file is needed to enable the shader compiler. This setup has to be done only once.</p>
+<p>You can follow <a href="https://cimmerian.gitbook.io/vita-troubleshooting-guide/shader-compiler/extract-libshacccg.suprx">this tutorial</a>.</p>
+<h4 id="install-the-game"><a class="header" href="#install-the-game">Install the game</a></h4>
+<p>Put the .vpk file on the memory card of your PsVita (using FTP or USB), then launch <a href="https://github.com/TheOfficialFloW/VitaShell">VitaShell</a>, find the .vpk file and press X to install. Confirm the next popup about security. Then a new bubble with the icon of the game should pop on the main PsVita screen.</p>
+<h3 id="ps3"><a class="header" href="#ps3">PS3</a></h3>
+<p>Put the game build folder on the hard drive of your PS3 using FTP or put the game folder on an USB key, then launch <a href="https://store.brewology.com/ahomebrew.php?brewid=24">MultiMan</a> (or another software that can launch .self files) and launch the .self file. If you have a .fake.self file, it's only used by devevelopment kits, you can delete this file if you don't have one.</p>
+<p>The log file is located next the the .self file.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2512,14 +2562,15 @@ See the <a href="manual/usage/../../script_api_reference/engine/assets/scene.htm
 </style>
 <h1 id="performances-tips"><a class="header" href="#performances-tips">Performances tips</a></h1>
 <p>Performances on Xenity can be affected for many reasons.</p>
+<p>A great way to analyze performances is to use the integrated profiler in the editor.</p>
 <h2 id="physics-1"><a class="header" href="#physics-1">Physics</a></h2>
-<p>On small system like the PlayStation Portable, performances can be very low with too many rigidbody. Try to reduce the amount of activated rigidbody in the scene.</p>
+<p>On small systems like the PlayStation Portable, performances can be very low with too many rigidbodies. Try to reduce the amount of activated rigidbody in the scene.</p>
 <h2 id="audio-1"><a class="header" href="#audio-1">Audio</a></h2>
 <p>Streaming is very slow on game console, try to avoid having more than one audio source using an audio clip from the storage memory. Only musics should be streamed from the storage memory. Short audio should be in RAM.
-See the "Loaded In Memory" option in <a href="manual/usage/../../script_api_reference/engine/assets/audio_clip.html">Audio Clip</a>
-Loaded In Memory option consumes a large amount of memory, that why you can't enable this option for every audio clips.</p>
+See the <code>Loaded In Memory</code> option in <a href="manual/usage/../../script_api_reference/engine/assets/audio_clip.html">Audio Clip</a>
+The <code>Loaded In Memory</code> option consumes a large amount of memory, that why you should not enable this option for every audio clips.</p>
 <h2 id="rendering-2"><a class="header" href="#rendering-2">Rendering</a></h2>
-<p>Lighting is extremely heavy on Xenity, try to reduce as mush as possible the point/spot light count in you scene. Try to use smaller range for your lights.</p>
+<p>Lighting is extremely heavy on Xenity, try to reduce as much as possible the point/spot light count in you scene. Try to use smaller range for your lights.</p>
 <p>Transparency is heavy on PS3 and PsVita, try to avoid them by using Cutout on materials instead.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -2597,6 +2648,21 @@ Loaded In Memory option consumes a large amount of memory, that why you can't en
 <ul>
 <li>Increase the near plane value of the camera</li>
 <li>Reduce the size of the triangles of affected meshes (generally by increasing triangle count with subdivision)</li>
+</ul>
+<h3 id="i-cant-use-more-than-4-lights-on-psp"><a class="header" href="#i-cant-use-more-than-4-lights-on-psp">I can't use more than 4 lights on PSP</a></h3>
+<p>The PlayStation Portable has a hardware limit of 4 lights per object.
+For example you can use:</p>
+<ul>
+<li>1 directional light,</li>
+<li>1 ambient light,</li>
+<li>2 point lights.</li>
+</ul>
+<p>You can have more lights in the whole scene but only 4 lights will be used for the rendering of a mesh.</p>
+<p>Lighting priorities:</p>
+<ul>
+<li>Ambient light has the priority over the directional light,</li>
+<li>Directional light has the priority over the point light,</li>
+<li>Point light has the priority over the spot light.</li>
 </ul>
 <h2 id="audio-issues"><a class="header" href="#audio-issues">Audio issues</a></h2>
 <p>If the audio sounds weird on PlayStation 3, make sure to use 48000Hz audio files. But on other platforms you should use 44000Hz audio files.</p>
@@ -5951,12 +6017,15 @@ Vector4 rgbaAsVector4 = myRGBA.ToVector4();
 <li><a href="script_api_reference/engine/components/./audio_source.html">AudioSource</a>: Component to play audio clips.</li>
 <li><a href="script_api_reference/engine/components/./billboard_renderer.html">BillboardRenderer</a>: Component to render a billboard sprite (2D sprite that always faces the camera).</li>
 <li><a href="script_api_reference/engine/components/./box_collider.html">BoxCollider</a>: Component to add a cube-shaped collider to a GameObject.</li>
+<li><a href="script_api_reference/engine/components/./button.html">Button</a>: Component that renders a button on the screen.</li>
 <li><a href="script_api_reference/engine/components/./camera.html">Camera</a>: Component for rendering the scene.</li>
 <li><a href="script_api_reference/engine/components/./canvas.html">Canvas</a>: Component to render a canvas (UI elements).</li>
 <li><a href="script_api_reference/engine/components/./fps_counter.html">FpsCounter</a>: Component to display the FPS counter in the game.</li>
+<li><a href="script_api_reference/engine/components/./image_renderer.html">ImageRenderer</a>: Component that renders an image on the screen.</li>
 <li><a href="script_api_reference/engine/components/./light.html">Light</a>: Component to produce light.</li>
 <li><a href="script_api_reference/engine/components/./lod.html">Lod</a>: Component to manage Level of Detail (LOD) for a GameObject.</li>
 <li><a href="script_api_reference/engine/components/./mesh_renderer.html">MeshRenderer</a>: Component that renders a mesh with materials.</li>
+<li><a href="script_api_reference/engine/components/./missing_script.html">MissingScript</a>: Special Component that replaces missing components.</li>
 <li><a href="script_api_reference/engine/components/./particle_system.html">ParticleSystem</a>: Component to spawn particles.</li>
 <li><a href="script_api_reference/engine/components/./rect_transform.html">RectTransform</a>: Component that represents a transform for UI elements.</li>
 <li><a href="script_api_reference/engine/components/./rigidbody.html">Rigidbody</a>: Component to add physics to the GameObject.</li>
@@ -7891,11 +7960,87 @@ Heavy operation, use with caution.</p>
 }
 
 </style>
+<h1 id="missingscript"><a class="header" href="#missingscript">MissingScript</a></h1>
+<h2 id="description-36"><a class="header" href="#description-36">Description</a></h2>
+<p>Special component used when a script is not found. It stores data of the previous working component to avoid data loss when saving the scene. The user cannot instantiate this component.</p>
+<p>It's used when:</p>
+<ul>
+<li>A script has been deleted,</li>
+<li>A script has been renamed,</li>
+<li>The game is not compiled.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="particlesystem"><a class="header" href="#particlesystem">ParticleSystem</a></h1>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/particle_system/particle_system.h&gt;
 </code></pre>
-<h2 id="description-36"><a class="header" href="#description-36">Description</a></h2>
+<h2 id="description-37"><a class="header" href="#description-37">Description</a></h2>
 <p>Component to spawn particles.</p>
 <h2 id="public-methods-16"><a class="header" href="#public-methods-16">Public methods</a></h2>
 <hr />
@@ -8065,7 +8210,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/rect_transform.h&gt;
 </code></pre>
-<h2 id="description-37"><a class="header" href="#description-37">Description</a></h2>
+<h2 id="description-38"><a class="header" href="#description-38">Description</a></h2>
 <p>Component that represents a transform for UI elements.</p>
 <h2 id="variables-6"><a class="header" href="#variables-6">Variables</a></h2>
 <hr />
@@ -8143,7 +8288,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/rigidbody.h&gt;
 </code></pre>
-<h2 id="description-38"><a class="header" href="#description-38">Description</a></h2>
+<h2 id="description-39"><a class="header" href="#description-39">Description</a></h2>
 <p>Component to add physics to the GameObject.</p>
 <h2 id="public-methods-17"><a class="header" href="#public-methods-17">Public Methods</a></h2>
 <hr />
@@ -8399,7 +8544,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/sphere_collider.h&gt;
 </code></pre>
-<h2 id="description-39"><a class="header" href="#description-39">Description</a></h2>
+<h2 id="description-40"><a class="header" href="#description-40">Description</a></h2>
 <p>Component to add a sphere-shaped collider to a GameObject.</p>
 <h2 id="public-methods-18"><a class="header" href="#public-methods-18">Public Methods</a></h2>
 <hr />
@@ -8501,7 +8646,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/2d_graphics/sprite_renderer.h&gt;
 </code></pre>
-<h2 id="description-40"><a class="header" href="#description-40">Description</a></h2>
+<h2 id="description-41"><a class="header" href="#description-41">Description</a></h2>
 <p>Component that renders a sprite with a texture and material.</p>
 <h2 id="public-methods-19"><a class="header" href="#public-methods-19">Public Methods</a></h2>
 <hr />
@@ -8617,7 +8762,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_mesh.h&gt;
 </code></pre>
-<h2 id="description-41"><a class="header" href="#description-41">Description</a></h2>
+<h2 id="description-42"><a class="header" href="#description-42">Description</a></h2>
 <p>Component for rendering text in 3D space.</p>
 <h2 id="public-methods-20"><a class="header" href="#public-methods-20">Public methods</a></h2>
 <hr />
@@ -8817,7 +8962,7 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_renderer.h&gt;
 </code></pre>
-<h2 id="description-42"><a class="header" href="#description-42">Description</a></h2>
+<h2 id="description-43"><a class="header" href="#description-43">Description</a></h2>
 <p>Component for rendering text in a canvas.</p>
 <h2 id="public-methods-21"><a class="header" href="#public-methods-21">Public methods</a></h2>
 <hr />
@@ -9119,7 +9264,7 @@ Debug::Print(currentDateTime.ToString());
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/debug/debug.h&gt;
 </code></pre>
-<h2 id="description-43"><a class="header" href="#description-43">Description</a></h2>
+<h2 id="description-44"><a class="header" href="#description-44">Description</a></h2>
 <p>Class used to print text in the console and in file or remotely to a server (Server part is removed for now).</p>
 <p>You can find logs in the <code>xenity_engine_debug.txt</code> file.<br>
 The file will be created in the same folder of the executable file.<br>
@@ -9336,7 +9481,7 @@ Debug::GetOnDebugLogEvent().Unbind(&amp;OnLog);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/event_system/event_system.h&gt;
 </code></pre>
-<h2 id="description-44"><a class="header" href="#description-44">Description</a></h2>
+<h2 id="description-45"><a class="header" href="#description-45">Description</a></h2>
 <p>This class gives the possibility to bind a function to an event.<br>
 When a event object is destroyed, all bound functions are unbound.</p>
 <p>This class is using templates.</p>
@@ -9568,7 +9713,7 @@ size_t count = myEvent.GetBoundFunctionCount(); // count = 2
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
 </code></pre>
-<h2 id="description-45"><a class="header" href="#description-45">Description</a></h2>
+<h2 id="description-46"><a class="header" href="#description-46">Description</a></h2>
 <p>This class provides methods to manipulate files and directories.</p>
 <h2 id="static-methods-8"><a class="header" href="#static-methods-8">Static methods</a></h2>
 <hr />
@@ -9763,7 +9908,7 @@ if(file-&gt;Open(FileMode::WriteCreateFile))
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
 </code></pre>
-<h2 id="description-46"><a class="header" href="#description-46">Description</a></h2>
+<h2 id="description-47"><a class="header" href="#description-47">Description</a></h2>
 <p>Class to manage a file (Create, open, read, write).</p>
 <h2 id="public-methods-24"><a class="header" href="#public-methods-24">Public methods</a></h2>
 <hr />
@@ -10013,7 +10158,7 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file.h&gt;
 </code></pre>
-<h2 id="description-47"><a class="header" href="#description-47">Description</a></h2>
+<h2 id="description-48"><a class="header" href="#description-48">Description</a></h2>
 <p>Enum that list every modes to open a file.</p>
 <h2 id="values-9"><a class="header" href="#values-9">Values</a></h2>
 <hr />
@@ -10093,7 +10238,7 @@ std::string filePath = file-&gt;GetFileExtension(); // = .txt
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/directory.h&gt;
 </code></pre>
-<h2 id="description-48"><a class="header" href="#description-48">Description</a></h2>
+<h2 id="description-49"><a class="header" href="#description-49">Description</a></h2>
 <p>Class to manage a directory (Get all files of a folder).</p>
 <h2 id="variables-8"><a class="header" href="#variables-8">Variables</a></h2>
 <hr />
@@ -10208,7 +10353,7 @@ const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/file_system/file_system.h&gt;
 </code></pre>
-<h2 id="description-49"><a class="header" href="#description-49">Description</a></h2>
+<h2 id="description-50"><a class="header" href="#description-50">Description</a></h2>
 <p>Enum to list every different results of a file copy call.</p>
 <h2 id="values-10"><a class="header" href="#values-10">Values</a></h2>
 <hr />
@@ -10288,7 +10433,7 @@ const std::string&amp; path = directory-&gt;GetPath(); // = "C:/my_folder/"
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/gameobject.h&gt;
 </code></pre>
-<h2 id="description-50"><a class="header" href="#description-50">Description</a></h2>
+<h2 id="description-51"><a class="header" href="#description-51">Description</a></h2>
 <p>A GameObject is a class that contains some properties and a list of components.<br>
 Includes functions to create GameObjects.</p>
 <h2 id="global-methods"><a class="header" href="#global-methods">Global Methods</a></h2>
@@ -10726,7 +10871,7 @@ if(sharedChild1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-51"><a class="header" href="#description-51">Description</a></h2>
+<h2 id="description-52"><a class="header" href="#description-52">Description</a></h2>
 <p>Class to read inputs (GamePads, Touch Screens, Keyboard, Mouse).</p>
 <h2 id="macros"><a class="header" href="#macros">Macros</a></h2>
 <p><code>PLAYER_1</code> value: 0<br>
@@ -10959,7 +11104,7 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-52"><a class="header" href="#description-52">Description</a></h2>
+<h2 id="description-53"><a class="header" href="#description-53">Description</a></h2>
 <p>This class stores information of finger on a touchscreen.</p>
 <h2 id="variables-9"><a class="header" href="#variables-9">Variables</a></h2>
 <hr />
@@ -11039,7 +11184,7 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/inputs/input_system.h&gt;
 </code></pre>
-<h2 id="description-53"><a class="header" href="#description-53">Description</a></h2>
+<h2 id="description-54"><a class="header" href="#description-54">Description</a></h2>
 <p>Enum that list every keys of a keyboard and buttons of a controller.</p>
 <h2 id="values-11"><a class="header" href="#values-11">Values</a></h2>
 <hr />
@@ -11302,7 +11447,7 @@ if (touchCount &gt;= 1)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/quaternion.h&gt;
 </code></pre>
-<h2 id="description-54"><a class="header" href="#description-54">Description</a></h2>
+<h2 id="description-55"><a class="header" href="#description-55">Description</a></h2>
 <p>Class representing rotations in 3D space.</p>
 <h2 id="variables-10"><a class="header" href="#variables-10">Variables</a></h2>
 <hr />
@@ -11593,7 +11738,7 @@ bool operator!=(const Quaternion&amp; left, const Quaternion&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector2.h&gt;
 </code></pre>
-<h2 id="description-55"><a class="header" href="#description-55">Description</a></h2>
+<h2 id="description-56"><a class="header" href="#description-56">Description</a></h2>
 <p>Contains 2D coordinates.</p>
 <h2 id="variables-11"><a class="header" href="#variables-11">Variables</a></h2>
 <hr />
@@ -11849,7 +11994,7 @@ bool operator!=(const Vector2&amp; left, const Vector2&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector2_int.h&gt;
 </code></pre>
-<h2 id="description-56"><a class="header" href="#description-56">Description</a></h2>
+<h2 id="description-57"><a class="header" href="#description-57">Description</a></h2>
 <p>Contains integer 2D coordinates.</p>
 <h2 id="variables-12"><a class="header" href="#variables-12">Variables</a></h2>
 <hr />
@@ -12080,7 +12225,7 @@ bool operator!=(const Vector2Int&amp; left, const Vector2Int&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector3.h&gt;
 </code></pre>
-<h2 id="description-57"><a class="header" href="#description-57">Description</a></h2>
+<h2 id="description-58"><a class="header" href="#description-58">Description</a></h2>
 <p>Contains 3D coordinates.</p>
 <h2 id="variables-13"><a class="header" href="#variables-13">Variables</a></h2>
 <hr />
@@ -12409,7 +12554,7 @@ bool operator!=(const Vector3&amp; left, const Vector3&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/math/vector4.h&gt;
 </code></pre>
-<h2 id="description-58"><a class="header" href="#description-58">Description</a></h2>
+<h2 id="description-59"><a class="header" href="#description-59">Description</a></h2>
 <p>Contains 4D coordinates.</p>
 <h2 id="variables-14"><a class="header" href="#variables-14">Variables</a></h2>
 <hr />
@@ -12746,7 +12891,7 @@ bool operator!=(const Vector4&amp; left, const Vector4&amp; right)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
 </code></pre>
-<h2 id="description-59"><a class="header" href="#description-59">Description</a></h2>
+<h2 id="description-60"><a class="header" href="#description-60">Description</a></h2>
 <p>Class to create sockets and to manage networking settings.</p>
 <h2 id="static-methods-15"><a class="header" href="#static-methods-15">Static methods</a></h2>
 <hr />
@@ -12851,7 +12996,7 @@ For this, a menu of the PSP OS ask to the user to setup a network connection.</p
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/network/network.h&gt;
 </code></pre>
-<h2 id="description-60"><a class="header" href="#description-60">Description</a></h2>
+<h2 id="description-61"><a class="header" href="#description-61">Description</a></h2>
 <p>Class to send and received data to/from a server.<br>
 Created with the NetworkManager class.<br>
 The socket will be closed when the object is destroyed.</p>
@@ -12997,7 +13142,7 @@ if(socket)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/noise/noise.h&gt;
 </code></pre>
-<h2 id="description-61"><a class="header" href="#description-61">Description</a></h2>
+<h2 id="description-62"><a class="header" href="#description-62">Description</a></h2>
 <p>Class to generate 1D, 2D, 3D and 4D Perlin noise.</p>
 <h2 id="static-methods-16"><a class="header" href="#static-methods-16">Static methods</a></h2>
 <hr />
@@ -13125,7 +13270,7 @@ if(socket)
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/gameplay_utility.h&gt;
 </code></pre>
-<h2 id="description-62"><a class="header" href="#description-62">Description</a></h2>
+<h2 id="description-63"><a class="header" href="#description-63">Description</a></h2>
 <p>Class to manage Objects (GameObject and Components).<br>
 You can Instantiate, Check and Destroy Objects.</p>
 <h2 id="methods"><a class="header" href="#methods">Methods</a></h2>
@@ -13355,7 +13500,7 @@ Destroy(myGameObject);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/collider.h&gt;
 </code></pre>
-<h2 id="description-63"><a class="header" href="#description-63">Description</a></h2>
+<h2 id="description-64"><a class="header" href="#description-64">Description</a></h2>
 <p>Parent class of collider components (BoxCollider, SphereCollider...).</p>
 <p>Function of Collider can be used on every colllider component.</p>
 <h2 id="public-methods-32"><a class="header" href="#public-methods-32">Public methods</a></h2>
@@ -13477,7 +13622,7 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/collision_event.h&gt;
 </code></pre>
-<h2 id="description-64"><a class="header" href="#description-64">Description</a></h2>
+<h2 id="description-65"><a class="header" href="#description-65">Description</a></h2>
 <p>This class stores information of a collision between two colliders.</p>
 <h2 id="variables-15"><a class="header" href="#variables-15">Variables</a></h2>
 <hr />
@@ -13556,7 +13701,7 @@ bool generateCollisionEvents = boxCollider-&gt;GetGenerateCollisionEvents(); // 
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
-<h2 id="description-65"><a class="header" href="#description-65">Description</a></h2>
+<h2 id="description-66"><a class="header" href="#description-66">Description</a></h2>
 <p>Class to check collisions with a ray.</p>
 <h2 id="public-methods-33"><a class="header" href="#public-methods-33">Public methods</a></h2>
 <hr />
@@ -13661,7 +13806,7 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/physics/raycast.h&gt;
 </code></pre>
-<h2 id="description-66"><a class="header" href="#description-66">Description</a></h2>
+<h2 id="description-67"><a class="header" href="#description-67">Description</a></h2>
 <p>This class stores information of a racyast hit.</p>
 <h2 id="variables-16"><a class="header" href="#variables-16">Variables</a></h2>
 <hr />
@@ -13742,7 +13887,7 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/reflection/reflection.h&gt;
 </code></pre>
-<h2 id="description-67"><a class="header" href="#description-67">Description</a></h2>
+<h2 id="description-68"><a class="header" href="#description-68">Description</a></h2>
 <p>Class to inherit if you want to access child's variables to fill variables from json or save them to json.<br>
 It's used to see variables of a class in the <a href="script_api_reference/engine/reflection/../../../manual/editor_ui/inspector.html">Inspector</a>.</p>
 <p>GameObject, Transform and Component implement this class.</p>
@@ -13883,7 +14028,7 @@ void MyComponent::OnReflectionUpdated()
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/scene_manager/scene_manager.h&gt;
 </code></pre>
-<h2 id="description-68"><a class="header" href="#description-68">Description</a></h2>
+<h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
 <p>Class to load scenes.</p>
 <h2 id="static-methods-17"><a class="header" href="#static-methods-17">Static methods</a></h2>
 <hr />
@@ -13987,7 +14132,7 @@ SceneManager::LoadScene(sceneToLoad);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/ui/screen.h&gt;
 </code></pre>
-<h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
+<h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
 <p>Class to get information and to interact with the screen.</p>
 <h2 id="static-methods-18"><a class="header" href="#static-methods-18">Static methods</a></h2>
 <hr />
@@ -14113,7 +14258,7 @@ bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/time/time.h&gt;
 </code></pre>
-<h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
+<h2 id="description-71"><a class="header" href="#description-71">Description</a></h2>
 <p>Class to get time information (Delta time, elapsed time).</p>
 <p>Values are updated every frame.</p>
 <h2 id="static-methods-19"><a class="header" href="#static-methods-19">Static methods</a></h2>
@@ -14261,7 +14406,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/transform.h&gt;
 </code></pre>
-<h2 id="description-71"><a class="header" href="#description-71">Description</a></h2>
+<h2 id="description-72"><a class="header" href="#description-72">Description</a></h2>
 <p>Class representing a 3D transformation (position, rotation, scale) of a GameObject.</p>
 <h2 id="public-methods-35"><a class="header" href="#public-methods-35">Public Methods</a></h2>
 <hr />
@@ -14569,7 +14714,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-72"><a class="header" href="#description-72">Description</a></h2>
+<h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
 <p>Enum to horizontally align text with text rendering components.</p>
 <h2 id="values-12"><a class="header" href="#values-12">Values</a></h2>
 <hr />
@@ -14649,7 +14794,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
+<h2 id="description-74"><a class="header" href="#description-74">Description</a></h2>
 <p>Enum to vertically align text with text rendering components.</p>
 <h2 id="values-13"><a class="header" href="#values-13">Values</a></h2>
 <hr />
@@ -14800,7 +14945,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/endian_utils.h&gt;
 </code></pre>
-<h2 id="description-74"><a class="header" href="#description-74">Description</a></h2>
+<h2 id="description-75"><a class="header" href="#description-75">Description</a></h2>
 <p>Utility class for endian conversion.<br>
 Usefull when using binary data on different platforms.</p>
 <h2 id="static-methods-20"><a class="header" href="#static-methods-20">Static methods</a></h2>
@@ -14901,7 +15046,7 @@ uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
-<h2 id="description-75"><a class="header" href="#description-75">Description</a></h2>
+<h2 id="description-76"><a class="header" href="#description-76">Description</a></h2>
 <p>Class that store the data structure of a vertex.</p>
 <h2 id="static-methods-21"><a class="header" href="#static-methods-21">Static methods</a></h2>
 <hr />
@@ -15088,7 +15233,7 @@ Do not use if there is no color vertex element.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
-<h2 id="description-76"><a class="header" href="#description-76">Description</a></h2>
+<h2 id="description-77"><a class="header" href="#description-77">Description</a></h2>
 <p>Enum of all different vertex element types.</p>
 <h2 id="values-14"><a class="header" href="#values-14">Values</a></h2>
 <hr />

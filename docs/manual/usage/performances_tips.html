@@ -236,14 +236,15 @@
 </style>
 <h1 id="performances-tips"><a class="header" href="#performances-tips">Performances tips</a></h1>
 <p>Performances on Xenity can be affected for many reasons.</p>
+<p>A great way to analyze performances is to use the integrated profiler in the editor.</p>
 <h2 id="physics"><a class="header" href="#physics">Physics</a></h2>
-<p>On small system like the PlayStation Portable, performances can be very low with too many rigidbody. Try to reduce the amount of activated rigidbody in the scene.</p>
+<p>On small systems like the PlayStation Portable, performances can be very low with too many rigidbodies. Try to reduce the amount of activated rigidbody in the scene.</p>
 <h2 id="audio"><a class="header" href="#audio">Audio</a></h2>
 <p>Streaming is very slow on game console, try to avoid having more than one audio source using an audio clip from the storage memory. Only musics should be streamed from the storage memory. Short audio should be in RAM.
-See the "Loaded In Memory" option in <a href="../../script_api_reference/engine/assets/audio_clip.html">Audio Clip</a>
-Loaded In Memory option consumes a large amount of memory, that why you can't enable this option for every audio clips.</p>
+See the <code>Loaded In Memory</code> option in <a href="../../script_api_reference/engine/assets/audio_clip.html">Audio Clip</a>
+The <code>Loaded In Memory</code> option consumes a large amount of memory, that why you should not enable this option for every audio clips.</p>
 <h2 id="rendering"><a class="header" href="#rendering">Rendering</a></h2>
-<p>Lighting is extremely heavy on Xenity, try to reduce as mush as possible the point/spot light count in you scene. Try to use smaller range for your lights.</p>
+<p>Lighting is extremely heavy on Xenity, try to reduce as much as possible the point/spot light count in you scene. Try to use smaller range for your lights.</p>
 <p>Transparency is heavy on PS3 and PsVita, try to avoid them by using Cutout on materials instead.</p>
 
                     </main>

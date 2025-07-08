@@ -119,7 +119,7 @@ std::vector<std::string> ClassRegistry::GetComponentNames()
 	std::vector<std::string> names;
 	for (const auto& kv : s_nameToComponent)
 	{
-		if(kv.second.second)
+		if (kv.second.second)
 			names.push_back(kv.first);
 	}
 	return names;
@@ -139,59 +139,75 @@ void ClassRegistry::RegisterEngineComponents()
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	// List all Engine components
-	REGISTER_COMPONENT(Light, true);
-	REGISTER_COMPONENT(Camera, true);
-	REGISTER_COMPONENT(TextRenderer, true);
-	REGISTER_COMPONENT(Canvas, false);
-	REGISTER_COMPONENT(RectTransform, true);
-	REGISTER_COMPONENT(TextMesh, true);
-	REGISTER_COMPONENT(MeshRenderer, true);
+	REGISTER_COMPONENT(Light).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
+
+	REGISTER_COMPONENT(Camera).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/camera.html");
+
+	REGISTER_COMPONENT(TextRenderer).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/text_renderer.html");
+
+	REGISTER_COMPONENT(Canvas)
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/canvas.html");
+
+	REGISTER_COMPONENT(RectTransform).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/rect_transform.html");
+
+	REGISTER_COMPONENT(TextMesh).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/text_mesh.html");
+
+	REGISTER_COMPONENT(MeshRenderer).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/mesh_renderer.html");
+
 #if defined(ENABLE_EXPERIMENTAL_FEATURES)
-	REGISTER_COMPONENT(Tilemap, 20, true);
+	REGISTER_COMPONENT(Tilemap, 20).DisableUpdateFunction()
+		.SetDocLink("");
+
+	REGISTER_COMPONENT(LineRenderer).DisableUpdateFunction()
+		.SetDocLink("");
 #endif // ENABLE_EXPERIMENTAL_FEATURES
-	REGISTER_COMPONENT(SpriteRenderer, true);
-	REGISTER_COMPONENT(BillboardRenderer, true);
-#if defined(ENABLE_EXPERIMENTAL_FEATURES)
-	REGISTER_COMPONENT(LineRenderer, true);
-#endif // ENABLE_EXPERIMENTAL_FEATURES
-	REGISTER_COMPONENT(AudioSource, true);
-	REGISTER_COMPONENT(ParticleSystem, true);
-	REGISTER_COMPONENT(RigidBody, true);
-	REGISTER_COMPONENT(BoxCollider, true);
-	REGISTER_COMPONENT(SphereCollider, true);
-	REGISTER_COMPONENT(Lod, true);
-	REGISTER_COMPONENT(FpsCounter, false);
-	REGISTER_COMPONENT(MissingScript, true);
-	REGISTER_COMPONENT(ImageRenderer, true);
-	REGISTER_COMPONENT(Button, true);
+
+	REGISTER_COMPONENT(SpriteRenderer).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/sprite_renderer.html");
+
+	REGISTER_COMPONENT(BillboardRenderer).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/billboard_renderer.html");
+
+	REGISTER_COMPONENT(AudioSource).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/audio_source.html");
+
+	REGISTER_COMPONENT(ParticleSystem).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/particle_system.html");
+
+	REGISTER_COMPONENT(RigidBody).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/rigidbody.html");
+
+	REGISTER_COMPONENT(BoxCollider).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/box_collider.html");
+
+	REGISTER_COMPONENT(SphereCollider).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/sphere_collider.html");
+
+	REGISTER_COMPONENT(Lod).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/lod.html");
+
+	REGISTER_COMPONENT(FpsCounter)
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/fps_counter.html");
+
+	REGISTER_COMPONENT(ImageRenderer).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/image_renderer.html");
+
+	REGISTER_COMPONENT(Button).DisableUpdateFunction()
+		.SetDocLink("https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/button.html");
+
 #if defined(DEBUG)
-	REGISTER_COMPONENT(TestComponent, false);
+	REGISTER_COMPONENT(TestComponent)
+		.SetDocLink("");
 #endif
 
-	REGISTER_COMPONENT_DOC_LINK(Light, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
-	REGISTER_COMPONENT_DOC_LINK(Camera, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/camera.html");
-	REGISTER_COMPONENT_DOC_LINK(TextRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/text_renderer.html");
-	REGISTER_COMPONENT_DOC_LINK(Canvas, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/canvas.html");
-	REGISTER_COMPONENT_DOC_LINK(RectTransform, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/rect_transform.html");
-	REGISTER_COMPONENT_DOC_LINK(TextMesh, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/text_mesh.html");
-	REGISTER_COMPONENT_DOC_LINK(MeshRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/mesh_renderer.html");
-	//REGISTER_COMPONENT_DOC_LINK(Tilemap, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
-	REGISTER_COMPONENT_DOC_LINK(SpriteRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/sprite_renderer.html");
-	REGISTER_COMPONENT_DOC_LINK(BillboardRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/billboard_renderer.html");
-	//REGISTER_COMPONENT_DOC_LINK(LineRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
-	REGISTER_COMPONENT_DOC_LINK(AudioSource, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/audio_source.html");
-	REGISTER_COMPONENT_DOC_LINK(ParticleSystem, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/particle_system.html");
-	REGISTER_COMPONENT_DOC_LINK(RigidBody, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/rigidbody.html");
-	REGISTER_COMPONENT_DOC_LINK(BoxCollider, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/box_collider.html");
-	REGISTER_COMPONENT_DOC_LINK(SphereCollider, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/sphere_collider.html");
-	REGISTER_COMPONENT_DOC_LINK(Lod, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/lod.html");
-	REGISTER_COMPONENT_DOC_LINK(FpsCounter, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/fps_counter.html");
-	REGISTER_COMPONENT_DOC_LINK(ImageRenderer, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/image_renderer.html");
-	REGISTER_COMPONENT_DOC_LINK(Button, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/button.html");
-
-	//REGISTER_COMPONENT_DOC_LINK(TestComponent, "https://fewnity.github.io/Xenity-Engine/script_api_reference/engine/components/light.html");
-
-	REGISTER_INVISIBLE_COMPONENT(MissingScript, true);
+	REGISTER_INVISIBLE_COMPONENT(MissingScript).DisableUpdateFunction()
+		.SetDocLink("");
 }
 
 void ClassRegistry::RegisterEngineFileClasses()

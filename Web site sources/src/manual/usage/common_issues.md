@@ -12,6 +12,21 @@ The hardware clipping on the PSP is not great. There are two ways to reduce this
 - Increase the near plane value of the camera
 - Reduce the size of the triangles of affected meshes (generally by increasing triangle count with subdivision)
 
+### I can't use more than 4 lights on PSP
+
+The PlayStation Portable has a hardware limit of 4 lights per object. 
+For example you can use:
+- 1 directional light,
+- 1 ambient light,
+- 2 point lights.
+
+You can have more lights in the whole scene but only 4 lights will be used for the rendering of a mesh.
+
+Lighting priorities:
+- Ambient light has the priority over the directional light,
+- Directional light has the priority over the point light,
+- Point light has the priority over the spot light.
+
 ## Audio issues
 
 If the audio sounds weird on PlayStation 3, make sure to use 48000Hz audio files. But on other platforms you should use 44000Hz audio files.

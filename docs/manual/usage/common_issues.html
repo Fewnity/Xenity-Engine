@@ -244,6 +244,21 @@
 <li>Increase the near plane value of the camera</li>
 <li>Reduce the size of the triangles of affected meshes (generally by increasing triangle count with subdivision)</li>
 </ul>
+<h3 id="i-cant-use-more-than-4-lights-on-psp"><a class="header" href="#i-cant-use-more-than-4-lights-on-psp">I can't use more than 4 lights on PSP</a></h3>
+<p>The PlayStation Portable has a hardware limit of 4 lights per object.
+For example you can use:</p>
+<ul>
+<li>1 directional light,</li>
+<li>1 ambient light,</li>
+<li>2 point lights.</li>
+</ul>
+<p>You can have more lights in the whole scene but only 4 lights will be used for the rendering of a mesh.</p>
+<p>Lighting priorities:</p>
+<ul>
+<li>Ambient light has the priority over the directional light,</li>
+<li>Directional light has the priority over the point light,</li>
+<li>Point light has the priority over the spot light.</li>
+</ul>
 <h2 id="audio-issues"><a class="header" href="#audio-issues">Audio issues</a></h2>
 <p>If the audio sounds weird on PlayStation 3, make sure to use 48000Hz audio files. But on other platforms you should use 44000Hz audio files.</p>
 <h2 id="crash"><a class="header" href="#crash">Crash</a></h2>

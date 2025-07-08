@@ -79,6 +79,7 @@
             - [Light](./script_api_reference/engine/components/light.md)
             - [Lod](./script_api_reference/engine/components/lod.md)
             - [MeshRenderer](./script_api_reference/engine/components/mesh_renderer.md)
+            - [MissingScript](./script_api_reference/engine/components/missing_script.md)
             - [ParticleSystem](./script_api_reference/engine/components/particle_system.md)
             - [RectTransform](./script_api_reference/engine/components/rect_transform.md)
             - [RigidBody](./script_api_reference/engine/components/rigidbody.md)

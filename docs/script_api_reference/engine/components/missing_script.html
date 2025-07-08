@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>How to play your game on game console - Xenity Engine</title>
+        <title>MissingScript - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../../favicon.svg">
-        <link rel="shortcut icon" href="../../favicon.png">
-        <link rel="stylesheet" href="../../css/variables.css">
-        <link rel="stylesheet" href="../../css/general.css">
-        <link rel="stylesheet" href="../../css/chrome.css">
-        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="../../custom.css">
+        <link rel="stylesheet" href="../../../custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../../";
+            const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc.js"></script>
+        <script src="../../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -103,7 +103,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -138,7 +138,7 @@
                     <h1 class="menu-title">Xenity Engine</h1>
 
                     <div class="right-buttons">
-                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -234,49 +234,25 @@
 }
 
 </style>
-<h1 id="how-to-play-your-game-on-game-console"><a class="header" href="#how-to-play-your-game-on-game-console">How to play your game on game console</a></h1>
-<p>First of all, to run a homebrew made with Xenity, you need a jailbreaked game console.</p>
-<p>It's highly recommended to test your builds on real hardware before publishing your game. If you cannot test, you can ask to some people on homebrew discord servers to test them or ask me.</p>
-<p>To build a game on game console, you have to setup Docker, see <a href="../../installation/game_console_installation.html">Game Console Installation</a>.
-Then you can check the <a href="../editor_ui/build_settings.html">Build Setting Menu</a>, it's the menu to use to make builds.</p>
-<p>Preview of the build menu:</p>
-<p><img src="images/build_menu.png" alt="image" /></p>
-<p>Each game console has a special executable file.</p>
+<h1 id="missingscript"><a class="header" href="#missingscript">MissingScript</a></h1>
+<h2 id="description"><a class="header" href="#description">Description</a></h2>
+<p>Special component used when a script is not found. It stores data of the previous working component to avoid data loss when saving the scene. The user cannot instantiate this component.</p>
+<p>It's used when:</p>
 <ul>
-<li>On PSP it's an EBOOT.PBP file, it will directly launch the game.</li>
-<li>On PsVita it's a .vpk file, it will install the game, asset files are in the .vpk file.</li>
-<li>On PS3 it's a .self, it will directly launch the game.</li>
+<li>A script has been deleted,</li>
+<li>A script has been renamed,</li>
+<li>The game is not compiled.</li>
 </ul>
-<h2 id="emulation"><a class="header" href="#emulation">Emulation</a></h2>
-<p>You can try your game on emulator, but it's not recommended to check performances with them, a game can run smoothly on an emulator but run poorly on real hardware or not even boot! Sometimes emulators won't crash if you code has a bug.</p>
-<ul>
-<li>For PSP you can use <a href="https://www.ppsspp.org/">PPSSPP</a>.</li>
-<li>For PS3 you can use <a href="https://rpcs3.net/">RPCS3</a>.</li>
-<li>No working emulator for PsVita is available.</li>
-</ul>
-<h2 id="running-on-real-hardware"><a class="header" href="#running-on-real-hardware">Running on real hardware</a></h2>
-<h3 id="psp"><a class="header" href="#psp">PSP</a></h3>
-<p>Put the game build folder in the GAME folder of your PSP memory stick then you should see a new game in the game list.</p>
-<p>The log file is located next the the EBOOT file.</p>
-<h3 id="psvita"><a class="header" href="#psvita">PsVita</a></h3>
-<h4 id="setup"><a class="header" href="#setup">Setup</a></h4>
-<p>Xenity games needs some setup to run on a PsVita. The libshacccg.suprx file needs to be extracted and decrypted. This file is needed to enable the shader compiler. This setup has to be done only once.</p>
-<p>You can follow <a href="https://cimmerian.gitbook.io/vita-troubleshooting-guide/shader-compiler/extract-libshacccg.suprx">this tutorial</a>.</p>
-<h4 id="install-the-game"><a class="header" href="#install-the-game">Install the game</a></h4>
-<p>Put the .vpk file on the memory card of your PsVita (using FTP or USB), then launch <a href="https://github.com/TheOfficialFloW/VitaShell">VitaShell</a>, find the .vpk file and press X to install. Confirm the next popup about security. Then a new bubble with the icon of the game should pop on the main PsVita screen.</p>
-<h3 id="ps3"><a class="header" href="#ps3">PS3</a></h3>
-<p>Put the game build folder on the hard drive of your PS3 using FTP or put the game folder on an USB key, then launch <a href="https://store.brewology.com/ahomebrew.php?brewid=24">MultiMan</a> (or another software that can launch .self files) and launch the .self file. If you have a .fake.self file, it's only used by devevelopment kits, you can delete this file if you don't have one.</p>
-<p>The log file is located next the the .self file.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../manual/usage/play_game_in_editor.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../script_api_reference/engine/components/mesh_renderer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../manual/usage/performances_tips.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../script_api_reference/engine/components/particle_system.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -286,11 +262,11 @@ Then you can check the <a href="../editor_ui/build_settings.html">Build Setting 
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../manual/usage/play_game_in_editor.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../script_api_reference/engine/components/mesh_renderer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../manual/usage/performances_tips.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../script_api_reference/engine/components/particle_system.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -305,13 +281,13 @@ Then you can check the <a href="../editor_ui/build_settings.html">Build Setting 
         </script>
 
 
-        <script src="../../elasticlunr.min.js"></script>
-        <script src="../../mark.min.js"></script>
-        <script src="../../searcher.js"></script>
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
 
-        <script src="../../clipboard.min.js"></script>
-        <script src="../../highlight.js"></script>
-        <script src="../../book.js"></script>
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
 
         <!-- Custom JS scripts -->
 

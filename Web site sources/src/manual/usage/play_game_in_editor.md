@@ -4,7 +4,8 @@ Xenity allows you to test your game directly in the editor.
 
 For this, you have to compile the code of your game to be able to use scripts you have made.
 
-To compile, open the "Game" tab and click on Compile Game.
+To compile, open the `Game` tab and click on `Compile Game`.
+
 ![image](images/compile_in_editor.png)
 
 Each time you change you game code, you have to compile to apply changes.

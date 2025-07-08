@@ -235,6 +235,23 @@
 
 </style>
 <h1 id="how-to-create-a-component"><a class="header" href="#how-to-create-a-component">How to create a component</a></h1>
+<p>Xenity provides a simple way to create a component for your game.</p>
+<p>First, make a right click on the background of the file explorer, then click on Create C++ class:</p>
+<p><img src="images/create_component_file_explorer.png" alt="image" /></p>
+<p>Then a menu will ask for information about the new class:</p>
+<ul>
+<li>Class name,</li>
+<li>File name.</li>
+</ul>
+<p>If you modify the class name, the file name will be automatically updated with the new name.</p>
+<p><img src="images/create_component_menu.png" alt="image" /></p>
+<p>And finally, the engine needs to know that this class exists. For this, you have to open game.cpp and add two lines:</p>
+<ul>
+<li>An include to the file,</li>
+<li>A REGISTER_COMPONENT call.</li>
+</ul>
+<p>REGISTER_COMPONENT allows you to add parameters about this class, for example the DisableUpdateFunction will prevent the engine from calling the Update function every frame.</p>
+<p><img src="images/create_component_game_cpp.png" alt="image" /></p>
 
                     </main>
 
