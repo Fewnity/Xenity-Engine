@@ -188,6 +188,8 @@ void Performance::SaveToBinary(const std::string& path)
 {
 	Debug::Print("Saving profiler data...");
 
+	FileSystem::Delete(path); // Delete the file if it exists
+
 	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool isOpen = file->Open(FileMode::WriteCreateFile);
 	if (isOpen)
