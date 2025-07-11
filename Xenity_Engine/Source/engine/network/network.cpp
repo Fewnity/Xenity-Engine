@@ -83,19 +83,15 @@ void NetworkManager::Init()
 
 	memset(&adhocparam, 0, sizeof(adhocparam));
 	s_pspNetworkData.adhocparam = &adhocparam;
-
-	//sceUtilityNetconfInitStart(&s_pspNetworkData);
 #elif defined(__PS3__)
 	netInitialize();
-#else
-#if defined(_WIN32) || defined(_WIN64)
+#else defined(_WIN32) || defined(_WIN64)
 	WSADATA WSAData;
 	int startupResult = WSAStartup(MAKEWORD(2, 0), &WSAData);
 	if (startupResult != 0)
 	{
 		Debug::PrintError("[NetworkManager::CreateSocket] Could not start win socket");
 	}
-#endif
 #endif
 
 #if !defined(EDITOR)
@@ -155,8 +151,15 @@ std::shared_ptr<Socket> NetworkManager::GetClientSocket()
 void NetworkManager::ShowPSPNetworkSetupMenu()
 {
 #if defined(__PSP__)
-	sceUtilityNetconfInitStart(&s_pspNetworkData);
-	s_needDrawMenu = true;
+	int state;
+	sceNetApctlGetState(&state);
+
+	if ((s_result != 0 || state == PSP_NET_APCTL_STATE_DISCONNECTED) && !s_needDrawMenu)
+	{
+		sceUtilityNetconfInitStart(&s_pspNetworkData);
+		s_needDrawMenu = true;
+		s_done = false;
+	}
 #endif
 }
 
@@ -246,15 +249,16 @@ void NetworkManager::DrawNetworkSetupMenu()
 		case PSP_UTILITY_DIALOG_NONE:
 		{
 			s_result = s_pspNetworkData.base.result;
-			Debug::Print("Network setup: " + std::to_string(s_result), true);
-			if (s_result == 0)
+			//Debug::Print("Network setup: " + std::to_string(s_result), true);
+			/*if (s_result == 0)
 			{
 				if (EngineSettings::values.useOnlineDebugger)
 				{
 					Debug::ConnectToOnlineConsole();
 				}
-			}
+			}*/
 			s_done = true;
+			s_needDrawMenu = false;
 		}
 		break;
 
