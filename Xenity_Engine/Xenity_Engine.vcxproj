@@ -405,6 +405,10 @@
       <AssemblyDebug>true</AssemblyDebug>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
+    <PostBuildEvent>
+      <Command>copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib" "$(ProjectDir)Xenity_Editor.lib"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Editor|x64'">
     <ClCompile>
@@ -437,6 +441,10 @@
       <AssemblyDebug>true</AssemblyDebug>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
+    <PostBuildEvent>
+      <Command>copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.dll" "$(ProjectDir)Xenity_Editor.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Editor.lib" "$(ProjectDir)Xenity_Editor.lib"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">
     <ClCompile>
@@ -462,6 +470,10 @@
       <AssemblyDebug>true</AssemblyDebug>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
+    <PostBuildEvent>
+      <Command>copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.dll" "$(ProjectDir)Xenity_Engine.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib" "$(ProjectDir)Xenity_Engine.lib"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">
     <ClCompile>
@@ -489,6 +501,10 @@
       <AssemblyDebug>true</AssemblyDebug>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
+    <PostBuildEvent>
+      <Command>copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.dll" "$(ProjectDir)Xenity_Engine.dll"
+copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib" "$(ProjectDir)Xenity_Engine.lib"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
