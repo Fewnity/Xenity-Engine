@@ -15,8 +15,8 @@
 ReflectiveData Vector2Int::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, x, "x", true);
-	Reflective::AddVariable(reflectedVariables, y, "y", true);
+	Reflective::AddVariable(reflectedVariables, x, "x");
+	Reflective::AddVariable(reflectedVariables, y, "y");
 	return reflectedVariables;
 }
 

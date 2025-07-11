@@ -113,7 +113,7 @@ struct API ReflectiveEntry
 	double minSliderValue = 0.0;
 	double maxSliderValue = 0.0;
 	bool visibleInFileInspector = false;
-	bool isPublic = false;
+	bool isPublic = true;
 	bool isEnum = false;
 	bool isSlider = false;
 };
@@ -121,8 +121,8 @@ struct API ReflectiveEntry
 typedef std::vector<ReflectiveEntry> ReflectiveData;
 
 #define BEGIN_REFLECTION() ReflectiveData reflectedVariables
-#define ADD_VARIABLE(variable, isPublic) Reflective::AddVariable(reflectedVariables, variable, #variable, isPublic)
-#define ADD_VARIABLE_CUSTOM(variable, name, isPublic) Reflective::AddVariable(reflectedVariables, variable, name, isPublic)
+#define ADD_VARIABLE(variable) Reflective::AddVariable(reflectedVariables, variable, #variable)
+#define ADD_VARIABLE_CUSTOM(variable, name) Reflective::AddVariable(reflectedVariables, variable, name)
 #define END_REFLECTION() return reflectedVariables
 
 /**
@@ -160,12 +160,12 @@ protected:
 	*/
 	template<typename T>
 	std::enable_if_t<!std::is_pointer<T>::value && !std::is_enum<T>::value && !std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
-		static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
+		static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<T>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<T>(value), variableName, false, type, false);
 		return newReflectiveEntry;
 	}
 
@@ -182,12 +182,12 @@ protected:
 	*/
 	template<typename T>
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
-	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
+	static AddVariable(ReflectiveData& vector, T& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<Reflective>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<Reflective>(value), variableName, false, type, false);
 		return newReflectiveEntry;
 	}
 
@@ -200,12 +200,12 @@ protected:
 	*/
 	template<typename T>
 	std::enable_if_t<std::is_base_of<Reflective, T>::value, ReflectiveEntry&>
-		static AddVariable(ReflectiveData& vector, std::vector<T*>& value, const std::string& variableName, const bool isPublic)
+		static AddVariable(ReflectiveData& vector, std::vector<T*>& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<Reflective*>&>(value), variableName, false, type, false);
 		for (ReflectiveEntry& otherEntry : vector)
 		{
 			if (otherEntry.variableName == variableName)
@@ -229,12 +229,12 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
-	static ReflectiveEntry& AddVariable(ReflectiveData& vector, T& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, T& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<int>((int&)value), variableName, false, isPublic, type, true);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, std::reference_wrapper<int>((int&)value), variableName, false, type, true);
 		return newReflectiveEntry;
 	}
 
@@ -246,12 +246,12 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
-	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<T>& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, isPublic, type, true);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<int>&>(value), variableName, false, type, true);
 		return newReflectiveEntry;
 	}
 
@@ -267,12 +267,12 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
-	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::weak_ptr<T>& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::weak_ptr<T>& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::weak_ptr<Component>&>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::weak_ptr<Component>&>(value), variableName, false, type, false);
 		return newReflectiveEntry;
 	}
 
@@ -284,12 +284,12 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
-	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<std::weak_ptr<T>>& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<std::weak_ptr<T>>& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::weak_ptr<Component>>&>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::weak_ptr<Component>>&>(value), variableName, false, type, false);
 		return newReflectiveEntry;
 	}
 
@@ -305,12 +305,12 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_base_of<FileReference, T>::value>>
-	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::shared_ptr<T>& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::shared_ptr<T>& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::shared_ptr<FileReference>&>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::shared_ptr<FileReference>&>(value), variableName, false, type, false);
 		return newReflectiveEntry;
 	}
 
@@ -322,12 +322,12 @@ protected:
 	* @param isPublic If the variable is public
 	*/
 	template<typename T, typename = std::enable_if_t<std::is_base_of<FileReference, T>::value>>
-	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<std::shared_ptr<T>>& value, const std::string& variableName, const bool isPublic)
+	static ReflectiveEntry& AddVariable(ReflectiveData& vector, std::vector<std::shared_ptr<T>>& value, const std::string& variableName)
 	{
 		XASSERT(!variableName.empty(), "[Reflective::AddVariable] variableName is empty");
 
 		static const uint64_t type = typeid(T).hash_code();
-		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::shared_ptr<FileReference>>&>(value), variableName, false, isPublic, type, false);
+		ReflectiveEntry& newReflectiveEntry = Reflective::CreateReflectionEntry(vector, reinterpret_cast<std::vector<std::shared_ptr<FileReference>>&>(value), variableName, false, type, false);
 		return newReflectiveEntry;
 	}
 
@@ -342,6 +342,6 @@ private:
 	* @param id The variable type id (hash code)
 	* @param isEnum If the variable is an enum
 	*/
-	[[nodiscard]] static ReflectiveEntry& CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const bool isPublic, const uint64_t id, const bool isEnum);
+	[[nodiscard]] static ReflectiveEntry& CreateReflectionEntry(ReflectiveData& vector, const VariableReference& variable, const std::string& variableName, const bool visibleInFileInspector, const uint64_t id, const bool isEnum);
 };
 

@@ -27,9 +27,9 @@ Transform::Transform(const std::shared_ptr<GameObject>& _gameObject) : m_gameObj
 ReflectiveData Transform::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_localPosition, "localPosition", true);
-	Reflective::AddVariable(reflectedVariables, m_localRotationQuaternion, "localRotationQuaternion", true);
-	Reflective::AddVariable(reflectedVariables, m_localScale, "localScale", true);
+	Reflective::AddVariable(reflectedVariables, m_localPosition, "localPosition");
+	Reflective::AddVariable(reflectedVariables, m_localRotationQuaternion, "localRotationQuaternion");
+	Reflective::AddVariable(reflectedVariables, m_localScale, "localScale");
 	return reflectedVariables;
 }
 

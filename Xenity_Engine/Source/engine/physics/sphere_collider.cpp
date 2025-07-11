@@ -29,10 +29,10 @@
 ReflectiveData SphereCollider::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	AddVariable(reflectedVariables, m_size, "size", true);
-	AddVariable(reflectedVariables, m_offset, "offset", true);
-	AddVariable(reflectedVariables, m_isTrigger, "isTrigger", true);
-	AddVariable(reflectedVariables, m_generateCollisionEvents, "generateCollisionEvents", true);
+	AddVariable(reflectedVariables, m_size, "size");
+	AddVariable(reflectedVariables, m_offset, "offset");
+	AddVariable(reflectedVariables, m_isTrigger, "isTrigger");
+	AddVariable(reflectedVariables, m_generateCollisionEvents, "generateCollisionEvents");
 	return reflectedVariables;
 }
 

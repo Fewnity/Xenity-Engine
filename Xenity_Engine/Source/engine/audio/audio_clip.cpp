@@ -15,7 +15,7 @@
 ReflectiveData AudioClipSettings::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_loadedInMemory, "loadedInMemory", GameplayManager::GetGameState() == GameState::Stopped);
+	Reflective::AddVariable(reflectedVariables, m_loadedInMemory, "loadedInMemory").SetIsPublic(GameplayManager::GetGameState() == GameState::Stopped);
 	return reflectedVariables;
 }
 

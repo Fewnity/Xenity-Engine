@@ -1452,13 +1452,13 @@ std::string ProjectDirectory::GetFolderName()
 ReflectiveData ProjectSettings::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, projectName, "projectName", true);
-	Reflective::AddVariable(reflectedVariables, gameName, "gameName", true);
-	Reflective::AddVariable(reflectedVariables, companyName, "companyName", true);
-	Reflective::AddVariable(reflectedVariables, startScene, "startScene", true);
-	Reflective::AddVariable(reflectedVariables, engineVersion, "engineVersion", false);
-	Reflective::AddVariable(reflectedVariables, compiledLibEngineVersion, "compiledLibEngineVersion", false);
-	Reflective::AddVariable(reflectedVariables, isLibCompiledForDebug, "isLibCompiledForDebug", false);
-	Reflective::AddVariable(reflectedVariables, isLibCompiledFor64Bits, "isLibCompiledFor64Bits", false);
+	Reflective::AddVariable(reflectedVariables, projectName, "projectName");
+	Reflective::AddVariable(reflectedVariables, gameName, "gameName");
+	Reflective::AddVariable(reflectedVariables, companyName, "companyName");
+	Reflective::AddVariable(reflectedVariables, startScene, "startScene");
+	Reflective::AddVariable(reflectedVariables, engineVersion, "engineVersion").SetIsPublic(false);
+	Reflective::AddVariable(reflectedVariables, compiledLibEngineVersion, "compiledLibEngineVersion").SetIsPublic(false);
+	Reflective::AddVariable(reflectedVariables, isLibCompiledForDebug, "isLibCompiledForDebug").SetIsPublic(false);
+	Reflective::AddVariable(reflectedVariables, isLibCompiledFor64Bits, "isLibCompiledFor64Bits").SetIsPublic(false);
 	return reflectedVariables;
 }

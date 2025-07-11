@@ -13,9 +13,9 @@
 ReflectiveData ImageRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_image, "image", true);
-	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, m_orderInLayer, "orderInLayer", true);
+	Reflective::AddVariable(reflectedVariables, m_image, "image");
+	Reflective::AddVariable(reflectedVariables, color, "color");
+	Reflective::AddVariable(reflectedVariables, m_orderInLayer, "orderInLayer");
 	return reflectedVariables;
 }
 

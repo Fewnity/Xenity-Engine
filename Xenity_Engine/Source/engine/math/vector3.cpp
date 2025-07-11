@@ -18,9 +18,9 @@
 ReflectiveData Vector3::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, x, "x", true);
-	Reflective::AddVariable(reflectedVariables, y, "y", true);
-	Reflective::AddVariable(reflectedVariables, z, "z", true);
+	Reflective::AddVariable(reflectedVariables, x, "x");
+	Reflective::AddVariable(reflectedVariables, y, "y");
+	Reflective::AddVariable(reflectedVariables, z, "z");
 	return reflectedVariables;
 }
 

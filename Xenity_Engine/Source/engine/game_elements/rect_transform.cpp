@@ -21,7 +21,7 @@
 ReflectiveData RectTransform::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, position, "position", true);
+	Reflective::AddVariable(reflectedVariables, position, "position");
 	//Reflective::AddVariable(reflectedVariables, anchors, "anchors", true);
 	return reflectedVariables;
 }

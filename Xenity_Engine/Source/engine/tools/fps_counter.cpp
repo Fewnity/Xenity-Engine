@@ -39,7 +39,7 @@ void FpsCounter::Update()
 ReflectiveData FpsCounter::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_textRenderer, "textRenderer", true);
-	Reflective::AddVariable(reflectedVariables, showAverage, "showAverage", true);
+	Reflective::AddVariable(reflectedVariables, m_textRenderer, "textRenderer");
+	Reflective::AddVariable(reflectedVariables, showAverage, "showAverage");
 	return reflectedVariables;
 }

@@ -87,13 +87,13 @@ public:
 	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
-		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
+		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode");
+		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler");
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
-		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage", true);
-		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage", true);
-		Reflective::AddVariable(reflectedVariables, previewImage, "previewImage", true);
-		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache", true);
+		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage");
+		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage");
+		Reflective::AddVariable(reflectedVariables, previewImage, "previewImage");
+		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache");
 		return reflectedVariables;
 	}
 
@@ -114,14 +114,14 @@ public:
 	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
-		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
+		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode");
+		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler");
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
-		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage", true);
-		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage", true);
-		Reflective::AddVariable(reflectedVariables, startupImage, "startupImage", true);
-		Reflective::AddVariable(reflectedVariables, gameId, "gameId", true);
-		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache", true);
+		Reflective::AddVariable(reflectedVariables, iconImage, "iconImage");
+		Reflective::AddVariable(reflectedVariables, backgroundImage, "backgroundImage");
+		Reflective::AddVariable(reflectedVariables, startupImage, "startupImage");
+		Reflective::AddVariable(reflectedVariables, gameId, "gameId");
+		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache");
 		return reflectedVariables;
 	}
 
@@ -143,10 +143,10 @@ public:
 	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
-		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
+		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode");
+		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler");
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
-		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache", true);
+		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache");
 		return reflectedVariables;
 	}
 
@@ -166,7 +166,7 @@ public:
 		//Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
 		//Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
-		Reflective::AddVariable(reflectedVariables, icon, "icon", true);
+		Reflective::AddVariable(reflectedVariables, icon, "icon");
 		return reflectedVariables;
 	}
 

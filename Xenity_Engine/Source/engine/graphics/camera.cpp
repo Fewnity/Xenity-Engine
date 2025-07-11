@@ -187,15 +187,15 @@ void Camera::RemoveReferences()
 ReflectiveData Camera::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_projectionType, "projectionType", true);
-	ReflectiveEntry& fovEntry = Reflective::AddVariable(reflectedVariables, m_fov, "fov", m_projectionType == ProjectionType::Perspective);
+	Reflective::AddVariable(reflectedVariables, m_projectionType, "projectionType");
+	ReflectiveEntry& fovEntry = Reflective::AddVariable(reflectedVariables, m_fov, "fov").SetIsPublic(m_projectionType == ProjectionType::Perspective);
 	fovEntry.isSlider = true;
 	fovEntry.minSliderValue = 1;
 	fovEntry.maxSliderValue = 179;
-	Reflective::AddVariable(reflectedVariables, m_projectionSize, "projectionSize", m_projectionType == ProjectionType::Orthographic);
-	Reflective::AddVariable(reflectedVariables, m_nearClippingPlane, "nearClippingPlane", true);
-	Reflective::AddVariable(reflectedVariables, m_farClippingPlane, "farClippingPlane", true);
-	Reflective::AddVariable(reflectedVariables, m_useMultisampling, "useMultisampling", true);
+	Reflective::AddVariable(reflectedVariables, m_projectionSize, "projectionSize").SetIsPublic(m_projectionType == ProjectionType::Orthographic);
+	Reflective::AddVariable(reflectedVariables, m_nearClippingPlane, "nearClippingPlane");
+	Reflective::AddVariable(reflectedVariables, m_farClippingPlane, "farClippingPlane");
+	Reflective::AddVariable(reflectedVariables, m_useMultisampling, "useMultisampling");
 	return reflectedVariables;
 }
 

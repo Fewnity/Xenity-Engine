@@ -58,15 +58,15 @@ RigidBody::~RigidBody()
 ReflectiveData RigidBody::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	AddVariable(reflectedVariables, m_isStatic, "isStatic", true);
-	AddVariable(reflectedVariables, m_gravityMultiplier, "gravityMultiplier", true);
-	AddVariable(reflectedVariables, m_drag, "drag", true);
-	AddVariable(reflectedVariables, m_angularDrag, "angularDrag", true);
-	AddVariable(reflectedVariables, m_bounce, "bounce", true);
-	AddVariable(reflectedVariables, m_mass, "mass", true);
-	AddVariable(reflectedVariables, m_friction, "friction", true);
-	AddVariable(reflectedVariables, lockedMovementAxis, "lockedMovementAxis", true);
-	AddVariable(reflectedVariables, lockedRotationAxis, "lockedRotationAxis", true);
+	AddVariable(reflectedVariables, m_isStatic, "isStatic");
+	AddVariable(reflectedVariables, m_gravityMultiplier, "gravityMultiplier");
+	AddVariable(reflectedVariables, m_drag, "drag");
+	AddVariable(reflectedVariables, m_angularDrag, "angularDrag");
+	AddVariable(reflectedVariables, m_bounce, "bounce");
+	AddVariable(reflectedVariables, m_mass, "mass");
+	AddVariable(reflectedVariables, m_friction, "friction");
+	AddVariable(reflectedVariables, lockedMovementAxis, "lockedMovementAxis");
+	AddVariable(reflectedVariables, lockedRotationAxis, "lockedRotationAxis");
 	return reflectedVariables;
 }
 
@@ -544,8 +544,8 @@ void RigidBody::RemoveTriggerShape(btCollisionShape* shape)
 ReflectiveData LockedAxis::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	AddVariable(reflectedVariables, x, "x", true);
-	AddVariable(reflectedVariables, y, "y", true);
-	AddVariable(reflectedVariables, z, "z", true);
+	AddVariable(reflectedVariables, x, "x");
+	AddVariable(reflectedVariables, y, "y");
+	AddVariable(reflectedVariables, z, "z");
 	return reflectedVariables;
 }

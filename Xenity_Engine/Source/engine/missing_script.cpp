@@ -11,6 +11,6 @@
 ReflectiveData MissingScript::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, data, "data", false);
+	Reflective::AddVariable(reflectedVariables, data, "data").SetIsPublic(false);
 	return reflectedVariables;
 }

@@ -76,9 +76,9 @@ GameObject::GameObject(const std::string& _name)
 ReflectiveData GameObject::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_name, "name", true);
-	Reflective::AddVariable(reflectedVariables, m_active, "active", true);
-	//Reflective::AddVariable(reflectedVariables, m_isStatic, "isStatic", true);
+	Reflective::AddVariable(reflectedVariables, m_name, "name");
+	Reflective::AddVariable(reflectedVariables, m_active, "active");
+	//Reflective::AddVariable(reflectedVariables, m_isStatic, "isStatic");
 	return reflectedVariables;
 }
 

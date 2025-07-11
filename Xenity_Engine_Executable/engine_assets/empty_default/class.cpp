@@ -28,6 +28,6 @@ void {CLASSNAME}::Update()
 ReflectiveData {CLASSNAME}::GetReflectiveData()
 {
     BEGIN_REFLECTION();
-    // ADD_VARIABLE(variableName, true); // Set true to make the variable visible in the inspector
+    // ADD_VARIABLE(variableName);
     END_REFLECTION();
 }

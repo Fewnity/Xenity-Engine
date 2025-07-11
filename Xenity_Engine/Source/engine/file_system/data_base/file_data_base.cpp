@@ -14,20 +14,20 @@ using ordered_json = nlohmann::ordered_json;
 ReflectiveData FileDataBaseEntry::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, p, "p", true);
-	Reflective::AddVariable(reflectedVariables, id, "id", true);
-	Reflective::AddVariable(reflectedVariables, po, "po", true);
-	Reflective::AddVariable(reflectedVariables, s, "s", true);
-	Reflective::AddVariable(reflectedVariables, mpo, "mpo", true);
-	Reflective::AddVariable(reflectedVariables, ms, "ms", true);
-	Reflective::AddVariable(reflectedVariables, t, "t", true);
+	Reflective::AddVariable(reflectedVariables, p, "p");
+	Reflective::AddVariable(reflectedVariables, id, "id");
+	Reflective::AddVariable(reflectedVariables, po, "po");
+	Reflective::AddVariable(reflectedVariables, s, "s");
+	Reflective::AddVariable(reflectedVariables, mpo, "mpo");
+	Reflective::AddVariable(reflectedVariables, ms, "ms");
+	Reflective::AddVariable(reflectedVariables, t, "t");
 	return reflectedVariables;
 }
 
 ReflectiveData FileDataBase::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_fileList, "fl", true);
+	Reflective::AddVariable(reflectedVariables, m_fileList, "fl");
 	return reflectedVariables;
 }
 

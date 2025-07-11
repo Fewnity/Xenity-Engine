@@ -145,9 +145,9 @@ void MeshRenderer::OnComponentAttached()
 ReflectiveData MeshRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_meshData, "meshData", true);
-	Reflective::AddVariable(reflectedVariables, m_materials, "materials", true);
-	Reflective::AddVariable(reflectedVariables, m_useAdvancedLighting, "useAdvancedLighting", true);
+	Reflective::AddVariable(reflectedVariables, m_meshData, "meshData");
+	Reflective::AddVariable(reflectedVariables, m_materials, "materials");
+	Reflective::AddVariable(reflectedVariables, m_useAdvancedLighting, "useAdvancedLighting");
 	return reflectedVariables;
 }
 

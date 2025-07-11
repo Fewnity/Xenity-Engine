@@ -27,17 +27,17 @@
 ReflectiveData AudioSource::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	ReflectiveEntry& volumeEntry = Reflective::AddVariable(reflectedVariables, m_volume, "volume", true);
+	ReflectiveEntry& volumeEntry = Reflective::AddVariable(reflectedVariables, m_volume, "volume");
 	volumeEntry.isSlider = true;
 	volumeEntry.minSliderValue = 0;
 	volumeEntry.maxSliderValue = 1;
-	ReflectiveEntry& panEntry = Reflective::AddVariable(reflectedVariables, m_pan, "pan", true);
+	ReflectiveEntry& panEntry = Reflective::AddVariable(reflectedVariables, m_pan, "pan");
 	panEntry.isSlider = true;
 	panEntry.minSliderValue = 0;
 	panEntry.maxSliderValue = 1;
-	Reflective::AddVariable(reflectedVariables, m_playOnAwake, "playOnAwake", true);
-	Reflective::AddVariable(reflectedVariables, m_loop, "loop", true);
-	Reflective::AddVariable(reflectedVariables, m_audioClip, "audioClip", true);
+	Reflective::AddVariable(reflectedVariables, m_playOnAwake, "playOnAwake");
+	Reflective::AddVariable(reflectedVariables, m_loop, "loop");
+	Reflective::AddVariable(reflectedVariables, m_audioClip, "audioClip");
 	return reflectedVariables;
 }
 

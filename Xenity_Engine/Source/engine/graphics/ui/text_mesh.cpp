@@ -24,12 +24,12 @@ TextMesh::TextMesh()
 ReflectiveData TextMesh::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_text, "text", true);
-	Reflective::AddVariable(reflectedVariables, m_font, "font", true);
-	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
-	Reflective::AddVariable(reflectedVariables, m_horizontalAlignment, "horizontalAlignment", true);
-	Reflective::AddVariable(reflectedVariables, m_verticalAlignment, "verticalAlignment", true);
-	Reflective::AddVariable(reflectedVariables, m_fontSize, "fontSize", true);
+	Reflective::AddVariable(reflectedVariables, m_text, "text");
+	Reflective::AddVariable(reflectedVariables, m_font, "font");
+	Reflective::AddVariable(reflectedVariables, m_color, "color");
+	Reflective::AddVariable(reflectedVariables, m_horizontalAlignment, "horizontalAlignment");
+	Reflective::AddVariable(reflectedVariables, m_verticalAlignment, "verticalAlignment");
+	Reflective::AddVariable(reflectedVariables, m_fontSize, "fontSize");
 	return reflectedVariables;
 }
 

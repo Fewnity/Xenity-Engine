@@ -140,9 +140,9 @@ Vector3 Quaternion::ToEuler() const
 ReflectiveData Quaternion::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, x, "x", true);
-	Reflective::AddVariable(reflectedVariables, y, "y", true);
-	Reflective::AddVariable(reflectedVariables, z, "z", true);
-	Reflective::AddVariable(reflectedVariables, w, "w", true);
+	Reflective::AddVariable(reflectedVariables, x, "x");
+	Reflective::AddVariable(reflectedVariables, y, "y");
+	Reflective::AddVariable(reflectedVariables, z, "z");
+	Reflective::AddVariable(reflectedVariables, w, "w");
 	return reflectedVariables;
 }

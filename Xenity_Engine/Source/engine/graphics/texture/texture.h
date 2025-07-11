@@ -49,12 +49,12 @@ public:
 	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
-		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
-		//Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
-		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
-		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
-		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
+		Reflective::AddVariable(reflectedVariables, resolution, "resolution");
+		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap");
+		//Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount");
+		Reflective::AddVariable(reflectedVariables, filter, "filter");
+		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode");
+		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit");
 		return reflectedVariables;
 	}
 };
@@ -84,14 +84,14 @@ public:
 	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
-		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
+		Reflective::AddVariable(reflectedVariables, resolution, "resolution");
+		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap");
 		//Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
-		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
-		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
-		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
-		Reflective::AddVariable(reflectedVariables, type, "type", true);
-		Reflective::AddVariable(reflectedVariables, tryPutInVram, "tryPutInVram", true);
+		Reflective::AddVariable(reflectedVariables, filter, "filter");
+		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode");
+		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit");
+		Reflective::AddVariable(reflectedVariables, type, "type");
+		Reflective::AddVariable(reflectedVariables, tryPutInVram, "tryPutInVram");
 		return reflectedVariables;
 	}
 
@@ -110,13 +110,13 @@ public:
 	ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		Reflective::AddVariable(reflectedVariables, resolution, "resolution", true);
-		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap", true);
-		//Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount", true);
-		Reflective::AddVariable(reflectedVariables, filter, "filter", true);
-		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode", true);
-		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit", true);
-		Reflective::AddVariable(reflectedVariables, type, "type", true);
+		Reflective::AddVariable(reflectedVariables, resolution, "resolution");
+		Reflective::AddVariable(reflectedVariables, useMipMap, "useMipMap");
+		//Reflective::AddVariable(reflectedVariables, mipmaplevelCount, "mipmaplevelCount");
+		Reflective::AddVariable(reflectedVariables, filter, "filter");
+		Reflective::AddVariable(reflectedVariables, wrapMode, "wrapMode");
+		Reflective::AddVariable(reflectedVariables, pixelPerUnit, "pixelPerUnit");
+		Reflective::AddVariable(reflectedVariables, type, "type");
 		return reflectedVariables;
 	}
 

@@ -46,32 +46,32 @@ ParticleSystem::ParticleSystem()
 ReflectiveData ParticleSystem::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_mesh, "mesh", true);
-	Reflective::AddVariable(reflectedVariables, m_material, "material", true);
-	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
-	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
-	Reflective::AddVariable(reflectedVariables, m_isBillboard, "isBillboard", true);
+	Reflective::AddVariable(reflectedVariables, m_mesh, "mesh");
+	Reflective::AddVariable(reflectedVariables, m_material, "material");
+	Reflective::AddVariable(reflectedVariables, m_texture, "texture");
+	Reflective::AddVariable(reflectedVariables, m_color, "color");
+	Reflective::AddVariable(reflectedVariables, m_isBillboard, "isBillboard");
 
-	Reflective::AddVariable(reflectedVariables, m_emitterShape, "emitterShape", true);
-	Reflective::AddVariable(reflectedVariables, m_coneAngle, "coneAngle", m_emitterShape == EmitterShape::Cone);
-	Reflective::AddVariable(reflectedVariables, m_boxSize, "boxSize", m_emitterShape == EmitterShape::Box);
-	Reflective::AddVariable(reflectedVariables, m_direction, "direction", m_emitterShape == EmitterShape::Box);
+	Reflective::AddVariable(reflectedVariables, m_emitterShape, "emitterShape");
+	Reflective::AddVariable(reflectedVariables, m_coneAngle, "coneAngle").SetIsPublic(m_emitterShape == EmitterShape::Cone);
+	Reflective::AddVariable(reflectedVariables, m_boxSize, "boxSize").SetIsPublic(m_emitterShape == EmitterShape::Box);
+	Reflective::AddVariable(reflectedVariables, m_direction, "direction").SetIsPublic(m_emitterShape == EmitterShape::Box);
 
-	Reflective::AddVariable(reflectedVariables, m_speedMin, "speedMin", true);
-	Reflective::AddVariable(reflectedVariables, m_speedMax, "speedMax", true);
-	Reflective::AddVariable(reflectedVariables, m_lifeTimeMin, "lifeTimeMin", true);
-	Reflective::AddVariable(reflectedVariables, m_lifeTimeMax, "lifeTimeMax", true);
+	Reflective::AddVariable(reflectedVariables, m_speedMin, "speedMin");
+	Reflective::AddVariable(reflectedVariables, m_speedMax, "speedMax");
+	Reflective::AddVariable(reflectedVariables, m_lifeTimeMin, "lifeTimeMin");
+	Reflective::AddVariable(reflectedVariables, m_lifeTimeMax, "lifeTimeMax");
 
-	Reflective::AddVariable(reflectedVariables, m_spawnRate, "spawnRate", true);
-	Reflective::AddVariable(reflectedVariables, m_maxParticles, "maxParticles", true);
-	Reflective::AddVariable(reflectedVariables, m_randomRotation, "randomRotation", true);
+	Reflective::AddVariable(reflectedVariables, m_spawnRate, "spawnRate");
+	Reflective::AddVariable(reflectedVariables, m_maxParticles, "maxParticles");
+	Reflective::AddVariable(reflectedVariables, m_randomRotation, "randomRotation");
 
 	//Reflective::AddVariable(reflectedVariables, reset, "reset", true);
-	Reflective::AddVariable(reflectedVariables, m_isEmitting, "isEmitting", true);
-	Reflective::AddVariable(reflectedVariables, m_simulationRate, "simulationRate", true);
-	Reflective::AddVariable(reflectedVariables, m_worldSimulation, "worldSimulation", true);
-	Reflective::AddVariable(reflectedVariables, m_loop, "loop", true);
-	Reflective::AddVariable(reflectedVariables, m_play, "play", !m_loop);
+	Reflective::AddVariable(reflectedVariables, m_isEmitting, "isEmitting");
+	Reflective::AddVariable(reflectedVariables, m_simulationRate, "simulationRate");
+	Reflective::AddVariable(reflectedVariables, m_worldSimulation, "worldSimulation");
+	Reflective::AddVariable(reflectedVariables, m_loop, "loop");
+	Reflective::AddVariable(reflectedVariables, m_play, "play").SetIsPublic(!m_loop);
 
 	return reflectedVariables;
 }

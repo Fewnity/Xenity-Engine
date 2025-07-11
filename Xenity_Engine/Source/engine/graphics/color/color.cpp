@@ -32,7 +32,7 @@ std::string Color::ToString() const
 ReflectiveData Color::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_rgba, "rgba", true);
+	Reflective::AddVariable(reflectedVariables, m_rgba, "rgba");
 	return reflectedVariables;
 }
 
@@ -99,10 +99,10 @@ void Color::UpdateUnsignedInts()
 ReflectiveData RGBA::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, r, "r", true);
-	Reflective::AddVariable(reflectedVariables, g, "g", true);
-	Reflective::AddVariable(reflectedVariables, b, "b", true);
-	Reflective::AddVariable(reflectedVariables, a, "a", true);
+	Reflective::AddVariable(reflectedVariables, r, "r");
+	Reflective::AddVariable(reflectedVariables, g, "g");
+	Reflective::AddVariable(reflectedVariables, b, "b");
+	Reflective::AddVariable(reflectedVariables, a, "a");
 	return reflectedVariables;
 }
 

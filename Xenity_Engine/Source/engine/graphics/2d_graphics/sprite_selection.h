@@ -15,9 +15,9 @@ public:
 	[[nodiscard]] ReflectiveData GetReflectiveData() override
 	{
 		ReflectiveData reflectedVariables;
-		Reflective::AddVariable(reflectedVariables, position, "position", true);
-		Reflective::AddVariable(reflectedVariables, size, "size", true);
-		Reflective::AddVariable(reflectedVariables, pivot, "pivot", true);
+		Reflective::AddVariable(reflectedVariables, position, "position");
+		Reflective::AddVariable(reflectedVariables, size, "size");
+		Reflective::AddVariable(reflectedVariables, pivot, "pivot");
 		return reflectedVariables;
 	}
 

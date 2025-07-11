@@ -18,7 +18,7 @@ TestResult ModifyReflectiveCommandTest::Start(std::string& errorOut)
 	int newValue = 17;
 
 	ReflectiveData reflectiveData;
-	Reflective::AddVariable(reflectiveData, variable, "Variable", true);
+	Reflective::AddVariable(reflectiveData, variable, "Variable");
 
 	ReflectiveDataToDraw dataToDraw = ReflectiveDataToDraw();
 	dataToDraw.reflectiveDataStack.push_back(reflectiveData);

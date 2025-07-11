@@ -84,12 +84,12 @@ void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 ReflectiveData GraphicsSettings::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, skybox, "skybox", true);
-	Reflective::AddVariable(reflectedVariables, skyColor, "skyColor", true);
-	Reflective::AddVariable(reflectedVariables, isFogEnabled, "isFogEnabled", false);
-	Reflective::AddVariable(reflectedVariables, fogStart, "fogStart", false);
-	Reflective::AddVariable(reflectedVariables, fogEnd, "fogEnd", false);
-	Reflective::AddVariable(reflectedVariables, fogColor, "fogColor", false);
+	Reflective::AddVariable(reflectedVariables, skybox, "skybox");
+	Reflective::AddVariable(reflectedVariables, skyColor, "skyColor");
+	Reflective::AddVariable(reflectedVariables, isFogEnabled, "isFogEnabled").SetIsPublic(false);
+	Reflective::AddVariable(reflectedVariables, fogStart, "fogStart").SetIsPublic(false);
+	Reflective::AddVariable(reflectedVariables, fogEnd, "fogEnd").SetIsPublic(false);
+	Reflective::AddVariable(reflectedVariables, fogColor, "fogColor").SetIsPublic(false);
 	return reflectedVariables;
 }
 

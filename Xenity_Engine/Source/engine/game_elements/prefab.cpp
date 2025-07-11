@@ -24,7 +24,7 @@ std::shared_ptr<Prefab> Prefab::MakePrefab()
 ReflectiveData Prefab::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, data, "data", true);
+	Reflective::AddVariable(reflectedVariables, data, "data");
 	return reflectedVariables;
 }
 

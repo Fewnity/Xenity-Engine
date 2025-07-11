@@ -243,17 +243,17 @@ void Material::Update()
 ReflectiveData Material::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_shader, "shader", true);
-	Reflective::AddVariable(reflectedVariables, m_renderingMode, "renderingMode", true);
-	ReflectiveEntry& alphaCutoffReflectiveEntry = Reflective::AddVariable(reflectedVariables, m_alphaCutoff, "alphaCutoff", m_renderingMode == MaterialRenderingMode::Cutout);
+	Reflective::AddVariable(reflectedVariables, m_shader, "shader");
+	Reflective::AddVariable(reflectedVariables, m_renderingMode, "renderingMode");
+	ReflectiveEntry& alphaCutoffReflectiveEntry = Reflective::AddVariable(reflectedVariables, m_alphaCutoff, "alphaCutoff").SetIsPublic(m_renderingMode == MaterialRenderingMode::Cutout);
 	alphaCutoffReflectiveEntry.isSlider = true;
 	alphaCutoffReflectiveEntry.minSliderValue = 0.0;
 	alphaCutoffReflectiveEntry.maxSliderValue = 1.0;
-	Reflective::AddVariable(reflectedVariables, m_texture, "texture", true);
-	Reflective::AddVariable(reflectedVariables, m_color, "color", true);
-	Reflective::AddVariable(reflectedVariables, t_offset, "offset", true);
-	Reflective::AddVariable(reflectedVariables, t_tiling, "tiling", true);
-	Reflective::AddVariable(reflectedVariables, m_useLighting, "useLighting", true);
+	Reflective::AddVariable(reflectedVariables, m_texture, "texture");
+	Reflective::AddVariable(reflectedVariables, m_color, "color");
+	Reflective::AddVariable(reflectedVariables, t_offset, "offset");
+	Reflective::AddVariable(reflectedVariables, t_tiling, "tiling");
+	Reflective::AddVariable(reflectedVariables, m_useLighting, "useLighting");
 	return reflectedVariables;
 }
 

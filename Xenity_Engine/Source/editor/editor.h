@@ -459,10 +459,10 @@ private:
 		[[nodiscard]] ReflectiveData GetReflectiveData() override
 		{
 			ReflectiveData reflectedVariables;
-			Reflective::AddVariable(reflectedVariables, name, "name", true);
-			Reflective::AddVariable(reflectedVariables, id, "id", true);
-			Reflective::AddVariable(reflectedVariables, isActive, "isActive", true);
-			Reflective::AddVariable(reflectedVariables, isUnique, "isUnique", true);
+			Reflective::AddVariable(reflectedVariables, name, "name");
+			Reflective::AddVariable(reflectedVariables, id, "id");
+			Reflective::AddVariable(reflectedVariables, isActive, "isActive");
+			Reflective::AddVariable(reflectedVariables, isUnique, "isUnique");
 			return reflectedVariables;
 		}
 
@@ -478,8 +478,8 @@ private:
 		[[nodiscard]] ReflectiveData GetReflectiveData() override
 		{
 			ReflectiveData reflectedVariables;
-			Reflective::AddVariable(reflectedVariables, settings, "settings", true);
-			Reflective::AddVariable(reflectedVariables, version, "version", true);
+			Reflective::AddVariable(reflectedVariables, settings, "settings");
+			Reflective::AddVariable(reflectedVariables, version, "version");
 			return reflectedVariables;
 		}
 

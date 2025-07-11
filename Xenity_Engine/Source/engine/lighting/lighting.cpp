@@ -75,22 +75,22 @@ void Light::RemoveReferences()
 ReflectiveData Light::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_type, "type", true);
-	Reflective::AddVariable(reflectedVariables, color, "color", true);
-	Reflective::AddVariable(reflectedVariables, m_intensity, "intensity", true);
-	Reflective::AddVariable(reflectedVariables, m_range, "range", m_type != LightType::Directional && m_type != LightType::Ambient);
+	Reflective::AddVariable(reflectedVariables, m_type, "type");
+	Reflective::AddVariable(reflectedVariables, color, "color");
+	Reflective::AddVariable(reflectedVariables, m_intensity, "intensity");
+	Reflective::AddVariable(reflectedVariables, m_range, "range").SetIsPublic(m_type != LightType::Directional && m_type != LightType::Ambient);
 
-	ReflectiveEntry& spotAngleEntry = Reflective::AddVariable(reflectedVariables, m_spotAngle, "spotAngle", m_type == LightType::Spot);
+	ReflectiveEntry& spotAngleEntry = Reflective::AddVariable(reflectedVariables, m_spotAngle, "spotAngle").SetIsPublic(m_type == LightType::Spot);
 	spotAngleEntry.isSlider = true;
 	spotAngleEntry.minSliderValue = 0;
 	spotAngleEntry.maxSliderValue = 90;
 
-	ReflectiveEntry& spotSmoothnessEntry = Reflective::AddVariable(reflectedVariables, m_spotSmoothness, "spotSmoothness", m_type == LightType::Spot);
+	ReflectiveEntry& spotSmoothnessEntry = Reflective::AddVariable(reflectedVariables, m_spotSmoothness, "spotSmoothness").SetIsPublic(m_type == LightType::Spot);
 	spotSmoothnessEntry.isSlider = true;
 	spotSmoothnessEntry.minSliderValue = 0;
 	spotSmoothnessEntry.maxSliderValue = 1;
 
-	Reflective::AddVariable(reflectedVariables, m_oldConsoleCompatibility, "oldConsoleCompatibility", true);
+	Reflective::AddVariable(reflectedVariables, m_oldConsoleCompatibility, "oldConsoleCompatibility");
 	return reflectedVariables;
 }
 

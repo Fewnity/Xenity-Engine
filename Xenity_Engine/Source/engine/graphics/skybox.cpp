@@ -25,12 +25,12 @@ SkyBox::SkyBox(const std::shared_ptr<Texture>& _front, const std::shared_ptr<Tex
 ReflectiveData SkyBox::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	AddVariable(reflectedVariables, front, "front", true);
-	AddVariable(reflectedVariables, back, "back", true);
-	AddVariable(reflectedVariables, up, "up", true);
-	AddVariable(reflectedVariables, down, "down", true);
-	AddVariable(reflectedVariables, left, "left", true);
-	AddVariable(reflectedVariables, right, "right", true);
+	AddVariable(reflectedVariables, front, "front");
+	AddVariable(reflectedVariables, back, "back");
+	AddVariable(reflectedVariables, up, "up");
+	AddVariable(reflectedVariables, down, "down");
+	AddVariable(reflectedVariables, left, "left");
+	AddVariable(reflectedVariables, right, "right");
 	return reflectedVariables;
 }
 

@@ -27,20 +27,20 @@ void EngineSettings::LoadEngineSettings()
 ReflectiveData EngineSettingsValues::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, useProfiler, "useProfiler", true);
-	Reflective::AddVariable(reflectedVariables, useDebugger, "useDebugger", true);
-	Reflective::AddVariable(reflectedVariables, useOnlineDebugger, "useOnlineDebugger", true);
-	Reflective::AddVariable(reflectedVariables, compilerPath, "compilerPath", true);
-	Reflective::AddVariable(reflectedVariables, ppssppExePath, "ppssppExePath", true);
-	Reflective::AddVariable(reflectedVariables, dockerExePath, "dockerExePath", true);
-	Reflective::AddVariable(reflectedVariables, ps3CtrlPath, "ps3CtrlPath", true);
-	Reflective::AddVariable(reflectedVariables, compileOnCodeChanged, "compileOnCodeChanged", true);
-	Reflective::AddVariable(reflectedVariables, compileWhenOpeningProject, "compileWhenOpeningProject", true);
+	Reflective::AddVariable(reflectedVariables, useProfiler, "useProfiler");
+	Reflective::AddVariable(reflectedVariables, useDebugger, "useDebugger");
+	Reflective::AddVariable(reflectedVariables, useOnlineDebugger, "useOnlineDebugger");
+	Reflective::AddVariable(reflectedVariables, compilerPath, "compilerPath");
+	Reflective::AddVariable(reflectedVariables, ppssppExePath, "ppssppExePath");
+	Reflective::AddVariable(reflectedVariables, dockerExePath, "dockerExePath");
+	Reflective::AddVariable(reflectedVariables, ps3CtrlPath, "ps3CtrlPath");
+	Reflective::AddVariable(reflectedVariables, compileOnCodeChanged, "compileOnCodeChanged");
+	Reflective::AddVariable(reflectedVariables, compileWhenOpeningProject, "compileWhenOpeningProject");
 
-	Reflective::AddVariable(reflectedVariables, backbgroundColor, "backbgroundColor", true);
-	Reflective::AddVariable(reflectedVariables, secondaryColor, "secondaryColor", true);
-	Reflective::AddVariable(reflectedVariables, playTintColor, "playTintColor", true);
-	Reflective::AddVariable(reflectedVariables, isPlayTintAdditive, "isPlayTintAdditive", true);
+	Reflective::AddVariable(reflectedVariables, backbgroundColor, "backbgroundColor");
+	Reflective::AddVariable(reflectedVariables, secondaryColor, "secondaryColor");
+	Reflective::AddVariable(reflectedVariables, playTintColor, "playTintColor");
+	Reflective::AddVariable(reflectedVariables, isPlayTintAdditive, "isPlayTintAdditive");
 
 	return reflectedVariables;
 }

@@ -15,12 +15,12 @@
 ReflectiveData Lod::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;
-	Reflective::AddVariable(reflectedVariables, m_lod0MeshRenderer, "lod0MeshRenderer", true);
-	Reflective::AddVariable(reflectedVariables, m_lod1MeshRenderer, "lod1MeshRenderer", true);
-	Reflective::AddVariable(reflectedVariables, m_lod1Distance, "lod1Distance", true);
-	Reflective::AddVariable(reflectedVariables, m_lod2MeshRenderer, "lod2MeshRenderer", true);
-	Reflective::AddVariable(reflectedVariables, m_lod2Distance, "lod2Distance", true);
-	Reflective::AddVariable(reflectedVariables, m_culledDistance, "culledDistance", true);
+	Reflective::AddVariable(reflectedVariables, m_lod0MeshRenderer, "lod0MeshRenderer");
+	Reflective::AddVariable(reflectedVariables, m_lod1MeshRenderer, "lod1MeshRenderer");
+	Reflective::AddVariable(reflectedVariables, m_lod1Distance, "lod1Distance");
+	Reflective::AddVariable(reflectedVariables, m_lod2MeshRenderer, "lod2MeshRenderer");
+	Reflective::AddVariable(reflectedVariables, m_lod2Distance, "lod2Distance");
+	Reflective::AddVariable(reflectedVariables, m_culledDistance, "culledDistance");
 	return reflectedVariables;
 }
 
