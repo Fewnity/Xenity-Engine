@@ -16,7 +16,8 @@ class UnitTest
 {
 public:
 	UnitTest() = delete;
-	UnitTest(const std::string& _name);
+
+	UnitTest(const std::string& _name) : name(_name) { }
 
 	/**
 	* @brief Start the test and return true if the test is successful
@@ -86,7 +87,6 @@ using TestResult = bool;
 // - Reflection To Json then back to reflection object
 // ----- Editor -----
 // - Delete commands
-// - Modify commands
 // - FileReferenceFinder
 
 #pragma region Vector
@@ -223,6 +223,7 @@ MAKE_TEST(DeleteGameObjectCommand);
 #pragma region Delete Commands
 
 MAKE_TEST(ModifyReflectiveCommand);
+MAKE_TEST(ModifyInspectorChangeValueCommand);
 
 #pragma endregion
 

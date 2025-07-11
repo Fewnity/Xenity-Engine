@@ -53,4 +53,34 @@ TestResult ModifyReflectiveCommandTest::Start(std::string& errorOut)
 	END_TEST();
 }
 
+TestResult ModifyInspectorChangeValueCommandTest::Start(std::string& errorOut)
+{
+	BEGIN_TEST();
+
+	////////////////////// No target //////////////////////
+
+	int t = 3;
+	std::weak_ptr<void> weakPtr;
+	InspectorChangeValueCommand command = InspectorChangeValueCommand(weakPtr, &t, 1, 3);
+	command.Execute();
+
+	EXPECT_EQUALS(t, 1, "Value has not been modified to the new value");
+
+	command.Undo();
+
+	EXPECT_EQUALS(t, 3, "Value has not been modified to the older value");
+
+	command.Redo();
+
+	EXPECT_EQUALS(t, 1, "Value has not been modified to the new value");
+
+	////////////////////// GameObject target //////////////////////
+
+	////////////////////// Transform target //////////////////////
+
+	////////////////////// FileReference target //////////////////////
+
+	END_TEST();
+}
+
 #endif

@@ -11,10 +11,6 @@
 #include <engine/math/vector3.h>
 #include <engine/math/vector4.h>
 
-UnitTest::UnitTest(const std::string& _name) : name(_name)
-{
-}
-
 void UnitTestManager::StartAllTests()
 {
 	Debug::Print("------ Unit Tests ------", true);
@@ -156,6 +152,9 @@ void UnitTestManager::StartAllTests()
 
 		ModifyReflectiveCommandTest modifyReflectiveCommandTest = ModifyReflectiveCommandTest("Modify Reflective Command");
 		TryTest(modifyReflectiveCommandTest);
+
+		ModifyInspectorChangeValueCommandTest modifyInspectorChangeValueCommandTest = ModifyInspectorChangeValueCommandTest("Modify Inspector Change Value Command");
+		TryTest(modifyInspectorChangeValueCommandTest);
 	}
 #endif
 
