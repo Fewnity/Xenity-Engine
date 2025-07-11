@@ -133,8 +133,8 @@ int Engine::Init(int argc, char* argv[])
 		return -1;
 	}
 
-	EngineSettings::LoadEngineSettings();
 #if defined(EDITOR)
+	EngineSettings::LoadEngineSettings();
 	EngineSettings::SaveEngineSettings();
 #endif
 
