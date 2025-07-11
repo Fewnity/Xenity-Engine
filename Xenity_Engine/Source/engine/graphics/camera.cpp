@@ -494,24 +494,7 @@ void Camera::BindFrameBuffer()
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	UpdateFrameBuffer();
-#if defined(EDITOR)
-	if (m_framebuffer != -1)
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-	}
-#else
-	if (m_useMultisampling)
-	{
-		if (m_framebuffer != -1)
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-		}
-	}
-	else
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-#endif
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 #endif
 
 #if !defined(__PSP__)
@@ -603,18 +586,18 @@ void Camera::CopyMultiSampledFrameBuffer()
 {
 	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
 
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 	if (m_useMultisampling)
 	{
-#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_framebuffer);
-#if defined(EDITOR)
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_secondFramebuffer);
-#else
+		glBlitFramebuffer(0, 0, GetWidth(), GetHeight(), 0, 0, GetWidth(), GetHeight(), GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	}
+#if !defined(EDITOR)
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-#endif
 		glBlitFramebuffer(0, 0, GetWidth(), GetHeight(), 0, 0, GetWidth(), GetHeight(), GL_COLOR_BUFFER_BIT, GL_LINEAR);
 #endif
-	}
+#endif
 }
 
 #pragma endregion
