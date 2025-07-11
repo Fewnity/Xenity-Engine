@@ -8,9 +8,11 @@
 
 #if defined(__PSP__)
 
+#include <engine/engine.h>
+
 int exit_callback(int arg1, int arg2, void* common)
 {
-	sceKernelExitGame();
+	Engine::Quit();
 	return 0;
 }
 
