@@ -352,6 +352,13 @@ void ShaderOpenGL::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2
 	SetShaderAttribut(m_tilingLocation, tiling);
 }
 
+void ShaderOpenGL::SetAlphaThreshold(float alphaThreshold) 
+{
+#if defined(__vita__)
+	SetShaderAttribut(m_alphaThresholdLocation, alphaThreshold);
+#endif
+}
+
 void ShaderOpenGL::SetLightIndices(const LightsIndices& lightsIndices)
 {
 	XASSERT(Engine::IsCalledFromMainThread(), "Function called from another thread");
@@ -508,7 +515,9 @@ void ShaderOpenGL::Link()
 	m_ambientLightLocation = GetShaderUniformLocation("ambientLight");
 	m_tilingLocation = GetShaderUniformLocation("tiling");
 	m_offsetLocation = GetShaderUniformLocation("offset");
-
+#if defined(__vita__)
+	m_alphaThresholdLocation = GetShaderUniformLocation("alphaThreshold");
+#endif
 	m_usedPointLightCountLocation = GetShaderUniformLocation("usedPointLightCount");
 	m_usedSpotLightCountLocation = GetShaderUniformLocation("usedSpotLightCount");
 	m_usedDirectionalLightCountLocation = GetShaderUniformLocation("usedDirectionalLightCount");

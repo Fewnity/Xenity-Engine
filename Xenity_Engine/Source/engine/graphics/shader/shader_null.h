@@ -51,4 +51,5 @@ public:
 	void SetSpotLightData(const Light& light, const int index) override {}
 
 	void SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling) override {}
+	void SetAlphaThreshold(float alphaThreshold) override {}
 };

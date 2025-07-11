@@ -65,6 +65,7 @@ protected:
 	void SetShaderModel(const Vector3& position, const Vector3& eulerAngle, const Vector3& scale) override;
 
 	void SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling) override;
+	void SetAlphaThreshold(float alphaThreshold) override;
 
 	void SetLightIndices(const LightsIndices& lightsIndices) override;
 	[[nodiscard]] unsigned int GetShaderUniformLocation(const char* name);
@@ -185,6 +186,7 @@ protected:
 	unsigned int m_ambientLightLocation = 0;
 	unsigned int m_tilingLocation = 0;
 	unsigned int m_offsetLocation = 0;
+	unsigned int m_alphaThresholdLocation = 0;
 
 	unsigned int m_usedPointLightCountLocation = 0;
 	unsigned int m_usedSpotLightCountLocation = 0;

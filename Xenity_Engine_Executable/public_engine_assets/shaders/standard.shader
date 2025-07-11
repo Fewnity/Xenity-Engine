@@ -225,6 +225,7 @@ uniform sampler2D diffuse;
 uniform vec2 tiling;
 uniform vec2 offset;
 uniform vec3 ambientLight;
+uniform float alphaThreshold;
 
 uniform LightIndices
 {
@@ -335,7 +336,14 @@ void main()
 	result += textureColor.xyz * ambientLight;
 
 	float alpha = textureColor.w * color.w;
-	gl_FragColor = vec4(result * color.xyz, alpha) * v_Color; //Add texture color
+
+	vec4 finalColor = vec4(result * color.xyz, alpha) * v_Color;
+
+	// Alpha cutoff
+	if (finalColor.w < alphaThreshold)
+        discard;
+
+	gl_FragColor = finalColor; //Add texture color
 }
 
 //-------------- {ps3}

@@ -69,6 +69,7 @@ uniform sampler2D diffuse;
 uniform vec4 color;
 uniform vec2 tiling;
 uniform vec2 offset;
+uniform float alphaThreshold;
 
 void main()
 {
@@ -76,8 +77,13 @@ void main()
 
 	vec3 result = color.xyz * textureFrag.xyz;
 	float alpha = textureFrag.w * color.w;
+	vec4 finalColor = vec4(result, alpha) * v_Color; // Multiply color material and texture fragment
 
-	gl_FragColor = vec4(result, alpha) * v_Color; //Add texture color
+	// Alpha cutoff
+	if (finalColor.w < alphaThreshold)
+        discard;
+
+	gl_FragColor = finalColor;
 }
 
 //-------------- {ps3}

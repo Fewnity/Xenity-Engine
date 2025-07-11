@@ -176,6 +176,8 @@ protected:
 
 	virtual void SetShaderOffsetAndTiling(const Vector2& offset, const Vector2& tiling) = 0;
 
+	virtual void SetAlphaThreshold(float alphaThreshold) = 0;
+
 	/**
 	* @brief Set the shader uniform of the object model
 	* @param position The position of the object
