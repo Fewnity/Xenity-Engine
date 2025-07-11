@@ -357,6 +357,7 @@
     <ClCompile Include="Source\unit_tests\editor\unit_test_modify_command.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\image_renderer.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\button.cpp" />
+    <ClCompile Include="Source\engine\debug\profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\engine\component.h" />
@@ -824,6 +825,7 @@
     <ClInclude Include="Source\engine\math\math.h" />
     <ClInclude Include="Source\engine\graphics\ui\image_renderer.h" />
     <ClInclude Include="Source\engine\graphics\ui\button.h" />
+    <ClInclude Include="Source\engine\debug\profiler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\engine\reflection\reflection_utils.inl" />

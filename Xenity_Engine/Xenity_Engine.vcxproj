@@ -528,6 +528,7 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\engine\debug\profiler.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\button.cpp" />
     <ClCompile Include="Source\engine\graphics\ui\image_renderer.cpp" />
     <ClCompile Include="Source\engine\math\math.cpp" />
@@ -723,6 +724,7 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib
     <ClCompile Include="Source\engine\graphics\texture\texture_default.cpp" />
     <ClCompile Include="Source\engine\graphics\texture\texture_ps3.cpp" />
     <ClCompile Include="Source\engine\graphics\texture\texture_psp.cpp" />
+    <ClInclude Include="Source\engine\debug\profiler.h" />
     <ClInclude Include="Source\engine\graphics\ui\button.h" />
     <ClInclude Include="Source\engine\graphics\ui\image_renderer.h" />
     <ClInclude Include="Source\engine\math\math.h" />

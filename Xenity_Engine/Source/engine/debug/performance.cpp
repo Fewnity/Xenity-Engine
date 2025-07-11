@@ -8,6 +8,10 @@
 
 #include <cstring>
 
+#if defined(EDITOR)
+#include <editor/ui/editor_ui.h>
+#endif
+
 #include <engine/time/time.h>
 #include <engine/debug/debug.h>
 #include <engine/engine_settings.h>
@@ -31,7 +35,7 @@ int Performance::s_tickCount = 0;
 float Performance::s_averageCoolDown = 0;
 int Performance::s_lastDrawCallCount = 0;
 int Performance::s_lastDrawTriangleCount = 0;
-
+std::string Performance::nextProfilerFileName = "";
 MemoryTracker* Performance::s_gameObjectMemoryTracker = nullptr;
 MemoryTracker* Performance::s_meshDataMemoryTracker = nullptr;
 MemoryTracker* Performance::s_textureMemoryTracker = nullptr;
@@ -184,6 +188,18 @@ void WriteData(std::vector<uint8_t>& buffer, T* value, size_t size)
 	buffer.insert(buffer.end(), ((uint8_t*)value), ((uint8_t*)value) + size);
 }
 
+void Performance::CheckIfSavingIsNeeded()
+{
+	if(nextProfilerFileName.empty())
+	{
+		return;
+	}
+
+	SaveToBinary(nextProfilerFileName);
+
+	nextProfilerFileName = "";
+}
+
 void Performance::SaveToBinary(const std::string& path)
 {
 	Debug::Print("Saving profiler data...");
@@ -195,6 +211,10 @@ void Performance::SaveToBinary(const std::string& path)
 	if (isOpen)
 	{
 		std::vector<uint8_t> data;
+
+		WriteData(data, "PFLR", 4); // Magic number for profiler files
+
+		WriteData(data, s_profiler_file_version);
 
 		// Write profiler names count
 		WriteData(data, static_cast<uint32_t>(s_scopProfilerNames.size()));
@@ -248,19 +268,60 @@ T ReadData(unsigned char*& data)
 
 void Performance::LoadFromBinary(const std::string& path)
 {
+#if defined(EDITOR)
+	if(path.empty())
+	{
+		EditorUI::OpenDialog("Profiler Error", "Path is empty, cannot load profiler data.", DialogType::Dialog_Type_OK);
+		return;
+	}
+
+	if (path.size() > 4 && path.substr(path.size() - 4) != "xenp")
+	{
+		EditorUI::OpenDialog("Profiler Error", "Wrong file type.", DialogType::Dialog_Type_OK);
+		return;
+	}
+
 	const std::shared_ptr<File> file = FileSystem::MakeFile(path);
 	const bool isOpen = file->Open(FileMode::ReadOnly);
 	if (isOpen)
 	{
-		Performance::s_scopProfilerList[s_currentProfilerFrame].frameId = s_currentFrame;
-		Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults.clear();
-
 		// Read file
 		size_t size = 0;
 		unsigned char* data = file->ReadAllBinary(size);
 		unsigned char* originalDataPtr = data;
 		file->Close();
 
+		// ---- Check if the file is valid
+
+		// Check if the file is big enough
+		if(size < 8)
+		{
+			EditorUI::OpenDialog("Profiler Error", "File is too small to be a valid profiler file.", DialogType::Dialog_Type_OK);
+			delete[] originalDataPtr;
+			return;
+		}
+
+		// Check magic number
+		const std::string magicNumber = std::string(reinterpret_cast<const char*>(data), 4);
+		data += 4;
+		if(magicNumber != "PFLR")
+		{
+			EditorUI::OpenDialog("Profiler Error", "Not a profiler data file.", DialogType::Dialog_Type_OK);
+			delete[] originalDataPtr;
+			return;
+		}
+
+		// Check file version
+		const uint32_t fileVersion = ReadData<uint32_t>(data);
+		if(fileVersion != s_profiler_file_version)
+		{
+			EditorUI::OpenDialog("Profiler Error", "Invalid profiler file version: " + std::to_string(fileVersion) + ", expected: " + std::to_string(s_profiler_file_version) + ".", DialogType::Dialog_Type_OK);
+			delete[] originalDataPtr;
+			return;
+		}
+
+		Performance::s_scopProfilerList[s_currentProfilerFrame].frameId = s_currentFrame;
+		Performance::s_scopProfilerList[s_currentProfilerFrame].timerResults.clear();
 		ResetProfiler();
 		s_scopProfilerNames.clear();
 
@@ -307,8 +368,9 @@ void Performance::LoadFromBinary(const std::string& path)
 	}
 	else
 	{
-		Debug::PrintError("[Performance::LoadFromBinary] Failed to load profiler data");
+		EditorUI::OpenDialog("Profiler Error", "Failed to open file.", DialogType::Dialog_Type_OK);
 	}
+#endif
 }
 
 void Performance::ResetProfiler()

@@ -483,17 +483,7 @@ void Engine::Loop()
 			FrameLimiter::Wait();
 		}
 
-		if (Performance::IsProfilerEnabled() && InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
-		{
-			std::string path = "profiler";
-			DateTime now = DateTime::GetNow();
-			path += std::to_string(now.hour) + "h " + std::to_string(now.minute) + "m " + std::to_string(now.second) + "s " + std::to_string(now.day) + "d " + std::to_string(now.month) + "m " + std::to_string(now.year) + "y";
-			path += ".bin";
-#if defined(__vita__)
-			path = PSVITA_DEBUG_LOG_FOLDER + path;
-#endif
-			Performance::SaveToBinary(path);
-		}
+		Performance::CheckIfSavingIsNeeded();
 
 #if defined(EDITOR)
 		Editor::Draw();

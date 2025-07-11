@@ -173,14 +173,18 @@ public:
 	static MemoryTracker* s_textureMemoryTracker;
 	static uint32_t s_benchmarkScopeLevel;
 
+	static void CheckIfSavingIsNeeded();
+
 	static void SaveToBinary(const std::string& path);
 	static void LoadFromBinary(const std::string& path);
+	static std::string nextProfilerFileName;
 private:
 
 	/**
 	* @brief Reset profiler
 	*/
 	static void ResetProfiler();
+
 
 	static int s_drawCallCount;
 	static int s_drawTriangleCount;
@@ -190,4 +194,5 @@ private:
 
 	static int s_tickCount;
 	static float s_averageCoolDown;
+	static const uint32_t s_profiler_file_version = 1; // Version of the profiler data format, used for compatibility
 };

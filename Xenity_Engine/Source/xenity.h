@@ -27,7 +27,6 @@
 // Tools
 #include <engine/tools/benchmark.h>
 #include <engine/tools/curve.h>
-#include <engine/tools/internal_math.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/tools/shape_spawner.h>
 
@@ -74,7 +73,7 @@
 
 // Debug
 #include <engine/debug/debug.h>
-#include <engine/debug/performance.h>
+#include <engine/debug/profiler.h>
 
 // Audio
 #include <engine/audio/audio_clip.h>
