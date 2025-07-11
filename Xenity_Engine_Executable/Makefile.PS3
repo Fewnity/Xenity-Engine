@@ -36,6 +36,14 @@ CFLAGS		=	-mcpu=cell $(MACHDEP) $(INCLUDE)
 #CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -DDEBUG -fpermissive -O2
 CXXFLAGS	=	$(CFLAGS) -std=gnu++17 -D__PS3__ -fpermissive -O3
 
+ifeq ($(DEBUG),1)
+    CXXFLAGS += -DDEBUG
+endif
+
+ifeq ($(PROFILER),1)
+    CXXFLAGS += -DUSE_PROFILER
+endif
+
 LDFLAGS		=	$(MACHDEP) -Wl,-Map,$(notdir $@).map
 
 #---------------------------------------------------------------------------------

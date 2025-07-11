@@ -1018,8 +1018,12 @@ CompileResult Compiler::CompileInDocker(const CompilerParams& params)
 	else if (params.buildPlatform.platform == Platform::P_PS3)
 	{
 		std::string removeSourceCommand = "rm -r Source/editor/ ; rm Source/gl.c ; rm -r include/glad/ ; rm -r include/imgui/ ; rm -r include/implot/ ; rm -r include/SDL3/ ; rm -r include/KHR/ ;";
-
-		createCommand = "docker create --name XenityEngineBuild xenity_1_0_0 /bin/bash -c -it \"cd /home/XenityBuild/ ; " + removeSourceCommand + "make -j" + std::to_string(threadNumber) + "\"";
+		std::string paramsStr = "";
+		const std::shared_ptr<const PlatformSettingsPS3> platformSettings = std::dynamic_pointer_cast<PlatformSettingsPS3>(params.buildPlatform.settings);
+		const std::string debugDefine = platformSettings->isDebugMode ? " DEBUG=1" : "";
+		const std::string profilerDefine = platformSettings->enableProfiler ? " PROFILER=1" : "";
+		paramsStr += debugDefine + profilerDefine;
+		createCommand = "docker create --name XenityEngineBuild xenity_1_0_0 /bin/bash -c -it \"cd /home/XenityBuild/ ; " + removeSourceCommand + "make -j" + std::to_string(threadNumber) + paramsStr + "\"";
 	}
 
 	[[maybe_unused]] const int createResult = system(createCommand.c_str());

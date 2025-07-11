@@ -144,7 +144,7 @@ public:
 	{
 		ReflectiveData reflectedVariables;
 		Reflective::AddVariable(reflectedVariables, isDebugMode, "isDebugMode", true);
-		//Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
+		Reflective::AddVariable(reflectedVariables, enableProfiler, "enableProfiler", true);
 		//Reflective::AddVariable(reflectedVariables, enableOnlineProfiler, "enableOnlineProfiler", true);
 		Reflective::AddVariable(reflectedVariables, useCompilationCache, "useCompilationCache", true);
 		return reflectedVariables;
