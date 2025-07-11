@@ -396,6 +396,15 @@ void Engine::Loop()
 			}
 #endif
 
+			// Block game input if the network menu is focused
+#if defined(__PSP__)
+			InputSystem::s_blockGameInput = false;
+			if (NetworkManager::s_needDrawMenu)
+			{
+				InputSystem::s_blockGameInput = true;
+			}
+#endif
+
 			// Skip some frames to stabilize delta time
 			if (frameToSkip == 0)
 			{
