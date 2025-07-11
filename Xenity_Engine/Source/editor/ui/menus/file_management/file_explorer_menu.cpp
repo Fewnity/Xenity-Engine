@@ -41,8 +41,7 @@ void FileExplorerMenu::OpenItem(const FileExplorerItem& item)
 	{
 		if (item.file->GetFileType() == FileType::File_Scene) // If the file is a scene, load the scene
 		{
-			GameplayManager::SetGameState(GameState::Stopped, false);
-			SceneManager::LoadSceneInternal(std::dynamic_pointer_cast<Scene>(item.file));
+			SceneManager::LoadSceneInternal(std::dynamic_pointer_cast<Scene>(item.file), SceneManager::DialogMode::ShowDialogAndLoadIfStop);
 		}
 		else if (item.file->GetFileType() == FileType::File_Code || item.file->GetFileType() == FileType::File_Header || item.file->GetFileType() == FileType::File_Shader) // If the file is something like code, open Visual Studio Code
 		{

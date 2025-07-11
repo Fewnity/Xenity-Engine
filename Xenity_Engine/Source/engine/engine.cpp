@@ -476,7 +476,7 @@ void Engine::Loop()
 
 			if (SceneManager::s_nextSceneToLoad != nullptr) 
 			{
-				SceneManager::LoadSceneInternal(SceneManager::s_nextSceneToLoad);
+				SceneManager::LoadSceneInternal(SceneManager::s_nextSceneToLoad, SceneManager::DialogMode::NoDialog);
 			}
 
 			InputSystem::s_blockGameInput = false;
@@ -547,7 +547,7 @@ void Engine::Quit()
 #if defined(EDITOR)
 	if (s_isRunning)
 	{
-		const bool cancelQuit = SceneManager::OnQuit();
+		const bool cancelQuit = SceneManager::OnQuit(SceneManager::DialogMode::ShowDialog);
 		s_isRunning = cancelQuit;
 	}
 #else

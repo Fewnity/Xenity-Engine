@@ -34,12 +34,6 @@ public:
 	API static void LoadScene(const std::shared_ptr<Scene>& scene);
 
 	/**
-	* @brief Load a scene
-	* @param scene Scene to load
-	*/
-	API static void LoadSceneInternal(std::shared_ptr<Scene> scene);
-
-	/**
 	* @brief Reload the current scene
 	*/
 	API static void ReloadScene();
@@ -78,12 +72,27 @@ private:
 	friend class Prefab;
 	friend class SceneMenu;
 	friend class UniqueId;
+	friend class FileExplorerMenu;
+
 	friend API std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<Prefab>& prefab);
 	friend API std::shared_ptr<GameObject> FindGameObjectById(const uint64_t id);
 	friend API std::shared_ptr<Component> FindComponentById(const uint64_t id);
 
 	API static std::shared_ptr<GameObject> FindGameObjectByIdAdvanced(const uint64_t id, bool searchInTempList);
 	API static std::shared_ptr<Component> FindComponentByIdAdvanced(const uint64_t id, bool searchInTempList);
+
+	enum class DialogMode
+	{
+		ShowDialog,
+		ShowDialogAndLoadIfStop,
+		NoDialog
+	};
+
+	/**
+	* @brief Load a scene
+	* @param scene Scene to load
+	*/
+	static void LoadSceneInternal(std::shared_ptr<Scene> scene, DialogMode dialogMode);
 
 	static std::unordered_map<uint64_t, uint64_t> idRedirection;
 	static std::vector<std::shared_ptr<GameObject>> tempGameobjects;
@@ -141,7 +150,7 @@ private:
 	 * @brief [Internal] Show a dialog to ask if the user wants to save the scene if it has been modified
 	 * @return True if canceled
 	 */
-	[[nodiscard]] static bool OnQuit();
+	[[nodiscard]] static bool OnQuit(DialogMode dialogMode);
 
 	/**
 	* @brief [Internal] Load scene from json data

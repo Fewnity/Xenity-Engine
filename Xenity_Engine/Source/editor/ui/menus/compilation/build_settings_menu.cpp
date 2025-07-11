@@ -127,7 +127,7 @@ void BuildSettingsMenu::Draw()
 			ImGui::TableSetColumnIndex(0);
 			ImGui::BeginChild("build_settings_platforms_table_child");
 
-			const int imageSize = 50 * GetUIScale();
+			const float imageSize = 50 * GetUIScale();
 
 			const size_t platformCount = buildPlatforms.size();
 			ImVec2 availColSize = ImGui::GetContentRegionAvail();

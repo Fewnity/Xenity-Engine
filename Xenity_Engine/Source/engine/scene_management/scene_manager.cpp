@@ -456,7 +456,7 @@ void SceneManager::ReloadScene()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	LoadSceneInternal(s_openedScene);
+	LoadScene(s_openedScene);
 }
 
 void SceneManager::RestoreScene()
@@ -482,7 +482,7 @@ void SceneManager::ClearOpenedSceneFile()
 	}
 }
 
-bool SceneManager::OnQuit()
+bool SceneManager::OnQuit(DialogMode dialogMode)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -494,8 +494,15 @@ bool SceneManager::OnQuit()
 		if (result == DialogResult::Dialog_YES)
 		{
 			GameplayManager::SetGameState(GameState::Stopped, true);
+			if (dialogMode != DialogMode::ShowDialogAndLoadIfStop)
+			{
+				cancel = true;
+			}
 		}
-		cancel = true;
+		else 
+		{
+			cancel = true;
+		}
 	}
 	else
 	{
@@ -567,7 +574,7 @@ void SceneManager::LoadSceneInternal(const ordered_json& jsonData, const ordered
 	//#endif
 }
 
-void SceneManager::LoadSceneInternal(std::shared_ptr<Scene> scene)
+void SceneManager::LoadSceneInternal(std::shared_ptr<Scene> scene, DialogMode dialogMode)
 {
 	s_nextSceneToLoad = nullptr;
 
@@ -575,9 +582,12 @@ void SceneManager::LoadSceneInternal(std::shared_ptr<Scene> scene)
 
 	XASSERT(scene != nullptr, "[SceneManager::LoadScene] scene is nullptr");
 
-	const bool canceled = OnQuit();
-	if (canceled)
-		return;
+	if (dialogMode != DialogMode::NoDialog)
+	{
+		const bool canceled = OnQuit(dialogMode);
+		if (canceled)
+			return;
+	}
 
 	Debug::Print("Loading scene...", true);
 
