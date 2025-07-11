@@ -25,6 +25,7 @@
 int Screen::s_height = 0;
 int Screen::s_width = 0;
 bool Screen::s_useVSync = true;
+std::string Screen::nextScreenshotFileName = "";
 
 int Screen::GetWidth()
 {
@@ -78,8 +79,15 @@ bool Screen::IsVSyncEnabled()
 	return s_useVSync;
 }
 
-bool Screen::MakeScreenshot(const std::string& fileName)
+void Screen::MakeScreenshot(const std::string& fileName)
 {
+	nextScreenshotFileName = fileName;
+}
+
+bool Screen::MakeScreenshotInternal(std::string fileName)
+{
+	nextScreenshotFileName = "";
+
 	if (Graphics::usedCamera)
 	{
 		std::unique_ptr<uint8_t[]> frameBufferData = Graphics::usedCamera->GetRawFrameBuffer();
@@ -106,7 +114,7 @@ bool Screen::MakeScreenshot(const std::string& fileName)
 
 		if (stbi_write_png(path.c_str(), Graphics::usedCamera->GetWidth(), Graphics::usedCamera->GetHeight(), 3, frameBufferData.get(), 0) == 0)
 		{
-			Debug::PrintError("Failed to export the framebuffer data");
+			Debug::PrintError("[Screen::MakeScreenshot] Failed to make screenshot");
 			return false;
 		}
 

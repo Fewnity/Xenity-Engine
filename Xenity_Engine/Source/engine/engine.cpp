@@ -84,6 +84,7 @@
 #include <engine/graphics/graphics.h>
 #include <engine/graphics/2d_graphics/sprite_manager.h>
 #include <engine/graphics/frame_limiter/frame_limiter.h>
+#include <engine/ui/screen.h>
 
 // Time
 #include <engine/time/time.h>
@@ -445,6 +446,11 @@ void Engine::Loop()
 
 					// Draw
 					Graphics::Draw();
+
+					if (!Screen::nextScreenshotFileName.empty())
+					{
+						Screen::MakeScreenshotInternal(Screen::nextScreenshotFileName);
+					}
 
 					/*if (InputSystem::GetKey(KeyCode::LTRIGGER1) && InputSystem::GetKeyDown(KeyCode::RTRIGGER1))
 					{

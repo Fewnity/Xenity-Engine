@@ -49,12 +49,16 @@ public:
 	*
 	* @param fileName The name of the file to save the screenshot (without the extension)
 	*/
-	static bool MakeScreenshot(const std::string& fileName);
+	static void MakeScreenshot(const std::string& fileName);
 
 private:
 
-	friend class Window;
+	static bool MakeScreenshotInternal(std::string fileName);
 
+	friend class Window;
+	friend class Engine;
+
+	static std::string nextScreenshotFileName;
 	static int s_height;
 	static int s_width;
 	static bool s_useVSync;
