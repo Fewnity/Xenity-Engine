@@ -477,6 +477,7 @@ void Engine::Loop()
 			if (SceneManager::s_nextSceneToLoad != nullptr) 
 			{
 				SceneManager::LoadSceneInternal(SceneManager::s_nextSceneToLoad, SceneManager::DialogMode::NoDialog);
+				frameToSkip = 4;
 			}
 
 			InputSystem::s_blockGameInput = false;
