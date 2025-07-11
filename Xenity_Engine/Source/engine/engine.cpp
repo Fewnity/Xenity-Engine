@@ -466,16 +466,9 @@ void Engine::Loop()
 				}
 			}
 
-			if (ProjectManager::GetProjectState() == ProjectState::WaitingForScene)
+			if (SceneManager::s_nextSceneToLoad != nullptr) 
 			{
-				if (ProjectManager::GetStartScene())
-				{
-					SceneManager::LoadScene(ProjectManager::GetStartScene());
-				}
-#if defined(EDITOR)
-				Editor::s_currentMenu = MenuGroup::Menu_Editor;
-#endif
-				ProjectManager::SetProjectState(ProjectState::Loaded);
+				SceneManager::LoadSceneInternal(SceneManager::s_nextSceneToLoad);
 			}
 
 			InputSystem::s_blockGameInput = false;

@@ -31,11 +31,13 @@ class SceneManager
 {
 public:
 
+	API static void LoadScene(const std::shared_ptr<Scene>& scene);
+
 	/**
 	* @brief Load a scene
 	* @param scene Scene to load
 	*/
-	API static void LoadScene(const std::shared_ptr<Scene>& scene);
+	API static void LoadSceneInternal(std::shared_ptr<Scene> scene);
 
 	/**
 	* @brief Reload the current scene
@@ -144,8 +146,9 @@ private:
 	/**
 	* @brief [Internal] Load scene from json data
 	*/
-	static void LoadScene(const nlohmann::ordered_json& jsonData, const nlohmann::ordered_json& jsonUsedFileListData);
+	static void LoadSceneInternal(const nlohmann::ordered_json& jsonData, const nlohmann::ordered_json& jsonUsedFileListData);
 
+	static std::shared_ptr<Scene> s_nextSceneToLoad;
 	static std::shared_ptr<Scene> s_openedScene;
 	static bool s_sceneModified;
 	static constexpr int s_sceneVersion = 1;

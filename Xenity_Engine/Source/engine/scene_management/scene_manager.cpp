@@ -35,6 +35,7 @@
 using ordered_json = nlohmann::ordered_json;
 
 std::shared_ptr<Scene> SceneManager::s_openedScene = nullptr;
+std::shared_ptr<Scene> SceneManager::s_nextSceneToLoad = nullptr;
 
 ordered_json savedSceneData;
 ordered_json savedSceneUsedFileListData;
@@ -251,6 +252,11 @@ std::shared_ptr<Component> SceneManager::FindComponentByIdAdvanced(const uint64_
 	return std::shared_ptr<Component>();
 }
 
+void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
+{
+	s_nextSceneToLoad = scene;
+}
+
 void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData, bool createNewIds, std::shared_ptr<GameObject>* rootGameObject)
 {
 	idRedirection.clear();
@@ -450,21 +456,21 @@ void SceneManager::ReloadScene()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	LoadScene(s_openedScene);
+	LoadSceneInternal(s_openedScene);
 }
 
 void SceneManager::RestoreScene()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	LoadScene(savedSceneData, savedSceneUsedFileListData);
+	LoadSceneInternal(savedSceneData, savedSceneUsedFileListData);
 }
 
 void SceneManager::RestoreSceneHotReloading()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
-	LoadScene(savedSceneDataHotReloading, savedSceneUsedFileListDataHotReloading);
+	LoadSceneInternal(savedSceneDataHotReloading, savedSceneUsedFileListDataHotReloading);
 }
 
 void SceneManager::ClearOpenedSceneFile()
@@ -512,7 +518,7 @@ bool SceneManager::OnQuit()
 	return cancel;
 }
 
-void SceneManager::LoadScene(const ordered_json& jsonData, const ordered_json& jsonUsedFileListData)
+void SceneManager::LoadSceneInternal(const ordered_json& jsonData, const ordered_json& jsonUsedFileListData)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
@@ -561,8 +567,10 @@ void SceneManager::LoadScene(const ordered_json& jsonData, const ordered_json& j
 	//#endif
 }
 
-void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
+void SceneManager::LoadSceneInternal(std::shared_ptr<Scene> scene)
 {
+	s_nextSceneToLoad = nullptr;
+
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	XASSERT(scene != nullptr, "[SceneManager::LoadScene] scene is nullptr");
@@ -608,7 +616,7 @@ void SceneManager::LoadScene(const std::shared_ptr<Scene>& scene)
 		return;
 	}
 
-	LoadScene(data, usedFileListData);
+	LoadSceneInternal(data, usedFileListData);
 #if defined(EDITOR)
 	SetIsSceneDirty(false);
 #endif

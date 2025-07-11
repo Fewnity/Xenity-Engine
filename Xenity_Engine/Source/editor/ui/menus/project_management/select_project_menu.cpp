@@ -103,9 +103,7 @@ void SelectProjectMenu::Draw()
 		font->Scale = oldScale * 1.5f;
 		ImGui::PushFont(font);
 
-		const bool isLoadingBegValue = 
-			ProjectManager::GetProjectState() == ProjectState::Loading ||
-			ProjectManager::GetProjectState() == ProjectState::WaitingForScene;
+		const bool isLoadingBegValue = ProjectManager::GetProjectState() == ProjectState::Loading;
 
 		if (isLoadingBegValue)
 		{
@@ -191,9 +189,7 @@ void SelectProjectMenu::DrawProjectsList()
 {
 	ImGui::Separator();
 
-	const bool isLoadingBegValue =
-		ProjectManager::GetProjectState() == ProjectState::Loading ||
-		ProjectManager::GetProjectState() == ProjectState::WaitingForScene;
+	const bool isLoadingBegValue = ProjectManager::GetProjectState() == ProjectState::Loading;
 
 	if (isLoadingBegValue)
 	{

@@ -602,8 +602,12 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 
 	s_projectLoadedEvent.Trigger();
 	s_projectLoaded = true;
-	s_projectState = ProjectState::WaitingForScene;
+	SceneManager::LoadScene(ProjectManager::GetStartScene());
 
+	s_projectState = ProjectState::Loaded;
+#if defined(EDITOR)
+	Editor::s_currentMenu = MenuGroup::Menu_Editor;
+#endif
 	Debug::Print("Project loaded", true);
 
 	return ProjectLoadingErrors::Success;

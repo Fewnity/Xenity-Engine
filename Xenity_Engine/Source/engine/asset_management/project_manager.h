@@ -32,7 +32,6 @@ struct CompilerParams;
 enum ProjectState 
 {
 	NotLoaded,
-	WaitingForScene,
 	Loading,
 	Loaded,
 };
