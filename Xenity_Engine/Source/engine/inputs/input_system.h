@@ -181,12 +181,10 @@ public:
 	*/
 	[[nodiscard]] static bool GetKeyDown(const KeyCode keyCode, const int controllerIndex = 0)
 	{
-#if defined(EDITOR)
 		if (s_blockGameInput)
 		{
 			return false;
 		}
-#endif
 
 		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
 		{
@@ -203,12 +201,10 @@ public:
 	*/
 	[[nodiscard]] static bool GetKey(const KeyCode keyCode, const int controllerIndex = 0)
 	{
-#if defined(EDITOR)
 		if (s_blockGameInput)
 		{
 			return false;
 		}
-#endif
 
 		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
 		{
@@ -225,12 +221,10 @@ public:
 	*/
 	[[nodiscard]] static bool GetKeyUp(const KeyCode keyCode, const int controllerIndex = 0)
 	{
-#if defined(EDITOR)
 		if (s_blockGameInput)
 		{
 			return false;
 		}
-#endif
 
 		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
 		{
@@ -246,12 +240,10 @@ public:
 	*/
 	[[nodiscard]] static Vector2 GetLeftJoystick(const int controllerIndex = 0)
 	{
-#if defined(EDITOR)
 		if (s_blockGameInput)
 		{
 			return Vector2(0);
 		}
-#endif
 
 		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
 		{
@@ -267,12 +259,10 @@ public:
 	*/
 	[[nodiscard]] static Vector2 GetRightJoystick(const int controllerIndex = 0)
 	{
-#if defined(EDITOR)
 		if (s_blockGameInput)
 		{
 			return Vector2(0);
 		}
-#endif
 
 		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
 		{
@@ -288,12 +278,10 @@ public:
 	*/
 	[[nodiscard]] static float GetLeftTrigger(const int controllerIndex = 0)
 	{
-#if defined(EDITOR)
 		if (s_blockGameInput)
 		{
 			return 0;
 		}
-#endif
 
 		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
 		{
@@ -309,12 +297,10 @@ public:
 	*/
 	[[nodiscard]] static float GetRightTrigger(const int controllerIndex = 0)
 	{
-#if defined(EDITOR)
 		if (s_blockGameInput)
 		{
 			return 0;
 		}
-#endif
 
 		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
 		{
