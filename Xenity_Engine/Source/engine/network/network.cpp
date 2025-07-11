@@ -85,7 +85,7 @@ void NetworkManager::Init()
 	s_pspNetworkData.adhocparam = &adhocparam;
 #elif defined(__PS3__)
 	netInitialize();
-#else defined(_WIN32) || defined(_WIN64)
+#elif defined(_WIN32) || defined(_WIN64)
 	WSADATA WSAData;
 	int startupResult = WSAStartup(MAKEWORD(2, 0), &WSAData);
 	if (startupResult != 0)
