@@ -419,6 +419,7 @@ void Editor::Draw()
 		ImGui::DockBuilderDockWindow("###File_Explorer0", fileExplorerNode);
 		ImGui::DockBuilderDockWindow("###Console0", fileExplorerNode);
 		ImGui::DockBuilderDockWindow("###Inspector0", inspectorNode);
+		ImGui::DockBuilderDockWindow("###Profiling0", inspectorNode);
 		ImGui::DockBuilderDockWindow("###Debug0", inspectorNode);
 		ImGui::DockBuilderDockWindow("###Scene0", SceneNode);
 		ImGui::DockBuilderDockWindow("###Game0", SceneNode);
