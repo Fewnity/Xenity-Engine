@@ -728,7 +728,10 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib
     <ClInclude Include="Source\engine\graphics\ui\button.h" />
     <ClInclude Include="Source\engine\graphics\ui\image_renderer.h" />
     <ClInclude Include="Source\engine\math\math.h" />
-    <ClInclude Include="Source\editor\ui\editor_icons.h" />
+    <ClInclude Include="Source\editor\ui\editor_icons.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Engine|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Engine|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\engine\debug\debug_type.h" />
     <ClInclude Include="Source\engine\physics\collision_event.h" />
     <ClCompile Include="Source\engine\physics\sphere_collider.cpp" />
