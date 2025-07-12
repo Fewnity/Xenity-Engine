@@ -80,6 +80,8 @@ int EditorUI::Init()
 	LoadComponentIcon("Light", "icons/components/point_light.png");
 	LoadComponentIcon("ImageRenderer", "icons/components/image.png");
 	LoadComponentIcon("Button", "icons/components/button.png");
+	LoadComponentIcon("SphereCollider", "icons/components/sphere.png");
+	LoadComponentIcon("FpsCounter", "icons/components/contrer.png");
 
 	Debug::Print("---- Editor UI initiated ----", true);
 	return 0;
