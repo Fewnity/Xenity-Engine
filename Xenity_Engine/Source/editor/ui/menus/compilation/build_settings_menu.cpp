@@ -183,7 +183,7 @@ void BuildSettingsMenu::Draw()
 
 				// Draw text
 				ImGui::SameLine();
-				ImGui::SetCursorPosY(cursorPos.y + 25 - style.ItemSpacing.y * 2);
+				ImGui::SetCursorPosY(cursorPos.y + 25 * GetUIScale() - style.ItemSpacing.y * 2 * GetUIScale());
 				ImGui::TextColored(textColor, "%s", nameText.c_str());
 
 				if (platform.isSupported)
