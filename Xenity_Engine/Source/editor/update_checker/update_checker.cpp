@@ -26,9 +26,7 @@ void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 		CURLcode res;
 		std::string readBuffer;
 
-		//curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/Fewnity/Xenity-Engine-SDK/releases");
-		/*curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/skiff/PS3-Toolbox/releases");*/
-		curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/ocornut/imgui/releases");
+		curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/Fewnity/Xenity-Engine/releases");
 		curl_easy_setopt(curl, CURLOPT_USERAGENT, "Xenity");
 		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "application/vnd.github+json");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -43,7 +41,13 @@ void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 
 				for (auto& release : j)
 				{
-					const std::string tagName = release["tag_name"];
+					std::string tagName = release["tag_name"];
+					size_t tagNameSize = tagName.size();
+					for (size_t i = 0; i < tagNameSize; i++)
+					{
+						tagName[i] = std::tolower(tagName[i]);
+					}
+
 					int major = 0;
 					int minor = 0;
 					int patch = 0;
@@ -52,7 +56,7 @@ void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 #elif defined(__LINUX__)
 					sscanf(tagName.c_str(), "v%d.%d.%d\n", &major, &minor, &patch);
 #endif
-					Debug::Print("Tag name: " + tagName);
+
 					if (major > ENGINE_MAJOR_VERSION)
 					{
 						updateFound = true;
@@ -86,13 +90,17 @@ void UpdateChecker::CheckForUpdate(Event<bool>* onUpdateCheckedEvent)
 			}
 			catch (const std::exception&)
 			{
-				Debug::PrintError("[UpdateChecker::CheckForUpdate] failed to parse json", true);
+				Debug::PrintError("[UpdateChecker::CheckForUpdate] Failed to parse json", true);
 			}
 		}
 		else 
 		{
-			Debug::PrintError("[UpdateChecker::CheckForUpdate] failed to check update", true);
+			Debug::PrintError("[UpdateChecker::CheckForUpdate] Failed to check update", true);
 		}
+	}
+	else 
+	{
+		Debug::PrintError("[UpdateChecker::CheckForUpdate] Failed to init Update Checker", true);
 	}
 	onUpdateCheckedEvent->Trigger(updateFound);
 }
