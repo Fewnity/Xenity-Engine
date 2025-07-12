@@ -27,6 +27,18 @@ Lighting priorities:
 - Directional light has the priority over the point light,
 - Point light has the priority over the spot light.
 
+### My material is black in my scene
+
+Check if:
+- Use lighting option of your material is checked if you are using the Standard shader or unchecked if you are using Unlit shader,
+- You have a light in the scene if you are using Standard shader.
+
+### My texture does look transparent on PSP/PS3
+
+By default textures on PSP and PS3 are compressed without alpha channel.
+
+You have to use the RGBA_8888, RGBA_5551, RGBA_4444 types instead of RGBA_5650 type to get transparent textures.
+
 ## Audio issues
 
 If the audio sounds weird on PlayStation 3, make sure to use 48000Hz audio files. But on other platforms you should use 44000Hz audio files.
@@ -35,4 +47,4 @@ If the audio sounds weird on PlayStation 3, make sure to use 48000Hz audio files
 
 On Windows, if the game crash, you should find a new file next to the game executable called crash_dump.txt containing the call stack of the crash. This will shows you where the crash has happened.
 
-On game consoles, there is no easy way to understand a crash. You can add debug logs in your code to see where logs work and where they stop working. If it's the engine that crashes and not your code, [create an issue on the github page](https://github.com/Fewnity/Xenity-Engine/issues) of the engine to explain how to reproduce the crash. You can send me by email your project to help me finding the bug. You can make a [pull request](https://github.com/Fewnity/Xenity-Engine/pulls) if you can fix the bug yourself.
+On game consoles, there is no easy way to understand a crash. You can add debug logs in your code to see where logs work and where they stop working. If it's the engine that crashes and not your code, [create an issue on the github page](https://github.com/Fewnity/Xenity-Engine/issues) of the engine to explain how to reproduce the crash. You can send me your project to help me finding the bug. You can make a [pull request](https://github.com/Fewnity/Xenity-Engine/pulls) if you can fix the bug yourself.

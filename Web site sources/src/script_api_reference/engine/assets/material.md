@@ -10,6 +10,19 @@ Add this in your code:
 Handles the visual appearance of rendered objects, including shaders and textures.<br>
 The Material class allows you to configure how an object should look when drawn on screen.
 
+## Inspector settings
+
+---
+| Name | Type | Description |
+|-|-|-|
+Shader | Shader | Set the material shader. Standard to use lighting, Unlit to disable lighting.
+Rendering mode | Enum | Set the rendering mode of the material.
+Texture | Texture | Set the material texture.
+Color | Color | Set the color of the material.
+Offset | Vector2 | Set the texture offset.
+Tiling | Vector2 | Set the texture tiling.
+Use lighting | CheckBox | Check this if you are using Standard shader, uncheck this if you are using Unlit shader.
+
 ## Public methods
 
 ---
@@ -101,14 +114,14 @@ material->SetOffset(Vector2(0.5f, 0.5f));
 Set the texture tiling.
 
 Parameters:
-- `tiling`: Offset of the texture
+- `tiling`: Tiling of the texture
 ```cpp
 void SetTiling(const Vector2& tiling)
 ```
 Code sample:
 ```cpp
 std::shared_ptr<Material> material; // Filled variable
-material->SetOffset(Vector2(2.0f, 2.0f));
+material->SetTiling(Vector2(2.0f, 2.0f));
 ```
 
 ---

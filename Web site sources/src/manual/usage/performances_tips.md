@@ -4,6 +4,8 @@ Performances on Xenity can be affected for many reasons.
 
 A great way to analyze performances is to use the integrated profiler in the editor.
 
+See the [Profiler Menu](../editor_ui/profiler.md) and the [Profiler class](../../script_api_reference/engine/profiler/profiler.md).
+
 ## Physics
 
 On small systems like the PlayStation Portable, performances can be very low with too many rigidbodies. Try to reduce the amount of activated rigidbody in the scene.

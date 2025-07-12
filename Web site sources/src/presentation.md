@@ -39,6 +39,8 @@ _It's pink but you can change the color!_
 > - Duplicating a meta file will cause problems, each meta file has a unique file id in it.
 > - Audio works "fine" with 44100Hz but on PS3 you need to use 48000Hz audio.
 
+Please make frequent backups of your project, you are not safe from a project corruption!
+
 You can see all limitations [here](./limitations.md).
 
 If you want to improve the engine, here is the [TODO list](https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/TODO.md).

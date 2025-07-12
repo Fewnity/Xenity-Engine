@@ -21,3 +21,6 @@ And finally, the engine needs to know that this class exists. For this, you have
 REGISTER_COMPONENT allows you to add parameters about this class, for example the DisableUpdateFunction will prevent the engine from calling the Update function every frame.
 
 ![image](images/create_component_game_cpp.png)
+
+> [!WARNING]
+> Do not move or delete the game.cpp and game.h file, or your project won't work anymore.

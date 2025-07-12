@@ -75,3 +75,20 @@ Screen::SetVSync(true);
 
 bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
 ```
+
+---
+### MakeScreenshot
+Make a screenshot of the game (.png).<br>
+(Note: on PSP/PsVita, plugins overlays are also captured).
+On RPCS3 emulator, you have to enable the "Write Color Buffers" gpu option. You may have to use OpenGL instead of vulkan if there are artifacts.
+On PPSSPP emulator, you gave to enable software rendering.
+
+Parameters:
+- `fileName`: The name of the file to save the screenshot (without the extension)
+```cpp
+void MakeScreenshot(const std::string& fileName)
+```
+Code sample:
+```cpp
+Screen::MakeScreenshot("my_screenshot");
+```

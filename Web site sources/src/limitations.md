@@ -10,7 +10,7 @@ Multi selection is not supported.
 
 ### In game UI
 
-There is no image and button component.
+There is no gamepad support for UI menus.
 
 ### Lighting
 

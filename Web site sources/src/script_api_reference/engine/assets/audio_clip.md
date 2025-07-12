@@ -11,7 +11,7 @@ Asset that stores audio like a sound effect or a music.
 
 Used by [Audio Source](../components/audio_source.md).
 
-## Settings
+## Inspector settings
 
 ---
 | Name | Type | Description |

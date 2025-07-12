@@ -241,6 +241,18 @@
 <h2 id="description"><a class="header" href="#description">Description</a></h2>
 <p>Handles the visual appearance of rendered objects, including shaders and textures.<br>
 The Material class allows you to configure how an object should look when drawn on screen.</p>
+<h2 id="inspector-settings"><a class="header" href="#inspector-settings">Inspector settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Shader</td><td>Shader</td><td>Set the material shader. Standard to use lighting, Unlit to disable lighting.</td></tr>
+<tr><td>Rendering mode</td><td>Enum</td><td>Set the rendering mode of the material.</td></tr>
+<tr><td>Texture</td><td>Texture</td><td>Set the material texture.</td></tr>
+<tr><td>Color</td><td>Color</td><td>Set the color of the material.</td></tr>
+<tr><td>Offset</td><td>Vector2</td><td>Set the texture offset.</td></tr>
+<tr><td>Tiling</td><td>Vector2</td><td>Set the texture tiling.</td></tr>
+<tr><td>Use lighting</td><td>CheckBox</td><td>Check this if you are using Standard shader, uncheck this if you are using Unlit shader.</td></tr>
+</tbody></table>
+</div>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
 <h3 id="setattribute"><a class="header" href="#setattribute">SetAttribute</a></h3>
@@ -320,13 +332,13 @@ material-&gt;SetOffset(Vector2(0.5f, 0.5f));
 <p>Set the texture tiling.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>tiling</code>: Offset of the texture</li>
+<li><code>tiling</code>: Tiling of the texture</li>
 </ul>
 <pre><code class="language-cpp">void SetTiling(const Vector2&amp; tiling)
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-material-&gt;SetOffset(Vector2(2.0f, 2.0f));
+material-&gt;SetTiling(Vector2(2.0f, 2.0f));
 </code></pre>
 <hr />
 <h3 id="getshader"><a class="header" href="#getshader">GetShader</a></h3>

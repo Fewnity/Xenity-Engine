@@ -259,11 +259,20 @@ For example you can use:</p>
 <li>Directional light has the priority over the point light,</li>
 <li>Point light has the priority over the spot light.</li>
 </ul>
+<h3 id="my-material-is-black-in-my-scene"><a class="header" href="#my-material-is-black-in-my-scene">My material is black in my scene</a></h3>
+<p>Check if:</p>
+<ul>
+<li>Use lighting option of your material is checked if you are using the Standard shader or unchecked if you are using Unlit shader,</li>
+<li>You have a light in the scene if you are using Standard shader.</li>
+</ul>
+<h3 id="my-texture-does-look-transparent-on-pspps3"><a class="header" href="#my-texture-does-look-transparent-on-pspps3">My texture does look transparent on PSP/PS3</a></h3>
+<p>By default textures on PSP and PS3 are compressed without alpha channel.</p>
+<p>You have to use the RGBA_8888, RGBA_5551, RGBA_4444 types instead of RGBA_5650 type to get transparent textures.</p>
 <h2 id="audio-issues"><a class="header" href="#audio-issues">Audio issues</a></h2>
 <p>If the audio sounds weird on PlayStation 3, make sure to use 48000Hz audio files. But on other platforms you should use 44000Hz audio files.</p>
 <h2 id="crash"><a class="header" href="#crash">Crash</a></h2>
 <p>On Windows, if the game crash, you should find a new file next to the game executable called crash_dump.txt containing the call stack of the crash. This will shows you where the crash has happened.</p>
-<p>On game consoles, there is no easy way to understand a crash. You can add debug logs in your code to see where logs work and where they stop working. If it's the engine that crashes and not your code, <a href="https://github.com/Fewnity/Xenity-Engine/issues">create an issue on the github page</a> of the engine to explain how to reproduce the crash. You can send me by email your project to help me finding the bug. You can make a <a href="https://github.com/Fewnity/Xenity-Engine/pulls">pull request</a> if you can fix the bug yourself.</p>
+<p>On game consoles, there is no easy way to understand a crash. You can add debug logs in your code to see where logs work and where they stop working. If it's the engine that crashes and not your code, <a href="https://github.com/Fewnity/Xenity-Engine/issues">create an issue on the github page</a> of the engine to explain how to reproduce the crash. You can send me your project to help me finding the bug. You can make a <a href="https://github.com/Fewnity/Xenity-Engine/pulls">pull request</a> if you can fix the bug yourself.</p>
 
                     </main>
 
@@ -273,7 +282,7 @@ For example you can use:</p>
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../script_api_reference/scripting_api_reference.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../manual/usage/get_help.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -287,7 +296,7 @@ For example you can use:</p>
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../script_api_reference/scripting_api_reference.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../manual/usage/get_help.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

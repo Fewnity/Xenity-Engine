@@ -11,7 +11,7 @@ Asset that stores an image.
 
 A texture can be created dynamically.
 
-## General settings
+## Inspector settings
 
 ---
 | Name | Type | Description |
@@ -22,7 +22,7 @@ WrapMode | Enum | Texture wrap mode
 UseMipMap | CheckBox | If enabled, smaller versions of the texture will be generated. Improves rendering but consumes more memory (Not working on PS3).
 PixelPerUnit | Number | Number of pixel per world unit (Used for sprites).
 
-## PSP additional settings
+## PSP additional Inspector settings
 
 ---
 | Name | Type | Description |
@@ -30,7 +30,7 @@ PixelPerUnit | Number | Number of pixel per world unit (Used for sprites).
 Type | Enum | Type of compression
 TryPutInVram | CheckBox | If true, the texture will try to be stored in video ram instead of ram. (video ram is faster than ram but way smaller)
 
-## PS3 additional settings
+## PS3 additional Inspector settings
 
 ---
 | Name | Type | Description |

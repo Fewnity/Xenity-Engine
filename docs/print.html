@@ -288,6 +288,7 @@ C++ Plugins (Started but not finished)</li>
 <li>Audio works "fine" with 44100Hz but on PS3 you need to use 48000Hz audio.</li>
 </ul>
 </div>
+<p>Please make frequent backups of your project, you are not safe from a project corruption!</p>
 <p>You can see all limitations <a href="./limitations.html">here</a>.</p>
 <p>If you want to improve the engine, here is the <a href="https://github.com/Fewnity/Xenity-Engine/blob/crossplatform/TODO.md">TODO list</a>.</p>
 <h3 id="contact"><a class="header" href="#contact">Contact:</a></h3>
@@ -367,7 +368,7 @@ C++ Plugins (Started but not finished)</li>
 <h3 id="editor-ui"><a class="header" href="#editor-ui">Editor UI</a></h3>
 <p>Multi selection is not supported.</p>
 <h3 id="in-game-ui"><a class="header" href="#in-game-ui">In game UI</a></h3>
-<p>There is no image and button component.</p>
+<p>There is no gamepad support for UI menus.</p>
 <h3 id="lighting"><a class="header" href="#lighting">Lighting</a></h3>
 <p>Lighting does not work great on PsVita and PS3. A shader variant system could fix this.</p>
 <ul>
@@ -713,7 +714,8 @@ They all work on game consoles too.<br></p>
 <h1 id="manual"><a class="header" href="#manual">Manual</a></h1>
 <p>Here is a manual to learn more about the engine and how to use it.</p>
 <p>To learn more about menus and their uses, see <a href="manual/./editor_ui/editor_ui.html">Editor UI</a>.</p>
-<p>To learn how to use the engine, see <a href="manual/./usage/usage.html">Usage</a></p>
+<p>To learn how to use the engine, see <a href="manual/./usage/usage.html">Usage</a>.</p>
+<p>To check which asset formats to use, see <a href="manual/./compatible_asset_formats.html">Compatible asset formats</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -1998,11 +2000,14 @@ If you want to leave the game you can reset the dev kit.</p>
 <li><a href="manual/usage/create_project.html">How to create a project</a></li>
 <li><a href="manual/usage/add_existing_project.html">How to add an existing project</a></li>
 <li><a href="manual/usage/scene_system.html">How a scene works</a></li>
+<li><a href="manual/usage/import_files.html">How to import files</a></li>
+<li><a href="manual/usage/add_object_in_scene.html">Add your first object in the scene</a></li>
 <li><a href="manual/usage/create_component.html">How to create a component</a></li>
 <li><a href="manual/usage/play_game_in_editor.html">How to play your game in the editor</a></li>
 <li><a href="manual/usage/play_game_on_console.html">How to play your game on game console</a></li>
 <li><a href="manual/usage/performances_tips.html">Performances tips</a></li>
 <li><a href="manual/usage/common_issues.html">Common issues</a></li>
+<li><a href="manual/usage/get_help.html">Where to get help</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -2301,6 +2306,166 @@ See the <a href="manual/usage/../../script_api_reference/engine/assets/scene.htm
 }
 
 </style>
+<h1 id="how-to-import-files"><a class="header" href="#how-to-import-files">How to import files</a></h1>
+<p>To add files to your Xenity project, you simply have to drag and drop files or folders into the File Explorer.</p>
+<p>You can also add files using the Windows file manager into the asset folder of your project. You may have to refresh the file explorer by right clicking on the background and then click on <code>Refresh</code>.</p>
+<p><img src="manual/usage/images/refresh_asset_list.png" alt="image" /></p>
+<p>See <a href="manual/usage/../compatible_asset_formats.html">Compatible asset formats</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="add-your-first-object-in-the-scene"><a class="header" href="#add-your-first-object-in-the-scene">Add your first object in the scene</a></h1>
+<p>Once you have a mesh and a texture, you are almost able to use them in your scene.</p>
+<p><img src="manual/usage/images/add_object_file_explorer.png" alt="image" /></p>
+<p>You need a material for your mesh. To create one, you can right click on your texture and click on <code>Create a material for this</code>:</p>
+<p><img src="manual/usage/images/add_object_file_explorer_create_mat_from_texture.png" alt="image" /></p>
+<p>Or you can create an empty material by right clicking on the background and by clicking <code>material</code> in the <code>Create</code> menu:</p>
+<p><img src="manual/usage/images/add_object_file_explorer_create_mat.png" alt="image" /></p>
+<p>Then you will have a new material. Use the Standard shader if you want to use lighting, or use the Unlit shader if you want a bright texture without lighting. Unlit has way better performances.</p>
+<p><img src="manual/usage/images/add_object_material.png" alt="image" /></p>
+<p>Then you can drag and drop your mesh into the scene and set the material in the materials list of the mesh renderer.</p>
+<p>There are two ways to change a material variable:</p>
+<ul>
+<li>Drag and drop the asset into the slot,</li>
+<li>Click on the slot to show the list of asset and double click on the asset you want to use.</li>
+</ul>
+<p><img src="manual/usage/images/add_object_dragged.png" alt="image" /></p>
+<p>Each material slot is a material for a submesh. This mesh has 3 submeshes.</p>
+<p>I'm only applying a material to one submesh because other submesh are LODs.</p>
+<p><img src="manual/usage/images/add_object_material_set.png" alt="image" /></p>
+<p>And now if you want, you can add more components to your GameObject by clicking <code>Add Component</code>:</p>
+<p><img src="manual/usage/images/add_object_add_component.png" alt="image" /></p>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="how-to-create-a-component"><a class="header" href="#how-to-create-a-component">How to create a component</a></h1>
 <p>Xenity provides a simple way to create a component for your game.</p>
 <p>First, make a right click on the background of the file explorer, then click on Create C++ class:</p>
@@ -2319,6 +2484,13 @@ See the <a href="manual/usage/../../script_api_reference/engine/assets/scene.htm
 </ul>
 <p>REGISTER_COMPONENT allows you to add parameters about this class, for example the DisableUpdateFunction will prevent the engine from calling the Update function every frame.</p>
 <p><img src="manual/usage/images/create_component_game_cpp.png" alt="image" /></p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>Do not move or delete the game.cpp and game.h file, or your project won't work anymore.</p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2563,6 +2735,7 @@ Then you can check the <a href="manual/usage/../editor_ui/build_settings.html">B
 <h1 id="performances-tips"><a class="header" href="#performances-tips">Performances tips</a></h1>
 <p>Performances on Xenity can be affected for many reasons.</p>
 <p>A great way to analyze performances is to use the integrated profiler in the editor.</p>
+<p>See the <a href="manual/usage/../editor_ui/profiler.html">Profiler Menu</a> and the <a href="manual/usage/../../script_api_reference/engine/profiler/profiler.html">Profiler class</a>.</p>
 <h2 id="physics-1"><a class="header" href="#physics-1">Physics</a></h2>
 <p>On small systems like the PlayStation Portable, performances can be very low with too many rigidbodies. Try to reduce the amount of activated rigidbody in the scene.</p>
 <h2 id="audio-1"><a class="header" href="#audio-1">Audio</a></h2>
@@ -2664,12 +2837,166 @@ For example you can use:</p>
 <li>Directional light has the priority over the point light,</li>
 <li>Point light has the priority over the spot light.</li>
 </ul>
+<h3 id="my-material-is-black-in-my-scene"><a class="header" href="#my-material-is-black-in-my-scene">My material is black in my scene</a></h3>
+<p>Check if:</p>
+<ul>
+<li>Use lighting option of your material is checked if you are using the Standard shader or unchecked if you are using Unlit shader,</li>
+<li>You have a light in the scene if you are using Standard shader.</li>
+</ul>
+<h3 id="my-texture-does-look-transparent-on-pspps3"><a class="header" href="#my-texture-does-look-transparent-on-pspps3">My texture does look transparent on PSP/PS3</a></h3>
+<p>By default textures on PSP and PS3 are compressed without alpha channel.</p>
+<p>You have to use the RGBA_8888, RGBA_5551, RGBA_4444 types instead of RGBA_5650 type to get transparent textures.</p>
 <h2 id="audio-issues"><a class="header" href="#audio-issues">Audio issues</a></h2>
 <p>If the audio sounds weird on PlayStation 3, make sure to use 48000Hz audio files. But on other platforms you should use 44000Hz audio files.</p>
 <h2 id="crash"><a class="header" href="#crash">Crash</a></h2>
 <p>On Windows, if the game crash, you should find a new file next to the game executable called crash_dump.txt containing the call stack of the crash. This will shows you where the crash has happened.</p>
-<p>On game consoles, there is no easy way to understand a crash. You can add debug logs in your code to see where logs work and where they stop working. If it's the engine that crashes and not your code, <a href="https://github.com/Fewnity/Xenity-Engine/issues">create an issue on the github page</a> of the engine to explain how to reproduce the crash. You can send me by email your project to help me finding the bug. You can make a <a href="https://github.com/Fewnity/Xenity-Engine/pulls">pull request</a> if you can fix the bug yourself.</p>
+<p>On game consoles, there is no easy way to understand a crash. You can add debug logs in your code to see where logs work and where they stop working. If it's the engine that crashes and not your code, <a href="https://github.com/Fewnity/Xenity-Engine/issues">create an issue on the github page</a> of the engine to explain how to reproduce the crash. You can send me your project to help me finding the bug. You can make a <a href="https://github.com/Fewnity/Xenity-Engine/pulls">pull request</a> if you can fix the bug yourself.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="where-to-get-help"><a class="header" href="#where-to-get-help">Where to get help</a></h1>
+<p>If you have a bug or a problem that is not listed in <a href="manual/usage/./common_issues.html">Common issues</a>, you can <a href="https://github.com/Fewnity/Xenity-Engine/issues">create an issue on the github page</a>, or send me a message on Discord or by email. You can send me your project to help me finding a solution for your issue, nothing will be shared.</p>
+<p><strong>Discord:</strong> fewnity</p>
+<p><strong>Email:</strong> fewnity@gmail.com</p>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="compatible-asset-formats"><a class="header" href="#compatible-asset-formats">Compatible asset formats</a></h1>
+<div class="table-wrapper"><table><thead><tr><th>Type</th><th>Extensions</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Images</td><td><code>.png .jpg .bmp, .tga</code></td><td></td></tr>
+<tr><td>Audio</td><td><code>.wav .mp3</code></td><td>(Please use 44100Hz audio, but on PS3 you have to use 48000Hz audio)</td></tr>
+<tr><td>Mesh</td><td><code>.obj .fbx</code></td><td></td></tr>
+<tr><td>Font</td><td><code>.ttf</code></td><td></td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -3734,7 +4061,7 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <h2 id="description-4"><a class="header" href="#description-4">Description</a></h2>
 <p>Asset that stores audio like a sound effect or a music.</p>
 <p>Used by <a href="script_api_reference/engine/assets/../components/audio_source.html">Audio Source</a>.</p>
-<h2 id="settings"><a class="header" href="#settings">Settings</a></h2>
+<h2 id="inspector-settings"><a class="header" href="#inspector-settings">Inspector settings</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>Loaded In Memory</td><td>CheckBox</td><td>Defines if the audio should be fully loaded in memory.<br>When enabled, it's faster to play the audio but consumes a lot of memory.<br>Recommended for sound effects but not for musics.</td></tr>
@@ -3961,6 +4288,18 @@ bool isOpened = myFile-&gt;Open(FileMode::ReadOnly);
 <h2 id="description-7"><a class="header" href="#description-7">Description</a></h2>
 <p>Handles the visual appearance of rendered objects, including shaders and textures.<br>
 The Material class allows you to configure how an object should look when drawn on screen.</p>
+<h2 id="inspector-settings-1"><a class="header" href="#inspector-settings-1">Inspector settings</a></h2>
+<hr />
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>Shader</td><td>Shader</td><td>Set the material shader. Standard to use lighting, Unlit to disable lighting.</td></tr>
+<tr><td>Rendering mode</td><td>Enum</td><td>Set the rendering mode of the material.</td></tr>
+<tr><td>Texture</td><td>Texture</td><td>Set the material texture.</td></tr>
+<tr><td>Color</td><td>Color</td><td>Set the color of the material.</td></tr>
+<tr><td>Offset</td><td>Vector2</td><td>Set the texture offset.</td></tr>
+<tr><td>Tiling</td><td>Vector2</td><td>Set the texture tiling.</td></tr>
+<tr><td>Use lighting</td><td>CheckBox</td><td>Check this if you are using Standard shader, uncheck this if you are using Unlit shader.</td></tr>
+</tbody></table>
+</div>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
 <h3 id="setattribute"><a class="header" href="#setattribute">SetAttribute</a></h3>
@@ -4040,13 +4379,13 @@ material-&gt;SetOffset(Vector2(0.5f, 0.5f));
 <p>Set the texture tiling.</p>
 <p>Parameters:</p>
 <ul>
-<li><code>tiling</code>: Offset of the texture</li>
+<li><code>tiling</code>: Tiling of the texture</li>
 </ul>
 <pre><code class="language-cpp">void SetTiling(const Vector2&amp; tiling)
 </code></pre>
 <p>Code sample:</p>
 <pre><code class="language-cpp">std::shared_ptr&lt;Material&gt; material; // Filled variable
-material-&gt;SetOffset(Vector2(2.0f, 2.0f));
+material-&gt;SetTiling(Vector2(2.0f, 2.0f));
 </code></pre>
 <hr />
 <h3 id="getshader"><a class="header" href="#getshader">GetShader</a></h3>
@@ -5044,7 +5383,7 @@ Then you can recreate the GameObject by dragging the prefab from the File Explor
 <h2 id="description-15"><a class="header" href="#description-15">Description</a></h2>
 <p>Asset that stores an image.</p>
 <p>A texture can be created dynamically.</p>
-<h2 id="general-settings"><a class="header" href="#general-settings">General settings</a></h2>
+<h2 id="inspector-settings-2"><a class="header" href="#inspector-settings-2">Inspector settings</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>Resolution</td><td>Enum</td><td>Max texture resolution</td></tr>
@@ -5054,14 +5393,14 @@ Then you can recreate the GameObject by dragging the prefab from the File Explor
 <tr><td>PixelPerUnit</td><td>Number</td><td>Number of pixel per world unit (Used for sprites).</td></tr>
 </tbody></table>
 </div>
-<h2 id="psp-additional-settings"><a class="header" href="#psp-additional-settings">PSP additional settings</a></h2>
+<h2 id="psp-additional-inspector-settings"><a class="header" href="#psp-additional-inspector-settings">PSP additional Inspector settings</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>Type</td><td>Enum</td><td>Type of compression</td></tr>
 <tr><td>TryPutInVram</td><td>CheckBox</td><td>If true, the texture will try to be stored in video ram instead of ram. (video ram is faster than ram but way smaller)</td></tr>
 </tbody></table>
 </div>
-<h2 id="ps3-additional-settings"><a class="header" href="#ps3-additional-settings">PS3 additional settings</a></h2>
+<h2 id="ps3-additional-inspector-settings"><a class="header" href="#ps3-additional-inspector-settings">PS3 additional Inspector settings</a></h2>
 <hr />
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
 <tr><td>Type</td><td>Enum</td><td>Type of compression</td></tr>
@@ -13883,11 +14222,99 @@ if (hasHit &amp;&amp; hit.hitCollider.lock())
 }
 
 </style>
+<h1 id="profiler"><a class="header" href="#profiler">Profiler</a></h1>
+<p>Add this in your code:</p>
+<pre><code class="language-cpp">#include &lt;engine/debug/profiler.h&gt;
+</code></pre>
+<h2 id="description-68"><a class="header" href="#description-68">Description</a></h2>
+<p>Class used to use the profiler in game builds.</p>
+<h2 id="public-methods-34"><a class="header" href="#public-methods-34">Public methods</a></h2>
+<hr />
+<h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
+<p>Save profiling data to a file at the end of the frame.<br>
+Return true if the data can be saved, false if the profiler is disabled.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>name</code>: Name of the profiling data file without the extension, if empty, the name will be "profiler" + the date and time</li>
+</ul>
+<pre><code class="language-cpp">static bool SaveProfilingData(const std::string&amp; name = "")
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Profiler::SaveProfilingData(); // Will be saved in "profiler 14h 37m 42s 9d 7m 2025y.xenp"
+Profiler::SaveProfilingData("scene_0"); // Will be saved in "scene_0.xenp"
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="reflective"><a class="header" href="#reflective">Reflective</a></h1>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/reflection/reflection.h&gt;
 </code></pre>
-<h2 id="description-68"><a class="header" href="#description-68">Description</a></h2>
+<h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
 <p>Class to inherit if you want to access child's variables to fill variables from json or save them to json.<br>
 It's used to see variables of a class in the <a href="script_api_reference/engine/reflection/../../../manual/editor_ui/inspector.html">Inspector</a>.</p>
 <p>GameObject, Transform and Component implement this class.</p>
@@ -13901,9 +14328,9 @@ It's used to see variables of a class in the <a href="script_api_reference/engin
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
 <p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
 <p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<h2 id="public-methods-34"><a class="header" href="#public-methods-34">Public methods</a></h2>
+<h2 id="public-methods-35"><a class="header" href="#public-methods-35">Public methods</a></h2>
 <hr />
-<h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
+<h3 id="getreflectivedata-1"><a class="header" href="#getreflectivedata-1">GetReflectiveData</a></h3>
 <p>Get all child class variables references (Needs to be implemented).</p>
 <pre><code class="language-cpp">virtual ReflectiveData GetReflectiveData() = 0
 </code></pre>
@@ -14028,7 +14455,7 @@ void MyComponent::OnReflectionUpdated()
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/scene_manager/scene_manager.h&gt;
 </code></pre>
-<h2 id="description-69"><a class="header" href="#description-69">Description</a></h2>
+<h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
 <p>Class to load scenes.</p>
 <h2 id="static-methods-17"><a class="header" href="#static-methods-17">Static methods</a></h2>
 <hr />
@@ -14132,7 +14559,7 @@ SceneManager::LoadScene(sceneToLoad);
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/ui/screen.h&gt;
 </code></pre>
-<h2 id="description-70"><a class="header" href="#description-70">Description</a></h2>
+<h2 id="description-71"><a class="header" href="#description-71">Description</a></h2>
 <p>Class to get information and to interact with the screen.</p>
 <h2 id="static-methods-18"><a class="header" href="#static-methods-18">Static methods</a></h2>
 <hr />
@@ -14186,6 +14613,21 @@ Does not affect the editor window.</p>
 <pre><code class="language-cpp">Screen::SetVSync(true);
 
 bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
+</code></pre>
+<hr />
+<h3 id="makescreenshot"><a class="header" href="#makescreenshot">MakeScreenshot</a></h3>
+<p>Make a screenshot of the game (.png).<br>
+(Note: on PSP/PsVita, plugins overlays are also captured).
+On RPCS3 emulator, you have to enable the "Write Color Buffers" gpu option. You may have to use OpenGL instead of vulkan if there are artifacts.
+On PPSSPP emulator, you gave to enable software rendering.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>fileName</code>: The name of the file to save the screenshot (without the extension)</li>
+</ul>
+<pre><code class="language-cpp">void MakeScreenshot(const std::string&amp; fileName)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">Screen::MakeScreenshot("my_screenshot");
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
@@ -14258,7 +14700,7 @@ bool isEnabled = Screen::IsVSyncEnabled(); // Returns true
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/time/time.h&gt;
 </code></pre>
-<h2 id="description-71"><a class="header" href="#description-71">Description</a></h2>
+<h2 id="description-72"><a class="header" href="#description-72">Description</a></h2>
 <p>Class to get time information (Delta time, elapsed time).</p>
 <p>Values are updated every frame.</p>
 <h2 id="static-methods-19"><a class="header" href="#static-methods-19">Static methods</a></h2>
@@ -14406,9 +14848,9 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/game_elements/transform.h&gt;
 </code></pre>
-<h2 id="description-72"><a class="header" href="#description-72">Description</a></h2>
+<h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
 <p>Class representing a 3D transformation (position, rotation, scale) of a GameObject.</p>
-<h2 id="public-methods-35"><a class="header" href="#public-methods-35">Public Methods</a></h2>
+<h2 id="public-methods-36"><a class="header" href="#public-methods-36">Public Methods</a></h2>
 <hr />
 <h3 id="getposition"><a class="header" href="#getposition">GetPosition</a></h3>
 <p>Get world position.</p>
@@ -14714,7 +15156,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-73"><a class="header" href="#description-73">Description</a></h2>
+<h2 id="description-74"><a class="header" href="#description-74">Description</a></h2>
 <p>Enum to horizontally align text with text rendering components.</p>
 <h2 id="values-12"><a class="header" href="#values-12">Values</a></h2>
 <hr />
@@ -14794,7 +15236,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/ui/text_alignments.h&gt;
 </code></pre>
-<h2 id="description-74"><a class="header" href="#description-74">Description</a></h2>
+<h2 id="description-75"><a class="header" href="#description-75">Description</a></h2>
 <p>Enum to vertically align text with text rendering components.</p>
 <h2 id="values-13"><a class="header" href="#values-13">Values</a></h2>
 <hr />
@@ -14945,7 +15387,7 @@ float timeScale = Time::GetTimeScale(); // = 0.4f
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/tools/endian_utils.h&gt;
 </code></pre>
-<h2 id="description-75"><a class="header" href="#description-75">Description</a></h2>
+<h2 id="description-76"><a class="header" href="#description-76">Description</a></h2>
 <p>Utility class for endian conversion.<br>
 Usefull when using binary data on different platforms.</p>
 <h2 id="static-methods-20"><a class="header" href="#static-methods-20">Static methods</a></h2>
@@ -15046,7 +15488,7 @@ uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
-<h2 id="description-76"><a class="header" href="#description-76">Description</a></h2>
+<h2 id="description-77"><a class="header" href="#description-77">Description</a></h2>
 <p>Class that store the data structure of a vertex.</p>
 <h2 id="static-methods-21"><a class="header" href="#static-methods-21">Static methods</a></h2>
 <hr />
@@ -15061,7 +15503,7 @@ uint32_t newValue = EndianUtils::SwapEndian(value); // = 2063597568
 <p>Code sample:</p>
 <pre><code class="language-cpp">uint16_t elementSize = VertexDescriptor::GetVertexElementSize(VertexElement::POSITION_32_BITS);
 </code></pre>
-<h2 id="public-methods-36"><a class="header" href="#public-methods-36">Public methods</a></h2>
+<h2 id="public-methods-37"><a class="header" href="#public-methods-37">Public methods</a></h2>
 <hr />
 <h3 id="addvertexelement"><a class="header" href="#addvertexelement">AddVertexElement</a></h3>
 <p>Add a vertex element to the descriptor.</p>
@@ -15233,7 +15675,7 @@ Do not use if there is no color vertex element.</p>
 <p>Add this in your code:</p>
 <pre><code class="language-cpp">#include &lt;engine/graphics/3d_graphics/vertex_descriptor.h&gt;
 </code></pre>
-<h2 id="description-77"><a class="header" href="#description-77">Description</a></h2>
+<h2 id="description-78"><a class="header" href="#description-78">Description</a></h2>
 <p>Enum of all different vertex element types.</p>
 <h2 id="values-14"><a class="header" href="#values-14">Values</a></h2>
 <hr />
@@ -15419,8 +15861,10 @@ Do not use if there is no color vertex element.</p>
 <p><a href="https://github.com/CyrilArtFX">CyrilArtFX</a><br>
 <a href="https://github.com/arkaht">arkaht</a><br></p>
 <h2 id="icons-not-fully-updated"><a class="header" href="#icons-not-fully-updated">Icons (not fully updated):</a></h2>
-<p><a href="https://www.flaticon.com/free-icon/question_471664?term=question">Question free icon designed by Freepik</a>
-<a href="https://www.flaticon.com/free-icon/button_9374979?related_id=9374942">Click through rate icons created by Prashanth Rapolu 15</a></p>
+<p><a href="https://www.flaticon.com/free-icon/question_471664?term=question">Question free icon designed by Freepik</a><br>
+<a href="https://www.flaticon.com/free-icon/button_9374979?related_id=9374942">Click through rate icons created by Prashanth Rapolu 15</a><br>
+<a href="https://www.flaticon.com/fr/icone-gratuite/sphere_6181128?related_id=6181254">Sphere free icon designed by Freepik</a><br>
+<a href="https://www.flaticon.com/fr/icone-gratuite/contrer_6134688">Contrer free icon designed by Freepik</a><br></p>
 
                     </main>
 

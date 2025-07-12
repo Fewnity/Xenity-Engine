@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Credits - Xenity Engine</title>
+        <title>Add your first object in the scene - Xenity Engine</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="custom.css">
+        <link rel="stylesheet" href="../../custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "";
+            const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -103,7 +103,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -138,7 +138,7 @@
                     <h1 class="menu-title">Xenity Engine</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -234,26 +234,39 @@
 }
 
 </style>
-<h1 id="credits"><a class="header" href="#credits">Credits</a></h1>
-<h2 id="creator"><a class="header" href="#creator">Creator:</a></h2>
-<p><a href="https://github.com/Fewnity/">Fewnity</a></p>
-<h2 id="contributors"><a class="header" href="#contributors">Contributors:<br></a></h2>
-<p><a href="https://github.com/CyrilArtFX">CyrilArtFX</a><br>
-<a href="https://github.com/arkaht">arkaht</a><br></p>
-<h2 id="icons-not-fully-updated"><a class="header" href="#icons-not-fully-updated">Icons (not fully updated):</a></h2>
-<p><a href="https://www.flaticon.com/free-icon/question_471664?term=question">Question free icon designed by Freepik</a><br>
-<a href="https://www.flaticon.com/free-icon/button_9374979?related_id=9374942">Click through rate icons created by Prashanth Rapolu 15</a><br>
-<a href="https://www.flaticon.com/fr/icone-gratuite/sphere_6181128?related_id=6181254">Sphere free icon designed by Freepik</a><br>
-<a href="https://www.flaticon.com/fr/icone-gratuite/contrer_6134688">Contrer free icon designed by Freepik</a><br></p>
+<h1 id="add-your-first-object-in-the-scene"><a class="header" href="#add-your-first-object-in-the-scene">Add your first object in the scene</a></h1>
+<p>Once you have a mesh and a texture, you are almost able to use them in your scene.</p>
+<p><img src="images/add_object_file_explorer.png" alt="image" /></p>
+<p>You need a material for your mesh. To create one, you can right click on your texture and click on <code>Create a material for this</code>:</p>
+<p><img src="images/add_object_file_explorer_create_mat_from_texture.png" alt="image" /></p>
+<p>Or you can create an empty material by right clicking on the background and by clicking <code>material</code> in the <code>Create</code> menu:</p>
+<p><img src="images/add_object_file_explorer_create_mat.png" alt="image" /></p>
+<p>Then you will have a new material. Use the Standard shader if you want to use lighting, or use the Unlit shader if you want a bright texture without lighting. Unlit has way better performances.</p>
+<p><img src="images/add_object_material.png" alt="image" /></p>
+<p>Then you can drag and drop your mesh into the scene and set the material in the materials list of the mesh renderer.</p>
+<p>There are two ways to change a material variable:</p>
+<ul>
+<li>Drag and drop the asset into the slot,</li>
+<li>Click on the slot to show the list of asset and double click on the asset you want to use.</li>
+</ul>
+<p><img src="images/add_object_dragged.png" alt="image" /></p>
+<p>Each material slot is a material for a submesh. This mesh has 3 submeshes.</p>
+<p>I'm only applying a material to one submesh because other submesh are LODs.</p>
+<p><img src="images/add_object_material_set.png" alt="image" /></p>
+<p>And now if you want, you can add more components to your GameObject by clicking <code>Add Component</code>:</p>
+<p><img src="images/add_object_add_component.png" alt="image" /></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="how_to_compile_editor.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../manual/usage/import_files.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
+                            <a rel="next prefetch" href="../../manual/usage/create_component.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -261,10 +274,13 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="how_to_compile_editor.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../manual/usage/import_files.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
+                    <a rel="next prefetch" href="../../manual/usage/create_component.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>
@@ -277,13 +293,13 @@
         </script>
 
 
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
 
