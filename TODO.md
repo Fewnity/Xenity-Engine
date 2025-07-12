@@ -1,11 +1,5 @@
 ## For the next release (V1.0)
 
-- Add unit tests for modify commands and Awake/Start/Update/
-- Rework the Screen::MakeScreenshot to be able to use in game loop
-- Implement alpha testing on PsVita shaders
-- Fix PSP sleep mode when networking is enabled
-- Add a way for the user to export profiler data from a script
-
 ## Can be done for a later release
 
 ### High priority
@@ -17,6 +11,7 @@
 - Add filter to file dialog
 
 ### Medium priority
+- Add unit tests for Awake/Start/Update functions
 - Add a function to resize a submesh (resize only if size is different, usefull for text)
 - Try to remove rotation and local rotation from transform, maybe remove position
 - Check why the tv texture does not load on PSP (Specific to my project)
