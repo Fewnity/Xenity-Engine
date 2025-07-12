@@ -542,7 +542,7 @@ void ShaderOpenGL::Link()
 
 	if (blockIndex == -1)
 	{
-		Debug::PrintWarning("The shader does not have a LightIndices uniform buffer: " + m_file->GetFileName());
+		//Debug::PrintWarning("The shader does not have a LightIndices uniform buffer: " + m_file->GetFileName());
 	}
 	else
 	{
