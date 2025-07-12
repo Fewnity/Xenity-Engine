@@ -213,11 +213,15 @@ void Compiler::UpdatePaths()
 
 	const size_t backSlashPos = s_engineProjectLocation.substr(0, s_engineProjectLocation.size() - 1).find_last_of('/');
 	std::string visualStudioProjectPath = s_engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
+	// If the engine is running from visual studio, the project path is located in the Xenity_Engine folder
 	if (fs::exists(visualStudioProjectPath + "Xenity_Engine.vcxproj"))
 	{
-		s_engineProjectLocation = s_engineProjectLocation.erase(backSlashPos + 1) + "Xenity_Engine/";
+		s_engineProjectLocation = visualStudioProjectPath;
 	}
-
+	else 
+	{
+		s_engineProjectLocation = s_engineFolderLocation;
+	}
 #if defined(_WIN64) 
 	s_compilerExecFileName = MSVC_START_FILE_64BITS;
 #else

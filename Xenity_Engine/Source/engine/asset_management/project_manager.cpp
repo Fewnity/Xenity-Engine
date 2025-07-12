@@ -237,16 +237,38 @@ void ProjectManager::FindAllProjectFiles()
 	Debug::Print(std::to_string(AssetManager::GetFileReferenceCount()) + " files loaded");
 }
 
-void ProjectManager::CreateVisualStudioSettings()
+void ProjectManager::CreateVisualStudioSettings(bool forceCreation)
 {
 #if defined(EDITOR)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	const std::string filePath = s_assetFolderPath + ".vscode/c_cpp_properties.json";
+	const std::shared_ptr<File> vsCodeParamFile = FileSystem::MakeFile(filePath);
+
+	if (vsCodeParamFile->CheckIfExist() && !forceCreation)
+	{
+		return;
+	}
+
 	try
 	{
-		// Get engine includes folder
-		const std::filesystem::path exePath = std::filesystem::canonical("./");
-		const std::string includesPath = exePath.generic_string() + "/includes/";
+		// Get engine source and include folders
+		const std::string root = FileSystem::ConvertWindowsPathToBasicPath(std::filesystem::current_path().string()) + "/";
+		std::string enginePath = root;
+		const size_t backSlashPos = root.substr(0, root.size() - 1).find_last_of('/');
+		std::string visualStudioProjectPath = enginePath.erase(backSlashPos + 1) + "Xenity_Engine/";
+		// If the engine is running from visual studio, the project path is located in the Xenity_Engine folder
+		if (std::filesystem::exists(visualStudioProjectPath + "Xenity_Engine.vcxproj"))
+		{
+			enginePath = visualStudioProjectPath;
+		}
+		else 
+		{
+			enginePath = root;
+		}
+
+		const std::string includePath = enginePath + "include/";
+		const std::string sourcePath = enginePath + "Source/";
 
 		// Read the empty vscode settings file
 		std::shared_ptr<File> emptyVSCodeParamFile = FileSystem::MakeFile("./vscodeSample/c_cpp_properties.json");
@@ -257,7 +279,7 @@ void ProjectManager::CreateVisualStudioSettings()
 			std::string vsCodeText = emptyVSCodeParamFile->ReadAll();
 			emptyVSCodeParamFile->Close();
 
-			const size_t vsCodeTextSize = vsCodeText.size();
+			size_t vsCodeTextSize = vsCodeText.size();
 
 			// Replace tag by the include folder path
 			size_t beg = 0, end = 0;
@@ -265,15 +287,19 @@ void ProjectManager::CreateVisualStudioSettings()
 			{
 				if (StringUtils::FindTag(vsCodeText, i, vsCodeTextSize, "{ENGINE_SOURCE_PATH}", beg, end))
 				{
-					vsCodeText.replace(beg, end - beg - 1, includesPath);
-					break;
+					vsCodeText.replace(beg, end - beg - 1, sourcePath);
+					vsCodeTextSize = vsCodeText.size();
+				}
+				else if (StringUtils::FindTag(vsCodeText, i, vsCodeTextSize, "{ENGINE_INCLUDE_PATH}", beg, end))
+				{
+					vsCodeText.replace(beg, end - beg - 1, includePath);
+					vsCodeTextSize = vsCodeText.size();
 				}
 			}
 
 			// Create vscode folder
 			FileSystem::CreateFolder(s_assetFolderPath + ".vscode/");
 
-			const std::string filePath = s_assetFolderPath + ".vscode/c_cpp_properties.json";
 			FileSystem::Delete(filePath);
 
 			// Create the vscode settings file
@@ -580,7 +606,7 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 	CreateGame();
 
 #if defined(EDITOR)
-	CreateVisualStudioSettings();
+	CreateVisualStudioSettings(false);
 
 	// Check files to avoid triggerring a compilation
 	FileHandler::HasCodeChanged(GetAssetFolderPath());

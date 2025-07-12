@@ -105,6 +105,9 @@ public:
 	ReflectiveData GetReflectiveData() override;
 };
 
+/**
+* @brief Internal class
+*/
 class ProjectManager
 {
 public:
@@ -337,6 +340,11 @@ public:
 		return s_projectUnloadedEvent;
 	}
 
+	/**
+	* @brief Create Visual Studio Code settings file
+	*/
+	static void CreateVisualStudioSettings(bool forceCreation);
+
 	static ProjectSettings s_projectSettings;
 	static std::shared_ptr <Directory> s_projectDirectoryBase;
 	static std::shared_ptr <Directory> s_publicEngineAssetsDirectoryBase;
@@ -389,11 +397,6 @@ private:
 	* @brief Find all project files
 	*/
 	static void FindAllProjectFiles();
-
-	/**
-	* @brief Create Visual Studio Code settings file
-	*/
-	static void CreateVisualStudioSettings();
 
 	/**
 	* @brief Load meta file
