@@ -503,6 +503,10 @@ void MainBarMenu::Draw()
 		{
 			Compiler::HotReloadGame();
 		}
+		if (ImGui::MenuItem("Regenerate Visual Studio config"))
+		{
+			ProjectManager::CreateVisualStudioSettings(true);
+		}
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Window")) // ----------------------------------- Draw Window menu
