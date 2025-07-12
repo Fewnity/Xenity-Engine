@@ -543,14 +543,17 @@ void SceneManager::LoadSceneInternal(const ordered_json& jsonData, const ordered
 	for (const auto& idKv : jsonUsedFileListData["UsedFiles"]["Values"].items())
 	{
 		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(idKv.value());
-		s_openedScene->m_fileReferenceList.push_back(fileRef);
+		if (fileRef)
+		{
+			s_openedScene->m_fileReferenceList.push_back(fileRef);
 
-#if !defined(EDITOR)
-		FileReference::LoadOptions options;
-		options.threaded = false;
-		options.platform = Application::GetPlatform();
-		fileRef->LoadFileReference(options);
-#endif
+	#if !defined(EDITOR)
+			FileReference::LoadOptions options;
+			options.threaded = false;
+			options.platform = Application::GetPlatform();
+			fileRef->LoadFileReference(options);
+	#endif
+		}
 	}
 
 	if (jsonData.contains("GameObjects"))
