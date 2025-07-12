@@ -1026,8 +1026,6 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib
     </ClCompile>
     <ClCompile Include="Source\engine\asset_management\project_manager.cpp" />
     <ClCompile Include="Source\engine\tools\fps_counter.cpp" />
-    <ClCompile Include="Source\game_test\free_move.cpp" />
-    <ClCompile Include="Source\game_test\rotate.cpp" />
     <ClCompile Include="Source\engine\scene_management\scene.cpp" />
     <ClCompile Include="Source\engine\scene_management\scene_manager.cpp" />
     <ClCompile Include="Source\editor\ui\menus\settings\engine_settings_menu.cpp">
@@ -1760,8 +1758,6 @@ copy   "$(SolutionDir)XenityBuild\$(Platform)\$(Configuration)\Xenity_Engine.lib
     <ClInclude Include="Source\engine\asset_management\project_manager.h" />
     <ClInclude Include="Source\engine\tools\template_utils.h" />
     <ClInclude Include="Source\engine\tools\fps_counter.h" />
-    <ClInclude Include="Source\game_test\free_move.h" />
-    <ClInclude Include="Source\game_test\rotate.h" />
     <ClInclude Include="Source\engine\scene_management\scene.h" />
     <ClInclude Include="Source\engine\scene_management\scene_manager.h" />
     <ClInclude Include="Source\editor\ui\menus\settings\engine_settings_menu.h">
