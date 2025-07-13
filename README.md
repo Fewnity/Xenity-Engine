@@ -11,6 +11,7 @@ If you want to improve the engine, here is the [TODO list](https://github.com/Fe
 
 ![image](https://github.com/Fewnity/Xenity-Engine/assets/39272935/df59e12e-b989-4b0d-93b1-4f95fac7c91f)
 
+![gif](https://github.com/user-attachments/assets/7568e868-e41c-4495-bde7-56bb7b6bc54d)
 
 ### Supported platforms:<br>
 ✔️ Supported<br>
