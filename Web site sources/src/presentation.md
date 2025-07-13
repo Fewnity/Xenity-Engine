@@ -1,6 +1,7 @@
 # Presentation of Xenity Engine
 
-Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows. Made in C++ 17.
+Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows. Made in C++ 17.<br>
+Xenity engine uses [Visual Studio Code](https://code.visualstudio.com/) to edit your scripts.
 
 [GitHub page here!](https://github.com/Fewnity/Xenity-Engine)
 

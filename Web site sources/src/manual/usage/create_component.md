@@ -2,6 +2,8 @@
 
 Xenity provides a simple way to create a component for your game.
 
+To modify scripts, please install [Visual Studio Code](https://code.visualstudio.com/).
+
 First, make a right click on the background of the file explorer, then click on Create C++ class:
 
 ![image](images/create_component_file_explorer.png)
