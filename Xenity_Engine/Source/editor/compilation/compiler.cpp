@@ -506,12 +506,12 @@ void Compiler::CleanDestinationFolder(const std::string& exportPath)
 
 void Compiler::PrintTimings()
 {
-	Debug::Print("Compilation timings:");
-	Debug::Print("Cooking time: " + std::to_string(s_timings.cookTime) + " us (" + std::to_string(s_timings.cookTime / 1000000.0f) + " s)");
-	Debug::Print("Docker preparation time: " + std::to_string(s_timings.prepareDockerTime) + " us" + " us (" + std::to_string(s_timings.prepareDockerTime / 1000000.0f) + " s)");
-	Debug::Print("Docker code compile time: " + std::to_string(s_timings.dockerCompileTime) + " us" + " us (" + std::to_string(s_timings.dockerCompileTime / 1000000.0f) + " s)");
-	Debug::Print("Docker shader compile time: " + std::to_string(s_timings.shaderCompileTime) + " us" + " us (" + std::to_string(s_timings.shaderCompileTime / 1000000.0f) + " s)");
-	Debug::Print("Total compile time: " + std::to_string(s_timings.totalCompileTime) + " us" + " us (" + std::to_string(s_timings.totalCompileTime / 1000000.0f) + " s)");
+	Debug::Print("Compilation timings:", true);
+	Debug::Print("Cooking time: " + std::to_string(s_timings.cookTime) + " us (" + std::to_string(s_timings.cookTime / 1000000.0f) + " s)", true);
+	Debug::Print("Docker preparation time: " + std::to_string(s_timings.prepareDockerTime) + " us" + " us (" + std::to_string(s_timings.prepareDockerTime / 1000000.0f) + " s)", true);
+	Debug::Print("Docker code compile time: " + std::to_string(s_timings.dockerCompileTime) + " us" + " us (" + std::to_string(s_timings.dockerCompileTime / 1000000.0f) + " s)", true);
+	Debug::Print("Docker shader compile time: " + std::to_string(s_timings.shaderCompileTime) + " us" + " us (" + std::to_string(s_timings.shaderCompileTime / 1000000.0f) + " s)", true);
+	Debug::Print("Total compile time: " + std::to_string(s_timings.totalCompileTime) + " us" + " us (" + std::to_string(s_timings.totalCompileTime / 1000000.0f) + " s)", true);
 }
 
 void Compiler::CompileGameThreaded(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
@@ -802,7 +802,7 @@ CompileResult Compiler::CompileWindows(const CompilerParams& params)
 		command += GetCompileExecutableCommand(params);
 	}
 
-	Debug::Print("[Compiler::Compile] Command: " + command);
+	Debug::Print("[Compiler::Compile] Command: " + command, true);
 	// Run compilation
 	const int buildResult = system(command.c_str());
 	if (buildResult != 0)
