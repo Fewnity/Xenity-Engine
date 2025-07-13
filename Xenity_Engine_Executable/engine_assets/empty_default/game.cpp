@@ -3,11 +3,12 @@
 #include <engine/class_registry/class_registry.h>
 
 //----- Include all your classes here:
-// #include "my_class.h"
-// #include "scripts/my_other/class.h"
+// #include "Scripts/my_class.h"
+// #include "Scripts/my_other_class.h"
 
 /**
-* Register all your classes here:
+* @brief Register all your classes here
+* @brief Only use this function to register your classes!
 */
 void Game::Start()
 {
@@ -15,3 +16,7 @@ void Game::Start()
 	// Disable update function of not needed for better performances
 	// REGISTER_COMPONENT(MyOtherClass).DisableUpdateFunction();
 }
+
+/**
+* Do not add any code after this line.
+*/
