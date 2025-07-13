@@ -18,7 +18,7 @@ public:
 	virtual ~IDrawable() = default;
 
 	/**
-	* @brief Get order in layer
+	* @brief Get the order in layer, higher number, higher priority
 	*/
 	[[nodiscard]] int GetOrderInLayer() const
 	{
@@ -26,8 +26,8 @@ public:
 	}
 
 	/**
-	* @brief Set order in layer
-	* @param orderInLayer Order in layer
+	* @brief Set the order in layer
+	* @param orderInLayer Order in layer, higher number, higher priority
 	*/
 	void SetOrderInLayer(int orderInLayer);
 
