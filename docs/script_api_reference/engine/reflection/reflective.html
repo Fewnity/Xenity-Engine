@@ -250,8 +250,8 @@ It's used to see variables of a class in the <a href="../../../manual/editor_ui/
 <p>Macros have been added to simplify the usage of the reflection system.</p>
 <p><code>BEGIN_REFLECTION();</code> is used at the beginning of the GetReflectiveData function to prepare the reflection.</p>
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
-<p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
+<p><code>ADD_VARIABLE(variable);</code> is used to make a variable visible for the reflection system.</p>
+<p><code>ADD_VARIABLE_CUSTOM(variable, name);</code> is used to make a variable visible for the reflection system with a custom name.</p>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
 <h3 id="getreflectivedata"><a class="header" href="#getreflectivedata">GetReflectiveData</a></h3>
@@ -266,6 +266,7 @@ public:
 
 public:
     float publicVariable = 0;
+    float publicVariable2 = 0;
 private:
     float m_privateVariable = 1;
 };
@@ -273,9 +274,9 @@ private:
 ReflectiveData MyComponent::GetReflectiveData()
 {
 	BEGIN_REFLECTION();
-	ADD_VARIABLE(publicVariable, true);
-     // false is used to hide the variable from the Inspector view
-	ADD_VARIABLE(m_privateVariable, false);
+	ADD_VARIABLE(publicVariable);
+	ADD_VARIABLE(publicVariable2).SetIsSlider(true).SetMaxSliderValue(100.0).SetMinSliderValue(2.0);
+	ADD_VARIABLE(m_privateVariable).SetIsPublic(false); // false is used to hide the variable from the Inspector view
 	END_REFLECTION();
 }
 </code></pre>

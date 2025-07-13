@@ -639,7 +639,7 @@ They all work on game consoles too.<br></p>
 <ul>
 <li><a href="https://github.com/Fewnity/Dungeon_Xenity_Game">Dungeon platformer</a>, it's a platformer in a dungeon. Use of physics, lighting, UI and audio.<br>
 <img src="game_project_samples/images/dungeon.jpg" alt="image" /></li>
-<li><a href="https://github.com/Fewnity/Nano-Machine">Nano Machines</a>, it's a tiny car controller. Use of physics and particles.<br>
+<li><a href="https://github.com/Fewnity/Nano-Machines">Nano Machines</a>, it's a tiny car controller. Use of physics and particles.<br>
 <img src="game_project_samples/images/nano_machines.jpg" alt="image" /></li>
 <li><a href="https://github.com/Fewnity/Cook_Xenity_Game">Cooking game</a>, it's an Overcooked like. Use of physics, audio and particles.<br>
 <img src="game_project_samples/images/cooking_game.jpg" alt="image" /></li>
@@ -1925,8 +1925,8 @@ Then you can click on the dev kit to use.<br></p>
 <p>You can turn on or off your dev kit from the editor.<br>
 If you want to leave the game you can reset the dev kit.</p>
 <h3 id="game-management"><a class="header" href="#game-management">Game Management</a></h3>
-<p>If the game's files are located on the dev kit hard drive, you can launch it with the <code>Launch game from ps3 hdd</code>.<br>This option is useful with fake dev kit (retail PS3 running dev kit firmware).</p>
-<p>If the game's files are on your computer, you can launch it with the <code>Launch game from pc</code>.<br>This option only works with an official PlayStation dev kit.</p>
+<p>If the game's files are located on the dev kit hard drive, you can launch it with the <code>Launch game from ps3 hdd</code>.<br>This option is useful with fake dev kit (retail PS3 running dev kit firmware). The file should be located in <code>/dev_hdd0/xenity_engine/XenityBuild.self</code>.</p>
+<p>If the game's files are on your computer, you can launch it with the <code>Launch game from pc</code>.<br>This option only works with an official PlayStation dev kit. You have to select the .fake.self file.</p>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2641,9 +2641,9 @@ Then you can check the <a href="manual/usage/../editor_ui/build_settings.html">B
 <p><img src="manual/usage/images/build_menu.png" alt="image" /></p>
 <p>Each game console has a special executable file.</p>
 <ul>
-<li>On PSP it's an EBOOT.PBP file, it will directly launch the game.</li>
-<li>On PsVita it's a .vpk file, it will install the game, asset files are in the .vpk file.</li>
-<li>On PS3 it's a .self, it will directly launch the game.</li>
+<li>On PSP it's an EBOOT.PBP file, it will directly launch the game. Cannot be renamed.</li>
+<li>On PsVita it's a .vpk file, it will install the game, asset files are in the .vpk file. Can be renamed.</li>
+<li>On PS3 it's a .self, it will directly launch the game. Can be renamed.</li>
 </ul>
 <h2 id="emulation"><a class="header" href="#emulation">Emulation</a></h2>
 <p>You can try your game on emulator, but it's not recommended to check performances with them, a game can run smoothly on an emulator but run poorly on real hardware or not even boot! Sometimes emulators won't crash if you code has a bug.</p>
@@ -7254,6 +7254,20 @@ const std::string&amp; name = component-&gt;GetComponentName();
 </div>
 <h2 id="public-methods-10"><a class="header" href="#public-methods-10">Public methods</a></h2>
 <hr />
+<h3 id="getorderinlayer"><a class="header" href="#getorderinlayer">GetOrderInLayer</a></h3>
+<p>Get the order in layer, higher number, higher priority.</p>
+<pre><code class="language-cpp">int GetOrderInLayer() const
+</code></pre>
+<hr />
+<h3 id="setorderinlayer"><a class="header" href="#setorderinlayer">SetOrderInLayer</a></h3>
+<p>Set the order in layer.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>orderInLayer</code>: Order in layer, higher number, higher priority</li>
+</ul>
+<pre><code class="language-cpp">void SetOrderInLayer(int orderInLayer)
+</code></pre>
+<hr />
 <h3 id="getimage"><a class="header" href="#getimage">GetImage</a></h3>
 <p>Get the image.</p>
 <pre><code class="language-cpp">const std::shared_ptr&lt;Texture&gt;&amp; GetImage() const
@@ -9105,6 +9119,20 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <p>Component for rendering text in 3D space.</p>
 <h2 id="public-methods-20"><a class="header" href="#public-methods-20">Public methods</a></h2>
 <hr />
+<h3 id="getorderinlayer-1"><a class="header" href="#getorderinlayer-1">GetOrderInLayer</a></h3>
+<p>Get the order in layer, higher number, higher priority.</p>
+<pre><code class="language-cpp">int GetOrderInLayer() const
+</code></pre>
+<hr />
+<h3 id="setorderinlayer-1"><a class="header" href="#setorderinlayer-1">SetOrderInLayer</a></h3>
+<p>Set the order in layer.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>orderInLayer</code>: Order in layer, higher number, higher priority</li>
+</ul>
+<pre><code class="language-cpp">void SetOrderInLayer(int orderInLayer)
+</code></pre>
+<hr />
 <h3 id="getcolor-3"><a class="header" href="#getcolor-3">GetColor</a></h3>
 <p>Get the color of the sprite.</p>
 <pre><code class="language-cpp">const Color&amp; GetColor() const
@@ -9304,6 +9332,20 @@ particleSystem-&gt;SetScaleOverLifeTimeFunction(&amp;GetColorOverLifeTime);
 <h2 id="description-43"><a class="header" href="#description-43">Description</a></h2>
 <p>Component for rendering text in a canvas.</p>
 <h2 id="public-methods-21"><a class="header" href="#public-methods-21">Public methods</a></h2>
+<hr />
+<h3 id="getorderinlayer-2"><a class="header" href="#getorderinlayer-2">GetOrderInLayer</a></h3>
+<p>Get the order in layer, higher number, higher priority.</p>
+<pre><code class="language-cpp">int GetOrderInLayer() const
+</code></pre>
+<hr />
+<h3 id="setorderinlayer-2"><a class="header" href="#setorderinlayer-2">SetOrderInLayer</a></h3>
+<p>Set the order in layer.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>orderInLayer</code>: Order in layer, higher number, higher priority</li>
+</ul>
+<pre><code class="language-cpp">void SetOrderInLayer(int orderInLayer)
+</code></pre>
 <hr />
 <h3 id="getcolor-4"><a class="header" href="#getcolor-4">GetColor</a></h3>
 <p>Get the color of the sprite.</p>
@@ -11319,6 +11361,30 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 <pre><code class="language-cpp">Vector2 right = InputSystem::GetRightJoystick(PLAYER_1);
 </code></pre>
 <hr />
+<h3 id="getlefttrigger"><a class="header" href="#getlefttrigger">GetLeftTrigger</a></h3>
+<p>Get left trigger value (R2), values between 0.0f and 1.0f.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp"> static float GetLeftTrigger(const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = InputSystem::GetLeftTrigger(PLAYER_1);
+</code></pre>
+<hr />
+<h3 id="getrighttrigger"><a class="header" href="#getrighttrigger">GetRightTrigger</a></h3>
+<p>Get right trigger value (R2), values between 0.0f and 1.0f.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">static float GetRightTrigger(const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = InputSystem::GetRightTrigger(PLAYER_1);
+</code></pre>
+<hr />
 <h3 id="gettouchscreencount"><a class="header" href="#gettouchscreencount">GetTouchScreenCount</a></h3>
 <p>Get how many touch screens the device has.</p>
 <pre><code class="language-cpp">int GetTouchScreenCount()
@@ -12248,6 +12314,8 @@ Vector2 operator-(const Vector2&amp; vec)
 Vector2 operator*(const float value, const Vector2&amp; vec)
 Vector2 operator*(const Vector2&amp; left, const Vector2&amp; right)
 Vector2 operator*(const Vector2&amp; vec, const float value)
+Vector2 operator*(const Vector2&amp; left, const Vector2Int&amp; right);
+Vector2 operator*(const Vector2Int&amp; left, const Vector2&amp; right);
 Vector2 operator/(const float value, const Vector2&amp; vec)
 Vector2 operator/(const Vector2&amp; vec, const float value)
 Vector2 operator/(const Vector2&amp; left, const Vector2&amp; right)
@@ -14326,8 +14394,8 @@ It's used to see variables of a class in the <a href="script_api_reference/engin
 <p>Macros have been added to simplify the usage of the reflection system.</p>
 <p><code>BEGIN_REFLECTION();</code> is used at the beginning of the GetReflectiveData function to prepare the reflection.</p>
 <p><code>END_REFLECTION();</code> is used at the end of the GetReflectiveData function to end the reflection.</p>
-<p><code>ADD_VARIABLE(variable, isPublic);</code> is used to make a variable visible for the reflection system. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
-<p><code>ADD_VARIABLE_CUSTOM(variable, name, isPublic);</code> is used to make a variable visible for the reflection system with a custom name. <code>isPublic</code> is used to hide or show the variable from the Inspector view.</p>
+<p><code>ADD_VARIABLE(variable);</code> is used to make a variable visible for the reflection system.</p>
+<p><code>ADD_VARIABLE_CUSTOM(variable, name);</code> is used to make a variable visible for the reflection system with a custom name.</p>
 <h2 id="public-methods-35"><a class="header" href="#public-methods-35">Public methods</a></h2>
 <hr />
 <h3 id="getreflectivedata-1"><a class="header" href="#getreflectivedata-1">GetReflectiveData</a></h3>
@@ -14342,6 +14410,7 @@ public:
 
 public:
     float publicVariable = 0;
+    float publicVariable2 = 0;
 private:
     float m_privateVariable = 1;
 };
@@ -14349,9 +14418,9 @@ private:
 ReflectiveData MyComponent::GetReflectiveData()
 {
 	BEGIN_REFLECTION();
-	ADD_VARIABLE(publicVariable, true);
-     // false is used to hide the variable from the Inspector view
-	ADD_VARIABLE(m_privateVariable, false);
+	ADD_VARIABLE(publicVariable);
+	ADD_VARIABLE(publicVariable2).SetIsSlider(true).SetMaxSliderValue(100.0).SetMinSliderValue(2.0);
+	ADD_VARIABLE(m_privateVariable).SetIsPublic(false); // false is used to hide the variable from the Inspector view
 	END_REFLECTION();
 }
 </code></pre>

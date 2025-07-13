@@ -221,6 +221,8 @@ Vector2 operator-(const Vector2& vec)
 Vector2 operator*(const float value, const Vector2& vec)
 Vector2 operator*(const Vector2& left, const Vector2& right)
 Vector2 operator*(const Vector2& vec, const float value)
+Vector2 operator*(const Vector2& left, const Vector2Int& right);
+Vector2 operator*(const Vector2Int& left, const Vector2& right);
 Vector2 operator/(const float value, const Vector2& vec)
 Vector2 operator/(const Vector2& vec, const float value)
 Vector2 operator/(const Vector2& left, const Vector2& right)

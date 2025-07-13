@@ -242,6 +242,20 @@
 <p>Component for rendering text in a canvas.</p>
 <h2 id="public-methods"><a class="header" href="#public-methods">Public methods</a></h2>
 <hr />
+<h3 id="getorderinlayer"><a class="header" href="#getorderinlayer">GetOrderInLayer</a></h3>
+<p>Get the order in layer, higher number, higher priority.</p>
+<pre><code class="language-cpp">int GetOrderInLayer() const
+</code></pre>
+<hr />
+<h3 id="setorderinlayer"><a class="header" href="#setorderinlayer">SetOrderInLayer</a></h3>
+<p>Set the order in layer.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>orderInLayer</code>: Order in layer, higher number, higher priority</li>
+</ul>
+<pre><code class="language-cpp">void SetOrderInLayer(int orderInLayer)
+</code></pre>
+<hr />
 <h3 id="getcolor"><a class="header" href="#getcolor">GetColor</a></h3>
 <p>Get the color of the sprite.</p>
 <pre><code class="language-cpp">const Color&amp; GetColor() const

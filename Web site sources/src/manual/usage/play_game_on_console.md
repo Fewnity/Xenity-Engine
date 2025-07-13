@@ -13,9 +13,9 @@ Preview of the build menu:
 
 Each game console has a special executable file.
 
-- On PSP it's an EBOOT.PBP file, it will directly launch the game.
-- On PsVita it's a .vpk file, it will install the game, asset files are in the .vpk file.
-- On PS3 it's a .self, it will directly launch the game.
+- On PSP it's an EBOOT.PBP file, it will directly launch the game. Cannot be renamed.
+- On PsVita it's a .vpk file, it will install the game, asset files are in the .vpk file. Can be renamed.
+- On PS3 it's a .self, it will directly launch the game. Can be renamed.
 
 ## Emulation
 

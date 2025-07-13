@@ -130,6 +130,34 @@ Vector2 right = InputSystem::GetRightJoystick(PLAYER_1);
 ```
 
 ---
+### GetLeftTrigger
+Get left trigger value (R2), values between 0.0f and 1.0f.
+
+Parameters:
+- `controllerIndex`: Controller index (0-7)
+```cpp
+ static float GetLeftTrigger(const int controllerIndex = 0)
+```
+Code sample:
+```cpp
+float value = InputSystem::GetLeftTrigger(PLAYER_1);
+```
+
+---
+### GetRightTrigger
+Get right trigger value (R2), values between 0.0f and 1.0f.
+
+Parameters:
+- `controllerIndex`: Controller index (0-7)
+```cpp
+static float GetRightTrigger(const int controllerIndex = 0)
+```
+Code sample:
+```cpp
+float value = InputSystem::GetRightTrigger(PLAYER_1);
+```
+
+---
 ### GetTouchScreenCount
 Get how many touch screens the device has.
 ```cpp

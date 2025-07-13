@@ -12,6 +12,23 @@ Component for rendering text in 3D space.
 ## Public methods
 
 ---
+### GetOrderInLayer
+Get the order in layer, higher number, higher priority.
+```cpp
+int GetOrderInLayer() const
+```
+
+---
+### SetOrderInLayer
+Set the order in layer.
+
+Parameters:
+- `orderInLayer`: Order in layer, higher number, higher priority
+```cpp
+void SetOrderInLayer(int orderInLayer)
+```
+
+---
 ### GetColor
 Get the color of the sprite.
 ```cpp

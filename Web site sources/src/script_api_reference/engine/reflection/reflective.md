@@ -27,9 +27,9 @@ Macros have been added to simplify the usage of the reflection system.
 
 `END_REFLECTION();` is used at the end of the GetReflectiveData function to end the reflection.
 
-`ADD_VARIABLE(variable, isPublic);` is used to make a variable visible for the reflection system. `isPublic` is used to hide or show the variable from the Inspector view.
+`ADD_VARIABLE(variable);` is used to make a variable visible for the reflection system.
 
-`ADD_VARIABLE_CUSTOM(variable, name, isPublic);` is used to make a variable visible for the reflection system with a custom name. `isPublic` is used to hide or show the variable from the Inspector view.
+`ADD_VARIABLE_CUSTOM(variable, name);` is used to make a variable visible for the reflection system with a custom name.
 
 ## Public methods
 
@@ -48,6 +48,7 @@ public:
 
 public:
     float publicVariable = 0;
+    float publicVariable2 = 0;
 private:
     float m_privateVariable = 1;
 };
@@ -55,9 +56,9 @@ private:
 ReflectiveData MyComponent::GetReflectiveData()
 {
 	BEGIN_REFLECTION();
-	ADD_VARIABLE(publicVariable, true);
-     // false is used to hide the variable from the Inspector view
-	ADD_VARIABLE(m_privateVariable, false);
+	ADD_VARIABLE(publicVariable);
+	ADD_VARIABLE(publicVariable2).SetIsSlider(true).SetMaxSliderValue(100.0).SetMinSliderValue(2.0);
+	ADD_VARIABLE(m_privateVariable).SetIsPublic(false); // false is used to hide the variable from the Inspector view
 	END_REFLECTION();
 }
 ```

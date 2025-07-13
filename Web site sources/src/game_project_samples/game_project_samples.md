@@ -6,7 +6,7 @@ They all work on game consoles too.<br>
 
 - [Dungeon platformer](https://github.com/Fewnity/Dungeon_Xenity_Game), it's a platformer in a dungeon. Use of physics, lighting, UI and audio.<br>
 ![image](images/dungeon.jpg)
-- [Nano Machines](https://github.com/Fewnity/Nano-Machine), it's a tiny car controller. Use of physics and particles.<br>
+- [Nano Machines](https://github.com/Fewnity/Nano-Machines), it's a tiny car controller. Use of physics and particles.<br>
 ![image](images/nano_machines.jpg)
 - [Cooking game](https://github.com/Fewnity/Cook_Xenity_Game), it's an Overcooked like. Use of physics, audio and particles.<br>
 ![image](images/cooking_game.jpg)

@@ -347,6 +347,30 @@ if (InputSystem::GetKeyUp(KeyCode::CIRCLE), PLAYER_1)
 <pre><code class="language-cpp">Vector2 right = InputSystem::GetRightJoystick(PLAYER_1);
 </code></pre>
 <hr />
+<h3 id="getlefttrigger"><a class="header" href="#getlefttrigger">GetLeftTrigger</a></h3>
+<p>Get left trigger value (R2), values between 0.0f and 1.0f.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp"> static float GetLeftTrigger(const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = InputSystem::GetLeftTrigger(PLAYER_1);
+</code></pre>
+<hr />
+<h3 id="getrighttrigger"><a class="header" href="#getrighttrigger">GetRightTrigger</a></h3>
+<p>Get right trigger value (R2), values between 0.0f and 1.0f.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>controllerIndex</code>: Controller index (0-7)</li>
+</ul>
+<pre><code class="language-cpp">static float GetRightTrigger(const int controllerIndex = 0)
+</code></pre>
+<p>Code sample:</p>
+<pre><code class="language-cpp">float value = InputSystem::GetRightTrigger(PLAYER_1);
+</code></pre>
+<hr />
 <h3 id="gettouchscreencount"><a class="header" href="#gettouchscreencount">GetTouchScreenCount</a></h3>
 <p>Get how many touch screens the device has.</p>
 <pre><code class="language-cpp">int GetTouchScreenCount()

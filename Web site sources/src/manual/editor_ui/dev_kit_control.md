@@ -16,6 +16,6 @@ If you want to leave the game you can reset the dev kit.
 
 ### Game Management
 
-If the game's files are located on the dev kit hard drive, you can launch it with the `Launch game from ps3 hdd`.<br>This option is useful with fake dev kit (retail PS3 running dev kit firmware).
+If the game's files are located on the dev kit hard drive, you can launch it with the `Launch game from ps3 hdd`.<br>This option is useful with fake dev kit (retail PS3 running dev kit firmware). The file should be located in `/dev_hdd0/xenity_engine/XenityBuild.self`.
 
-If the game's files are on your computer, you can launch it with the `Launch game from pc`.<br>This option only works with an official PlayStation dev kit.
+If the game's files are on your computer, you can launch it with the `Launch game from pc`.<br>This option only works with an official PlayStation dev kit. You have to select the .fake.self file.

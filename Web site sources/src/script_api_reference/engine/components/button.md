@@ -19,6 +19,23 @@ color | `Color` | Color of the sprite
 ## Public methods
 
 ---
+### GetOrderInLayer
+Get the order in layer, higher number, higher priority.
+```cpp
+int GetOrderInLayer() const
+```
+
+---
+### SetOrderInLayer
+Set the order in layer.
+
+Parameters:
+- `orderInLayer`: Order in layer, higher number, higher priority
+```cpp
+void SetOrderInLayer(int orderInLayer)
+```
+
+---
 ### GetImage
 Get the image.
 ```cpp
