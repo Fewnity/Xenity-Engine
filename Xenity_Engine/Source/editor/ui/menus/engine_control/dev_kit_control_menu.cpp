@@ -10,6 +10,7 @@
 #include <imgui/imgui.h>
 
 #include <editor/editor.h>
+#include <editor/ui/editor_ui.h>
 
 #include <engine/engine_settings.h>
 #include <engine/tools/string_utils.h>
@@ -113,6 +114,8 @@ void DevKitControlMenu::Draw()
 			std::thread launchGameThread = std::thread(&DevKitControlMenu::LaunchGame, this, DevKitRunningMode::FromHDD);
 			launchGameThread.detach();
 		}
+		ImGui::SameLine();
+		ImGui::Text("File should be in: dev_hdd0/xenity_engine/XenityBuild.self");
 		if (ImGui::Button("Launch game from pc"))
 		{
 			std::thread launchGameThread = std::thread(&DevKitControlMenu::LaunchGame, this, DevKitRunningMode::FromPC);
@@ -273,7 +276,17 @@ void DevKitControlMenu::LaunchGame(DevKitRunningMode devKitRunningMode)
 	}
 	else if (devKitRunningMode == DevKitRunningMode::FromPC)
 	{
-		command += " C:\\Users\\elect\\Desktop\\Builds\\Benchmark\\PS3\\XenityBuild.fake.self"; // Real dev kit cannot run normal self files so use fake.self
+		std::string location = EditorUI::OpenFileDialog("Select the game fake.self file", "");
+		if(location.empty())
+		{
+			m_currentError = DevKitError::NoError;
+			return;
+		}
+		else 
+		{
+			command += location;
+		}
+		//command += " C:\\Users\\elect\\Desktop\\Builds\\Benchmark\\PS3\\XenityBuild.fake.self"; // Real dev kit cannot run normal self files so use fake.self
 	}
 	command += "\"";
 
