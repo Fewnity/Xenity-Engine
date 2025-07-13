@@ -201,10 +201,10 @@ void Material::Update()
 	if (!m_updated)
 	{
 		m_shader->SetShaderOffsetAndTiling(t_offset, t_tiling);
-		if(m_renderingMode == MaterialRenderingMode::Cutout)
-			m_shader->SetAlphaThreshold(m_alphaCutoff);
-		else
-			m_shader->SetAlphaThreshold(0.0f);
+		//if(m_renderingMode == MaterialRenderingMode::Cutout)
+		//	m_shader->SetAlphaThreshold(m_alphaCutoff);
+		//else
+		//	m_shader->SetAlphaThreshold(0.0f);
 
 		//int textureIndex = 0;
 		/*for (const auto& kv : uniformsTextures)

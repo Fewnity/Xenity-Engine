@@ -355,7 +355,7 @@ void ShaderOpenGL::SetShaderOffsetAndTiling(const Vector2& offset, const Vector2
 void ShaderOpenGL::SetAlphaThreshold(float alphaThreshold) 
 {
 #if defined(__vita__)
-	SetShaderAttribut(m_alphaThresholdLocation, alphaThreshold);
+	//SetShaderAttribut(m_alphaThresholdLocation, alphaThreshold);
 #endif
 }
 

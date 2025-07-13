@@ -111,6 +111,12 @@ public:
 	*/
 	[[nodiscard]] MaterialRenderingMode GetRenderingMode() const
 	{
+#if defined(__vita__)
+		if (m_renderingMode == MaterialRenderingMode::Cutout)
+		{
+			return MaterialRenderingMode::Transparent;
+		}
+#endif
 		return m_renderingMode;
 	}
 
