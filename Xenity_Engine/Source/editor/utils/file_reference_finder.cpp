@@ -33,6 +33,7 @@ FileReferenceFinder::GetFileRefId(const std::reference_wrapper<std::shared_ptr<T
 		auto ret = ids.insert(valuePtr->get()->GetFileId());
 		if(valuePtr->get()->GetFileType() == FileType::File_Prefab && ret.second)
 		{
+			valuePtr->get()->LoadFileReference(FileReference::LoadOptions{});
 			GetUsedFilesInJson(ids, std::dynamic_pointer_cast<Prefab>(valuePtr->get())->GetData());
 		}
 		return true;
@@ -106,9 +107,15 @@ void FileReferenceFinder::GetUsedFilesInJson(std::set<uint64_t>& usedFilesIds, c
 	ExtractInts(json, ids);
 	for (uint64_t id : ids)
 	{
-		if(ProjectManager::GetFileReferenceById(id))
+		if(std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(id))
 		{
-			usedFilesIds.insert(id);
+			auto ret = usedFilesIds.insert(id);
+
+			if (fileRef->GetFileType() == FileType::File_Prefab && ret.second)
+			{
+				fileRef->LoadFileReference(FileReference::LoadOptions{});
+				GetUsedFilesInJson(usedFilesIds, std::dynamic_pointer_cast<Prefab>(fileRef)->GetData());
+			}
 		}
 	}
 }
