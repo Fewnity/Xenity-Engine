@@ -13,6 +13,8 @@ If you want to improve the engine, here is the [TODO list](https://github.com/Fe
 
 ![gif](https://github.com/user-attachments/assets/7568e868-e41c-4495-bde7-56bb7b6bc54d)
 
+[Game samples](https://fewnity.github.io/Xenity-Engine/game_project_samples/game_project_samples.html) are available to download!
+
 ### Supported platforms:<br>
 ✔️ Supported<br>
 🚧 Work In Progress<br>
