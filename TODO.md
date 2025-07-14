@@ -1,5 +1,7 @@
 ## For the next release (V1.0)
 
+Empty, add tasks from the list below.
+
 ## Can be done for a later release
 
 ### High priority
