@@ -120,7 +120,7 @@ CompileResult Compiler::Compile(CompilerParams params)
 	{
 		ProjectSettings projectSettingsCopy = ProjectManager::s_projectSettings;
 
-		ProjectManager::s_projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
+		ProjectManager::s_projectSettings.compiledLibEngineVersion = ENGINE_VERSION;
 		bool isDebugMode = false;
 #if defined(DEBUG)
 		isDebugMode = true;

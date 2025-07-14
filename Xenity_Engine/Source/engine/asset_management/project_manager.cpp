@@ -233,8 +233,6 @@ void ProjectManager::FindAllProjectFiles()
 		Editor::SetCurrentProjectDirectory(s_projectDirectory);
 	}
 #endif
-
-	Debug::Print(std::to_string(AssetManager::GetFileReferenceCount()) + " files loaded");
 }
 
 void ProjectManager::CreateVisualStudioSettings(bool forceCreation)
@@ -527,7 +525,7 @@ void ProjectManager::OnProjectCompiled([[maybe_unused]] CompilerParams params, b
 
 	if (result)
 	{
-		s_projectSettings.compiledLibEngineVersion = ENGINE_DLL_VERSION;
+		s_projectSettings.compiledLibEngineVersion = ENGINE_VERSION;
 	}
 	else
 	{
@@ -1289,7 +1287,7 @@ void ProjectManager::CreateGame()
 #if defined(DEBUG)
 	isDebugMode = true;
 #endif
-	const bool isSameVersion = s_projectSettings.compiledLibEngineVersion == ENGINE_DLL_VERSION;
+	const bool isSameVersion = s_projectSettings.compiledLibEngineVersion == ENGINE_VERSION;
 	const bool isSameDebugMode = s_projectSettings.isLibCompiledForDebug == isDebugMode;
 	const bool isSame64Bits = s_projectSettings.isLibCompiledFor64Bits == is64Bits;
 
@@ -1300,9 +1298,15 @@ void ProjectManager::CreateGame()
 #else
 		DynamicLibrary::LoadGameLibrary("game");
 #endif // defined(EDITOR)
+
+		if (!ProjectManager::s_projectSettings.isCompiled)
+		{
+			Debug::PrintWarning("The project DLL is not found, please recompile the game.");
+		}
+
 		Engine::s_game = DynamicLibrary::CreateGame();
 	}
-	else
+	else if(s_projectSettings.compiledLibEngineVersion != "0")
 	{
 		// Maybe automaticaly recompile the project
 		Debug::PrintWarning("The project was compiled with another version of the engine, please recompile the game.");

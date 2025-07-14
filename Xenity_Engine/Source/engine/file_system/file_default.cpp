@@ -175,10 +175,6 @@ bool FileDefault::Open(FileMode fileMode)
 				isOpen = true;
 			}
 		}
-		else
-		{
-			Debug::Print("[File::Open] Fail while opening file or file not found: " + m_path);
-		}
 	}
 	else
 	{

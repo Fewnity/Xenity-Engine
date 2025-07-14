@@ -19,14 +19,11 @@
 // -------------------------------------------------- Version
 //
 // Increase those numbers when you make a new release
-#define ENGINE_MAJOR_VERSION 0
-#define ENGINE_MINOR_VERSION 1
+#define ENGINE_MAJOR_VERSION 1
+#define ENGINE_MINOR_VERSION 0
 #define ENGINE_PATCH_VERSION 0
 
-
 #define ENGINE_VERSION TO_STRING(ENGINE_MAJOR_VERSION) "." TO_STRING(ENGINE_MINOR_VERSION) "." TO_STRING(ENGINE_PATCH_VERSION)
-
-#define ENGINE_DLL_VERSION "2" // Increase by one this number to invalidate compiled Dlls of games projects
 
 //
 // -------------------------------------------------- Files/directories names
