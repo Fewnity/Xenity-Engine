@@ -26,3 +26,9 @@ REGISTER_COMPONENT allows you to add parameters about this class, for example th
 
 > [!WARNING]
 > Do not move or delete the game.cpp and game.h file, or your project won't work anymore.
+> DDo not use game.cpp for anything other than registering your components.
+
+> [!NOTE]
+> If you have a compilation error, you can see it in the CMD window.
+
+![image](images/error_in_cmd.png)
