@@ -18,7 +18,7 @@ public:
 	constexpr RGBA(float r, float g, float b, float a)
 	{
 		this->r = r;
-		this->a = a;
+		this->g = g;
 		this->b = b;
 		this->a = a;
 	}
