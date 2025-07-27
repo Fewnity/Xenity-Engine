@@ -25,7 +25,7 @@ public:
 
 	uint32_t m_vertexProgramSize = 0;
 	uint32_t m_fragmentProgramSize = 0;
-	uint32_t* m_fragmentProgramCodeOnGPU = nullptr;;
+	uint32_t* m_fragmentProgramCodeOnGPU = nullptr;
 	uint32_t m_fp_offset = 0;
 
 	void* m_vertexProgramCode = nullptr;
