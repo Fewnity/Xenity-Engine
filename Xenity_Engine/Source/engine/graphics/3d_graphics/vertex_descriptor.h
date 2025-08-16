@@ -64,7 +64,7 @@ struct VertexDescriptor
 	*/
 	[[nodiscard]] static uint16_t GetVertexElementSize(VertexElement vertexElement)
 	{
-		XASSERT(vertexElement != VertexElement::NONE, "[VertexDescriptor::AddVertexElement] Wrong vertexElement");
+		XASSERT(vertexElement != VertexElement::NONE, "[VertexDescriptor::GetVertexElementSize] Wrong vertexElement");
 
 		uint16_t vertexSize = 0;
 		if ((vertexElement & VertexElement::POSITION_32_BITS) == VertexElement::POSITION_32_BITS)
@@ -186,7 +186,7 @@ struct VertexDescriptor
 	*/
 	[[nodiscard]] VertexElement GetElementFromIndex(int32_t index) const
 	{
-		XASSERT(index >= 0 && index < static_cast<int32_t>(m_vertexElementInfos.size()), "[VertexDescriptor::GetOffsetFromIndex] Index out of bound");
+		XASSERT(index >= 0 && index < static_cast<int32_t>(m_vertexElementInfos.size()), "[VertexDescriptor::GetElementFromIndex] Index out of bound");
 
 		return m_vertexElementInfos[index].vertexElement;
 	}
