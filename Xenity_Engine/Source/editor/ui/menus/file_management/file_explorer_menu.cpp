@@ -209,19 +209,22 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		if (dropFileInFolder)
 		{
 			const std::shared_ptr<File>& file = fileRef->m_file;
-			CopyFileResult copyResult = FileSystem::CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
-			if (copyResult == CopyFileResult::Success)
+			if (!IsSelectedFileLocked(file))
 			{
-				copyResult = FileSystem::CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
-
+				CopyFileResult copyResult = FileSystem::CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
 				if (copyResult == CopyFileResult::Success)
 				{
-					FileSystem::Delete(file->GetPath());
-					FileSystem::Delete(file->GetPath() + ".meta");
-				}
-			}
+					copyResult = FileSystem::CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
 
-			ProjectManager::RefreshProjectDirectory();
+					if (copyResult == CopyFileResult::Success)
+					{
+						FileSystem::Delete(file->GetPath());
+						FileSystem::Delete(file->GetPath() + ".meta");
+					}
+				}
+
+				ProjectManager::RefreshProjectDirectory();
+			}
 		}
 		std::shared_ptr <ProjectDirectory> directoryRef = nullptr;
 		const bool dropFolderInFolder = EditorUI::DragDropTarget("Folders", directoryRef);
@@ -355,7 +358,10 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				}
 				ProjectManager::RefreshProjectDirectory();
 			});
-		deleteMenuItem->SetIsVisible(itemSelected);
+		
+		const std::shared_ptr<File> file = fileExplorerItem.file ? fileExplorerItem.file->m_file : nullptr;
+
+		deleteMenuItem->SetIsVisible(itemSelected && !IsSelectedFileLocked(file));
 	}
 
 	const bool rightClickDrawn = fileExplorerRightClickMenu.Draw();
@@ -644,4 +650,14 @@ void FileExplorerMenu::Rename()
 	{
 		Window::UpdateWindowTitle(); // If it's a scene, update the window title
 	}
+}
+
+bool  FileExplorerMenu::IsSelectedFileLocked(const std::shared_ptr<File> file)
+{
+	if (!file) return false;
+
+	return
+		file->GetFileName() == "game" &&
+		(file->GetFileExtension() == ".cpp" ||
+		file->GetFileExtension() == ".h");
 }

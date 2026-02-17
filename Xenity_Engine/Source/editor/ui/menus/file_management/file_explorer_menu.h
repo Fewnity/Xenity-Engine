@@ -12,6 +12,7 @@
 #include <editor/ui/menus/menu.h>
 
 class FileReference;
+class File;
 class ProjectDirectory;
 class Texture;
 
@@ -60,6 +61,8 @@ private:
 	void OpenItem(const FileExplorerItem& item);
 
 	void SetFileToRename(const std::shared_ptr<FileReference>& file, const std::shared_ptr<ProjectDirectory>& directory);
+
+	bool IsSelectedFileLocked(const std::shared_ptr<File> file);
 
 	std::string m_renamingString = "";
 	std::shared_ptr<FileReference> m_fileToRename = nullptr;
