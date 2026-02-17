@@ -121,7 +121,7 @@ public:
 	std::enable_if_t<std::is_base_of<Menu, T>::value, void>
 	static AddMenuClass(const std::string& name, bool isVisible = true)
 	{
-		XASSERT(!name.empty(), "[ClassRegistry::AddComponentClass] name is empty");
+		XASSERT(!name.empty(), "[ClassRegistry::AddMenuClass] name is empty");
 
 		auto function = []()
 		{
