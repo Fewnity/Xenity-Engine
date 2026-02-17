@@ -253,6 +253,8 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 	RightClickMenuState rightClickState = fileExplorerRightClickMenu.Check(false, !itemSelected);
 	if (rightClickState != RightClickMenuState::Closed)
 	{
+		const std::shared_ptr<File> file = fileExplorerItem.file ? fileExplorerItem.file->m_file : nullptr;
+
 		//-
 		RightClickMenuItem* createItem = fileExplorerRightClickMenu.AddItem("Create");
 		//--
@@ -292,6 +294,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				createClassMenu->Reset();
 				createClassMenu->SetFolderPath(fileExplorerItem.directory->path);
 			});
+
 		//-
 		RightClickMenuItem* RenameItem = fileExplorerRightClickMenu.AddItem("Rename", [this, &fileExplorerItem]()
 			{
@@ -302,12 +305,14 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				else if (m_directoryToRename)
 					m_renamingString = m_directoryToRename->GetFolderName();
 			});
-		RenameItem->SetIsVisible(itemSelected);
+		RenameItem->SetIsVisible(itemSelected && !IsSelectedFileLocked(file));
+
 		RightClickMenuItem* openMenuItem = fileExplorerRightClickMenu.AddItem("Open", [this, &fileExplorerItem]()
 			{
 				OpenItem(fileExplorerItem);
 			});
 		openMenuItem->SetIsVisible(itemSelected);
+
 		std::string explorerTitle = "Show in Explorer";
 		if (!itemSelected)
 			explorerTitle = "Open folder in Explorer";
@@ -319,10 +324,12 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 					Editor::OpenExplorerWindow(fileExplorerItem.directory->path, itemSelected);
 
 			});
+
 		fileExplorerRightClickMenu.AddItem("Refresh", []()
 			{
 				ProjectManager::RefreshProjectDirectory();
 			});
+
 		if (fileExplorerItem.file && fileExplorerItem.file->GetFileType() == FileType::File_Texture)
 		{
 			fileExplorerRightClickMenu.AddItem("Create material for this", [&fileExplorerItem]()
@@ -340,6 +347,7 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 					}
 				});
 		}
+
 		RightClickMenuItem* deleteMenuItem = fileExplorerRightClickMenu.AddItem("Delete", [&fileExplorerItem]()
 			{
 				if (fileExplorerItem.file)
@@ -358,8 +366,6 @@ int FileExplorerMenu::CheckOpenRightClickPopupFile(const FileExplorerItem& fileE
 				}
 				ProjectManager::RefreshProjectDirectory();
 			});
-		
-		const std::shared_ptr<File> file = fileExplorerItem.file ? fileExplorerItem.file->m_file : nullptr;
 
 		deleteMenuItem->SetIsVisible(itemSelected && !IsSelectedFileLocked(file));
 	}
