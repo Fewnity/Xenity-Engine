@@ -112,7 +112,7 @@ int InspectorMenu::CheckOpenRightClickPopupTransform(Transform& transform, const
 	if (rightClickState != RightClickMenuState::Closed)
 	{
 		inspectorRightClickMenu.AddItem("Copy transform values", copyFunc);
-		RightClickMenuItem* pastItem = inspectorRightClickMenu.AddItem("Past transform values", pastFunc);
+		RightClickMenuItem* pastItem = inspectorRightClickMenu.AddItem("Paste transform values", pastFunc);
 		pastItem->SetIsEnabled(EditorUI::currentCopyType == CopyType::Transform);
 	}
 	const bool rightClickMenuDrawn = inspectorRightClickMenu.Draw();
@@ -157,7 +157,7 @@ int InspectorMenu::CheckOpenRightClickPopup(Component& component, int& component
 	if (rightClickState != RightClickMenuState::Closed)
 	{
 		inspectorRightClickMenu.AddItem("Copy component values", copyFunc);
-		RightClickMenuItem* pastItem = inspectorRightClickMenu.AddItem("Past component values", pastFunc);
+		RightClickMenuItem* pastItem = inspectorRightClickMenu.AddItem("Paste component values", pastFunc);
 		pastItem->SetIsEnabled(EditorUI::currentCopyType == CopyType::Component && EditorUI::copiedComponentName == component.GetComponentName());
 		inspectorRightClickMenu.AddItem("Delete", deleteFunc);
 	}
