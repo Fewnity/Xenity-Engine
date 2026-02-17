@@ -144,7 +144,8 @@ public:
 				componentsDataPtr->remainingSlot++;
 				if (componentsDataPtr->remainingSlot == m_maxComponentCount)
 				{
-					for (size_t i = 0; i < m_maxComponentCount; i++)
+					size_t listCount = GetListCount();
+					for (size_t i = 0; i < listCount; i++)
 					{
 						if (m_componentsData[i].get() == componentsDataPtr)
 						{
