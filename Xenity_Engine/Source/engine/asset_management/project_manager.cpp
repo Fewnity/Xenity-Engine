@@ -568,12 +568,14 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 		if (!s_fileDataBase.GetBitFile().Open("data.xenb"))
 		{
 			Debug::PrintError("[ProjectManager::LoadProject] Failed to open the data file", true);
+			s_projectState = ProjectState::NotLoaded;
 			return ProjectLoadingErrors::FailedToOpenDataFile;
 		}
 	}
 	else
 	{
 		Debug::PrintError("[ProjectManager::LoadProject] Failed to open the data base file", true);
+		s_projectState = ProjectState::NotLoaded;
 		return ProjectLoadingErrors::FailedToOpenDataBaseFile;
 	}
 #endif
@@ -583,6 +585,7 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 #if defined(EDITOR)
 	if (!std::filesystem::exists(s_assetFolderPath))
 	{
+		s_projectState = ProjectState::NotLoaded;
 		return ProjectLoadingErrors::NoAssetFolder;
 	}
 	FileSystem::CreateFolder(s_projectFolderPath + "/temp/");
@@ -620,6 +623,7 @@ ProjectLoadingErrors ProjectManager::LoadProject(const std::string& projectPathT
 #if !defined(EDITOR)
 	if (!ProjectManager::GetStartScene())
 	{
+		s_projectState = ProjectState::NotLoaded;
 		return ProjectLoadingErrors::NoStartupScene;
 	}
 #endif
