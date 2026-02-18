@@ -30,18 +30,73 @@ void TextManager::Init()
 {
 }
 
+static int DecodeUTF8(const char* s, uint32_t& outCodepoint)
+{
+	const unsigned char* bytes = (const unsigned char*)s;
+
+	if (bytes[0] < 0x80) // 1 byte (ASCII)
+	{
+		outCodepoint = bytes[0];
+		return 1;
+	}
+	else if ((bytes[0] & 0xE0) == 0xC0) // 2 bytes
+	{
+		outCodepoint =
+			((bytes[0] & 0x1F) << 6) |
+			(bytes[1] & 0x3F);
+		return 2;
+	}
+	else if ((bytes[0] & 0xF0) == 0xE0) // 3 bytes
+	{
+		outCodepoint =
+			((bytes[0] & 0x0F) << 12) |
+			((bytes[1] & 0x3F) << 6) |
+			(bytes[2] & 0x3F);
+		return 3;
+	}
+	else if ((bytes[0] & 0xF8) == 0xF0) // 4 bytes
+	{
+		outCodepoint =
+			((bytes[0] & 0x07) << 18) |
+			((bytes[1] & 0x3F) << 12) |
+			((bytes[2] & 0x3F) << 6) |
+			(bytes[3] & 0x3F);
+		return 4;
+	}
+
+	// Invalid
+	outCodepoint = 0;
+	return 0; // Should not be 0 but for now, we only support the first 256 codepoints, so it will be good
+}
+
 std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Color &color, const std::shared_ptr<Font> &font, float scale)
 {
 	if (!font->GetFontAtlas())
 		return nullptr;
 
-	const int textLenght = (int)text.size();
+	int textLenght = 0;
 
-	// if (textLenght == 0)
-	// {
-	//     textBenchmark->Stop();
-	//     return;
-	// }
+	// Count the number of characters to draw
+	const char* str = text.c_str();
+	while (*str)
+	{
+		uint32_t codepoint = 0;
+		const uint32_t byteCount = DecodeUTF8(str, codepoint);
+		str += byteCount;
+
+		// for now, only the first 256 codepoints are supported
+		if (byteCount != 1)
+		{
+			continue;
+		}
+
+		textLenght++;
+	}
+
+	if (textLenght == 0)
+	{
+		return nullptr;
+	}
 
 	// Set text start offset
 	float totalY = 0;
@@ -86,11 +141,22 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 	mesh->unifiedColor = color;
 
 	int drawnCharIndex = 0;
-	for (int i = 0; i < textLenght; i++)
-	{
-		const char c = text[i];
-		Character *ch = font->Characters[(int)c];
 
+	str = text.c_str();
+	while (*str)
+	{
+		uint32_t codepoint = 0;
+		const uint32_t byteCount = DecodeUTF8(str, codepoint);
+
+		// for now, only the first 256 codepoints are supported
+		if (byteCount != 1)
+		{
+			str += byteCount;
+			continue;
+		}
+
+		const char c = *str;
+		Character *ch = font->Characters[(int)c];
 		if (c == '\n')
 		{
 			line++;
@@ -110,6 +176,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 			drawnCharIndex++;
 			x -= ch->rightAdvance * scale;
 		}
+		str += byteCount;
 	}
 
 	mesh->OnLoadFileReferenceFinished();
@@ -199,7 +266,7 @@ void TextManager::AddCharToMesh(const std::shared_ptr<MeshData> &mesh, Character
 	subMesh->SetIndex(indiceIndex + 5, indice + 5);
 }
 
-TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, std::shared_ptr<Font> font, float scale)
+TextInfo *TextManager::GetTextInformations(const std::string &text, std::shared_ptr<Font> font, float scale)
 {
 	TextInfo *textInfos = new TextInfo();
 	if (!font || !font->GetFontAtlas())
@@ -211,10 +278,21 @@ TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, 
 	float higherY = 0;
 	float lowerY = 0;
 
-	for (int i = 0; i < textLen; i++)
+	const char* str = text.c_str();
+	while (*str)
 	{
-		const Character *ch = font->Characters[(int)text[i]];
-		if (text[i] == '\n')
+		uint32_t codepoint = 0;
+		const uint32_t byteCount = DecodeUTF8(str, codepoint);
+
+		// for now, only the first 256 codepoints are supported
+		if (byteCount != 1)
+		{
+			str += byteCount;
+			continue;
+		}
+
+		const Character *ch = font->Characters[codepoint];
+		if (*str == '\n')
 		{
 			textInfos->linesInfo[currentLine].lenght *= scale;
 			textInfos->linesInfo[currentLine].y1 = (higherY - lowerY) * scale;
@@ -233,6 +311,7 @@ TextInfo *TextManager::GetTextInfomations(const std::string &text, int textLen, 
 			if (lowerY < low)
 				lowerY = low;
 		}
+		str += byteCount;
 	}
 	textInfos->linesInfo[currentLine].lenght *= scale;
 	textInfos->linesInfo[currentLine].y1 = (higherY - lowerY) * scale;

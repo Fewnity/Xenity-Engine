@@ -92,7 +92,7 @@ public:
 	* @param scale Test scale
 	* @return Text information
 	*/
-	[[nodiscard]] static TextInfo* GetTextInfomations(const std::string& text, int textLen, std::shared_ptr<Font> font, float scale);
+	[[nodiscard]] static TextInfo* GetTextInformations(const std::string& text, std::shared_ptr<Font> font, float scale);
 
 	/**
 	* @brief Create a mesh from a text

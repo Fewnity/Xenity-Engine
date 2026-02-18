@@ -103,9 +103,9 @@ void TextRenderer::DrawCommand(const RenderCommand& renderCommand)
 			delete m_textInfo;
 			m_mesh.reset();
 		}
-		if(!m_text.empty())
+		if (!m_text.empty())
 		{
-			m_textInfo = TextManager::GetTextInfomations(m_text, (int)m_text.size(), m_font, 1);
+			m_textInfo = TextManager::GetTextInformations(m_text, m_font, 1);
 			m_mesh = TextManager::CreateMesh(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, m_color, m_font, m_fontSize);
 		}
 		m_isTextInfoDirty = false;
