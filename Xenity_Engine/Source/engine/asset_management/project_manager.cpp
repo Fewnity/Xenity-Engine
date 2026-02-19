@@ -968,7 +968,7 @@ void ProjectManager::SaveProjectSettings(const std::string& folderPath)
 	const std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
 	if (projectFile->Open(FileMode::WriteCreateFile))
 	{
-		projectFile->Write(projectData.dump(0));
+		projectFile->Write(projectData.dump(4));
 		projectFile->Close();
 	}
 	else

@@ -403,7 +403,7 @@ void BuildSettingsMenu::SaveSettings()
 		Debug::PrintError("[BuildSettingsMenu::SaveSettings] Error while saving build settings: " + file->GetPath());
 		return;
 	}
-	file->Write(buildSettingsData.dump(0));
+	file->Write(buildSettingsData.dump(4));
 	file->Close();
 }
 
