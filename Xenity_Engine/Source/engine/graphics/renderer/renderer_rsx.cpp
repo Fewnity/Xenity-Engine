@@ -416,6 +416,7 @@ void RendererRSX::NewFrame()
 	// }
 	lastUsedColor = 0x00000000;
 	lastUsedColor2 = 0xFFFFFFFF;
+	lastMeshOffset = 0;
 
 	return;
 	// Update the lights
@@ -572,8 +573,6 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	DrawSubMesh(subMesh, material, *material.GetTexture(), settings);
 }
 
-uint32_t lastOffset = 0;
-
 void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& material, const Texture& texture, RenderingSettings& settings)
 {
 	ShaderRSX& rsxShader = dynamic_cast<ShaderRSX&>(*Graphics::s_currentShader);
@@ -648,8 +647,8 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 	}
 
 	const VertexDescriptor& vertexDescriptorList = subMesh.m_vertexDescriptor;
-	// Set vertex array attributes
-	if(lastOffset != subMesh.positionOffset)
+	// Set vertex array attributes only if the mesh is different, to avoid redundant state changes.
+	if(lastMeshOffset != subMesh.positionOffset)
 	{
 		rsxBindVertexArrayAttrib(context, GCM_VERTEX_ATTRIB_POS, 0, subMesh.positionOffset, vertexDescriptorList.GetVertexSize(), 3, GCM_VERTEX_DATA_TYPE_F32, GCM_LOCATION_RSX);
 		if (vertexDescriptorList.GetUvIndex() != -1)
@@ -673,7 +672,7 @@ void RendererRSX::DrawSubMesh(const MeshData::SubMesh& subMesh, const Material& 
 			rsxDrawVertex4f(context, GCM_VERTEX_ATTRIB_COLOR0, defaultColor);
 		}
 
-		lastOffset = subMesh.positionOffset;
+		lastMeshOffset = subMesh.positionOffset;
 	}
 
 	if (rsxShader.m_color)

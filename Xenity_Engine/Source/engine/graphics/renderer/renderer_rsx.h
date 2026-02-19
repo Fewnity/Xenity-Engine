@@ -83,6 +83,7 @@ private:
 	RenderingSettings lastSettings;
 	unsigned int lastUsedColor = 0x00000000;
 	unsigned int lastUsedColor2 = 0xFFFFFFFF;
+	uint32_t lastMeshOffset = 0;
 	uint64_t lastShaderIdUsedColor = 0;
 	void flip();
 	void waitflip();
