@@ -347,7 +347,7 @@ void BuildSettingsMenu::LoadSettings()
 	std::shared_ptr<File> file = FileSystem::MakeFile(ProjectManager::GetProjectFolderPath() + "build_settings.json");
 	if (!file->Open(FileMode::ReadOnly)) 
 	{
-		Debug::PrintError("[BuildSettingsMenu::LoadSettings] Error while opening build settings file: " + file->GetPath());
+		SaveSettings();
 		return;
 	}
 
