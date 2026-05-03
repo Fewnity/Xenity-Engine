@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=Fewnity&project=Xenity-Engine&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 # Xenity Engine
 
 Xenity Engine is a crossplatform game engine based on GameObjects and Components for PlayStation Portable, PsVita, PS3 and Windows.
