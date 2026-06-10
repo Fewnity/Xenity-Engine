@@ -283,6 +283,13 @@ void Graphics::Draw()
 			{
 				SCOPED_PROFILER("Graphics::Render2D", scopeBenchmarkRender2D);
 				s_currentMode = IDrawableTypes::Draw_2D;
+				std::sort(renderBatch.spriteCommands.begin(), renderBatch.spriteCommands.end(), [](const RenderCommand& a, const RenderCommand& b) {
+					if (!a.drawable && !b.drawable) return false;
+					if (!a.drawable) return false;
+					if (!b.drawable) return true;
+
+					return a.drawable->m_orderInLayer < b.drawable->m_orderInLayer;
+				});
 				for (const RenderCommand& com : renderBatch.spriteCommands)
 				{
 					if (com.isEnabled)
