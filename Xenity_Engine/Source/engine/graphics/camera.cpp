@@ -543,26 +543,32 @@ void Camera::OnDrawGizmosSelected()
 
 	const glm::vec4 screenSizeNorm = glm::vec4(0, 0, 1, 1);
 
+	float zStartUnProject = 0;
+	if (m_projectionType == ProjectionType::Orthographic)
+	{
+		zStartUnProject = 0.5f;
+	}
+
 	//Top left
-	const glm::vec3 topLeftNear = glm::unProject(glm::vec3(0, 0, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
+	const glm::vec3 topLeftNear = glm::unProject(glm::vec3(0, 0, zStartUnProject), cameraModelMatrix, m_projection, screenSizeNorm);
 	const glm::vec3 topLeftFar = glm::unProject(glm::vec3(0, 0, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(-topLeftNear.x, topLeftNear.y, topLeftNear.z), Vector3(-topLeftFar.x, topLeftFar.y, topLeftFar.z));
 
 	//Top right
-	const glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
+	const glm::vec3 topRightNear = glm::unProject(glm::vec3(1, 0, zStartUnProject), cameraModelMatrix, m_projection, screenSizeNorm);
 	const glm::vec3 topRightFar = glm::unProject(glm::vec3(1, 0, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(-topRightNear.x, topRightNear.y, topRightNear.z), Vector3(-topRightFar.x, topRightFar.y, topRightFar.z));
 
 	//Bottom left
-	const glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
+	const glm::vec3 bottomLeftNear = glm::unProject(glm::vec3(0, 1, zStartUnProject), cameraModelMatrix, m_projection, screenSizeNorm);
 	const glm::vec3 bottomLeftFar = glm::unProject(glm::vec3(0, 1, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(-bottomLeftNear.x, bottomLeftNear.y, bottomLeftNear.z), Vector3(-bottomLeftFar.x, bottomLeftFar.y, bottomLeftFar.z));
 
 	//Bottom right
-	const glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, 0.0f), cameraModelMatrix, m_projection, screenSizeNorm);
+	const glm::vec3 bottomRightNear = glm::unProject(glm::vec3(1, 1, zStartUnProject), cameraModelMatrix, m_projection, screenSizeNorm);
 	const glm::vec3 bottomRightFar = glm::unProject(glm::vec3(1, 1, 1.0f), cameraModelMatrix, m_projection, screenSizeNorm);
 
 	Gizmo::DrawLine(Vector3(-bottomRightNear.x, bottomRightNear.y, bottomRightNear.z), Vector3(-bottomRightFar.x, bottomRightFar.y, bottomRightFar.z));
