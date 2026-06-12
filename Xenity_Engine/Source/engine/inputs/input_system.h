@@ -235,6 +235,78 @@ public:
 	}
 
 	/**
+	* @brief Return true if a key has just been pressed
+	* @param controllerIndex Controller index (0-7)
+	*/
+	[[nodiscard]] static bool GetAnyKeyDown(const int controllerIndex = 0)
+	{
+		if (s_blockGameInput)
+		{
+			return false;
+		}
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return false;
+		}
+		for (int i = 0; i < INPUT_COUNT; i++)
+		{
+			if (s_inputs[controllerIndex][i].pressed)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	* @brief Return true if a key is held
+	* @param controllerIndex Controller index (0-7) (for buttons)
+	*/
+	[[nodiscard]] static bool GetAnyKey(const int controllerIndex = 0)
+	{
+		if (s_blockGameInput)
+		{
+			return false;
+		}
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return false;
+		}
+		for (int i = 0; i < INPUT_COUNT; i++)
+		{
+			if (s_inputs[controllerIndex][i].held)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	* @brief Return true if a key has just been released
+	* @param controllerIndex Controller index (0-7) (for buttons)
+	*/
+	[[nodiscard]] static bool GetAnyKeyUp(const int controllerIndex = 0)
+	{
+		if (s_blockGameInput)
+		{
+			return false;
+		}
+		if (controllerIndex < 0 || controllerIndex >= MAX_CONTROLLER)
+		{
+			return false;
+		}
+		for (int i = 0; i < INPUT_COUNT; i++)
+		{
+			if (s_inputs[controllerIndex][i].released)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	* @brief Get left joystick value, values between -1.0f and 1.0f
 	* @param controllerIndex Controller index (0-7)
 	*/
