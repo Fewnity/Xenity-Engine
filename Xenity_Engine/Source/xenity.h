@@ -29,9 +29,13 @@
 #include <engine/tools/curve.h>
 #include <engine/tools/profiler_benchmark.h>
 #include <engine/tools/shape_spawner.h>
+#include <engine/tools/endian_utils.h>
+#include <engine/tools/fps_counter.h>
+#include <engine/tools/template_utils.h>
 
 // Time
 #include <engine/time/time.h>
+#include <engine/time/date_time.h>
 
 // Scenes
 #include <engine/scene_management/scene.h>
@@ -53,6 +57,8 @@
 #include <engine/graphics/skybox.h>
 #include <engine/graphics/3d_graphics/mesh_data.h>
 #include <engine/graphics/3d_graphics/mesh_renderer.h>
+#include <engine/graphics/3d_graphics/lod.h>
+#include <engine/graphics/3d_graphics/vertex_descriptor.h>
 #include <engine/graphics/2d_graphics/sprite_renderer.h>
 #include <engine/graphics/2d_graphics/billboard_renderer.h>
 #include <engine/graphics/2d_graphics/tile_map.h>
@@ -74,6 +80,8 @@
 // Debug
 #include <engine/debug/debug.h>
 #include <engine/debug/profiler.h>
+#include <engine/debug/performance.h>
+#include <engine/assertions/assertions.h>
 
 // Audio
 #include <engine/audio/audio_clip.h>
@@ -91,6 +99,7 @@
 
 // Physics
 #include <engine/physics/box_collider.h>
+#include <engine/physics/sphere_collider.h>
 #include <engine/physics/rigidbody.h>
 #include <engine/physics/raycast.h>
 #include <engine/physics/collision_event.h>
@@ -106,3 +115,5 @@
 
 // Prefab
 #include <engine/game_elements/prefab.h>
+
+#include <engine/application.h>
