@@ -22,6 +22,7 @@ ReflectiveData SpriteRenderer::GetReflectiveData()
 	ReflectiveData reflectedVariables;
 	Reflective::AddVariable(reflectedVariables, m_color, "color");
 	Reflective::AddVariable(reflectedVariables, m_texture, "texture");
+	Reflective::AddVariable(reflectedVariables, m_orderInLayer, "orderInLayer");
 	return reflectedVariables;
 }
 

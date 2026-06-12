@@ -74,6 +74,11 @@ bool Graphics::s_isLightUpdateNeeded = true;
 bool Graphics::s_isGridRenderingEnabled = true;
 float Graphics::s_gridAlphaMultiplier = 1;
 
+bool UIElementComparator(const RenderCommand& c1, const RenderCommand& c2)
+{
+	return c2.drawable->GetOrderInLayer() > c1.drawable->GetOrderInLayer();
+}
+
 void Graphics::SetSkybox(const std::shared_ptr<SkyBox>& skybox_)
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
@@ -283,6 +288,7 @@ void Graphics::Draw()
 			{
 				SCOPED_PROFILER("Graphics::Render2D", scopeBenchmarkRender2D);
 				s_currentMode = IDrawableTypes::Draw_2D;
+				std::sort(renderBatch.spriteCommands.begin(), renderBatch.spriteCommands.begin() + renderBatch.spriteCommandIndex, UIElementComparator);
 				for (const RenderCommand& com : renderBatch.spriteCommands)
 				{
 					if (com.isEnabled)
@@ -437,11 +443,6 @@ bool meshComparator2(const RenderCommand& c1, const RenderCommand& c2)
 bool meshComparator3(const RenderCommand& c1, const RenderCommand& c2)
 {
 	return Vector3::Distance(c2.transform->GetPosition(), meshComparatorCamPos) > Vector3::Distance(c1.transform->GetPosition(), meshComparatorCamPos);
-}
-
-bool UIElementComparator(const RenderCommand& c1, const RenderCommand& c2)
-{
-	return c2.drawable->GetOrderInLayer() > c1.drawable->GetOrderInLayer();
 }
 
 void Graphics::SortDrawables()
