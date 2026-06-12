@@ -1082,7 +1082,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
 	if (file->Open(FileMode::WriteCreateFile))
 	{
-		file->Write(j.dump(3));
+		file->Write(j.dump(4));
 		file->Close();
 	}
 	else
