@@ -680,7 +680,7 @@ void Graphics::DrawSkybox(const Vector3& cameraPosition)
 		Graphics::DrawSubMesh(Vector3(0, -5, 0) + cameraPosition, q0, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
 		AssetManager::unlitMaterial->m_texture = s_settings.skybox->up;
-		static const Quaternion q1 = Quaternion::Euler(180, 180, 0);
+		static const Quaternion q1 = Quaternion::Euler(180, 90, 0);
 		Graphics::DrawSubMesh(Vector3(0, 5, 0) + cameraPosition, q1, scale, *skyPlane->m_subMeshes[0], *AssetManager::unlitMaterial, renderSettings);
 
 		AssetManager::unlitMaterial->m_texture = s_settings.skybox->front;
