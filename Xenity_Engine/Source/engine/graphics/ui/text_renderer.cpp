@@ -21,6 +21,11 @@ TextRenderer::TextRenderer()
 {
 }
 
+TextRenderer::~TextRenderer()
+{
+	delete m_textInfo;
+}
+
 ReflectiveData TextRenderer::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;

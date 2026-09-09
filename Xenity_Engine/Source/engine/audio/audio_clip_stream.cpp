@@ -125,6 +125,11 @@ uint64_t AudioClipStream::FillBuffer(uint64_t amount, short* buff, bool loop)
 		{	
 			tempFrameReadCount = drwav_read_pcm_frames_s16(m_wavStream, remainingFrames, buff + (amount - remainingFrames));
 		}
+		else 
+		{
+			// Error
+			break;
+		}
 
 		// If the stream ends and not looping stop the stream
 		if (!loop)

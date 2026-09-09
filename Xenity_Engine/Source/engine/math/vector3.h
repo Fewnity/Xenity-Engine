@@ -173,7 +173,7 @@ inline Vector3 operator*(const Vector3& vec, const float value)
 
 inline Vector3 operator/(const float value, const Vector3& vec)
 {
-	return Vector3{ vec.x / value, vec.y / value, vec.z / value };
+	return Vector3{ value / vec.x, value / vec.y, value / vec.z };
 }
 
 inline Vector3 operator/(const Vector3& vec, const float value)

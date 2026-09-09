@@ -162,9 +162,9 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 			line++;
 
 			if (horizontalAlignment == HorizontalAlignment::Left)
-				x = textInfo->linesInfo[line].lenght;
+				x = textInfo->linesInfo[line].lenght * scale;
 			else if (horizontalAlignment == HorizontalAlignment::Center)
-				x = textInfo->linesInfo[line].lenght * 0.5f;
+				x = textInfo->linesInfo[line].lenght * 0.5f * scale;
 			else
 				x = 0;
 

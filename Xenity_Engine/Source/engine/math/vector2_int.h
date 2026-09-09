@@ -114,29 +114,29 @@ inline Vector2Int operator/(const Vector2Int& left, const Vector2Int& right)
 
 inline Vector2Int& operator/=(Vector2Int& vec, const float value)
 {
-	vec.x /= (int)value;
-	vec.y /= (int)value;
+	vec.x = static_cast<int>(vec.x / value);
+	vec.y = static_cast<int>(vec.y / value);
 	return vec;
 }
 
 inline Vector2Int& operator*=(Vector2Int& vec, const float value)
 {
-	vec.x *= (int)value;
-	vec.y *= (int)value;
+	vec.x = static_cast<int>(vec.x * value);
+	vec.y = static_cast<int>(vec.y * value);
 	return vec;
 }
 
 inline Vector2Int& operator+=(Vector2Int& vec, const float value)
 {
-	vec.x += (int)value;
-	vec.y += (int)value;
+	vec.x = static_cast<int>(vec.x + value);
+	vec.y = static_cast<int>(vec.y + value);
 	return vec;
 }
 
 inline Vector2Int& operator-=(Vector2Int& vec, const float value)
 {
-	vec.x -= (int)value;
-	vec.y -= (int)value;
+	vec.x = static_cast<int>(vec.x - value);
+	vec.y = static_cast<int>(vec.y - value);
 	return vec;
 }
 

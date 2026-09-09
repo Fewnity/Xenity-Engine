@@ -23,6 +23,7 @@ class API TextRenderer : public IDrawable
 {
 public:
 	TextRenderer();
+	~TextRenderer();
 
 	/**
 	* @brief Get text color

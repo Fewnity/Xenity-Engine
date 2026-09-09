@@ -57,7 +57,11 @@ void Window::OnResize()
 	const size_t cameraCount = Graphics::cameras.size();
 	for (size_t i = 0; i < cameraCount; i++)
 	{
-		Graphics::cameras[i].lock()->ChangeFrameBufferSize(Vector2Int(s_width, s_height));
+		const std::shared_ptr<Camera> cam = Graphics::cameras[i].lock();
+		if (cam)
+		{
+			cam->ChangeFrameBufferSize(Vector2Int(s_width, s_height));
+		}
 	}
 #endif
 }

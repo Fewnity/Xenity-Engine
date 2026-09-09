@@ -117,7 +117,7 @@ inline Vector4 operator*(const Vector4& vec, const float value)
 
 inline Vector4 operator/(const float value, const Vector4& vec)
 {
-	return Vector4{ vec.x / value, vec.y / value, vec.z / value, vec.w / value };
+	return Vector4{ value / vec.x, value / vec.y, value / vec.z, value / vec.w };
 }
 
 inline Vector4 operator/(const Vector4& vec, const float value)

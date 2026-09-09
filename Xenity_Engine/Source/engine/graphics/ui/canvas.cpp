@@ -62,8 +62,8 @@ void Canvas::Update()
 		const int touchScreenCount = InputSystem::GetTouchScreenCount();
 		if (touchScreenCount != 0)
 		{
-			const int touchScreenCount = InputSystem::GetTouchCount(0);
-			for (int touchIndex = 0; touchIndex < touchScreenCount; touchIndex++)
+			const int touchCount = InputSystem::GetTouchCount(0);
+			for (int touchIndex = 0; touchIndex < touchCount; touchIndex++)
 			{
 				if (InputSystem::GetTouch(touchIndex, 0).pressed)
 				{

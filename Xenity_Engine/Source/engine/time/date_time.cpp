@@ -28,12 +28,15 @@ DateTime DateTime::GetNow()
     std::time_t t = std::time(0);   // get time now
     std::tm* now = localtime(&t);
 
-	dateTime.second = now->tm_sec;
-	dateTime.minute = now->tm_min;
-	dateTime.hour = now->tm_hour;
-	dateTime.day = now->tm_mday;
-	dateTime.month = now->tm_mon + 1;
-	dateTime.year = now->tm_year + 1900;
+	if (now)
+	{
+		dateTime.second = now->tm_sec;
+		dateTime.minute = now->tm_min;
+		dateTime.hour = now->tm_hour;
+		dateTime.day = now->tm_mday;
+		dateTime.month = now->tm_mon + 1;
+		dateTime.year = now->tm_year + 1900;
+	}
 #endif
     return dateTime;
 }

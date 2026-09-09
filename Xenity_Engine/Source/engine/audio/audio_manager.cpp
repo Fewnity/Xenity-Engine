@@ -235,9 +235,9 @@ void audio_thread(void *arg)
 
 		int16_t wave_buf[AUDIO_BLOCK_SAMPLES * 2] = { 0 };
 		AudioManager::FillChannelBuffer((short*)wave_buf, AUDIO_BLOCK_SAMPLES, AudioManager::s_channel);
-		for (int i2 = 0; i2 < AUDIO_BLOCK_SAMPLES*2; i2++)
+		for (int i2 = 0; i2 < AUDIO_BLOCK_SAMPLES * 2; i2++)
 		{
-			buf[i2] = (wave_buf[i2]) / 35535.0f;
+			buf[i2] = (wave_buf[i2]) / 32768.0f;
 		}
 		if (!Engine::IsRunning(false))
 		{

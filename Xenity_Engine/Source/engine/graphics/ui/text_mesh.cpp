@@ -21,6 +21,11 @@ TextMesh::TextMesh()
 {
 }
 
+TextMesh::~TextMesh()
+{
+	delete m_textInfo;
+}
+
 ReflectiveData TextMesh::GetReflectiveData()
 {
 	ReflectiveData reflectedVariables;

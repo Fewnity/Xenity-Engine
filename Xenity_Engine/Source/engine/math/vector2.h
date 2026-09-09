@@ -123,7 +123,7 @@ inline Vector2 operator*(const Vector2& vec, const float value)
 
 inline Vector2 operator/(const float value, const Vector2& vec)
 {
-	return Vector2{ vec.x / value, vec.y / value };
+	return Vector2{ value / vec.x, value / vec.y };
 }
 
 inline Vector2 operator/(const Vector2& vec, const float value)
