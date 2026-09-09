@@ -32,9 +32,11 @@ protected:
 
 	void OnReflectionUpdated() override;
 	void LoadFileReference(const LoadOptions& loadOptions) override;
+	void OnLoadFileReferenceFinished() override;
 
 	Character* Characters[256] = {};
 	float maxCharHeight = 0;
+	unsigned char* m_atlasBuffer = nullptr;
 
 	/**
 	* @brief [Internal] Get the shared pointer of this object
