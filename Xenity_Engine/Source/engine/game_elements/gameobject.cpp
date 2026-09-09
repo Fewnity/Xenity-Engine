@@ -340,7 +340,10 @@ void GameObject::UpdateActive(const GameObject& changed)
 		// Update children
 		for (int i = 0; i < m_childCount; i++)
 		{
-			m_children[i].lock()->UpdateActive(changed);
+			if (const std::shared_ptr<GameObject> child = m_children[i].lock())
+			{
+				child->UpdateActive(changed);
+			}
 		}
 	}
 }
@@ -352,15 +355,16 @@ bool GameObject::IsParentOf(const std::shared_ptr<GameObject>& gameObject)
 
 	for (int i = 0; i < m_childCount; i++)
 	{
-		if (m_children[i].lock() == gameObject)
+		if (const std::shared_ptr<GameObject> child = m_children[i].lock())
 		{
-			return true;
-		}
-		else
-		{
-			const bool temp = m_children[i].lock()->IsParentOf(gameObject);
-			if (temp)
+			if (child == gameObject)
+			{
 				return true;
+			}
+			else if (child->IsParentOf(gameObject))
+			{
+				return true;
+			}
 		}
 	}
 	return false;

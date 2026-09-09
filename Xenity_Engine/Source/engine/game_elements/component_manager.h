@@ -10,6 +10,8 @@
 #include <engine/event_system/event_system.h>
 #include <engine/debug/performance.h>
 
+class ComponentManager;
+
 class API BaseComponentList
 {
 public:
@@ -25,7 +27,7 @@ public:
 	/**
 	* @brief Create a new component of the child template type (Will create a new list if no slot available)
 	*/
-	[[nodiscard]] virtual std::shared_ptr<Component> CreateComponent(Event<size_t>* onComponentDeletedEvent) = 0;
+	[[nodiscard]] virtual std::shared_ptr<Component> CreateComponent() = 0;
 
 	/**
 	* @brief Initialize active components
@@ -87,85 +89,7 @@ public:
 	/**
 	* @brief Create a new component of the template type (Will create a new list if no slot available)
 	*/
-	[[nodiscard]] std::shared_ptr<Component> CreateComponent(Event<size_t>* onComponentDeletedEvent)
-	{
-		// Find available list
-		size_t listIndex = -1;
-		const size_t listCount = m_componentsData.size();
-
-		for (size_t currentListIndex = 0; currentListIndex < listCount; currentListIndex++)
-		{
-			if (m_componentsData[currentListIndex]->remainingSlot != 0)
-			{
-				listIndex = currentListIndex;
-				break;
-			}
-		}
-
-		//XASSERT(listIndex != -1, "No slot available for the next item");
-
-		// Create new list if no slot available for the next item
-		if (listIndex == -1)
-		{
-			std::unique_ptr<ComponentsData> data = std::make_unique<ComponentsData>();
-			data->data = std::make_unique<uint8_t[]>(sizeof(T) * m_maxComponentCount);
-			data->allocated.resize(m_maxComponentCount);
-			data->remainingSlot = m_maxComponentCount;
-			m_componentsData.push_back(std::move(data));
-			listIndex = listCount;
-		}
-
-		size_t addedAt = -1;
-		for (size_t i = 0; i < m_maxComponentCount; ++i)
-		{
-			if (!m_componentsData[listIndex]->allocated[i])
-			{
-				m_componentsData[listIndex]->allocated[i] = true;
-				new (&m_componentsData[listIndex]->data[i * sizeof(T)]) T(); // Allocate components memory and call constructor
-				m_componentsData[listIndex]->remainingSlot--;
-				addedAt = i;
-				break;
-			}
-		}
-
-		XASSERT(addedAt != -1, "No slot available for the next item");
-
-
-		ComponentsData* componentsDataPtr = m_componentsData[listIndex].get();
-
-		// Create shared_ptr from raw pointer and define custom destructor
-		const std::shared_ptr<T> sharedComponent = std::shared_ptr<T>((T*)&m_componentsData[listIndex]->data[addedAt * sizeof(T)],
-			[this, addedAt, componentsDataPtr, onComponentDeletedEvent](T* pi)
-			{
-				pi->~T();
-				if (m_componentsData.empty())
-					return;
-				componentsDataPtr->allocated[addedAt] = false;
-				componentsDataPtr->remainingSlot++;
-				if (componentsDataPtr->remainingSlot == m_maxComponentCount)
-				{
-					size_t listCount = GetListCount();
-					for (size_t i = 0; i < listCount; i++)
-					{
-						if (m_componentsData[i].get() == componentsDataPtr)
-						{
-							m_componentsData.erase(m_componentsData.begin() + i);
-							if (m_componentsData.size() == 0)
-							{
-								static const size_t typeId = typeid(T).hash_code();
-								onComponentDeletedEvent->Trigger(typeId);
-							}
-							break;
-						}
-					}
-				}
-			});
-
-		const std::shared_ptr<Component> sharedComponentBase = std::dynamic_pointer_cast<Component>(sharedComponent);
-		shared_components.push_back(sharedComponentBase);
-		componentsToInit.push_back(sharedComponentBase);
-		return sharedComponentBase;
-	}
+	[[nodiscard]] std::shared_ptr<Component> CreateComponent() override;
 
 	/**
 	* @brief Remove a component from the list
@@ -269,8 +193,6 @@ public:
 	{
 		const bool disabledLoop = GetCompnentDisabledLoop(typeId);
 		componentLists[typeId] = std::make_unique<ComponentList<T>>(100, disabledLoop);
-
-		onComponentDeletedEvent.Bind(&ComponentManager::RemoveList);
 	}
 
 	template<typename T>
@@ -295,7 +217,7 @@ public:
 		}
 
 		// Add component
-		return std::static_pointer_cast<T>(componentLists[typeId]->CreateComponent(&onComponentDeletedEvent));
+		return std::static_pointer_cast<T>(componentLists[typeId]->CreateComponent());
 	}
 
 	/**
@@ -360,6 +282,83 @@ public:
 	}
 
 private:
-	static Event<size_t> onComponentDeletedEvent;
 	static std::unordered_map<size_t, std::unique_ptr<BaseComponentList>> componentLists;
 };
+
+template<class T>
+std::shared_ptr<Component> ComponentList<T>::CreateComponent()
+{
+	// Find available list
+	size_t listIndex = -1;
+	const size_t listCount = m_componentsData.size();
+
+	for (size_t currentListIndex = 0; currentListIndex < listCount; currentListIndex++)
+	{
+		if (m_componentsData[currentListIndex]->remainingSlot != 0)
+		{
+			listIndex = currentListIndex;
+			break;
+		}
+	}
+
+	// Create new list if no slot available for the next item
+	if (listIndex == -1)
+	{
+		std::unique_ptr<ComponentsData> data = std::make_unique<ComponentsData>();
+		data->data = std::make_unique<uint8_t[]>(sizeof(T) * m_maxComponentCount);
+		data->allocated.resize(m_maxComponentCount);
+		data->remainingSlot = m_maxComponentCount;
+		m_componentsData.push_back(std::move(data));
+		listIndex = listCount;
+	}
+
+	size_t addedAt = -1;
+	for (size_t i = 0; i < m_maxComponentCount; ++i)
+	{
+		if (!m_componentsData[listIndex]->allocated[i])
+		{
+			m_componentsData[listIndex]->allocated[i] = true;
+			new (&m_componentsData[listIndex]->data[i * sizeof(T)]) T(); // Allocate components memory and call constructor
+			m_componentsData[listIndex]->remainingSlot--;
+			addedAt = i;
+			break;
+		}
+	}
+
+	XASSERT(addedAt != -1, "No slot available for the next item");
+
+	ComponentsData* componentsDataPtr = m_componentsData[listIndex].get();
+
+	// Create shared_ptr from raw pointer and define custom destructor
+	const std::shared_ptr<T> sharedComponent = std::shared_ptr<T>((T*)&m_componentsData[listIndex]->data[addedAt * sizeof(T)],
+		[this, addedAt, componentsDataPtr](T* pi)
+		{
+			pi->~T();
+			if (m_componentsData.empty())
+				return;
+			componentsDataPtr->allocated[addedAt] = false;
+			componentsDataPtr->remainingSlot++;
+			if (componentsDataPtr->remainingSlot == m_maxComponentCount)
+			{
+				size_t listCount = GetListCount();
+				for (size_t i = 0; i < listCount; i++)
+				{
+					if (m_componentsData[i].get() == componentsDataPtr)
+					{
+						m_componentsData.erase(m_componentsData.begin() + i);
+						if (m_componentsData.size() == 0)
+						{
+							static const size_t typeId = typeid(T).hash_code();
+							ComponentManager::RemoveList(typeId);
+						}
+						break;
+					}
+				}
+			}
+		});
+
+	const std::shared_ptr<Component> sharedComponentBase = std::dynamic_pointer_cast<Component>(sharedComponent);
+	shared_components.push_back(sharedComponentBase);
+	componentsToInit.push_back(sharedComponentBase);
+	return sharedComponentBase;
+}

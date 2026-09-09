@@ -183,11 +183,11 @@ void GameplayManager::RemoveDestroyedGameObjects()
 			const std::shared_ptr<GameObject>& gameObjectToCheck = gameObjects[gIndex];
 			if (gameObjectToCheck == gameObjectsToDestroy[i].lock())
 			{
-				gameObjects.erase(gameObjects.begin() + gIndex);
+				gameObjects.erase(gameObjects.begin() + gIndex);	
+				gameObjectCount--;
 				break;
 			}
 		}
-		gameObjectCount--;
 	}
 	gameObjectsToDestroy.clear();
 }
