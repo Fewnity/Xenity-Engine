@@ -36,6 +36,13 @@ inline  ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue,
 {
 	STACK_DEBUG_OBJECT(STACK_VERY_LOW_PRIORITY);
 
+	// NaN and Inf values are saved as null by nlohmann::json, keep the current value instead of throwing
+	if (jsonValue.is_null())
+	{
+		Debug::PrintWarning("[ReflectionUtils::JsonToVariable] Null value for " + entry.variableName + ", default value kept", true);
+		return;
+	}
+
 	valuePtr.get() = jsonValue;
 }
 
@@ -85,6 +92,17 @@ std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value ||
 
 	for (size_t i = 0; i < jsonArraySize; i++)
 	{
+		// NaN and Inf values are saved as null by nlohmann::json
+		if (jsonValue[i].is_null())
+		{
+			Debug::PrintWarning("[ReflectionUtils::JsonToVariable] Null value in " + entry.variableName + ", default value used", true);
+			if (i >= objectVectorSize)
+			{
+				valuePtr.get().push_back(T());
+			}
+			continue;
+		}
+
 		T tempVariable = jsonValue[i];
 		if (i >= objectVectorSize)
 		{
@@ -209,10 +227,18 @@ inline void ReflectionUtils::JsonToReflectiveData(const nlohmann::ordered_json& 
 				{
 					const VariableReference& variableRef = otherEntry.variable.value();
 					const auto& kvValue = kv.value();
-					std::visit([&kvValue, &otherEntry](const auto& value)
-						{
-							JsonToVariable(kvValue, value, otherEntry);
-						}, variableRef);
+					// Skip the variable if the value is invalid (wrong type, corrupted data...) to load the rest of the data
+					try
+					{
+						std::visit([&kvValue, &otherEntry](const auto& value)
+							{
+								JsonToVariable(kvValue, value, otherEntry);
+							}, variableRef);
+					}
+					catch (const std::exception& e)
+					{
+						Debug::PrintError("[ReflectionUtils::JsonToReflectiveData] Failed to load variable " + otherEntry.variableName + ": " + std::string(e.what()), true);
+					}
 					break;
 				}
 			}
