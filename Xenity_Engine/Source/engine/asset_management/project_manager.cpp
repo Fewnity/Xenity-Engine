@@ -57,7 +57,6 @@
 #include <engine/constants.h>
 #include <engine/game_elements/prefab.h>
 #include <mutex>
-#include <fstream>
 
 using json = nlohmann::ordered_json;
 
@@ -964,18 +963,11 @@ void ProjectManager::SaveProjectSettings(const std::string& folderPath)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	const std::string path = folderPath + PROJECT_SETTINGS_FILE_NAME;
-	FileSystem::Delete(path);
 	json projectData;
 
 	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(s_projectSettings.GetReflectiveData());
 
-	const std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
-	if (projectFile->Open(FileMode::WriteCreateFile))
-	{
-		projectFile->Write(projectData.dump(4));
-		projectFile->Close();
-	}
-	else
+	if (!FileSystem::WriteFileSafely(path, projectData.dump(4)))
 	{
 		Debug::PrintError("[ProjectManager::SaveProjectSettings] Cannot save project settings: " + path, true);
 	}
@@ -985,53 +977,6 @@ void ProjectManager::SaveProjectSettings()
 {
 	SaveProjectSettings(s_projectFolderPath);
 }
-
-#if defined(EDITOR)
-/**
-* @brief Write a meta file without ever deleting or partially writing the existing one:
-* the data is written to a temporary file, then moved over the original file.
-* Losing a meta file gives a new id to the asset and breaks every reference to it
-* @return True if the file has been fully written
-*/
-static bool WriteMetaFileSafely(const std::string& path, const std::string& data)
-{
-	const std::string tempPath = path + ".tmp";
-	try
-	{
-		{
-			std::ofstream tempFile(tempPath, std::ios::binary | std::ios::trunc);
-			if (!tempFile.is_open())
-			{
-				return false;
-			}
-			tempFile.write(data.data(), static_cast<std::streamsize>(data.size()));
-			tempFile.flush();
-			if (!tempFile.good())
-			{
-				tempFile.close();
-				std::filesystem::remove(tempPath);
-				return false;
-			}
-		}
-
-		if (std::filesystem::file_size(tempPath) != data.size())
-		{
-			std::filesystem::remove(tempPath);
-			return false;
-		}
-
-		// Replace the original file (atomic on the same drive)
-		std::filesystem::rename(tempPath, path);
-	}
-	catch (const std::exception&)
-	{
-		std::error_code ec;
-		std::filesystem::remove(tempPath, ec);
-		return false;
-	}
-	return true;
-}
-#endif
 
 void ProjectManager::SaveMetaFile(FileReference& fileReference)
 {
@@ -1058,7 +1003,8 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 		metaData[s_assetPlatformNames[i]]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(platform));
 	}
 
-	if (WriteMetaFileSafely(metaPath, metaData.dump(0)))
+	// Never delete the meta file before writing: a lost meta file gives a new id to the asset and breaks every reference to it
+	if (FileSystem::WriteFileSafely(metaPath, metaData.dump(0)))
 	{
 		fileReference.m_isMetaDirty = false;
 		FileHandler::SetLastModifiedFile(metaPath);
@@ -1096,16 +1042,23 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath(), true);
 			}
 
-			const size_t projectCount = j.size();
+			const size_t projectCount = j.is_array() ? j.size() : 0;
 			for (size_t i = 0; i < projectCount; i++)
 			{
+				// Ignore invalid entries (file edited by hand...)
+				if (!j[i].is_object() || !j[i].contains("path") || !j[i]["path"].is_string())
+				{
+					continue;
+				}
+
 				// Get project information (name and path)
 				ProjectListItem projectItem;
 				projectItem.path = j[i]["path"];
 				const ProjectSettings settings = GetProjectSettings(projectItem.path);
 				if (settings.projectName.empty())
 				{
-					projectItem.name = j[i]["name"];
+					if (j[i].contains("name") && j[i]["name"].is_string())
+						projectItem.name = j[i]["name"];
 				}
 				else
 				{
@@ -1130,14 +1083,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 		j[i]["name"] = projects[i].name;
 		j[i]["path"] = projects[i].path;
 	}
-	FileSystem::Delete(PROJECTS_LIST_FILE);
-	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
-	if (file->Open(FileMode::WriteCreateFile))
-	{
-		file->Write(j.dump(4));
-		file->Close();
-	}
-	else
+	if (!FileSystem::WriteFileSafely(PROJECTS_LIST_FILE, j.dump(4)))
 	{
 		Debug::PrintError(std::string("[ProjectManager::SaveProjectsList] Cannot save projects list: ") + PROJECTS_LIST_FILE, true);
 	}

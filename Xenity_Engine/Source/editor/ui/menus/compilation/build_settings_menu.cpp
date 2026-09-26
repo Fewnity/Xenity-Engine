@@ -394,17 +394,13 @@ void BuildSettingsMenu::SaveSettings()
 			buildSettingsData[plaform.name]["Values"] = ReflectionUtils::ReflectiveDataToJson(plaform.settings->GetReflectiveData());
 	}
 
-	FileSystem::Delete(ProjectManager::GetProjectFolderPath() + "build_settings.json");
-
 	// Write json into the file
-	std::shared_ptr<File> file = FileSystem::MakeFile(ProjectManager::GetProjectFolderPath() + "build_settings.json");
-	if (!file->Open(FileMode::WriteCreateFile))
+	const std::string path = ProjectManager::GetProjectFolderPath() + "build_settings.json";
+	if (!FileSystem::WriteFileSafely(path, buildSettingsData.dump(4)))
 	{
-		Debug::PrintError("[BuildSettingsMenu::SaveSettings] Error while saving build settings: " + file->GetPath());
+		Debug::PrintError("[BuildSettingsMenu::SaveSettings] Error while saving build settings: " + path);
 		return;
 	}
-	file->Write(buildSettingsData.dump(4));
-	file->Close();
 }
 
 void BuildSettingsMenu::StartBuild(const BuildPlatform& buildPlatform, BuildType buildType)

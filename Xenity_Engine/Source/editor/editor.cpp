@@ -922,7 +922,8 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 		}
 		else
 		{
-			if (!isdigit(name[i]))
+			// Cast to unsigned char: isdigit with a negative char (accented character) is undefined behavior
+			if (!isdigit(static_cast<unsigned char>(name[i])))
 			{
 				numberState = 0;
 				break;
@@ -936,8 +937,17 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 
 	if (startParenthesis != -1)
 	{
-		number = std::stoi(name.substr(startParenthesis + 1, endParenthesis - startParenthesis - 1)) + 1;
-		baseName = name.substr(0, startParenthesis - 1);
+		try
+		{
+			number = std::stoi(name.substr(startParenthesis + 1, endParenthesis - startParenthesis - 1)) + 1;
+			baseName = name.substr(0, startParenthesis - 1);
+		}
+		catch (const std::exception&)
+		{
+			// Number too big for an int
+			baseName = name;
+			number = 1;
+		}
 	}
 	else
 	{
