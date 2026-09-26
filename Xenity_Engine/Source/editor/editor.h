@@ -11,6 +11,7 @@
  */
 
 #include <memory>
+#include <atomic>
 
 #include <editor/ui/menus/menu.h>
 
@@ -389,8 +390,9 @@ public:
 
 	/**
 	* @brief Start folder copy
+	* @return True if every file and folder has been copied
 	*/
-	static void StartFolderCopy(const std::string& path, const std::string& newPath);
+	static bool StartFolderCopy(const std::string& path, const std::string& newPath);
 
 	/**
 	* @brief Get the name of a GameObject incremented by the number of GameObjects with the same name
@@ -523,6 +525,9 @@ private:
 	static std::shared_ptr <BottomBarMenu> s_bottomBar;
 	static std::vector<std::string> s_dragdropEntries;
 	static Event<bool>* s_onUpdateCheckedEvent;
-	static bool s_needProjectDiretoryUpdate;
+	// Set from file watcher/update checker threads, applied on the main thread in Editor::Update
+	static std::atomic<bool> s_needProjectDiretoryUpdate;
+	static std::atomic<bool> s_needCodeHotReload;
+	static std::atomic<bool> s_needShowUpdateMenu;
 	static MenuSettings s_menuSettings;
 };

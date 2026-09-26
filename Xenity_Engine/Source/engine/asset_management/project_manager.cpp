@@ -57,6 +57,7 @@
 #include <engine/constants.h>
 #include <engine/game_elements/prefab.h>
 #include <mutex>
+#include <fstream>
 
 using json = nlohmann::ordered_json;
 
@@ -985,17 +986,67 @@ void ProjectManager::SaveProjectSettings()
 	SaveProjectSettings(s_projectFolderPath);
 }
 
+#if defined(EDITOR)
+/**
+* @brief Write a meta file without ever deleting or partially writing the existing one:
+* the data is written to a temporary file, then moved over the original file.
+* Losing a meta file gives a new id to the asset and breaks every reference to it
+* @return True if the file has been fully written
+*/
+static bool WriteMetaFileSafely(const std::string& path, const std::string& data)
+{
+	const std::string tempPath = path + ".tmp";
+	try
+	{
+		{
+			std::ofstream tempFile(tempPath, std::ios::binary | std::ios::trunc);
+			if (!tempFile.is_open())
+			{
+				return false;
+			}
+			tempFile.write(data.data(), static_cast<std::streamsize>(data.size()));
+			tempFile.flush();
+			if (!tempFile.good())
+			{
+				tempFile.close();
+				std::filesystem::remove(tempPath);
+				return false;
+			}
+		}
+
+		if (std::filesystem::file_size(tempPath) != data.size())
+		{
+			std::filesystem::remove(tempPath);
+			return false;
+		}
+
+		// Replace the original file (atomic on the same drive)
+		std::filesystem::rename(tempPath, path);
+	}
+	catch (const std::exception&)
+	{
+		std::error_code ec;
+		std::filesystem::remove(tempPath, ec);
+		return false;
+	}
+	return true;
+}
+#endif
+
 void ProjectManager::SaveMetaFile(FileReference& fileReference)
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	const std::shared_ptr<File>& file = fileReference.m_file;
-#if defined(EDITOR)
-	const std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
-	const bool exists = metaFile->CheckIfExist();
-	if (!file || (!fileReference.m_isMetaDirty && exists))
+	if (!file)
 		return;
 
-	FileSystem::Delete(file->GetPath() + META_EXTENSION);
+#if defined(EDITOR)
+	const std::string metaPath = file->GetPath() + META_EXTENSION;
+	const std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaPath);
+	const bool exists = metaFile->CheckIfExist();
+	if (!fileReference.m_isMetaDirty && exists)
+		return;
+
 	json metaData;
 	metaData["id"] = fileReference.m_fileId;
 	metaData["MetaVersion"] = s_metaVersion;
@@ -1007,12 +1058,10 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 		metaData[s_assetPlatformNames[i]]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(platform));
 	}
 
-	if (metaFile->Open(FileMode::WriteCreateFile))
+	if (WriteMetaFileSafely(metaPath, metaData.dump(0)))
 	{
-		metaFile->Write(metaData.dump(0));
-		metaFile->Close();
 		fileReference.m_isMetaDirty = false;
-		FileHandler::SetLastModifiedFile(file->GetPath() + META_EXTENSION);
+		FileHandler::SetLastModifiedFile(metaPath);
 		if (!exists)
 			FileHandler::AddOneFile();
 	}
@@ -1262,18 +1311,44 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 			return;
 		}
 
+		if (!metaData.is_object())
+		{
+			Debug::PrintError("[ProjectManager::LoadMetaFile] Invalid meta file: " + path, true);
+#if defined(EDITOR)
+			// Rewrite a valid meta file with the current id
+			fileReference.m_isMetaDirty = true;
+#endif
+			return;
+		}
+
 		// Load platform specific data
 		for (size_t i = 0; i < static_cast<size_t>(AssetPlatform::AP_COUNT); i++)
 		{
 			const AssetPlatform platform = static_cast<AssetPlatform>(i);
-			if (Application::GetAssetPlatform() == platform || Application::IsInEditor())
+			if ((Application::GetAssetPlatform() == platform || Application::IsInEditor()) && metaData.contains(s_assetPlatformNames[i]))
 			{
 				ReflectionUtils::JsonToReflectiveData(metaData[s_assetPlatformNames[i]], fileReference.GetMetaReflectiveData(platform));
 			}
 		}
 
-		//fileReference.m_file->SetUniqueId(metaData["id"]);
-		fileReference.m_fileId = metaData["id"];
+		const bool hasValidId = metaData.contains("id") && metaData["id"].is_number_unsigned();
+#if defined(EDITOR)
+		// In the editor, the id has already been given by the project scan (a new id is given if the id of the meta file is already used by another file).
+		// Do not overwrite it with the id of the meta file, and save the meta file if the ids are different
+		if (!hasValidId || metaData["id"].get<uint64_t>() != fileReference.m_fileId)
+		{
+			fileReference.m_isMetaDirty = true;
+		}
+#else
+		if (hasValidId)
+		{
+			fileReference.m_fileId = metaData["id"].get<uint64_t>();
+		}
+		else
+		{
+			Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file without valid id: " + path, true);
+		}
+#endif
 	}
 	else
 	{

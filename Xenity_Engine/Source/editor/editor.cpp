@@ -78,7 +78,9 @@ bool Editor::s_isToolLocalMode;
 Event<bool>* Editor::s_onUpdateCheckedEvent = new Event<bool>();
 bool Editor::s_updateAvailable = false;
 float Editor::s_cameraSpeed = 30;
-bool Editor::s_needProjectDiretoryUpdate = false;
+std::atomic<bool> Editor::s_needProjectDiretoryUpdate{ false };
+std::atomic<bool> Editor::s_needCodeHotReload{ false };
+std::atomic<bool> Editor::s_needShowUpdateMenu{ false };
 
 void Editor::Init()
 {
@@ -242,8 +244,9 @@ void Editor::OnCodeModified()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	// Called from a file watcher thread: the hot reload unloads the game and clears the scene, it must be done on the main thread
 	if (EngineSettings::values.compileOnCodeChanged)
-		Compiler::HotReloadGame();
+		s_needCodeHotReload = true;
 }
 
 void Editor::OnWindowFocused()
@@ -260,6 +263,16 @@ void Editor::OnWindowFocused()
 void Editor::Update()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	if (s_needShowUpdateMenu)
+	{
+		s_needShowUpdateMenu = false;
+		if (const std::shared_ptr<UpdateAvailableMenu> updateMenu = GetMenu<UpdateAvailableMenu>())
+		{
+			updateMenu->SetActive(true);
+			updateMenu->Focus();
+		}
+	}
 
 	if (ProjectManager::IsProjectLoaded())
 	{
@@ -374,6 +387,12 @@ void Editor::Update()
 		{
 			s_needProjectDiretoryUpdate = false;
 			ProjectManager::RefreshProjectDirectory();
+		}
+
+		if (s_needCodeHotReload)
+		{
+			s_needCodeHotReload = false;
+			Compiler::HotReloadGame();
 		}
 	}
 }
@@ -826,27 +845,47 @@ void Editor::AddDragAndDrop(const std::string& path)
 	s_dragdropEntries.push_back(path);
 }
 
-void Editor::StartFolderCopy(const std::string& path, const std::string& newPath)
+bool Editor::StartFolderCopy(const std::string& path, const std::string& newPath)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	if (path.empty() || newPath.empty())
-		return;
+		return false;
 
-	for (const auto& file : std::filesystem::directory_iterator(path))
+	bool success = true;
+	try
 	{
-		// Check is file
-		if (!file.is_regular_file())
+		for (const auto& file : std::filesystem::directory_iterator(path))
 		{
-			const std::string newFolderPath = newPath + file.path().filename().string() + '\\';
-			FileSystem::CreateFolder(newFolderPath);
-			StartFolderCopy(file.path().string() + '\\', newFolderPath);
-		}
-		else
-		{
-			FileSystem::CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
+			// Check is file
+			if (!file.is_regular_file())
+			{
+				const std::string newFolderPath = newPath + file.path().filename().string() + '\\';
+				FileSystem::CreateFolder(newFolderPath);
+				if (!StartFolderCopy(file.path().string() + '\\', newFolderPath))
+				{
+					success = false;
+				}
+			}
+			else
+			{
+				const CopyFileResult copyResult = FileSystem::CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
+				if (copyResult != CopyFileResult::Success)
+				{
+					Debug::PrintError("[Editor::StartFolderCopy] Failed to copy the file: " + file.path().string(), true);
+					success = false;
+				}
+			}
 		}
 	}
+	catch (const std::exception& e)
+	{
+		// Unreadable folder, file name not convertible to the current code page...
+		Debug::PrintError("[Editor::StartFolderCopy] Failed to copy the folder: " + path + " (" + e.what() + ")", true);
+		success = false;
+	}
+
+	return success;
 }
 
 void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number)
@@ -909,11 +948,11 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 
 void Editor::OnUpdateChecked(bool newVersionAvailable)
 {
+	// Called from the update checker thread, the menu is shown on the main thread in Editor::Update
 	s_updateAvailable = newVersionAvailable;
 	if (newVersionAvailable)
 	{
-		GetMenu<UpdateAvailableMenu>()->SetActive(true);
-		GetMenu<UpdateAvailableMenu>()->Focus();
+		s_needShowUpdateMenu = true;
 	}
 }
 
