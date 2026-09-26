@@ -14,6 +14,7 @@
 #include <editor/file_handler/file_handler.h>
 #include <editor/compilation/compiler.h>
 #include <editor/utils/file_reference_finder.h>
+#include <editor/command/command_manager.h>
 #endif
 
 #include "code_file.h"
@@ -649,6 +650,8 @@ void ProjectManager::UnloadProject()
 	Editor::SetCurrentProjectDirectory(nullptr);
 	Editor::SetSelectedGameObject(nullptr);
 	Editor::SetSelectedFileReference(nullptr);
+	// The undo history refers to objects and settings of the closed project
+	CommandManager::ClearCommands();
 
 	SceneManager::SetIsSceneDirty(false);
 	SceneManager::SetOpenedScene(nullptr);

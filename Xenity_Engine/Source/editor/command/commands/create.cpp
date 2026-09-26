@@ -88,6 +88,11 @@ void InspectorCreateGameObjectCommand::Execute()
 		for (size_t i = 0; i < targetCount; i++)
 		{
 			std::shared_ptr<GameObject> target = FindGameObjectById(m_targets[i]);
+			// Keep createdGameObjects aligned with m_targets, 0 means that nothing was created for this target
+			if (m_alreadyExecuted && (i >= createdGameObjects.size() || createdGameObjects[i] == 0))
+				target = nullptr;
+			if (!target && !m_alreadyExecuted)
+				createdGameObjects.push_back(0);
 			if (target)
 			{
 				std::shared_ptr<GameObject> newGameObject = CreateGameObject();
@@ -110,6 +115,14 @@ void InspectorCreateGameObjectCommand::Execute()
 		for (size_t i = 0; i < targetCount; i++)
 		{
 			std::shared_ptr<GameObject> target = FindGameObjectById(m_targets[i]);
+			// Keep createdGameObjects and m_oldParents aligned with m_targets, 0 means that nothing was created for this target
+			if (m_alreadyExecuted && (i >= createdGameObjects.size() || createdGameObjects[i] == 0))
+				target = nullptr;
+			if (!target && !m_alreadyExecuted)
+			{
+				createdGameObjects.push_back(0);
+				m_oldParents.push_back(0);
+			}
 			if (target)
 			{
 				std::shared_ptr<GameObject> newGameObject = CreateGameObject();
@@ -127,10 +140,13 @@ void InspectorCreateGameObjectCommand::Execute()
 				{
 					newGameObject->SetParent(target->GetParent().lock());
 				}
-				if (target->GetParent().lock())
-					m_oldParents.push_back(target->GetParent().lock()->GetUniqueId());
-				else
-					m_oldParents.push_back(0);
+				if (!m_alreadyExecuted)
+				{
+					if (target->GetParent().lock())
+						m_oldParents.push_back(target->GetParent().lock()->GetUniqueId());
+					else
+						m_oldParents.push_back(0);
+				}
 
 				target->SetParent(newGameObject);
 				done = true;
@@ -164,7 +180,8 @@ void InspectorCreateGameObjectCommand::Undo()
 			for (uint64_t gameObjectId : createdGameObjects)
 			{
 				std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(gameObjectId);
-				Destroy(createdGameObject);
+				if (createdGameObject)
+					Destroy(createdGameObject);
 			}
 			done = true;
 		}
@@ -173,17 +190,24 @@ void InspectorCreateGameObjectCommand::Undo()
 			const size_t targetCount = m_targets.size();
 			for (size_t i = 0; i < targetCount; i++)
 			{
+				if (i >= m_oldParents.size() || i >= createdGameObjects.size() || createdGameObjects[i] == 0)
+					continue;
+
 				std::shared_ptr<GameObject> target = FindGameObjectById(m_targets[i]);
-				if (m_oldParents[i] != 0)
+				if (target)
 				{
-					std::shared_ptr<GameObject> oldParent = FindGameObjectById(m_oldParents[i]);
-					target->SetParent(oldParent);
+					if (m_oldParents[i] != 0)
+					{
+						std::shared_ptr<GameObject> oldParent = FindGameObjectById(m_oldParents[i]);
+						target->SetParent(oldParent);
+					}
+					else
+						target->SetParent(nullptr);
 				}
-				else
-					target->SetParent(nullptr);
 
 				std::shared_ptr<GameObject> createdGameObject = FindGameObjectById(createdGameObjects[i]);
-				Destroy(createdGameObject);
+				if (createdGameObject)
+					Destroy(createdGameObject);
 				done = true;
 			}
 		}

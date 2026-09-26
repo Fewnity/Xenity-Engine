@@ -476,6 +476,22 @@ public:
 			{
 				selectMenu->reflectiveDataToDraw = *reflectiveDataToDraw;
 				selectMenu->hasReflectiveDataToDraw = true;
+
+				// Keep a weak reference to the owner of the variable to know when valuePtr becomes invalid
+				std::shared_ptr<void> owner = nullptr;
+				if (reflectiveDataToDraw->ownerType == ReflectiveDataToDraw::OwnerTypeEnum::GameObject)
+				{
+					owner = FindGameObjectById(reflectiveDataToDraw->ownerUniqueId);
+				}
+				else if (reflectiveDataToDraw->ownerType == ReflectiveDataToDraw::OwnerTypeEnum::Component)
+				{
+					owner = FindComponentById(reflectiveDataToDraw->ownerUniqueId);
+				}
+				if (owner)
+				{
+					selectMenu->owner = owner;
+					selectMenu->hasOwner = true;
+				}
 			}
 			currentSelectAssetMenu = selectMenu;
 			selectMenu->Focus();

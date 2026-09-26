@@ -16,6 +16,7 @@
 #include <engine/accessors/acc_gameobject.h>
 #include <engine/scene_management/scene_manager.h>
 #include <engine/game_elements/prefab.h>
+#include <engine/debug/debug.h>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -222,7 +223,16 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<Prefab>& prefab)
 		return nullptr;
 
 	std::shared_ptr<GameObject> newGameObject = nullptr;
-	SceneManager::CreateObjectsFromJson(prefab->GetData(), true, &newGameObject);
+	try
+	{
+		SceneManager::CreateObjectsFromJson(prefab->GetData(), true, &newGameObject);
+	}
+	catch (const std::exception& e)
+	{
+		// Invalid prefab data (edited by hand, bad merge...)
+		Debug::PrintError("[Instantiate] Failed to instantiate the prefab: " + std::string(e.what()));
+		return nullptr;
+	}
 	return newGameObject;
 }
 
@@ -257,7 +267,18 @@ void DestroyGameObjectAndChild(const std::shared_ptr<GameObject>& gameObject)
 	int childCount = gameObject->GetChildrenCount();
 	for (int i = 0; i < childCount; i++)
 	{
-		DestroyGameObjectAndChild(gameObjectChildren[0].lock());
+		const std::shared_ptr<GameObject> child = gameObjectChildren[0].lock();
+		if (child)
+		{
+			// Removes the child from gameObjectChildren
+			DestroyGameObjectAndChild(child);
+		}
+		else
+		{
+			// Expired child, remove it directly to avoid a null dereference
+			gameObjectChildren.erase(gameObjectChildren.begin());
+			gameObjectAcc.SetChildrenCount(gameObject->GetChildrenCount() - 1);
+		}
 		i--;
 		childCount--;
 	}
@@ -271,8 +292,11 @@ void Destroy(const std::weak_ptr<GameObject>& gameObject)
 
 void Destroy(const std::shared_ptr<GameObject>& gameObject)
 {
+	if (!gameObject)
+		return;
+
 	GameObjectAccessor gameObjectAcc = GameObjectAccessor(gameObject);
-	if (gameObject && !gameObjectAcc.IsWaitingForDestroy())
+	if (!gameObjectAcc.IsWaitingForDestroy())
 	{
 		DestroyGameObjectAndChild(gameObject);
 	}

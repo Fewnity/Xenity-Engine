@@ -323,13 +323,17 @@ void Editor::Update()
 			const std::shared_ptr<HierarchyMenu> hierarchy = Editor::GetMenu<HierarchyMenu>();
 			if ((sceneMenu && sceneMenu->IsFocused()) || (hierarchy && hierarchy->IsFocused()))
 			{
-				for (std::weak_ptr<GameObject>& currentGameObject : s_selectedGameObjects)
+				// Only delete the top-most selected GameObjects, deleting a child with its parent would recreate the child twice on undo (with the same ids)
+				std::vector<std::shared_ptr<GameObject>> selectedGameObjectsToCheck;
+				for (const std::weak_ptr<GameObject>& currentGameObject : s_selectedGameObjects)
 				{
-					if (currentGameObject.lock())
-					{
-						auto command = std::make_shared<InspectorDeleteGameObjectCommand>(*currentGameObject.lock());
-						CommandManager::AddCommandAndExecute(command);
-					}
+					selectedGameObjectsToCheck.push_back(currentGameObject.lock());
+				}
+				const std::vector<std::shared_ptr<GameObject>> gameObjectsToDelete = RemoveChildren(selectedGameObjectsToCheck);
+				for (const std::shared_ptr<GameObject>& gameObjectToDelete : gameObjectsToDelete)
+				{
+					auto command = std::make_shared<InspectorDeleteGameObjectCommand>(*gameObjectToDelete);
+					CommandManager::AddCommandAndExecute(command);
 				}
 				s_selectedGameObjects.clear();
 			}

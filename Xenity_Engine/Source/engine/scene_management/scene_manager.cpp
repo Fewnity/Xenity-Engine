@@ -9,6 +9,7 @@
 #if defined(EDITOR)
 #include <editor/ui/editor_ui.h>
 #include <editor/utils/file_reference_finder.h>
+#include <editor/command/command_manager.h>
 #endif
 
 #include <engine/accessors/acc_gameobject.h>
@@ -322,6 +323,19 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 	idRedirection.clear();
 	tempGameobjects.clear();
 	tempComponents.clear();
+
+	// Always clear the temporary lists, even if an exception is thrown (invalid json).
+	// Otherwise FindGameObjectById/FindComponentById would keep searching in these stale lists
+	struct TempListsCleaner
+	{
+		~TempListsCleaner()
+		{
+			idRedirection.clear();
+			tempGameobjects.clear();
+			tempComponents.clear();
+		}
+	};
+	TempListsCleaner tempListsCleaner;
 
 	std::vector<std::shared_ptr<Component>> allComponents;
 	// Create all GameObjects and Components
@@ -700,6 +714,14 @@ void SceneManager::LoadSceneInternal(std::shared_ptr<Scene> scene, DialogMode di
 
 	Debug::Print("Loading scene...", true);
 
+#if defined(EDITOR)
+	// The undo history refers to the objects of the previous scene
+	if (GameplayManager::GetGameState() == GameState::Stopped)
+	{
+		CommandManager::ClearCommands();
+	}
+#endif
+
 	ClearOpenedSceneFile();
 	s_openedScene = scene;
 
@@ -776,6 +798,13 @@ void SceneManager::ClearScene()
 
 void SceneManager::CreateEmptyScene()
 {
+#if defined(EDITOR)
+	// The undo history refers to the objects of the previous scene
+	if (GameplayManager::GetGameState() == GameState::Stopped)
+	{
+		CommandManager::ClearCommands();
+	}
+#endif
 	ClearOpenedSceneFile();
 	ClearScene();
 }

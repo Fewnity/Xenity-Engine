@@ -54,21 +54,28 @@ void CommandManager::AddCommandAndExecute(std::shared_ptr<Command> command)
 void CommandManager::ClearCommands()
 {
 	s_commands.clear();
+	s_currentCommand = -1;
 }
 
 void CommandManager::ClearInGameCommands()
 {
-	size_t commandCount = s_commands.size();
+	// Keep the cursor on the same kept command, so commands undone before playing stay undone
+	std::vector<std::shared_ptr<Command>> keptCommands;
+	int newCurrentCommand = -1;
+	const size_t commandCount = s_commands.size();
 	for (size_t i = 0; i < commandCount; i++)
 	{
 		if (s_commands[i]->doneInPlayMode)
+			continue;
+
+		keptCommands.push_back(s_commands[i]);
+		if (static_cast<int>(i) <= s_currentCommand)
 		{
-			s_commands.erase(s_commands.begin() + i);
-			commandCount--;
-			i--;
+			newCurrentCommand = static_cast<int>(keptCommands.size()) - 1;
 		}
 	}
-	s_currentCommand = static_cast<int>(commandCount - 1);
+	s_commands = std::move(keptCommands);
+	s_currentCommand = newCurrentCommand;
 }
 
 void CommandManager::Undo()
