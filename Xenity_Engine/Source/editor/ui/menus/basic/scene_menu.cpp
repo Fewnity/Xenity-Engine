@@ -27,6 +27,7 @@
 #include <engine/tools/internal_math.h>
 #include <engine/graphics/texture/texture_default.h>
 #include <engine/game_elements/prefab.h>
+#include <engine/tools/gameplay_utility.h>
 #include <editor/ui/editor_icons.h>
 
 
@@ -876,8 +877,8 @@ void SceneMenu::Draw()
 						std::shared_ptr<Prefab> prefab = std::dynamic_pointer_cast<Prefab>(prefabFileRef);
 						if (prefab)
 						{
-							std::shared_ptr<GameObject> newGameObject = nullptr;
-							SceneManager::CreateObjectsFromJson(prefab->GetData(), true, &newGameObject);
+							// Instantiate catches errors from invalid prefab data
+							std::shared_ptr<GameObject> newGameObject = Instantiate(prefab);
 							if (newGameObject)
 							{
 								newGameObject->GetTransform()->SetPosition(camera->GetTransform()->GetPosition() + mouseWorldDirNormalized * -6);

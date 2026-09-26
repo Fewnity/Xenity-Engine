@@ -63,6 +63,8 @@ void TextMesh::SetFont(const std::shared_ptr<Font>& font)
 	{
 		m_font = font;
 		m_isTextInfoDirty = true;
+		// Recreate render commands (no command is created without font)
+		Graphics::s_isRenderingBatchDirty = true;
 	}
 }
 
@@ -96,14 +98,15 @@ void TextMesh::CreateRenderCommands(RenderBatch& renderBatch)
 void TextMesh::DrawCommand(const RenderCommand& renderCommand)
 {
 	XASSERT(m_font, "[TextMesh::DrawCommand] Font is nullptr");
+	if (!m_font)
+		return;
 
 	if (m_isTextInfoDirty)
 	{
-		if (m_mesh)
-		{
-			delete m_textInfo;
-			m_mesh.reset();
-		}
+		// Always delete the old text info, m_textInfo is kept when the text becomes empty and would be deleted twice
+		delete m_textInfo;
+		m_textInfo = nullptr;
+		m_mesh.reset();
 		if (!m_text.empty())
 		{
 			m_textInfo = TextManager::GetTextInformations(m_text, m_font, 1);

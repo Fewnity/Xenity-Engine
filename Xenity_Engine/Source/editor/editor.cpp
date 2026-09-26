@@ -78,7 +78,9 @@ bool Editor::s_isToolLocalMode;
 Event<bool>* Editor::s_onUpdateCheckedEvent = new Event<bool>();
 bool Editor::s_updateAvailable = false;
 float Editor::s_cameraSpeed = 30;
-bool Editor::s_needProjectDiretoryUpdate = false;
+std::atomic<bool> Editor::s_needProjectDiretoryUpdate{ false };
+std::atomic<bool> Editor::s_needCodeHotReload{ false };
+std::atomic<bool> Editor::s_needShowUpdateMenu{ false };
 
 void Editor::Init()
 {
@@ -242,8 +244,9 @@ void Editor::OnCodeModified()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	// Called from a file watcher thread: the hot reload unloads the game and clears the scene, it must be done on the main thread
 	if (EngineSettings::values.compileOnCodeChanged)
-		Compiler::HotReloadGame();
+		s_needCodeHotReload = true;
 }
 
 void Editor::OnWindowFocused()
@@ -260,6 +263,16 @@ void Editor::OnWindowFocused()
 void Editor::Update()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	if (s_needShowUpdateMenu)
+	{
+		s_needShowUpdateMenu = false;
+		if (const std::shared_ptr<UpdateAvailableMenu> updateMenu = GetMenu<UpdateAvailableMenu>())
+		{
+			updateMenu->SetActive(true);
+			updateMenu->Focus();
+		}
+	}
 
 	if (ProjectManager::IsProjectLoaded())
 	{
@@ -323,13 +336,17 @@ void Editor::Update()
 			const std::shared_ptr<HierarchyMenu> hierarchy = Editor::GetMenu<HierarchyMenu>();
 			if ((sceneMenu && sceneMenu->IsFocused()) || (hierarchy && hierarchy->IsFocused()))
 			{
-				for (std::weak_ptr<GameObject>& currentGameObject : s_selectedGameObjects)
+				// Only delete the top-most selected GameObjects, deleting a child with its parent would recreate the child twice on undo (with the same ids)
+				std::vector<std::shared_ptr<GameObject>> selectedGameObjectsToCheck;
+				for (const std::weak_ptr<GameObject>& currentGameObject : s_selectedGameObjects)
 				{
-					if (currentGameObject.lock())
-					{
-						auto command = std::make_shared<InspectorDeleteGameObjectCommand>(*currentGameObject.lock());
-						CommandManager::AddCommandAndExecute(command);
-					}
+					selectedGameObjectsToCheck.push_back(currentGameObject.lock());
+				}
+				const std::vector<std::shared_ptr<GameObject>> gameObjectsToDelete = RemoveChildren(selectedGameObjectsToCheck);
+				for (const std::shared_ptr<GameObject>& gameObjectToDelete : gameObjectsToDelete)
+				{
+					auto command = std::make_shared<InspectorDeleteGameObjectCommand>(*gameObjectToDelete);
+					CommandManager::AddCommandAndExecute(command);
 				}
 				s_selectedGameObjects.clear();
 			}
@@ -370,6 +387,12 @@ void Editor::Update()
 		{
 			s_needProjectDiretoryUpdate = false;
 			ProjectManager::RefreshProjectDirectory();
+		}
+
+		if (s_needCodeHotReload)
+		{
+			s_needCodeHotReload = false;
+			Compiler::HotReloadGame();
 		}
 	}
 }
@@ -822,27 +845,47 @@ void Editor::AddDragAndDrop(const std::string& path)
 	s_dragdropEntries.push_back(path);
 }
 
-void Editor::StartFolderCopy(const std::string& path, const std::string& newPath)
+bool Editor::StartFolderCopy(const std::string& path, const std::string& newPath)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	if (path.empty() || newPath.empty())
-		return;
+		return false;
 
-	for (const auto& file : std::filesystem::directory_iterator(path))
+	bool success = true;
+	try
 	{
-		// Check is file
-		if (!file.is_regular_file())
+		for (const auto& file : std::filesystem::directory_iterator(path))
 		{
-			const std::string newFolderPath = newPath + file.path().filename().string() + '\\';
-			FileSystem::CreateFolder(newFolderPath);
-			StartFolderCopy(file.path().string() + '\\', newFolderPath);
-		}
-		else
-		{
-			FileSystem::CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
+			// Check is file
+			if (!file.is_regular_file())
+			{
+				const std::string newFolderPath = newPath + file.path().filename().string() + '\\';
+				FileSystem::CreateFolder(newFolderPath);
+				if (!StartFolderCopy(file.path().string() + '\\', newFolderPath))
+				{
+					success = false;
+				}
+			}
+			else
+			{
+				const CopyFileResult copyResult = FileSystem::CopyFile(file.path().string(), newPath + file.path().filename().string(), true); // TODO ask if we want to replace files
+				if (copyResult != CopyFileResult::Success)
+				{
+					Debug::PrintError("[Editor::StartFolderCopy] Failed to copy the file: " + file.path().string(), true);
+					success = false;
+				}
+			}
 		}
 	}
+	catch (const std::exception& e)
+	{
+		// Unreadable folder, file name not convertible to the current code page...
+		Debug::PrintError("[Editor::StartFolderCopy] Failed to copy the folder: " + path + " (" + e.what() + ")", true);
+		success = false;
+	}
+
+	return success;
 }
 
 void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::string& baseName, int& number)
@@ -879,7 +922,8 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 		}
 		else
 		{
-			if (!isdigit(name[i]))
+			// Cast to unsigned char: isdigit with a negative char (accented character) is undefined behavior
+			if (!isdigit(static_cast<unsigned char>(name[i])))
 			{
 				numberState = 0;
 				break;
@@ -893,8 +937,17 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 
 	if (startParenthesis != -1)
 	{
-		number = std::stoi(name.substr(startParenthesis + 1, endParenthesis - startParenthesis - 1)) + 1;
-		baseName = name.substr(0, startParenthesis - 1);
+		try
+		{
+			number = std::stoi(name.substr(startParenthesis + 1, endParenthesis - startParenthesis - 1)) + 1;
+			baseName = name.substr(0, startParenthesis - 1);
+		}
+		catch (const std::exception&)
+		{
+			// Number too big for an int
+			baseName = name;
+			number = 1;
+		}
 	}
 	else
 	{
@@ -905,11 +958,11 @@ void Editor::GetIncrementedGameObjectNameInfo(const std::string& name, std::stri
 
 void Editor::OnUpdateChecked(bool newVersionAvailable)
 {
+	// Called from the update checker thread, the menu is shown on the main thread in Editor::Update
 	s_updateAvailable = newVersionAvailable;
 	if (newVersionAvailable)
 	{
-		GetMenu<UpdateAvailableMenu>()->SetActive(true);
-		GetMenu<UpdateAvailableMenu>()->Focus();
+		s_needShowUpdateMenu = true;
 	}
 }
 

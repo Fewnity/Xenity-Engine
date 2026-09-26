@@ -112,9 +112,17 @@ void TextureDefault::OnLoadFileReferenceFinished()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	// The loading may have failed (missing, empty or invalid file)
+	if (!m_buffer || m_fileStatus == FileStatus::FileStatus_Failed)
+	{
+		return;
+	}
+
 	SetData(m_buffer);
 
 	free(m_buffer);
+	// Avoid a double free/use after free if the texture is reloaded and the loading fails
+	m_buffer = nullptr;
 }
 
 // TODO: This function only supports 1 color textures, add enum for texture color type
