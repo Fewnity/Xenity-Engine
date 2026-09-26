@@ -207,10 +207,10 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 	std::shared_ptr<GameObject> aParent = a->GetGameObject();
 	while (aParent != nullptr)
 	{
-		const size_t goAComponentsCount = aParent->m_components.size();
-		for (size_t i = 0; i < goAComponentsCount; i++)
+		// The size is read at each iteration and the component is copied because the game code can add or remove components during the event
+		for (size_t i = 0; i < aParent->m_components.size(); i++)
 		{
-			const std::shared_ptr<Component>& component = aParent->m_components[i];
+			const std::shared_ptr<Component> component = aParent->m_components[i];
 			if (component)
 			{
 				if (state == 0)
@@ -242,10 +242,10 @@ void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger
 	std::shared_ptr<GameObject> bParent = b->GetGameObject();
 	while (bParent != nullptr)
 	{
-		const size_t goBComponentsCount = bParent->m_components.size();
-		for (size_t i = 0; i < goBComponentsCount; i++)
+		// The size is read at each iteration and the component is copied because the game code can add or remove components during the event
+		for (size_t i = 0; i < bParent->m_components.size(); i++)
 		{
-			const std::shared_ptr<Component>& component = bParent->m_components[i];
+			const std::shared_ptr<Component> component = bParent->m_components[i];
 			if (component)
 			{
 				if (state == 0)
@@ -339,59 +339,73 @@ void PhysicsManager::Update()
 	{
 		SCOPED_PROFILER("PhysicsManager::Update|CallCollisionEvent", scopeBenchmark2);
 		// Call the collision events
-		for (size_t i = 0; i < colliderCount; i++)
+		struct PendingCollisionEvent
 		{
-			ColliderInfo& colliderInfo = s_colliders[i];
-			std::vector<Collider*> toRemove;
+			Collider* otherCollider;
+			bool isTrigger;
+			int state;
+		};
+		std::vector<PendingCollisionEvent> pendingEvents;
 
-			for (auto& collision : colliderInfo.collisions)
+		for (size_t i = 0; i < colliderCount && i < s_colliders.size(); i++)
+		{
+			// First update the collision states without calling game code:
+			// the game code can add colliders (s_colliders reallocation) so no reference to s_colliders must be kept while calling events
+			pendingEvents.clear();
+			Collider* collider = s_colliders[i].collider;
 			{
-				if (collision.second == CollisionState::FirstFrame)
+				ColliderInfo& colliderInfo = s_colliders[i];
+				std::vector<Collider*> toRemove;
+
+				for (auto& collision : colliderInfo.collisions)
 				{
-					CallCollisionEvent(colliderInfo.collider, collision.first, false, 0);
-					//std::cout << "OnCollisionEnter: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-					collision.second = CollisionState::RequireUpdate;
+					if (collision.second == CollisionState::FirstFrame)
+					{
+						pendingEvents.push_back({ collision.first, false, 0 });
+						collision.second = CollisionState::RequireUpdate;
+					}
+					else if (collision.second == CollisionState::Updated)
+					{
+						pendingEvents.push_back({ collision.first, false, 1 });
+						collision.second = CollisionState::RequireUpdate;
+					}
+					else if (collision.second == CollisionState::RequireUpdate)
+					{
+						pendingEvents.push_back({ collision.first, false, 2 });
+						toRemove.push_back(collision.first);
+					}
 				}
-				else if (collision.second == CollisionState::Updated)
+
+				for (auto& collision : colliderInfo.triggersCollisions)
 				{
-					CallCollisionEvent(colliderInfo.collider, collision.first, false, 1);
-					//std::cout << "OnCollisionStay: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-					collision.second = CollisionState::RequireUpdate;
+					if (collision.second == CollisionState::FirstFrame)
+					{
+						pendingEvents.push_back({ collision.first, true, 0 });
+						collision.second = CollisionState::RequireUpdate;
+					}
+					else if (collision.second == CollisionState::Updated)
+					{
+						pendingEvents.push_back({ collision.first, true, 1 });
+						collision.second = CollisionState::RequireUpdate;
+					}
+					else if (collision.second == CollisionState::RequireUpdate)
+					{
+						pendingEvents.push_back({ collision.first, true, 2 });
+						toRemove.push_back(collision.first);
+					}
 				}
-				else if (collision.second == CollisionState::RequireUpdate)
+
+				for (auto& remove : toRemove)
 				{
-					CallCollisionEvent(colliderInfo.collider, collision.first, false, 2);
-					//std::cout << "OnCollisionExit: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-					toRemove.push_back(collision.first);
+					colliderInfo.collisions.erase(remove);
+					colliderInfo.triggersCollisions.erase(remove);
 				}
 			}
 
-			for (auto& collision : colliderInfo.triggersCollisions)
+			// Then call the game code
+			for (const PendingCollisionEvent& pendingEvent : pendingEvents)
 			{
-				if (collision.second == CollisionState::FirstFrame)
-				{
-					CallCollisionEvent(colliderInfo.collider, collision.first, true, 0);
-					//std::cout << "OnTriggerEnter: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-					collision.second = CollisionState::RequireUpdate;
-				}
-				else if (collision.second == CollisionState::Updated)
-				{
-					CallCollisionEvent(colliderInfo.collider, collision.first, true, 1);
-					//std::cout << "OnTriggerStay: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-					collision.second = CollisionState::RequireUpdate;
-				}
-				else if (collision.second == CollisionState::RequireUpdate)
-				{
-					CallCollisionEvent(colliderInfo.collider, collision.first, true, 2);
-					//std::cout << "OnTriggerExit: " << colliderInfo.collider->GetGameObject()->GetName() << " " << collision.first->GetGameObject()->GetName() << std::endl;
-					toRemove.push_back(collision.first);
-				}
-			}
-
-			for (auto& remove : toRemove)
-			{
-				colliderInfo.collisions.erase(remove);
-				colliderInfo.triggersCollisions.erase(remove);
+				CallCollisionEvent(collider, pendingEvent.otherCollider, pendingEvent.isTrigger, pendingEvent.state);
 			}
 		}
 	}
@@ -448,5 +462,13 @@ void PhysicsManager::RemoveCollider(const Collider* col)
 			s_colliders.erase(s_colliders.begin() + i);
 			break;
 		}
+	}
+
+	// Remove the collider from the other colliders' collisions to avoid calling events with a destroyed collider
+	Collider* colliderKey = const_cast<Collider*>(col);
+	for (ColliderInfo& colliderInfo : s_colliders)
+	{
+		colliderInfo.collisions.erase(colliderKey);
+		colliderInfo.triggersCollisions.erase(colliderKey);
 	}
 }

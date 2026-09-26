@@ -134,6 +134,13 @@ void GameObject::AddChild(const std::shared_ptr<GameObject>& newChild)
 
 	if (newChild)
 	{
+		// A GameObject can't be its own parent, this would create an infinite loop
+		if (newChild.get() == this)
+		{
+			Debug::PrintWarning("[GameObject::AddChild] A GameObject can't be its own parent: " + m_name);
+			return;
+		}
+
 		if (newChild->IsParentOf(shared_from_this()))
 		{
 			return;

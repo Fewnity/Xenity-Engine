@@ -125,7 +125,8 @@ public:
 		size_t componentsToInitCount = componentsToInit.size();
 		for (size_t i = 0; i < componentsToInitCount; i++)
 		{
-			const std::shared_ptr<Component>& component = componentsToInit[i];
+			// Copy: the game code can create components of the same type during Start (vector reallocation)
+			const std::shared_ptr<Component> component = componentsToInit[i];
 			if (!component->m_initiated &&IsComponentLocalActive(component) && component->IsEnabled())
 			{
 				component->m_initiated = true;
@@ -147,8 +148,12 @@ public:
 		{
 			SCOPED_DYNAMIC_PROFILER(shared_components[0]->GetComponentName(), scopeBenchmark);
 
-			for (const std::shared_ptr<Component>& component : shared_components)
+			// Use an index and a copy: the game code can create components of the same type during Update (vector reallocation)
+			// New components are updated from the next frame
+			const size_t componentCount = shared_components.size();
+			for (size_t i = 0; i < componentCount && i < shared_components.size(); i++)
 			{
+				const std::shared_ptr<Component> component = shared_components[i];
 				if (IsComponentLocalActive(component) && component->IsEnabled())
 				{
 #if defined(_WIN32) || defined(_WIN64)
@@ -225,9 +230,14 @@ public:
 	*/
 	static void InitComponentLists()
 	{
-		for (auto& componentList : componentLists)
+		// The game code can create a new component type in Start (map insertion), so do not iterate the map directly
+		for (const size_t typeId : GetComponentListsIds())
 		{
-			componentList.second->InitComponents();
+			const auto it = componentLists.find(typeId);
+			if (it != componentLists.end() && it->second)
+			{
+				it->second->InitComponents();
+			}
 		}
 	}
 
@@ -236,13 +246,29 @@ public:
 	*/
 	static void UpdateComponentLists(std::weak_ptr<Component>& lastUpdatedComponent)
 	{
-		for (auto& componentList : componentLists)
+		// The game code can create a new component type in Update (map insertion), so do not iterate the map directly
+		for (const size_t typeId : GetComponentListsIds())
 		{
-			if (componentList.second->IsDisabledLoop())
+			const auto it = componentLists.find(typeId);
+			if (it == componentLists.end() || !it->second || it->second->IsDisabledLoop())
 				continue;
 
-			componentList.second->UpdateComponents(lastUpdatedComponent);
+			it->second->UpdateComponents(lastUpdatedComponent);
 		}
+	}
+
+	/**
+	* @brief Get the type ids of all component lists (copy, safe to use if lists are added during the iteration)
+	*/
+	[[nodiscard]] static std::vector<size_t> GetComponentListsIds()
+	{
+		std::vector<size_t> ids;
+		ids.reserve(componentLists.size());
+		for (const auto& componentList : componentLists)
+		{
+			ids.push_back(componentList.first);
+		}
+		return ids;
 	}
 
 	[[nodiscard]] static std::vector<std::shared_ptr<Component>> GetAllComponents()
