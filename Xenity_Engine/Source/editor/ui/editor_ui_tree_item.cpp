@@ -77,6 +77,13 @@ bool EditorUI::DragDropOrderGameObject(std::shared_ptr <GameObject>& droppedGame
 		{
 			newParent = dropAreaOwner;
 		}
+
+		// Do not allow to drop a GameObject in itself or in one of its children
+		if (newParent && (newParent == droppedGameObject || droppedGameObject->IsParentOf(newParent)))
+		{
+			return false;
+		}
+
 		droppedGameObject->SetParent(newParent);
 		if (!newParent)
 		{
@@ -201,7 +208,8 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 		ImGui::PopStyleColor();
 
 		std::shared_ptr <GameObject> droppedGameObject = nullptr;
-		if (DragDropTarget("GameObject", droppedGameObject))
+		// Do not allow to drop a GameObject in itself or in one of its children
+		if (DragDropTarget("GameObject", droppedGameObject) && droppedGameObject != gameObject && !droppedGameObject->IsParentOf(gameObject))
 		{
 			droppedGameObject->SetParent(gameObject);
 			state = 1;
