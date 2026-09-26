@@ -27,6 +27,9 @@ namespace fs = std::filesystem;
 #define ASSETS_FOLDER "assets/"
 
 FileDataBase Cooker::s_fileDataBase;
+std::set<uint64_t> Cooker::s_preparedFileIds;
+std::vector<std::shared_ptr<FileReference>> Cooker::s_preparedFileReferences;
+bool Cooker::s_isCookingPrepared = false;
 using ordered_json = nlohmann::ordered_json;
 
 std::mutex dataBaseMutex;
@@ -49,15 +52,24 @@ bool Cooker::CookAssets(const CookSettings& settings)
 
 	const std::string projectAssetFolder = ProjectManager::GetProjectFolderPath();
 	const size_t projectFolderPathLen = projectAssetFolder.size();
-	const std::set<uint64_t> fileToCookIds = ProjectManager::GetAllUsedFileByTheGame();
-
-	// Create all file references to avoid making them in the threads
-	for (uint64_t id : fileToCookIds)
+	std::set<uint64_t> fileToCookIds;
+	if (s_isCookingPrepared)
 	{
-		const FileInfo* fileInfo = ProjectManager::GetFileById(id);
-		if (fileInfo)
+		// File references already created on the main thread
+		fileToCookIds = s_preparedFileIds;
+	}
+	else
+	{
+		fileToCookIds = ProjectManager::GetAllUsedFileByTheGame();
+
+		// Create all file references to avoid making them in the threads
+		for (uint64_t id : fileToCookIds)
 		{
-			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo->fileAndId.file);
+			const FileInfo* fileInfo = ProjectManager::GetFileById(id);
+			if (fileInfo)
+			{
+				const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo->fileAndId.file);
+			}
 		}
 	}
 
@@ -107,6 +119,34 @@ bool Cooker::CookAssets(const CookSettings& settings)
 	s_fileDataBase.GetBitFile().Close();
 
 	return true;
+}
+
+void Cooker::PrepareCooking()
+{
+	s_preparedFileReferences.clear();
+	s_preparedFileIds = ProjectManager::GetAllUsedFileByTheGame();
+
+	// Create all file references on the main thread and keep them alive during the build
+	for (uint64_t id : s_preparedFileIds)
+	{
+		const FileInfo* fileInfo = ProjectManager::GetFileById(id);
+		if (fileInfo)
+		{
+			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceByFile(*fileInfo->fileAndId.file);
+			if (fileRef)
+			{
+				s_preparedFileReferences.push_back(fileRef);
+			}
+		}
+	}
+	s_isCookingPrepared = true;
+}
+
+void Cooker::ClearPreparedCooking()
+{
+	s_isCookingPrepared = false;
+	s_preparedFileIds.clear();
+	s_preparedFileReferences.clear();
 }
 
 //void Cooker::CookAsset(const CookSettings& settings, const FileInfo& fileInfo, const std::string& exportFolderPath, const std::string& partialFilePath)
