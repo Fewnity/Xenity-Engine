@@ -400,22 +400,15 @@ void Transform::UpdateTransformationMatrix()
 
 void Transform::UpdateWorldScale()
 {
-	m_scale = m_localScale;
-	const std::shared_ptr<GameObject> lockGameObject = m_gameObject.lock();
-	if (auto parentGm = lockGameObject->GetParent().lock())
+	// The parent's world scale is already up to date (parents are updated before their children)
+	// Children are updated by SetChildrenWorldPositions, so there is no need to go through them here
+	if (const std::shared_ptr<GameObject> parentGm = m_gameObject.lock()->GetParent().lock())
 	{
-		while (parentGm != nullptr)
-		{
-			m_scale = m_scale * parentGm->GetTransform()->m_localScale;
-			parentGm = parentGm->GetParent().lock();
-		}
-
-		const int childCount = lockGameObject->GetChildrenCount();
-		for (int i = 0; i < childCount; i++)
-		{
-			const std::shared_ptr<GameObject> child = lockGameObject->GetChildren()[i].lock();
-			child->GetTransform()->UpdateWorldScale();
-		}
+		m_scale = parentGm->GetTransform()->m_scale * m_localScale;
+	}
+	else
+	{
+		m_scale = m_localScale;
 	}
 }
 
