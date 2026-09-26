@@ -115,11 +115,11 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 			const VariableReference& variableRef = reflectiveEntry.variable.value();
 			if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Component>>>(&variableRef))
 			{
-				if (valuePtr->get().lock())
+				if (const std::shared_ptr<Component> component = valuePtr->get().lock())
 				{
 					for (size_t j = 0; j < componentCount; j++)
 					{
-						if (valuePtr->get().lock()->GetUniqueId() == ComponentsAndIds[j].oldId)
+						if (component->GetUniqueId() == ComponentsAndIds[j].oldId)
 						{
 							valuePtr->get() = ComponentsAndIds[j].newComponent;
 						}
@@ -128,11 +128,11 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<GameObject>>>(&variableRef))
 			{
-				if (valuePtr->get().lock())
+				if (const std::shared_ptr<GameObject> gameObject = valuePtr->get().lock())
 				{
 					for (size_t j = 0; j < gameObjectCount; j++)
 					{
-						if (valuePtr->get().lock()->GetUniqueId() == GameObjectsAndIds[j].oldId)
+						if (gameObject->GetUniqueId() == GameObjectsAndIds[j].oldId)
 						{
 							valuePtr->get() = GameObjectsAndIds[j].newGameObject;
 						}
@@ -141,11 +141,12 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 			}
 			else if (auto valuePtr = std::get_if<std::reference_wrapper<std::weak_ptr<Transform>>>(&variableRef))
 			{
-				if (valuePtr->get().lock())
+				const std::shared_ptr<Transform> transform = valuePtr->get().lock();
+				if (transform && transform->GetGameObject())
 				{
 					for (size_t j = 0; j < gameObjectCount; j++)
 					{
-						if (valuePtr->get().lock()->GetGameObject()->GetUniqueId() == GameObjectsAndIds[j].oldId)
+						if (transform->GetGameObject()->GetUniqueId() == GameObjectsAndIds[j].oldId)
 						{
 							valuePtr->get() = GameObjectsAndIds[j].newGameObject->GetTransform();
 						}
@@ -157,9 +158,14 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 				const size_t vectorSize = valuePtr->get().size();
 				for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
 				{
+					// Skip empty or expired references
+					const std::shared_ptr<Component> component = valuePtr->get()[vectorIndex].lock();
+					if (!component)
+						continue;
+
 					for (size_t j = 0; j < componentCount; j++)
 					{
-						if (valuePtr->get()[vectorIndex].lock()->GetUniqueId() == ComponentsAndIds[j].oldId)
+						if (component->GetUniqueId() == ComponentsAndIds[j].oldId)
 						{
 							valuePtr->get()[vectorIndex] = ComponentsAndIds[j].newComponent;
 						}
@@ -171,9 +177,14 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 				const size_t vectorSize = valuePtr->get().size();
 				for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
 				{
+					// Skip empty or expired references
+					const std::shared_ptr<GameObject> gameObject = valuePtr->get()[vectorIndex].lock();
+					if (!gameObject)
+						continue;
+
 					for (size_t j = 0; j < gameObjectCount; j++)
 					{
-						if (valuePtr->get()[vectorIndex].lock()->GetUniqueId() == GameObjectsAndIds[j].oldId)
+						if (gameObject->GetUniqueId() == GameObjectsAndIds[j].oldId)
 						{
 							valuePtr->get()[vectorIndex] = GameObjectsAndIds[j].newGameObject;
 						}
@@ -185,9 +196,14 @@ std::shared_ptr<GameObject> Instantiate(const std::shared_ptr<GameObject>& goToD
 				const size_t vectorSize = valuePtr->get().size();
 				for (size_t vectorIndex = 0; vectorIndex < vectorSize; vectorIndex++)
 				{
+					// Skip empty or expired references
+					const std::shared_ptr<Transform> transform = valuePtr->get()[vectorIndex].lock();
+					if (!transform || !transform->GetGameObject())
+						continue;
+
 					for (size_t j = 0; j < gameObjectCount; j++)
 					{
-						if (valuePtr->get()[vectorIndex].lock()->GetGameObject()->GetUniqueId() == GameObjectsAndIds[j].oldId)
+						if (transform->GetGameObject()->GetUniqueId() == GameObjectsAndIds[j].oldId)
 						{
 							valuePtr->get()[vectorIndex] = GameObjectsAndIds[j].newGameObject->GetTransform();
 						}

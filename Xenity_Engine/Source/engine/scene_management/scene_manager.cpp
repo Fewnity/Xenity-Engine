@@ -636,8 +636,6 @@ void SceneManager::LoadSceneInternal(std::shared_ptr<Scene> scene, DialogMode di
 	// Read scene data
 	const std::string jsonString = scene->ReadString();
 
-	XASSERT(!jsonString.empty(), "[SceneManager::LoadScene] jsonString is empty");
-
 	ordered_json data;
 	ordered_json usedFileListData;
 	try
