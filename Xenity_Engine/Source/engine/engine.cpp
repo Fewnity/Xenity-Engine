@@ -411,7 +411,17 @@ void Engine::Loop()
 				// Skip some frames to stabilize delta time
 				if (GameplayManager::GetGameState() == GameState::Playing && frameToSkip == 0)
 				{
+#if defined(EDITOR)
+					// Collision events call the game's code, catch errors to prevent the editor to crash
+					const bool physicsTryResult = CrashHandler::CallInTry(PhysicsManager::Update);
+					if (physicsTryResult)
+					{
+						Debug::PrintError("Error in game's code during a collision event! Stopping the game...");
+						GameplayManager::SetGameState(GameState::Stopped, true);
+					}
+#else
 					PhysicsManager::Update();
+#endif
 				}
 
 				// Update all components

@@ -78,7 +78,10 @@ nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, st
 	const int childCount = gameObject.GetChildrenCount();
 	for (int childI = 0; childI < childCount; childI++)
 	{
-		const uint64_t id = gameObject.GetChildren()[childI].lock()->GetUniqueId();
+		const std::shared_ptr<GameObject> child = gameObject.GetChildren()[childI].lock();
+		if (!child || child.get() == &gameObject)
+			continue;
+		const uint64_t id = child->GetUniqueId();
 		//if (usedIds[id])
 		//{
 		//	Debug::PrintError("[SceneManager::SaveScene] GameObject Id already used by another Component/GameObject! Id: " + std::to_string(id), true);
@@ -417,6 +420,12 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 					continue;
 				}
 				const std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
+				if (goChild == parentGameObject)
+				{
+					// Scenes saved with a GameObject set as its own child: ignore the loop to be able to open the scene
+					Debug::PrintWarning("[SceneManager::CreateObjectsFromJson] GameObject " + kv.key() + " is its own child, the link has been removed");
+					continue;
+				}
 				if (goChild)
 				{
 					goChild->SetParent(parentGameObject);
@@ -633,7 +642,11 @@ void SceneManager::LoadSceneInternal(const ordered_json& jsonData, const ordered
 			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(idKv.value());
 			if (fileRef)
 			{
-				s_openedScene->m_fileReferenceList.push_back(fileRef);
+				// No opened scene when the scene has never been saved (new scene, play mode, hot reloading)
+				if (s_openedScene)
+				{
+					s_openedScene->m_fileReferenceList.push_back(fileRef);
+				}
 
 		#if !defined(EDITOR)
 				FileReference::LoadOptions options;
