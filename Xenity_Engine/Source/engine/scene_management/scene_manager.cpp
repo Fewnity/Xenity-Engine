@@ -28,6 +28,11 @@
 #include <engine/debug/debug.h>
 #include <engine/missing_script.h>
 #include "scene.h"
+
+#if defined(EDITOR)
+#include <fstream>
+#include <filesystem>
+#endif
 #include <engine/world_partitionner/world_partitionner.h>
 #include <engine/debug/stack_debug_object.h>
 #include <engine/tools/gameplay_utility.h>
@@ -118,6 +123,65 @@ nlohmann::ordered_json SceneManager::GameObjectToJson(GameObject& gameObject, st
 	return j;
 }
 
+/**
+* @brief Write the scene file without ever leaving a partially written or mixed file on disk:
+* the data is written to a temporary file, checked, then moved over the original file.
+* The previous version of the scene is kept as a .bak file
+* @return True if the scene file has been fully written
+*/
+static bool WriteSceneFileSafely(const std::string& path, const std::string& data)
+{
+	const std::string tempPath = path + ".tmp";
+	const std::string backupPath = path + ".bak";
+
+	try
+	{
+		{
+			std::ofstream tempFile(tempPath, std::ios::binary | std::ios::trunc);
+			if (!tempFile.is_open())
+			{
+				Debug::PrintError("[SceneManager::SaveScene] Fail to create the temporary scene file: " + tempPath, true);
+				return false;
+			}
+			tempFile.write(data.data(), static_cast<std::streamsize>(data.size()));
+			tempFile.flush();
+			if (!tempFile.good())
+			{
+				tempFile.close();
+				std::filesystem::remove(tempPath);
+				Debug::PrintError("[SceneManager::SaveScene] Fail to write the temporary scene file: " + tempPath, true);
+				return false;
+			}
+		}
+
+		// Make sure the whole data is on disk before replacing the original file
+		if (std::filesystem::file_size(tempPath) != data.size())
+		{
+			std::filesystem::remove(tempPath);
+			Debug::PrintError("[SceneManager::SaveScene] The temporary scene file is incomplete: " + tempPath, true);
+			return false;
+		}
+
+		// Keep the previous version of the scene
+		if (std::filesystem::exists(path))
+		{
+			std::filesystem::copy_file(path, backupPath, std::filesystem::copy_options::overwrite_existing);
+		}
+
+		// Replace the original file (atomic on the same drive)
+		std::filesystem::rename(tempPath, path);
+	}
+	catch (const std::exception& e)
+	{
+		std::error_code ec;
+		std::filesystem::remove(tempPath, ec);
+		Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + path + " (" + e.what() + ")", true);
+		return false;
+	}
+
+	return true;
+}
+
 void SceneManager::SaveScene(SaveSceneType saveType)
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
@@ -177,22 +241,15 @@ void SceneManager::SaveScene(SaveSceneType saveType)
 		// If there is no error, save the file
 		if (!path.empty())
 		{
-			FileSystem::Delete(path);
-			const std::shared_ptr<File> file = FileSystem::MakeFile(path);
-			if (file->Open(FileMode::WriteCreateFile))
+			const std::string sceneData = usedFilesJson.dump(2) + "\n" + j.dump(2);
+			if (WriteSceneFileSafely(path, sceneData))
 			{
-				const std::string usedFilesJsonData = usedFilesJson.dump(2);
-				const std::string jsonData = j.dump(2);
-				file->Write(usedFilesJsonData);
-				file->Write("\n");
-				file->Write(jsonData);
-				file->Close();
 				ProjectManager::RefreshProjectDirectory();
 				SetIsSceneDirty(false);
 			}
 			else
 			{
-				Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + file->GetPath(), true);
+				Debug::PrintError("[SceneManager::SaveScene] Fail to save the scene file: " + path, true);
 			}
 		}
 	}
