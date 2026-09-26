@@ -6,6 +6,8 @@
 
 #include "delete.h"
 
+#include <engine/debug/debug.h>
+
 InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObjectCommand::AddChild(GameObject& child)
 {
 	GameObjectChild gameObjectChild;
@@ -39,6 +41,10 @@ void InspectorDeleteGameObjectCommand::UpdateChildComponents(const GameObjectChi
 	for (const GameObjectComponent& childChild : child.components)
 	{
 		std::shared_ptr<Component> component = FindComponentById(childChild.componentId);
+		// The component may not have been recreated (unknown class, script not compiled)
+		if (!component)
+			continue;
+
 		ReflectionUtils::JsonToReflectiveData(childChild.componentData, component->GetReflectiveData());
 		component->OnReflectionUpdated();
 	}
@@ -66,6 +72,12 @@ void InspectorDeleteGameObjectCommand::ReCreateChild(const GameObjectChild& chil
 	for (const GameObjectComponent& childChild : child.components)
 	{
 		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(childChild.componentName, *newGameObject);
+		if (!component)
+		{
+			Debug::PrintError("[InspectorDeleteGameObjectCommand::ReCreateChild] Failed to recreate component: " + childChild.componentName, true);
+			continue;
+		}
+
 		//ReflectionUtils::JsonToReflectiveData(childChild.componentData, component->GetReflectiveData());
 		component->SetIsEnabled(childChild.isEnabled);
 		component->SetUniqueId(childChild.componentId);
