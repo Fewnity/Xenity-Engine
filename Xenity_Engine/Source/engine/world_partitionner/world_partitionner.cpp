@@ -94,12 +94,23 @@ void getCubesIntersectedBySphere(std::vector<Vector3Fast>& intersectedCubes, con
 	}
 
 	// Parcours de tous les cubes potentiellement concern�s
-	for (float x = minCube.x; x <= maxCube.x; x += cubeSize)
+	// Use integer indices: with very large coordinates, x += cubeSize does not change x anymore (float precision) and the loop never ends
+	const int xCount = static_cast<int>((maxCube.x - minCube.x) / cubeSize);
+	const int yCount = static_cast<int>((maxCube.y - minCube.y) / cubeSize);
+	const int zCount = static_cast<int>((maxCube.z - minCube.z) / cubeSize);
+	if (xCount < 0 || yCount < 0 || zCount < 0)
 	{
-		for (float y = minCube.y; y <= maxCube.y; y += cubeSize)
+		return;
+	}
+	for (int xIndex = 0; xIndex <= xCount; xIndex++)
+	{
+		const float x = minCube.x + xIndex * cubeSize;
+		for (int yIndex = 0; yIndex <= yCount; yIndex++)
 		{
-			for (float z = minCube.z; z <= maxCube.z; z += cubeSize)
+			const float y = minCube.y + yIndex * cubeSize;
+			for (int zIndex = 0; zIndex <= zCount; zIndex++)
 			{
+				const float z = minCube.z + zIndex * cubeSize;
 				const Vector3Fast cubeMin = Vector3Fast(x, y, z);
 				if (cubeIntersectsSphere(cubeMin, cubeSize, pos, r))
 				{

@@ -34,6 +34,13 @@ void Astar::SetGridSize(int xSize, int ySize)
 void Astar::DeleteGrid()
 {
 	free(grid);
+	// Avoid a use after free/double free if the new grid size is invalid
+	grid = nullptr;
+	xGridSize = 0;
+	yGridSize = 0;
+	nextTilesToCheck.clear();
+	currentTile = nullptr;
+	endTile = nullptr;
 }
 
 Astar::~Astar()
@@ -186,6 +193,11 @@ std::vector<Vector2> Astar::GetPath()
 
 	endTile = GetTile((int)endPos.x, (int)endPos.y);
 	currentTile = GetTile((int)startPos.x, (int)startPos.y);
+	// No grid, or start/end positions outside of the grid (the grid may have been resized)
+	if (!endTile || !currentTile)
+	{
+		return path;
+	}
 	currentTile->closed = true;
 	currentTile->g = 0;
 

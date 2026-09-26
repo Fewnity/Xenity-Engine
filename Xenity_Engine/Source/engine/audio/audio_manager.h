@@ -51,6 +51,8 @@ public:
 	bool m_loop = true;
 	bool m_isPlaying = false;
 	bool m_needRemove = false;
+	// Audio clip read by m_audioClipStream (the stream may read the clip memory)
+	const AudioClip* m_audioClip = nullptr;
 };
 
 class Channel
@@ -151,6 +153,11 @@ public:
 	* @param audioSource Audio source
 	*/
 	static void StopAudioSource(const std::shared_ptr<AudioSource>& audioSource);
+
+	/**
+	* @brief Stop all sounds reading an audio clip and wait until they are deleted (to be able to free the clip memory)
+	*/
+	static void StopAudioClip(const AudioClip& audioClip);
 
 	static bool s_isAdding;
 	static Channel* s_channel;
