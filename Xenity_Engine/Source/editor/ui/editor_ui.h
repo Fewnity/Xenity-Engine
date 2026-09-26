@@ -78,11 +78,12 @@ enum class InputButtonState
 	ResetValue,
 };
 
+// Weak pointers: the dragged objects can be destroyed during the drag (play mode, scene change...)
 struct MultiDragData
 {
-	std::vector<GameObject*> gameObjects;
-	std::vector<Transform*> transforms;
-	std::vector<Component*> components;
+	std::vector<std::weak_ptr<GameObject>> gameObjects;
+	std::vector<std::weak_ptr<Transform>> transforms;
+	std::vector<std::weak_ptr<Component>> components;
 };
 
 enum class CopyType

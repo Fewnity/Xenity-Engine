@@ -124,7 +124,9 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 					const aiFace& face = assimpMesh->mFaces[faceIndex];
 					for (size_t index = 0; index < verticesPerFace; index++)
 					{
-						mesh.m_subMeshes[subMeshIndex]->SetIndex(faceIndex * verticesPerFace + index, face.mIndices[index]);
+						// A mesh can mix triangles with lines or points (fewer indices than the first face): repeat the first index (degenerate face)
+						const unsigned int vertexIndex = index < face.mNumIndices ? face.mIndices[index] : (face.mNumIndices > 0 ? face.mIndices[0] : 0);
+						mesh.m_subMeshes[subMeshIndex]->SetIndex(faceIndex * verticesPerFace + index, vertexIndex);
 					}
 				}
 			}
@@ -135,7 +137,9 @@ bool AssimpMeshLoader::LoadMesh(MeshData& mesh, const LoadingOptions& options)
 				{
 					for (size_t faceVertexIndex = 0; faceVertexIndex < verticesPerFace; faceVertexIndex++)
 					{
-						const size_t assimpVertexIndex = assimpMesh->mFaces[faceIndex].mIndices[faceVertexIndex];
+						// A mesh can mix triangles with lines or points (fewer indices than the first face): repeat the first index (degenerate face)
+						const aiFace& face = assimpMesh->mFaces[faceIndex];
+						const size_t assimpVertexIndex = faceVertexIndex < face.mNumIndices ? face.mIndices[faceVertexIndex] : (face.mNumIndices > 0 ? face.mIndices[0] : 0);
 						SetVertex(mesh, options, assimpMesh, assimpVertexIndex, subMeshIndex, meshVertexIndex);
 						meshVertexIndex++;
 					}

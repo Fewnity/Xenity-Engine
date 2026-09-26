@@ -427,12 +427,16 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, c
 			else
 				payloadName = "Files" + std::to_string((int)fileExplorerItem.file->GetFileType());
 
-			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
+			// Only send the id, the file reference is found again by id on drop
+			const uint64_t fileId = fileExplorerItem.file->GetFileId();
+			ImGui::SetDragDropPayload(payloadName.c_str(), &fileId, sizeof(uint64_t));
 		}
 		else
 		{
 			payloadName = "Folders";
-			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.directory.get(), sizeof(ProjectDirectory));
+			// Only send the path (null terminated string), the directory is found again by path on drop
+			const std::string& directoryPath = fileExplorerItem.directory->path;
+			ImGui::SetDragDropPayload(payloadName.c_str(), directoryPath.c_str(), directoryPath.size() + 1);
 		}
 
 		const TextureDefault& openglTexture = dynamic_cast<const TextureDefault&>(iconTexture);
@@ -602,15 +606,16 @@ void FileExplorerMenu::Draw()
 			const bool droppedGameObject = EditorUI::DragDropTarget("MultiDragData", unused);
 			if (droppedGameObject)
 			{
-				if (EditorUI::multiDragData.gameObjects.size() == 1)
+				const std::shared_ptr<GameObject> draggedGameObject = EditorUI::multiDragData.gameObjects.size() == 1 ? EditorUI::multiDragData.gameObjects[0].lock() : nullptr;
+				if (draggedGameObject)
 				{
-					Debug::Print("Create prefab of: " + EditorUI::multiDragData.gameObjects[0]->GetName());
-					std::shared_ptr<File> newFile = Editor::CreateNewFile(currentDir->path + "\\" + EditorUI::multiDragData.gameObjects[0]->GetName(), FileType::File_Prefab, true);
-					std::shared_ptr<FileReference> newFileRef = ProjectManager::GetFileReferenceByFile(*newFile);
-					if (newFileRef)
+					Debug::Print("Create prefab of: " + draggedGameObject->GetName());
+					std::shared_ptr<File> newFile = Editor::CreateNewFile(currentDir->path + "\\" + draggedGameObject->GetName(), FileType::File_Prefab, true);
+					std::shared_ptr<FileReference> newFileRef = newFile ? ProjectManager::GetFileReferenceByFile(*newFile) : nullptr;
+					std::shared_ptr<Prefab> prefab = std::dynamic_pointer_cast<Prefab>(newFileRef);
+					if (prefab)
 					{
-						std::shared_ptr<Prefab> prefab = std::dynamic_pointer_cast<Prefab>(newFileRef);
-						prefab->SetData(*EditorUI::multiDragData.gameObjects[0]);
+						prefab->SetData(*draggedGameObject);
 					}
 					//SetFileToRename(newFileRef, nullptr);
 				}
