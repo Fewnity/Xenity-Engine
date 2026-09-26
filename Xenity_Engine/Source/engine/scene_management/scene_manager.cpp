@@ -289,14 +289,26 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 		{
 			for (auto& componentKV : gameObjectKV.value()["Components"].items())
 			{
-				const std::string componentName = componentKV.value()["Type"];
-				std::shared_ptr<Component> comp = ClassRegistry::AddComponentFromName(componentName, *newGameObject);
+				std::shared_ptr<Component> comp;
+				if (componentKV.value().contains("Type") && componentKV.value()["Type"].is_string())
+				{
+					const std::string componentName = componentKV.value()["Type"];
+					if (!componentName.empty())
+					{
+						comp = ClassRegistry::AddComponentFromName(componentName, *newGameObject);
+					}
+				}
+				else
+				{
+					Debug::PrintError("[SceneManager::CreateObjectsFromJson] Component " + componentKV.key() + " has no valid Type", true);
+				}
+
 				if (comp)
 				{
 					tempComponents.push_back(comp);
 
 					// Enable or disable component
-					if (componentKV.value().contains("Enabled"))
+					if (componentKV.value().contains("Enabled") && componentKV.value()["Enabled"].is_boolean())
 					{
 						const bool isEnabled = componentKV.value()["Enabled"];
 						comp->SetIsEnabled(isEnabled);
@@ -342,6 +354,11 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 			// For each child, set his parent
 			for (const auto& kv2 : kv.value()["Children"].items())
 			{
+				if (!kv2.value().is_number_integer())
+				{
+					Debug::PrintError("[SceneManager::CreateObjectsFromJson] Invalid child id in GameObject " + kv.key(), true);
+					continue;
+				}
 				const std::shared_ptr<GameObject> goChild = FindGameObjectById(kv2.value());
 				if (goChild)
 				{
@@ -364,11 +381,18 @@ void SceneManager::CreateObjectsFromJson(const nlohmann::ordered_json& jsonData,
 			}
 
 			// Update transform
-			const std::shared_ptr<Transform>& transform = go->GetTransform();
-			ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
-			transform->m_isTransformationMatrixDirty = true;
-			transform->UpdateLocalRotation();
-			transform->UpdateWorldValues();
+			if (kv.value().contains("Transform"))
+			{
+				const std::shared_ptr<Transform>& transform = go->GetTransform();
+				ReflectionUtils::JsonToReflective(kv.value()["Transform"], *transform.get());
+				transform->m_isTransformationMatrixDirty = true;
+				transform->UpdateLocalRotation();
+				transform->UpdateWorldValues();
+			}
+			else
+			{
+				Debug::PrintError("[SceneManager::CreateObjectsFromJson] GameObject " + kv.key() + " has no Transform", true);
+			}
 
 			// If the gameobject has components
 			if (kv.value().contains("Components"))
@@ -540,20 +564,32 @@ void SceneManager::LoadSceneInternal(const ordered_json& jsonData, const ordered
 #endif
 
 	ClearScene();
-	for (const auto& idKv : jsonUsedFileListData["UsedFiles"]["Values"].items())
+	if (jsonUsedFileListData.contains("UsedFiles") && jsonUsedFileListData["UsedFiles"].contains("Values"))
 	{
-		const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(idKv.value());
-		if (fileRef)
+		for (const auto& idKv : jsonUsedFileListData["UsedFiles"]["Values"].items())
 		{
-			s_openedScene->m_fileReferenceList.push_back(fileRef);
+			if (!idKv.value().is_number_integer())
+			{
+				Debug::PrintError("[SceneManager::LoadSceneInternal] Invalid file id in UsedFiles", true);
+				continue;
+			}
+			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(idKv.value());
+			if (fileRef)
+			{
+				s_openedScene->m_fileReferenceList.push_back(fileRef);
 
-	#if !defined(EDITOR)
-			FileReference::LoadOptions options;
-			options.threaded = false;
-			options.platform = Application::GetPlatform();
-			fileRef->LoadFileReference(options);
-	#endif
+		#if !defined(EDITOR)
+				FileReference::LoadOptions options;
+				options.threaded = false;
+				options.platform = Application::GetPlatform();
+				fileRef->LoadFileReference(options);
+		#endif
+			}
 		}
+	}
+	else
+	{
+		Debug::PrintError("[SceneManager::LoadSceneInternal] Scene has no UsedFiles list", true);
 	}
 
 	if (jsonData.contains("GameObjects"))
@@ -606,18 +642,25 @@ void SceneManager::LoadSceneInternal(std::shared_ptr<Scene> scene, DialogMode di
 	ordered_json usedFileListData;
 	try
 	{
-		if (!jsonString.empty())
+		// An empty or truncated file is an error, loading it as an empty scene would let the user overwrite the file with an empty scene
+		if (jsonString.empty())
 		{
-			const size_t sceneDataPosition = FindSceneDataPosition(jsonString);
-			if (sceneDataPosition != -1)
-			{
-				const std::string sceneStr = jsonString.substr(sceneDataPosition);
-				data = ordered_json::parse(sceneStr);
-
-				const std::string sceneFileListStr = jsonString.substr(0, sceneDataPosition);
-				usedFileListData = ordered_json::parse(sceneFileListStr);
-			}
+			throw std::runtime_error("The file is empty");
 		}
+
+		const size_t sceneDataPosition = FindSceneDataPosition(jsonString);
+		if (sceneDataPosition == -1)
+		{
+			throw std::runtime_error("Scene data not found");
+		}
+
+		const std::string sceneStr = jsonString.substr(sceneDataPosition);
+		data = ordered_json::parse(sceneStr);
+
+		const std::string sceneFileListStr = jsonString.substr(0, sceneDataPosition);
+		usedFileListData = ordered_json::parse(sceneFileListStr);
+
+		LoadSceneInternal(data, usedFileListData);
 	}
 	catch (const std::exception& e)
 	{
@@ -629,7 +672,6 @@ void SceneManager::LoadSceneInternal(std::shared_ptr<Scene> scene, DialogMode di
 		return;
 	}
 
-	LoadSceneInternal(data, usedFileListData);
 #if defined(EDITOR)
 	SetIsSceneDirty(false);
 #endif
