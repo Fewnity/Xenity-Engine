@@ -121,81 +121,38 @@ void PhysicsManager::AddEvent(Collider* collider, Collider* otherCollider, bool 
 }
 
 
-class MyContactResultCallback : public btCollisionWorld::ContactResultCallback
+Collider* PhysicsManager::GetColliderFromCollisionObject(const btCollisionObject* collisionObject, int childIndex)
 {
-public:
-	bool onCollisionEnter(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1)
+	if (const btRigidBody* bulletRb = btRigidBody::upcast(collisionObject))
 	{
-		STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
-
-		if (colObj0Wrap->getCollisionObject()->isStaticOrKinematicObject() && colObj1Wrap->getCollisionObject()->isStaticOrKinematicObject())
+		// Rigidbodies use compound shapes, the child index gives the collider
+		const RigidBody* rb = reinterpret_cast<const RigidBody*>(bulletRb->getUserPointer());
+		const btCompoundShape* compoundShape = (bulletRb->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE) ? rb->m_bulletTriggerCompoundShape : rb->m_bulletCompoundShape;
+		if (childIndex < 0 || childIndex >= compoundShape->getNumChildShapes())
 		{
-			return false;
+			return nullptr;
 		}
-
-
-		Collider* col0 = nullptr;
-		Collider* col1 = nullptr;
-
-		//std::cout << "------------ Collision detected between objects ------------" << std::endl;
-		//if (!colObj0Wrap->getCollisionObject()->isStaticOrKinematicObject())
-		if (auto bulletRb = dynamic_cast<const btRigidBody*>(colObj0Wrap->getCollisionObject()))
-		{
-			RigidBody* rb = reinterpret_cast<RigidBody*>(colObj0Wrap->getCollisionObject()->getUserPointer());
-			if (colObj0Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-				col0 = reinterpret_cast<Collider*>(rb->m_bulletTriggerCompoundShape->getChildShape(index0)->getUserPointer());
-			else
-				col0 = reinterpret_cast<Collider*>(rb->m_bulletCompoundShape->getChildShape(index0)->getUserPointer());
-			//std::cout << "Object0: " << rb->GetGameObject()->GetName() << " ToString" << col0->ToString() << std::endl;
-		}
-		else
-		{
-			col0 = reinterpret_cast<Collider*>(colObj0Wrap->getCollisionObject()->getUserPointer());
-			//std::cout << "Object0: " << col0->GetGameObject()->GetName() << std::endl;
-		}
-		/*if (colObj0Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-		{
-			std::cout << "Object0 is a trigger" << std::endl;
-		}*/
-
-		//if (!colObj1Wrap->getCollisionObject()->isStaticOrKinematicObject())
-		if(auto bulletRb = dynamic_cast<const btRigidBody*>(colObj1Wrap->getCollisionObject()))
-		{
-			RigidBody* rb = reinterpret_cast<RigidBody*>(colObj1Wrap->getCollisionObject()->getUserPointer());
-			if (colObj1Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-				col1 = reinterpret_cast<Collider*>(rb->m_bulletTriggerCompoundShape->getChildShape(index1)->getUserPointer());
-			else
-				col1 = reinterpret_cast<Collider*>(rb->m_bulletCompoundShape->getChildShape(index1)->getUserPointer());
-			//std::cout << "Object1: " << rb->GetGameObject()->GetName() << " ToString" << col1->ToString() << std::endl;
-			//std::cout << "Object1: " << rb->GetGameObject()->GetName() << std::endl;
-		}
-		else
-		{
-			col1 = reinterpret_cast<Collider*>(colObj1Wrap->getCollisionObject()->getUserPointer());
-			//std::cout << "Object1: " << col1->GetGameObject()->GetName() << std::endl;
-		}
-		/*if (colObj1Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-		{
-			std::cout << "Object1 is a trigger" << std::endl;
-		}*/
-
-		//colObj0Wrap->m_collisionObject->
-	//	std::cout << "Collision detected between objects " << colObj0Wrap->getCollisionObject() << " and " << colObj1Wrap->getCollisionObject() << std::endl;
-		//std::cout << partId0 << " " << index0 << " and " << partId1 << "   " << index1 << std::endl;
-		if (col0 && col1 && col0->GetGameObjectRaw() != col1->GetGameObjectRaw())
-			PhysicsManager::AddEvent(col0, col1, col0->IsTrigger() || col1->IsTrigger());
-
-		return false;
+		return reinterpret_cast<Collider*>(compoundShape->getChildShape(childIndex)->getUserPointer());
 	}
-
-	btScalar addSingleResult(btManifoldPoint& cp,
-		const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0,
-		const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) override
+	else
 	{
-		onCollisionEnter(cp, colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);
-		return 0;
+		return reinterpret_cast<Collider*>(collisionObject->getUserPointer());
 	}
-};
+}
+
+bool PhysicsManager::GeneratesEvents(const btCollisionObject* collisionObject)
+{
+	if (const btRigidBody* bulletRb = btRigidBody::upcast(collisionObject))
+	{
+		const RigidBody* rb = reinterpret_cast<const RigidBody*>(bulletRb->getUserPointer());
+		return rb->m_generatesEvents && rb->IsEnabled() && rb->GetGameObjectRaw()->IsLocalActive();
+	}
+	else
+	{
+		const Collider* collider = reinterpret_cast<const Collider*>(collisionObject->getUserPointer());
+		return collider->m_generateCollisionEvents && collider->IsEnabled() && collider->GetGameObjectRaw()->IsLocalActive();
+	}
+}
 
 void PhysicsManager::CallCollisionEvent(Collider* a, Collider* b, bool isTrigger, int state)
 {
@@ -309,29 +266,62 @@ void PhysicsManager::Update()
 
 	{
 		SCOPED_PROFILER("PhysicsManager::Update|ContactTest", scopeBenchmark2);
-		MyContactResultCallback resultCallback;
-		for (size_t i = 0; i < rigidbodyCount; i++)
+		// Read the contacts already computed by stepSimulation instead of running the narrowphase again with contactTest
+		btDispatcher* dispatcher = s_physDynamicsWorld->getDispatcher();
+		const int manifoldCount = dispatcher->getNumManifolds();
+		for (int i = 0; i < manifoldCount; i++)
 		{
-			const RigidBody* rb = s_rigidBodies[i];
-			if (rb->m_generatesEvents && rb->IsEnabled() && rb->GetGameObjectRaw()->IsLocalActive())
+			const btPersistentManifold* manifold = dispatcher->getManifoldByIndexInternal(i);
+			const int contactCount = manifold->getNumContacts();
+			if (contactCount == 0)
 			{
-				if (!rb->m_isEmpty)
-				{
-					s_physDynamicsWorld->contactTest(rb->m_bulletRigidbody, resultCallback);
-				}
-				if (rb->m_isTriggerEmpty)
-				{
-					s_physDynamicsWorld->contactTest(rb->m_bulletTriggerRigidbody, resultCallback);
-				}
+				continue;
 			}
-		}
 
-		for (size_t i = 0; i < colliderCount; i++)
-		{
-			const ColliderInfo& colliderInfo = s_colliders[i];
-			if (colliderInfo.collider->m_generateCollisionEvents && colliderInfo.collider->m_bulletCollisionObject && colliderInfo.collider->IsEnabled() && colliderInfo.collider->GetGameObjectRaw()->IsLocalActive())
+			const btCollisionObject* object0 = manifold->getBody0();
+			const btCollisionObject* object1 = manifold->getBody1();
+			if (object0->isStaticOrKinematicObject() && object1->isStaticOrKinematicObject())
 			{
-				s_physDynamicsWorld->contactTest(colliderInfo.collider->m_bulletCollisionObject, resultCallback);
+				continue;
+			}
+
+			const bool object0GeneratesEvents = GeneratesEvents(object0);
+			const bool object1GeneratesEvents = GeneratesEvents(object1);
+			if (!object0GeneratesEvents && !object1GeneratesEvents)
+			{
+				continue;
+			}
+
+			int lastIndex0 = -2;
+			int lastIndex1 = -2;
+			for (int j = 0; j < contactCount; j++)
+			{
+				const btManifoldPoint& point = manifold->getContactPoint(j);
+				if (point.m_index0 == lastIndex0 && point.m_index1 == lastIndex1)
+				{
+					continue;
+				}
+				lastIndex0 = point.m_index0;
+				lastIndex1 = point.m_index1;
+
+				Collider* col0 = GetColliderFromCollisionObject(object0, point.m_index0);
+				Collider* col1 = GetColliderFromCollisionObject(object1, point.m_index1);
+				if (!col0 || !col1 || col0->GetGameObjectRaw() == col1->GetGameObjectRaw())
+				{
+					continue;
+				}
+
+				// Register the pair only once, CallCollisionEvent notifies both colliders.
+				// Use the side that generates events, or the lowest pointer if both do, so the pair stays on the same side between frames
+				const bool isTrigger = col0->IsTrigger() || col1->IsTrigger();
+				if (object0GeneratesEvents && (!object1GeneratesEvents || col0 < col1))
+				{
+					AddEvent(col0, col1, isTrigger);
+				}
+				else
+				{
+					AddEvent(col1, col0, isTrigger);
+				}
 			}
 		}
 	}
