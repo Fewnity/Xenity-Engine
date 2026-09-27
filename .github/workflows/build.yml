@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows-msvc:
+    name: ${{ matrix.configuration }} (x64)
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Release Editor, Release Engine]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - name: Build solution
+        run: msbuild Xenity_Engine.sln /m /nologo /verbosity:minimal "/p:Configuration=${{ matrix.configuration }}" /p:Platform=x64
