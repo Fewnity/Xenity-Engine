@@ -66,6 +66,12 @@ message(STATUS "BUILD PSP")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto=auto -falign-functions=32 -ftree-vectorize -O1")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -flto=auto -falign-functions=32 -ftree-vectorize -O1 -g") # To use to get functions names in PPSSPP
+
+# Bullet is heavy float math, build it with more optimizations than the rest of the engine
+# -fno-math-errno lets GCC use the sqrt.s instruction directly instead of calling sqrtf
+set(BULLET_SOURCES ${SOURCES})
+list(FILTER BULLET_SOURCES INCLUDE REGEX "include/bullet/.*")
+set_source_files_properties(${BULLET_SOURCES} PROPERTIES COMPILE_OPTIONS "-O2;-fno-math-errno")
 include_directories(${PSPDEV}/psp/include/freetype2)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
