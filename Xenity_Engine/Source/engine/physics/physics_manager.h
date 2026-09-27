@@ -20,6 +20,7 @@ class btRigidBody;
 class btVector3;
 class btQuaternion;
 class btDynamicsWorld;
+class btCollisionObject;
 class Collider;
 class Vector3;
 
@@ -75,6 +76,8 @@ public:
 
 private:
 	static void CallCollisionEvent(Collider* a, Collider* b, bool isTrigger, int state);
+	static Collider* GetColliderFromCollisionObject(const btCollisionObject* collisionObject, int childIndex);
+	static bool GeneratesEvents(const btCollisionObject* collisionObject);
 
 	static std::vector<RigidBody*> s_rigidBodies;
 	static std::vector<ColliderInfo> s_colliders;
