@@ -53,7 +53,7 @@ Material::~Material()
 void Material::SetAttribute(const char* attribute, const Vector2& value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	m_uniformsVector2.insert_or_assign(attribute, value);
+	m_uniformsVector2.emplace(std::pair <const char*, Vector2>(attribute, value));
 }
 
 /// <summary>
@@ -64,7 +64,7 @@ void Material::SetAttribute(const char* attribute, const Vector2& value)
 void Material::SetAttribute(const char* attribute, const Vector3& value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	m_uniformsVector3.insert_or_assign(attribute, value);
+	m_uniformsVector3.emplace(std::pair <const char*, Vector3>(attribute, value));
 }
 
 /// <summary>
@@ -75,7 +75,7 @@ void Material::SetAttribute(const char* attribute, const Vector3& value)
 void Material::SetAttribute(const char* attribute, const Vector4& value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	m_uniformsVector4.insert_or_assign(attribute, value);
+	m_uniformsVector4.emplace(std::pair <const char*, Vector4>(attribute, value));
 }
 
 /// <summary>
@@ -96,7 +96,7 @@ void Material::SetAttribute(const char* attribute, const Vector4& value)
 void Material::SetAttribute(const char* attribute, const float value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	m_uniformsFloat.insert_or_assign(attribute, value);
+	m_uniformsFloat.emplace(std::pair <const char*, float>(attribute, value));
 }
 
 /// <summary>
@@ -107,7 +107,7 @@ void Material::SetAttribute(const char* attribute, const float value)
 void Material::SetAttribute(const char* attribute, const int value)
 {
 	XASSERT(strlen(attribute) != 0, "[Material::SetAttribute] attribute name is empty");
-	m_uniformsInt.insert_or_assign(attribute, value);
+	m_uniformsInt.emplace(std::pair <const char*, int>(attribute, value));
 }
 
 std::shared_ptr<Material> Material::MakeMaterial()
