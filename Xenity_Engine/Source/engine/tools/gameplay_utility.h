@@ -118,7 +118,12 @@ Destroy(const std::shared_ptr<T>& component)
 	// Remove the component from the his parent's components list
 	if (component) 
 	{
-		GameObjectAccessor gameObjectAcc = GameObjectAccessor(component->GetGameObject());
+		// The component can be already detached from its GameObject
+		const std::shared_ptr<GameObject> gameObject = component->GetGameObject();
+		if (!gameObject)
+			return;
+
+		GameObjectAccessor gameObjectAcc = GameObjectAccessor(gameObject);
 		gameObjectAcc.RemoveComponent(component);
 	}
 }

@@ -243,6 +243,8 @@ protected:
 	bool m_generatesEvents = false;
 	bool m_disableEvent = false;
 	bool m_disableSleep = false;
+	// True if the Bullet body was already sleeping during the last Tick (the transform is already synced)
+	bool m_wasSleeping = false;
 
 	/**
 	 * @brief [Internal]

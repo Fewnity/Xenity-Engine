@@ -54,6 +54,16 @@ public:
 	static bool Rename(const std::string& path, const std::string& newPath);
 
 	/**
+	* @brief Write a text file without ever deleting or partially writing the existing file:
+	* the data is written to a temporary file then moved over the original file (on Windows and Linux).
+	* On other platforms, the file is deleted and written again
+	* @param path File path
+	* @param data Content of the file
+	* @return True if the file has been fully written
+	*/
+	static bool WriteFileSafely(const std::string& path, const std::string& data);
+
+	/**
 	* @brief Copy a file to a new path
 	* @param path File path to copy
 	* @param newPath New file path

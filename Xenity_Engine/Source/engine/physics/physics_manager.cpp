@@ -319,7 +319,7 @@ void PhysicsManager::Update()
 				{
 					s_physDynamicsWorld->contactTest(rb->m_bulletRigidbody, resultCallback);
 				}
-				if (rb->m_isTriggerEmpty)
+				if (!rb->m_isTriggerEmpty)
 				{
 					s_physDynamicsWorld->contactTest(rb->m_bulletTriggerRigidbody, resultCallback);
 				}

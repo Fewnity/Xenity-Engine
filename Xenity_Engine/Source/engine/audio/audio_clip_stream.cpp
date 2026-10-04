@@ -41,6 +41,15 @@ void AudioClipStream::OpenStream(const AudioClip& audioFile)
 			// Error opening WAV file.
 			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init wav file: " + path, true);
 			delete m_wavStream;
+			m_wavStream = nullptr;
+		}
+		else if (m_wavStream->channels != 1 && m_wavStream->channels != 2)
+		{
+			// The mixer and the stream buffer sizes only support mono and stereo
+			Debug::PrintError("[AudioClipStream::OpenStream] Only mono and stereo audio files are supported: " + path, true);
+			drwav_uninit(m_wavStream);
+			delete m_wavStream;
+			m_wavStream = nullptr;
 		}
 		else
 		{
@@ -59,6 +68,15 @@ void AudioClipStream::OpenStream(const AudioClip& audioFile)
 			// Error opening MP3 file.
 			Debug::PrintError("[AudioClipStream::OpenStream] Cannot init mp3 file: " + path, true);
 			delete m_mp3Stream;
+			m_mp3Stream = nullptr;
+		}
+		else if (m_mp3Stream->channels != 1 && m_mp3Stream->channels != 2)
+		{
+			// The mixer and the stream buffer sizes only support mono and stereo
+			Debug::PrintError("[AudioClipStream::OpenStream] Only mono and stereo audio files are supported: " + path, true);
+			drmp3_uninit(m_mp3Stream);
+			delete m_mp3Stream;
+			m_mp3Stream = nullptr;
 		}
 		else
 		{
@@ -114,16 +132,19 @@ uint64_t AudioClipStream::FillBuffer(uint64_t amount, short* buff, bool loop)
 	uint64_t remainingFrames = amount;
 	uint64_t tempFrameReadCount = 0;
 	uint32_t loopCount = 0;
+	uint32_t emptyReadCount = 0;
+	// The buffer offset is in samples (one sample per channel for each frame)
+	const uint64_t channelCount = m_channelCount == 0 ? 1 : m_channelCount;
 	while (remainingFrames != 0)
 	{
 		loopCount++;
 		if (m_type == AudioType::Mp3)
 		{
-			tempFrameReadCount = drmp3_read_pcm_frames_s16(m_mp3Stream, remainingFrames, buff + (amount - remainingFrames));
+			tempFrameReadCount = drmp3_read_pcm_frames_s16(m_mp3Stream, remainingFrames, buff + (amount - remainingFrames) * channelCount);
 		}
 		else if (m_type == AudioType::Wav)
 		{	
-			tempFrameReadCount = drwav_read_pcm_frames_s16(m_wavStream, remainingFrames, buff + (amount - remainingFrames));
+			tempFrameReadCount = drwav_read_pcm_frames_s16(m_wavStream, remainingFrames, buff + (amount - remainingFrames) * channelCount);
 		}
 		else 
 		{
@@ -143,6 +164,20 @@ uint64_t AudioClipStream::FillBuffer(uint64_t amount, short* buff, bool loop)
 			ResetSeek();
 		}
 		remainingFrames -= tempFrameReadCount;
+
+		// Empty or unreadable stream: stop instead of looping forever
+		if (tempFrameReadCount == 0)
+		{
+			emptyReadCount++;
+			if (emptyReadCount >= 2)
+			{
+				break;
+			}
+		}
+		else
+		{
+			emptyReadCount = 0;
+		}
 	}
 
 	if (loopCount > 1)

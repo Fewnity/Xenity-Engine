@@ -616,7 +616,9 @@ void InspectorMenu::DrawTransformHeader(const GameObject& selectedGameObject)
 		{
 			const std::string typeId = std::to_string(typeid(std::weak_ptr <Transform>).hash_code());
 			const std::string payloadName = "Type" + typeId;
-			ImGui::SetDragDropPayload(payloadName.c_str(), selectedTransform.get(), sizeof(Transform));
+			// Only send the GameObject id, the transform is found again by id on drop
+			const uint64_t gameObjectId = selectedGameObject.GetUniqueId();
+			ImGui::SetDragDropPayload(payloadName.c_str(), &gameObjectId, sizeof(uint64_t));
 
 			if (texture)
 			{
@@ -724,7 +726,9 @@ void InspectorMenu::DrawComponentsHeaders(const GameObject& selectedGameObject)
 				{
 					const std::string typeId = std::to_string(typeid(*comp.get()).hash_code());
 					const std::string payloadName = "Type" + typeId;
-					ImGui::SetDragDropPayload(payloadName.c_str(), comp.get(), sizeof(Component));
+					// Only send the component id, the component is found again by id on drop
+					const uint64_t componentId = comp->GetUniqueId();
+					ImGui::SetDragDropPayload(payloadName.c_str(), &componentId, sizeof(uint64_t));
 
 					if (texture)
 					{

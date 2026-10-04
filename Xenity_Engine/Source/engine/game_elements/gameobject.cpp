@@ -324,7 +324,8 @@ void GameObject::UpdateActive(const GameObject& changed)
 	{
 		for (int i = 0; i < m_componentCount; i++)
 		{
-			const std::shared_ptr<Component>& component = m_components[i];
+			// Copy the shared_ptr: OnEnabled/Awake can add components and reallocate m_components
+			const std::shared_ptr<Component> component = m_components[i];
 			if (component)
 			{
 				if (m_localActive)

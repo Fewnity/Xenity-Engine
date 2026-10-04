@@ -188,6 +188,10 @@ void Graphics::Draw()
 	{
 		usedCamera = weakCam.lock();
 
+		// The camera may have been destroyed
+		if (!usedCamera)
+			continue;
+
 		if (usedCamera->IsEnabled() && usedCamera->GetGameObjectRaw()->IsLocalActive())
 		{
 			Engine::GetRenderer().NewFrame();
@@ -427,14 +431,24 @@ void Graphics::Draw()
 
 Vector3 meshComparatorCamPos;
 
+// Squared distance to the camera: gives the same order as the distance without a square root per comparison
+static inline float SquaredDistanceToCamera(const RenderCommand& command)
+{
+	const Vector3& position = command.transform->GetPosition();
+	const float xDis = position.x - meshComparatorCamPos.x;
+	const float yDis = position.y - meshComparatorCamPos.y;
+	const float zDis = position.z - meshComparatorCamPos.z;
+	return xDis * xDis + yDis * yDis + zDis * zDis;
+}
+
 static bool MeshComparatorFarToNear(const RenderCommand& c1, const RenderCommand& c2)
 {
-	return Vector3::Distance(c1.transform->GetPosition(), meshComparatorCamPos) > Vector3::Distance(c2.transform->GetPosition(), meshComparatorCamPos);
+	return SquaredDistanceToCamera(c1) > SquaredDistanceToCamera(c2);
 }
 
 static bool MeshComparatorNearToFar(const RenderCommand& c1, const RenderCommand& c2)
 {
-	return Vector3::Distance(c2.transform->GetPosition(), meshComparatorCamPos) > Vector3::Distance(c1.transform->GetPosition(), meshComparatorCamPos);
+	return SquaredDistanceToCamera(c2) > SquaredDistanceToCamera(c1);
 }
 
 static bool LayerOrderComparator(const RenderCommand& c1, const RenderCommand& c2)

@@ -197,6 +197,8 @@ void Texture::LoadTexture()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	m_buffer = nullptr;
+
 	size_t fileBufferSize = 0;
 	unsigned char* fileData = ReadBinary(fileBufferSize);
 	if (!fileData)
@@ -212,6 +214,14 @@ void Texture::LoadTexture()
 	unsigned char* data2 = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &m_width, &height,
 		&nrChannels, 4);
 	delete[] fileData;
+
+	if (!data2)
+	{
+		// Invalid or unsupported image
+		Debug::PrintError("[Texture::LoadTexture] Failed to load texture: " + m_file->GetPath(), true);
+		m_fileStatus = FileStatus::FileStatus_Failed;
+		return;
+	}
 
 	m_originalWidth = m_width;
 	m_originalHeight = height;
@@ -253,7 +263,8 @@ void Texture::LoadTexture()
 	m_buffer = stbi_load_from_memory(fileData, static_cast<int>(fileBufferSize), &m_width, &height,
 		&nrChannels, 4);
 
-	free(fileData);
+	// Allocated with new[] by ReadBinary
+	delete[] fileData;
 #endif
 
 	if (!m_buffer)

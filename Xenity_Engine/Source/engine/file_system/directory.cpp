@@ -30,6 +30,7 @@
 #endif
 
 #include <engine/assertions/assertions.h>
+#include <engine/debug/debug.h>
 #include "file_system.h"
 
 Directory::Directory(std::string _path) : UniqueId(true)
@@ -169,9 +170,25 @@ void Directory::FillDirectory(Directory& directory, bool recursive)
 	}
 #elif defined(__PS3__)
 #else
-	for (const auto& file : std::filesystem::directory_iterator(directory.GetPath()))
+	// Use error codes: an unreadable or deleted folder must not throw and crash the project loading/refresh
+	std::error_code iteratorError;
+	std::filesystem::directory_iterator directoryIterator(directory.GetPath(), iteratorError);
+	if (iteratorError)
 	{
-		if (file.is_directory())
+		Debug::PrintError("[Directory::FillDirectory] Cannot read the folder: " + directory.GetPath() + " (" + iteratorError.message() + ")", true);
+		return;
+	}
+	const std::filesystem::directory_iterator directoryIteratorEnd;
+	for (; directoryIterator != directoryIteratorEnd; directoryIterator.increment(iteratorError))
+	{
+		if (iteratorError)
+		{
+			Debug::PrintError("[Directory::FillDirectory] Error while reading the folder: " + directory.GetPath() + " (" + iteratorError.message() + ")", true);
+			break;
+		}
+		const std::filesystem::directory_entry& file = *directoryIterator;
+		std::error_code typeError;
+		if (file.is_directory(typeError))
 		{
 			std::shared_ptr<Directory> newDirectory = nullptr;
 			try
@@ -191,7 +208,7 @@ void Directory::FillDirectory(Directory& directory, bool recursive)
 			{
 			}
 		}
-		else if (file.is_regular_file())
+		else if (file.is_regular_file(typeError))
 		{
 			std::shared_ptr<File> newFile = nullptr;
 			try

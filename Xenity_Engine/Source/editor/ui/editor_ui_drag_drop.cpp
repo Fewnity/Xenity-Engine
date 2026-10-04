@@ -13,6 +13,10 @@
 
 #include <engine/asset_management/project_manager.h>
 #include <engine/physics/collider.h>
+#include <engine/game_elements/gameobject.h>
+#include <engine/game_elements/transform.h>
+
+#include <cstring>
 
 bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileReference>& ref, bool getOnMouseRelease)
 {
@@ -24,9 +28,11 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <FileRefe
 			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			FileReference* movedFile = (FileReference*)payload->Data;
+			// The payload is the file id
+			uint64_t movedFileId = 0;
+			memcpy(&movedFileId, payload->Data, sizeof(uint64_t));
 
-			std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(movedFile->m_fileId);
+			std::shared_ptr<FileReference> file = ProjectManager::GetFileReferenceById(movedFileId);
 			if (file)
 			{
 				FileReference::LoadOptions loadOptions;
@@ -52,8 +58,13 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr <ProjectD
 			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			ProjectDirectory* movedFolder = (ProjectDirectory*)payload->Data;
-			std::shared_ptr<ProjectDirectory> directory = ProjectManager::FindProjectDirectory(*ProjectManager::GetProjectDirectory(), movedFolder->path);
+			// The payload is the folder path
+			const std::string movedFolderPath = std::string(static_cast<const char*>(payload->Data), payload->DataSize > 0 ? payload->DataSize - 1 : 0);
+			std::shared_ptr<ProjectDirectory> directory = nullptr;
+			if (ProjectManager::GetProjectDirectory())
+			{
+				directory = ProjectManager::FindProjectDirectory(*ProjectManager::GetProjectDirectory(), movedFolderPath);
+			}
 			if (directory)
 			{
 				ref = directory;
@@ -73,10 +84,13 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component
 		ImGuiDragDropFlags target_flags = 0;
 		if (!getOnMouseRelease)
 			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
-		Component* comp = nullptr;
+		std::shared_ptr<Component> comp = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			comp = ((Component*)payload->Data);
+			// The payload is the component id
+			uint64_t componentId = 0;
+			memcpy(&componentId, payload->Data, sizeof(uint64_t));
+			comp = FindComponentById(componentId);
 		}
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MultiDragData", target_flags))
 		{
@@ -84,10 +98,14 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component
 
 			for (size_t i = 0; i < compCount; i++)
 			{
-				const uint64_t id = typeid(*EditorUI::multiDragData.components[i]).hash_code();
+				const std::shared_ptr<Component> draggedComponent = EditorUI::multiDragData.components[i].lock();
+				if (!draggedComponent)
+					continue;
+
+				const uint64_t id = typeid(*draggedComponent).hash_code();
 				if ("Type" + std::to_string(id) == name)
 				{
-					comp = EditorUI::multiDragData.components[i];
+					comp = draggedComponent;
 					break;
 				}
 			}
@@ -96,7 +114,7 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Component
 
 		if (comp)
 		{
-			ref = comp->shared_from_this();
+			ref = comp;
 			returnValue = true;
 		}
 
@@ -115,11 +133,13 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Collider>
 			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			Collider* obj = ((Collider*)payload->Data);
-
-			if (obj)
+			// The payload is the component id
+			uint64_t componentId = 0;
+			memcpy(&componentId, payload->Data, sizeof(uint64_t));
+			const std::shared_ptr<Collider> collider = std::dynamic_pointer_cast<Collider>(FindComponentById(componentId));
+			if (collider)
 			{
-				ref = std::dynamic_pointer_cast<Collider>(((Component*)obj)->shared_from_this());
+				ref = collider;
 				returnValue = true;
 			}
 		}
@@ -136,19 +156,23 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<GameObjec
 		ImGuiDragDropFlags target_flags = 0;
 		if (!getOnMouseRelease)
 			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
-		GameObject* gameObject = nullptr;
+		std::shared_ptr<GameObject> gameObject = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			gameObject = ((GameObject*)payload->Data);
+			// The payload is the GameObject id
+			uint64_t gameObjectId = 0;
+			memcpy(&gameObjectId, payload->Data, sizeof(uint64_t));
+			gameObject = FindGameObjectById(gameObjectId);
 		}
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MultiDragData", target_flags))
 		{
-			gameObject = EditorUI::multiDragData.gameObjects[0];
+			if (!EditorUI::multiDragData.gameObjects.empty())
+				gameObject = EditorUI::multiDragData.gameObjects[0].lock();
 		}
 
 		if (gameObject)
 		{
-			ref = gameObject->shared_from_this();
+			ref = gameObject;
 			returnValue = true;
 		}
 
@@ -165,19 +189,24 @@ bool EditorUI::DragDropTarget(const std::string& name, std::shared_ptr<Transform
 		ImGuiDragDropFlags target_flags = 0;
 		if (!getOnMouseRelease)
 			target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
-		Transform* trans = nullptr;
+		std::shared_ptr<Transform> trans = nullptr;
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(name.c_str(), target_flags))
 		{
-			trans = ((Transform*)payload->Data);
+			// The payload is the id of the GameObject of the transform
+			uint64_t gameObjectId = 0;
+			memcpy(&gameObjectId, payload->Data, sizeof(uint64_t));
+			if (const std::shared_ptr<GameObject> gameObject = FindGameObjectById(gameObjectId))
+				trans = gameObject->GetTransform();
 		}
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MultiDragData", target_flags))
 		{
-			trans = EditorUI::multiDragData.transforms[0];
+			if (!EditorUI::multiDragData.transforms.empty())
+				trans = EditorUI::multiDragData.transforms[0].lock();
 		}
 
 		if (trans)
 		{
-			ref = trans->shared_from_this();
+			ref = trans;
 			returnValue = true;
 		}
 

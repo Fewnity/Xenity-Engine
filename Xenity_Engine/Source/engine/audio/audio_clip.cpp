@@ -11,6 +11,7 @@
 #include <engine/debug/debug.h>
 #include <engine/game_elements/gameplay_manager.h>
 #include <engine/debug/stack_debug_object.h>
+#include <engine/audio/audio_manager.h>
 
 ReflectiveData AudioClipSettings::GetReflectiveData()
 {
@@ -97,6 +98,8 @@ void AudioClip::OnReflectionUpdated()
 	// Reload file
 	if (GameplayManager::GetGameState() == GameState::Stopped)
 	{
+		// Sounds playing this clip (editor preview) may read the memory that will be freed
+		AudioManager::StopAudioClip(*this);
 		UnloadFileReference();
 		FileReference::LoadOptions loadOptions;
 		loadOptions.platform = Application::GetPlatform();
