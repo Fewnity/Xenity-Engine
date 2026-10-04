@@ -57,6 +57,12 @@ Dijkstras::Dijkstras(int size)
 
 void Dijkstras::processDijkstras(int source, int destination)
 {
+	pathCount = 0;
+	if (source < 0 || source >= squareSize || destination < 0 || destination >= squareSize)
+	{
+		return;
+	}
+
 	bool* explored = new bool[squareSize];
 
 	//For each vertex
@@ -83,13 +89,15 @@ void Dijkstras::processDijkstras(int source, int destination)
 		}
 	}
 
-	for (int i = 0; i < 4; i++)
+	delete[] explored;
+
+	for (int i = 0; i < squareSize; i++)
 	{
 		usedPath[i] = -1;
 	}
-	fillPath(path, usedPath, 2, 0);
+	fillPath(path, usedPath, destination, 0);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < squareSize; i++)
 	{
 		if (usedPath[i] != -1) {
 			pathCount++;

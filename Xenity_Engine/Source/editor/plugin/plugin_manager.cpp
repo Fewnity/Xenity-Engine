@@ -53,7 +53,8 @@ void PluginManager::Init()
 	for (auto& file : dir->GetAllFiles(false))
 	{
 		// Check extension
-		if (file->GetFileExtension() != extension) return;
+		// Ignore other files (.pdb, readme...), do not stop loading the other plugins
+		if (file->GetFileExtension() != extension) continue;
 
 		const std::string& path = file->GetPath();
 

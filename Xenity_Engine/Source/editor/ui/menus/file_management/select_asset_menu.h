@@ -129,6 +129,13 @@ public:
 
 	void Draw() override
 	{
+		// valuePtr points to a variable of the owner, close the menu if the owner has been destroyed (deleted, undo, scene changed, play mode stopped...)
+		if (!valuePtr || (hasOwner && owner.expired()))
+		{
+			Editor::RemoveMenu(this);
+			return;
+		}
+
 		ImGui::SetNextWindowSize(ImVec2(1000, 400), ImGuiCond_FirstUseEver);
 		bool isOpen = true;
 		const bool visible = ImGui::Begin("Select file##Selectfile", &isOpen, ImGuiWindowFlags_NoCollapse);
@@ -227,6 +234,9 @@ public:
 	ReflectiveDataToDraw reflectiveDataToDraw;
 	bool hasReflectiveDataToDraw = false;
 	bool showEngineAssetOnly = false;
+	// Object that owns the variable pointed by valuePtr
+	std::weak_ptr<void> owner;
+	bool hasOwner = false;
 private:
 	std::vector<std::shared_ptr<FileReference>> m_foundFiles;
 	FileType m_fileType = FileType::File_Other;

@@ -21,25 +21,33 @@ uint32_t FileHandler::s_tempFileCount = 0;
 bool FileHandler::HasCodeChangedDirect(const std::string& folderPath, bool isThreaded, std::function<void()> callback)
 {
 	bool changed = false;
-	for (const auto& file : std::filesystem::directory_iterator(folderPath))
+	try
 	{
-		// Check is file
-		if (!file.is_regular_file()) continue;
-
-		// Check extension
-		const std::string ext = file.path().extension().string();
-		if (ext != ".h" && ext != ".cpp") continue;
-
-		const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
-
-		// Check last date
-		const auto duration = time.time_since_epoch();
-		const uint64_t durationCount = duration.count();
-		if (durationCount > s_lastModifiedCodeFileTime)
+		for (const auto& file : std::filesystem::directory_iterator(folderPath))
 		{
-			s_lastModifiedCodeFileTime = durationCount;
-			changed = true;
+			// Check is file
+			if (!file.is_regular_file()) continue;
+
+			// Check extension
+			const std::string ext = file.path().extension().string();
+			if (ext != ".h" && ext != ".cpp") continue;
+
+			const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
+
+			// Check last date
+			const auto duration = time.time_since_epoch();
+			const uint64_t durationCount = duration.count();
+			if (durationCount > s_lastModifiedCodeFileTime)
+			{
+				s_lastModifiedCodeFileTime = durationCount;
+				changed = true;
+			}
 		}
+	}
+	catch (const std::exception&)
+	{
+		// The folder may have been renamed or deleted outside of the editor, an exception in a thread would terminate the editor
+		Debug::PrintError("[FileHandler::HasCodeChangedDirect] failed to check if code files have changed", true);
 	}
 	if (isThreaded && changed) 
 	{
@@ -135,7 +143,10 @@ void FileHandler::HasFileChangedOrAddedThreaded(const std::string& folderPath, s
 
 void FileHandler::SetLastModifiedFile(const std::string& file)
 {
-	const std::filesystem::file_time_type time = std::filesystem::last_write_time(file);
+	std::error_code error;
+	const std::filesystem::file_time_type time = std::filesystem::last_write_time(file, error);
+	if (error)
+		return;
 	const auto duration = time.time_since_epoch();
 	const uint64_t durationCount = duration.count();
 	if (durationCount > s_lastModifiedFileTime)

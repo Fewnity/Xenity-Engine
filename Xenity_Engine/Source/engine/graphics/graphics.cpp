@@ -188,6 +188,10 @@ void Graphics::Draw()
 	{
 		usedCamera = weakCam.lock();
 
+		// The camera may have been destroyed
+		if (!usedCamera)
+			continue;
+
 		if (usedCamera->IsEnabled() && usedCamera->GetGameObjectRaw()->IsLocalActive())
 		{
 			Engine::GetRenderer().NewFrame();

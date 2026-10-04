@@ -192,12 +192,12 @@ int EditorUI::DrawTreeItem(const std::shared_ptr<GameObject>& gameObject, std::w
 			EditorUI::multiDragData.transforms.clear();
 			EditorUI::multiDragData.components.clear();
 
-			EditorUI::multiDragData.gameObjects.push_back(gameObject.get());
-			EditorUI::multiDragData.transforms.push_back(gameObject->GetTransform().get());
+			EditorUI::multiDragData.gameObjects.push_back(gameObject);
+			EditorUI::multiDragData.transforms.push_back(gameObject->GetTransform());
 			const int componentCount = gameObject->GetComponentCount();
 			for (int i = 0; i < componentCount; i++)
 			{
-				EditorUI::multiDragData.components.push_back(gameObject->m_components[i].get());
+				EditorUI::multiDragData.components.push_back(gameObject->m_components[i]);
 			}
 			const std::string payloadName = "MultiDragData";
 			int emptyInt = 0;

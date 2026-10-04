@@ -660,20 +660,8 @@ inline bool ReflectionUtils::JsonToFile(const nlohmann::ordered_json& data, std:
 
 	XASSERT(file != nullptr, "[ReflectionUtils::JsonToFile] file is nullptr");
 
-	bool ok = false;
-	FileSystem::Delete(file->GetPath());
-	if (file->Open(FileMode::WriteCreateFile))
-	{
-		file->Write(data.dump(0));
-		file->Close();
-		ok = true;
-	}
-	else
-	{
-		ok = false;
-	}
-
-	return ok;
+	// Never delete the file before writing the new one: a failed write would lose or corrupt the file (materials, prefabs...)
+	return FileSystem::WriteFileSafely(file->GetPath(), data.dump(0));
 }
 
 #pragma endregion

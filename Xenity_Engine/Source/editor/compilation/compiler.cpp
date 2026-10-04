@@ -519,7 +519,14 @@ void Compiler::PrintTimings()
 void Compiler::CompileGameThreaded(const BuildPlatform buildPlatform, BuildType buildType, const std::string& exportPath)
 {
 	Debug::ClearDebugLogs();
-	std::thread t = std::thread(CompileGame, buildPlatform, buildType, exportPath);
+	// Create the file references on the main thread, the build thread must not modify the asset lists while the editor is running
+	Cooker::PrepareCooking();
+	std::thread t = std::thread([buildPlatform, buildType, exportPath]()
+		{
+			CompileGame(buildPlatform, buildType, exportPath);
+			// Release the file references prepared for this build
+			Cooker::ClearPreparedCooking();
+		});
 	t.detach();
 }
 

@@ -101,9 +101,16 @@ inline void InspectorDeleteComponentCommand::Execute()
 inline void InspectorDeleteComponentCommand::Undo()
 {
 	std::shared_ptr<GameObject> gameObject = FindGameObjectById(m_gameObjectId);
-	if (gameObject)
+	// Do not recreate the component if it already exists, it would create two components with the same id
+	if (gameObject && !FindComponentById(m_componentId))
 	{
 		std::shared_ptr<Component> component = ClassRegistry::AddComponentFromName(m_componentName, *gameObject);
+		// Can fail if the component class does not exist anymore or if only one component of this type is allowed
+		if (!component)
+		{
+			Debug::PrintError("[InspectorDeleteComponentCommand::Undo] Failed to recreate the component: " + m_componentName);
+			return;
+		}
 		ReflectionUtils::JsonToReflectiveData(m_componentData, component->GetReflectiveData());
 		component->SetIsEnabled(m_isEnabled);
 		component->SetUniqueId(m_componentId);

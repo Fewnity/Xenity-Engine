@@ -17,7 +17,10 @@ InspectorDeleteGameObjectCommand::GameObjectChild InspectorDeleteGameObjectComma
 	gameObjectChild.transformData["Values"] = ReflectionUtils::ReflectiveDataToJson(child.GetTransform()->GetReflectiveData());
 	for (std::weak_ptr<GameObject> childChild : child.GetChildren())
 	{
-		gameObjectChild.children.push_back(AddChild(*childChild.lock()));
+		if (const std::shared_ptr<GameObject> childChildLock = childChild.lock())
+		{
+			gameObjectChild.children.push_back(AddChild(*childChildLock));
+		}
 	}
 
 	for (std::shared_ptr<Component> component : child.m_components)
@@ -108,6 +111,13 @@ void InspectorDeleteGameObjectCommand::Execute()
 
 void InspectorDeleteGameObjectCommand::Undo()
 {
+	// Do not recreate the GameObject if it already exists, it would create two GameObjects with the same id
+	if (FindGameObjectById(m_gameObjectChild.gameObjectId))
+	{
+		Debug::PrintWarning("[InspectorDeleteGameObjectCommand::Undo] The GameObject already exists");
+		return;
+	}
+
 	std::shared_ptr<GameObject> parentGameObject = nullptr;
 	if (m_gameObjectChild.parentGameObjectId != 0)
 	{
