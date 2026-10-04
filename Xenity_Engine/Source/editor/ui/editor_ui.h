@@ -78,11 +78,12 @@ enum class InputButtonState
 	ResetValue,
 };
 
+// Weak pointers: the dragged objects can be destroyed during the drag (play mode, scene change...)
 struct MultiDragData
 {
-	std::vector<GameObject*> gameObjects;
-	std::vector<Transform*> transforms;
-	std::vector<Component*> components;
+	std::vector<std::weak_ptr<GameObject>> gameObjects;
+	std::vector<std::weak_ptr<Transform>> transforms;
+	std::vector<std::weak_ptr<Component>> components;
 };
 
 enum class CopyType
@@ -476,6 +477,22 @@ public:
 			{
 				selectMenu->reflectiveDataToDraw = *reflectiveDataToDraw;
 				selectMenu->hasReflectiveDataToDraw = true;
+
+				// Keep a weak reference to the owner of the variable to know when valuePtr becomes invalid
+				std::shared_ptr<void> owner = nullptr;
+				if (reflectiveDataToDraw->ownerType == ReflectiveDataToDraw::OwnerTypeEnum::GameObject)
+				{
+					owner = FindGameObjectById(reflectiveDataToDraw->ownerUniqueId);
+				}
+				else if (reflectiveDataToDraw->ownerType == ReflectiveDataToDraw::OwnerTypeEnum::Component)
+				{
+					owner = FindComponentById(reflectiveDataToDraw->ownerUniqueId);
+				}
+				if (owner)
+				{
+					selectMenu->owner = owner;
+					selectMenu->hasOwner = true;
+				}
 			}
 			currentSelectAssetMenu = selectMenu;
 			selectMenu->Focus();

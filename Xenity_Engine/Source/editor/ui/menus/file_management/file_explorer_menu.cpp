@@ -6,6 +6,8 @@
 
 #include "file_explorer_menu.h"
 
+#include <filesystem>
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
 
@@ -211,16 +213,27 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 			const std::shared_ptr<File>& file = fileRef->m_file;
 			if (!IsSelectedFileLocked(file))
 			{
-				CopyFileResult copyResult = FileSystem::CopyFile(file->GetPath(), item.directory->path + file->GetFileName() + file->GetFileExtension(), false);
+				const std::string newFilePath = item.directory->path + file->GetFileName() + file->GetFileExtension();
+				CopyFileResult copyResult = FileSystem::CopyFile(file->GetPath(), newFilePath, false);
 				if (copyResult == CopyFileResult::Success)
 				{
-					copyResult = FileSystem::CopyFile(file->GetPath() + ".meta", item.directory->path + file->GetFileName() + file->GetFileExtension() + ".meta", false);
+					copyResult = FileSystem::CopyFile(file->GetPath() + ".meta", newFilePath + ".meta", false);
 
 					if (copyResult == CopyFileResult::Success)
 					{
 						FileSystem::Delete(file->GetPath());
 						FileSystem::Delete(file->GetPath() + ".meta");
 					}
+					else
+					{
+						// Do not keep a copy without its meta file (or with the meta file of another file), it would get another id
+						FileSystem::Delete(newFilePath);
+						EditorUI::OpenDialog("Error", "Failed to move the file, a .meta file with the same name probably already exists in this location.", DialogType::Dialog_Type_OK);
+					}
+				}
+				else if (copyResult == CopyFileResult::FileAlreadyExists)
+				{
+					EditorUI::OpenDialog("Error", "There is already a file with the same name in this location.", DialogType::Dialog_Type_OK);
 				}
 
 				ProjectManager::RefreshProjectDirectory();
@@ -231,9 +244,23 @@ void FileExplorerMenu::DrawExplorerItem(const float iconSize, int& currentCol, c
 		if (dropFolderInFolder)
 		{
 			const std::string destinationPath = item.directory->path + directoryRef->GetFolderName() + "\\";
-			FileSystem::CreateFolder(destinationPath);
-			Editor::StartFolderCopy(directoryRef->path, destinationPath);
-			FileSystem::Delete(directoryRef->path);
+			bool moved = false;
+			std::error_code existsError;
+			if (!std::filesystem::exists(destinationPath, existsError) && !existsError)
+			{
+				// Move the folder in one operation, copying then deleting could delete files that failed to be copied
+				std::string sourceFolderPath = directoryRef->path;
+				std::string destinationFolderPath = destinationPath;
+				while (!sourceFolderPath.empty() && (sourceFolderPath.back() == '\\' || sourceFolderPath.back() == '/'))
+					sourceFolderPath.pop_back();
+				while (!destinationFolderPath.empty() && (destinationFolderPath.back() == '\\' || destinationFolderPath.back() == '/'))
+					destinationFolderPath.pop_back();
+				moved = FileSystem::Rename(sourceFolderPath, destinationFolderPath);
+			}
+			if (!moved)
+			{
+				EditorUI::OpenDialog("Error", "Failed to move the folder. A folder with the same name may already exist in this location, or a file may be used by another program.", DialogType::Dialog_Type_OK);
+			}
 			ProjectManager::RefreshProjectDirectory();
 		}
 	}
@@ -400,12 +427,16 @@ void FileExplorerMenu::CheckItemDrag(const FileExplorerItem& fileExplorerItem, c
 			else
 				payloadName = "Files" + std::to_string((int)fileExplorerItem.file->GetFileType());
 
-			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.file.get(), sizeof(FileReference));
+			// Only send the id, the file reference is found again by id on drop
+			const uint64_t fileId = fileExplorerItem.file->GetFileId();
+			ImGui::SetDragDropPayload(payloadName.c_str(), &fileId, sizeof(uint64_t));
 		}
 		else
 		{
 			payloadName = "Folders";
-			ImGui::SetDragDropPayload(payloadName.c_str(), fileExplorerItem.directory.get(), sizeof(ProjectDirectory));
+			// Only send the path (null terminated string), the directory is found again by path on drop
+			const std::string& directoryPath = fileExplorerItem.directory->path;
+			ImGui::SetDragDropPayload(payloadName.c_str(), directoryPath.c_str(), directoryPath.size() + 1);
 		}
 
 		const TextureDefault& openglTexture = dynamic_cast<const TextureDefault&>(iconTexture);
@@ -575,15 +606,16 @@ void FileExplorerMenu::Draw()
 			const bool droppedGameObject = EditorUI::DragDropTarget("MultiDragData", unused);
 			if (droppedGameObject)
 			{
-				if (EditorUI::multiDragData.gameObjects.size() == 1)
+				const std::shared_ptr<GameObject> draggedGameObject = EditorUI::multiDragData.gameObjects.size() == 1 ? EditorUI::multiDragData.gameObjects[0].lock() : nullptr;
+				if (draggedGameObject)
 				{
-					Debug::Print("Create prefab of: " + EditorUI::multiDragData.gameObjects[0]->GetName());
-					std::shared_ptr<File> newFile = Editor::CreateNewFile(currentDir->path + "\\" + EditorUI::multiDragData.gameObjects[0]->GetName(), FileType::File_Prefab, true);
-					std::shared_ptr<FileReference> newFileRef = ProjectManager::GetFileReferenceByFile(*newFile);
-					if (newFileRef)
+					Debug::Print("Create prefab of: " + draggedGameObject->GetName());
+					std::shared_ptr<File> newFile = Editor::CreateNewFile(currentDir->path + "\\" + draggedGameObject->GetName(), FileType::File_Prefab, true);
+					std::shared_ptr<FileReference> newFileRef = newFile ? ProjectManager::GetFileReferenceByFile(*newFile) : nullptr;
+					std::shared_ptr<Prefab> prefab = std::dynamic_pointer_cast<Prefab>(newFileRef);
+					if (prefab)
 					{
-						std::shared_ptr<Prefab> prefab = std::dynamic_pointer_cast<Prefab>(newFileRef);
-						prefab->SetData(*EditorUI::multiDragData.gameObjects[0]);
+						prefab->SetData(*draggedGameObject);
 					}
 					//SetFileToRename(newFileRef, nullptr);
 				}
@@ -619,14 +651,34 @@ void FileExplorerMenu::Rename()
 		needUpdate = true;
 
 		std::shared_ptr<File> file = m_fileToRename->m_file;
-		const bool success = FileSystem::Rename(file->GetPath(), file->GetFolderPath() + m_renamingString + file->GetFileExtension());
+		const std::string newFilePath = file->GetFolderPath() + m_renamingString + file->GetFileExtension();
+		bool success = false;
+		// A meta file without its file (deleted outside of the editor) would give its id to the renamed file
+		std::error_code existsError;
+		const bool metaFileAlreadyExists = std::filesystem::exists(newFilePath + ".meta", existsError);
+		if (!metaFileAlreadyExists)
+		{
+			success = FileSystem::Rename(file->GetPath(), newFilePath);
+		}
 		if (success)
 		{
-			FileSystem::Rename(file->GetPath() + ".meta", file->GetFolderPath() + m_renamingString + file->GetFileExtension() + ".meta");
-			if (SceneManager::GetOpenedScene() == m_fileToRename)
+			const bool metaSuccess = FileSystem::Rename(file->GetPath() + ".meta", newFilePath + ".meta");
+			std::error_code metaExistsError;
+			if (!metaSuccess && std::filesystem::exists(file->GetPath() + ".meta", metaExistsError))
+			{
+				// Keep the file with its meta file
+				FileSystem::Rename(newFilePath, file->GetPath());
+				success = false;
+				EditorUI::OpenDialog("Error", "Failed to rename the file, the .meta file may be used by another program.", DialogType::Dialog_Type_OK);
+			}
+			else if (SceneManager::GetOpenedScene() == m_fileToRename)
 			{
 				needTitleRefresh = true;
 			}
+		}
+		else if (metaFileAlreadyExists && m_renamingString != file->GetFileName())
+		{
+			EditorUI::OpenDialog("Error", "There is already a .meta file with the same name in this location (" + m_renamingString + file->GetFileExtension() + ".meta). Delete it or choose another name.", DialogType::Dialog_Type_OK);
 		}
 		else if(m_renamingString + file->GetFileExtension() != file->GetFileName() + file->GetFileExtension())
 		{

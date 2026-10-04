@@ -32,6 +32,10 @@
 #include <filesystem>
 #endif
 
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+#include <fstream>
+#endif
+
 #include <engine/debug/debug.h>
 #include <engine/constants.h>
 #include <engine/application.h>
@@ -70,6 +74,61 @@ bool FileSystem::Rename(const std::string& path, const std::string& newPath)
 		success = false;
 	}
 	return success;
+}
+
+bool FileSystem::WriteFileSafely(const std::string& path, const std::string& data)
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	const std::string tempPath = path + ".tmp";
+	try
+	{
+		{
+			std::ofstream tempFile(tempPath, std::ios::binary | std::ios::trunc);
+			if (!tempFile.is_open())
+			{
+				Debug::PrintError("[FileSystem::WriteFileSafely] Fail to create the temporary file: " + tempPath, true);
+				return false;
+			}
+			tempFile.write(data.data(), static_cast<std::streamsize>(data.size()));
+			tempFile.flush();
+			if (!tempFile.good())
+			{
+				tempFile.close();
+				std::filesystem::remove(tempPath);
+				Debug::PrintError("[FileSystem::WriteFileSafely] Fail to write the temporary file: " + tempPath, true);
+				return false;
+			}
+		}
+
+		if (std::filesystem::file_size(tempPath) != data.size())
+		{
+			std::filesystem::remove(tempPath);
+			Debug::PrintError("[FileSystem::WriteFileSafely] The temporary file is incomplete: " + tempPath, true);
+			return false;
+		}
+
+		// Replace the original file (atomic on the same drive)
+		std::filesystem::rename(tempPath, path);
+	}
+	catch (const std::exception& e)
+	{
+		std::error_code ec;
+		std::filesystem::remove(tempPath, ec);
+		Debug::PrintError("[FileSystem::WriteFileSafely] Fail to write the file: " + path + " (" + e.what() + ")", true);
+		return false;
+	}
+	return true;
+#else
+	Delete(path);
+	const std::shared_ptr<File> file = MakeFile(path);
+	if (!file->Open(FileMode::WriteCreateFile))
+	{
+		return false;
+	}
+	file->Write(data);
+	file->Close();
+	return true;
+#endif
 }
 
 CopyFileResult FileSystem::CopyFile(const std::string& path, const std::string& newPath, bool replace)

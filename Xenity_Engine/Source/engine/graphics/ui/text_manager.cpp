@@ -30,10 +30,19 @@ void TextManager::Init()
 {
 }
 
+// Unicode replacement character, used for invalid UTF-8 bytes
+static constexpr uint32_t INVALID_CODEPOINT = 0xFFFD;
+
+/**
+ * @brief Decode one UTF-8 character
+ * @return Number of bytes of the character (always at least 1 to always move forward in the string, even with invalid or truncated characters)
+ */
 static int DecodeUTF8(const char* s, uint32_t& outCodepoint)
 {
 	const unsigned char* bytes = (const unsigned char*)s;
 
+	outCodepoint = 0;
+	int byteCount = 1;
 	if (bytes[0] < 0x80) // 1 byte (ASCII)
 	{
 		outCodepoint = bytes[0];
@@ -41,32 +50,39 @@ static int DecodeUTF8(const char* s, uint32_t& outCodepoint)
 	}
 	else if ((bytes[0] & 0xE0) == 0xC0) // 2 bytes
 	{
-		outCodepoint =
-			((bytes[0] & 0x1F) << 6) |
-			(bytes[1] & 0x3F);
-		return 2;
+		byteCount = 2;
+		outCodepoint = bytes[0] & 0x1F;
 	}
 	else if ((bytes[0] & 0xF0) == 0xE0) // 3 bytes
 	{
-		outCodepoint =
-			((bytes[0] & 0x0F) << 12) |
-			((bytes[1] & 0x3F) << 6) |
-			(bytes[2] & 0x3F);
-		return 3;
+		byteCount = 3;
+		outCodepoint = bytes[0] & 0x0F;
 	}
 	else if ((bytes[0] & 0xF8) == 0xF0) // 4 bytes
 	{
-		outCodepoint =
-			((bytes[0] & 0x07) << 18) |
-			((bytes[1] & 0x3F) << 12) |
-			((bytes[2] & 0x3F) << 6) |
-			(bytes[3] & 0x3F);
-		return 4;
+		byteCount = 4;
+		outCodepoint = bytes[0] & 0x07;
+	}
+	else
+	{
+		// Invalid lead byte (continuation byte or not UTF-8 text like Windows-1252), skip it
+		outCodepoint = INVALID_CODEPOINT;
+		return 1;
 	}
 
-	// Invalid
-	outCodepoint = 0;
-	return 0; // Should not be 0 but for now, we only support the first 256 codepoints, so it will be good
+	// Check the continuation bytes, stop at the end of the string (truncated character)
+	for (int i = 1; i < byteCount; i++)
+	{
+		if ((bytes[i] & 0xC0) != 0x80)
+		{
+			// Invalid or truncated character, skip only the lead byte
+			outCodepoint = INVALID_CODEPOINT;
+			return 1;
+		}
+		outCodepoint = (outCodepoint << 6) | (bytes[i] & 0x3F);
+	}
+
+	return byteCount;
 }
 
 std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextInfo *textInfo, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, const Color &color, const std::shared_ptr<Font> &font, float scale)
@@ -85,7 +101,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 		str += byteCount;
 
 		// for now, only the first 256 codepoints are supported
-		if (byteCount != 1)
+		if (byteCount != 1 || codepoint >= 0x80)
 		{
 			continue;
 		}
@@ -149,7 +165,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 		const uint32_t byteCount = DecodeUTF8(str, codepoint);
 
 		// for now, only the first 256 codepoints are supported
-		if (byteCount != 1)
+		if (byteCount != 1 || codepoint >= 0x80)
 		{
 			str += byteCount;
 			continue;
@@ -285,7 +301,7 @@ TextInfo *TextManager::GetTextInformations(const std::string &text, std::shared_
 		const uint32_t byteCount = DecodeUTF8(str, codepoint);
 
 		// for now, only the first 256 codepoints are supported
-		if (byteCount != 1)
+		if (byteCount != 1 || codepoint >= 0x80)
 		{
 			str += byteCount;
 			continue;

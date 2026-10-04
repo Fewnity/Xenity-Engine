@@ -160,7 +160,7 @@ void BoxCollider::CreateCollision(bool forceCreation)
 			m_bulletCollisionObject->setCollisionFlags(m_bulletCollisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		}
 
-		PhysicsManager::s_physDynamicsWorld->addCollisionObject(m_bulletCollisionObject);
+		PhysicsManager::s_physDynamicsWorld->addCollisionObject(m_bulletCollisionObject, btBroadphaseProxy::StaticFilter, btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
 	}
 }
 

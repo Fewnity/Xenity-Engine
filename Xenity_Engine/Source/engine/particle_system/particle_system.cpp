@@ -493,7 +493,8 @@ void ParticleSystem::CreateRenderCommands(RenderBatch& renderBatch)
 	RenderCommand command = RenderCommand();
 	command.material = m_material.get();
 	command.drawable = this;
-	if (!m_mesh)
+	// A mesh without sub mesh (failed to load) uses the sprite mesh
+	if (!m_mesh || m_mesh->m_subMeshes.empty())
 		command.subMesh = SpriteManager::GetBasicSpriteMeshDataWithNormals()->m_subMeshes[0].get();
 	else
 		command.subMesh = m_mesh->m_subMeshes[0].get();

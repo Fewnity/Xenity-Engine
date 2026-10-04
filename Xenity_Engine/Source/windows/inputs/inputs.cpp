@@ -111,8 +111,11 @@ API void CrossOnControllerAdded(const int controllerId)
 {
 	SDL_Gamepad* controller = SDL_OpenGamepad(controllerId);
 
+	if (!controller)
+		return;
+
 	const int playerIndex = SDL_GetGamepadPlayerIndex(controller);
-	if (playerIndex < 0)
+	if (playerIndex < 0 || playerIndex >= static_cast<int>(controllers.size()))
 	{
 		SDL_CloseGamepad(controller);
 		return;

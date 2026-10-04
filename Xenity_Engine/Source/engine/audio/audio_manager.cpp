@@ -106,6 +106,12 @@ void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* ch
 	{
 		PlayedSound* sound = channel->m_playedSounds[soundIndex];
 
+		// Waiting to be deleted by the fill thread
+		if (sound->m_needRemove)
+		{
+			continue;
+		}
+
 		// Security checks
 		if(sound->m_bufferSeekPosition < halfBuffSize && sound->m_needFillFirstHalfBuffer)
 		{
@@ -205,14 +211,11 @@ void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* ch
 				}
 			}
 
-			//If the played sound needs to be deleted
+			// If the played sound needs to be deleted.
+			// Only the fill thread deletes played sounds: it may be using this sound while the mutex is unlocked
 			if (deleteAudio)
 			{
-				delete sound;
-				channel->m_playedSounds.erase(channel->m_playedSounds.begin() + soundIndex);
-				channel->m_playedSoundsCount--;
-				soundIndex--;
-				playedSoundsCount--;
+				sound->m_needRemove = true;
 				continue;
 			}
 		}
@@ -403,6 +406,12 @@ int fillAudioBufferThread()
 			for (size_t i = 0; i < count; i++)
 			{
 				PlayedSound* playedSound = AudioManager::s_channel->m_playedSounds[i];
+				// The audio source has been destroyed, stop the sound (a looping sound would play forever)
+				if (playedSound->m_audioSource.expired())
+				{
+					playedSound->m_needRemove = true;
+					continue;
+				}
 				const std::shared_ptr<AudioSource> audioSource = playedSound->m_audioSource.lock();
 				if (audioSource) 
 				{
@@ -655,7 +664,8 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	for (size_t i = 0; i < count; i++)
 	{
 		const auto& playedSound = s_channel->m_playedSounds[i];
-		if (playedSound->m_audioSource.lock() == audioSource)
+		// Ignore finished sounds waiting to be deleted
+		if (!playedSound->m_needRemove && playedSound->m_audioSource.lock() == audioSource)
 		{
 			found = true;
 			break;
@@ -670,6 +680,13 @@ void AudioManager::PlayAudioSource(const std::shared_ptr<AudioSource>& audioSour
 		newPlayedSound->m_buffer = (short*)calloc((size_t)buffSize, sizeof(short));
 		newPlayedSound->m_audioClipStream = std::make_unique<AudioClipStream>();
 		newPlayedSound->m_audioClipStream->OpenStream(*audioSource->GetAudioClip());
+		newPlayedSound->m_audioClip = audioSource->GetAudioClip().get();
+		// Invalid or unsupported file (only mono and stereo are supported)
+		if (newPlayedSound->m_audioClipStream->GetChannelCount() == 0)
+		{
+			delete newPlayedSound;
+			return;
+		}
 		newPlayedSound->m_audioSource = audioSource;
 		newPlayedSound->m_bufferSeekPosition = 0;
 		newPlayedSound->m_needFillFirstHalfBuffer = true;
@@ -716,6 +733,44 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	}
 
 	AudioManager::s_myMutex->Unlock();
+}
+
+void AudioManager::StopAudioClip(const AudioClip& audioClip)
+{
+	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+	AudioManager::s_myMutex->Lock();
+	for (PlayedSound* playedSound : s_channel->m_playedSounds)
+	{
+		if (playedSound->m_audioClip == &audioClip)
+		{
+			playedSound->m_needRemove = true;
+		}
+	}
+	AudioManager::s_myMutex->Unlock();
+
+#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX__)
+	// Wait for the fill thread to delete the sounds, it may be reading the clip memory
+	for (int tryCount = 0; tryCount < 500; tryCount++)
+	{
+		bool isUsed = false;
+		AudioManager::s_myMutex->Lock();
+		for (const PlayedSound* playedSound : s_channel->m_playedSounds)
+		{
+			if (playedSound->m_audioClip == &audioClip)
+			{
+				isUsed = true;
+				break;
+			}
+		}
+		AudioManager::s_myMutex->Unlock();
+
+		if (!isUsed || !Engine::IsRunning(false))
+			break;
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+#endif
 }
 
 /// <summary>

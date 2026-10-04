@@ -14,6 +14,7 @@
 #include <editor/file_handler/file_handler.h>
 #include <editor/compilation/compiler.h>
 #include <editor/utils/file_reference_finder.h>
+#include <editor/command/command_manager.h>
 #endif
 
 #include "code_file.h"
@@ -649,6 +650,8 @@ void ProjectManager::UnloadProject()
 	Editor::SetCurrentProjectDirectory(nullptr);
 	Editor::SetSelectedGameObject(nullptr);
 	Editor::SetSelectedFileReference(nullptr);
+	// The undo history refers to objects and settings of the closed project
+	CommandManager::ClearCommands();
 
 	SceneManager::SetIsSceneDirty(false);
 	SceneManager::SetOpenedScene(nullptr);
@@ -960,18 +963,11 @@ void ProjectManager::SaveProjectSettings(const std::string& folderPath)
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
 	const std::string path = folderPath + PROJECT_SETTINGS_FILE_NAME;
-	FileSystem::Delete(path);
 	json projectData;
 
 	projectData["Values"] = ReflectionUtils::ReflectiveDataToJson(s_projectSettings.GetReflectiveData());
 
-	const std::shared_ptr<File> projectFile = FileSystem::MakeFile(path);
-	if (projectFile->Open(FileMode::WriteCreateFile))
-	{
-		projectFile->Write(projectData.dump(4));
-		projectFile->Close();
-	}
-	else
+	if (!FileSystem::WriteFileSafely(path, projectData.dump(4)))
 	{
 		Debug::PrintError("[ProjectManager::SaveProjectSettings] Cannot save project settings: " + path, true);
 	}
@@ -986,13 +982,16 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
 	const std::shared_ptr<File>& file = fileReference.m_file;
-#if defined(EDITOR)
-	const std::shared_ptr<File> metaFile = FileSystem::MakeFile(file->GetPath() + META_EXTENSION);
-	const bool exists = metaFile->CheckIfExist();
-	if (!file || (!fileReference.m_isMetaDirty && exists))
+	if (!file)
 		return;
 
-	FileSystem::Delete(file->GetPath() + META_EXTENSION);
+#if defined(EDITOR)
+	const std::string metaPath = file->GetPath() + META_EXTENSION;
+	const std::shared_ptr<File> metaFile = FileSystem::MakeFile(metaPath);
+	const bool exists = metaFile->CheckIfExist();
+	if (!fileReference.m_isMetaDirty && exists)
+		return;
+
 	json metaData;
 	metaData["id"] = fileReference.m_fileId;
 	metaData["MetaVersion"] = s_metaVersion;
@@ -1004,12 +1003,11 @@ void ProjectManager::SaveMetaFile(FileReference& fileReference)
 		metaData[s_assetPlatformNames[i]]["Values"] = ReflectionUtils::ReflectiveDataToJson(fileReference.GetMetaReflectiveData(platform));
 	}
 
-	if (metaFile->Open(FileMode::WriteCreateFile))
+	// Never delete the meta file before writing: a lost meta file gives a new id to the asset and breaks every reference to it
+	if (FileSystem::WriteFileSafely(metaPath, metaData.dump(0)))
 	{
-		metaFile->Write(metaData.dump(0));
-		metaFile->Close();
 		fileReference.m_isMetaDirty = false;
-		FileHandler::SetLastModifiedFile(file->GetPath() + META_EXTENSION);
+		FileHandler::SetLastModifiedFile(metaPath);
 		if (!exists)
 			FileHandler::AddOneFile();
 	}
@@ -1044,16 +1042,23 @@ std::vector<ProjectListItem> ProjectManager::GetProjectsList()
 				Debug::PrintError("[ProjectManager::GetProjectsList] Fail to load projects list: " + file->GetPath(), true);
 			}
 
-			const size_t projectCount = j.size();
+			const size_t projectCount = j.is_array() ? j.size() : 0;
 			for (size_t i = 0; i < projectCount; i++)
 			{
+				// Ignore invalid entries (file edited by hand...)
+				if (!j[i].is_object() || !j[i].contains("path") || !j[i]["path"].is_string())
+				{
+					continue;
+				}
+
 				// Get project information (name and path)
 				ProjectListItem projectItem;
 				projectItem.path = j[i]["path"];
 				const ProjectSettings settings = GetProjectSettings(projectItem.path);
 				if (settings.projectName.empty())
 				{
-					projectItem.name = j[i]["name"];
+					if (j[i].contains("name") && j[i]["name"].is_string())
+						projectItem.name = j[i]["name"];
 				}
 				else
 				{
@@ -1078,14 +1083,7 @@ void ProjectManager::SaveProjectsList(const std::vector<ProjectListItem>& projec
 		j[i]["name"] = projects[i].name;
 		j[i]["path"] = projects[i].path;
 	}
-	FileSystem::Delete(PROJECTS_LIST_FILE);
-	std::shared_ptr<File> file = FileSystem::MakeFile(PROJECTS_LIST_FILE);
-	if (file->Open(FileMode::WriteCreateFile))
-	{
-		file->Write(j.dump(4));
-		file->Close();
-	}
-	else
+	if (!FileSystem::WriteFileSafely(PROJECTS_LIST_FILE, j.dump(4)))
 	{
 		Debug::PrintError(std::string("[ProjectManager::SaveProjectsList] Cannot save projects list: ") + PROJECTS_LIST_FILE, true);
 	}
@@ -1259,18 +1257,44 @@ void ProjectManager::LoadMetaFile(FileReference& fileReference)
 			return;
 		}
 
+		if (!metaData.is_object())
+		{
+			Debug::PrintError("[ProjectManager::LoadMetaFile] Invalid meta file: " + path, true);
+#if defined(EDITOR)
+			// Rewrite a valid meta file with the current id
+			fileReference.m_isMetaDirty = true;
+#endif
+			return;
+		}
+
 		// Load platform specific data
 		for (size_t i = 0; i < static_cast<size_t>(AssetPlatform::AP_COUNT); i++)
 		{
 			const AssetPlatform platform = static_cast<AssetPlatform>(i);
-			if (Application::GetAssetPlatform() == platform || Application::IsInEditor())
+			if ((Application::GetAssetPlatform() == platform || Application::IsInEditor()) && metaData.contains(s_assetPlatformNames[i]))
 			{
 				ReflectionUtils::JsonToReflectiveData(metaData[s_assetPlatformNames[i]], fileReference.GetMetaReflectiveData(platform));
 			}
 		}
 
-		//fileReference.m_file->SetUniqueId(metaData["id"]);
-		fileReference.m_fileId = metaData["id"];
+		const bool hasValidId = metaData.contains("id") && metaData["id"].is_number_unsigned();
+#if defined(EDITOR)
+		// In the editor, the id has already been given by the project scan (a new id is given if the id of the meta file is already used by another file).
+		// Do not overwrite it with the id of the meta file, and save the meta file if the ids are different
+		if (!hasValidId || metaData["id"].get<uint64_t>() != fileReference.m_fileId)
+		{
+			fileReference.m_isMetaDirty = true;
+		}
+#else
+		if (hasValidId)
+		{
+			fileReference.m_fileId = metaData["id"].get<uint64_t>();
+		}
+		else
+		{
+			Debug::PrintError("[ProjectManager::LoadMetaFile] Meta file without valid id: " + path, true);
+		}
+#endif
 	}
 	else
 	{
