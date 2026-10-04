@@ -55,6 +55,7 @@ void BoxCollider::OnReflectionUpdated()
 	{
 		rb->UpdateGeneratesEvents();
 	}
+	UpdateTriggerFlag();
 	OnTransformScaled();
 	OnTransformUpdated();
 }
@@ -237,12 +238,19 @@ void BoxCollider::SetSize(const Vector3& size)
 {
 	m_size = size;
 	CalculateBoundingBox();
+	// Apply the new size to the bullet shape
+	OnTransformScaled();
+	OnTransformUpdated();
 }
 
 
 void BoxCollider::SetOffset(const Vector3& offset)
 {
 	m_offset = offset;
+	CalculateBoundingBox();
+	// Apply the new offset to the bullet shape
+	OnTransformScaled();
+	OnTransformUpdated();
 }
 
 std::string BoxCollider::ToString()

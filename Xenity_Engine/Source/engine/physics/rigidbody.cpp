@@ -22,6 +22,12 @@ RigidBody::RigidBody() : Component(false, false)
 {
 }
 
+// The bullet bodies must be in the physics world only if the rigidbody is enabled and its GameObject is active
+static bool IsInPhysicsWorld(const RigidBody& rigidBody)
+{
+	return rigidBody.IsEnabled() && rigidBody.GetGameObjectRaw() && rigidBody.GetGameObjectRaw()->IsLocalActive();
+}
+
 RigidBody::~RigidBody()
 {
 	if (GetTransformRaw())
@@ -186,9 +192,10 @@ void RigidBody::SetGravityMultiplier(float _gravityMultiplier)
 	UpdateRigidBodyGravityMultiplier();
 }
 
-void RigidBody::SetIsStatic(float _isStatic)
+void RigidBody::SetIsStatic(bool _isStatic)
 {
 	m_isStatic = _isStatic;
+	UpdateRigidBodyMass();
 }
 
 void RigidBody::SetMass(float _mass)
@@ -276,6 +283,8 @@ void RigidBody::UpdateRigidBodyMass()
 		return;
 	}
 
+	const bool wasStaticOrKinematic = m_bulletRigidbody->isStaticOrKinematicObject();
+
 	btVector3 inertia(0, 0, 0);
 	m_bulletCompoundShape->calculateLocalInertia(m_mass, inertia);
 	if (m_isStatic)
@@ -288,6 +297,14 @@ void RigidBody::UpdateRigidBodyMass()
 	}
 	//m_bulletRigidbody->setActivationState(DISABLE_DEACTIVATION);
 	m_bulletRigidbody->setMassProps(m_mass, inertia);
+
+	// Bullet sorts the bodies (static or dynamic) when they are added to the world,
+	// re-add the body if it's in the world and if its type has changed
+	if (m_bulletRigidbody->getBroadphaseHandle() && wasStaticOrKinematic != m_bulletRigidbody->isStaticOrKinematicObject())
+	{
+		PhysicsManager::s_physDynamicsWorld->removeRigidBody(m_bulletRigidbody);
+		PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
+	}
 
 	if (!m_isStatic)
 	{
@@ -364,8 +381,16 @@ void RigidBody::OnEnabled()
 {
 	if (m_bulletRigidbody)
 	{
-		PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
-		PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
+		// Do not add the bodies twice (Bullet would duplicate them)
+		if (!m_bulletRigidbody->getBroadphaseHandle())
+		{
+			PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
+		}
+		// An empty compound shape has an invalid AABB, the trigger body is added when it gets a shape
+		if (!m_isTriggerEmpty && !m_bulletTriggerRigidbody->getBroadphaseHandle())
+		{
+			PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
+		}
 	}
 }
 
@@ -456,6 +481,14 @@ void RigidBody::Awake()
 	m_bulletTriggerRigidbody = new btRigidBody(1, myMotionStateTrigger, nullptr, btVector3(0, 0, 0));
 	m_bulletTriggerRigidbody->setUserPointer(this);
 
+	// The gravity is set by UpdateRigidBodyGravityMultiplier, the world must not reset it each time the body is added to the world
+	m_bulletRigidbody->setFlags(m_bulletRigidbody->getFlags() | BT_DISABLE_WORLD_GRAVITY);
+
+	// The trigger body follows the main body (see Tick), it must not fall by itself:
+	// its velocity would grow forever and it would move away while the main body is sleeping
+	m_bulletTriggerRigidbody->setFlags(m_bulletTriggerRigidbody->getFlags() | BT_DISABLE_WORLD_GRAVITY);
+	m_bulletTriggerRigidbody->setGravity(btVector3(0, 0, 0));
+
 	// The trigger body always overlaps the main body, skip the narrowphase between them
 	m_bulletRigidbody->setIgnoreCollisionCheck(m_bulletTriggerRigidbody, true);
 	m_bulletTriggerRigidbody->setIgnoreCollisionCheck(m_bulletRigidbody, true);
@@ -478,6 +511,8 @@ void RigidBody::Awake()
 
 	Activate();
 	m_bulletTriggerRigidbody->activate();
+	// The trigger body does not move by itself, keep it awake to detect the triggers like before
+	m_bulletTriggerRigidbody->setActivationState(DISABLE_DEACTIVATION);
 
 	SetIsSleepDisabled(m_disableSleep);
 
@@ -516,7 +551,10 @@ void RigidBody::AddShape(btCollisionShape* shape, const Vector3& offset)
 
 		UpdateRigidBodyMass();
 	}
-	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
+	if (IsInPhysicsWorld(*this))
+	{
+		PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
+	}
 }
 
 void RigidBody::AddTriggerShape(btCollisionShape* shape, const Vector3& offset)
@@ -531,7 +569,10 @@ void RigidBody::AddTriggerShape(btCollisionShape* shape, const Vector3& offset)
 
 		m_isTriggerEmpty = false;
 	}
-	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
+	if (IsInPhysicsWorld(*this))
+	{
+		PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
+	}
 }
 
 void RigidBody::RemoveShape(btCollisionShape* shape)
@@ -556,7 +597,10 @@ void RigidBody::RemoveShape(btCollisionShape* shape)
 
 		UpdateRigidBodyMass();
 	}
-	PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
+	if (IsInPhysicsWorld(*this))
+	{
+		PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletRigidbody);
+	}
 }
 
 void RigidBody::RemoveTriggerShape(btCollisionShape* shape)
@@ -567,7 +611,10 @@ void RigidBody::RemoveTriggerShape(btCollisionShape* shape)
 
 	if (m_bulletTriggerCompoundShape->getNumChildShapes() != 0)
 	{
-		PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
+		if (IsInPhysicsWorld(*this))
+		{
+			PhysicsManager::s_physDynamicsWorld->addRigidBody(m_bulletTriggerRigidbody);
+		}
 		m_isTriggerEmpty = false;
 	}
 	else

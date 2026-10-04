@@ -24,12 +24,7 @@ public:
 	* @brief Set if the collider is a trigger or not.
 	* @brief A trigger collider will not collide with other colliders, but will still generate collision events.
 	*/
-	void SetIsTrigger(bool isTrigger)
-	{
-		m_isTrigger = isTrigger;
-		OnTransformScaled();
-		OnTransformUpdated();
-	}
+	void SetIsTrigger(bool isTrigger);
 
 	/**
 	* @brief Check if the collider is a trigger or not.
@@ -42,10 +37,7 @@ public:
 	/**
 	* @brief Set if the collider should generate collision events or not.
 	*/
-	void SetGenerateCollisionEvents(bool generateCollisionEvents)
-	{
-		m_generateCollisionEvents = generateCollisionEvents;
-	}
+	void SetGenerateCollisionEvents(bool generateCollisionEvents);
 
 	/**
 	* @brief Check if the collider should generate collision events or not.
@@ -75,6 +67,11 @@ protected:
 	virtual void CreateCollision(bool forceCreation) = 0;
 	virtual void OnTransformScaled() {};
 	virtual void OnTransformUpdated() {};
+
+	/**
+	* @brief Apply the trigger state to the bullet collision object (collider without rigidbody)
+	*/
+	void UpdateTriggerFlag();
 
 	std::weak_ptr<RigidBody> m_attachedRigidbody;
 	btCollisionObject* m_bulletCollisionObject = nullptr;

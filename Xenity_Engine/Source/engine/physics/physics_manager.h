@@ -74,9 +74,13 @@ public:
 	static btDynamicsWorld* s_physDynamicsWorld;
 	static Vector3 s_gravity;
 
+	/**
+	* @brief Get the collider of a bullet collision object (rigidbodies use compound shapes, childIndex gives the collider)
+	*/
+	static Collider* GetColliderFromCollisionObject(const btCollisionObject* collisionObject, int childIndex);
+
 private:
 	static void CallCollisionEvent(Collider* a, Collider* b, bool isTrigger, int state);
-	static Collider* GetColliderFromCollisionObject(const btCollisionObject* collisionObject, int childIndex);
 	static bool GeneratesEvents(const btCollisionObject* collisionObject);
 
 	static std::vector<RigidBody*> s_rigidBodies;

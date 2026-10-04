@@ -44,6 +44,7 @@ void SphereCollider::OnReflectionUpdated()
 	{
 		rb->UpdateGeneratesEvents();
 	}
+	UpdateTriggerFlag();
 	OnTransformScaled();
 	OnTransformUpdated();
 }
@@ -116,7 +117,8 @@ void SphereCollider::CreateCollision(bool forceCreation)
 	else
 	{
 		const glm::mat4x4& matrix = GetTransform()->GetTransformationMatrix();
-		const Vector3 newPos = Vector3(matrix * glm::vec4(-m_offset.x, m_offset.y, -m_offset.z, 1));
+		// Same formula as OnTransformUpdated
+		const Vector3 newPos = Vector3(matrix * glm::vec4(-m_offset.x, m_offset.y, m_offset.z, 1));
 
 		const Quaternion& rot = GetTransform()->GetRotation();
 
@@ -184,16 +186,24 @@ void SphereCollider::SetDefaultSize()
 		const std::shared_ptr<MeshData>& meshData = mesh->GetMeshData();
 		m_size = ((meshData->GetMaxBoundingBox() - meshData->GetMinBoundingBox())).Max();
 		m_offset = ((meshData->GetMaxBoundingBox() + meshData->GetMinBoundingBox()) / 2.0f);
+		// The x axis is inverted between the mesh and the collider offset (same as BoxCollider)
+		m_offset.x = -m_offset.x;
 	}
 }
 
 void SphereCollider::SetSize(float size)
 {
 	m_size = size;
+	// Apply the new size to the bullet shape
+	OnTransformScaled();
+	OnTransformUpdated();
 }
 
 
 void SphereCollider::SetOffset(const Vector3& offset)
 {
 	m_offset = offset;
+	// Apply the new offset to the bullet shape
+	OnTransformScaled();
+	OnTransformUpdated();
 }

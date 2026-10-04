@@ -37,10 +37,7 @@ public:
 	* @brief Set text color
 	* @param color Color
 	*/
-	void SetColor(const Color& color)
-	{
-		m_color = color;
-	}
+	void SetColor(const Color& color);
 
 	/**
 	* @brief Set order in layer

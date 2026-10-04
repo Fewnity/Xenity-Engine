@@ -89,6 +89,37 @@ void Collider::SetRigidbody(const std::shared_ptr<RigidBody>& rb)
 	}
 }
 
+void Collider::SetIsTrigger(bool isTrigger)
+{
+	m_isTrigger = isTrigger;
+	UpdateTriggerFlag();
+	OnTransformScaled();
+	OnTransformUpdated();
+}
+
+void Collider::SetGenerateCollisionEvents(bool generateCollisionEvents)
+{
+	m_generateCollisionEvents = generateCollisionEvents;
+	// The rigidbody caches if one of its colliders generates events
+	if (const std::shared_ptr<RigidBody> rb = m_attachedRigidbody.lock())
+	{
+		rb->UpdateGeneratesEvents();
+	}
+}
+
+void Collider::UpdateTriggerFlag()
+{
+	if (m_bulletCollisionObject)
+	{
+		int flags = m_bulletCollisionObject->getCollisionFlags();
+		if (m_isTrigger)
+			flags |= btCollisionObject::CF_NO_CONTACT_RESPONSE;
+		else
+			flags &= ~btCollisionObject::CF_NO_CONTACT_RESPONSE;
+		m_bulletCollisionObject->setCollisionFlags(flags);
+	}
+}
+
 void Collider::OnEnabled()
 {
 	if (m_bulletCollisionObject)

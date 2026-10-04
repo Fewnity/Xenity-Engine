@@ -101,6 +101,11 @@ void TextMesh::DrawCommand(const RenderCommand& renderCommand)
 	if (!m_font)
 		return;
 
+	// The font may still be loading in another thread, wait for it before creating the mesh (the mesh would not be updated after)
+	const FileStatus fontStatus = m_font->GetFileStatus();
+	if (fontStatus == FileStatus::FileStatus_Loading || fontStatus == FileStatus::FileStatus_AsyncWaiting)
+		return;
+
 	if (m_isTextInfoDirty)
 	{
 		// Always delete the old text info, m_textInfo is kept when the text becomes empty and would be deleted twice
@@ -117,6 +122,16 @@ void TextMesh::DrawCommand(const RenderCommand& renderCommand)
 	if (m_mesh)
 	{
 		TextManager::DrawText(m_text, m_textInfo, m_horizontalAlignment, m_verticalAlignment, *GetTransformRaw(), m_color, false, *m_mesh, *m_font, *AssetManager::unlitMaterial);
+	}
+}
+
+void TextMesh::SetColor(const Color& color)
+{
+	m_color = color;
+	// The color is stored in the mesh, update it without recreating the mesh
+	if (m_mesh)
+	{
+		m_mesh->unifiedColor = color;
 	}
 }
 

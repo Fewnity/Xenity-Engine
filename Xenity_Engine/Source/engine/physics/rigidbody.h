@@ -115,12 +115,12 @@ public:
 	/**
 	* @brief Get if the rigidbody is static
 	*/
-	[[nodiscard]] float IsStatic() const { return m_isStatic; }
+	[[nodiscard]] bool IsStatic() const { return m_isStatic; }
 	
 	/**
 	* @brief Set if the rigidbody is static
 	*/
-	void SetIsStatic(float isStatic);
+	void SetIsStatic(bool isStatic);
 
 	/**
 	* @brief Get the mass of the rigidbody

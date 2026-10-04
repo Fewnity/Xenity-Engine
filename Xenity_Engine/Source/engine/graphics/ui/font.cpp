@@ -99,6 +99,12 @@ void Font::OnLoadFileReferenceFinished()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
 
+	// Called by the async loading even if the loading has failed, keep the failed status
+	if (m_fileStatus == FileStatus::FileStatus_Failed)
+	{
+		return;
+	}
+
 	if (fontAtlas && m_atlasBuffer)
 	{
 		fontAtlas->SetData(m_atlasBuffer);
@@ -159,19 +165,44 @@ static bool CheckFontPacking(FT_Face face, int pixelHeight, int atlasSize)
 }
 #endif
 
+#if !defined(__LINUX__)
+namespace
+{
+	// Free the FreeType objects and the font file data on every return path
+	// The file data is used by the face, so it's deleted after the face
+	struct FreeTypeCleanup
+	{
+		FT_Library library = nullptr;
+		FT_Face face = nullptr;
+		unsigned char* fileData = nullptr;
+
+		~FreeTypeCleanup()
+		{
+			if (face)
+				FT_Done_Face(face);
+			if (library)
+				FT_Done_FreeType(library);
+			delete[] fileData;
+		}
+	};
+}
+#endif
+
 bool Font::CreateFont(Font& font)
 {
 	Debug::Print("Loading font: " + font.m_file->GetPath(), true);
 #if !defined(__LINUX__)
-	FT_Library ft;
-	if (FT_Init_FreeType(&ft))
+	FreeTypeCleanup cleanup;
+	if (FT_Init_FreeType(&cleanup.library))
 	{
+		cleanup.library = nullptr;
 		Debug::PrintError("[Font::CreateFont] Could not init FreeType Library", true);
 		return false;
 	}
+	FT_Library ft = cleanup.library;
 
 	// Load font
-	FT_Face face;
+	FT_Face face = nullptr;
 #if defined(EDITOR)
 	if (FT_New_Face(ft, font.m_file->GetPath().c_str(), 0, &face))
 	{
@@ -180,18 +211,14 @@ bool Font::CreateFont(Font& font)
 	}
 #else
 	const size_t fileBufferSize = m_fileSize;
-	unsigned char* fileData = nullptr;
-	fileData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(m_filePosition, fileBufferSize);
-	if (FT_New_Memory_Face(ft, fileData, static_cast<FT_Long>(fileBufferSize), 0, &face))
+	cleanup.fileData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(m_filePosition, fileBufferSize);
+	if (!cleanup.fileData || FT_New_Memory_Face(ft, cleanup.fileData, static_cast<FT_Long>(fileBufferSize), 0, &face))
 	{
 		Debug::PrintError("[Font::CreateFont] Failed to load font from memory", true);
-		if (fileData)
-		{
-			delete[] fileData;
-		}
 		return false;
 	}
 #endif
+	cleanup.face = face;
 	const int atlasSize = 512;
 	const int targetPixelHeight = 48;
 	int charPixelHeight = targetPixelHeight;
@@ -232,9 +259,6 @@ bool Font::CreateFont(Font& font)
 	unsigned char *atlas = new unsigned char[atlasSize * atlasSize * channelCount];
 	if (!atlas)
 	{
-#if !defined(EDITOR)
-		delete[] fileData;
-#endif
 		return false;
 	}
 	memset(atlas, 0, atlasSize * atlasSize * channelCount);
@@ -320,9 +344,6 @@ bool Font::CreateFont(Font& font)
 			Debug::PrintError("[Font::CreateFont] Failed to load Glyph. Path: " + font.m_file->GetPath(), true);
 			delete[] atlas;
 			font.m_atlasBuffer = nullptr;
-#if !defined(EDITOR)
-			delete[] fileData;
-#endif
 			return false;
 		}
 	}
@@ -340,11 +361,6 @@ bool Font::CreateFont(Font& font)
 	font.fontAtlas = newAtlas;
 	font.m_atlasBuffer = atlas;
 
-	FT_Done_Face(face);
-	FT_Done_FreeType(ft);
-#if !defined(EDITOR)
-	delete[] fileData;
-#endif
 #if defined(__PSP__)
 	sceKernelDcacheWritebackInvalidateAll(); // Very important
 #endif

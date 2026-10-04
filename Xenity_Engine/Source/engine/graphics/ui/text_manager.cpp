@@ -186,7 +186,7 @@ std::shared_ptr<MeshData> TextManager::CreateMesh(const std::string &text, TextI
 
 			y += -textInfo->maxLineHeight * scale;
 		}
-		else
+		else if (ch) // The glyph may have failed to load
 		{
 			AddCharToMesh(mesh, ch, x, y, drawnCharIndex, scale);
 			drawnCharIndex++;
@@ -317,7 +317,7 @@ TextInfo *TextManager::GetTextInformations(const std::string &text, std::shared_
 			higherY = 0;
 			lowerY = 0;
 		}
-		else
+		else if (ch) // The glyph may have failed to load
 		{
 			textInfos->linesInfo[currentLine].lenght += ch->rightAdvance;
 			if (higherY < ch->rightBearing.y)
