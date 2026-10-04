@@ -280,10 +280,7 @@ void Light::SetRange(float value)
 	}
 
 	// The light distance has changed, update the list of the lit chunks
-	if (GetGameObjectRaw())
-	{
-		WorldPartitionner::ProcessLight(this);
-	}
+	WorldPartitionner::ProcessLight(this);
 }
 
 #pragma endregion

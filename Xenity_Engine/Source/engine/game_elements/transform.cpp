@@ -43,7 +43,8 @@ void Transform::SetTransformationMatrix(const glm::mat4& matrix)
 	m_isNormalMatrixDirty = true;
 	transformationMatrix = matrix;
 
-	// Keep the rotation matrix in sync, it's used by GetForward/GetUp/GetRight and to place the children
+	// Keep the rotation matrix in sync, it's used by GetForward/GetUp/GetRight and to place the children, 
+	// rotationMatrix is not updated because m_isTransformationMatrixDirty is false
 	for (int i = 0; i < 3; i++)
 	{
 		const int ix3 = i * 3;
