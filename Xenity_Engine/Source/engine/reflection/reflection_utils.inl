@@ -29,6 +29,19 @@
 #include <engine/class_registry/class_registry.h>
 #pragma region Fill variables
 
+/**
+* @brief Remove the elements after newSize, the json array may be smaller than the vector
+* (elements removed in the editor, or undo after adding an element)
+*/
+template<typename T>
+inline void ShrinkVector(std::vector<T>& vector, const size_t newSize)
+{
+	if (vector.size() > newSize)
+	{
+		vector.erase(vector.begin() + newSize, vector.end());
+	}
+}
+
 // Template for basic types (int, float, strings...)
 template<typename T>
 std::enable_if_t<!std::is_base_of<Reflective, T>::value && !is_shared_ptr<T>::value && !is_weak_ptr<T>::value && !is_vector<T>::value, void>
@@ -78,6 +91,13 @@ inline  void ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonV
 			valuePtr.get()[i] = tempVariable;
 		}
 	}
+
+	// Remove the elements that are not in the json (the vector owns the elements, like in the editor)
+	for (size_t i = jsonArraySize; i < valuePtr.get().size(); i++)
+	{
+		delete valuePtr.get()[i];
+	}
+	ShrinkVector(valuePtr.get(), jsonArraySize);
 }
 
 template<typename T>
@@ -113,6 +133,8 @@ std::enable_if_t<std::is_same<T, int>::value || std::is_same<T, float>::value ||
 			valuePtr.get()[i] = tempVariable;
 		}
 	}
+
+	ShrinkVector(valuePtr.get(), jsonArraySize);
 }
 
 template<typename T>
@@ -199,6 +221,8 @@ inline ReflectionUtils::JsonToVariable(const nlohmann::ordered_json& jsonValue, 
 			valuePtr.get()[i] = tempVariable;
 		}
 	}
+
+	ShrinkVector(valuePtr.get(), jsonArraySize);
 }
 
 template<typename T>
@@ -596,6 +620,8 @@ inline void ReflectionUtils::FillVectorFileReference(const nlohmann::ordered_jso
 			vectorRefPtr.get()[i] = std::dynamic_pointer_cast<T>(file);
 		}
 	}
+
+	ShrinkVector(vectorRefPtr.get(), jsonArraySize);
 }
 
 #pragma endregion

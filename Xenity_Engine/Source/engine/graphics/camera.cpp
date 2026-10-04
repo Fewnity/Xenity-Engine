@@ -261,7 +261,8 @@ void Camera::SetFarClippingPlane(float value)
 
 	if (value <= m_nearClippingPlane)
 	{
-		m_farClippingPlane = value + 0.01f;
+		// The far plane must stay after the near plane
+		m_farClippingPlane = m_nearClippingPlane + 0.01f;
 	}
 	else
 	{

@@ -172,16 +172,16 @@ void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* ch
 				while (sound->m_seekNext >= SOUND_FREQUENCY)
 				{
 					sound->m_seekNext -= SOUND_FREQUENCY;
+					// The buffer position is in samples (one per channel), the audio position is in frames like the sample count of the stream
 					if (channelCount == 2)
 					{
 						sound->m_bufferSeekPosition += 2;
-						sound->m_audioSeekPosition += 2;
 					}
 					else
 					{
 						sound->m_bufferSeekPosition += 1;
-						sound->m_audioSeekPosition += 1;
 					}
+					sound->m_audioSeekPosition += 1;
 
 					if (sound->m_audioSeekPosition >= sampleCount) // If the stream ends, reset the seek or stop the stream
 					{

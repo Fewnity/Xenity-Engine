@@ -68,6 +68,9 @@ void Time::Reset()
 #elif defined(__vita__)
 	sceRtcGetCurrentTick(&currentTick);
 	lastTick = currentTick;
+#elif defined(_EE)
+	currentTick = GetTimerSystemTime();
+	lastTick = currentTick;
 #else
 	start_point = std::chrono::high_resolution_clock::now();
 	end_point = start_point;
@@ -98,18 +101,14 @@ void Time::UpdateTime()
 	const float tempDeltaTime = std::chrono::duration<float>(start_point - end_point).count();
 	end_point = start_point;
 #endif
-	s_deltaTime = tempDeltaTime * s_timeScale;
 	s_unscaledDeltaTime = tempDeltaTime;
-	
-	if (s_deltaTime >= 0.2f) 
-	{
-		s_deltaTime = 0.2f;
-	}
-
 	if (s_unscaledDeltaTime >= 0.2f)
 	{
 		s_unscaledDeltaTime = 0.2f;
 	}
+
+	// Limit the frame duration before applying the time scale, otherwise a high time scale would be limited too
+	s_deltaTime = s_unscaledDeltaTime * s_timeScale;
 
 	s_time += s_deltaTime;
 	s_unscaledTime += s_unscaledDeltaTime;

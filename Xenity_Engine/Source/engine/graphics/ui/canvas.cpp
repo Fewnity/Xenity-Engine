@@ -45,6 +45,10 @@ void Canvas::UpdateButtons(const std::shared_ptr<GameObject>& gameObject)
 	}
 	for (const auto& child : children)
 	{
+		// The child may have been destroyed (or by a previous button click)
+		if (!child)
+			continue;
+
 		std::shared_ptr<Button> button = child->GetComponent<Button>();
 		if (button)
 		{
@@ -119,7 +123,11 @@ void Canvas::DrawCommand(const RenderCommand& renderCommand)
 
 	for (uint32_t i = 0; i < GetGameObject()->GetChildrenCount(); i++)
 	{
-		std::shared_ptr<RectTransform> rect = GetGameObject()->GetChildren()[i].lock()->GetComponent<RectTransform>();
+		const std::shared_ptr<GameObject> child = GetGameObject()->GetChildren()[i].lock();
+		if (!child)
+			continue;
+
+		std::shared_ptr<RectTransform> rect = child->GetComponent<RectTransform>();
 		if (rect)
 		{
 			rect->UpdatePosition(*this);

@@ -660,6 +660,8 @@ void SceneManager::LoadSceneInternal(const ordered_json& jsonData, const ordered
 #endif
 
 	ClearScene();
+	// Fill a new list instead of adding to the current one: restoring the scene after the play mode would add the same files again each time
+	std::vector<std::shared_ptr<FileReference>> fileReferenceList;
 	if (jsonUsedFileListData.contains("UsedFiles") && jsonUsedFileListData["UsedFiles"].contains("Values"))
 	{
 		for (const auto& idKv : jsonUsedFileListData["UsedFiles"]["Values"].items())
@@ -672,11 +674,7 @@ void SceneManager::LoadSceneInternal(const ordered_json& jsonData, const ordered
 			const std::shared_ptr<FileReference> fileRef = ProjectManager::GetFileReferenceById(idKv.value());
 			if (fileRef)
 			{
-				// No opened scene when the scene has never been saved (new scene, play mode, hot reloading)
-				if (s_openedScene)
-				{
-					s_openedScene->m_fileReferenceList.push_back(fileRef);
-				}
+				fileReferenceList.push_back(fileRef);
 
 		#if !defined(EDITOR)
 				FileReference::LoadOptions options;
@@ -690,6 +688,12 @@ void SceneManager::LoadSceneInternal(const ordered_json& jsonData, const ordered
 	else
 	{
 		Debug::PrintError("[SceneManager::LoadSceneInternal] Scene has no UsedFiles list", true);
+	}
+
+	// No opened scene when the scene has never been saved (new scene, play mode, hot reloading)
+	if (s_openedScene)
+	{
+		s_openedScene->m_fileReferenceList = std::move(fileReferenceList);
 	}
 
 	if (jsonData.contains("GameObjects"))

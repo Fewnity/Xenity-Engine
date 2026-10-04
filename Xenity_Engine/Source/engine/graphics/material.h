@@ -198,11 +198,11 @@ protected:
 	void Update();
 
 	Camera* m_lastUsedCamera = nullptr;
-	std::unordered_map <const char*, Vector2> m_uniformsVector2;
-	std::unordered_map <const char*, Vector3> m_uniformsVector3;
-	std::unordered_map <const char*, Vector4> m_uniformsVector4;
-	std::unordered_map <const char*, int> m_uniformsInt;
-	std::unordered_map <const char*, float> m_uniformsFloat;
+	std::unordered_map <std::string, Vector2> m_uniformsVector2;
+	std::unordered_map <std::string, Vector3> m_uniformsVector3;
+	std::unordered_map <std::string, Vector4> m_uniformsVector4;
+	std::unordered_map <std::string, int> m_uniformsInt;
+	std::unordered_map <std::string, float> m_uniformsFloat;
 
 	std::shared_ptr<Shader> m_shader = nullptr;
 	std::shared_ptr<Texture> m_texture;

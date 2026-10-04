@@ -126,6 +126,7 @@ void InspectorDeleteGameObjectCommand::Undo()
 
 	ReCreateChild(m_gameObjectChild, parentGameObject);
 	UpdateChildComponents(m_gameObjectChild);
+	SceneManager::SetIsSceneDirty(true);
 	/*std::shared_ptr<GameObject> gameObject = CreateGameObject();
 	ReflectionUtils::JsonToReflectiveData(gameObjectData, gameObject->GetReflectiveData());
 	gameObject->OnReflectionUpdated();
