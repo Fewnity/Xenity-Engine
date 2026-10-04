@@ -40,7 +40,18 @@ ReflectiveData Transform::GetReflectiveData()
 void Transform::SetTransformationMatrix(const glm::mat4& matrix)
 {
 	m_isTransformationMatrixDirty = false;
+	m_isNormalMatrixDirty = true;
 	transformationMatrix = matrix;
+
+	// Keep the rotation matrix in sync, it's used by GetForward/GetUp/GetRight and to place the children
+	for (int i = 0; i < 3; i++)
+	{
+		const int ix3 = i * 3;
+		for (int j = 0; j < 3; j++)
+		{
+			rotationMatrix[ix3 + j] = matrix[i][j];
+		}
+	}
 
 	const glm::vec3 pos = glm::vec3(matrix[3]);
 	m_position = Vector3(-pos.x, pos.y, pos.z);

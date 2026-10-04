@@ -57,6 +57,17 @@ int NetworkManager::s_result = -1;
 
 bool NetworkManager::s_done = false;
 
+#if !defined(_EE)
+static void CloseSocketId(int socketId)
+{
+#if defined(_WIN32) || defined(_WIN64)
+	closesocket(socketId);
+#elif defined(__PSP__) || defined(__vita__)
+	close(socketId);
+#endif
+}
+#endif
+
 std::vector<std::shared_ptr<Socket>> NetworkManager::s_sockets;
 bool NetworkManager::s_needDrawMenu = false;
 
@@ -197,13 +208,14 @@ void Socket::Update()
 void Socket::Close()
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
+	if (m_socketId < 0)
+		return;
+
 #if !defined(_EE)
-#if defined(_WIN32) || defined(_WIN64)
-	closesocket(m_socketId);
-#elif defined(__PSP__) || defined(__vita__)
-	close(m_socketId);
+	CloseSocketId(m_socketId);
 #endif
-#endif
+	// Forget the id, the system can give it to a new socket (closing it twice could close another socket)
+	m_socketId = -1;
 }
 
 Socket::~Socket()
@@ -283,7 +295,7 @@ void NetworkManager::DrawNetworkSetupMenu()
 std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address, int port)
 {
 	STACK_DEBUG_OBJECT(STACK_MEDIUM_PRIORITY);
-	int newSocketId = 1;
+	int newSocketId = -1;
 	#if !defined(__LINUX__)
 	if (address.empty() || port <= 0)
 	{
@@ -309,18 +321,20 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 		Debug::PrintError("[NetworkManager::CreateSocket] Could not create socket");
 		return nullptr;
 	}
-	memset(&serv_addr, '0', sizeof(serv_addr));
+	memset(&serv_addr, 0, sizeof(serv_addr));
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port);
 	if (inet_pton(AF_INET, address.c_str(), &serv_addr.sin_addr) <= 0)
 	{
 		Debug::PrintError("[NetworkManager::CreateSocket] inet_pton error occured");
+		CloseSocketId(newSocketId);
 		return nullptr;
 	}
 	if (connect(newSocketId, reinterpret_cast<struct sockaddr*>(&serv_addr), sizeof(serv_addr)) < 0)
 	{
 		Debug::PrintError("[NetworkManager::CreateSocket] Connect Failed");
+		CloseSocketId(newSocketId);
 		return nullptr;
 	}
 #if defined(_WIN32) || defined(_WIN64)
@@ -331,6 +345,7 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 	if (setsockopt(newSocketId, SOL_SOCKET, SO_NBIO, (char*)&i, sizeof(i)) < 0)
 	{
 		Debug::PrintError("Failed to change socket flags");
+		CloseSocketId(newSocketId);
 		return nullptr;
 	}
 #else
@@ -338,6 +353,7 @@ std::shared_ptr<Socket> NetworkManager::CreateSocket(const std::string& address,
 	if (setsockopt(newSocketId, SOL_SOCKET, SO_NONBLOCK, (char*)&i, sizeof(i)) < 0)
 	{
 		Debug::PrintError("Failed to change socket flags");
+		CloseSocketId(newSocketId);
 		return nullptr;
 	}
 #endif

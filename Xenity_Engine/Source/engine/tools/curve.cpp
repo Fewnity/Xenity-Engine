@@ -6,17 +6,25 @@
 
 #include "curve.h"
 
+#include <algorithm>
+
 #include <engine/game_elements/gameobject.h>
 #include <engine/game_elements/transform.h>
 
 Vector3 Spline::GetValueAt(const float t) const
 {
 	const int curveCount = (int)splinePoints.size() - 1;
-	int currentCurve = (int)floorf(t * curveCount);
+	// A curve needs at least two points
+	if (curveCount < 1)
+		return Vector3();
+
+	// Out of range values would read outside of the points list
+	const float clampedT = std::clamp(t, 0.0f, 1.0f);
+	int currentCurve = (int)floorf(clampedT * curveCount);
 	if (currentCurve == curveCount)
 		currentCurve--;
 
-	float tVal = t * curveCount;
+	float tVal = clampedT * curveCount;
 	tVal -= currentCurve;
 
 	Vector3 result = Vector3();

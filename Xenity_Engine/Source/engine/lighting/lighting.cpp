@@ -254,6 +254,12 @@ void Light::SetIntensity(float intensity)
 	}
 
 	m_intensity = intensity;
+
+	// The attenuation depends on the intensity in old console compatibility mode
+	if (m_type != LightType::Directional)
+	{
+		UpdateLightValues();
+	}
 }
 
 void Light::SetRange(float value)
@@ -271,6 +277,12 @@ void Light::SetRange(float value)
 	if (m_type != LightType::Directional)
 	{
 		UpdateLightValues();
+	}
+
+	// The light distance has changed, update the list of the lit chunks
+	if (GetGameObjectRaw())
+	{
+		WorldPartitionner::ProcessLight(this);
 	}
 }
 

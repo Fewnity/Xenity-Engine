@@ -93,7 +93,7 @@ void Tilemap::Setup(int _width, int _height, int _chunkSize)
 
 Tilemap::Tile* Tilemap::GetTile(int x, int y) const
 {
-	if (tiles == nullptr || x < 0 || y < 0 || x >= height || y >= height)
+	if (tiles == nullptr || x < 0 || y < 0 || x >= width || y >= height)
 		return nullptr;
 
 	return &tiles[x * height + y];

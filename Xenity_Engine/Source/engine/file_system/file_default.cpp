@@ -71,6 +71,8 @@ std::string FileDefault::ReadAll()
 	}
 
 	std::stringstream allText;
+	// Clear the eof/fail flags of a previous read, otherwise seekg and the reads would do nothing
+	m_file.clear();
 	m_file.seekg(0, std::ios_base::beg);
 	std::string tempText;
 	while (getline(m_file, tempText))
@@ -89,6 +91,7 @@ unsigned char* FileDefault::ReadAllBinary(size_t& size)
 		return nullptr;
 	}
 
+	m_file.clear();
 	m_file.seekg(0, std::ios_base::end);
 	const std::streampos pos = m_file.tellg();
 	m_file.seekg(0, std::ios_base::beg);
@@ -118,6 +121,7 @@ unsigned char* FileDefault::ReadBinary(size_t offset, size_t size)
 		return nullptr;
 	}
 
+	m_file.clear();
 	m_file.seekg(offset, std::ios_base::beg);
 	char* data = new char[size];
 	m_file.read(data, size);

@@ -117,7 +117,7 @@ void AudioManager::FillChannelBuffer(short* buffer, uint64_t length, Channel* ch
 		{
 			continue;
 		}
-		else if(sound->m_bufferSeekPosition > halfBuffSize && sound->m_needFillSecondHalfBuffer)
+		else if(sound->m_bufferSeekPosition >= halfBuffSize && sound->m_needFillSecondHalfBuffer)
 		{
 			continue;
 		}
@@ -711,25 +711,16 @@ void AudioManager::StopAudioSource(const std::shared_ptr<AudioSource>& audioSour
 	XASSERT(audioSource != nullptr, "[AudioManager::StopAudioSource] audioSource is null");
 
 	AudioManager::s_myMutex->Lock();
-	size_t audioSourceIndex = 0;
-	bool found = false;
 
-	// Find audio source index
+	// Stop every sound of the audio source: a finished sound waiting to be deleted can be in the list before the playing one
 	const size_t count = s_channel->m_playedSoundsCount;
 	for (size_t i = 0; i < count; i++)
 	{
-		if (s_channel->m_playedSounds[i]->m_audioSource.lock() == audioSource)
+		PlayedSound* playedSound = s_channel->m_playedSounds[i];
+		if (playedSound->m_audioSource.lock() == audioSource)
 		{
-			audioSourceIndex = i;
-			found = true;
-			break;
+			playedSound->m_needRemove = true;
 		}
-	}
-
-	if (found)
-	{
-		PlayedSound* playedSound = s_channel->m_playedSounds[audioSourceIndex];
-		playedSound->m_needRemove = true;
 	}
 
 	AudioManager::s_myMutex->Unlock();
