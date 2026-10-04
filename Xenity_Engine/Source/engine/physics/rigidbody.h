@@ -207,7 +207,6 @@ protected:
 	friend class BoxCollider;
 	friend class SphereCollider;
 	friend class PhysicsManager;
-	friend class MyContactResultCallback;
 
 	void AddShape(btCollisionShape* shape, const Vector3& offset);
 	void AddTriggerShape(btCollisionShape* shape, const Vector3& offset);
