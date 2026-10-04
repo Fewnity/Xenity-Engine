@@ -456,6 +456,10 @@ void RigidBody::Awake()
 	m_bulletTriggerRigidbody = new btRigidBody(1, myMotionStateTrigger, nullptr, btVector3(0, 0, 0));
 	m_bulletTriggerRigidbody->setUserPointer(this);
 
+	// The trigger body always overlaps the main body, skip the narrowphase between them
+	m_bulletRigidbody->setIgnoreCollisionCheck(m_bulletTriggerRigidbody, true);
+	m_bulletTriggerRigidbody->setIgnoreCollisionCheck(m_bulletRigidbody, true);
+
 	UpdateLockedAxis();
 	UpdateRigidBodyDrag();
 	UpdateRigidBodyBounce();

@@ -93,7 +93,7 @@ void Collider::OnEnabled()
 {
 	if (m_bulletCollisionObject)
 	{
-		PhysicsManager::s_physDynamicsWorld->addCollisionObject(m_bulletCollisionObject);
+		PhysicsManager::s_physDynamicsWorld->addCollisionObject(m_bulletCollisionObject, btBroadphaseProxy::StaticFilter, btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
 	}
 }
 
