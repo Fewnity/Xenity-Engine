@@ -34,8 +34,22 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 
 	unsigned char* fileData = ProjectManager::s_fileDataBase.GetBitFile().ReadBinary(mesh.m_filePosition, mesh.m_fileSize);
 	unsigned char* fileDataOriginalPtr = fileData;
+	if (!fileData || mesh.m_fileSize < sizeof(uint32_t))
+	{
+		Debug::PrintError("[BinaryMeshLoader::LoadMesh] Cannot read the mesh data", true);
+		delete[] fileDataOriginalPtr;
+		return false;
+	}
+	const unsigned char* fileDataEnd = fileDataOriginalPtr + mesh.m_fileSize;
 
-	uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(fileData);
+	// Check that the next read stays in the file data (truncated or corrupted file)
+	const auto canRead = [&fileData, fileDataEnd](size_t size)
+	{
+		return size <= static_cast<size_t>(fileDataEnd - fileData);
+	};
+
+	uint32_t subMeshCount = 0;
+	memcpy(&subMeshCount, fileData, sizeof(uint32_t));
 
 #if defined(__PS3__)
 	subMeshCount = EndianUtils::SwapEndian(subMeshCount);
@@ -49,6 +63,12 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		// Read vertex descriptor
 		uint32_t vertexDescriptorListSize = 0;
 
+		if (!canRead(sizeof(uint32_t)))
+		{
+			Debug::PrintError("[BinaryMeshLoader::LoadMesh] The mesh data is truncated", true);
+			delete[] fileDataOriginalPtr;
+			return false;
+		}
 		memcpy(&vertexDescriptorListSize, fileData, sizeof(uint32_t));
 		fileData += sizeof(uint32_t);
 
@@ -57,6 +77,13 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 #endif
 
 		VertexDescriptor vertexDescriptorList;
+
+		if (!canRead(static_cast<size_t>(vertexDescriptorListSize) * sizeof(VertexElement) + sizeof(uint32_t) * 4))
+		{
+			Debug::PrintError("[BinaryMeshLoader::LoadMesh] The mesh data is truncated", true);
+			delete[] fileDataOriginalPtr;
+			return false;
+		}
 
 		for (size_t vertexDescIndex = 0; vertexDescIndex < vertexDescriptorListSize; vertexDescIndex++)
 		{
@@ -93,8 +120,31 @@ bool BinaryMeshLoader::LoadMesh(MeshData& mesh)
 		indexMemSize = EndianUtils::SwapEndian(indexMemSize);
 #endif // defined(__PS3__)
 
+		if (!canRead(static_cast<size_t>(vertexMemSize) + indexMemSize))
+		{
+			Debug::PrintError("[BinaryMeshLoader::LoadMesh] The mesh data is truncated", true);
+			delete[] fileDataOriginalPtr;
+			return false;
+		}
+
+		const uint32_t subMeshCountBefore = mesh.m_subMeshCount;
 		mesh.CreateSubMesh(vertice_count, index_count, vertexDescriptorList);
+		// The sub mesh is not added if the memory allocation failed
+		if (mesh.m_subMeshCount == subMeshCountBefore)
+		{
+			Debug::PrintError("[BinaryMeshLoader::LoadMesh] Failed to create the sub mesh", true);
+			delete[] fileDataOriginalPtr;
+			return false;
+		}
 		const std::unique_ptr<MeshData::SubMesh>& subMesh = mesh.m_subMeshes[mesh.m_subMeshCount - 1];
+
+		// The sizes in the file must match the memory allocated for the sub mesh
+		if (vertexMemSize != subMesh->m_vertexMemSize || (index_count != 0 && indexMemSize != subMesh->m_indexMemSize))
+		{
+			Debug::PrintError("[BinaryMeshLoader::LoadMesh] The mesh data does not match the vertex descriptor", true);
+			delete[] fileDataOriginalPtr;
+			return false;
+		}
 
 		// Copy vertices data
 		memcpy(subMesh->m_data, fileData, vertexMemSize);

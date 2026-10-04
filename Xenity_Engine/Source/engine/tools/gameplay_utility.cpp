@@ -59,6 +59,15 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 		newTransform->SetLocalEulerAngles(transformToDuplicate->GetLocalEulerAngles());
 		newTransform->SetLocalScale(transformToDuplicate->GetLocalScale());
 	}
+	else
+	{
+		// The copy has no parent, use the world values of the original GameObject (before adding the components, a rigidbody uses the position in Awake)
+		const std::shared_ptr<Transform>& transformToDuplicate = goToDuplicate->GetTransform();
+		const std::shared_ptr<Transform>& newTransform = newGameObject->GetTransform();
+		newTransform->SetPosition(transformToDuplicate->GetPosition());
+		newTransform->SetRotation(transformToDuplicate->GetRotation());
+		newTransform->SetLocalScale(transformToDuplicate->GetScale());
+	}
 
 	GameObjectAccessor goToDuplicateAcc = GameObjectAccessor(goToDuplicate);
 	std::vector<std::shared_ptr<Component>>& goToDuplicateComponents = goToDuplicateAcc.GetComponents();
@@ -67,6 +76,12 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 	{
 		const std::shared_ptr<Component> componentToDuplicate = goToDuplicateComponents[i];
 		const std::shared_ptr<Component> newComponent = ClassRegistry::AddComponentFromName(componentToDuplicate->GetComponentName(), *newGameObject);
+		// The component can fail to be created (missing script...)
+		if (!newComponent)
+		{
+			Debug::PrintError("[Instantiate] Failed to duplicate the component: " + componentToDuplicate->GetComponentName());
+			continue;
+		}
 		newComponent->SetIsEnabled(componentToDuplicate->IsEnabled());
 		const ReflectiveData newReflection = newComponent->GetReflectiveData();
 		const ReflectiveData reflectionToCopy = componentToDuplicate->GetReflectiveData();
@@ -92,7 +107,11 @@ void DuplicateChild(const std::shared_ptr<GameObject>& parent, const std::shared
 	const int childCount = goToDuplicate->GetChildrenCount();
 	for (int i = 0; i < childCount; i++)
 	{
-		DuplicateChild(newGameObject, goToDuplicateAcc.GetChildren()[i].lock(), ComponentsAndIds, GameObjectsAndIds);
+		const std::shared_ptr<GameObject> child = goToDuplicateAcc.GetChildren()[i].lock();
+		if (child)
+		{
+			DuplicateChild(newGameObject, child, ComponentsAndIds, GameObjectsAndIds);
+		}
 	}
 }
 

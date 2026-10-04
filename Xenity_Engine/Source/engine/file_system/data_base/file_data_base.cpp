@@ -107,9 +107,18 @@ bool FileDataBase::LoadFromFile(const std::string& path)
 		memcpy(binaryFileDataBase.data(), data, dataSize);
 		delete[] data;
 
-		const ordered_json j = ordered_json::from_msgpack(binaryFileDataBase);
-
-		ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
+		// The file can be empty or corrupted, the json library throws an exception in this case
+		try
+		{
+			const ordered_json j = ordered_json::from_msgpack(binaryFileDataBase);
+			ReflectionUtils::JsonToReflectiveData(j, GetReflectiveData());
+		}
+		catch (const std::exception& e)
+		{
+			Debug::PrintError("[FileDataBase::LoadFromFile] Invalid data base file: " + std::string(e.what()), true);
+			Clear();
+			return false;
+		}
 	}
 
 	return openResult;
