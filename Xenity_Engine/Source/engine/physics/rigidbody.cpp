@@ -397,6 +397,16 @@ void RigidBody::Tick()
 {
 	if (GetGameObjectRaw()->IsLocalActive() && m_bulletTriggerRigidbody)
 	{
+		// A sleeping body does not move: skip the transform update after the first sleeping frame
+		// (the first one is still synced because the body can move a bit during the step where it falls asleep)
+		// Moving the transform from the game code wakes the body up (see OnTransformUpdated)
+		const bool isSleeping = !m_bulletRigidbody->isActive();
+		if (isSleeping && m_wasSleeping)
+		{
+			return;
+		}
+		m_wasSleeping = isSleeping;
+
 		m_disableEvent = true;
 		m_bulletTriggerRigidbody->setWorldTransform(m_bulletRigidbody->getWorldTransform());
 
@@ -533,11 +543,11 @@ void RigidBody::RemoveShape(btCollisionShape* shape)
 			offsetTransform.setOrigin(btVector3(0, 0, 0));
 
 			m_bulletCompoundShape->addChildShape(offsetTransform, m_emptyShape);
-			m_isEmpty = false;
+			m_isEmpty = true;
 		}
 		else
 		{
-			m_isEmpty = true;
+			m_isEmpty = false;
 		}
 
 		UpdateRigidBodyMass();

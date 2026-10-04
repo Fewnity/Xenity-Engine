@@ -469,27 +469,27 @@ void AssetManager::RemoveLight(Light* light)
 void AssetManager::RemoveUnusedFiles()
 {
 	STACK_DEBUG_OBJECT(STACK_HIGH_PRIORITY);
+
+#if !defined(EDITOR) // Do not unload files in the editor to avoid freezes TODO: Make a cache system to reduce memory usage
 	SCOPED_PROFILER("AssetManager::RemoveUnusedFiles", scopeBenchmark);
 
-	int fileRefCount = GetFileReferenceCount();
-	for (int i = 0; i < fileRefCount; i++)
+	// Do not copy the shared_ptr here: this function is called every frame for every file
+	for (int i = 0; i < s_fileReferenceCount; i++)
 	{
-		std::shared_ptr<FileReference> fileRef = GetFileReference(i);
-		const int refCount = fileRef.use_count();
-		// If the reference count is 2 (fileRef variable and the reference in the asset manager)
-#if defined(EDITOR) // Do not unload files in the editor to avoid freezes TODO: Make a cache system to reduce memory usage
-		if (refCount == 1)
-#else
-		if (refCount == 2)
-#endif
+		// If the asset manager holds the only reference, the file is not used anymore
+		if (s_fileReferences[i].use_count() == 1)
 		{
-			// Free the file
-			RemoveFileReference(fileRef);
-			fileRef.reset();
+			// Remove the file from the list before freeing it (same order as before)
+			std::shared_ptr<FileReference> fileRef = std::move(s_fileReferences[i]);
+			s_fileReferences.erase(s_fileReferences.begin() + i);
+			s_fileReferenceCount--;
 			i--;
-			fileRefCount--;
+
+			// Free the file
+			fileRef.reset();
 		}
 	}
+#endif
 }
 
 std::string AssetManager::GetDefaultFileData(FileType fileType)
